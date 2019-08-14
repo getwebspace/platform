@@ -11,9 +11,20 @@ if (PHP_SAPI == 'cli-server') {
 }
 
 // Include global const's
-require __DIR__ . '/../config/vars.php';
+require __DIR__ . '/../src/bootstrap.php';
 
-// Run app
-$app = app_run($app);
+// App container
+$c = $container = $app->getContainer();
+
+// Set up dependencies
+require APP_DIR . '/dependencies.php';
+
+// Register middleware
+require APP_DIR . '/middleware.php';
+
+// Register routes
+require APP_DIR . '/routes.php';
+
+return $app->run();
 
 // And nothing more :)

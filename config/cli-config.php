@@ -2,7 +2,7 @@
 
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 
-require __DIR__ . '/../config/vars.php';
+require __DIR__ . '/../src/bootstrap.php';
 
 $settings = $app->getContainer()->get('settings')['doctrine'];
 
@@ -19,5 +19,6 @@ $config = \Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration(
 );
 
 $em = \Doctrine\ORM\EntityManager::create($settings['connection'], $config);
+$em->getConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
 
 return ConsoleRunner::createHelperSet($em);

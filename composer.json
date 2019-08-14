@@ -35,56 +35,55 @@
     },
     "autoload": {
         "classmap": [
-            "engine/app"
-        ],
-        "files": ["engine/loader.php"]
-    },
-    "config": {
-        "vendor-dir": "engine/libs"
+            "src"
+        ]
     },
     "scripts": {
         "post-create-project-cmd": [
             "php -r \"@chmod('./', 0777);\"",
-            "php -r \"@chmod('./engine', 0555);\"",
-            "php -r \"@chmod('./engine/libs', 0775);\"",
-            "php -r \"@chmod('./engine/src', 0775);\"",
-            "php -r \"@chmod('./engine/var', 0777);\"",
-            "php -r \"@chmod('./engine/var/cache', 0777);\"",
-            "php -r \"@chmod('./engine/var/log', 0777);\"",
+            "php -r \"@chmod('./app', 0555);\"",
+            "php -r \"@chmod('./config', 0555);\"",
             "php -r \"@chmod('./public', 0777);\"",
+            "php -r \"@chmod('./src', 0775);\"",
             "php -r \"@chmod('./themes', 0555);\"",
             "php -r \"@chmod('./uploads', 0777);\"",
-            "php ./engine/libs/bin/doctrine orm:schema-tool:create",
-            "php -r \"@chmod('./engine/var/database.sqlite', 0777);\""
+            "php -r \"@chmod('./var', 0777);\"",
+            "php -r \"@chmod('./var/cache', 0777);\"",
+            "php -r \"@chmod('./var/log', 0777);\"",
+            "php -r \"@chmod('./vendor', 0775);\"",
+            "php ./vendor/bin/doctrine orm:schema-tool:create",
+            "php -r \"@chmod('./var/database.sqlite', 0777);\""
         ],
         "post-install-cmd": [
             "php -r \"@chmod('./', 0777);\"",
-            "php -r \"@chmod('./engine', 0555);\"",
-            "php -r \"@chmod('./engine/libs', 0775);\"",
-            "php -r \"@chmod('./engine/src', 0775);\"",
-            "php -r \"@chmod('./engine/var', 0777);\"",
-            "php -r \"@chmod('./engine/var/cache', 0777);\"",
-            "php -r \"@chmod('./engine/var/log', 0777);\"",
+            "php -r \"@chmod('./app', 0555);\"",
+            "php -r \"@chmod('./config', 0555);\"",
             "php -r \"@chmod('./public', 0777);\"",
+            "php -r \"@chmod('./src', 0775);\"",
             "php -r \"@chmod('./themes', 0555);\"",
             "php -r \"@chmod('./uploads', 0777);\"",
-            "php -r \"@chmod('./engine/var/database.sqlite', 0777);\"",
-            "php ./engine/libs/bin/doctrine orm:schema-tool:update --force",
-            "php -r \"@chmod('./engine/var/database.sqlite', 0777);\""
+            "php -r \"@chmod('./var', 0777);\"",
+            "php -r \"@chmod('./var/cache', 0777);\"",
+            "php -r \"@chmod('./var/log', 0777);\"",
+            "php -r \"@chmod('./vendor', 0775);\"",
+            "php -r \"@chmod('./var/database.sqlite', 0777);\"",
+            "php ./vendor/bin/doctrine orm:schema-tool:update --force",
+            "php -r \"@chmod('./var/database.sqlite', 0777);\""
         ],
         "post-update-cmd": [
             "php -r \"@chmod('./', 0777);\"",
-            "php -r \"@chmod('./engine', 0555);\"",
-            "php -r \"@chmod('./engine/libs', 0775);\"",
-            "php -r \"@chmod('./engine/src', 0775);\"",
-            "php -r \"@chmod('./engine/var', 0777);\"",
-            "php -r \"@chmod('./engine/var/cache', 0777);\"",
-            "php -r \"@chmod('./engine/var/log', 0777);\"",
+            "php -r \"@chmod('./app', 0555);\"",
+            "php -r \"@chmod('./config', 0555);\"",
             "php -r \"@chmod('./public', 0777);\"",
+            "php -r \"@chmod('./src', 0775);\"",
             "php -r \"@chmod('./themes', 0555);\"",
             "php -r \"@chmod('./uploads', 0777);\"",
-            "php -r \"@chmod('./engine/var/database.sqlite', 0777);\"",
-            "php ./engine/libs/bin/doctrine orm:schema-tool:update --force"
+            "php -r \"@chmod('./var', 0777);\"",
+            "php -r \"@chmod('./var/cache', 0777);\"",
+            "php -r \"@chmod('./var/log', 0777);\"",
+            "php -r \"@chmod('./vendor', 0775);\"",
+            "php -r \"@chmod('./var/database.sqlite', 0777);\"",
+            "php ./vendor/bin/doctrine orm:schema-tool:update --force"
         ]
     }
 }
