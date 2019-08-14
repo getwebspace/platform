@@ -1,0 +1,86 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">Страницы</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <h4 class="card-title">Список страниц ({{ list.count() }})</h4>
+                        <a href="/cup/page/add" class="btn btn-primary btn-round ml-auto">
+                            <i class="fa fa-plus"></i>
+                            Создать страницу
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table data-table class="display table table-striped table-hover" >
+                            <thead>
+                                <tr>
+                                    <th>Заголовок</th>
+                                    <th width="25%">Ссылка</th>
+                                    <th width="15%">Дата публикации</th>
+                                    <th width="10%" class="text-center no-sorting"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in list %}
+                                    <tr>
+                                        <td>
+                                            <a href="/{{ item.address }}" target="_blank">
+                                                {{ item.title }}
+                                                <i class="fas fa-external-link-alt"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            {% include 'cup/form.twig' with {
+                                                'type': 'text',
+                                                'args': {
+                                                    'value': '/' ~ item.address,
+                                                    'placeholder': 'contact-form',
+                                                }
+                                            } %}
+                                        </td>
+                                        <td>{{ item.date|date('d.m.Y H:i') }}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group dropdown">
+                                                <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                                                    <i class="fas fa-bars"></i>
+                                                </button>
+                                                <ul class="dropdown-menu" role="menu">
+                                                    <li>
+                                                        <a href="/cup/page/{{ item.uuid }}/edit" class="btn btn-link"><i class="fas fa-edit"></i> Изменить</a>
+                                                    </li>
+                                                    <li><div class="dropdown-divider"></div></li>
+                                                    <li>
+                                                        <form action="/cup/page/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить страницу?');">
+                                                            <button type="submit" class="btn btn-link text-danger">
+                                                                <i class="fas fa-trash-alt"></i> Удалить
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

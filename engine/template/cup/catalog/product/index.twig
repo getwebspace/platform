@@ -1,0 +1,97 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">Каталог</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <h4 class="card-title">Список товаров в категории {{ category.title }} ({{ product.count() }})</h4>
+                        <a href="/cup/catalog/{{ category.uuid }}/product/add" class="btn btn-primary btn-round ml-auto">
+                            <i class="fa fa-plus"></i>
+                            Добавить товар
+                        </a>
+                        <a href="/cup/catalog/" class="btn btn-secondary btn-round ml-1">
+                            <i class="fas fa-long-arrow-alt-left"></i>
+                            Назад
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table data-table class="display table table-striped table-hover" >
+                            <thead>
+                                <tr>
+                                    <th width="5%"><i class="fas fa-sort" data-toggle="tooltip" data-placement="top" title="Название категории. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов"></i></th>
+                                    <th>Наименование</th>
+                                    <th>Артикул</th>
+                                    <th>Цена (оптовая)</th>
+                                    <th>Поле 1</th>
+                                    <th>Поле 2</th>
+                                    <th>Поле 3</th>
+                                    <th>Поле 4</th>
+                                    <th>Поле 5</th>
+                                    <th><i class="fas fa-boxes"></i></th>
+                                    <th><i class="fas fa-warehouse"></i></th>
+                                    <th width="10%" class="text-center no-sorting"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in product %}
+                                    <tr>
+                                        <td class="text-center">{{ item.order }}</td>
+                                        <td>
+                                            <a href="/catalog/{{ category.address }}/{{ item.address }}" target="_blank">
+                                                {{ item.title }}
+                                                <i class="fas fa-external-link-alt"></i>
+                                            </a>
+                                        </td>
+                                        <td>{{ item.vendorcode }}</td>
+                                        <td>{{ item.price|round(2) }} ({{ item.priceWholesale|round(2) }})</td>
+                                        <td>{{ item.field1 }}</td>
+                                        <td>{{ item.field2 }}</td>
+                                        <td>{{ item.field3 }}</td>
+                                        <td>{{ item.field4 }}</td>
+                                        <td>{{ item.field5 }}</td>
+                                        <td>{{ item.getVolume() }}</td>
+                                        <td>{{ item.stock }}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group dropdown">
+                                                <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                                                    <i class="fas fa-bars"></i>
+                                                </button>
+                                                <ul class="dropdown-menu" role="menu">
+                                                    <li>
+                                                        <a href="/cup/catalog/{{ category.uuid }}/product/{{ item.uuid }}/edit" class="btn btn-link"><i class="fas fa-edit"></i> Изменить</a>
+                                                    </li>
+                                                    <li><div class="dropdown-divider"></div></li>
+                                                    <li>
+                                                        <form action="/cup/catalog/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить публикацию?');">
+                                                            <button type="submit" class="btn btn-link text-danger">
+                                                                <i class="fas fa-trash-alt"></i> Удалить
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

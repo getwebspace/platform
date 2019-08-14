@@ -1,0 +1,89 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">Пользователи</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <form method="post">
+                    <div class="card-header">
+                        <div class="card-head-row">
+                            <div class="card-title">{{ item.uuid ? 'Редактирование пользователя ' ~ item.username : 'Добавление пользователя' }}</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+
+                            <div class="col-md-12">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Сообщение',
+                                    'type': 'textarea',
+                                    'name': 'message',
+                                    'args': {
+                                        'method': 'null',
+                                        'value': item.message,
+                                        'data': {
+                                            'summernote': true,
+                                            'summernote-code': true,
+                                        }
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Дата',
+                                    'type': 'datetime',
+                                    'name': 'date',
+                                    'args': {
+                                        'value': item.date|date('d.m.Y H:i'),
+                                        'placeholder': '20.01.2019 12:34',
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Имя',
+                                    'type': 'text',
+                                    'name': 'firstname',
+                                    'args': {
+                                        'value': item.firstname,
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Фамилия',
+                                    'type': 'text',
+                                    'name': 'lastname',
+                                    'args': {
+                                        'value': item.lastname,
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <button type="submit" class="btn btn-success">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

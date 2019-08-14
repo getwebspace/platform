@@ -1,0 +1,95 @@
+{#
+    label - ярлык поля
+    name - имя поля
+    type - тип поля
+    args - аргументы поля
+    message - сообщение
+    prefix - префикс перед полем
+    postfix - постфикс после поля
+#}
+{% block input %}
+    {% if name is empty %}
+        {% set name = '' %}
+    {% endif %}
+    {% if type is empty %}
+        {% set type = 'text' %}
+    {% endif %}
+    {% if args is empty %}
+        {% set args = {} %}
+    {% endif %}
+
+    {% if args.method == 'null' %}
+        {% if args.data is empty %}
+            {% set args = args|merge({'data': {}}) %}
+        {% endif %}
+        {% set args = args|merge({
+            'data': args.data|merge({
+                'value': _request[name] is not empty ? _request[name]|e : args.value|e
+            }),
+            'value': null
+        }) %}
+    {% endif %}
+
+    {% set args = args|merge({'value': args.value|e}) %}
+
+    {% set error = '' %}
+    {% if _error[name] is same as(false) or _error[name] is not empty %}
+        {% set error = 'has-error' %}
+    {% endif %}
+
+    <div data-input class="{{ type == 'checkbox' or type == 'radio' ? 'custom-control custom-' ~ type : 'form-group' }} {{ error }}">
+        {# COMMON LABEL #}
+        {% if label is not empty and type not in ['checkbox', 'radio'] %}
+            <label class="placeholder">
+                <b>{{ label }}</b>
+
+                {% if args.required is not empty %}
+                    <i class="text-danger">*</i>
+                {% endif %}
+            </label>
+        {% endif %}
+
+        {% if prefix is not empty or postfix is not empty %}
+            <div class="input-group">
+            {% if prefix is not empty %}
+                <span class="input-group-prepend">
+                    <span class="input-group-text">{{ prefix|raw }}</span>
+                </span>
+            {% endif %}
+        {% endif %}
+
+        {# LABEL FOR CHECKBOX OR RADIO #}
+        {% if label is not empty and type in ['checkbox', 'radio'] %}
+            <label class="form-check-label">
+                {{ form( type, name, { 'id': type~'-'~name~'-'~args.value,'class': ['custom-control-input'] } | merge(args) ) }}
+
+                <label class="custom-control-label" for="{{ type }}-{{ name }}-{{ args.value }}">
+                    {{ label }}
+                </label>
+
+                {% if args.required is not empty %}
+                    <i class="text-danger">*</i>
+                {% endif %}
+            </label>
+        {% else %}
+            {{ form( type, name, { 'class': ['form-control'] } | merge(args) ) }}
+        {% endif %}
+
+        {% if prefix is not empty or postfix is not empty %}
+            {% if postfix is not empty %}
+                <span class="input-group-append">
+                    <span class="input-group-text">{{ postfix|raw }}</span>
+                </span>
+            {% endif %}
+            </div>
+        {% endif %}
+
+        {% if error %}
+            <label class="error" for="{{ label }}">{{ _error[name] }}</label>
+        {% endif %}
+
+        {% if message is not empty %}
+            <small class="form-text text-muted">{{ message }}</small>
+        {% endif %}
+    </div>
+{% endblock %}

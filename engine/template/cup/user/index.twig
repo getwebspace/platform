@@ -1,0 +1,163 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">Пользователи</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <form method="post">
+                    <div class="card-header">
+                        <div class="card-head-row">
+                            <div class="card-title">Поиск пользователя</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Логин',
+                                    'type': 'text',
+                                    'name': 'username',
+                                    'args': {
+                                        'placeholder': 'pushkin'
+                                    }
+                                } %}
+
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Точное совпадение логина',
+                                    'type': 'checkbox',
+                                    'name': 'username_strong',
+                                    'args': {
+                                        'value': 1
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'E-Mail',
+                                    'type': 'email',
+                                    'name': 'email',
+                                    'args': {
+                                        'placeholder': 'pushkin@example.com'
+                                    }
+                                } %}
+
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Забанен',
+                                    'type': 'checkbox',
+                                    'name': 'status_block',
+                                    'args': {
+                                        'value': 1
+                                    }
+                                } %}
+
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Удален',
+                                    'type': 'checkbox',
+                                    'name': 'status_delete',
+                                    'args': {
+                                        'value': 1
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <button type="submit" class="btn btn-primary">Найти</button>
+                        <button type="reset" class="btn btn-danger">Сбросить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <h4 class="card-title">Список пользователей ({{ list.count() }})</h4>
+                        <a href="/cup/user/add" class="btn btn-primary btn-round ml-auto">
+                            <i class="fa fa-plus"></i>
+                            Добавить пользователя
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table data-table class="display table table-striped table-hover" >
+                            <thead>
+                                <tr>
+                                    <th>Логин</th>
+                                    <th>Группа (Статус)</th>
+                                    <th width="15%">Дата регистрации</th>
+                                    <th width="15%">Дата посещения</th>
+                                    <th class="text-center"><i class="fas fa-file"></i></th>
+                                    <th class="text-center"><i class="fas fa-comments"></i></th>
+                                    <th width="10%" class="text-center no-sorting"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in list %}
+                                    <tr class="
+                                        {{
+                                            item.status == reference('/Reference/User::STATUS_DELETE')
+                                            ? 'bg-danger'
+                                            : (
+                                                item.status == reference('/Reference/User::STATUS_BLOCK')
+                                                ? 'bg-warning'
+                                                : ''
+                                            )
+                                        }}
+                                    ">
+                                        <td>
+                                            {{ item.username }}
+                                        </td>
+                                        <td>
+                                            {{ reference('/Reference/User::LEVEL', item.level) }}
+                                            ({{ reference('/Reference/User::STATUS', item.status) }})
+                                        </td>
+                                        <td>{{ item.register|date('d.m.Y H:i:s') }}</td>
+                                        <td>{{ item.session.date|date('d.m.Y H:i:s') }}</td>
+                                        <td class="text-center">0</td>
+                                        <td class="text-center">0</td>
+                                        <td class="text-center">
+                                            <div class="btn-group dropdown">
+                                                <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                                                    <i class="fas fa-bars"></i>
+                                                </button>
+                                                <ul class="dropdown-menu" role="menu">
+                                                    <li>
+                                                        <a href="/cup/user/{{ item.uuid }}/edit" class="btn btn-link"><i class="fas fa-edit"></i> Изменить</a>
+                                                    </li>
+                                                    <li><div class="dropdown-divider"></div></li>
+                                                    <li>
+                                                        <form action="/cup/user/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить пользователя?');">
+                                                            <button type="submit" class="btn btn-link text-danger">
+                                                                <i class="fas fa-trash-alt"></i> Удалить
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

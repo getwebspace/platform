@@ -1,0 +1,90 @@
+{
+    "name": "0x12f/cms-structure",
+    "description": "Content Management System structure by 0x12f",
+    "authors": [
+        {
+            "name": "Aleksey Ilyin",
+            "email": "alksily@icloud.com",
+            "homepage": "https://www.facebook.com/aleksey.ily",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.0",
+        "slim/slim": "^3.1",
+        "slim/php-view": "^2.0",
+        "slim/twig-view": "^2.4",
+        "slim/http-cache": "^0.4.0",
+        "doctrine/orm": "^2",
+        "aengine/memory": "^1.0",
+        "aengine/entity": "^1.0",
+        "aengine/validator": "^1.0",
+        "aengine/support": "^1.0",
+        "twig/extensions": "^1.5",
+        "phive/twig-extensions-deferred": "^2.0",
+        "ramsey/uuid": "^3.8",
+        "ramsey/uuid-doctrine": "^1.5",
+        "phpmailer/phpmailer": "^6.0",
+        "pragmarx/google2fa": "^3.0",
+        "bacon/bacon-qr-code": "^1.0",
+        "vitalybaev/google-merchant-feed": "^1.0",
+        "bukashk0zzz/yml-generator": "^1.6",
+        "samdark/sitemap": "^2.2",
+        "monolog/monolog": "^1.17",
+        "runcmf/runtracy": "^0.2.10"
+    },
+    "autoload": {
+        "classmap": [
+            "engine/src"
+        ],
+        "files": ["engine/loader.php"]
+    },
+    "config": {
+        "vendor-dir": "engine/libs"
+    },
+    "scripts": {
+        "post-create-project-cmd": [
+            "php -r \"@chmod('./', 0777);\"",
+            "php -r \"@chmod('./engine', 0555);\"",
+            "php -r \"@chmod('./engine/libs', 0775);\"",
+            "php -r \"@chmod('./engine/src', 0775);\"",
+            "php -r \"@chmod('./engine/var', 0777);\"",
+            "php -r \"@chmod('./engine/var/cache', 0777);\"",
+            "php -r \"@chmod('./engine/var/log', 0777);\"",
+            "php -r \"@chmod('./public', 0777);\"",
+            "php -r \"@chmod('./themes', 0555);\"",
+            "php -r \"@chmod('./uploads', 0777);\"",
+            "php ./engine/libs/bin/doctrine orm:schema-tool:create",
+            "php -r \"@chmod('./engine/var/database.sqlite', 0777);\""
+        ],
+        "post-install-cmd": [
+            "php -r \"@chmod('./', 0777);\"",
+            "php -r \"@chmod('./engine', 0555);\"",
+            "php -r \"@chmod('./engine/libs', 0775);\"",
+            "php -r \"@chmod('./engine/src', 0775);\"",
+            "php -r \"@chmod('./engine/var', 0777);\"",
+            "php -r \"@chmod('./engine/var/cache', 0777);\"",
+            "php -r \"@chmod('./engine/var/log', 0777);\"",
+            "php -r \"@chmod('./public', 0777);\"",
+            "php -r \"@chmod('./themes', 0555);\"",
+            "php -r \"@chmod('./uploads', 0777);\"",
+            "php -r \"@chmod('./engine/var/database.sqlite', 0777);\"",
+            "php ./engine/libs/bin/doctrine orm:schema-tool:update --force",
+            "php -r \"@chmod('./engine/var/database.sqlite', 0777);\""
+        ],
+        "post-update-cmd": [
+            "php -r \"@chmod('./', 0777);\"",
+            "php -r \"@chmod('./engine', 0555);\"",
+            "php -r \"@chmod('./engine/libs', 0775);\"",
+            "php -r \"@chmod('./engine/src', 0775);\"",
+            "php -r \"@chmod('./engine/var', 0777);\"",
+            "php -r \"@chmod('./engine/var/cache', 0777);\"",
+            "php -r \"@chmod('./engine/var/log', 0777);\"",
+            "php -r \"@chmod('./public', 0777);\"",
+            "php -r \"@chmod('./themes', 0555);\"",
+            "php -r \"@chmod('./uploads', 0777);\"",
+            "php -r \"@chmod('./engine/var/database.sqlite', 0777);\"",
+            "php ./engine/libs/bin/doctrine orm:schema-tool:update --force"
+        ]
+    }
+}

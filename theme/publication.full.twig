@@ -1,0 +1,58 @@
+{% extends 'main.twig' %}
+
+{% block title %}{{ publication.title }} | {{ category.meta.title ? category.meta.title : category.title }} | {{ parent() }}{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+    <meta name="description" content="{{ category.meta.description }}">
+    <meta name="keywords" content="{{ category.meta.keywords }}">
+{% endblock %}
+
+{% block page %}
+    <div class="page-top-info">
+        <div class="container">
+            <h4>{{ category.title }}</h4>
+            <div class="site-pagination">
+                <a href="/">Главная</a> /
+                <a href="/{{ category.address }}">{{ category.title }}</a> /
+                <a href="/{{ category.address }}/{{ publication.address }}">{{ publication.title }}</a>
+            </div>
+            <div>
+                {{ category.description }}
+            </div>
+        </div>
+    </div>
+
+    <section class="page-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 order-2 order-lg-1">
+                    <div class="filter-widget">
+                        <h2 class="fw-title">Категории</h2>
+                        <ul class="category-menu">
+                            {% for cat in categories %}
+                                <li class=""><a href="/{{ cat.address }}">{{ cat.title }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-lg-9 order-1 order-lg-2 mb-5 mb-lg-0">
+                    <div class="row">
+                        <article class="publication" data-uuid="{{ publication.uuid }}">
+                            <h2>{{ publication.title }}</h2>
+                            <div>
+                                <ul class="meta">
+                                    <li>{{ publication.date|date(parameter.where('key', 'publication_date_format').first().value) }}</li>
+                                </ul>
+                            </div>
+                            <div>
+                                {{ publication.content.full|raw }}
+                            </div>
+                        </article>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

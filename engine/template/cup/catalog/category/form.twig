@@ -1,0 +1,213 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">Каталог</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <form method="post">
+                    <div class="card-header">
+                        <div class="card-head-row">
+                            <div class="card-title">{{ item.uuid ? 'Редактирование категории ' ~ item.title : 'Создание новой категории' }}</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Наименование',
+                                    'type': 'text',
+                                    'name': 'title',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Краткое описание категории"></i>',
+                                    'args': {
+                                        'value': item.title,
+                                        'required': true,
+                                        'placeholder': 'Еда',
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Адрес',
+                                    'type': 'text',
+                                    'name': 'address',
+                                    'prefix': base_url() ~ '/catalog/',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Название категории. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов"></i>',
+                                    'args': {
+                                        'value': item.address,
+                                        'placeholder': 'food',
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Описание категории',
+                                    'type': 'textarea',
+                                    'name': 'description',
+                                    'args': {
+                                        'method': 'null',
+                                        'value': item.description,
+                                        'data': {
+                                            'summernote': true,
+                                            'summernote-code': true,
+                                        }
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Основная категория',
+                                    'type': 'select',
+                                    'name': 'parent',
+                                    'args': {
+                                        'option': {'null': '---'}|merge(category.whereNotIn('uuid', [item.uuid]).pluck('title', 'uuid').all()),
+                                        'selected': item.parent
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-3">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Порядок',
+                                    'type': 'number',
+                                    'name': 'order',
+                                    'args': {
+                                        'value': item.order is not empty ? item.order : '1.0',
+                                        'placeholder': '1',
+                                        'min': '1'
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-3">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Внешний ID',
+                                    'type': 'text',
+                                    'name': 'external_id',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
+                                    'args': {
+                                        'value': item.external_id,
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Поле 1',
+                                    'type': 'text',
+                                    'name': 'field1',
+                                    'message': 'Индивидуальное поле',
+                                    'args': {
+                                        'value': item.field1,
+                                    }
+                                } %}
+                            </div>
+
+                            <div class="col-md-4">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Поле 2',
+                                    'type': 'text',
+                                    'name': 'field2',
+                                    'message': 'Индивидуальное поле',
+                                    'args': {
+                                        'value': item.field2,
+                                    }
+                                } %}
+                            </div>
+
+                            <div class="col-md-4">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Поле 3',
+                                    'type': 'text',
+                                    'name': 'field3',
+                                    'message': 'Индивидуальное поле',
+                                    'args': {
+                                        'value': item.field3,
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Шаблон',
+                                    'type': 'text',
+                                    'name': 'template',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="Укажите название шаблона, который хотите использовать для данной категории или оставьте <b>category.twig</b>"></i>',
+                                    'args': {
+                                        'value': item.template is not empty ? item.template : 'category.twig',
+                                        'required': true,
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Метатег Title',
+                                    'type': 'text',
+                                    'name': 'meta[title]',
+                                    'args': {
+                                        'value': item.meta.title,
+                                    }
+                                } %}
+                            </div>
+
+                            <div class="col-md-4">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Метатег Description',
+                                    'type': 'text',
+                                    'name': 'meta[description]',
+                                    'args': {
+                                        'value': item.meta.description,
+                                    }
+                                } %}
+                            </div>
+
+                            <div class="col-md-4">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Метатег Keywords',
+                                    'type': 'text',
+                                    'name': 'meta[keywords]',
+                                    'args': {
+                                        'value': item.meta.keywords,
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <button type="submit" class="btn btn-success">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

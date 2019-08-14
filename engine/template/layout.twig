@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <!-- OpenSource CMS (Full free for all) Powered by 0x12f Team -->
+    <!-- Blog: https://t.me/ThreeHundredThree -->
+    <!-- Community: https://t.me/ThreeHundredThreeCommunity -->
+    <!-- Facebook: https://www.facebook.com/ThreeHundredThree -->
+    <!-- GitHub: https://github.com/0x12f -->
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title deferred %}{{ title }}{% endblock %}</title>
+        {% block head '' %}
+
+        {% block stylesheet deferred %}
+            {% for style in styles %}
+                <link rel="stylesheet" href="{{ style }}">
+            {% endfor %}
+        {% endblock %}
+        {% block style '' %}
+    </head>
+
+    {% block body %}
+        <body>
+            {% block bodyinner '' %}
+        </body>
+    {% endblock %}
+
+    {% block javascript deferred %}
+        {% for script in scripts %}
+            <script src="{{ script }}"></script>
+        {% endfor %}
+    {% endblock %}
+    {% block script '' %}
+</html>

@@ -1,0 +1,349 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">Настройки</h2>
+                <h5 class="text-white op-7 mb-2">Всевозможные поля для ввода и каждое за что-то отвечает</h5>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <form method="post">
+                    <div class="card-header">
+                        <ul class="nav nav-pills nav-secondary nav-pills-no-bd" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active show" data-toggle="pill" href="#common" role="tab">
+                                    Общие
+                                </a>
+                            </li>
+                            <li class="nav-item submenu">
+                                <a class="nav-link" data-toggle="pill" href="#security" role="tab">
+                                    Безопасность
+                                </a>
+                            </li>
+                            <li class="nav-item submenu">
+                                <a class="nav-link" data-toggle="pill" href="#optimisation" role="tab">
+                                    Оптимизация
+                                </a>
+                            </li>
+                            <li class="nav-item submenu">
+                                <a class="nav-link" data-toggle="pill" href="#file" role="tab">
+                                    Файлы
+                                </a>
+                            </li>
+                            <li class="nav-item submenu">
+                                <a class="nav-link" data-toggle="pill" href="#image" role="tab">
+                                    Изображения
+                                </a>
+                            </li>
+                            <li class="nav-item submenu">
+                                <a class="nav-link" data-toggle="pill" href="#mail" role="tab">
+                                    Почта
+                                </a>
+                            </li>
+                            <li class="nav-item submenu">
+                                <a class="nav-link" data-toggle="pill" href="#user" role="tab">
+                                    Пользователи
+                                </a>
+                            </li>
+                            <li class="nav-item submenu">
+                                <a class="nav-link" data-toggle="pill" href="#publication" role="tab">
+                                    Публикации
+                                </a>
+                            </li>
+                            <li class="nav-item submenu">
+                                <a class="nav-link" data-toggle="pill" href="#catalog" role="tab">
+                                    Каталог
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content">
+
+                            {# TAB: Common #}
+                            <div class="tab-pane fade active show" id="common" role="tabpanel">
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Название сайта',
+                                    'description': 'например: "Моя домашняя страница"',
+                                    'type': 'text',
+                                    'name': 'common[title]',
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Домашняя страница сайта',
+                                    'description': 'Укажите имя основного домена на котором располагается ваш сайт. Например: http://yoursite.com/',
+                                    'type': 'text',
+                                    'name': 'common[homepage]',
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Описание (Description) сайта',
+                                    'description': 'Краткое описание, не более 200 символов',
+                                    'type': 'text',
+                                    'name': 'common[description]',
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Описание (Description) сайта',
+                                    'description': 'Краткое описание, не более 200 символов',
+                                    'type': 'textarea',
+                                    'name': 'common[keywords]',
+                                } %}
+                            </div>
+
+                            {# TAB: Security #}
+                            <div class="tab-pane fade" id="security" role="tabpanel">
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Включение и выключение reCAPTCHA',
+                                    'description': 'Защита от роботов',
+                                    'type': 'select',
+                                    'name': 'security[recaptcha]',
+                                    'args': {
+                                        'option': {'off':'Выключена', 'on':'Включена'}
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Публичный ключ сервиса reCAPTCHA',
+                                    'description': 'Этот ключ будет использован в HTML-коде сайта на устройства пользователей',
+                                    'type': 'text',
+                                    'name': 'security[recaptcha_public]',
+                                    'args': {
+                                        'placeholder': '6Le_gY8UAAAAAKv9EUVJxlAQTchtx2ACG6B616Eu'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Секретный ключ сервиса reCAPTCHA',
+                                    'description': 'Этот ключ нужен для связи между сайтом и сервисом reCAPTCHA. Никому его не сообщайте',
+                                    'type': 'text',
+                                    'name': 'security[recaptcha_private]',
+                                    'args': {
+                                        'placeholder': '6Le_gY8UAAAAAAx1_Lv3aKo-L1QnxE2QWhOHCgxS'
+                                    }
+                                } %}
+                            </div>
+
+                            {# TAB: Optimisation #}
+                            <div class="tab-pane fade" id="optimisation" role="tabpanel">
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Кеширующий сервер',
+                                    'description': 'Выберите тип кеширующего сервера который планируется использовать',
+                                    'type': 'select',
+                                    'name': 'cache[type]',
+                                    'args': {
+                                        'option': {'':'Нет', 'memcache':'Memcache', 'redis':'Redis'}
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Хост сервера',
+                                    'description': 'Обычно - localhost',
+                                    'type': 'text',
+                                    'name': 'cache[host]',
+                                    'args': {
+                                        'value': 'localhost',
+                                        'placeholder': 'localhost'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Порт сервера',
+                                    'description': 'Обычно - localhost',
+                                    'type': 'select',
+                                    'name': 'cache[port]',
+                                    'args': {
+                                        'option': {'':'-', '11211': 'Memcache - 11211', '6379': 'Redis - 6379'}
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Ключевая соль',
+                                    'description': 'Комбинация символов которая будет добавлена к ключам кеширующего сервера',
+                                    'type': 'text',
+                                    'name': 'cache[salt]',
+                                    'args': {
+                                        'value': random()
+                                    }
+                                } %}
+                            </div>
+
+                            {# TAB: File #}
+                            <div class="tab-pane fade" id="file" role="tabpanel">
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Разрешить загрузку файлов на сервер',
+                                    'description': 'Будет разрешена загрузка не только картинок на сервер, но и других файлов',
+                                    'type': 'select',
+                                    'name': 'file[enable]',
+                                    'args': {
+                                        'option': {'yes':'Да', 'no':'Нет'}
+                                    }
+                                } %}
+                            </div>
+
+                            {# TAB: Image #}
+                            <div class="tab-pane fade" id="image" role="tabpanel">
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Разрешить конвертацию загруженных изображений',
+                                    'description': 'Будет разрешена загрузка не только картинок на сервер, но и других файлов',
+                                    'type': 'select',
+                                    'name': 'image[enable]',
+                                    'args': {
+                                        'option': {'yes':'Да', 'no':'Нет'}
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Размер маленькой превью копии загруженного изображения',
+                                    'description': 'Вы можете указать 0, если не хотите создавать превью копии загружаемых картинок на сервер',
+                                    'type': 'number',
+                                    'name': 'image[size_small]',
+                                    'args': {
+                                        'placeholder': 'my.site@company.com',
+                                        'value': '200'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Размер средней копии загруженного изображения',
+                                    'description': 'Вы можете указать 0, если не хотите создавать превью копии загружаемых картинок на сервер',
+                                    'type': 'number',
+                                    'name': 'image[size_middle]',
+                                    'args': {
+                                        'placeholder': 'my.site@company.com',
+                                        'value': '450'
+                                    }
+                                } %}
+                            </div>
+
+                            {# TAB: Mail #}
+                            <div class="tab-pane fade" id="mail" role="tabpanel">
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Системный E-Mail адрес',
+                                    'description': 'От данного адреса будут отправляться сообщения сайта, например уведомления пользователей, рассылки, подтверждения и т.д. Примечание: некоторые бесплатные почтовые сервисы, например yandex.ru, требуют, чтобы в качестве E-Mail адреса отправителя был указан именно адрес, зарегистрированный на их почтовом сервисе',
+                                    'type': 'text',
+                                    'name': 'smtp[from]',
+                                    'args': {
+                                        'placeholder': 'my.site@company.com'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Имя отправителя',
+                                    'description': 'Данное имя будет прикреплено к письму в качетве имени отправителя',
+                                    'type': 'text',
+                                    'name': 'smtp[from_name]',
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Заголовок при отправке писем',
+                                    'description': 'При отправке писем с сайта вы можете указать заголовок, который будет добавляться к почте отправителя. Например, вы можете там указать краткое название вашего сайта',
+                                    'type': 'text',
+                                    'name': 'smtp[subject]',
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Хост SMTP сервера',
+                                    'description': 'Обычно — localhost',
+                                    'type': 'text',
+                                    'name': 'smtp[host]',
+                                    'args': {
+                                        'placeholder': 'smtp.yandex.ru'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Порт SMTP сервера',
+                                    'description': 'Обычно — 25',
+                                    'type': 'select',
+                                    'name': 'smtp[port]',
+                                    'args': {
+                                        'option': {'25':25, '587':587, '465':465}
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Использовать защищенный протокол для отправки писем через SMTP сервер',
+                                    'description': 'Выберите протокол шифрования при отправке писем с использованием SMTP сервера',
+                                    'type': 'select',
+                                    'name': 'smtp[secure]',
+                                    'args': {
+                                        'option': {'':'Нет', 'ssl':'SSL', 'tls':'TLS'}
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'SMTP имя пользователя',
+                                    'description': 'Не требуется в большинстве случаев, когда используется "localhost"',
+                                    'type': 'text',
+                                    'name': 'smtp[login]',
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'SMTP пароль',
+                                    'description': 'Не требуется в большинстве случаев, когда используется "localhost"',
+                                    'type': 'text',
+                                    'name': 'smtp[pass]',
+                                } %}
+                            </div>
+
+                            {# TAB: User #}
+                            <div class="tab-pane fade" id="user" role="tabpanel">
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Метод авторизации на сайте',
+                                    'description': 'Вы можете выбрать, каким способом будет производиться авторизация пользователей на сайте. Доступно два варианта, либо с использованием своего логина или с использованием E-mail',
+                                    'type': 'select',
+                                    'name': 'user[login_type]',
+                                    'args': {
+                                        'option': {'email':'E-Mail', 'username':'Логин'}
+                                    }
+                                } %}
+                            </div>
+
+                            {# TAB: Publication #}
+                            <div class="tab-pane fade" id="publication" role="tabpanel">
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Формат времени для публикации',
+                                    'description': '',
+                                    'type': 'text',
+                                    'name': 'publication[date_format]',
+                                    'args': {
+                                        'placeholder': 'j-m-Y, H:i',
+                                        'value': 'j-m-Y, H:i'
+                                    }
+                                } %}
+                            </div>
+
+                            {# TAB: Catalog #}
+                            <div class="tab-pane fade" id="catalog" role="tabpanel">
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Список единиц измерения',
+                                    'description': 'Каждая единица измерения на новой строке',
+                                    'type': 'textarea',
+                                    'name': 'catalog[measure]',
+                                    'message': 'Формат записи: [сокращение]: [за 1]; [за 2]; [за 5] ',
+                                    'args': {
+                                        'placeholder': 'кг: килограмм; килограмма; килограмм',
+                                        'value': 'кг: килограмм; килограмма; килограмм',
+                                        'style': 'min-height: 150px;'
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <button type="submit" class="btn btn-primary">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

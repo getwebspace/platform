@@ -1,0 +1,159 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">Страницы</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <form method="post">
+                    <div class="card-header">
+                        <div class="card-head-row">
+                            <div class="card-title">{{ item.uuid ? 'Редактирование страницы ' ~ item.title : 'Создание новой страницы' }}</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Название',
+                                    'type': 'text',
+                                    'name': 'title',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Краткое описание страницы"></i>',
+                                    'args': {
+                                        'value': item.title,
+                                        'required': true,
+                                        'placeholder': 'О нас',
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Дата',
+                                    'type': 'date',
+                                    'name': 'date',
+                                    'args': {
+                                        'value': item.date|date('d.m.Y H:i'),
+                                        'placeholder': '20.01.2019 12:34',
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Адрес',
+                                    'type': 'text',
+                                    'name': 'address',
+                                    'prefix': base_url() ~ '/',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Название страницы. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов"></i>',
+                                    'args': {
+                                        'value': item.address,
+                                        'placeholder': 'about',
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Текст страницы',
+                                    'type': 'textarea',
+                                    'name': 'content',
+                                    'args': {
+                                        'method': 'null',
+                                        'value': item.content,
+                                        'data': {
+                                            'summernote': true,
+                                            'summernote-code': true,
+                                        }
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Тип содержимого',
+                                    'type': 'select',
+                                    'name': 'type',
+                                    'message': 'Если нет понимания на что влияет это поле, оставьте значение по-умолчанию',
+                                    'args': {
+                                        'option': reference('/Reference/Page::TYPE'),
+                                        'selected': item.type
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Шаблон',
+                                    'type': 'text',
+                                    'name': 'template',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="Укажите название шаблона, который хотите использовать для данной страницы или оставьте <b>page.twig</b>"></i>',
+                                    'args': {
+                                        'value': item.template is not empty ? item.template : 'page.twig',
+                                        'required': true,
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Метатег Title',
+                                    'type': 'text',
+                                    'name': 'meta[title]',
+                                    'args': {
+                                        'value': item.meta.title,
+                                    }
+                                } %}
+                            </div>
+
+                            <div class="col-md-4">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Метатег Description',
+                                    'type': 'text',
+                                    'name': 'meta[description]',
+                                    'args': {
+                                        'value': item.meta.description,
+                                    }
+                                } %}
+                            </div>
+
+                            <div class="col-md-4">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Метатег Keywords',
+                                    'type': 'text',
+                                    'name': 'meta[keywords]',
+                                    'args': {
+                                        'value': item.meta.keywords,
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <button type="submit" class="btn btn-success">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

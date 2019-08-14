@@ -1,0 +1,223 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">Публикации</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <form method="post">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">{{ item.uuid ? 'Редактирование публикации ' ~ item.title : 'Добавление новой публикации' }}</h4>
+
+                            <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active show" data-toggle="pill" href="#publication" role="tab">
+                                        Публикация
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="pill" href="#poll" role="tab">
+                                        Опрос
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="pill" href="#other" role="tab">
+                                        Дополнительно
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content">
+
+                            {# Tab: Публикация #}
+                            <div class="tab-pane fade show active" id="publication" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Заголовок',
+                                            'type': 'text',
+                                            'name': 'title',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Заголовок публикации обязателен к заполнению и может содержать не более 255 символов"></i>',
+                                            'args': {
+                                                'value': item.title,
+                                                'required': true,
+                                                'placeholder': 'О нас',
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Дата',
+                                            'type': 'date',
+                                            'name': 'date',
+                                            'args': {
+                                                'value': item.date|date('d.m.Y H:i'),
+                                                'placeholder': '20.01.2019 12:34',
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Категория',
+                                            'type': 'select',
+                                            'name': 'category',
+                                            'args': {
+                                                'required': true,
+                                                'option': list.pluck('title', 'uuid').all(),
+                                                'selected': item.category
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Краткое описание',
+                                            'type': 'textarea',
+                                            'name': 'content[short]',
+                                            'args': {
+                                                'method': 'null',
+                                                'value': item.content.short,
+                                                'data': {
+                                                    'summernote': true,
+                                                    'summernote-code': true,
+                                                }
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Полное описание',
+                                            'type': 'textarea',
+                                            'name': 'content[full]',
+                                            'args': {
+                                                'method': 'null',
+                                                'value': item.content.full,
+                                                'data': {
+                                                    'summernote': true,
+                                                    'summernote-code': true,
+                                                }
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            {# Tab: Опрос #}
+                            <div class="tab-pane fade" id="poll" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Вопрос',
+                                            'type': 'text',
+                                            'name': 'poll[question]',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Укажите вопрос вашего голосования."></i>',
+                                            'args': {
+                                                'value': item.question,
+                                                'placeholder': 'Как вы думаете...',
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Варианты ответов',
+                                            'message': 'Каждая новая строка является новым вариантом ответа',
+                                            'type': 'textarea',
+                                            'name': 'poll[answer]',
+                                            'args': {
+                                                'value': item.answer,
+                                                'placeholder': 'Вот так..',
+                                                'style': 'min-height: 150px;'
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {# Tab: Дополнительно #}
+                            <div class="tab-pane fade" id="other" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Адрес',
+                                            'type': 'text',
+                                            'name': 'address',
+                                            'prefix': base_url() ~ '/ ... /',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Cсылка для просмотра статьи в браузере. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов"></i>',
+                                            'args': {
+                                                'value': item.address,
+                                                'placeholder': 'my-awesome-publication',
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Метатег Title',
+                                            'type': 'text',
+                                            'name': 'meta[title]',
+                                            'args': {
+                                                'value': item.meta.title,
+                                            }
+                                        } %}
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Метатег Description',
+                                            'type': 'text',
+                                            'name': 'meta[description]',
+                                            'args': {
+                                                'value': item.meta.description,
+                                            }
+                                        } %}
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Метатег Keywords',
+                                            'type': 'text',
+                                            'name': 'meta[keywords]',
+                                            'args': {
+                                                'value': item.meta.keywords,
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <button type="submit" class="btn btn-success">Сохранить</button>
+                        <button type="button" data-click="preview" class="btn btn-info">Предварительный просмотр</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

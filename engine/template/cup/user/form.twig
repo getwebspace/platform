@@ -1,0 +1,167 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">Пользователи</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <form method="post">
+                    <div class="card-header">
+                        <div class="card-head-row">
+                            <div class="card-title">{{ item.uuid ? 'Редактирование пользователя ' ~ item.username : 'Добавление пользователя' }}</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Логин',
+                                    'type': 'text',
+                                    'name': 'username',
+                                    'args': {
+                                        'value': item.username,
+                                        'required': true,
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Новый пароль',
+                                    'type': 'text',
+                                    'name': 'password',
+                                    'args': {
+                                        'required': item.uuid ? false : true,
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Имя',
+                                    'type': 'text',
+                                    'name': 'firstname',
+                                    'args': {
+                                        'value': item.firstname,
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Фамилия',
+                                    'type': 'text',
+                                    'name': 'lastname',
+                                    'args': {
+                                        'value': item.lastname,
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'E-Mail',
+                                    'type': 'email',
+                                    'name': 'email',
+                                    'args': {
+                                        'value': item.email,
+                                        'required': true,
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {# include 'cup/form.twig' with {
+                                    'label': 'Точное совпадение логина',
+                                    'type': 'checkbox',
+                                    'name': 'username_strong',
+                                    'args': {
+                                        'value': 1
+                                    }
+                                } #}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Группа',
+                                    'type': 'select',
+                                    'name': 'level',
+                                    'args': {
+                                        'option': reference('/Reference/User::LEVEL'),
+                                        'selected': item.level
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% if item.uuid %}
+                                    {% include 'cup/form.twig' with {
+                                        'label': 'Статус',
+                                        'type': 'select',
+                                        'name': 'status',
+                                        'args': {
+                                            'option': reference('/Reference/User::STATUS'),
+                                            'selected': item.status
+                                        }
+                                    } %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <button type="submit" class="btn btn-success">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {% if item.uuid %}
+            <div class="col-md-4">
+                <div class="card card-round">
+                    <div class="card-body">
+                        <div class="user-profile text-center">
+                            <div class="avatar avatar-xl mb-3">
+                                <img src="{{ item.avatar(80) }}" alt="{{ item.name('full') }}" class="avatar-img rounded-circle">
+                            </div>
+                            <div class="name">{{ item.username }}</div>
+                            <div class="text-muted">{{ reference('/Reference/User::LEVEL', item.level) }}</div>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <ul class="list-group list-group-bordered">
+                            {% if item.firstname or item.lastname %}
+                                <li class="list-group-item">Полное имя: {{ item.name('full') }}</li>
+                            {% endif %}
+                            <li class="list-group-item">E-Mail: {{ item.email }}</li>
+                            <li class="list-group-item">Зарегистрирован: {{ item.register|date('d.m.Y H:i:s') }}</li>
+                            <li class="list-group-item">Последнее редактирование: {{ item.change|date('d.m.Y H:i:s') }}</li>
+                            {% if item.session.date.getTimestamp() %}
+                                <li class="list-group-item">Последняя активность: {{ item.session.date|date('d.m.Y H:i:s') }}</li>
+                            {% endif %}
+                            {% if item.session.ip %}
+                                <li class="list-group-item">IP: {{ item.session.ip }}</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

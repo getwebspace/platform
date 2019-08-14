@@ -1,0 +1,115 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">Формы</h2>
+                <h5 class="text-white op-7 mb-2">Функционал форм позволяет принимать данные с сайта или форм встроенных в удаленные сайты.</h5>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <form method="post">
+                    <div class="card-header">
+                        <div class="card-head-row">
+                            <div class="card-title">{{ item.uuid ? 'Редактирование формы ' ~ item.title : 'Создание новой формы' }}</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Название',
+                                    'type': 'text',
+                                    'name': 'title',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Краткое описание формы"></i>',
+                                    'args': {
+                                        'value': item.title,
+                                        'required': true,
+                                        'placeholder': 'Форма контактов',
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Адрес обработчика формы',
+                                    'type': 'text',
+                                    'name': 'address',
+                                    'prefix': base_url() ~ '/form/',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Адрес формы. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов"></i>',
+                                    'args': {
+                                        'value': item.address,
+                                        'placeholder': 'contact-form',
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Шаблон письма',
+                                    'type': 'textarea',
+                                    'name': 'template',
+                                    'args': {
+                                        'method': 'null',
+                                        'value': item.template,
+                                        'data': {
+                                            'summernote': true,
+                                            'summernote-code': true,
+                                        }
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'E-Mail адреса получателей',
+                                    'message': 'Каждая новая строка должна быть отдельным E-Mail адресом получателя. Используйте символ ":" для разделения E-Mail:Имя получателя',
+                                    'type': 'textarea',
+                                    'name': 'mailto',
+                                    'args': {
+                                        'value': item.mailto|join('\n'),
+                                        'required': true,
+                                        'placeholder': 'manager@example.com',
+                                        'style': 'min-height: 150px;'
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Адреса страниц использования',
+                                    'message': 'Каждая новая строка должна быть отдельным адресом страницы где размещена форма. Используйте символ "*" для указания любого адреса страницы.',
+                                    'type': 'textarea',
+                                    'name': 'origin',
+                                    'args': {
+                                        'value': item.origin ? item.origin|join('\n') : '*',
+                                        'required': true,
+                                        'placeholder': ' example.com',
+                                        'style': 'min-height: 150px;'
+                                    }
+                                } %}
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <button type="submit" class="btn btn-success">Сохранить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

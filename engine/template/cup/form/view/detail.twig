@@ -1,0 +1,64 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">Формы</h2>
+                <h5 class="text-white op-7 mb-2">Функционал форм позволяет принимать данные с сайта или форм встроенных в удаленные сайты.</h5>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <h4 class="card-title">Детали полученной заявки ({{ item.uuid }})</h4>
+                        <a href="/cup/form/{{ item.form_uuid }}/view" class="btn btn-secondary btn-round ml-auto">
+                            <i class="fas fa-long-arrow-alt-left"></i>
+                            Назад
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <iframe srcdoc="{{ item.message|raw }}" frameborder="0" style="width: 100%; min-height: 500px;"></iframe>
+
+                    <div class="row">
+                        {% for file in files %}
+                            <div class="col-sm-6 col-md-3">
+                                <a href="{{ file.getPublicPath() }}" class="d-block card card-stats card-round" target="_blank">
+                                    <div class="card-body ">
+                                        <div class="row align-items-center">
+                                            <div class="col-icon">
+                                                <div class="icon-big text-center icon-primary bubble-shadow-small">
+                                                    <i class="flaticon-file"></i>
+                                                </div>
+                                            </div>
+                                            <div class="col col-stats ml-3 ml-sm-0">
+                                                <div class="numbers">
+                                                    <p class="card-category">{{ file.type }} ({{ file.getSize() }})</p>
+                                                    <h4 class="card-title">{{ file.name }}</h4>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <form action="/cup/form/{{ item.form_uuid }}/view/{{ item.uuid }}/delete" method="post" onsubmit="return confirm('Вы действительно хотите удалить запись?');">
+                        <button type="submit" class="btn btn-danger btn-round">
+                            <i class="fas fa-trash-alt"></i> Удалить запись
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
