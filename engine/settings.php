@@ -9,7 +9,7 @@ return [
         'doctrine' => [
             'meta' => [
                 'entity_path' => [
-                    SRC_DIR . '/Entity',
+                    APP_DIR . '/Entity',
                 ],
                 'auto_generate_proxies' => true,
                 'proxy_dir' => CACHE_DIR . '/proxies',
@@ -40,7 +40,7 @@ return [
         'renderer' => [
             'template_path' => [
                 THEME_DIR,
-                __DIR__ . '/template/',
+                TEMPLATE_DIR,
             ],
         ],
 

@@ -7,9 +7,10 @@ ini_set('error_reporting',  '30719');
 
 // path const
 define('BASE_DIR',      realpath(__DIR__ . '/..'));
+define('APP_DIR',       realpath(__DIR__ . '/../engine/app'));
 define('VENDOR_DIR',    realpath(__DIR__ . '/../engine/libs'));
-define('SRC_DIR',       realpath(__DIR__ . '/../engine/src'));
 define('VAR_DIR',       realpath(__DIR__ . '/../engine/var'));
+define('TEMPLATE_DIR',  realpath(__DIR__ . '/../engine/template'));
 define('CACHE_DIR',     realpath(__DIR__ . '/../engine/var/cache'));
 define('LOG_DIR',       realpath(__DIR__ . '/../engine/var/log'));
 define('PUBLIC_DIR',    realpath(__DIR__ . '/../public'));

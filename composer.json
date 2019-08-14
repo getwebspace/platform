@@ -1,5 +1,5 @@
 {
-    "name": "0x12f/cms-structure",
+    "name": "0x12f/cms",
     "description": "Content Management System structure by 0x12f",
     "authors": [
         {
@@ -35,7 +35,7 @@
     },
     "autoload": {
         "classmap": [
-            "engine/src"
+            "engine/app"
         ],
         "files": ["engine/loader.php"]
     },
