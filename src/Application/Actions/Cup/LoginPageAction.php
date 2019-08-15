@@ -7,7 +7,7 @@ use DateTime;
 use Exception;
 use Psr\Container\ContainerInterface;
 
-class LoginAction extends Action
+class LoginPageAction extends Action
 {
     /**
      * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository

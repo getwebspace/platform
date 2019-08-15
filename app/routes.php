@@ -6,30 +6,11 @@ use Slim\Http\Response;
 
 $app
     ->group('/cup', function (App $app) {
-        $app->map(['get', 'post'], '/login', \Application\Actions\Cup\LoginAction::class);
+        $app->map(['get', 'post'], '/login', \Application\Actions\Cup\LoginPageAction::class);
 
         $app
             ->group('', function (App $app) {
-                $app->get('', function (Request $request, Response $response) {
-                    return $this->template->render($response, 'cup/layout.twig', [
-                        'stats' => [
-                            'pages' => $this->get(\Resource\Page::class)->count(),
-                            'users' => $this->get(\Resource\User::class)->count(),
-                            'publications' => $this->get(\Resource\Publication::class)->count(),
-                            'comments' => 0,
-                            'files' => $files = $this->get(\Resource\File::class)->count(),
-                        ],
-                        'properties' => [
-                            'os' => @implode(' ', [php_uname('s'), php_uname('r'), php_uname('m')]),
-                            'php' => PHP_VERSION,
-                            'memory_limit' => ini_get('memory_limit'),
-                            'disable_functions' => ini_get('disable_functions'),
-                            'disable_classes' => ini_get('disable_classes'),
-                            'upload_max_filesize' => ini_get('upload_max_filesize'),
-                            'max_file_uploads' => ini_get('max_file_uploads'),
-                        ],
-                    ]);
-                });
+                $app->get('', \Application\Actions\Cup\MainPageAction::class);
 
                 // settings
                 $app->map(['get', 'post'], '/parameters', function (Request $request, Response $response) {
