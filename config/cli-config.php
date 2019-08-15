@@ -4,7 +4,7 @@ use Doctrine\ORM\Tools\Console\ConsoleRunner;
 
 require __DIR__ . '/../src/bootstrap.php';
 
-$settings = $app->getContainer()->get('settings')['doctrine'];
+$settings = $app->getContainer()->get('doctrine');
 
 foreach ($settings['types'] as $type => $class) {
     \Doctrine\DBAL\Types\Type::addType($type, $class);
