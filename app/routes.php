@@ -13,32 +13,7 @@ $app
                 $app->get('', \Application\Actions\Cup\MainPageAction::class);
 
                 // settings
-                $app->map(['get', 'post'], '/parameters', function (Request $request, Response $response) {
-                    if ($request->isPost()) {
-                        $params = [];
-
-                        foreach ($request->getParsedBody() as $group => $params) {
-                            foreach ($params as $key => $value) {
-                                $data = [
-                                    'key' => $group .'_'. $key,
-                                    'value' => $value,
-                                ];
-
-                                $check = \Filter\Parameter::check($data);
-
-                                if ($check === true) {
-                                    $this->get(\Resource\Parameter::class)->flush($data);
-                                } else {
-                                    \AEngine\Support\Form::$globalError[$group . '[' . $key . ']'] = \Reference\Errors\Parameter::WRONG_VALUE;
-                                }
-                            }
-                        }
-
-                        return $response->withAddedHeader('Location', $request->getQueryParam('return', '/cup/parameters'));
-                    }
-
-                    return $this->template->render($response, 'cup/parameters/index.twig');
-                });
+                $app->map(['get', 'post'], '/parameters', \Application\Actions\Cup\ParametersPageAction::class);
 
                 // users
                 $app->group('/user', function (App $app) {

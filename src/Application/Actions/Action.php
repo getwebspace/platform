@@ -85,7 +85,10 @@ abstract class Action
     protected function getParameter($key = null, $default = null)
     {
         if ($key === null) {
-            return collect($this->parametersRepository->findAll());
+            return collect($this->parametersRepository->findAll())->mapWithKeys(function ($item) {
+                list($group, $key) = explode('_', $item->key, 2);
+                return [$group . '[' . $key . ']' => $item];
+            });
         }
         if (is_string($key)) {
             return $this->parametersRepository->findOneBy(['key' => $key])->value ?? $default;
