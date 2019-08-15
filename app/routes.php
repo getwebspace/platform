@@ -930,9 +930,7 @@ $app
                 });
 
                 // docs
-                $app->get('/docs', function (Request $request, Response $response) {
-                    return $this->template->render($response, 'cup/docs/index.twig');
-                });
+                $app->get('/docs', \Application\Actions\Cup\DocsPageAction::class);
             })
             ->add(function (Request $request, Response $response, $next) {
                 $user = $request->getAttribute('user', false);
