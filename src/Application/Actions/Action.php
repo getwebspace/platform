@@ -16,6 +16,11 @@ use Slim\Views\Twig;
 abstract class Action
 {
     /**
+     * @var ContainerInterface
+     */
+    protected $container;
+
+    /**
      * @var LoggerInterface
      */
     protected $logger;
@@ -51,10 +56,16 @@ abstract class Action
     protected $args;
 
     /**
+     * @var array
+     */
+    protected $error = [];
+
+    /**
      * @param ContainerInterface $container
      */
     public function __construct(ContainerInterface $container)
     {
+        $this->container = $container;
         $this->logger = $container->get(\Monolog\Logger::class);
         $this->entityManager = $container->get(\Doctrine\ORM\EntityManager::class);
         $this->renderer = $container->get(\Slim\Views\Twig::class);
@@ -71,13 +82,25 @@ abstract class Action
      *
      * @return |null
      */
-    protected function getParameter($key, $default = null)
+    protected function getParameter($key = null, $default = null)
     {
+        if ($key === null) {
+            return collect($this->parametersRepository->findAll());
+        }
         if (is_string($key)) {
             return $this->parametersRepository->findOneBy(['key' => $key])->value ?? $default;
         }
 
         return collect($this->parametersRepository->findBy(['key' => $key]))->pluck('value', 'key')->all() ?? $default;
+    }
+
+    /**
+     * @param string $field
+     * @param string $reason
+     */
+    protected function addError($field, $reason)
+    {
+        $this->error[$field] = $reason;
     }
 
     /**
@@ -172,6 +195,14 @@ abstract class Action
     protected function respondRender($template, array $data = [])
     {
         try {
+            $data = array_merge(
+                [
+                    'parameter' => $this->getParameter(),
+                    'user' => $this->request->getAttribute('user', null),
+                    '_error' => array_merge($this->error, \AEngine\Support\Form::$globalError),
+                ],
+                $data
+            );
             $this->response->getBody()->write($this->renderer->fetch($template, $data));
 
             return $this->response;

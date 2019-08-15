@@ -1,52 +1,64 @@
 <?php
 
-namespace Application\Core;
+namespace Application\Middlewares;
 
-use Closure;
 use DateTime;
+use Psr\Container\ContainerInterface;
 use Ramsey\Uuid\Uuid;
 use Slim\App;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class Auth
+class AuthorizationMiddleware extends Middleware
 {
     /**
-     * Текущий пользрватель
-     *
-     * @var \Entity\User|null
+     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
      */
-    public static $user = null;
+    protected $userRepository;
 
     /**
-     * Прослойка авторизации
-     *
+     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     */
+    protected $userSessionRepository;
+
+    /**
+     * @inheritDoc
+     */
+    public function __construct(ContainerInterface $container)
+    {
+        parent::__construct($container);
+
+        $this->userRepository = $this->entityManager->getRepository(\Domain\Entities\User::class);
+        $this->userSessionRepository = $this->entityManager->getRepository(\Domain\Entities\User\Session::class);
+    }
+
+    /**
      * @param Request  $request
      * @param Response $response
-     * @param Closure  $next
+     * @param callable $next
      *
-     * @return mixed
+     * @return Response
      */
-    public function __invoke(Request $request, Response $response, $next)
+    public function __invoke(Request $request, Response $response, $next): \Slim\Http\Response
     {
-        /** @var App $app */
-        $app = $GLOBALS['app'];
         $data = [
             'uuid' => $request->getCookieParam('uuid', null),
             'session' => $request->getCookieParam('session', null),
         ];
 
         if ($data['uuid'] && Uuid::isValid($data['uuid']) && $data['session']) {
-            $container = $app->getContainer();
+            /** @var \Domain\Entities\User\Session $session */
+            $session = $this->userSessionRepository->findOneBy(['uuid' => $data['uuid']]);
 
-            /** @var \Entity\User\Session $session */
-            $session = $container->get(\Resource\User\Session::class)->fetchOne(['uuid' => $data['uuid']]);
-
-            if ($session && $data['session'] === static::session($session)) {
-                static::$user = $container->get(\Resource\User::class)->fetchOne([
+            if ($session && $data['session'] === $this->session($session)) {
+                $user = $this->userRepository->findOneBy([
                     'uuid' => $session->uuid,
-                    'status' => \Reference\User::STATUS_WORK,
+                    'status' => \Domain\Types\UserStatusType::STATUS_WORK,
                 ]);
+
+                if ($user) {
+                    $request = $request->withAttribute('user', $user);
+                }
             }
         }
 
@@ -56,11 +68,12 @@ class Auth
     /**
      * Возвращает ключ сессии
      *
-     * @param \Entity\User\Session $model
+     * @param \Domain\Entities\User\Session $model
      *
      * @return string
+     * @throws \Exception
      */
-    public static function session(\Entity\User\Session $model)
+    protected function session(\Domain\Entities\User\Session $model)
     {
         if (!$model->isEmpty()) {
             $default = [
@@ -72,7 +85,7 @@ class Auth
             $data = array_merge($default, $model->toArray());
 
             return sha1(
-                'salt:' . Common::$salt . ';' .
+                'salt:' . ($this->container->get('secret')['salt'] ?? '') . ';' .
                 'uuid:' . $data['uuid'] . ';' .
                 'ip:' . md5($data['ip']) . ';' .
                 'agent:' . md5($data['agent']) . ';' .
@@ -84,38 +97,13 @@ class Auth
     }
 
     /**
-     * Возвращает хэш от строки
-     *
-     * @param string $str
-     *
-     * @return string хэш
-     */
-    public static function hash(string $str)
-    {
-        return crypta_hash($str, Common::$salt);
-    }
-
-    /**
-     * Возвращает хэш от строки
-     *
-     * @param string $str
-     * @param string $hashStr
-     *
-     * @return string хэш
-     */
-    public static function hash_check(string $str, string $hashStr)
-    {
-        return crypta_hash_check($str, $hashStr);
-    }
-
-    /**
      * Метод проверки reCAPTCHA
      *
      * @param array $data
      *
      * @return bool
      */
-    public static function checkReCAPTCHA(array $data = [])
+    public function checkReCAPTCHA(array $data = [])
     {
         $default = [
             'secret' => Common::get('recaptcha_private'),
@@ -130,7 +118,7 @@ class Auth
                 'http' => [
                     'method' => 'POST',
                     'header' => "Content-Type: application/x-www-form-urlencoded\r\n".
-                                "Content-Length: ".strlen($query)."\r\n",
+                        "Content-Length: ".strlen($query)."\r\n",
                     'content' => $query,
                 ],
             ])));

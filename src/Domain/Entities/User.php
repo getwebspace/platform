@@ -50,17 +50,17 @@ class User extends Model
 
     /**
      * @var string
-     * @see \Reference\User::STATUS
+     * @see \Domain\Types\UserStatusType::LIST
      * @ORM\Column(type="string", length=50)
      */
-    public $status = \Reference\User::STATUS_WORK;
+    public $status = \Domain\Types\UserStatusType::STATUS_WORK;
 
     /**
      * @var string
-     * @see \Reference\User::LEVEL
+     * @see \Domain\Types\UserLevelType::LIST
      * @ORM\Column(type="string", length=50)
      */
-    public $level = \Reference\User::LEVEL_USER;
+    public $level = \Domain\Types\UserLevelType::LEVEL_USER;
 
     /**
      * @var DateTime
@@ -75,7 +75,7 @@ class User extends Model
     public $change;
 
     /**
-     * @var Session
+     * @var \Domain\Entities\User\Session
      * @ORM\OneToOne(targetEntity="Domain\Entities\User\Session")
      * @ORM\JoinColumn(name="uuid", referencedColumnName="uuid")
      */

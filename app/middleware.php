@@ -6,8 +6,8 @@ use Slim\Http\Response;
 // http cache
 $app->add(new \Slim\HttpCache\Cache('public', 86400));
 
-//$app->add(\Core\Common::class); // check load params
-//$app->add(\Core\Auth::class); // check auth
+// add user
+$app->add(\Application\Middlewares\AuthorizationMiddleware::class);
 
 // redirect to address without slash in end
 $app->add(function (Request $request, Response $response, $next) {

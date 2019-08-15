@@ -7,8 +7,6 @@ use Doctrine\DBAL\Types\Type;
 
 /**
  * Class EnumType
- * @package Core\Doctrine
- * @property-read string LIST
  */
 abstract class EnumType extends Type
 {

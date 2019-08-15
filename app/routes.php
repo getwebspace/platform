@@ -1,62 +1,12 @@
 <?php
 
-use AEngine\Support\Str;
 use Slim\App;
 use Slim\Http\Request;
 use Slim\Http\Response;
-use Slim\Http\UploadedFile;
 
 $app
     ->group('/cup', function (App $app) {
-        $app->map(['get', 'post'], '/login', function (Request $request, Response $response) {
-            if ($request->isPost()) {
-                $data = [
-                    'email' => $request->getParam('email'),
-                    'username' => $request->getParam('username'),
-                    'password' => $request->getParam('password'),
-                    'agent' => $request->getServerParam('HTTP_USER_AGENT'),
-                    'ip' => $request->getServerParam('REMOTE_ADDR'),
-
-                    'redirect' => $request->getParam('redirect'),
-                ];
-
-                $check = \Filter\User::login($data);
-
-                if ($check === true) {
-                    $identifier = \Core\Common::$parameter->where('key', 'user_login_type')->first()->value;
-                    $user = $this->get(\Resource\User::class)->fetchOne([$identifier => $data[$identifier]]);
-
-                    if ($user) {
-                        if (\Core\Auth::hash_check($data['password'], $user->password)) {
-                            try {
-                                $session = $this->get(\Resource\User\Session::class)->flush([
-                                    'uuid' => $user->uuid,
-                                    'agent' => $data['agent'],
-                                    'ip' => $data['ip'],
-                                    'date' => new DateTime(),
-                                ]);
-                                $hash = \Core\Auth::session($session);
-
-                                setcookie('uuid', $user->uuid, time() + \Reference\Date::YEAR, '/');
-                                setcookie('session', $hash, time() + \Reference\Date::YEAR, '/');
-
-                                return $response->withAddedHeader('Location', $data['redirect'] ? $data['redirect'] : '/cup');
-                            } catch (Exception $e) {
-                                $this->logger->warning('/login failure', $data);
-                            }
-                        } else {
-                            \AEngine\Support\Form::$globalError['password'] = \Reference\Errors\User::WRONG_PASSWORD;
-                        }
-                    } else {
-                        \AEngine\Support\Form::$globalError[$identifier] = \Reference\Errors\User::NOT_FOUND;
-                    }
-                } else {
-                    \AEngine\Support\Form::$globalError = $check;
-                }
-            }
-
-            return $this->template->render($response, 'cup/auth/login.twig');
-        });
+        $app->map(['get', 'post'], '/login', \Application\Actions\Cup\LoginAction::class);
 
         $app
             ->group('', function (App $app) {
@@ -1029,7 +979,9 @@ $app
                 });
             })
             ->add(function (Request $request, Response $response, $next) {
-                if (\Core\Auth::$user === null || \Core\Auth::$user->level !== \Reference\User::LEVEL_ADMIN) {
+                $user = $request->getAttribute('user', false);
+
+                if ($user === false || $user->level !== \Domain\Types\UserLevelType::LEVEL_ADMIN) {
                     return $response->withHeader('Location', '/cup/login?redirect=' . $request->getUri()->getPath());
                 }
 

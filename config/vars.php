@@ -11,7 +11,7 @@ define('APP_DIR',       realpath(__DIR__ . '/../app'));
 define('CONFIG_DIR',    realpath(__DIR__ . '/../config'));
 define('PUBLIC_DIR',    realpath(__DIR__ . '/../public'));
 define('SRC_DIR',       realpath(__DIR__ . '/../src'));
-define('VIEW_DIR',      realpath(__DIR__ . '/../src/Temlate'));
+define('VIEW_DIR',      realpath(__DIR__ . '/../src/Template'));
 define('THEME_DIR',     realpath(__DIR__ . '/../theme'));
 define('VAR_DIR',       realpath(__DIR__ . '/../var'));
 define('CACHE_DIR',     realpath(__DIR__ . '/../var/cache'));

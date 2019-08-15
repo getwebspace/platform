@@ -4,8 +4,8 @@ namespace Domain\Filters;
 
 use AEngine\Validator\Filter;
 use AEngine\Validator\Traits\FilterRules;
-use Filter\Traits\CommonFilterRules;
-use Filter\Traits\UserFilterRules;
+use Domain\Filters\Traits\CommonFilterRules;
+use Domain\Filters\Traits\UserFilterRules;
 
 class User extends Filter
 {
@@ -27,12 +27,12 @@ class User extends Filter
         $filter
             ->addGlobalRule($filter->leadTrim())
             ->option('username')
-                ->addRule($filter->leadStr(), \Reference\Errors\User::WRONG_USERNAME)
+                ->addRule($filter->leadStr(), \Domain\References\Errors\User::WRONG_USERNAME)
             ->option('email')
-                ->addRule($filter->checkEmail(), \Reference\Errors\User::WRONG_EMAIL)
+                ->addRule($filter->checkEmail(), \Domain\References\Errors\User::WRONG_EMAIL)
             ->attr('password')
                 ->addRule($filter->leadStr())
-                ->addRule($filter->checkStrlenBetween(3, 20), \Reference\Errors\User::WRONG_PASSWORD_LENGTH)
+                ->addRule($filter->checkStrlenBetween(3, 20), \Domain\References\Errors\User::WRONG_PASSWORD_LENGTH)
             ->attr('agent')
                 ->addRule($filter->leadStr())
             ->attr('ip')
