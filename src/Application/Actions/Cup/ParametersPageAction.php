@@ -24,7 +24,7 @@ class ParametersPageAction extends Action
                     $check = \Domain\Filters\Parameter::check($data);
 
                     if ($check === true) {
-                        $model = $models->firstWhere('key', $data['key']);
+                        $model = $models->firstWhere('key', $data['key']) ?? new \Domain\Entities\Parameter();
                         $model->replace($data);
                         $this->entityManager->persist($model);
                     } else {
