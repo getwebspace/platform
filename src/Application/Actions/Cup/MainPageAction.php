@@ -30,35 +30,4 @@ class MainPageAction extends Action
             ],
         ]);
     }
-
-    /**
-     * Возвращает ключ сессии
-     *
-     * @param \Domain\Entities\User\Session $model
-     *
-     * @return string
-     * @throws \Exception
-     */
-    protected function session(\Domain\Entities\User\Session $model)
-    {
-        if (!$model->isEmpty()) {
-            $default = [
-                'uuid' => null,
-                'ip' => null,
-                'agent' => null,
-                'date' => new DateTime(),
-            ];
-            $data = array_merge($default, $model->toArray());
-
-            return sha1(
-                'salt:' . ($this->container->get('secret')['salt'] ?? '') . ';' .
-                'uuid:' . $data['uuid'] . ';' .
-                'ip:' . md5($data['ip']) . ';' .
-                'agent:' . md5($data['agent']) . ';' .
-                'date:' . $data['date']->getTimestamp()
-            );
-        }
-
-        return null;
-    }
 }
