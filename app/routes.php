@@ -31,305 +31,84 @@ $app
                     $app->map(['get', 'post'], '/{uuid}/delete', \Application\Actions\Cup\Page\PageDeleteAction::class);
                 });
 
-//                $app->group('/page', function (App $app) {
-//                    // list
-//                    $app->map(['get', 'post'], '', function (Request $request, Response $response) {
-//                        $list = $this->get(\Resource\Page::class)->fetch();
-//
-//                        return $this->template->render($response, 'cup/page/index.twig', ['list' => $list]);
-//                    });
-//
-//                    // add
-//                    $app->map(['get', 'post'], '/add', function (Request $request, Response $response, $args = []) {
-//                        if ($request->isPost()) {
-//                            $data = [
-//                                'title' => $request->getParam('title'),
-//                                'address' => $request->getParam('address'),
-//                                'date' => $request->getParam('date'),
-//                                'content' => $request->getParam('content'),
-//                                'type' => $request->getParam('type'),
-//                                'meta' => $request->getParam('meta'),
-//                                'template' => $request->getParam('template'),
-//                            ];
-//
-//                            $check = \Filter\Page::check($data);
-//
-//                            if ($check === true) {
-//                                try {
-//                                    $this->get(\Resource\Page::class)->flush($data);
-//
-//                                    return $response->withAddedHeader('Location', '/cup/page');
-//                                } catch (Exception $e) {
-//                                    // todo nothing
-//                                }
-//                            }
-//                        }
-//
-//                        return $this->template->render($response, 'cup/page/form.twig');
-//                    });
-//
-//                    // edit
-//                    $app->map(['get', 'post'], '/{uuid}/edit', function (Request $request, Response $response, $args = []) {
-//                        if ($args['uuid'] && Ramsey\Uuid\Uuid::isValid($args['uuid'])) {
-//                            /** @var \Entity\User $item */
-//                            $item = $this->get(\Resource\Page::class)->fetchOne(['uuid' => $args['uuid']]);
-//
-//                            if (!$item->isEmpty()) {
-//                                if ($request->isPost()) {
-//                                    $data = [
-//                                        'uuid' => $item->uuid,
-//                                        'title' => $request->getParam('title'),
-//                                        'address' => $request->getParam('address'),
-//                                        'date' => $request->getParam('date'),
-//                                        'content' => $request->getParam('content'),
-//                                        'type' => $request->getParam('type'),
-//                                        'meta' => $request->getParam('meta'),
-//                                        'template' => $request->getParam('template'),
-//                                    ];
-//
-//                                    $check = \Filter\Page::check($data);
-//
-//                                    if ($check === true) {
-//                                        try {
-//                                            $this->get(\Resource\Page::class)->flush($data);
-//
-//                                            return $response->withAddedHeader('Location', '/cup/page');
-//                                        } catch (Exception $e) {
-//                                            // todo nothing
-//                                        }
-//                                    }
-//                                }
-//
-//                                return $this->template->render($response, 'cup/page/form.twig', ['item' => $item]);
-//                            }
-//                        }
-//
-//                        return $response->withAddedHeader('Location', '/cup/page');
-//                    });
-//
-//                    // delete
-//                    $app->map(['get', 'post'], '/{uuid}/delete', function (Request $request, Response $response, $args = []) {
-//                        if ($args['uuid'] && Ramsey\Uuid\Uuid::isValid($args['uuid'])) {
-//                            /** @var \Entity\User $item */
-//                            $item = $this->get(\Resource\Page::class)->fetchOne(['uuid' => $args['uuid']]);
-//
-//                            if (!$item->isEmpty() && $request->isPost()) {
-//                                $this->get(\Resource\Page::class)->remove([
-//                                    'uuid' => $item->uuid,
-//                                ]);
-//                            }
-//                        }
-//
-//                        return $response->withAddedHeader('Location', '/cup/page');
-//                    });
-//                });
-
                 // publications
                 $app->group('/publication', function (App $app) {
-                    // list
-                    $app->get('', function (Request $request, Response $response) {
-                        $categories = $this->get(\Resource\Publication\Category::class)->fetch();
-                        $publications = $this->get(\Resource\Publication::class)->fetch();
+                    $app->map(['get', 'post'], '', \Application\Actions\Cup\Publication\PublicationListAction::class);
+                    $app->map(['get', 'post'], '/add', \Application\Actions\Cup\Publication\PublicationCreateAction::class);
+                    $app->map(['get', 'post'], '/{uuid}/edit', \Application\Actions\Cup\Publication\PublicationUpdateAction::class);
+                    $app->map(['get', 'post'], '/{uuid}/delete', \Application\Actions\Cup\Publication\PublicationDeleteAction::class);
+                    $app->map(['get', 'post'], '/preview', \Application\Actions\Cup\Publication\PublicationPreviewAction::class);
 
-                        return $this->template->render($response, 'cup/publication/index.twig', [
-                            'categories' => $categories,
-                            'publications' => $publications,
-                        ]);
-                    });
-
-                    // add
-                    $app->map(['get', 'post'], '/add', function (Request $request, Response $response, $args = []) {
-                        if ($request->isPost()) {
-                            $data = [
-                                'title' => $request->getParam('title'),
-                                'address' => $request->getParam('address'),
-                                'date' => $request->getParam('date'),
-                                'category' => $request->getParam('category'),
-                                'content' => $request->getParam('content'),
-                                'poll' => $request->getParam('poll'),
-                                'meta' => $request->getParam('meta')
-                            ];
-
-                            $check = \Filter\Publication::check($data);
-
-                            if ($check === true) {
-                                try {
-                                    $this->get(\Resource\Publication::class)->flush($data);
-
-                                    return $response->withAddedHeader('Location', '/cup/publication');
-                                } catch (Exception $e) {
-                                    // todo nothing
-                                }
-                            }
-                        }
-
-                        $list = $this->get(\Resource\Publication\Category::class)->fetch();
-
-                        return $this->template->render($response, 'cup/publication/form.twig', ['list' => $list]);
-                    });
-
-                    // edit
-                    $app->map(['get', 'post'], '/{uuid}/edit', function (Request $request, Response $response, $args = []) {
-                        if ($args['uuid'] && Ramsey\Uuid\Uuid::isValid($args['uuid'])) {
-                            /** @var \Entity\Publication $item */
-                            $item = $this->get(\Resource\Publication::class)->fetchOne(['uuid' => $args['uuid']]);
-
-                            if (!$item->isEmpty()) {
-                                if ($request->isPost()) {
-                                    $data = [
-                                        'uuid' => $item->uuid,
-                                        'title' => $request->getParam('title'),
-                                        'address' => $request->getParam('address'),
-                                        'date' => $request->getParam('date'),
-                                        'category' => $request->getParam('category'),
-                                        'content' => $request->getParam('content'),
-                                        'poll' => $request->getParam('poll'),
-                                        'meta' => $request->getParam('meta')
-                                    ];
-
-                                    $check = \Filter\Publication::check($data);
-
-                                    if ($check === true) {
-                                        try {
-                                            $this->get(\Resource\Publication::class)->flush($data);
-
-                                            return $response->withAddedHeader('Location', '/cup/publication');
-                                        } catch (Exception $e) {
-                                            // todo nothing
-                                        }
-                                    }
-                                }
-
-                                $list = $this->get(\Resource\Publication\Category::class)->fetch();
-
-                                return $this->template->render($response, 'cup/publication/form.twig', ['list' => $list, 'item' => $item]);
-                            }
-                        }
-
-                        return $response->withAddedHeader('Location', '/cup/publication');
-                    });
-
-                    // delete
-                    $app->map(['get', 'post'], '/{uuid}/delete', function (Request $request, Response $response, $args = []) {
-                        if ($args['uuid'] && Ramsey\Uuid\Uuid::isValid($args['uuid'])) {
-                            /** @var \Entity\Publication $item */
-                            $item = $this->get(\Resource\Publication::class)->fetchOne(['uuid' => $args['uuid']]);
-
-                            if (!$item->isEmpty() && $request->isPost()) {
-                                $this->get(\Resource\Publication::class)->remove([
-                                    'uuid' => $item->uuid,
-                                ]);
-                            }
-                        }
-
-                        return $response->withAddedHeader('Location', '/cup/publication');
-                    });
-
-                    // preview
-                    $app->map(['get', 'post'], '/preview', function (Request $request, Response $response) {
-                        return $this->template->render($response, 'cup/publication/preview.twig');
-                    });
-
-                    // publications category
                     $app->group('/category', function (App $app) {
-                        // list
-                        $app->map(['get', 'post'], '', function (Request $request, Response $response) {
-                            $list = $this->get(\Resource\Publication\Category::class)->fetch();
-
-                            return $this->template->render($response, 'cup/publication/category/index.twig', ['list' => $list]);
-                        });
-
-                        // add
-                        $app->map(['get', 'post'], '/add', function (Request $request, Response $response, $args = []) {
-                            if ($request->isPost()) {
-                                $data = [
-                                    'title' => $request->getParam('title'),
-                                    'address' => $request->getParam('address'),
-                                    'description' => $request->getParam('description'),
-                                    'parent' => $request->getParam('parent'),
-                                    'pagination' => $request->getParam('pagination'),
-                                    'sort' => $request->getParam('sort'),
-                                    'meta' => $request->getParam('meta'),
-                                    'template' => $request->getParam('template'),
-                                ];
-
-                                $check = \Filter\Publication\Category::check($data);
-
-                                if ($check === true) {
-                                    try {
-                                        $this->get(\Resource\Publication\Category::class)->flush($data);
-
-                                        return $response->withAddedHeader('Location', '/cup/publication/category');
-                                    } catch (Exception $e) {
-                                        // todo nothing
-                                    }
-                                }
-                            }
-
-                            $list = $this->get(\Resource\Publication\Category::class)->fetch();
-
-                            return $this->template->render($response, 'cup/publication/category/form.twig', ['list' => $list]);
-                        });
-
-                        // edit
-                        $app->map(['get', 'post'], '/{uuid}/edit', function (Request $request, Response $response, $args = []) {
-                            if ($args['uuid'] && Ramsey\Uuid\Uuid::isValid($args['uuid'])) {
-                                /** @var \Entity\Publication\Category $item */
-                                $item = $this->get(\Resource\Publication\Category::class)->fetchOne(['uuid' => $args['uuid']]);
-
-                                if (!$item->isEmpty()) {
-                                    if ($request->isPost()) {
-                                        $data = [
-                                            'uuid' => $item->uuid,
-                                            'title' => $request->getParam('title'),
-                                            'address' => $request->getParam('address'),
-                                            'description' => $request->getParam('description'),
-                                            'parent' => $request->getParam('parent'),
-                                            'pagination' => $request->getParam('pagination'),
-                                            'sort' => $request->getParam('sort'),
-                                            'meta' => $request->getParam('meta'),
-                                            'template' => $request->getParam('template'),
-                                        ];
-
-                                        $check = \Filter\Publication\Category::check($data);
-
-                                        if ($check === true) {
-                                            try {
-                                                $this->get(\Resource\Publication\Category::class)->flush($data);
-
-                                                return $response->withAddedHeader('Location', '/cup/publication/category');
-                                            } catch (Exception $e) {
-                                                // todo nothing
-                                            }
-                                        }
-                                    }
-
-                                    $list = $this->get(\Resource\Publication\Category::class)->fetch();
-
-                                    return $this->template->render($response, 'cup/publication/category/form.twig', ['list' => $list, 'item' => $item]);
-                                }
-                            }
-
-                            return $response->withAddedHeader('Location', '/cup/publication/category');
-                        });
-
-                        // delete
-                        $app->map(['get', 'post'], '/{uuid}/delete', function (Request $request, Response $response, $args = []) {
-                            if ($args['uuid'] && Ramsey\Uuid\Uuid::isValid($args['uuid'])) {
-                                /** @var \Entity\Publication\Category $item */
-                                $item = $this->get(\Resource\Publication\Category::class)->fetchOne(['uuid' => $args['uuid']]);
-
-                                if (!$item->isEmpty() && $request->isPost()) {
-                                    $this->get(\Resource\Publication\Category::class)->remove([
-                                        'uuid' => $item->uuid,
-                                    ]);
-                                }
-                            }
-
-                            return $response->withAddedHeader('Location', '/cup/publication/category');
-                        });
+                        $app->map(['get', 'post'], '', \Application\Actions\Cup\Publication\Category\CategoryListAction::class);
+                        $app->map(['get', 'post'], '/add', \Application\Actions\Cup\Publication\Category\CategoryCreateAction::class);
+                        $app->map(['get', 'post'], '/{uuid}/edit', \Application\Actions\Cup\Publication\Category\CategoryUpdateAction::class);
+                        $app->map(['get', 'post'], '/{uuid}/delete', \Application\Actions\Cup\Publication\Category\CategoryDeleteAction::class);
                     });
                 });
+//                $app->group('/publication', function (App $app) {
+
+//                    // publications category
+//                    $app->group('/category', function (App $app) {
+//                        // edit
+//                        $app->map(['get', 'post'], '/{uuid}/edit', function (Request $request, Response $response, $args = []) {
+//                            if ($args['uuid'] && Ramsey\Uuid\Uuid::isValid($args['uuid'])) {
+//                                /** @var \Entity\Publication\Category $item */
+//                                $item = $this->get(\Resource\Publication\Category::class)->fetchOne(['uuid' => $args['uuid']]);
+//
+//                                if (!$item->isEmpty()) {
+//                                    if ($request->isPost()) {
+//                                        $data = [
+//                                            'uuid' => $item->uuid,
+//                                            'title' => $request->getParam('title'),
+//                                            'address' => $request->getParam('address'),
+//                                            'description' => $request->getParam('description'),
+//                                            'parent' => $request->getParam('parent'),
+//                                            'pagination' => $request->getParam('pagination'),
+//                                            'sort' => $request->getParam('sort'),
+//                                            'meta' => $request->getParam('meta'),
+//                                            'template' => $request->getParam('template'),
+//                                        ];
+//
+//                                        $check = \Filter\Publication\Category::check($data);
+//
+//                                        if ($check === true) {
+//                                            try {
+//                                                $this->get(\Resource\Publication\Category::class)->flush($data);
+//
+//                                                return $response->withAddedHeader('Location', '/cup/publication/category');
+//                                            } catch (Exception $e) {
+//                                                // todo nothing
+//                                            }
+//                                        }
+//                                    }
+//
+//                                    $list = $this->get(\Resource\Publication\Category::class)->fetch();
+//
+//                                    return $this->template->render($response, 'cup/publication/category/form.twig', ['list' => $list, 'item' => $item]);
+//                                }
+//                            }
+//
+//                            return $response->withAddedHeader('Location', '/cup/publication/category');
+//                        });
+//
+//                        // delete
+//                        $app->map(['get', 'post'], '/{uuid}/delete', function (Request $request, Response $response, $args = []) {
+//                            if ($args['uuid'] && Ramsey\Uuid\Uuid::isValid($args['uuid'])) {
+//                                /** @var \Entity\Publication\Category $item */
+//                                $item = $this->get(\Resource\Publication\Category::class)->fetchOne(['uuid' => $args['uuid']]);
+//
+//                                if (!$item->isEmpty() && $request->isPost()) {
+//                                    $this->get(\Resource\Publication\Category::class)->remove([
+//                                        'uuid' => $item->uuid,
+//                                    ]);
+//                                }
+//                            }
+//
+//                            return $response->withAddedHeader('Location', '/cup/publication/category');
+//                        });
+//                    });
+//                });
 
                 // forms
                 $app->group('/form', function (App $app) {

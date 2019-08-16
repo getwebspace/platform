@@ -36,6 +36,7 @@
                             </thead>
                             <tbody>
                                 {% for item in publications %}
+                                    {% set category = categories.where('uuid', item.category).first() %}
                                     <tr>
                                         <td>
                                             <a href="/{{ category.address }}/{{ item.address }}" target="_blank">

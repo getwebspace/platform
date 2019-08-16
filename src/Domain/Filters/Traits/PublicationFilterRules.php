@@ -17,8 +17,11 @@ trait PublicationFilterRules
             /** @var App $app */
             $app = $GLOBALS['app'];
 
-            /** @var \Entity\Publication $publication */
-            $publication = $app->getContainer()->get(\Resource\Publication::class)->search(['address' => str_escape($data[$field])])->first();
+            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $publicationRepository */
+            $publicationRepository = $app->getContainer()->get(\Doctrine\ORM\EntityManager::class)->getRepository(\Domain\Entities\Publication::class);
+
+            /** @var \Domain\Entities\Publication $publication */
+            $publication = $publicationRepository->findOneBy(['address' => str_escape($data[$field])]);
 
             return $publication === null || (!empty($data['uuid']) && $publication->uuid === $data['uuid']);
         };
@@ -104,8 +107,11 @@ trait PublicationFilterRules
             /** @var App $app */
             $app = $GLOBALS['app'];
 
-            /** @var \Entity\Publication\Category $category */
-            $category = $app->getContainer()->get(\Resource\Publication\Category::class)->search(['address' => str_escape($data[$field])])->first();
+            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $categoryRepository */
+            $categoryRepository = $app->getContainer()->get(\Doctrine\ORM\EntityManager::class)->getRepository(\Domain\Entities\Publication\Category::class);
+
+            /** @var \Domain\Entities\Publication\Category $category */
+            $category = $categoryRepository->findOneBy(['address' => str_escape($data[$field])]);
 
             return $category === null || (!empty($data['uuid']) && $category->uuid === $data['uuid']);
         };
@@ -120,8 +126,8 @@ trait PublicationFilterRules
     {
         return function (&$data, $field) {
             $buf = [
-                'by' => \Reference\Publication\Category::ORDER_BY_DATE,
-                'direction' => \Reference\Publication\Category::ORDER_DIRECTION_ASC,
+                'by' => \Domain\References\Publication\Category::ORDER_BY_DATE,
+                'direction' => \Domain\References\Publication\Category::ORDER_DIRECTION_ASC,
             ];
             $value = &$data[$field];
 
