@@ -25,97 +25,104 @@ $app
 
                 // static pages
                 $app->group('/page', function (App $app) {
-                    // list
-                    $app->map(['get', 'post'], '', function (Request $request, Response $response) {
-                        $list = $this->get(\Resource\Page::class)->fetch();
-
-                        return $this->template->render($response, 'cup/page/index.twig', ['list' => $list]);
-                    });
-
-                    // add
-                    $app->map(['get', 'post'], '/add', function (Request $request, Response $response, $args = []) {
-                        if ($request->isPost()) {
-                            $data = [
-                                'title' => $request->getParam('title'),
-                                'address' => $request->getParam('address'),
-                                'date' => $request->getParam('date'),
-                                'content' => $request->getParam('content'),
-                                'type' => $request->getParam('type'),
-                                'meta' => $request->getParam('meta'),
-                                'template' => $request->getParam('template'),
-                            ];
-
-                            $check = \Filter\Page::check($data);
-
-                            if ($check === true) {
-                                try {
-                                    $this->get(\Resource\Page::class)->flush($data);
-
-                                    return $response->withAddedHeader('Location', '/cup/page');
-                                } catch (Exception $e) {
-                                    // todo nothing
-                                }
-                            }
-                        }
-
-                        return $this->template->render($response, 'cup/page/form.twig');
-                    });
-
-                    // edit
-                    $app->map(['get', 'post'], '/{uuid}/edit', function (Request $request, Response $response, $args = []) {
-                        if ($args['uuid'] && Ramsey\Uuid\Uuid::isValid($args['uuid'])) {
-                            /** @var \Entity\User $item */
-                            $item = $this->get(\Resource\Page::class)->fetchOne(['uuid' => $args['uuid']]);
-
-                            if (!$item->isEmpty()) {
-                                if ($request->isPost()) {
-                                    $data = [
-                                        'uuid' => $item->uuid,
-                                        'title' => $request->getParam('title'),
-                                        'address' => $request->getParam('address'),
-                                        'date' => $request->getParam('date'),
-                                        'content' => $request->getParam('content'),
-                                        'type' => $request->getParam('type'),
-                                        'meta' => $request->getParam('meta'),
-                                        'template' => $request->getParam('template'),
-                                    ];
-
-                                    $check = \Filter\Page::check($data);
-
-                                    if ($check === true) {
-                                        try {
-                                            $this->get(\Resource\Page::class)->flush($data);
-
-                                            return $response->withAddedHeader('Location', '/cup/page');
-                                        } catch (Exception $e) {
-                                            // todo nothing
-                                        }
-                                    }
-                                }
-
-                                return $this->template->render($response, 'cup/page/form.twig', ['item' => $item]);
-                            }
-                        }
-
-                        return $response->withAddedHeader('Location', '/cup/page');
-                    });
-
-                    // delete
-                    $app->map(['get', 'post'], '/{uuid}/delete', function (Request $request, Response $response, $args = []) {
-                        if ($args['uuid'] && Ramsey\Uuid\Uuid::isValid($args['uuid'])) {
-                            /** @var \Entity\User $item */
-                            $item = $this->get(\Resource\Page::class)->fetchOne(['uuid' => $args['uuid']]);
-
-                            if (!$item->isEmpty() && $request->isPost()) {
-                                $this->get(\Resource\Page::class)->remove([
-                                    'uuid' => $item->uuid,
-                                ]);
-                            }
-                        }
-
-                        return $response->withAddedHeader('Location', '/cup/page');
-                    });
+                    $app->map(['get', 'post'], '', \Application\Actions\Cup\Page\PageListAction::class);
+                    $app->map(['get', 'post'], '/add', \Application\Actions\Cup\Page\PageCreateAction::class);
+                    $app->map(['get', 'post'], '/{uuid}/edit', \Application\Actions\Cup\Page\PageUpdateAction::class);
+                    $app->map(['get', 'post'], '/{uuid}/delete', \Application\Actions\Cup\Page\PageDeleteAction::class);
                 });
+
+//                $app->group('/page', function (App $app) {
+//                    // list
+//                    $app->map(['get', 'post'], '', function (Request $request, Response $response) {
+//                        $list = $this->get(\Resource\Page::class)->fetch();
+//
+//                        return $this->template->render($response, 'cup/page/index.twig', ['list' => $list]);
+//                    });
+//
+//                    // add
+//                    $app->map(['get', 'post'], '/add', function (Request $request, Response $response, $args = []) {
+//                        if ($request->isPost()) {
+//                            $data = [
+//                                'title' => $request->getParam('title'),
+//                                'address' => $request->getParam('address'),
+//                                'date' => $request->getParam('date'),
+//                                'content' => $request->getParam('content'),
+//                                'type' => $request->getParam('type'),
+//                                'meta' => $request->getParam('meta'),
+//                                'template' => $request->getParam('template'),
+//                            ];
+//
+//                            $check = \Filter\Page::check($data);
+//
+//                            if ($check === true) {
+//                                try {
+//                                    $this->get(\Resource\Page::class)->flush($data);
+//
+//                                    return $response->withAddedHeader('Location', '/cup/page');
+//                                } catch (Exception $e) {
+//                                    // todo nothing
+//                                }
+//                            }
+//                        }
+//
+//                        return $this->template->render($response, 'cup/page/form.twig');
+//                    });
+//
+//                    // edit
+//                    $app->map(['get', 'post'], '/{uuid}/edit', function (Request $request, Response $response, $args = []) {
+//                        if ($args['uuid'] && Ramsey\Uuid\Uuid::isValid($args['uuid'])) {
+//                            /** @var \Entity\User $item */
+//                            $item = $this->get(\Resource\Page::class)->fetchOne(['uuid' => $args['uuid']]);
+//
+//                            if (!$item->isEmpty()) {
+//                                if ($request->isPost()) {
+//                                    $data = [
+//                                        'uuid' => $item->uuid,
+//                                        'title' => $request->getParam('title'),
+//                                        'address' => $request->getParam('address'),
+//                                        'date' => $request->getParam('date'),
+//                                        'content' => $request->getParam('content'),
+//                                        'type' => $request->getParam('type'),
+//                                        'meta' => $request->getParam('meta'),
+//                                        'template' => $request->getParam('template'),
+//                                    ];
+//
+//                                    $check = \Filter\Page::check($data);
+//
+//                                    if ($check === true) {
+//                                        try {
+//                                            $this->get(\Resource\Page::class)->flush($data);
+//
+//                                            return $response->withAddedHeader('Location', '/cup/page');
+//                                        } catch (Exception $e) {
+//                                            // todo nothing
+//                                        }
+//                                    }
+//                                }
+//
+//                                return $this->template->render($response, 'cup/page/form.twig', ['item' => $item]);
+//                            }
+//                        }
+//
+//                        return $response->withAddedHeader('Location', '/cup/page');
+//                    });
+//
+//                    // delete
+//                    $app->map(['get', 'post'], '/{uuid}/delete', function (Request $request, Response $response, $args = []) {
+//                        if ($args['uuid'] && Ramsey\Uuid\Uuid::isValid($args['uuid'])) {
+//                            /** @var \Entity\User $item */
+//                            $item = $this->get(\Resource\Page::class)->fetchOne(['uuid' => $args['uuid']]);
+//
+//                            if (!$item->isEmpty() && $request->isPost()) {
+//                                $this->get(\Resource\Page::class)->remove([
+//                                    'uuid' => $item->uuid,
+//                                ]);
+//                            }
+//                        }
+//
+//                        return $response->withAddedHeader('Location', '/cup/page');
+//                    });
+//                });
 
                 // publications
                 $app->group('/publication', function (App $app) {

@@ -4,8 +4,8 @@ namespace Domain\Filters;
 
 use AEngine\Validator\Filter;
 use AEngine\Validator\Traits\FilterRules;
-use Filter\Traits\CommonFilterRules;
-use Filter\Traits\PageFilterRules;
+use \Domain\Filters\Traits\CommonFilterRules;
+use \Domain\Filters\Traits\PageFilterRules;
 
 class Page extends Filter
 {
@@ -38,7 +38,7 @@ class Page extends Filter
             ->attr('content')
                 ->addRule($filter->leadStr())
             ->attr('type')
-                ->addRule($filter->checkInKeys(\Reference\Page::TYPE))
+                ->addRule($filter->checkInKeys(\Domain\Types\PageTypeType::LIST))
             ->attr('meta')
                 ->addRule($filter->ValidMeta())
             ->attr('template')

@@ -21,10 +21,13 @@ trait PageFilterRules
             /** @var App $app */
             $app = $GLOBALS['app'];
 
-            /** @var \Entity\Publication $publication */
-            $publication = $app->getContainer()->get(\Resource\Publication::class)->search(['address' => str_escape($data[$field])])->first();
+            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $pageRepository */
+            $pageRepository = $app->getContainer()->get(\Doctrine\ORM\EntityManager::class)->getRepository(\Domain\Entities\Page::class);
 
-            return $publication === null || (!empty($data['uuid']) && $publication->uuid === $data['uuid']);
+            /** @var \Domain\Entities\Page $page */
+            $page = $pageRepository->findOneBy(['address' => str_escape($data[$field])]);
+
+            return $page === null || (!empty($data['uuid']) && $page->uuid === $data['uuid']);
         };
     }
 }

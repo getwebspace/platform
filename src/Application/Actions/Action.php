@@ -38,7 +38,7 @@ abstract class Action
     /**
      * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
      */
-    protected $parametersRepository;
+    private $parametersRepository;
 
     /**
      * @var Request
