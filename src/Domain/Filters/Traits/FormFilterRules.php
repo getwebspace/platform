@@ -17,10 +17,13 @@ trait FormFilterRules
             /** @var App $app */
             $app = $GLOBALS['app'];
 
-            /** @var \Entity\Form $publication */
-            $publication = $app->getContainer()->get(\Resource\Form::class)->search(['address' => str_escape($data[$field])])->first();
+            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $formRepository */
+            $formRepository = $app->getContainer()->get(\Doctrine\ORM\EntityManager::class)->getRepository(\Domain\Entities\Form::class);
 
-            return $publication === null || (!empty($data['uuid']) && $publication->uuid === $data['uuid']);
+            /** @var \Domain\Entities\Page $form */
+            $form = $formRepository->findOneBy(['address' => str_escape($data[$field])]);
+
+            return $form === null || (!empty($data['uuid']) && $form->uuid === $data['uuid']);
         };
     }
 

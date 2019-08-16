@@ -4,8 +4,8 @@ namespace Domain\Filters;
 
 use AEngine\Validator\Filter;
 use AEngine\Validator\Traits\FilterRules;
-use Filter\Traits\CommonFilterRules;
-use Filter\Traits\FormFilterRules;
+use \Domain\Filters\Traits\CommonFilterRules;
+use \Domain\Filters\Traits\FormFilterRules;
 
 class Form extends Filter
 {
