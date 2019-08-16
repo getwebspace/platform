@@ -105,7 +105,7 @@
                                     'type': 'select',
                                     'name': 'level',
                                     'args': {
-                                        'option': reference('/Reference/User::LEVEL'),
+                                        'option': reference('/Domain/Types/UserLevelType::LIST'),
                                         'selected': item.level
                                     }
                                 } %}
@@ -117,7 +117,7 @@
                                         'type': 'select',
                                         'name': 'status',
                                         'args': {
-                                            'option': reference('/Reference/User::STATUS'),
+                                            'option': reference('/Domain/Types/UserStatusType::LIST'),
                                             'selected': item.status
                                         }
                                     } %}
@@ -141,13 +141,13 @@
                                 <img src="{{ item.avatar(80) }}" alt="{{ item.name('full') }}" class="avatar-img rounded-circle">
                             </div>
                             <div class="name">{{ item.username }}</div>
-                            <div class="text-muted">{{ reference('/Reference/User::LEVEL', item.level) }}</div>
+                            <div class="text-muted">{{ reference('/Domain/Types/UserLevelType::LIST', item.level) }}</div>
                         </div>
                     </div>
                     <div class="card-footer">
                         <ul class="list-group list-group-bordered">
                             {% if item.firstname or item.lastname %}
-                                <li class="list-group-item">Полное имя: {{ item.name('full') }}</li>
+                                <li class="list-group-item">Полное имя: {{ item.getName('full') }}</li>
                             {% endif %}
                             <li class="list-group-item">E-Mail: {{ item.email }}</li>
                             <li class="list-group-item">Зарегистрирован: {{ item.register|date('d.m.Y H:i:s') }}</li>

@@ -1,16 +1,18 @@
 <?php
 
-namespace Application\Actions\Common;
+namespace Application\Actions\Cup\User;
 
 use Application\Actions\Action;
+use DateTime;
+use Exception;
 use Psr\Container\ContainerInterface;
 
-abstract class FileAction extends Action
+abstract class UserAction extends Action
 {
     /**
      * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
      */
-    protected $fileRepository;
+    protected $userRepository;
 
     /**
      * @inheritDoc
@@ -19,6 +21,6 @@ abstract class FileAction extends Action
     {
         parent::__construct($container);
 
-        $this->fileRepository = $this->entityManager->getRepository(\Domain\Entities\File::class);
+        $this->userRepository = $this->entityManager->getRepository(\Domain\Entities\User::class);
     }
 }

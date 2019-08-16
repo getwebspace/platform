@@ -84,11 +84,11 @@ class User extends Filter
         $filter
             ->addGlobalRule($filter->leadTrim())
             ->attr('username')
-                ->addRule($filter->leadStr(), \Reference\Errors\User::WRONG_USERNAME)
-                ->addRule($filter->UniqueUserUsername(), \Reference\Errors\User::WRONG_USERNAME_UNIQUE)
+                ->addRule($filter->leadStr(), \Domain\References\Errors\User::WRONG_USERNAME)
+                ->addRule($filter->UniqueUserUsername(), \Domain\References\Errors\User::WRONG_USERNAME_UNIQUE)
             ->attr('email')
-                ->addRule($filter->checkEmail(), \Reference\Errors\User::WRONG_EMAIL)
-                ->addRule($filter->UniqueUserEmail(), \Reference\Errors\User::WRONG_EMAIL_UNIQUE)
+                ->addRule($filter->checkEmail(), \Domain\References\Errors\User::WRONG_EMAIL)
+                ->addRule($filter->UniqueUserEmail(), \Domain\References\Errors\User::WRONG_EMAIL_UNIQUE)
             ->option('firstname')
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 20))
@@ -96,9 +96,9 @@ class User extends Filter
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 20))
             ->option('status')
-                ->addRule($filter->checkInKeys(\Reference\User::STATUS))
+                ->addRule($filter->checkInKeys(\Domain\Types\UserStatusType::LIST))
             ->option('level')
-                ->addRule($filter->checkInKeys(\Reference\User::LEVEL));
+                ->addRule($filter->checkInKeys(\Domain\Types\UserLevelType::LIST));
 
         // если длинна пароля не 140 символов - значит пароль
         // был изменен и его следует хешировать
@@ -106,7 +106,7 @@ class User extends Filter
             $filter
                 ->attr('password')
                     ->addRule($filter->leadStr())
-                    ->addRule($filter->checkStrlenBetween(3, 20), \Reference\Errors\User::WRONG_PASSWORD_LENGTH)
+                    ->addRule($filter->checkStrlenBetween(3, 20), \Domain\References\Errors\User::WRONG_PASSWORD_LENGTH)
                     ->addRule($filter->ValidPassword())
                 ->option('password_again')
                     ->addRule($filter->checkEqualToField('password'));

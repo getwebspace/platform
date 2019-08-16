@@ -79,10 +79,7 @@ $container[\Monolog\Logger::class] = function (ContainerInterface $c) {
 // not found
 $container['notFoundHandler'] = function ($c) {
     return function ($request, $response) use ($c) {
-        return $c
-            ->template
-            ->render($response, 'p404.twig')
-            ->withStatus(404)
+        return $c->get(\Slim\Views\Twig::class)->render($response, 'p404.twig')->withStatus(404)
         ;
     };
 };
@@ -90,21 +87,14 @@ $container['notFoundHandler'] = function ($c) {
 // not allowed
 $container['notAllowedHandler'] = function ($c) {
     return function ($request, $response, $methods) use ($c) {
-        return $c
-            ->template
-            ->render($response, 'p405.twig', ['methods' => $methods])
-            ->withStatus(404)
-        ;
+        return $c->get(\Slim\Views\Twig::class)->render($response, 'p405.twig', ['methods' => $methods])->withStatus(401);
     };
 };
 
 // error
 $container['errorHandler'] = function ($c) {
     return function ($request, $response, $exception) use ($c) {
-        return $c
-            ->template
-            ->render($response, 'p500.twig', ['exception' => $exception])
-            ->withStatus(404)
+        return $c->get(\Slim\Views\Twig::class)->render($response, 'p500.twig', ['exception' => $exception])->withStatus(500)
         ;
     };
 };

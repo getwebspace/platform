@@ -101,8 +101,6 @@
                                     <th>Группа (Статус)</th>
                                     <th width="15%">Дата регистрации</th>
                                     <th width="15%">Дата посещения</th>
-                                    <th class="text-center"><i class="fas fa-file"></i></th>
-                                    <th class="text-center"><i class="fas fa-comments"></i></th>
                                     <th width="10%" class="text-center no-sorting"></th>
                                 </tr>
                             </thead>
@@ -110,10 +108,10 @@
                                 {% for item in list %}
                                     <tr class="
                                         {{
-                                            item.status == reference('/Reference/User::STATUS_DELETE')
+                                            item.status == reference('/Domain/Types/UserStatusType::STATUS_DELETE')
                                             ? 'bg-danger'
                                             : (
-                                                item.status == reference('/Reference/User::STATUS_BLOCK')
+                                                item.status == reference('/Domain/Types/UserStatusType::STATUS_BLOCK')
                                                 ? 'bg-warning'
                                                 : ''
                                             )
@@ -123,13 +121,11 @@
                                             {{ item.username }}
                                         </td>
                                         <td>
-                                            {{ reference('/Reference/User::LEVEL', item.level) }}
-                                            ({{ reference('/Reference/User::STATUS', item.status) }})
+                                            {{ reference('/Domain/Types/UserLevelType::LIST', item.level) }}
+                                            ({{ reference('/Domain/Types/UserStatusType::LIST', item.status) }})
                                         </td>
                                         <td>{{ item.register|date('d.m.Y H:i:s') }}</td>
-                                        <td>{{ item.session.date|date('d.m.Y H:i:s') }}</td>
-                                        <td class="text-center">0</td>
-                                        <td class="text-center">0</td>
+                                        <td>{{ item.session.date ? item.session.date|date('d.m.Y H:i:s') : '' }}</td>
                                         <td class="text-center">
                                             <div class="btn-group dropdown">
                                                 <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">

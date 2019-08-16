@@ -21,8 +21,11 @@ trait UserFilterRules
             /** @var App $app */
             $app = $GLOBALS['app'];
 
-            /** @var \Entity\User $user */
-            $user = $app->getContainer()->get(\Resource\User::class)->search(['email' => str_escape($data[$field])])->first();
+            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $userRepository */
+            $userRepository = $app->getContainer()->get(\Doctrine\ORM\EntityManager::class)->getRepository(\Domain\Entities\User::class);
+
+            /** @var \Domain\Entities\User $user */
+            $user = $userRepository->findOneBy(['email' => str_escape($data[$field])]);
 
             return $user === null || (!empty($data['uuid']) && $user->uuid === $data['uuid']);
         };
@@ -39,8 +42,11 @@ trait UserFilterRules
             /** @var App $app */
             $app = $GLOBALS['app'];
 
-            /** @var \Entity\User $user */
-            $user = $app->getContainer()->get(\Resource\User::class)->search(['username' => str_escape($data[$field])])->first();
+            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $userRepository */
+            $userRepository = $app->getContainer()->get(\Doctrine\ORM\EntityManager::class)->getRepository(\Domain\Entities\User::class);
+
+            /** @var \Domain\Entities\User $user */
+            $user = $userRepository->findOneBy(['username' => str_escape($data[$field])]);
 
             return $user === null || (!empty($data['uuid']) && $user->uuid === $data['uuid']);
         };

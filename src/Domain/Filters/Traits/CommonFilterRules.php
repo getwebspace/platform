@@ -6,6 +6,7 @@ use AEngine\Support\Str;
 use Core\Auth;
 use Core\Common;
 use Ramsey\Uuid\Uuid;
+use Slim\App;
 
 trait CommonFilterRules
 {
@@ -36,7 +37,12 @@ trait CommonFilterRules
     {
         return function (&$data, $field) {
             $value = &$data[$field];
-            $value = Auth::hash($value);
+
+            /** @var App $app */
+            $app = $GLOBALS['app'];
+
+            $secret = $app->getContainer()->get('secret');
+            $value = crypta_hash($value, $secret['salt']);
 
             return true;
         };

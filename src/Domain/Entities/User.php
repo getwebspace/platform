@@ -70,7 +70,7 @@ class User extends Model
 
     /**
      * @var DateTime
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
+     * @ORM\Column(name="`change`", type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     public $change;
 
@@ -81,17 +81,10 @@ class User extends Model
      */
     public $session;
 
-    public function __construct(array $data = [])
-    {
-        parent::__construct($data);
-
-        $this->register = $this->register ?? new \DateTime('now');
-    }
-
     /**
      * @return string
      */
-    public function name($type = 'full')
+    public function getName($type = 'full')
     {
         switch ($type) {
             case 'full':
