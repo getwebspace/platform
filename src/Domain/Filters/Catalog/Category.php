@@ -4,8 +4,8 @@ namespace Domain\Filters\Catalog;
 
 use AEngine\Validator\Filter;
 use AEngine\Validator\Traits\FilterRules;
-use Filter\Traits\CommonFilterRules;
-use Filter\Traits\CatalogFilterRules;
+use \Domain\Filters\Traits\CommonFilterRules;
+use \Domain\Filters\Traits\CatalogFilterRules;
 
 class Category extends Filter
 {
@@ -51,7 +51,9 @@ class Category extends Filter
                 ->addRule($filter->ValidMeta())
             ->attr('template')
                 ->addRule($filter->leadStr())
-                ->addRule($filter->checkStrlenBetween(0, 50));
+                ->addRule($filter->checkStrlenBetween(0, 50))
+            ->attr('external_id')
+                ->addRule($filter->leadStr());
 
         return $filter->run();
     }

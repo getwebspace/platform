@@ -21,10 +21,34 @@ trait CatalogFilterRules
             /** @var App $app */
             $app = $GLOBALS['app'];
 
-            /** @var \Entity\Catalog\Category $category */
-            $category = $app->getContainer()->get(\Resource\Catalog\Category::class)->search(['address' => str_escape($data[$field])])->first();
+            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $categoryRepository */
+            $categoryRepository = $app->getContainer()->get(\Doctrine\ORM\EntityManager::class)->getRepository(\Domain\Entities\Catalog\Category::class);
+
+            /** @var \Domain\Entities\Page $category */
+            $category = $categoryRepository->findOneBy(['address' => str_escape($data[$field])]);
 
             return $category === null || (!empty($data['uuid']) && $category->uuid === $data['uuid']);
+        };
+    }
+
+    /**
+     * Проверяет уникальность адреса публикации
+     *
+     * @return \Closure
+     */
+    public function UniqueProductAddress()
+    {
+        return function (&$data, $field) {
+            /** @var App $app */
+            $app = $GLOBALS['app'];
+
+            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $productRepository */
+            $productRepository = $app->getContainer()->get(\Doctrine\ORM\EntityManager::class)->getRepository(\Domain\Entities\Catalog\Product::class);
+
+            /** @var \Domain\Entities\Page $product */
+            $product = $productRepository->findOneBy(['address' => str_escape($data[$field])]);
+
+            return $product === null || (!empty($data['uuid']) && $product->uuid === $data['uuid']);
         };
     }
 }

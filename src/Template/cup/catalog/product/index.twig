@@ -16,7 +16,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
-                        <h4 class="card-title">Список товаров в категории {{ category.title }} ({{ product.count() }})</h4>
+                        <h4 class="card-title">Список товаров в категории {{ category.title }} ({{ products.count() }})</h4>
                         <a href="/cup/catalog/{{ category.uuid }}/product/add" class="btn btn-primary btn-round ml-auto">
                             <i class="fa fa-plus"></i>
                             Добавить товар
@@ -47,7 +47,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for item in product %}
+                                {% for item in products %}
                                     <tr>
                                         <td class="text-center">{{ item.order }}</td>
                                         <td>

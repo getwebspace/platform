@@ -351,14 +351,6 @@
                         </div>
                     </div>
 
-                    {% include 'cup/form.twig' with {
-                        'type': 'hidden',
-                        'name': 'category',
-                        'args': {
-                            'value': category.uuid,
-                        }
-                    } %}
-
                     <div class="card-action">
                         <button type="submit" class="btn btn-success">Сохранить</button>
                     </div>

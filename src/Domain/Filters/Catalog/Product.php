@@ -4,8 +4,8 @@ namespace Domain\Filters\Catalog;
 
 use AEngine\Validator\Filter;
 use AEngine\Validator\Traits\FilterRules;
-use Filter\Traits\CommonFilterRules;
-use Filter\Traits\CatalogFilterRules;
+use \Domain\Filters\Traits\CommonFilterRules;
+use \Domain\Filters\Traits\CatalogFilterRules;
 
 class Product extends Filter
 {
@@ -39,7 +39,7 @@ class Product extends Filter
                 ->addRule($filter->checkStrlenBetween(0, 10000))
             ->attr('address')
                 ->addRule($filter->ValidAddress())
-                ->addRule($filter->UniqueCategoryAddress())
+                ->addRule($filter->UniqueProductAddress())
                 ->addRule($filter->checkStrlenBetween(0, 255))
             ->attr('vendorcode')
                 ->addRule($filter->leadStr())
@@ -72,7 +72,9 @@ class Product extends Filter
             ->attr('order')
                 ->addRule($filter->leadInteger())
             ->attr('meta')
-                ->addRule($filter->ValidMeta());
+                ->addRule($filter->ValidMeta())
+            ->attr('external_id')
+                ->addRule($filter->leadStr());
 
         return $filter->run();
     }

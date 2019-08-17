@@ -158,7 +158,7 @@ class Product extends Model
     ];
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=50, nullable=true)
      */
     public $external_id;
 
