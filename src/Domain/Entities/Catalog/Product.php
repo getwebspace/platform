@@ -169,6 +169,6 @@ class Product extends Model
      */
     public function getVolume()
     {
-        return $this->volume . $this->unit; // TODO: Reference
+        return ($this->volume ?? .0) . ($this->unit != 'null' ? $this->unit : '');
     }
 }

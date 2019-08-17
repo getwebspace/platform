@@ -6905,93 +6905,147 @@ label.error {
 }
 
 /*      Button States      */
+.btn-outline-white {
+    background: #ffffff !important;
+    border-color: #1a2035 !important;
+    color: #1a2035;
+}
 .btn-white {
     background: #ffffff !important;
     color: #1a2035 !important;
 }
 
+.btn-outline-white:hover, .btn-outline-white:focus, .btn-outline-white:disabled,
 .btn-white:hover, .btn-white:focus, .btn-white:disabled {
     background: #ffffff !important;
     color: #1a2035 !important;
 }
 
+.btn-outline-default {
+    background: #ffffff !important;
+    border-color: #1a2035 !important;
+    color: #1a2035;
+}
 .btn-default {
     background: #1a2035 !important;
     color: #ffffff !important;
 }
 
+.btn-outline-default:hover, .btn-outline-default:focus, .btn-outline-default:disabled,
 .btn-default:hover, .btn-default:focus, .btn-default:disabled {
     background: #1a2035 !important;
     color: #ffffff !important;
 }
 
+.btn-outline-primary {
+    background: #ffffff !important;
+    border-color: #1572e8 !important;
+    color: #1572e8;
+}
 .btn-primary {
     background: #1572e8 !important;
     border-color: #1572e8 !important;
 }
 
+.btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:disabled,
 .btn-primary:hover, .btn-primary:focus, .btn-primary:disabled {
     background: #1572e8 !important;
     border-color: #1572e8 !important;
 }
 
+.btn-outline-secondary {
+    background: #ffffff !important;
+    border-color: #6861ce !important;
+    color: #6861ce;
+}
 .btn-secondary {
     background: #6861ce !important;
     border-color: #6861ce !important;
 }
 
+.btn-outline-secondary:hover, .btn-outline-secondary:focus, .btn-outline-secondary:disabled,
 .btn-secondary:hover, .btn-secondary:focus, .btn-secondary:disabled {
     background: #6861ce !important;
     border-color: #6861ce !important;
 }
 
+.btn-outline-info {
+    background: #ffffff !important;
+    border-color: #48abf7 !important;
+    color: #48abf7;
+}
 .btn-info {
     background: #48abf7 !important;
     border-color: #48abf7 !important;
 }
 
+.btn-outline-info:hover, .btn-outline-info:focus, .btn-outline-info:disabled,
 .btn-info:hover, .btn-info:focus, .btn-info:disabled {
     background: #48abf7 !important;
     border-color: #48abf7 !important;
 }
 
+.btn-outline-success {
+    background: #ffffff !important;
+    border-color: #31ce36 !important;
+    color: #31ce36;
+}
 .btn-success {
     background: #31ce36 !important;
     border-color: #31ce36 !important;
 }
 
+.btn-outline-success:hover, .btn-outline-success:focus, .btn-outline-success:disabled,
 .btn-success:hover, .btn-success:focus, .btn-success:disabled {
     background: #31ce36 !important;
     border-color: #31ce36 !important;
 }
 
+.btn-outline-warning {
+    background: #ffffff !important;
+    border-color: #ffad46 !important;
+    color: #ffad46;
+}
 .btn-warning {
     background: #ffad46 !important;
     border-color: #ffad46 !important;
     color: #ffffff !important;
 }
 
+.btn-outline-warning:hover, .btn-outline-warning:focus, .btn-outline-warning:disabled,
 .btn-warning:hover, .btn-warning:focus, .btn-warning:disabled {
     background: #ffad46 !important;
     border-color: #ffad46 !important;
     color: #ffffff !important;
 }
 
+.btn-outline-danger {
+    background: #ffffff !important;
+    border-color: #f25961 !important;
+    color: #f25961;
+}
 .btn-danger {
     background: #f25961 !important;
     border-color: #f25961 !important;
 }
 
+.btn-outline-danger:hover, .btn-outline-danger:focus, .btn-outline-danger:disabled,
 .btn-danger:hover, .btn-danger:focus, .btn-danger:disabled {
     background: #f25961 !important;
     border-color: #f25961 !important;
 }
 
+.btn-outline-light {
+    background: #ffffff !important;
+    border-color: #1a2035 !important;
+    color: #1a2035;
+}
 .btn-light {
     background: #ffffff !important;
     border-color: transparent;
 }
 
+.btn-outline-light:hover, .btn-outline-light:focus, .btn-outline-light:disabled,
 .btn-light:hover, .btn-light:focus, .btn-light:disabled {
     background: #ebecec !important;
     border-color: transparent;

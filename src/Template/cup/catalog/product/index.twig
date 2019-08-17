@@ -17,13 +17,13 @@
                 <div class="card-header">
                     <div class="d-flex align-items-center">
                         <h4 class="card-title">Список товаров в категории {{ category.title }} ({{ products.count() }})</h4>
-                        <a href="/cup/catalog/{{ category.uuid }}/product/add" class="btn btn-primary btn-round ml-auto">
-                            <i class="fa fa-plus"></i>
-                            Добавить товар
-                        </a>
-                        <a href="/cup/catalog/" class="btn btn-secondary btn-round ml-1">
+                        <a href="/cup/catalog/" class="btn btn-secondary btn-round ml-auto">
                             <i class="fas fa-long-arrow-alt-left"></i>
                             Назад
+                        </a>
+                        <a href="/cup/catalog/{{ category.uuid }}/product/add" class="btn btn-primary btn-round ml-1">
+                            <i class="fa fa-plus"></i>
+                            Добавить товар
                         </a>
                     </div>
                 </div>
@@ -37,6 +37,7 @@
                                     <th width="10%">{{ category.product.field_1 ?? 'Поле 1' }}</th>
                                     <th width="10%">{{ category.product.field_2 ?? 'Поле 2' }}</th>
                                     <th width="10%">{{ category.product.field_3 ?? 'Поле 3' }}</th>
+                                    <th width="5%">Артикул</th>
                                     <th width="8%" class="text-center"><i class="fas fa-boxes" data-toggle="tooltip" data-placement="top" title="Объем упаковки"></i></th>
                                     <th width="8%" class="text-center"><i class="fas fa-warehouse" data-toggle="tooltip" data-placement="top" title="Количество на складе"></i></th>
                                     <th width="10%" class="text-center no-sorting"></th>
@@ -50,13 +51,12 @@
                                                 {{ item.title }}
                                                 <i class="fas fa-external-link-alt"></i>
                                             </a>
-                                            <br/>
-                                            {{ item.vendorcode }}
                                         </td>
                                         <td>{{ item.price|format_number({fraction_digit: 2}) }} ({{ item.priceWholesale|format_number({fraction_digit: 2}) }})</td>
                                         <td>{{ item.field1 }}</td>
                                         <td>{{ item.field2 }}</td>
                                         <td>{{ item.field3 }}</td>
+                                        <td>{{ item.vendorcode }}</td>
                                         <td class="text-center">{{ item.getVolume() }}</td>
                                         <td class="text-center">{{ item.stock|format_number({fraction_digit: 2}) }}</td>
                                         <td class="text-center">
@@ -83,6 +83,14 @@
                                 {% endfor %}
                             </tbody>
                         </table>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex align-items-center">
+                        <a href="/cup/catalog/{{ category.uuid }}/edit" class="btn btn-info btn-round ml-auto">
+                            <i class="fa fa-edit"></i>
+                            Изменить
+                        </a>
                     </div>
                 </div>
             </div>
