@@ -72,11 +72,6 @@ class Category extends Model
     ];
 
     /**
-     * @ORM\Column(type="array")
-     */
-    public $file = [];
-
-    /**
      * @ORM\Column(name="`order`", type="integer")
      */
     public $order;

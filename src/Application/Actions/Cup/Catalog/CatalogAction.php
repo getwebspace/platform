@@ -25,6 +25,11 @@ abstract class CatalogAction extends Action
     protected $orderRepository;
 
     /**
+     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     */
+    protected $fileRepository;
+
+    /**
      * @inheritDoc
      */
     public function __construct(ContainerInterface $container)
@@ -33,6 +38,7 @@ abstract class CatalogAction extends Action
 
         $this->categoryRepository = $this->entityManager->getRepository(\Domain\Entities\Catalog\Category::class);
         $this->productRepository = $this->entityManager->getRepository(\Domain\Entities\Catalog\Product::class);
+        $this->fileRepository = $this->entityManager->getRepository(\Domain\Entities\File::class);
         $this->orderRepository = null; // todo
     }
 

@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     <div class="card-header">
                         <div class="card-head-row">
                             <div class="card-title">{{ item.uuid ? 'Редактирование категории ' ~ item.title : 'Создание новой категории' }}</div>
@@ -152,21 +152,9 @@
                         <hr>
 
                         <div class="row">
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Шаблон',
-                                    'type': 'text',
-                                    'name': 'template',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="Укажите название шаблона, который хотите использовать для данной категории или оставьте <b>category.twig</b>"></i>',
-                                    'args': {
-                                        'value': item.template is not empty ? item.template : 'category.twig',
-                                        'required': true,
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Название дополнительного поля 1',
                                             'type': 'text',
@@ -178,7 +166,7 @@
                                             }
                                         } %}
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Название дополнительного поля 2',
                                             'type': 'text',
@@ -190,7 +178,7 @@
                                             }
                                         } %}
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Название дополнительного поля 3',
                                             'type': 'text',
@@ -202,7 +190,7 @@
                                             }
                                         } %}
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Название дополнительного поля 4',
                                             'type': 'text',
@@ -214,7 +202,7 @@
                                             }
                                         } %}
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Название дополнительного поля 5',
                                             'type': 'text',
@@ -227,6 +215,53 @@
                                         } %}
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Изображения',
+                                    'type': 'file',
+                                    'name': 'files[]',
+                                    'args': {
+                                        'class': ['d-block', 'btn', 'btn-sm', 'bg-grey2'],
+                                        'multiple': true,
+                                        'accept': 'image/*'
+                                    }
+                                } %}
+
+                                {% for file in files %}
+                                    <div class="p-2 d-inline-block m-2 bg-grey2 rounded">
+                                        <a href="/cup/catalog/{{ item.uuid }}/product">
+                                            <img class="rounded" height="100" src="{{ file.getPublicPath() }}" alt="preview" />
+                                        </a>
+                                        <div class="text-right pt-2 pb-2">
+                                            <button type="submit" name="delete-image" value="{{ file.uuid }}" class="btn btn-danger btn-icon btn-xs">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Шаблон',
+                                    'type': 'text',
+                                    'name': 'template',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="Укажите название шаблона, который хотите использовать для данной категории или оставьте <b>category.twig</b>"></i>',
+                                    'args': {
+                                        'value': item.template is not empty ? item.template : 'category.twig',
+                                        'required': true,
+                                    }
+                                } %}
                             </div>
                         </div>
 
