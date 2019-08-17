@@ -138,11 +138,6 @@ class Product extends Model
     public $tags = [];
 
     /**
-     * @ORM\Column(type="array")
-     */
-    public $file = [];
-
-    /**
      * @ORM\Column(name="`order`", type="integer")
      */
     public $order = 1;

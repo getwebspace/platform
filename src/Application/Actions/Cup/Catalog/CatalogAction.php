@@ -2,9 +2,8 @@
 
 namespace Application\Actions\Cup\Catalog;
 
+use AEngine\Support\Str;
 use Application\Actions\Action;
-use DateTime;
-use Exception;
 use Psr\Container\ContainerInterface;
 
 abstract class CatalogAction extends Action
@@ -40,6 +39,48 @@ abstract class CatalogAction extends Action
         $this->productRepository = $this->entityManager->getRepository(\Domain\Entities\Catalog\Product::class);
         $this->fileRepository = $this->entityManager->getRepository(\Domain\Entities\File::class);
         $this->orderRepository = null; // todo
+    }
+
+    /**
+     * Upload image files
+     *
+     * @param $model
+     *
+     * @throws \Doctrine\ORM\ORMException
+     */
+    protected function handlerFileUpload($model)
+    {
+        /** @var \Psr\Http\Message\UploadedFileInterface[] $files */
+        $files = $this->request->getUploadedFiles()['files'] ?? [];
+
+        foreach ($files as $file) {
+            if ($file->getSize() && !$file->getError()) {
+                $salt = uniqid();
+                $name = Str::translate(strtolower($file->getClientFilename()));
+                $path = UPLOAD_DIR . '/' . $salt;
+
+                if (!file_exists($path)) {
+                    mkdir($path);
+                }
+
+                // create model
+                $fileModel = new \Domain\Entities\File([
+                    'name' => $name,
+                    'type' => $file->getClientMediaType(),
+                    'size' => (int)$file->getSize(),
+                    'salt' => $salt,
+                    'date' => new \DateTime(),
+                    'item' => is_a($model, \Domain\Entities\Catalog\Category::class) ? \Domain\Types\FileItemType::ITEM_CATALOG_CATEGORY : \Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
+                    'item_uuid' => $model->uuid,
+                ]);
+
+                $file->moveTo($path . '/' . $name);
+                $fileModel->set('hash', sha1_file($path . '/' . $name));
+
+                // save model
+                $this->entityManager->persist($fileModel);
+            }
+        }
     }
 
     /**

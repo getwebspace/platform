@@ -2,6 +2,7 @@
 
 namespace Application\Actions\Cup\Catalog\Product;
 
+use AEngine\Support\Str;
 use Application\Actions\Cup\Catalog\CatalogAction;
 use Exception;
 
@@ -46,6 +47,7 @@ class ProductCreateAction extends CatalogAction
                         try {
                             $model = new \Domain\Entities\Catalog\Product($data);
                             $this->entityManager->persist($model);
+                            $this->handlerFileUpload($model);
                             $this->entityManager->flush();
 
                             return $this->response->withAddedHeader('Location', '/cup/catalog/' . $category->uuid . '/product');
