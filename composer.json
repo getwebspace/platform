@@ -31,7 +31,8 @@
         "bukashk0zzz/yml-generator": "^1.6",
         "samdark/sitemap": "^2.2",
         "monolog/monolog": "^1.17",
-        "runcmf/runtracy": "^0.2.10"
+        "runcmf/runtracy": "^0.2.10",
+        "twig/intl-extra": "3.x-dev"
     },
     "autoload": {
         "classmap": [

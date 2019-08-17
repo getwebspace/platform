@@ -35,4 +35,26 @@ abstract class CatalogAction extends Action
         $this->productRepository = $this->entityManager->getRepository(\Domain\Entities\Catalog\Product::class);
         $this->orderRepository = null; // todo
     }
+
+    /**
+     * @param bool $list
+     * if false return key:value
+     * if true return key:list
+     *
+     * @return array|false
+     */
+    protected function getMeasure($list = false) {
+        $measure = $this->getParameter('catalog_measure');
+        $result = [];
+
+        if ($measure) {
+            preg_match_all('/([\w\d]+)\:\s?([\w\d]+)\;\s?([\w\d]+)\;\s?([\w\d]+)(?>\s|$)/u', $measure, $matches);
+
+            foreach ($matches[1] as $index => $key) {
+                $result[$key] = $list ? [$matches[2][$index], $matches[3][$index], $matches[4][$index]] : $matches[2][$index];
+            }
+        }
+
+        return collect($result);
+    }
 }

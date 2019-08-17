@@ -13,7 +13,7 @@ $(() => {
     });
     $active.parents('li').addClass('active').parents('.nav-item').find('[href^="#"]').click();
     
-    $('[data-toggle="tooltip"]').tooltip()
+    $('[data-toggle="tooltip"]').tooltip();
     
     $('[data-input] select').select2({
         theme: 'bootstrap',
@@ -102,4 +102,4 @@ $(() => {
             $form.attr('target', '_self');
         }, 500);
     })
-})
+});

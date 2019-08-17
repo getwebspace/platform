@@ -63,7 +63,7 @@ class ProductUpdateAction extends CatalogAction
                 }
             }
 
-            return $this->respondRender('cup/catalog/product/form.twig', ['category' => $category, 'item' => $product]);
+            return $this->respondRender('cup/catalog/product/form.twig', ['category' => $category, 'measure' => $this->getMeasure(), 'item' => $product]);
         }
 
         return $this->response->withAddedHeader('Location', '/cup/catalog');

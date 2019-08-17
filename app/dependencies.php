@@ -47,6 +47,7 @@ $container[\Slim\Views\Twig::class] = function (ContainerInterface $c) {
         )
     );
     $view->addExtension(new \Application\TwigExtension());
+    $view->addExtension(new Twig\Extra\Intl\IntlExtension());
     $view->addExtension(new Twig_Extensions_Extension_Text());
     $view->addExtension(new Twig\Extension\StringLoaderExtension());
     $view->addExtension(new Phive\Twig\Extensions\Deferred\DeferredExtension());

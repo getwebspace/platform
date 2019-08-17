@@ -169,6 +169,6 @@ class Product extends Model
      */
     public function getVolume()
     {
-        return implode(' ', [$this->volume, $this->unit]); // TODO: Reference
+        return $this->volume . $this->unit; // TODO: Reference
     }
 }

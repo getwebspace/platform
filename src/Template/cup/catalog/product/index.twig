@@ -32,39 +32,33 @@
                         <table data-table class="display table table-striped table-hover" >
                             <thead>
                                 <tr>
-                                    <th width="5%"><i class="fas fa-sort" data-toggle="tooltip" data-placement="top" title="Название категории. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов"></i></th>
                                     <th>Наименование</th>
-                                    <th>Артикул</th>
                                     <th>Цена (оптовая)</th>
-                                    <th>Поле 1</th>
-                                    <th>Поле 2</th>
-                                    <th>Поле 3</th>
-                                    <th>Поле 4</th>
-                                    <th>Поле 5</th>
-                                    <th><i class="fas fa-boxes"></i></th>
-                                    <th><i class="fas fa-warehouse"></i></th>
+                                    <th width="10%" data-table-hidden>Поле 1</th>
+                                    <th width="10%" data-table-hidden>Поле 2</th>
+                                    <th width="10%" data-table-hidden>Поле 3</th>
+                                    <th width="8%" class="text-center"><i class="fas fa-boxes" data-toggle="tooltip" data-placement="top" title="Объем упаковки"></i></th>
+                                    <th width="8%" class="text-center"><i class="fas fa-warehouse" data-toggle="tooltip" data-placement="top" title="Количество на складе"></i></th>
                                     <th width="10%" class="text-center no-sorting"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for item in products %}
                                     <tr>
-                                        <td class="text-center">{{ item.order }}</td>
                                         <td>
                                             <a href="/catalog/{{ category.address }}/{{ item.address }}" target="_blank">
                                                 {{ item.title }}
                                                 <i class="fas fa-external-link-alt"></i>
                                             </a>
+                                            <br/>
+                                            {{ item.vendorcode }}
                                         </td>
-                                        <td>{{ item.vendorcode }}</td>
-                                        <td>{{ item.price|round(2) }} ({{ item.priceWholesale|round(2) }})</td>
+                                        <td>{{ item.price|format_number({fraction_digit: 2}) }} ({{ item.priceWholesale|format_number({fraction_digit: 2}) }})</td>
                                         <td>{{ item.field1 }}</td>
                                         <td>{{ item.field2 }}</td>
                                         <td>{{ item.field3 }}</td>
-                                        <td>{{ item.field4 }}</td>
-                                        <td>{{ item.field5 }}</td>
-                                        <td>{{ item.getVolume() }}</td>
-                                        <td>{{ item.stock }}</td>
+                                        <td class="text-center">{{ item.getVolume() }}</td>
+                                        <td class="text-center">{{ item.stock|format_number({fraction_digit: 2}) }}</td>
                                         <td class="text-center">
                                             <div class="btn-group dropdown">
                                                 <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">

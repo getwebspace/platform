@@ -157,11 +157,11 @@
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Размерность',
-                                    'type': 'number',
+                                    'type': 'select',
                                     'name': 'unit',
                                     'args': {
-                                        'value': item.unit,
-                                        'placeholder': '1',
+                                        'option': {'null': '---'}|merge(measure),
+                                        'selected': item.unit
                                     }
                                 } %}
                             </div>
@@ -170,9 +170,12 @@
                                     'label': 'Объем',
                                     'type': 'number',
                                     'name': 'volume',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Зависит от выбранной размерности"></i>',
                                     'args': {
                                         'value': item.volume,
                                         'placeholder': '1',
+                                        'step': 'any',
+                                        'min': '0',
                                     }
                                 } %}
                             </div>

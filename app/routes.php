@@ -76,25 +76,7 @@ $app
                         $app->get('', \Application\Actions\Cup\Catalog\Product\ProductListAction::class);
                         $app->map(['get', 'post'], '/add', \Application\Actions\Cup\Catalog\Product\ProductCreateAction::class);
                         $app->map(['get', 'post'], '/{product}/edit', \Application\Actions\Cup\Catalog\Product\ProductUpdateAction::class);
-
-                        // delete
-                        $app->map(['get', 'post'], '/{product}/delete', function (Request $request, Response $response, $args = []) {
-                            if (
-                                $args['uuid'] && Ramsey\Uuid\Uuid::isValid($args['uuid']) &&
-                                $args['product'] && Ramsey\Uuid\Uuid::isValid($args['product'])
-                            ) {
-                                /** @var \Entity\Catalog\Category $item */
-                                $item = $this->get(\Resource\Catalog\Product::class)->fetchOne(['uuid' => $args['uuid'], 'category' => $args['uuid']]);
-
-                                if (!$item->isEmpty() && $request->isPost()) {
-                                    $this->get(\Resource\Catalog\Category::class)->remove([
-                                        'uuid' => $item->uuid,
-                                    ]);
-                                }
-                            }
-
-                            return $response->withAddedHeader('Location', '/cup/catalog');
-                        });
+                        $app->map(['get', 'post'], '/{product}/delete', \Application\Actions\Cup\Catalog\Product\ProductDeleteAction::class);
                     });
                 });
 

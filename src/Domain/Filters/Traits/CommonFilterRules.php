@@ -87,7 +87,7 @@ trait CommonFilterRules
 
                         break;
                     default:
-                        $value = Common::uuid();
+                        $value = Uuid::uuid4();
 
                         break;
                 }
