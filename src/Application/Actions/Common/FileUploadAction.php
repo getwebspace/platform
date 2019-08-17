@@ -36,10 +36,14 @@ class FileUploadAction extends FileAction
                 $item->moveTo($path . '/' . $name);
                 $model->set('hash', sha1_file($path . '/' . $name));
 
+                $this->entityManager->persist($model);
+
                 // save model
-                $models[$field][] = $this->get(\Resource\File::class)->flush($model);
+                $models[$field][] = $model;
             }
         }
+
+        $this->entityManager->flush();
 
         return $this->response->withJson($models);
     }
