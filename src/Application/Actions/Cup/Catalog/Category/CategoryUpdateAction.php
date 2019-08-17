@@ -24,6 +24,7 @@ class CategoryUpdateAction extends CatalogAction
                         'field1' => $this->request->getParam('field1'),
                         'field2' => $this->request->getParam('field2'),
                         'field3' => $this->request->getParam('field3'),
+                        'product' => $this->request->getParam('product'),
                         'order' => $this->request->getParam('order'),
                         'meta' => $this->request->getParam('meta'),
                         'template' => $this->request->getParam('template'),
@@ -47,7 +48,11 @@ class CategoryUpdateAction extends CatalogAction
 
                 $category = collect($this->categoryRepository->findAll());
 
-                return $this->respondRender('cup/catalog/category/form.twig', ['category' => $category, 'item' => $item]);
+                return $this->respondRender('cup/catalog/category/form.twig', [
+                    'category' => $category,
+                    'item' => $item,
+                    'fields' => $this->getParameter(['catalog_category_field_1', 'catalog_category_field_2', 'catalog_category_field_3']),
+                ]);
             }
         }
 

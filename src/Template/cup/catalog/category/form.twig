@@ -114,7 +114,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Поле 1',
+                                    'label': fields.catalog_category_field_1 ?? 'Поле 1',
                                     'type': 'text',
                                     'name': 'field1',
                                     'message': 'Индивидуальное поле',
@@ -126,7 +126,7 @@
 
                             <div class="col-md-4">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Поле 2',
+                                    'label': fields.catalog_category_field_2 ?? 'Поле 2',
                                     'type': 'text',
                                     'name': 'field2',
                                     'message': 'Индивидуальное поле',
@@ -138,7 +138,7 @@
 
                             <div class="col-md-4">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Поле 3',
+                                    'label': fields.catalog_category_field_3 ?? 'Поле 3',
                                     'type': 'text',
                                     'name': 'field3',
                                     'message': 'Индивидуальное поле',
@@ -163,6 +163,70 @@
                                         'required': true,
                                     }
                                 } %}
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Название дополнительного поля 1',
+                                            'type': 'text',
+                                            'name': 'product[field_1]',
+                                            'message': 'Индивидуальное поле продукта категории',
+                                            'args': {
+                                                'value': item.product.field_1 is not empty ? item.product.field_1 : 'Поле 1',
+                                                'placeholder': 'Поле 1',
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Название дополнительного поля 2',
+                                            'type': 'text',
+                                            'name': 'product[field_2]',
+                                            'message': 'Индивидуальное поле продукта категории',
+                                            'args': {
+                                                'value': item.product.field_2 is not empty ? item.product.field_2 : 'Поле 2',
+                                                'placeholder': 'Поле 2',
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Название дополнительного поля 3',
+                                            'type': 'text',
+                                            'name': 'product[field_3]',
+                                            'message': 'Индивидуальное поле продукта категории',
+                                            'args': {
+                                                'value': item.product.field_3 is not empty ? item.product.field_3 : 'Поле 3',
+                                                'placeholder': 'Поле 3',
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Название дополнительного поля 4',
+                                            'type': 'text',
+                                            'name': 'product[field_4]',
+                                            'message': 'Индивидуальное поле продукта категории',
+                                            'args': {
+                                                'value': item.product.field_4 is not empty ? item.product.field_4 : 'Поле 4',
+                                                'placeholder': 'Поле 4',
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Название дополнительного поля 5',
+                                            'type': 'text',
+                                            'name': 'product[field_5]',
+                                            'message': 'Индивидуальное поле продукта категории',
+                                            'args': {
+                                                'value': item.product.field_5 is not empty ? item.product.field_5 : 'Поле 5',
+                                                'placeholder': 'Поле 5',
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

@@ -31,9 +31,9 @@
                                     <th width="5%"><i class="fas fa-sort" data-toggle="tooltip" data-placement="top" title="Название категории. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов"></i></th>
                                     <th>Наименование</th>
                                     <th>Основная категория</th>
-                                    <th>Поле 1</th>
-                                    <th>Поле 2</th>
-                                    <th>Поле 3</th>
+                                    <th>{{ fields.catalog_category_field_1 ?? 'Поле 1' }}</th>
+                                    <th>{{ fields.catalog_category_field_2 ?? 'Поле 2' }}</th>
+                                    <th>{{ fields.catalog_category_field_3 ?? 'Поле 3' }}</th>
                                     <th width="10%" class="text-center no-sorting"></th>
                                 </tr>
                             </thead>

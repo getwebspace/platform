@@ -45,6 +45,8 @@ class Category extends Filter
                 ->addRule($filter->leadStr())
             ->attr('field3')
                 ->addRule($filter->leadStr())
+            ->attr('product')
+                ->addRule($filter->ValidProductFieldNames())
             ->attr('order')
                 ->addRule($filter->leadInteger())
             ->attr('meta')

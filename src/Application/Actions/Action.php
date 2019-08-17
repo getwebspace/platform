@@ -80,7 +80,7 @@ abstract class Action
      * @param string|string[] $key
      * @param mixed           $default
      *
-     * @return |null
+     * @return array|string|mixed
      */
     protected function getParameter($key = null, $default = null)
     {
@@ -200,7 +200,7 @@ abstract class Action
         try {
             $data = array_merge(
                 [
-                    'parameter' => $this->getParameter(),
+                    //'parameter' => $this->getParameter(),
                     'user' => $this->request->getAttribute('user', null),
                     '_error' => array_merge($this->error, \AEngine\Support\Form::$globalError),
                 ],

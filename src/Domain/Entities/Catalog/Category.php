@@ -60,6 +60,18 @@ class Category extends Model
     public $field3;
 
     /**
+     * @var array
+     * @ORM\Column(type="array")
+     */
+    public $product = [
+        'field_1' => '',
+        'field_2' => '',
+        'field_3' => '',
+        'field_4' => '',
+        'field_5' => '',
+    ];
+
+    /**
      * @ORM\Column(type="array")
      */
     public $file = [];

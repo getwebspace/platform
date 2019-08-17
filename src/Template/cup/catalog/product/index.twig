@@ -34,9 +34,9 @@
                                 <tr>
                                     <th>Наименование</th>
                                     <th>Цена (оптовая)</th>
-                                    <th width="10%" data-table-hidden>Поле 1</th>
-                                    <th width="10%" data-table-hidden>Поле 2</th>
-                                    <th width="10%" data-table-hidden>Поле 3</th>
+                                    <th width="10%">{{ category.product.field_1 ?? 'Поле 1' }}</th>
+                                    <th width="10%">{{ category.product.field_2 ?? 'Поле 2' }}</th>
+                                    <th width="10%">{{ category.product.field_3 ?? 'Поле 3' }}</th>
                                     <th width="8%" class="text-center"><i class="fas fa-boxes" data-toggle="tooltip" data-placement="top" title="Объем упаковки"></i></th>
                                     <th width="8%" class="text-center"><i class="fas fa-warehouse" data-toggle="tooltip" data-placement="top" title="Количество на складе"></i></th>
                                     <th width="10%" class="text-center no-sorting"></th>

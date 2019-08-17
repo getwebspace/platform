@@ -336,6 +336,39 @@
                                         'style': 'min-height: 150px;'
                                     }
                                 } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Название дополнительного поля 1',
+                                    'description': 'Индивидуальное поле',
+                                    'type': 'text',
+                                    'name': 'catalog[category_field_1]',
+                                    'args': {
+                                        'placeholder': 'Поле 1',
+                                        'value': 'Поле 1'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Название дополнительного поля 2',
+                                    'description': 'Индивидуальное поле',
+                                    'type': 'text',
+                                    'name': 'catalog[category_field_2]',
+                                    'args': {
+                                        'placeholder': 'Поле 2',
+                                        'value': 'Поле 2'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Название дополнительного поля 3',
+                                    'description': 'Индивидуальное поле',
+                                    'type': 'text',
+                                    'name': 'catalog[category_field_3]',
+                                    'args': {
+                                        'placeholder': 'Поле 3',
+                                        'value': 'Поле 3'
+                                    }
+                                } %}
                             </div>
                         </div>
                     </div>
