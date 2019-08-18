@@ -41,6 +41,11 @@ abstract class Action
     private $parametersRepository;
 
     /**
+     * @var \AEngine\Entity\Collection
+     */
+    private static $parameters;
+
+    /**
      * @var Request
      */
     protected $request;
@@ -84,17 +89,20 @@ abstract class Action
      */
     protected function getParameter($key = null, $default = null)
     {
+        if (!self::$parameters) {
+            self::$parameters = collect($this->parametersRepository->findAll());
+        }
         if ($key === null) {
-            return collect($this->parametersRepository->findAll())->mapWithKeys(function ($item) {
+            return self::$parameters->mapWithKeys(function ($item) {
                 list($group, $key) = explode('_', $item->key, 2);
                 return [$group . '[' . $key . ']' => $item];
             });
         }
         if (is_string($key)) {
-            return $this->parametersRepository->findOneBy(['key' => $key])->value ?? $default;
+            return self::$parameters->firstWhere('key', $key)->value ?? $default;
         }
 
-        return collect($this->parametersRepository->findBy(['key' => $key]))->pluck('value', 'key')->all() ?? $default;
+        return self::$parameters->whereIn('key', $key)->pluck('value', 'key')->all() ?? $default;
     }
 
     /**
