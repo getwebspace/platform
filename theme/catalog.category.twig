@@ -1,0 +1,30 @@
+{% extends 'main.twig' %}
+
+{% block title %}{{ page.meta.title ? page.meta.title : page.title }} | {{ parent() }}{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+    <meta name="description" content="{{ page.meta.description }}">
+    <meta name="keywords" content="{{ page.meta.keywords }}">
+{% endblock %}
+
+{% block page %}
+    <section class="contact-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-4">
+                    <h3>collect(categories)</h3>
+                    {{ pre(categories) }}
+                </div>
+                <div class="col-4">
+                    <h3>category</h3>
+                    {{ pre(category) }}
+                </div>
+                <div class="col-4">
+                    <h3>collect(products)</h3>
+                    {{ pre(products) }}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

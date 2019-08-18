@@ -20,6 +20,7 @@ class CategoryCreateAction extends CatalogAction
                 'field2' => $this->request->getParam('field2'),
                 'field3' => $this->request->getParam('field3'),
                 'product' => $this->request->getParam('product'),
+                'pagination' => $this->request->getParam('pagination'),
                 'order' => $this->request->getParam('order'),
                 'meta' => $this->request->getParam('meta'),
                 'template' => $this->request->getParam('template'),

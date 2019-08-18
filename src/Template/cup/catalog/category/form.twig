@@ -73,7 +73,19 @@
                         <hr>
 
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-3">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Порядок',
+                                    'type': 'number',
+                                    'name': 'order',
+                                    'args': {
+                                        'value': item.order is not empty ? item.order : '1.0',
+                                        'placeholder': '1',
+                                        'min': '1'
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-3">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Основная категория',
                                     'type': 'select',
@@ -86,13 +98,11 @@
                             </div>
                             <div class="col-md-3">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Порядок',
-                                    'type': 'number',
-                                    'name': 'order',
+                                    'label': 'Количество товаров на страницу',
+                                    'type': 'text',
+                                    'name': 'pagination',
                                     'args': {
-                                        'value': item.order is not empty ? item.order : '1.0',
-                                        'placeholder': '1',
-                                        'min': '1'
+                                        'value': item.pagination,
                                     }
                                 } %}
                             </div>
@@ -123,7 +133,6 @@
                                     }
                                 } %}
                             </div>
-
                             <div class="col-md-4">
                                 {% include 'cup/form.twig' with {
                                     'label': fields.catalog_category_field_2 ?? 'Поле 2',
@@ -135,7 +144,6 @@
                                     }
                                 } %}
                             </div>
-
                             <div class="col-md-4">
                                 {% include 'cup/form.twig' with {
                                     'label': fields.catalog_category_field_3 ?? 'Поле 3',
@@ -254,12 +262,24 @@
                         <div class="row">
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Шаблон',
+                                    'label': 'Шаблон категории',
                                     'type': 'text',
-                                    'name': 'template',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="Укажите название шаблона, который хотите использовать для данной категории или оставьте <b>category.twig</b>"></i>',
+                                    'name': 'template[category]',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="Укажите название шаблона, который хотите использовать для данной категории или оставьте <b>catalog.category.twig</b>"></i>',
                                     'args': {
-                                        'value': item.template is not empty ? item.template : 'category.twig',
+                                        'value': item.template.category is not empty ? item.template.category : 'catalog.category.twig',
+                                        'required': true,
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Шаблон товара',
+                                    'type': 'text',
+                                    'name': 'template[product]',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="Укажите название шаблона, который хотите использовать для товаров в данной категории или оставьте <b>catalog.product.twig</b>"></i>',
+                                    'args': {
+                                        'value': item.template.product is not empty ? item.template.product : 'catalog.product.twig',
                                         'required': true,
                                     }
                                 } %}

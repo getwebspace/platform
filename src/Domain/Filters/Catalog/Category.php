@@ -47,13 +47,14 @@ class Category extends Filter
                 ->addRule($filter->leadStr())
             ->attr('product')
                 ->addRule($filter->ValidProductFieldNames())
+            ->attr('pagination')
+                ->addRule($filter->leadInteger())
             ->attr('order')
                 ->addRule($filter->leadInteger())
             ->attr('meta')
                 ->addRule($filter->ValidMeta())
             ->attr('template')
-                ->addRule($filter->leadStr())
-                ->addRule($filter->checkStrlenBetween(0, 50))
+                ->addRule($filter->ValidTemplate())
             ->attr('external_id')
                 ->addRule($filter->leadStr());
 

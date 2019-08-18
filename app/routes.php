@@ -167,5 +167,8 @@ $app->group('/file', function (App $app) {
 // form worker
 $app->any('/form/{unique}', \Application\Actions\Common\FormAddDataAction::class);
 
+// catalog worker
+$app->any('/catalog[/{args:.*}]', \Application\Actions\Common\CatalogAction::class);
+
 // dynamic path handler
 $app->any('/{args:.*}', \Application\Actions\Common\DynamicPageAction::class);

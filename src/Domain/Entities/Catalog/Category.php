@@ -72,6 +72,11 @@ class Category extends Model
     ];
 
     /**
+     * @ORM\Column(type="integer", options={"default": "10"})
+     */
+    public $pagination;
+
+    /**
      * @ORM\Column(name="`order`", type="integer")
      */
     public $order;
@@ -87,9 +92,12 @@ class Category extends Model
     ];
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="array")
      */
-    public $template;
+    public $template = [
+        'category' => '',
+        'product' => '',
+    ];
 
     /**
      * @ORM\Column(type="string", length=50, nullable=true)

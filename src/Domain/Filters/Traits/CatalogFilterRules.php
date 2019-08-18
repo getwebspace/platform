@@ -32,6 +32,38 @@ trait CatalogFilterRules
     }
 
     /**
+     * Проверяет поле template у категории
+     *
+     * @return \Closure
+     */
+    public function ValidTemplate() {
+        return function (&$data, $field) {
+            $buf = [
+                'category' => '',
+                'product' => '',
+            ];
+            $value = &$data[$field];
+
+            if (!is_array($value)) {
+                $value = $buf;
+
+                return true;
+            }
+
+            if (isset($value['category'])) {
+                $buf['category'] = $value['category'];
+            }
+            if (isset($value['product'])) {
+                $buf['product'] = $value['product'];
+            }
+
+            $value = $buf;
+
+            return true;
+        };
+    }
+
+    /**
      * Проверяет поле product у категории
      *
      * @return \Closure
