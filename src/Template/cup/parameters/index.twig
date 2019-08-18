@@ -326,7 +326,7 @@
                             <div class="tab-pane fade" id="catalog" role="tabpanel">
                                 {% include 'cup/field.twig' with {
                                     'label': 'Шаблон раздела',
-                                    'description': 'Значение по-умолчанию',
+                                    'description': 'Значение по-умолчанию, так же это значение будет использовано для главной страницы каталога',
                                     'type': 'text',
                                     'name': 'catalog[category_template]',
                                     'args': {
@@ -337,7 +337,7 @@
 
                                 {% include 'cup/field.twig' with {
                                     'label': 'Количество товаров на страницу',
-                                    'description': 'Значение по-умолчанию',
+                                    'description': 'Значение по-умолчанию, так же это значение будет использовано для ограничения количества товаров на главной странице',
                                     'type': 'number',
                                     'name': 'catalog[category_pagination]',
                                     'args': {
