@@ -1,6 +1,6 @@
 {% extends 'main.twig' %}
 
-{% block title %}{{ page.meta.title ? page.meta.title : page.title }} | {{ parent() }}{% endblock %}
+{% block title %}{{ product.meta.title ? product.meta.title : (product.title ?? 'Товар') }} | {{ parent() }}{% endblock %}
 
 {% block head %}
     {{ parent() }}

@@ -2,7 +2,6 @@
 
 namespace Application\Actions\Common;
 
-use AEngine\Entity\Collection;
 use Application\Actions\Action;
 use Psr\Container\ContainerInterface;
 use Slim\Http\Response;
@@ -44,56 +43,27 @@ class CatalogAction extends Action
     protected function action(): \Slim\Http\Response
     {
         $params = $this->parsePath();
-
-        /**
-         * @var Collection[\Domain\Entities\Catalog\Category] $categories
-         * @var \Domain\Entities\Catalog\Category $category
-         */
         $categories = collect($this->categoryRepository->findAll());
+        $files = collect(
+            $this->fileRepository->findBy([
+                'item' => \Domain\Types\FileItemType::ITEM_CATALOG_CATEGORY,
+                'item_uuid' => array_map('strval', $categories->pluck('uuid')->all()),
+            ])
+        );
 
         // Catalog main
-        if ($params['address'] == '') {
-            /** @var \Domain\Entities\Catalog\Product[] $products */
-            $products = collect(
-                $this->productRepository->findBy([], null, $this->getParameter('catalog_category_pagination'), $params['offset'])
-            );
-
-            return $this->respondRender($this->getParameter('catalog_category_template'), [
-                'categories' => $categories,
-                'products' => $products,
-            ]);
+        if ($buf = $this->prepareMain($params, $categories, $files)) {
+            return $buf;
         }
 
-        $category = $categories->firstWhere('address', $params['address']);
-
         // Category
-        if (is_null($category) === false) {
-            /** @var \Domain\Entities\Catalog\Product[] $products */
-            $products = collect(
-                $this
-                    ->productRepository
-                    ->findBy(['category' => $category->uuid], null, $category->pagination, $params['offset'])
-            );
-
-            return $this->respondRender($category->template['category'], [
-                'categories' => $categories,
-                'category' => $category,
-                'products' => $products,
-            ]);
+        if ($buf = $this->prepareCategory($params, $categories, $files)) {
+            return $buf;
         }
 
         // Product
-        /** @var \Domain\Entities\Catalog\Product $product */
-        $product = $this->productRepository->findOneBy(['address' => $params['address']]);
-
-        if (is_null($product) === false) {
-            $category = $categories->firstWhere('uuid', $product->category);
-
-            return $this->respondRender($category->template['product'], [
-                'categories' => $categories,
-                'category' => $category,
-                'product' => $product,
-            ]);
+        if ($buf = $this->prepareProduct($params, $categories, $files)) {
+            return $buf;
         }
 
         // 404
@@ -101,21 +71,116 @@ class CatalogAction extends Action
     }
 
     /**
+     * @param array $params
+     * @param       $categories
+     * @param       $files
+     *
+     * @return Response
+     * @throws \Domain\Exceptions\HttpBadRequestException
+     */
+    protected function prepareMain(array &$params, &$categories, &$files)
+    {
+        if ($params['address'] == '') {
+            $products = collect(
+                $this->productRepository->findBy([], null, $this->getParameter('catalog_category_pagination'), $params['offset'])
+            );
+            $files = $files->merge(
+                $this->fileRepository->findBy([
+                    'item' => \Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
+                    'item_uuid' => array_map('strval', $products->pluck('uuid')->all()),
+                ])
+            );
+
+            return $this->respondRender($this->getParameter('catalog_category_template'), [
+                'categories' => $categories,
+                'products' => $products,
+                'files' => $files,
+            ]);
+        }
+    }
+
+    /**
+     * @param array $params
+     * @param       $categories
+     * @param       $files
+     *
+     * @return Response
+     * @throws \Domain\Exceptions\HttpBadRequestException
+     */
+    protected function prepareCategory(array &$params, &$categories, &$files)
+    {
+        /**
+         * @var \Domain\Entities\Catalog\Category $category
+         */
+        $category = $categories->firstWhere('address', $params['address']);
+
+        if (is_null($category) === false) {
+            $products = collect(
+                $this
+                    ->productRepository
+                    ->findBy(['category' => $category->uuid], null, $category->pagination, $params['offset'])
+            );
+            $files = $files->merge(
+                $this->fileRepository->findBy([
+                    'item' => \Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
+                    'item_uuid' => array_map('strval', $products->pluck('uuid')->all()),
+                ])
+            );
+
+            return $this->respondRender($category->template['category'], [
+                'categories' => $categories,
+                'category' => $category,
+                'products' => $products,
+                'files' => $files,
+            ]);
+        }
+    }
+
+    /**
+     * @param array $params
+     * @param       $categories
+     * @param       $files
+     *
+     * @return Response
+     * @throws \Domain\Exceptions\HttpBadRequestException
+     */
+    protected function prepareProduct(array &$params, &$categories, &$files)
+    {
+        /** @var \Domain\Entities\Catalog\Product $product */
+        $product = $this->productRepository->findOneBy(['address' => $params['address']]);
+
+        if (is_null($product) === false) {
+            $category = $categories->firstWhere('uuid', $product->category);
+            $files = $files->merge(
+                $this->fileRepository->findBy([
+                    'item' => \Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
+                    'item_uuid' => $product->uuid,
+                ])
+            );
+
+            return $this->respondRender($category->template['product'], [
+                'categories' => $categories,
+                'category' => $category,
+                'product' => $product,
+                'files' => $files,
+            ]);
+        }
+    }
+
+    /**
      * @return array
      */
     protected function parsePath()
     {
-        $parts = explode('/', str_replace('/catalog', '', $this->request->getUri()->getPath()));
-
-        $index = 1;
+        $parts = explode('/', ltrim(str_replace('/catalog', '', $this->request->getUri()->getPath()), '/'));
         $offset = 0;
 
-        if (($buf = $parts[count($parts) - $index]) && ctype_digit($buf)) {
+        if (($buf = $parts[count($parts) - 1]) && ctype_digit($buf)) {
             $offset = +$buf;
-            $index++;
+            unset($parts[count($parts) - 1]);
         }
 
-        $address = $parts[count($parts) - $index];
+        $address = implode('/', $parts);
 
         return ['address' => $address, 'offset' => $offset];
     }

@@ -1,0 +1,16 @@
+<div class="col-lg-4 col-sm-6">
+    <div class="product-item">
+        <div class="pi-pic">
+            {#<div class="tag-sale">ON SALE</div>#}
+            <img src="{{ files.firstWhere('item_uuid', product.uuid).getPublicPath() }}" alt="">
+            <div class="pi-links">
+                <a href="#" class="add-card"><i class="flaticon-bag"></i><span>В корзину</span></a>
+                <a href="#" class="wishlist-btn"><i class="flaticon-heart"></i></a>
+            </div>
+        </div>
+        <div class="pi-text">
+            <h6>{{ product.price }}</h6>
+            <p>{{ product.title }}</p>
+        </div>
+    </div>
+</div>
