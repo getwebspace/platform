@@ -44,89 +44,47 @@ class CatalogAction extends Action
     protected function action(): \Slim\Http\Response
     {
         $params = $this->parsePath();
-        $item = $this->getItem(...array_values($params));
+        //$item = $this->getItem(...array_values($params));
 
-        /** @var Collection[\Domain\Entities\Catalog\Category] $categories */
-        $categories = collect(
-            $this
-                ->categoryRepository
-                ->findAll()
-        );
+        /**
+         * @var Collection[\Domain\Entities\Catalog\Category] $categories
+         * @var \Domain\Entities\Catalog\Category $category
+         */
+        $categories = collect($this->categoryRepository->findAll());
+        $category = $categories->firstWhere('address', $params['address']);
 
-        switch (true) {
-            case is_a($item, \Domain\Entities\Catalog\Category::class):
-                /**
-                 * @var \Domain\Entities\Catalog\Category  $item
-                 * @var \Domain\Entities\Catalog\Product[] $products
-                 */
-                $products = collect(
-                    $this
-                        ->productRepository
-                        ->findBy(['category' => $item->uuid], null, $item->pagination, $params['offset'])
-                );
+        // Category
+        if (is_null($category) === false) {
+            /** @var \Domain\Entities\Catalog\Product[] $products */
+            $products = collect(
+                $this
+                    ->productRepository
+                    ->findBy(['category' => $category->uuid], null, $category->pagination, $params['offset'])
+            );
 
-                return $this->respondRender($item->template['category'], [
-                    'categories' => $categories,
-                    'category' => $item,
-                    'products' => $products,
-                ]);
-
-            case is_a($item, \Domain\Entities\Catalog\Product::class):
-                /**
-                 * @var \Domain\Entities\Catalog\Product  $item
-                 * @var \Domain\Entities\Catalog\Category $category
-                 */
-                $category = $categories->firstWhere('uuid', $item->category);
-
-                return $this->respondRender($category->template['product'], [
-                    'categories' => $categories,
-                    'category' => $category,
-                    'product' => $item,
-                ]);
+            return $this->respondRender($category->template['category'], [
+                'categories' => $categories,
+                'category' => $category,
+                'products' => $products,
+            ]);
         }
 
+        // product
+        /** @var \Domain\Entities\Catalog\Product $product */
+        $product = $this->productRepository->findOneBy(['address' => $params['address']]);
+
+        if (is_null($product) === false) {
+            $category = $categories->firstWhere('uuid', $product->category);
+
+            return $this->respondRender($category->template['product'], [
+                'categories' => $categories,
+                'category' => $category,
+                'product' => $product,
+            ]);
+        }
+
+        // 404
         return $this->respondRender('p404.twig')->withStatus(404);
-    }
-
-    /**
-     * @return false|object|null
-     * @throws \Doctrine\DBAL\DBALException
-     */
-    protected function getItem($address, $offset = 0)
-    {
-        $query = $this
-            ->entityManager
-            ->getConnection()
-            ->query("
-                 (
-                    SELECT 'category' as `type`, `uuid`
-                    FROM `catalog_category`
-                    WHERE `address` = '" . str_escape($address) . "'
-                    LIMIT 1
-                    OFFSET " . (int)$offset . "
-                )
-                UNION
-                (
-                    SELECT 'product' as `type`, `uuid`
-                    FROM `catalog_product`
-                    WHERE `address` = '" . str_escape($address) . "'
-                    LIMIT 1
-                    OFFSET " . (int)$offset . "
-                )
-            ");
-
-        if ($query->execute()) {
-            $result = $query->fetch();
-
-            switch ($result['type']) {
-                case 'category':
-                    return $this->categoryRepository->findOneBy(['uuid' => $result['uuid']]);
-                case 'product':
-                    return $this->productRepository->findOneBy(['uuid' => $result['uuid']]);
-            }
-        }
-
-        return false;
     }
 
     /**
