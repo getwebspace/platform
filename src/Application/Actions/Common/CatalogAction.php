@@ -44,7 +44,6 @@ class CatalogAction extends Action
     protected function action(): \Slim\Http\Response
     {
         $params = $this->parsePath();
-        //$item = $this->getItem(...array_values($params));
 
         /**
          * @var Collection[\Domain\Entities\Catalog\Category] $categories
