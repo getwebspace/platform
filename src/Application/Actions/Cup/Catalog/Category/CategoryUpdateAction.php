@@ -75,6 +75,7 @@ class CategoryUpdateAction extends CatalogAction
                     'files' => $files,
                     'item' => $item,
                     'fields' => $this->getParameter(['catalog_category_field_1', 'catalog_category_field_2', 'catalog_category_field_3']),
+                    'params' => $this->getParameter(['catalog_category_template', 'catalog_category_pagination']),
                 ]);
             }
         }

@@ -2,7 +2,6 @@
 
 namespace Application\Actions\Cup\Catalog\Category;
 
-use AEngine\Support\Str;
 use Application\Actions\Cup\Catalog\CatalogAction;
 use Exception;
 
@@ -48,6 +47,7 @@ class CategoryCreateAction extends CatalogAction
         return $this->respondRender('cup/catalog/category/form.twig', [
             'category' => $category,
             'fields' => $this->getParameter(['catalog_category_field_1', 'catalog_category_field_2', 'catalog_category_field_3']),
+            'params' => $this->getParameter(['catalog_category_template', 'catalog_category_pagination']),
         ]);
     }
 }

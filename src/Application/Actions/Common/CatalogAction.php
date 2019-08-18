@@ -50,6 +50,20 @@ class CatalogAction extends Action
          * @var \Domain\Entities\Catalog\Category $category
          */
         $categories = collect($this->categoryRepository->findAll());
+
+        // Catalog main
+        if ($params['address'] == '') {
+            /** @var \Domain\Entities\Catalog\Product[] $products */
+            $products = collect(
+                $this->productRepository->findBy([], null, $this->getParameter('catalog_category_pagination'), $params['offset'])
+            );
+
+            return $this->respondRender($this->getParameter('catalog_category_template'), [
+                'categories' => $categories,
+                'products' => $products,
+            ]);
+        }
+
         $category = $categories->firstWhere('address', $params['address']);
 
         // Category
@@ -68,7 +82,7 @@ class CatalogAction extends Action
             ]);
         }
 
-        // product
+        // Product
         /** @var \Domain\Entities\Catalog\Product $product */
         $product = $this->productRepository->findOneBy(['address' => $params['address']]);
 

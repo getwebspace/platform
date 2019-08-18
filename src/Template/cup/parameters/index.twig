@@ -325,6 +325,28 @@
                             {# TAB: Catalog #}
                             <div class="tab-pane fade" id="catalog" role="tabpanel">
                                 {% include 'cup/field.twig' with {
+                                    'label': 'Шаблон раздела',
+                                    'description': 'Значение по-умолчанию',
+                                    'type': 'text',
+                                    'name': 'catalog[category_template]',
+                                    'args': {
+                                        'placeholder': 'catalog.category.twig',
+                                        'value': 'catalog.category.twig'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Количество товаров на страницу',
+                                    'description': 'Значение по-умолчанию',
+                                    'type': 'number',
+                                    'name': 'catalog[category_pagination]',
+                                    'args': {
+                                        'placeholder': '10',
+                                        'value': '10'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
                                     'label': 'Список единиц измерения',
                                     'description': 'Каждая единица измерения на новой строке',
                                     'type': 'textarea',
