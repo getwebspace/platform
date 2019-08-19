@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Actions\Common;
+namespace Application\Actions\Common\File;
 
 use AEngine\Support\Str;
 use Slim\Http\UploadedFile;

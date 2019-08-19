@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Actions\Common;
+namespace Application\Actions\Common\File;
 
 use Application\Actions\Action;
 use Psr\Container\ContainerInterface;

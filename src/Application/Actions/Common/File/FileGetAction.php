@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Actions\Common;
+namespace Application\Actions\Common\File;
 
 use Slim\Http\Response;
 

@@ -24,6 +24,16 @@ class GuestBook extends Model
     public $uuid;
 
     /**
+     * @ORM\Column(type="string", length=50)
+     */
+    public $name;
+
+    /**
+     * @ORM\Column(type="string", length=50)
+     */
+    public $email;
+
+    /**
      * @ORM\Column(type="text")
      */
     public $message;

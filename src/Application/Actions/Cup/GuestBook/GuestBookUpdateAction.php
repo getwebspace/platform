@@ -16,9 +16,11 @@ class GuestBookUpdateAction extends GuestBookAction
                 if ($this->request->isPost()) {
                     $data = [
                         'uuid' => $item->uuid,
+                        'name' => $this->request->getParam('name'),
+                        'email' => $this->request->getParam('email'),
                         'message' => $this->request->getParam('message'),
                         'date' => $this->request->getParam('date'),
-                        //'status' => $this->request->getParam('status'),
+                        'status' => $this->request->getParam('status'),
                     ];
 
                     $check = \Domain\Filters\GuestBook::check($data);

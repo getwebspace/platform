@@ -4,8 +4,7 @@ namespace Domain\Filters;
 
 use AEngine\Validator\Filter;
 use AEngine\Validator\Traits\FilterRules;
-use Filter\Traits\CommonFilterRules;
-use Filter\Traits\PageFilterRules;
+use Domain\Filters\Traits\CommonFilterRules;
 
 class GuestBook extends Filter
 {
@@ -25,6 +24,13 @@ class GuestBook extends Filter
 
         $filter
             ->addGlobalRule($filter->leadTrim())
+            ->attr('name')
+                ->addRule($filter->leadStr())
+                ->addRule($filter->checkStrlenBetween(0, 50))
+            ->attr('email')
+                ->addRule($filter->leadStr())
+                ->addRule($filter->checkEmail())
+                ->addRule($filter->checkStrlenBetween(0, 50))
             ->attr('message')
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 10000))

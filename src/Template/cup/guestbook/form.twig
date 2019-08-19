@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Пользователи</h2>
+                <h2 class="text-white pb-2 fw-bold">Гостевая книга</h2>
             </div>
         </div>
     </div>
@@ -17,12 +17,34 @@
                 <form method="post">
                     <div class="card-header">
                         <div class="card-head-row">
-                            <div class="card-title">{{ item.uuid ? 'Редактирование пользователя ' ~ item.username : 'Добавление пользователя' }}</div>
+                            <div class="card-title">Редактирование записи</div>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Имя',
+                                    'type': 'text',
+                                    'name': 'name',
+                                    'args': {
+                                        'value': item.name,
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'E-Mail',
+                                    'type': 'email',
+                                    'name': 'email',
+                                    'args': {
+                                        'value': item.email,
+                                    }
+                                } %}
+                            </div>
+                        </div>
 
+                        <div class="row">
                             <div class="col-md-12">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Сообщение',
@@ -47,31 +69,19 @@
                                     'type': 'datetime',
                                     'name': 'date',
                                     'args': {
-                                        'value': item.date|date('d.m.Y H:i'),
-                                        'placeholder': '20.01.2019 12:34',
-                                    }
-                                } %}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Имя',
-                                    'type': 'text',
-                                    'name': 'firstname',
-                                    'args': {
-                                        'value': item.firstname,
+                                        'value': item.date|date('d.m.Y H:i:s'),
+                                        'placeholder': '20.01.2019 12:34:01',
                                     }
                                 } %}
                             </div>
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Фамилия',
-                                    'type': 'text',
-                                    'name': 'lastname',
+                                    'label': 'Статус',
+                                    'type': 'select',
+                                    'name': 'status',
                                     'args': {
-                                        'value': item.lastname,
+                                        'option': reference('/Domain/Types/GuestBookStatusType::LIST'),
+                                        'selected': item.status
                                     }
                                 } %}
                             </div>

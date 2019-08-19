@@ -11,7 +11,7 @@ use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Slim\Http\UploadedFile;
 
-class FormAddDataAction extends Action
+class FormAction extends Action
 {
     /**
      * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
@@ -27,7 +27,6 @@ class FormAddDataAction extends Action
      * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
      */
     protected $fileRepository;
-
 
     /**
      * @inheritDoc
@@ -178,9 +177,7 @@ class FormAddDataAction extends Action
                     $this->response = $this->response->withHeader('Location', $_SERVER['HTTP_REFERER']);
                 }
 
-                return $this->respondWithData([
-                    'description' => 'Message sent',
-                ]);
+                return $this->respondWithData(['description' => 'Message sent',]);
             } else {
                 $this->logger->warn('Form will not sended: fail', ['mailto' => $item->mailto, 'error' => $mail->ErrorInfo]);
 

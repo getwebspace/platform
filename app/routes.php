@@ -102,19 +102,22 @@ $app
     });
 
 // main path
-$app->any('/', \Application\Actions\Common\MainPageAction::class);
+$app->get('/', \Application\Actions\Common\MainPageAction::class);
 
 // file worker
 $app->group('/file', function (App $app) {
-    $app->get('/get/{salt}/{hash}', \Application\Actions\Common\FileGetAction::class);
-    $app->post('/upload', \Application\Actions\Common\FileUploadAction::class);
+    $app->get('/get/{salt}/{hash}', \Application\Actions\Common\File\FileGetAction::class);
+    $app->post('/upload', \Application\Actions\Common\File\FileUploadAction::class);
 });
 
 // form worker
-$app->any('/form/{unique}', \Application\Actions\Common\FormAddDataAction::class);
+$app->post('/form/{unique}', \Application\Actions\Common\FormAction::class);
 
 // catalog worker
-$app->any('/catalog[/{args:.*}]', \Application\Actions\Common\CatalogAction::class);
+$app->get('/catalog[/{args:.*}]', \Application\Actions\Common\CatalogAction::class);
+
+// guestbook worker
+$app->map(['get', 'post'], '/guestbook[/{page:[0-9]+}}]', \Application\Actions\Common\GuestBookAction::class);
 
 // dynamic path handler
-$app->any('/{args:.*}', \Application\Actions\Common\DynamicPageAction::class);
+$app->get('/{args:.*}', \Application\Actions\Common\DynamicPageAction::class);
