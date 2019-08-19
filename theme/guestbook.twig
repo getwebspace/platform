@@ -38,7 +38,17 @@
                                 </button>
                             </div>
                             <div id="comment{{ loop.index }}" class="collapse {{ loop.index < 3 ? 'show' : 'collapsed' }}" aria-labelledby="headingOne" data-parent="#accordion">
-                                <div class="panel-body"><p>{{ item.message }}</p></div>
+                                <div class="panel-body">
+                                    <p>{{ item.message|nl2br|raw }}</p>
+
+                                    <div class="alert alert-light">
+
+                                        <p style="margin: 0; padding: 0;">
+                                            <b>Ответ:</b>
+                                            {{ item.response }}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     {% endfor %}

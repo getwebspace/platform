@@ -48,7 +48,8 @@
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <code>{{ item.message|truncate(250) }}</code>
+                                            <pre class="mt-2">{{ item.message|truncate(250) }}</pre>
+                                            <pre class="mb-2 text-primary">{{ item.response|truncate(250) }}</pre>
                                         </td>
                                         <td>{{ item.date|date('d.m.Y H:i:s') }}</td>
                                         <td class="text-center">

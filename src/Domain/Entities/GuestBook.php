@@ -39,6 +39,11 @@ class GuestBook extends Model
     public $message;
 
     /**
+     * @ORM\Column(type="text")
+     */
+    public $response;
+
+    /**
      * @var string
      * @see \Domain\Types\GuestBookStatusType::LIST
      * @ORM\Column(type="GuestBookStatusType", length=50)

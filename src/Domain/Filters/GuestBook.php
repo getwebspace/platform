@@ -34,6 +34,9 @@ class GuestBook extends Filter
             ->attr('message')
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 10000))
+            ->attr('response')
+                ->addRule($filter->leadStr())
+                ->addRule($filter->checkStrlenBetween(0, 10000))
             ->attr('date')
                 ->addRule($filter->ValidDate());
 

@@ -45,7 +45,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Сообщение',
                                     'type': 'textarea',
@@ -53,6 +53,21 @@
                                     'args': {
                                         'method': 'null',
                                         'value': item.message,
+                                        'data': {
+                                            'summernote': true,
+                                            'summernote-code': true,
+                                        }
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Ответ',
+                                    'type': 'textarea',
+                                    'name': 'response',
+                                    'args': {
+                                        'method': 'null',
+                                        'value': item.response,
                                         'data': {
                                             'summernote': true,
                                             'summernote-code': true,

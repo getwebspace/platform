@@ -19,6 +19,7 @@ class GuestBookUpdateAction extends GuestBookAction
                         'name' => $this->request->getParam('name'),
                         'email' => $this->request->getParam('email'),
                         'message' => $this->request->getParam('message'),
+                        'response' => $this->request->getParam('response'),
                         'date' => $this->request->getParam('date'),
                         'status' => $this->request->getParam('status'),
                     ];
