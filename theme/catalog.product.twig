@@ -9,20 +9,53 @@
 {% endblock %}
 
 {% block page %}
-    <section class="contact-section">
+    <section class="product-section">
         <div class="container">
+            <div class="back-link">
+                <a href="/catalog/{{ category.address }}">&lt;&lt; В категорию "{{ category.title }}"</a>
+            </div>
             <div class="row">
-                <div class="col-4">
-                    <h3>collect(categories)</h3>
-                    {{ pre(categories) }}
+                <div class="col-lg-6">
+                    <div class="product-pic-zoom">
+                        <img class="product-big-img" src="{{ files.firstWhere('item_uuid', product.uuid).getPublicPath() }}" alt="{{ product.title }}">
+                    </div>
+                    <div class="product-thumbs" tabindex="1" style="overflow: hidden; outline: none;">
+                        <div class="product-thumbs-track">
+                            {% for index, file in files.where('item_uuid', product.uuid) %}
+                                <div class="pt {{ index == 0 ? 'active' : '' }}" data-imgbigurl="{{ file.getPublicPath() }}">
+                                    <img src="{{ file.getPublicPath() }}" alt="{{ product.title }} {{ index }}" />
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
                 </div>
-                <div class="col-4">
-                    <h3>category</h3>
-                    {{ pre(category) }}
-                </div>
-                <div class="col-4">
-                    <h3>product</h3>
-                    {{ pre(product) }}
+                <div class="col-lg-6 product-details">
+                    <h2 class="p-title">{{ product.title }}</h2>
+                    <h3 class="p-price">{{ product.price }}</h3>
+                    <h4 class="p-stock">Наличие: {{ product.stock >= 0 ? '<span>На складе</span>' : '<span>Отсутствует</span>' }}</h4>
+                    <div class="quantity">
+                        <p>Количество</p>
+                        <div class="pro-qty"><input type="text" value="1"></div>
+                    </div>
+                    <a href="#" class="site-btn">В корзину</a>
+                    <div id="accordion" class="accordion-area">
+                        <div class="panel">
+                            <div class="panel-header" id="headingOne">
+                                <button class="panel-link active" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collapse1">Информация</button>
+                            </div>
+                            <div id="collapse1" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                                <div class="panel-body"><p>{{ product.description|raw }}</p></div>
+                            </div>
+                        </div>
+                        <div class="panel">
+                            <div class="panel-header" id="headingTwo">
+                                <button class="panel-link" data-toggle="collapse" data-target="#collapse2" aria-expanded="false" aria-controls="collapse2">Дополнительно</button>
+                            </div>
+                            <div id="collapse2" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                                <div class="panel-body"><p>{{ product.extra|raw }}</p></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

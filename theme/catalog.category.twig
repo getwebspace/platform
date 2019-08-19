@@ -134,7 +134,7 @@
                 <div class="col-lg-9  order-1 order-lg-2 mb-5 mb-lg-0">
                     <div class="row">
                         {% for product in products %}
-                            {% include 'catalog.category.product.twig' with {'product':product,'files':files} only %}
+                            {% include 'catalog.category.product.twig' with {'categories':categories,'product':product,'files':files} only %}
                         {% endfor %}
                     </div>
                 </div>

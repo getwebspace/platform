@@ -2,6 +2,7 @@
 
 namespace Application\Actions\Common;
 
+use AEngine\Entity\Collection;
 use Application\Actions\Action;
 use Psr\Container\ContainerInterface;
 use Slim\Http\Response;
@@ -71,16 +72,16 @@ class CatalogAction extends Action
     }
 
     /**
-     * @param array $params
-     * @param       $categories
-     * @param       $files
+     * @param array      $params
+     * @param Collection $categories
+     * @param Collection $files
      *
      * @return Response
      * @throws \Domain\Exceptions\HttpBadRequestException
      */
     protected function prepareMain(array &$params, &$categories, &$files)
     {
-        if ($params['address'] == '') {
+        if ($params['address']['category'] == '' && $params['address']['product'] == '') {
             $products = collect(
                 $this->productRepository->findBy([], null, $this->getParameter('catalog_category_pagination'), $params['offset'])
             );
@@ -100,9 +101,9 @@ class CatalogAction extends Action
     }
 
     /**
-     * @param array $params
-     * @param       $categories
-     * @param       $files
+     * @param array      $params
+     * @param Collection $categories
+     * @param Collection $files
      *
      * @return Response
      * @throws \Domain\Exceptions\HttpBadRequestException
@@ -112,7 +113,7 @@ class CatalogAction extends Action
         /**
          * @var \Domain\Entities\Catalog\Category $category
          */
-        $category = $categories->firstWhere('address', $params['address']);
+        $category = $categories->firstWhere('address', $params['address']['category']);
 
         if (is_null($category) === false) {
             $products = collect(
@@ -137,9 +138,9 @@ class CatalogAction extends Action
     }
 
     /**
-     * @param array $params
-     * @param       $categories
-     * @param       $files
+     * @param array      $params
+     * @param Collection $categories
+     * @param Collection $files
      *
      * @return Response
      * @throws \Domain\Exceptions\HttpBadRequestException
@@ -147,7 +148,7 @@ class CatalogAction extends Action
     protected function prepareProduct(array &$params, &$categories, &$files)
     {
         /** @var \Domain\Entities\Catalog\Product $product */
-        $product = $this->productRepository->findOneBy(['address' => $params['address']]);
+        $product = $this->productRepository->findOneBy(['address' => $params['address']['product']]);
 
         if (is_null($product) === false) {
             $category = $categories->firstWhere('uuid', $product->category);
@@ -180,8 +181,9 @@ class CatalogAction extends Action
             unset($parts[count($parts) - 1]);
         }
 
-        $address = implode('/', $parts);
+        $product = $parts[count($parts) - 1];
+        $category = implode('/', $parts);
 
-        return ['address' => $address, 'offset' => $offset];
+        return ['address' => ['category' => $category, 'product' => $product], 'offset' => $offset];
     }
 }

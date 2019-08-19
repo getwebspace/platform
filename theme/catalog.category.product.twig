@@ -5,12 +5,13 @@
             <img src="{{ files.firstWhere('item_uuid', product.uuid).getPublicPath() }}" alt="">
             <div class="pi-links">
                 <a href="#" class="add-card"><i class="flaticon-bag"></i><span>В корзину</span></a>
-                <a href="#" class="wishlist-btn"><i class="flaticon-heart"></i></a>
             </div>
         </div>
         <div class="pi-text">
-            <h6>{{ product.price }}</h6>
-            <p>{{ product.title }}</p>
+            <a href="/catalog/{{ categories.firstWhere('uuid', product.category).address }}/{{ product.address }}">
+                <h6>{{ product.price }}</h6>
+                <p>{{ product.title }}</p>
+            </a>
         </div>
     </div>
 </div>
