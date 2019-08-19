@@ -87,6 +87,12 @@ $app
                     $app->map(['get', 'post'], '/{uuid}/delete', \Application\Actions\Cup\GuestBook\GuestBookDeleteAction::class);
                 });
 
+                // files
+                $app->group('/file', function (App $app) {
+                    $app->get('', \Application\Actions\Cup\File\FileListAction::class);
+                    $app->any('/{uuid}/delete', \Application\Actions\Cup\File\FileDeleteAction::class);
+                });
+
                 // docs
                 $app->get('/docs', \Application\Actions\Cup\DocsPageAction::class);
             })
