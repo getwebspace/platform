@@ -39,7 +39,7 @@ class GuestBook extends Model
     public $message;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     public $response;
 
