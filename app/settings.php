@@ -19,8 +19,11 @@ return [
 
         'types' => [
             Ramsey\Uuid\Doctrine\UuidType::NAME => Ramsey\Uuid\Doctrine\UuidType::class,
+            Domain\Types\UserLevelType::NAME => \Domain\Types\UserLevelType::class,
+            Domain\Types\UserStatusType::NAME => \Domain\Types\UserStatusType::class,
             Domain\Types\FileItemType::NAME => \Domain\Types\FileItemType::class,
             Domain\Types\PageTypeType::NAME => \Domain\Types\PageTypeType::class,
+            Domain\Types\GuestBookStatusType::NAME => \Domain\Types\GuestBookStatusType::class,
         ],
 
         // Connection to DB settings

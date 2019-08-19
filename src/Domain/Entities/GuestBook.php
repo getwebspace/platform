@@ -30,10 +30,10 @@ class GuestBook extends Model
 
     /**
      * @var string
-     * @see \Reference\User::STATUS
-     * @ORM\Column(type="string", length=50)
+     * @see \Domain\Types\GuestBookStatusType::LIST
+     * @ORM\Column(type="GuestBookStatusType", length=50)
      */
-    public $status = \Reference\GuestBook::STATUS_WORK;
+    public $status = \Domain\Types\GuestBookStatusType::STATUS_WORK;
 
     /**
      * @var DateTime
