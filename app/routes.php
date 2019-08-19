@@ -82,63 +82,9 @@ $app
 
                 // guestbook
                 $app->group('/guestbook', function (App $app) {
-                    // list
-                    $app->map(['get', 'post'], '', function (Request $request, Response $response) {
-                        $list = $this->get(\Resource\GuestBook::class)->fetch();
-
-                        return $this->template->render($response, 'cup/guestbook/index.twig', ['list' => $list]);
-                    });
-
-                    // edit
-                    $app->map(['get', 'post'], '/{uuid}/edit', function (Request $request, Response $response, $args = []) {
-                        if ($args['uuid'] && Ramsey\Uuid\Uuid::isValid($args['uuid'])) {
-                            /** @var \Entity\GuestBook $item */
-                            $item = $this->get(\Resource\GuestBook::class)->fetchOne(['uuid' => $args['uuid']]);
-
-                            if (!$item->isEmpty()) {
-                                if ($request->isPost()) {
-                                    $data = [
-                                        'uuid' => $item->uuid,
-                                        'message' => $request->getParam('message'),
-                                        'date' => $request->getParam('date'),
-                                        //'status' => $request->getParam('status'),
-                                    ];
-
-                                    $check = \Filter\GuestBook::check($data);
-
-                                    if ($check === true) { // todo потом узнать как работает
-                                        try {
-                                            $this->get(\Resource\GuestBook::class)->flush($data);
-
-                                            return $response->withAddedHeader('Location', '/cup/guestbook');
-                                        } catch (Exception $e) {
-                                            // todo nothing
-                                        }
-                                    }
-                                }
-
-                                return $this->template->render($response, 'cup/guestbook/form.twig', ['item' => $item]);
-                            }
-                        }
-
-                        return $response->withAddedHeader('Location', '/cup/guestbook');
-                    });
-
-                    // delete
-                    $app->map(['get', 'post'], '/{uuid}/delete', function (Request $request, Response $response, $args = []) {
-                        if ($args['uuid'] && Ramsey\Uuid\Uuid::isValid($args['uuid'])) {
-                            /** @var \Entity\GuestBook $item */
-                            $item = $this->get(\Resource\GuestBook::class)->fetchOne(['uuid' => $args['uuid']]);
-
-                            if (!$item->isEmpty() && $request->isPost()) {
-                                $this->get(\Resource\GuestBook::class)->remove([
-                                    'uuid' => $item->uuid
-                                ]);
-                            }
-                        }
-
-                        return $response->withAddedHeader('Location', '/cup/guestbook');
-                    });
+                    $app->map(['get', 'post'], '', \Application\Actions\Cup\GuestBook\GuestBookListAction::class);
+                    $app->map(['get', 'post'], '/{uuid}/edit', \Application\Actions\Cup\GuestBook\GuestBookUpdateAction::class);
+                    $app->map(['get', 'post'], '/{uuid}/delete', \Application\Actions\Cup\GuestBook\GuestBookDeleteAction::class);
                 });
 
                 // docs
