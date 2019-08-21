@@ -48,6 +48,11 @@ class Category extends Model
     public $pagination;
 
     /**
+     * @ORM\Column(type="boolean", options={"default": true})
+     */
+    public $children = true;
+
+    /**
      * @var array
      * @ORM\Column(type="array", nullable=true)
      */

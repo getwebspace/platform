@@ -39,6 +39,8 @@ class Category extends Filter
             ->attr('parent')
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 36))
+            ->attr('children')
+                ->addRule($filter->leadBoolean())
             ->attr('pagination')
                 ->addRule($filter->leadInteger())
             ->attr('sort')

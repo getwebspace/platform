@@ -15,6 +15,7 @@ class CategoryCreateAction extends PublicationAction
                 'address' => $this->request->getParam('address'),
                 'description' => $this->request->getParam('description'),
                 'parent' => $this->request->getParam('parent'),
+                'children' => $this->request->getParam('children'),
                 'pagination' => $this->request->getParam('pagination'),
                 'sort' => $this->request->getParam('sort'),
                 'meta' => $this->request->getParam('meta'),

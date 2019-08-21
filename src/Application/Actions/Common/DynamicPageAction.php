@@ -56,7 +56,7 @@ class DynamicPageAction extends Action
                 $category = $categories->firstWhere('address', $path);
 
                 $publications = collect($this->publicationRepository->findBy(
-                    ['category' => $this->getCategoryChildrenUUID($categories, $category->uuid)],
+                    ['category' => $this->getCategoryChildrenUUID($categories, $category)],
                     [$category->sort['by'] => $category->sort['direction']],
                     $category->pagination,
                     $category->pagination * $offset
@@ -78,13 +78,15 @@ class DynamicPageAction extends Action
         return $this->respondRender('p404.twig')->withStatus(404);
     }
 
-    protected function getCategoryChildrenUUID(\AEngine\Entity\Collection $categories, \Ramsey\Uuid\UuidInterface $parent)
+    protected function getCategoryChildrenUUID(\AEngine\Entity\Collection $categories, \Domain\Entities\Publication\Category $curCategory)
     {
-        $result = [$parent->toString()];
+        $result = [$curCategory->uuid->toString()];
 
-        /** @var \Domain\Entities\Publication\Category $category */
-        foreach ($categories->where('parent', $parent) as $category) {
-            $result = array_merge($result, $this->getCategoryChildrenUUID($categories, $category->uuid));
+        if ($curCategory->children) {
+            /** @var \Domain\Entities\Publication\Category $category */
+            foreach ($categories->where('parent', $curCategory->uuid) as $childCategory) {
+                $result = array_merge($result, $this->getCategoryChildrenUUID($categories, $childCategory));
+            }
         }
 
         return $result;
