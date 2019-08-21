@@ -56,7 +56,14 @@ class DynamicPageAction extends Action
                 $category = $categories->where('address', $path)->first();
 
                 $publications = collect($this->publicationRepository->findBy(
-                    ['category' => $categories->where('parent', $category->uuid)->pluck('uuid')->merge([$category->uuid])->map(function ($item) { return strval($item); })->all()],
+                    [
+                        'category' => $categories
+                                        ->where('parent', $category->uuid)
+                                        ->pluck('uuid')
+                                        ->merge([$category->uuid])
+                                        ->map(function ($item) { return strval($item); })
+                                        ->all()
+                    ],
                     [$category->sort['by'] => $category->sort['direction']],
                     $category->pagination,
                     $category->pagination * $offset
