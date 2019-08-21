@@ -26,6 +26,8 @@ class LoginPageAction extends Action
 
     protected function action(): \Slim\Http\Response
     {
+        $identifier = $this->getParameter('user_login_type', 'username');
+
         if ($this->request->isPost()) {
             $data = [
                 'email' => $this->request->getParam('email'),
@@ -40,8 +42,6 @@ class LoginPageAction extends Action
             $check = \Domain\Filters\User::login($data);
 
             if ($check === true) {
-                $identifier = $this->getParameter('user_login_type', 'username');
-
                 /** @var \Domain\Entities\User $user */
                 $user = $this->userRepository->findOneBy([$identifier => $data[$identifier]]);
 
@@ -78,7 +78,7 @@ class LoginPageAction extends Action
             }
         }
 
-        return $this->respondRender('cup/auth/login.twig');
+        return $this->respondRender('cup/auth/login.twig', ['identifier' => $identifier]);
     }
 
     /**

@@ -13,7 +13,7 @@
                     <h3 class="text-center">Вход в панель администратора</h3>
                     <div class="login-form">
                         <form method="post">
-                            {% if parameter.where('key', 'user_login_type').first().value == 'email' %}
+                            {% if identifier == 'email' %}
                                 {% include 'cup/form.twig' with {
                                     'label': 'E-Mail',
                                     'type': 'email',

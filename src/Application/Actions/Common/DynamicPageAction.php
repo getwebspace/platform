@@ -62,7 +62,12 @@ class DynamicPageAction extends Action
                     $category->pagination * $offset
                 ));
 
-                return $this->respondRender($category->template['list'], ['categories' => $categories, 'category' => $category, 'publications' => $publications]);
+                return $this->respondRender($category->template['list'], [
+                    'categories' => $categories,
+                    'category' => $category,
+                    'publications' => $publications,
+                    'date_format' => $this->getParameter('publication_date_format'),
+                ]);
             } else {
                 $category = $categories->filter(function ($model) use ($path) { return strpos($path, $model->address) !== false; })->first();
 
@@ -70,7 +75,12 @@ class DynamicPageAction extends Action
                     $path = str_replace($category->address . '/', '', $path);
                     $publication = $this->publicationRepository->findOneBy(['address' => $path]);
 
-                    return $this->respondRender($category->template['full'], ['publication' => $publication, 'categories' => $categories, 'category' => $category]);
+                    return $this->respondRender($category->template['full'], [
+                        'publication' => $publication,
+                        'categories' => $categories,
+                        'category' => $category,
+                        'date_format' => $this->getParameter('publication_date_format'),
+                    ]);
                 }
             }
         }

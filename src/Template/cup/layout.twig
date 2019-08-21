@@ -270,8 +270,8 @@
                                                             <td width="50%">{{ stats.publications }}</td>
                                                         </tr>
                                                         <tr>
-                                                            <th width="50%">Количество комментариев:</th>
-                                                            <td width="50%">{{ stats.comments }}</td>
+                                                            <th width="50%">Количество отзвывов:</th>
+                                                            <td width="50%">{{ stats.guestbook }}</td>
                                                         </tr>
                                                         <tr>
                                                             <th width="50%">Количество пользователей:</th>
@@ -295,7 +295,7 @@
                                                                     'name': 'notepad[' ~ user.username ~ ']',
                                                                     'args': {
                                                                         'method': 'null',
-                                                                        'value': parameter.get('notepad[' ~ user.username ~ ']').value,
+                                                                        'value': notepad,
                                                                         'required': true,
                                                                         'data': {
                                                                             'summernote': true

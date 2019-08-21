@@ -43,7 +43,7 @@
                             <h2>{{ publication.title }}</h2>
                             <div>
                                 <ul class="meta">
-                                    <li>{{ publication.date|date(parameter.where('key', 'publication_date_format').first().value) }}</li>
+                                    <li>{{ publication.date|date(date_format) }}</li>
                                 </ul>
                             </div>
                             <div>

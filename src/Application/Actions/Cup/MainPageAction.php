@@ -12,11 +12,12 @@ class MainPageAction extends Action
     protected function action(): \Slim\Http\Response
     {
         return $this->respondRender('cup/layout.twig', [
+            'notepad' => $this->getParameter('notepad_' . $this->request->getAttribute('user')->username, ''),
             'stats' => [
                 'pages' => $this->entityManager->getRepository(\Domain\Entities\Page::class)->count([]),
                 'users' => $this->entityManager->getRepository(\Domain\Entities\User::class)->count([]),
                 'publications' => $this->entityManager->getRepository(\Domain\Entities\Publication::class)->count([]),
-                'comments' => 0,
+                'guestbook' => $this->entityManager->getRepository(\Domain\Entities\GuestBook::class)->count([]),
                 'files' => $this->entityManager->getRepository(\Domain\Entities\File::class)->count([]),
             ],
             'properties' => [
