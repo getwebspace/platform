@@ -30,11 +30,6 @@ class Category extends Model
     public $parent;
 
     /**
-     * @ORM\OneToMany(targetEntity="Domain\Entities\Catalog\Category", mappedBy="parent")
-     */
-    public $children;
-
-    /**
      * @ORM\Column(type="string")
      */
     public $title;

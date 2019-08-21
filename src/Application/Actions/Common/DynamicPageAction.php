@@ -53,17 +53,10 @@ class DynamicPageAction extends Action
             $categories = collect($this->publicationCategoryRepository->findAll());
 
             if ($this->publicationCategoryRepository->count(['address' => $path])) {
-                $category = $categories->where('address', $path)->first();
+                $category = $categories->firstWhere('address', $path);
 
                 $publications = collect($this->publicationRepository->findBy(
-                    [
-                        'category' => $categories
-                                        ->where('parent', $category->uuid)
-                                        ->pluck('uuid')
-                                        ->merge([$category->uuid])
-                                        ->map(function ($item) { return strval($item); })
-                                        ->all()
-                    ],
+                    ['category' => $this->getCategoryChildrenUUID($categories, $category->uuid)],
                     [$category->sort['by'] => $category->sort['direction']],
                     $category->pagination,
                     $category->pagination * $offset
@@ -83,5 +76,17 @@ class DynamicPageAction extends Action
         }
 
         return $this->respondRender('p404.twig')->withStatus(404);
+    }
+
+    protected function getCategoryChildrenUUID(\AEngine\Entity\Collection $categories, \Ramsey\Uuid\UuidInterface $parent)
+    {
+        $result = [$parent->toString()];
+
+        /** @var \Domain\Entities\Publication\Category $category */
+        foreach ($categories->where('parent', $parent) as $category) {
+            $result = array_merge($result, $this->getCategoryChildrenUUID($categories, $category->uuid));
+        }
+
+        return $result;
     }
 }

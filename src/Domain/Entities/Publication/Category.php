@@ -3,6 +3,7 @@
 namespace Domain\Entities\Publication;
 
 use AEngine\Entity\Model;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 
@@ -40,11 +41,6 @@ class Category extends Model
      * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
     public $parent;
-
-    /**
-     * @ORM\OneToMany(targetEntity="Domain\Entities\Publication\Category", mappedBy="parent")
-     */
-    public $children;
 
     /**
      * @ORM\Column(type="integer", options={"default": "10"})
