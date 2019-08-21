@@ -25,14 +25,27 @@ class Order extends Model
     public $uuid;
 
     /**
+     * @var integer
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue()
+     */
+    public $serial;
+
+    /**
      * @var UuidInterface
-     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
+     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL}, nullable=true)
+     */
+    public $user_uuid;
+
+    /**
+     * @ORM\OneToOne(targetEntity="\Domain\Entities\User")
+     * @ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid")
      */
     public $user;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=500)
+     * @ORM\Column(type="string", length=500, nullable=true)
      */
     public $delivery;
 
@@ -44,7 +57,7 @@ class Order extends Model
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=500)
+     * @ORM\Column(type="string", length=500, nullable=true)
      */
     public $comment;
 
@@ -63,7 +76,7 @@ class Order extends Model
 
     /**
      * @var DateTime
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"}, nullable=true)
+     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     public $date;
 
