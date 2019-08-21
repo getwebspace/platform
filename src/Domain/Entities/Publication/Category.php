@@ -48,9 +48,9 @@ class Category extends Model
     public $pagination;
 
     /**
-     * @ORM\Column(type="boolean", options={"default": true})
+     * @ORM\Column(type="boolean", options={"default": false})
      */
-    public $children = true;
+    public $children = false;
 
     /**
      * @var array

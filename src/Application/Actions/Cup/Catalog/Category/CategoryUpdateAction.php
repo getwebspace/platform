@@ -33,6 +33,7 @@ class CategoryUpdateAction extends CatalogAction
                         $data = [
                             'uuid' => $item->uuid,
                             'parent' => $this->request->getParam('parent'),
+                            'children' => $this->request->getParam('children'),
                             'title' => $this->request->getParam('title'),
                             'description' => $this->request->getParam('description'),
                             'address' => $this->request->getParam('address'),

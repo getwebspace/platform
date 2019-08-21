@@ -49,6 +49,8 @@ class Category extends Filter
                 ->addRule($filter->ValidProductFieldNames())
             ->attr('pagination')
                 ->addRule($filter->leadInteger())
+            ->attr('children')
+                ->addRule($filter->leadBoolean())
             ->attr('order')
                 ->addRule($filter->leadInteger())
             ->attr('meta')

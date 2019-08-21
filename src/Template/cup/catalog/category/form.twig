@@ -75,18 +75,6 @@
                         <div class="row">
                             <div class="col-md-3">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Порядок',
-                                    'type': 'number',
-                                    'name': 'order',
-                                    'args': {
-                                        'value': item.order is not empty ? item.order : '1.0',
-                                        'placeholder': '1',
-                                        'min': '1'
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-3">
-                                {% include 'cup/form.twig' with {
                                     'label': 'Основная категория',
                                     'type': 'select',
                                     'name': 'parent',
@@ -98,11 +86,34 @@
                             </div>
                             <div class="col-md-3">
                                 {% include 'cup/form.twig' with {
+                                    'label': 'Показывать вложенные категории',
+                                    'type': 'select',
+                                    'name': 'children',
+                                    'args': {
+                                        'option': {'yes':'Да', 'no':'Нет'},
+                                        'selected': item.children ? 'yes' : 'no'
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
                                     'label': 'Количество товаров на страницу',
                                     'type': 'text',
                                     'name': 'pagination',
                                     'args': {
                                         'value': item.pagination is not empty ? item.pagination : (params.catalog_category_pagination ?? '10'),
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-3">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Порядок',
+                                    'type': 'number',
+                                    'name': 'order',
+                                    'args': {
+                                        'value': item.order is not empty ? item.order : '1.0',
+                                        'placeholder': '1',
+                                        'min': '1'
                                     }
                                 } %}
                             </div>

@@ -78,6 +78,12 @@ class DynamicPageAction extends Action
         return $this->respondRender('p404.twig')->withStatus(404);
     }
 
+    /**
+     * @param \AEngine\Entity\Collection              $categories
+     * @param \Domain\Entities\Catalog\Category|null $curCategory
+     *
+     * @return array
+     */
     protected function getCategoryChildrenUUID(\AEngine\Entity\Collection $categories, \Domain\Entities\Publication\Category $curCategory)
     {
         $result = [$curCategory->uuid->toString()];

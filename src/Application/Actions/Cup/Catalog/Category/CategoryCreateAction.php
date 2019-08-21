@@ -12,6 +12,7 @@ class CategoryCreateAction extends CatalogAction
         if ($this->request->isPost()) {
             $data = [
                 'parent' => $this->request->getParam('parent'),
+                'children' => $this->request->getParam('children'),
                 'title' => $this->request->getParam('title'),
                 'description' => $this->request->getParam('description'),
                 'address' => $this->request->getParam('address'),

@@ -77,6 +77,11 @@ class Category extends Model
     public $pagination;
 
     /**
+     * @ORM\Column(type="boolean", options={"default": false})
+     */
+    public $children = false;
+
+    /**
      * @ORM\Column(name="`order`", type="integer")
      */
     public $order;

@@ -119,7 +119,7 @@ class CatalogAction extends Action
             $products = collect(
                 $this
                     ->productRepository
-                    ->findBy(['category' => $category->uuid], null, $category->pagination, $params['offset'])
+                    ->findBy(['category' => $this->getCategoryChildrenUUID($categories, $category)], null, $category->pagination, $params['offset'])
             );
             $files = $files->merge(
                 $this->fileRepository->findBy([
@@ -185,5 +185,25 @@ class CatalogAction extends Action
         $category = implode('/', $parts);
 
         return ['address' => ['category' => $category, 'product' => $product], 'offset' => $offset];
+    }
+
+    /**
+     * @param \AEngine\Entity\Collection             $categories
+     * @param \Domain\Entities\Catalog\Category|null $curCategory
+     *
+     * @return array
+     */
+    protected function getCategoryChildrenUUID(\AEngine\Entity\Collection $categories, \Domain\Entities\Catalog\Category $curCategory = null)
+    {
+        $result = [$curCategory->uuid->toString()];
+
+        if ($curCategory->children) {
+            /** @var \Domain\Entities\Catalog\Category $category */
+            foreach ($categories->where('parent', $curCategory->uuid) as $childCategory) {
+                $result = array_merge($result, $this->getCategoryChildrenUUID($categories, $childCategory));
+            }
+        }
+
+        return $result;
     }
 }
