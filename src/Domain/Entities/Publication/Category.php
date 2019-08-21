@@ -37,9 +37,14 @@ class Category extends Model
     public $description;
 
     /**
-     * @ORM\Column(type="string", length=36)
+     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
     public $parent;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Domain\Entities\Publication\Category", mappedBy="parent")
+     */
+    public $children;
 
     /**
      * @ORM\Column(type="integer", options={"default": "10"})

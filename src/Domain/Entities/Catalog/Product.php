@@ -31,7 +31,7 @@ class Product extends Model
     public $uuid;
 
     /**
-     * @ORM\Column(type="uuid")
+     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
     public $category;
 

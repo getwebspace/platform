@@ -34,17 +34,22 @@ class User extends Model
     public $email;
 
     /**
+     * @ORM\Column(type="string", length=25, nullable=true)
+     */
+    public $phone;
+
+    /**
      * @ORM\Column(type="string", length=140)
      */
     public $password;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=50, nullable=true)
      */
     public $firstname;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=50, nullable=true)
      */
     public $lastname;
 

@@ -45,7 +45,7 @@ class Page extends Model
 
     /**
      * @var string
-     * @see \Domain\Types\PageTypeType::TYPE
+     * @see \Domain\Types\PageTypeType::LIST
      * @ORM\Column(type="PageTypeType", length=50)
      */
     public $type = \Domain\Types\PageTypeType::TYPE_HTML;

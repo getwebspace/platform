@@ -37,8 +37,8 @@ abstract class CatalogAction extends Action
 
         $this->categoryRepository = $this->entityManager->getRepository(\Domain\Entities\Catalog\Category::class);
         $this->productRepository = $this->entityManager->getRepository(\Domain\Entities\Catalog\Product::class);
+        $this->orderRepository = $this->entityManager->getRepository(\Domain\Entities\Catalog\Order::class);
         $this->fileRepository = $this->entityManager->getRepository(\Domain\Entities\File::class);
-        $this->orderRepository = null; // todo
     }
 
     /**

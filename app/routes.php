@@ -78,6 +78,14 @@ $app
                         $app->map(['get', 'post'], '/{product}/edit', \Application\Actions\Cup\Catalog\Product\ProductUpdateAction::class);
                         $app->map(['get', 'post'], '/{product}/delete', \Application\Actions\Cup\Catalog\Product\ProductDeleteAction::class);
                     });
+
+                    // order
+                    $app->group('/order', function (App $app) {
+                        $app->get('', \Application\Actions\Cup\Catalog\Order\OrderListAction::class);
+                        $app->map(['get', 'post'], '/add', \Application\Actions\Cup\Catalog\Order\OrderCreateAction::class);
+                        $app->map(['get', 'post'], '/{order}/edit', \Application\Actions\Cup\Catalog\Order\OrderUpdateAction::class);
+                        $app->map(['get', 'post'], '/{order}/delete', \Application\Actions\Cup\Catalog\Order\OrderDeleteAction::class);
+                    });
                 });
 
                 // guestbook

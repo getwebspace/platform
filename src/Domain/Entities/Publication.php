@@ -33,7 +33,7 @@ class Publication extends Model
     public $title;
 
     /**
-     * @ORM\Column(type="string", length=36)
+     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
     public $category;
 
