@@ -71,9 +71,9 @@ abstract class Action
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->logger = $container->get(\Monolog\Logger::class);
-        $this->entityManager = $container->get(\Doctrine\ORM\EntityManager::class);
-        $this->renderer = $container->get(\Slim\Views\Twig::class);
+        $this->logger = $container->get('monolog');
+        $this->entityManager = $container->get('em');
+        $this->renderer = $container->get('view');
 
         $this->parametersRepository = $this->entityManager->getRepository(\Domain\Entities\Parameter::class);
     }
@@ -153,8 +153,14 @@ abstract class Action
         $this->response = $response;
         $this->args = $args;
 
+        \RunTracy\Helpers\Profiler\Profiler::start('route');
+
         try {
-            return $this->action();
+            $result = $this->action();
+
+            \RunTracy\Helpers\Profiler\Profiler::finish('route');
+
+            return $result;
         } catch (HttpException $exception) {
             $error = new ActionError(ActionError::SERVER_ERROR, 'An internal error has occurred while processing your request.');
             $error->setDescription($exception->getMessage());
@@ -172,7 +178,11 @@ abstract class Action
             $response = new Response($exception->getCode());
             $response->getBody()->write($encodedPayload);
 
-            return $response->withHeader('Content-Type', 'application/json');
+            $response = $response->withHeader('Content-Type', 'application/json');
+
+            \RunTracy\Helpers\Profiler\Profiler::finish('route');
+
+            return $response;
         }
     }
 
@@ -206,6 +216,8 @@ abstract class Action
     protected function respondRender($template, array $data = [])
     {
         try {
+            \RunTracy\Helpers\Profiler\Profiler::start('render', $template, $data);
+
             $data = array_merge(
                 [
                     //'parameter' => $this->getParameter(),
@@ -215,6 +227,8 @@ abstract class Action
                 $data
             );
             $this->response->getBody()->write($this->renderer->fetch($template, $data));
+
+            \RunTracy\Helpers\Profiler\Profiler::finish('render', $template, $data);
 
             return $this->response;
         } catch (\Twig\Error\LoaderError $exception) {

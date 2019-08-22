@@ -1,7 +1,5 @@
 <?php
 
-use Doctrine\ORM\EntityManager;
-
 require __DIR__ . '/../config/vars.php';
 
 /**
@@ -18,9 +16,24 @@ function app_create() {
     // Get app settings
     $settings = require APP_DIR . '/settings.php';
 
-    // Set router cache file of display error is negative
-    if (!isset($settings['settings']['displayErrorDetails']) || $settings['settings']['displayErrorDetails'] === false) {
-        $settings['settings']['routerCacheFile'] = CACHE_DIR . '/routes.cache.php';
+    $debug = !isset($settings['settings']['displayErrorDetails']) || $settings['settings']['displayErrorDetails'] === true;
+
+    switch ($debug) {
+        case true:
+            // enable Tracy panel
+            \Tracy\Debugger::enable(\Tracy\Debugger::DEVELOPMENT, LOG_DIR);
+
+            // enably Profiler
+            RunTracy\Helpers\Profiler\Profiler::enable();
+            break;
+
+        case false:
+            // Set router cache file if display error is negative
+            $settings['settings']['routerCacheFile'] = CACHE_DIR . '/routes.cache.php';
+
+            // enable Tracy panel
+            \Tracy\Debugger::enable(\Tracy\Debugger::PRODUCTION, LOG_DIR);
+            break;
     }
 
     // Instantiate and return the app instance

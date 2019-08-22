@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "afee4f92ce83a85c69111da0dc3cbc5d",
+    "content-hash": "7a1c7f43250137609ad4d25f515b93a4",
     "packages": [
         {
             "name": "aengine/entity",
@@ -1283,6 +1283,58 @@
             "time": "2018-11-05T09:00:11+00:00"
         },
         {
+            "name": "netpromotion/profiler",
+            "version": "v1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/netpromotion/profiler.git",
+                "reference": "a3c0a625c2dba9a03e1c738e51fe05d24909bb7e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/netpromotion/profiler/zipball/a3c0a625c2dba9a03e1c738e51fe05d24909bb7e",
+                "reference": "a3c0a625c2dba9a03e1c738e51fe05d24909bb7e",
+                "shasum": ""
+            },
+            "require": {
+                "petrknap/php-profiler": "^1.1",
+                "petrknap/php-singleton": "^1.0",
+                "php": ">=5.4"
+            },
+            "conflict": {
+                "nette/di": "<2.2 || >=3",
+                "tracy/tracy": "<2.2 || >=3"
+            },
+            "require-dev": {
+                "laravel/lumen-framework": "^5.0",
+                "latte/latte": "^2.3",
+                "netpromotion/tracy-wrapper": "^1.0",
+                "nette/application": "^2.3",
+                "nette/bootstrap": "^2.3",
+                "nette/di": "*",
+                "phpunit/phpunit": "^4.8",
+                "tracy/tracy": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Netpromotion\\Profiler\\": "src/Profiler"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Petr Knap",
+                    "email": "knap@netpromotion.cz"
+                }
+            ],
+            "description": "Profiler with adapter for Tracy",
+            "time": "2016-10-05T09:25:18+00:00"
+        },
+        {
             "name": "nikic/fast-route",
             "version": "v1.3.0",
             "source": {
@@ -1434,6 +1486,88 @@
                 "random"
             ],
             "time": "2018-07-02T15:55:56+00:00"
+        },
+        {
+            "name": "petrknap/php-profiler",
+            "version": "v1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/petrknap/php-profiler.git",
+                "reference": "39fb47fb0fbdbc678128a046fd1c5e8d71064595"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/petrknap/php-profiler/zipball/39fb47fb0fbdbc678128a046fd1c5e8d71064595",
+                "reference": "39fb47fb0fbdbc678128a046fd1c5e8d71064595",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PetrKnap\\Php\\Profiler\\": "src"
+                },
+                "files": []
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Petr Knap",
+                    "email": "dev@petrknap.cz"
+                }
+            ],
+            "description": "PHP profiler",
+            "homepage": "https://petrknap.github.io/docs/php-profiler.html",
+            "time": "2017-05-29T10:14:28+00:00"
+        },
+        {
+            "name": "petrknap/php-singleton",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/petrknap/php-singleton.git",
+                "reference": "dec131d0d6c72dd76b5a5c7940f04f14f5df7a20"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/petrknap/php-singleton/zipball/dec131d0d6c72dd76b5a5c7940f04f14f5df7a20",
+                "reference": "dec131d0d6c72dd76b5a5c7940f04f14f5df7a20",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PetrKnap\\Php\\Singleton\\": "src/Singleton"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Petr Knap",
+                    "email": "dev@petrknap.cz",
+                    "homepage": "http://petrknap.cz"
+                }
+            ],
+            "description": "Singleton pattern for PHP",
+            "homepage": "https://github.com/petrknap/php-singleton",
+            "time": "2016-09-22T07:59:18+00:00"
         },
         {
             "name": "phive/twig-extensions-deferred",
@@ -3229,7 +3363,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.0"
+        "php": ">=7.1"
     },
     "platform-dev": []
 }

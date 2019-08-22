@@ -13,18 +13,32 @@ if (PHP_SAPI == 'cli-server') {
 // Include global const's
 require __DIR__ . '/../src/bootstrap.php';
 
+    RunTracy\Helpers\Profiler\Profiler::start('app');
+
 // App container
 $c = $container = $app->getContainer();
+
+    RunTracy\Helpers\Profiler\Profiler::start('dependencies');
 
 // Set up dependencies
 require APP_DIR . '/dependencies.php';
 
+    RunTracy\Helpers\Profiler\Profiler::finish('dependencies');
+    RunTracy\Helpers\Profiler\Profiler::start('middleware');
+
 // Register middleware
 require APP_DIR . '/middleware.php';
+
+    RunTracy\Helpers\Profiler\Profiler::finish('middleware');
+    RunTracy\Helpers\Profiler\Profiler::start('routes');
 
 // Register routes
 require APP_DIR . '/routes.php';
 
-return $app->run();
+    RunTracy\Helpers\Profiler\Profiler::finish('routes');
+
+$app->run();
+
+    RunTracy\Helpers\Profiler\Profiler::finish('app');
 
 // And nothing more :)

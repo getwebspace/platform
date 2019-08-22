@@ -31,8 +31,8 @@ abstract class Middleware
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
-        $this->logger = $container->get(\Monolog\Logger::class);
-        $this->entityManager = $container->get(\Doctrine\ORM\EntityManager::class);
+        $this->logger = $container->get('monolog');
+        $this->entityManager = $container->get('em');
     }
 
     /**

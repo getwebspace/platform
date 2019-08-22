@@ -103,6 +103,9 @@ $app
 
                 // docs
                 $app->get('/docs', \Application\Actions\Cup\DocsPageAction::class);
+
+                // dev console
+                $app->post('/console', '\RunTracy\Controllers\RunTracyConsole:index');
             })
             ->add(function (Request $request, Response $response, $next) {
                 $user = $request->getAttribute('user', false);

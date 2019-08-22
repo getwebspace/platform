@@ -4,7 +4,7 @@ use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
 
 // doctrine
-$container[\Doctrine\ORM\EntityManager::class] = function (ContainerInterface $c) : EntityManager {
+$container['em'] = function (ContainerInterface $c) : EntityManager {
     $settings = $c->get('doctrine');
 
     foreach ($settings['types'] as $type => $class) {
@@ -49,7 +49,7 @@ $container[\Doctrine\ORM\EntityManager::class] = function (ContainerInterface $c
 };
 
 // view twig file render
-$container[\Slim\Views\Twig::class] = function (ContainerInterface $c) {
+$container['view'] = function (ContainerInterface $c) {
     $settings = array_merge(
         $c->get('renderer'),
         $c->get('twig'),
@@ -72,11 +72,13 @@ $container[\Slim\Views\Twig::class] = function (ContainerInterface $c) {
             \Slim\Http\Uri::createFromEnvironment(new \Slim\Http\Environment($_SERVER))
         )
     );
+    $view->addExtension(new \Twig\Extension\ProfilerExtension($c['twig_profile']));
     $view->addExtension(new \Application\TwigExtension());
-    $view->addExtension(new Twig\Extra\Intl\IntlExtension());
-    $view->addExtension(new Twig_Extensions_Extension_Text());
-    $view->addExtension(new Twig\Extension\StringLoaderExtension());
-    $view->addExtension(new Phive\Twig\Extensions\Deferred\DeferredExtension());
+
+    $view->addExtension(new \Twig\Extra\Intl\IntlExtension());
+    $view->addExtension(new \Twig_Extensions_Extension_Text());
+    $view->addExtension(new \Twig\Extension\StringLoaderExtension());
+    $view->addExtension(new \Phive\Twig\Extensions\Deferred\DeferredExtension());
 
     // if debug
     if ($settings['displayErrorDetails']) {
@@ -92,8 +94,13 @@ $container[\Slim\Views\Twig::class] = function (ContainerInterface $c) {
     return $view;
 };
 
+// twig profile
+$container['twig_profile'] = function (ContainerInterface $c) {
+    return new \Twig\Profiler\Profile();
+};
+
 // monolog
-$container[\Monolog\Logger::class] = function (ContainerInterface $c) {
+$container['monolog'] = function (ContainerInterface $c) {
     $settings = $c->get('logger');
 
     $logger = new Monolog\Logger($settings['name']);
@@ -106,22 +113,21 @@ $container[\Monolog\Logger::class] = function (ContainerInterface $c) {
 // not found
 $container['notFoundHandler'] = function ($c) {
     return function ($request, $response) use ($c) {
-        return $c->get(\Slim\Views\Twig::class)->render($response, 'p404.twig')->withStatus(404)
-        ;
+        return $c->get('view')->render($response, 'p404.twig')->withStatus(404);
     };
 };
 
 // not allowed
 $container['notAllowedHandler'] = function ($c) {
     return function ($request, $response, $methods) use ($c) {
-        return $c->get(\Slim\Views\Twig::class)->render($response, 'p405.twig', ['methods' => $methods])->withStatus(401);
+        return $c->get('view')->render($response, 'p405.twig', ['methods' => $methods])->withStatus(401);
     };
 };
 
 // error
 $container['errorHandler'] = function ($c) {
     return function ($request, $response, $exception) use ($c) {
-        return $c->get(\Slim\Views\Twig::class)->render($response, 'p500.twig', ['exception' => $exception])->withStatus(500)
+        return $c->get('view')->render($response, 'p500.twig', ['exception' => $exception])->withStatus(500)
         ;
     };
 };
