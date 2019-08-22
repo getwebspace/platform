@@ -120,10 +120,13 @@
                             <div class="col-md-4">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Цена закупки',
-                                    'type': 'text',
+                                    'type': 'number',
                                     'name': 'priceFirst',
                                     'args': {
-                                        'value': item.priceFirst is not empty ? item.priceFirst : '1.0',
+                                        'value': item.priceFirst,
+                                        'placeholder': '1',
+                                        'step': 'any',
+                                        'min': '0',
                                     }
                                 } %}
                             </div>
@@ -131,10 +134,13 @@
                             <div class="col-md-4">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Цена продажи',
-                                    'type': 'text',
+                                    'type': 'number',
                                     'name': 'price',
                                     'args': {
-                                        'value': item.price is not empty ? item.price : '1.0',
+                                        'value': item.price,
+                                        'placeholder': '1',
+                                        'step': 'any',
+                                        'min': '0',
                                     }
                                 } %}
                             </div>
@@ -142,10 +148,13 @@
                             <div class="col-md-4">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Цена оптовая',
-                                    'type': 'text',
+                                    'type': 'number',
                                     'name': 'priceWholesale',
                                     'args': {
-                                        'value': item.priceWholesale is not empty ? item.priceWholesale : '1.0',
+                                        'value': item.priceWholesale,
+                                        'placeholder': '1',
+                                        'step': 'any',
+                                        'min': '0',
                                     }
                                 } %}
                             </div>
@@ -188,8 +197,8 @@
                                     'type': 'number',
                                     'name': 'stock',
                                     'args': {
-                                        'value': item.stock is not empty ? item.stock : '1.0',
-                                        'placeholder': '1.0',
+                                        'value': item.stock,
+                                        'placeholder': '1',
                                         'step': 'any',
                                         'min': '0',
                                     }
@@ -324,6 +333,7 @@
                                     'label': 'Изображения',
                                     'type': 'file',
                                     'name': 'files[]',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Здесь можно выбрать несколько изображений"></i>',
                                     'args': {
                                         'class': ['d-block', 'btn', 'btn-sm', 'bg-grey2'],
                                         'multiple': true,
