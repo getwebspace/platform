@@ -21,6 +21,12 @@
                             <i class="fa fa-plus"></i>
                             Добавить товар
                         </a>
+
+                        {% if category %}
+                            <a href="/cup/catalog/product/{{ category.parent }}" class="btn btn-secondary btn-round ml-1">
+                                <i class="fas fa-arrow-up"></i>
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="card-body">
