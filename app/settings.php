@@ -75,7 +75,7 @@ return [
             'showSlimResponsePanel' => 0,
             'showSlimContainer' => 0,
             'showTwigPanel' => 1,
-            'showDoctrinePanel' => 'em',
+            'showDoctrinePanel' => \Doctrine\ORM\EntityManager::class,
             'showProfilerPanel' => 1,
             'showVendorVersionsPanel' => 0,
             'showIncludedFiles' => 0,

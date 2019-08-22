@@ -9,6 +9,8 @@ class CategoryCreateAction extends CatalogAction
 {
     protected function action(): \Slim\Http\Response
     {
+        $parent = $this->request->getParam('parent', false);
+
         if ($this->request->isPost()) {
             $data = [
                 'parent' => $this->request->getParam('parent'),
@@ -36,17 +38,18 @@ class CategoryCreateAction extends CatalogAction
                     $this->handlerFileUpload($model);
                     $this->entityManager->flush();
 
-                    return $this->response->withAddedHeader('Location', '/cup/catalog');
+                    return $this->response->withAddedHeader('Location', '/cup/catalog/category/' . $model->parent);
                 } catch (Exception $e) {
                     // todo nothing
                 }
             }
         }
 
-        $category = collect($this->categoryRepository->findAll());
+        $categories = collect($this->categoryRepository->findAll());
 
         return $this->respondRender('cup/catalog/category/form.twig', [
-            'category' => $category,
+            'parent' => $parent,
+            'categories' => $categories,
             'fields' => $this->getParameter(['catalog_category_field_1', 'catalog_category_field_2', 'catalog_category_field_3']),
             'params' => $this->getParameter(['catalog_category_template', 'catalog_category_pagination']),
         ]);

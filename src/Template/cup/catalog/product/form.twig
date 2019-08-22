@@ -17,8 +17,8 @@
                 <form method="post" enctype="multipart/form-data">
                     <div class="card-header">
                         <div class="card-head-row">
-                            <div class="card-title">{{ item.uuid ? 'Редактирование товара ' ~ item.title : 'Создание нового товара' }} в категории {{ category.title }}</div>
-                            <a href="/cup/catalog/{{ category.uuid }}/product" class="btn btn-secondary btn-round ml-auto">
+                            <div class="card-title">{{ item.uuid ? 'Редактирование товара ' ~ item.title : 'Создание нового товара' }}</div>
+                            <a href="/cup/catalog/product/{{ category.uuid }}" class="btn btn-secondary btn-round ml-auto">
                                 <i class="fas fa-long-arrow-alt-left"></i>
                                 Назад
                             </a>
@@ -44,7 +44,7 @@
                                     'label': 'Адрес',
                                     'type': 'text',
                                     'name': 'address',
-                                    'prefix': base_url() ~ '/catalog/' ~ category.address ~ '/',
+                                    'prefix': base_url() ~ '/catalog/ ... /',
                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Название товара. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов"></i>',
                                     'args': {
                                         'value': item.address,
@@ -94,6 +94,17 @@
                         <div class="row">
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
+                                    'label': 'Категория',
+                                    'type': 'select',
+                                    'name': 'category',
+                                    'args': {
+                                        'option': categories.pluck('title', 'uuid').all(),
+                                        'selected': item.category ?? category.uuid
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-3">
+                                {% include 'cup/form.twig' with {
                                     'label': 'Артикул',
                                     'type': 'text',
                                     'name': 'vendorcode',
@@ -103,7 +114,7 @@
                                     }
                                 } %}
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Штрих код',
                                     'type': 'number',
@@ -117,7 +128,7 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Цена закупки',
                                     'type': 'number',
@@ -131,7 +142,7 @@
                                 } %}
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Цена продажи',
                                     'type': 'number',
@@ -145,7 +156,7 @@
                                 } %}
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Цена оптовая',
                                     'type': 'number',
@@ -165,16 +176,18 @@
                         <div class="row">
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Размерность',
-                                    'type': 'select',
-                                    'name': 'unit',
+                                    'label': 'На складе',
+                                    'type': 'number',
+                                    'name': 'stock',
                                     'args': {
-                                        'option': {'null': '---'}|merge(measure),
-                                        'selected': item.unit
+                                        'value': item.stock,
+                                        'placeholder': '1',
+                                        'step': 'any',
+                                        'min': '0',
                                     }
                                 } %}
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Объем',
                                     'type': 'number',
@@ -188,19 +201,14 @@
                                     }
                                 } %}
                             </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'На складе',
-                                    'type': 'number',
-                                    'name': 'stock',
+                                    'label': 'Размерность',
+                                    'type': 'select',
+                                    'name': 'unit',
                                     'args': {
-                                        'value': item.stock,
-                                        'placeholder': '1',
-                                        'step': 'any',
-                                        'min': '0',
+                                        'option': {'null': '---'}|merge(measure),
+                                        'selected': item.unit
                                     }
                                 } %}
                             </div>

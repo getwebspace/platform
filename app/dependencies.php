@@ -4,7 +4,7 @@ use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
 
 // doctrine
-$container['em'] = function (ContainerInterface $c) : EntityManager {
+$container[\Doctrine\ORM\EntityManager::class] = function (ContainerInterface $c) : EntityManager {
     $settings = $c->get('doctrine');
 
     foreach ($settings['types'] as $type => $class) {

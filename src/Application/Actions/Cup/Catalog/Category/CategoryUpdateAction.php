@@ -10,9 +10,9 @@ class CategoryUpdateAction extends CatalogAction
 {
     protected function action(): \Slim\Http\Response
     {
-        if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
+        if ($this->resolveArg('category') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('category'))) {
             /** @var \Domain\Entities\Catalog\Category $item */
-            $item = $this->categoryRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
+            $item = $this->categoryRepository->findOneBy(['uuid' => $this->resolveArg('category')]);
 
             if (!$item->isEmpty()) {
                 if ($this->request->isPost()) {
@@ -57,7 +57,7 @@ class CategoryUpdateAction extends CatalogAction
                                 $this->handlerFileUpload($item);
                                 $this->entityManager->flush();
 
-                                return $this->response->withAddedHeader('Location', '/cup/catalog');
+                                return $this->response->withAddedHeader('Location', '/cup/catalog/category/' . $item->parent);
                             } catch (Exception $e) {
                                 // todo nothing
                             }
@@ -65,14 +65,14 @@ class CategoryUpdateAction extends CatalogAction
                     }
                 }
 
-                $category = collect($this->categoryRepository->findAll());
+                $categories = collect($this->categoryRepository->findAll());
                 $files = collect($this->fileRepository->findBy([
                     'item' => \Domain\Types\FileItemType::ITEM_CATALOG_CATEGORY,
                     'item_uuid' => $item->uuid,
                 ]));
 
                 return $this->respondRender('cup/catalog/category/form.twig', [
-                    'category' => $category,
+                    'categories' => $categories,
                     'files' => $files,
                     'item' => $item,
                     'fields' => $this->getParameter(['catalog_category_field_1', 'catalog_category_field_2', 'catalog_category_field_3']),
@@ -81,6 +81,6 @@ class CategoryUpdateAction extends CatalogAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/catalog');
+        return $this->response->withAddedHeader('Location', '/cup/catalog/category');
     }
 }

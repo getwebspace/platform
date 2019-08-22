@@ -72,7 +72,7 @@ abstract class Action
     {
         $this->container = $container;
         $this->logger = $container->get('monolog');
-        $this->entityManager = $container->get('em');
+        $this->entityManager = $container->get(\Doctrine\ORM\EntityManager::class);
         $this->renderer = $container->get('view');
 
         $this->parametersRepository = $this->entityManager->getRepository(\Domain\Entities\Parameter::class);

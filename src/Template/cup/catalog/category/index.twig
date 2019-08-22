@@ -16,11 +16,17 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
-                        <h4 class="card-title">Список категорий ({{ category.count() }})</h4>
-                        <a href="/cup/catalog/add" class="btn btn-primary btn-round ml-auto">
+                        <h4 class="card-title">Список категорий {{ category ? 'вложенный в ' ~ category.title : '' }} ({{ categories.count() }})</h4>
+                        <a href="/cup/catalog/category/add{{ category ? '?parent=' ~ category.uuid : '' }}" class="btn btn-primary btn-round ml-auto">
                             <i class="fa fa-plus"></i>
                             Добавить категорию
                         </a>
+
+                        {% if category %}
+                            <a href="/cup/catalog/category/{{ category.parent }}" class="btn btn-secondary btn-round ml-1">
+                                <i class="fas fa-arrow-left"></i>
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="card-body">
@@ -38,23 +44,26 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for item in category %}
+                                {% for category in categories %}
                                     <tr>
-                                        <td class="text-center">{{ item.order }}</td>
+                                        <td class="text-center">{{ category.order }}</td>
                                         <td>
-                                            <a href="/catalog/{{ item.address }}" target="_blank">
-                                                {{ item.title }}
+                                            <a href="/catalog/{{ category.address }}" target="_blank">
+                                                {{ category.title }}
                                                 <i class="fas fa-external-link-alt"></i>
                                             </a>
                                         </td>
-                                        <td>{{ category.where('uuid', item.parent).first().title ?? '&mdash;' }}</td>
-                                        <td>{{ item.field1 }}</td>
-                                        <td>{{ item.field2 }}</td>
-                                        <td>{{ item.field3 }}</td>
+                                        <td>{{ category.where('uuid', category.parent).first().title ?? '&mdash;' }}</td>
+                                        <td>{{ category.field1 }}</td>
+                                        <td>{{ category.field2 }}</td>
+                                        <td>{{ category.field3 }}</td>
                                         <td class="text-center">
                                             <div class="btn-group">
-                                                <a href="/cup/catalog/{{ item.uuid }}/product" class="btn btn-outline-info btn-sm">
+                                                <a href="/cup/catalog/product/{{ category.uuid }}" class="btn btn-outline-info btn-sm">
                                                     <i class="fas fa-eye fa-lg"></i>
+                                                </a>
+                                                <a href="/cup/catalog/category/{{ category.uuid }}" class="btn btn-outline-info btn-sm">
+                                                    <i class="fas fa-folder-open"></i>
                                                 </a>
                                                 <div class="btn-group dropdown">
                                                     <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
@@ -62,11 +71,11 @@
                                                     </button>
                                                     <ul class="dropdown-menu" role="menu">
                                                         <li>
-                                                            <a href="/cup/catalog/{{ item.uuid }}/edit" class="btn btn-link"><i class="fas fa-edit"></i> Изменить</a>
+                                                            <a href="/cup/catalog/category/{{ category.uuid }}/edit" class="btn btn-link"><i class="fas fa-edit"></i> Изменить</a>
                                                         </li>
                                                         <li><div class="dropdown-divider"></div></li>
                                                         <li>
-                                                            <form action="/cup/catalog/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить публикацию?');">
+                                                            <form action="/cup/catalog/category/{{ category.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить категорию?');">
                                                                 <button type="submit" class="btn btn-link text-danger">
                                                                     <i class="fas fa-trash-alt"></i> Удалить
                                                                 </button>

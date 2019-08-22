@@ -79,8 +79,8 @@
                                     'type': 'select',
                                     'name': 'parent',
                                     'args': {
-                                        'option': {'00000000-0000-0000-0000-000000000000': '---'}|merge(category.whereNotIn('uuid', [item.uuid]).pluck('title', 'uuid').all()),
-                                        'selected': item.parent
+                                        'option': {'00000000-0000-0000-0000-000000000000': '---'}|merge(categories.whereNotIn('uuid', [item.uuid]).pluck('title', 'uuid').all()),
+                                        'selected': item.parent ?? parent
                                     }
                                 } %}
                             </div>

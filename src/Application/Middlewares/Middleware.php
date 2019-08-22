@@ -32,7 +32,7 @@ abstract class Middleware
     {
         $this->container = $container;
         $this->logger = $container->get('monolog');
-        $this->entityManager = $container->get('em');
+        $this->entityManager = $container->get(\Doctrine\ORM\EntityManager::class);
     }
 
     /**

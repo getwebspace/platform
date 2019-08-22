@@ -66,17 +66,20 @@ $app
 
                 // catalog
                 $app->group('/catalog', function (App $app) {
-                    $app->get('', \Application\Actions\Cup\Catalog\Category\CategoryListAction::class);
-                    $app->map(['get', 'post'], '/add', \Application\Actions\Cup\Catalog\Category\CategoryCreateAction::class);
-                    $app->map(['get', 'post'], '/{uuid}/edit', \Application\Actions\Cup\Catalog\Category\CategoryUpdateAction::class);
-                    $app->map(['get', 'post'], '/{uuid}/delete', \Application\Actions\Cup\Catalog\Category\CategoryDeleteAction::class);
+                    // categories
+                    $app->group('/category', function (App $app) {
+                        $app->map(['get', 'post'], '/add', \Application\Actions\Cup\Catalog\Category\CategoryCreateAction::class);
+                        $app->map(['get', 'post'], '/{category}/edit', \Application\Actions\Cup\Catalog\Category\CategoryUpdateAction::class);
+                        $app->map(['get', 'post'], '/{category}/delete', \Application\Actions\Cup\Catalog\Category\CategoryDeleteAction::class);
+                        $app->get('[/{parent}]', \Application\Actions\Cup\Catalog\Category\CategoryListAction::class);
+                    });
 
-                    // catalog products
-                    $app->group('/{uuid}/product', function (App $app) {
-                        $app->get('', \Application\Actions\Cup\Catalog\Product\ProductListAction::class);
+                    // products
+                    $app->group('/product', function (App $app) {
                         $app->map(['get', 'post'], '/add', \Application\Actions\Cup\Catalog\Product\ProductCreateAction::class);
                         $app->map(['get', 'post'], '/{product}/edit', \Application\Actions\Cup\Catalog\Product\ProductUpdateAction::class);
                         $app->map(['get', 'post'], '/{product}/delete', \Application\Actions\Cup\Catalog\Product\ProductDeleteAction::class);
+                        $app->get('[/{category}]', \Application\Actions\Cup\Catalog\Product\ProductListAction::class);
                     });
 
                     // order

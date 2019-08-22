@@ -28,6 +28,7 @@ class Product extends Filter
             ->attr('category')
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 36))
+                ->addRule($filter->ValidUUID())
             ->attr('title')
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 255))
