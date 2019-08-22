@@ -79,16 +79,8 @@ return [
             'showProfilerPanel' => 1,
             'showVendorVersionsPanel' => 0,
             'showIncludedFiles' => 0,
-            'showConsolePanel' => 0,
             'configs' => [
-                'XDebugHelperIDEKey' => 'PHPSTORM',
                 'ConsoleNoLogin' => 0,
-                'ConsoleAccounts' => [
-                    //'dev' => '34c6fceca75e456f25e7e99531e2425c6c1de443'// = sha1('dev')
-                ],
-                'ConsoleHashAlgorithm' => 'sha1',
-                'ConsoleTerminalJs' => '/assets/dev/jquery.terminal.min.js',
-                'ConsoleTerminalCss' => '/assets/dev/jquery.terminal.min.css',
                 'ProfilerPanel' => [
                     'primaryValue' => 'effective', // or 'absolute'
                     'show' => [
