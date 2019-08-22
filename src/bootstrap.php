@@ -20,6 +20,11 @@ function app_create() {
 
     switch ($debug) {
         case true:
+            error_reporting(-1);
+            ini_set('display_errors',   '1');
+            ini_set('html_errors',      '1');
+            ini_set('error_reporting',  '30719');
+
             // enable Tracy panel
             \Tracy\Debugger::enable(\Tracy\Debugger::DEVELOPMENT, LOG_DIR);
 

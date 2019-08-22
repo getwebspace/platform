@@ -1,10 +1,5 @@
 <?php
 
-// todo debug
-ini_set('display_errors',   '1');
-ini_set('html_errors',      '1');
-ini_set('error_reporting',  '30719');
-
 // path const
 define('BASE_DIR',      realpath(__DIR__ . '/..'));
 define('APP_DIR',       realpath(__DIR__ . '/../app'));

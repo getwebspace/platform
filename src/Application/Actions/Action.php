@@ -216,7 +216,7 @@ abstract class Action
     protected function respondRender($template, array $data = [])
     {
         try {
-            \RunTracy\Helpers\Profiler\Profiler::start('render', $template, $data);
+            \RunTracy\Helpers\Profiler\Profiler::start('render (%s)', $template);
 
             $data = array_merge(
                 [
@@ -228,7 +228,7 @@ abstract class Action
             );
             $this->response->getBody()->write($this->renderer->fetch($template, $data));
 
-            \RunTracy\Helpers\Profiler\Profiler::finish('render', $template, $data);
+            \RunTracy\Helpers\Profiler\Profiler::finish('render (%s)', $template);
 
             return $this->response;
         } catch (\Twig\Error\LoaderError $exception) {

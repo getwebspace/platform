@@ -36,9 +36,11 @@ require APP_DIR . '/middleware.php';
 require APP_DIR . '/routes.php';
 
     RunTracy\Helpers\Profiler\Profiler::finish('routes');
+    RunTracy\Helpers\Profiler\Profiler::start('run');
 
 $app->run();
 
+    RunTracy\Helpers\Profiler\Profiler::finish('run');
     RunTracy\Helpers\Profiler\Profiler::finish('app');
 
 // And nothing more :)

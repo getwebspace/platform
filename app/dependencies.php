@@ -72,7 +72,6 @@ $container['view'] = function (ContainerInterface $c) {
             \Slim\Http\Uri::createFromEnvironment(new \Slim\Http\Environment($_SERVER))
         )
     );
-    $view->addExtension(new \Twig\Extension\ProfilerExtension($c['twig_profile']));
     $view->addExtension(new \Application\TwigExtension());
 
     $view->addExtension(new \Twig\Extra\Intl\IntlExtension());
@@ -82,6 +81,7 @@ $container['view'] = function (ContainerInterface $c) {
 
     // if debug
     if ($settings['displayErrorDetails']) {
+        $view->addExtension(new \Twig\Extension\ProfilerExtension($c['twig_profile']));
         $view->addExtension(new \Twig\Extension\DebugExtension());
     }
 
