@@ -34,6 +34,9 @@
         "runcmf/runtracy": "^0.2.10",
         "twig/intl-extra": "3.x-dev"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^7.5"
+    },
     "autoload": {
         "classmap": [
             "src"
