@@ -18,6 +18,11 @@ class MainPageAction extends Action
                 'users' => $this->entityManager->getRepository(\Domain\Entities\User::class)->count([]),
                 'publications' => $this->entityManager->getRepository(\Domain\Entities\Publication::class)->count([]),
                 'guestbook' => $this->entityManager->getRepository(\Domain\Entities\GuestBook::class)->count([]),
+                'catalog' => [
+                    'category' => $this->entityManager->getRepository(\Domain\Entities\Catalog\Category::class)->count([]),
+                    'product' => $this->entityManager->getRepository(\Domain\Entities\Catalog\Product::class)->count([]),
+                    'order' => $this->entityManager->getRepository(\Domain\Entities\Catalog\Order::class)->count([]),
+                ],
                 'files' => $this->entityManager->getRepository(\Domain\Entities\File::class)->count([]),
             ],
             'properties' => [
