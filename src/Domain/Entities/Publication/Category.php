@@ -38,7 +38,7 @@ class Category extends Model
     public $description;
 
     /**
-     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
+     * @ORM\Column(type="uuid", options={"default": NULL})
      */
     public $parent;
 

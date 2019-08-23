@@ -2,10 +2,6 @@
 
 namespace Domain\Filters\Traits;
 
-use AEngine\Support\Str;
-use Core\Auth;
-use Core\Common;
-use Ramsey\Uuid\Uuid;
 use Slim\App;
 
 trait CatalogFilterRules
@@ -126,6 +122,65 @@ trait CatalogFilterRules
             $product = $productRepository->findOneBy(['address' => str_escape($data[$field])]);
 
             return $product === null || (!empty($data['uuid']) && $product->uuid === $data['uuid']);
+        };
+    }
+
+    /**
+     * Проверяет поле product у категории
+     *
+     * @return \Closure
+     */
+    public function ValidOrderDelivery()
+    {
+        return function (&$data, $field) {
+            $buf = [
+                'client' => '',
+                'address' => '',
+            ];
+            $value = &$data[$field];
+
+            if (!is_array($value)) {
+                $value = $buf;
+
+                return true;
+            }
+
+            if (isset($value['client'])) {
+                $buf['client'] = $value['client'];
+            }
+            if (isset($value['address'])) {
+                $buf['address'] = $value['address'];
+            }
+
+            $value = $buf;
+
+            return true;
+        };
+    }
+
+    /**
+     * Проверяет UUID товаров заказа
+     *
+     * @return \Closure
+     */
+    public function ValidOrderItems()
+    {
+        return function (&$data, $field) {
+            $value = &$data[$field];
+
+            if (!is_array($value)) {
+                $value = [];
+
+                return true;
+            }
+
+            foreach ($value as $item) {
+                if (!\Ramsey\Uuid\Uuid::isValid($item)) {
+                    return false;
+                }
+            }
+
+            return true;
         };
     }
 }

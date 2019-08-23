@@ -29,7 +29,7 @@ class Category extends Filter
             ->attr('parent')
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 36))
-                ->addRule($filter->ValidUUID())
+                ->addRule($filter->CheckUUID())
             ->attr('title')
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 255))

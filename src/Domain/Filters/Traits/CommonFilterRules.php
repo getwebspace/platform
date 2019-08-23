@@ -3,28 +3,41 @@
 namespace Domain\Filters\Traits;
 
 use AEngine\Support\Str;
-use Core\Auth;
-use Core\Common;
 use Ramsey\Uuid\Uuid;
 use Slim\App;
 
 trait CommonFilterRules
 {
+    private static $salt = 'Ld8.2Ej5-$Cic5[dS';
+
     /**
-     * Проверяет или добавляет UUID
+     * Задает полю значение UUID
      *
      * @return \Closure
      */
-    public function ValidUUID()
+    public function LeadUUID()
     {
         return function (&$data, $field) {
             $value = &$data[$field];
+            $value = \Ramsey\Uuid\Uuid::uuid5(Uuid::NAMESPACE_OID, static::$salt . microtime(true));
 
-            if (empty($value)) {
-                $value = Common::uuid();
-            }
+            return true;
+        };
+    }
 
-            return Uuid::isValid($value);
+    /**
+     * Проверяет значение поля UUID
+     *
+     * @param bool $orNULL или значение Null
+     *
+     * @return \Closure
+     */
+    public function CheckUUID($orNULL = true)
+    {
+        return function (&$data, $field) use ($orNULL) {
+            $value = &$data[$field];
+
+            return Uuid::isValid($value) || $orNULL;
         };
     }
 

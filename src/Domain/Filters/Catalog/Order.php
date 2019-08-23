@@ -25,17 +25,18 @@ class Order extends Filter
         $filter = new self($data);
 
         $filter
+            ->attr('delivery')
+                ->addRule($filter->ValidOrderDelivery())
             ->attr('user_uuid')
-                ->addRule($filter->ValidUUID())
-            ->option('delivery')
-                ->addRule($filter->leadStr())
-                ->addRule($filter->checkStrlenBetween(0, 500))
+                ->addRule($filter->CheckUUID(true))
+            ->attr('items')
+                ->addRule($filter->ValidOrderItems())
             ->attr('shipping')
                 ->addRule($filter->ValidDate())
             ->attr('comment')
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 500))
-            ->attr('date')
+            ->attr('shipping')
                 ->addRule($filter->ValidDate())
             ->attr('external_id')
                 ->addRule($filter->leadStr());

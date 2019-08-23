@@ -3,8 +3,6 @@
 namespace Domain\Filters\Traits;
 
 use AEngine\Support\Str;
-use Core\Auth;
-use Core\Common;
 use Ramsey\Uuid\Uuid;
 use Slim\App;
 

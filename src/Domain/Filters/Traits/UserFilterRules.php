@@ -2,10 +2,6 @@
 
 namespace Domain\Filters\Traits;
 
-use AEngine\Database\Db;
-use Core\Auth;
-use Core\Common;
-use Ramsey\Uuid\Uuid;
 use Slim\App;
 
 trait UserFilterRules

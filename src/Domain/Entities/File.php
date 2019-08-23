@@ -55,7 +55,7 @@ class File extends Model
     public $item;
 
     /**
-     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
+     * @ORM\Column(type="uuid", options={"default": NULL})
      */
     public $item_uuid;
 

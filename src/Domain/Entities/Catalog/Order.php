@@ -33,7 +33,7 @@ class Order extends Model
 
     /**
      * @var UuidInterface
-     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL}, nullable=true)
+     * @ORM\Column(type="uuid", options={"default": NULL}, nullable=true)
      */
     public $user_uuid;
 
@@ -45,9 +45,12 @@ class Order extends Model
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=500, nullable=true)
+     * @ORM\Column(type="array", nullable=true)
      */
-    public $delivery;
+    public $delivery = [
+        'client' => '',
+        'address' => '',
+    ];
 
     /**
      * @var DateTime
@@ -84,4 +87,9 @@ class Order extends Model
      * @ORM\Column(type="string", length=50, nullable=true)
      */
     public $external_id;
+
+    /**
+     * @var array
+     */
+    public $select = [];
 }
