@@ -55,6 +55,22 @@
                                 <div class="panel-body"><p>{{ product.extra|raw }}</p></div>
                             </div>
                         </div>
+                        <div class="panel">
+                            <div class="panel-header" id="headingTwo">
+                                <button class="panel-link" data-toggle="collapse" data-target="#collapse3" aria-expanded="false" aria-controls="collapse2">Характеристики</button>
+                            </div>
+                            <div id="collapse3" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                                <div class="panel-body">
+                                    <p>
+                                        {% if product.field1 %}<b>{{ category.product.field_1 }}</b>: {{ product.field1|raw }}<br/>{% endif %}
+                                        {% if product.field2 %}<b>{{ category.product.field_2 }}</b>: {{ product.field2|raw }}<br/>{% endif %}
+                                        {% if product.field3 %}<b>{{ category.product.field_3 }}</b>: {{ product.field3|raw }}<br/>{% endif %}
+                                        {% if product.field4 %}<b>{{ category.product.field_4 }}</b>: {{ product.field4|raw }}<br/>{% endif %}
+                                        {% if product.field5 %}<b>{{ category.product.field_5 }}</b>: {{ product.field5|raw }}<br/>{% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
