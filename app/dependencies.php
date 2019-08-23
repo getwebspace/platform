@@ -19,33 +19,7 @@ $container[\Doctrine\ORM\EntityManager::class] = function (ContainerInterface $c
         false
     );
 
-    $doctrine = \Doctrine\ORM\EntityManager::create($settings['connection'], $config);
-
-//    $doctrineConnection = $doctrine->getConnection();
-//    $stack = new \Doctrine\DBAL\Logging\DebugStack();
-//    $doctrineConnection->getConfiguration()->setSQLLogger($stack);
-//
-//    register_shutdown_function(function () use ($doctrine) {
-//        $time   = round(microtime(true) - $_SERVER['REQUEST_TIME_FLOAT'], 7);
-//        $memory = str_convert_size(memory_get_usage());
-//
-//        /** @var \Doctrine\ORM\EntityManager $em */
-//        $dbStack = $doctrine->getConfiguration()->getSQLLogger();
-//        $dbQueries = count($dbStack->queries);
-//        $dbTime = 0;
-//
-//        foreach ($dbStack->queries as $query) {
-//            $dbTime += $query['executionMS'];
-//        }
-//
-//        pre('X-Memory', $memory);
-//        pre('X-Time', $time . ' ms');
-//        pre('X-DB-Queries', $dbQueries);
-//        pre('X-DB-Execution', round($dbTime, 7) . ' ms');
-//        exit;
-//    });
-
-    return $doctrine;
+    return \Doctrine\ORM\EntityManager::create($settings['connection'], $config);
 };
 
 // view twig file render
@@ -66,14 +40,7 @@ $container['view'] = function (ContainerInterface $c) {
     $view['styles'] = new ArrayObject();
     $view['scripts'] = new ArrayObject();
 
-    $view->addExtension(
-        new \Slim\Views\TwigExtension(
-            $c->get('router'),
-            \Slim\Http\Uri::createFromEnvironment(new \Slim\Http\Environment($_SERVER))
-        )
-    );
-    $view->addExtension(new \Application\TwigExtension());
-
+    $view->addExtension(new \Application\TwigExtension($c->get('router'), \Slim\Http\Uri::createFromEnvironment(new \Slim\Http\Environment($_SERVER))));
     $view->addExtension(new \Twig\Extra\Intl\IntlExtension());
     $view->addExtension(new \Twig_Extensions_Extension_Text());
     $view->addExtension(new \Twig\Extension\StringLoaderExtension());

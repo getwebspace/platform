@@ -1,0 +1,9 @@
+<nav>
+    <ul class="pagination justify-content-center">
+        {% for page in 0..(pagination.count / pagination.page)|round(0, 'floor') %}
+            <li class="page-item {{ is_current_page_number(page) ? 'active' : '' }}">
+                <a class="page-link" href="{{ non_page_path() }}{{ page ? '/' ~ page : '' }}">{{ page + 1 }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</nav>

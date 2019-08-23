@@ -82,9 +82,11 @@ class CatalogAction extends Action
     protected function prepareMain(array &$params, &$categories, &$files)
     {
         if ($params['address']['category'] == '' && $params['address']['product'] == '') {
+            $pagination = $this->getParameter('catalog_category_pagination');
             $products = collect(
-                $this->productRepository->findBy([], null, $this->getParameter('catalog_category_pagination'), $params['offset'])
+                $this->productRepository->findBy([], null, $pagination, $params['offset'] * $pagination)
             );
+            $productsCount = $this->productRepository->count([]);
             $files = $files->merge(
                 $this->fileRepository->findBy([
                     'item' => \Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
@@ -95,6 +97,10 @@ class CatalogAction extends Action
             return $this->respondRender($this->getParameter('catalog_category_template'), [
                 'categories' => $categories,
                 'products' => $products,
+                'pagination' => [
+                    'count' => $productsCount,
+                    'page' => $pagination,
+                ],
                 'files' => $files,
             ]);
         }
@@ -116,11 +122,13 @@ class CatalogAction extends Action
         $category = $categories->firstWhere('address', $params['address']['category']);
 
         if (is_null($category) === false) {
+            $categoryUUIDs = $this->getCategoryChildrenUUID($categories, $category);
             $products = collect(
                 $this
                     ->productRepository
-                    ->findBy(['category' => $this->getCategoryChildrenUUID($categories, $category)], null, $category->pagination, $params['offset'])
+                    ->findBy(['category' => $categoryUUIDs], null, $category->pagination, $params['offset'] * $category->pagination)
             );
+            $productsCount = $this->productRepository->count(['category' => $categoryUUIDs]);
             $files = $files->merge(
                 $this->fileRepository->findBy([
                     'item' => \Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
@@ -132,6 +140,10 @@ class CatalogAction extends Action
                 'categories' => $categories,
                 'category' => $category,
                 'products' => $products,
+                'pagination' => [
+                    'count' => $productsCount,
+                    'page' => $category->pagination,
+                ],
                 'files' => $files,
             ]);
         }
@@ -181,7 +193,7 @@ class CatalogAction extends Action
             unset($parts[count($parts) - 1]);
         }
 
-        $product = $parts[count($parts) - 1];
+        $product = count($parts) ? $parts[count($parts) - 1] : '';
         $category = implode('/', $parts);
 
         return ['address' => ['category' => $category, 'product' => $product], 'offset' => $offset];
