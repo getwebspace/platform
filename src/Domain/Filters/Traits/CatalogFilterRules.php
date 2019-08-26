@@ -21,7 +21,7 @@ trait CatalogFilterRules
             $categoryRepository = $app->getContainer()->get(\Doctrine\ORM\EntityManager::class)->getRepository(\Domain\Entities\Catalog\Category::class);
 
             /** @var \Domain\Entities\Page $category */
-            $category = $categoryRepository->findOneBy(['address' => str_escape($data[$field])]);
+            $category = $categoryRepository->findOneBy(['address' => str_escape($data[$field]), 'status' => \Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]);
 
             return $category === null || (!empty($data['uuid']) && $category->uuid === $data['uuid']);
         };
@@ -119,7 +119,7 @@ trait CatalogFilterRules
             $productRepository = $app->getContainer()->get(\Doctrine\ORM\EntityManager::class)->getRepository(\Domain\Entities\Catalog\Product::class);
 
             /** @var \Domain\Entities\Page $product */
-            $product = $productRepository->findOneBy(['address' => str_escape($data[$field])]);
+            $product = $productRepository->findOneBy(['address' => str_escape($data[$field]), 'status' => \Domain\Types\Catalog\ProductStatusType::STATUS_WORK]);
 
             return $product === null || (!empty($data['uuid']) && $product->uuid === $data['uuid']);
         };
