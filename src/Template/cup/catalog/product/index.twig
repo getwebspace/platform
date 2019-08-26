@@ -96,14 +96,16 @@
                         </table>
                     </div>
                 </div>
-                <div class="card-footer">
-                    <div class="d-flex align-items-center">
-                        <a href="/cup/catalog/category/{{ category.uuid }}/edit" class="btn btn-info btn-round ml-auto">
-                            <i class="fa fa-edit"></i>
-                            Изменить категорию
-                        </a>
+                {% if category.uuid %}
+                    <div class="card-footer">
+                        <div class="d-flex align-items-center">
+                            <a href="/cup/catalog/category/{{ category.uuid }}/edit" class="btn btn-info btn-round ml-auto">
+                                <i class="fa fa-edit"></i>
+                                Изменить категорию
+                            </a>
+                        </div>
                     </div>
-                </div>
+                {% endif %}
             </div>
         </div>
     </div>
