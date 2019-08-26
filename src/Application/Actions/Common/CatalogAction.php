@@ -187,10 +187,6 @@ class CatalogAction extends Action
             'status' => \Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
         ]);
 
-        pre($product);
-
-        exit;
-
         if (is_null($product) === false) {
             $category = $categories->firstWhere('uuid', $product->category);
             $files = $files->merge(
