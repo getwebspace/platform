@@ -115,6 +115,8 @@ class CatalogAction extends Action
                 'files' => $files,
             ]);
         }
+
+        return null;
     }
 
     /**
@@ -169,6 +171,8 @@ class CatalogAction extends Action
                 'files' => $files,
             ]);
         }
+
+        return null;
     }
 
     /**
@@ -203,6 +207,8 @@ class CatalogAction extends Action
                 'files' => $files,
             ]);
         }
+
+        return null;
     }
 
     /**

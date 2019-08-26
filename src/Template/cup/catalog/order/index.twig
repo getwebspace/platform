@@ -43,7 +43,7 @@
                                 <tr>
                                     <td>{{ item.serial }}</td>
                                     <td>{{ item.user.getName() }}</td>
-                                    <td>{{ reference('/Domain/Types/OrderStatusType::LIST', item.status) }}</td>
+                                    <td>{{ reference('/Domain/Types/Catalog/OrderStatusType::LIST', item.status) }}</td>
                                     <td>
                                         <pre class="mt-2 mb-2">{{ item.comment|truncate(250) }}</pre>
                                     </td>
