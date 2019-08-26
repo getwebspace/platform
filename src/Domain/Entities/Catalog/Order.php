@@ -25,9 +25,8 @@ class Order extends Model
     public $uuid;
 
     /**
-     * @var integer
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue()
+     * @var string
+     * @ORM\Column(type="string", length=7)
      */
     public $serial;
 
@@ -65,10 +64,24 @@ class Order extends Model
     public $comment;
 
     /**
-     * @var array
-     * @ORM\Column(type="array")
+     * @var string
+     * @ORM\Column(type="string", length=50, nullable=true)
      */
-    public $items = [];
+    public $phone;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    public $email;
+
+    /**
+     * @var array
+     * @ORM\Column(name="`list`", type="array")
+     */
+    public $list = [
+        // 'uuid' => 'count',
+    ];
 
     /**
      * @var string
@@ -87,9 +100,4 @@ class Order extends Model
      * @ORM\Column(type="string", length=50, nullable=true)
      */
     public $external_id;
-
-    /**
-     * @var array
-     */
-    public $select = [];
 }

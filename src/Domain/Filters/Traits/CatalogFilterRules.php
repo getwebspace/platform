@@ -126,6 +126,42 @@ trait CatalogFilterRules
     }
 
     /**
+     * Генерирует строку криптографически случайных байт произвольной длины
+     *
+     * @param int $length
+     *
+     * @return \Closure
+     */
+    public function UniqueSerialID($length = 7)
+    {
+        return function (&$data, $field) use ($length) {
+            $value = &$data[$field];
+
+            if (!$value) {
+                $value = strtoupper(substr(bin2hex(random_bytes(10)), 0, $length));
+            }
+
+            return true;
+        };
+    }
+
+    /**
+     * Проверяет наличие имени или UUID пользователя
+     *
+     * @return \Closure
+     */
+    public function CheckClient()
+    {
+        return function (&$data, $field) {
+            if(empty($data['delivery']['client']) && empty($data['user_uuid'])) {
+                return false;
+            }
+
+            return true;
+        };
+    }
+
+    /**
      * Проверяет поле product у категории
      *
      * @return \Closure
@@ -163,7 +199,7 @@ trait CatalogFilterRules
      *
      * @return \Closure
      */
-    public function ValidOrderItems()
+    public function ValidOrderList()
     {
         return function (&$data, $field) {
             $value = &$data[$field];
@@ -174,9 +210,12 @@ trait CatalogFilterRules
                 return true;
             }
 
-            foreach ($value as $item) {
-                if (!\Ramsey\Uuid\Uuid::isValid($item)) {
+            foreach ($value as $uuid => $count) {
+                if (!\Ramsey\Uuid\Uuid::isValid($uuid)) {
                     return false;
+                }
+                if (!ctype_digit($count) || $count <= 0) {
+                    unset($value[$uuid]);
                 }
             }
 

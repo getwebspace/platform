@@ -4,37 +4,202 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Каталог</h2>
+                <h2 class="text-white pb-2 fw-bold">Заказы</h2>
             </div>
         </div>
     </div>
 {% endblock %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
                     <div class="card-header">
                         <div class="card-head-row">
-                            <div class="card-title">{{ item.uuid ? 'Редактирование заказа ' ~ item.serial : 'Создание нового заказа' }}</div>
+                            <div class="card-title">{{ order.uuid ? 'Редактирование заказа ' ~ order.serial : 'Создание нового заказа' }}</div>
                         </div>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Получатель',
-                                    'type': 'text',
-                                    'name': 'delivery[client]',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="ФИО клиента"></i>',
-                                    'args': {
-                                        'value': item.user ? item.user.getName() : item.delivery.client,
-                                        'required': true,
-                                        'readonly': item.user ? true : false
-                                    }
-                                } %}
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Получатель',
+                                            'type': 'text',
+                                            'name': 'delivery[client]',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="ФИО клиента"></i>',
+                                            'args': {
+                                                'value': order.user ? order.user.getName() : order.delivery.client,
+                                                'required': true,
+                                                'readonly': order.user ? true : false
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Адрес доставки',
+                                            'type': 'textarea',
+                                            'name': 'delivery[address]',
+                                            'args': {
+                                                'value': order.delivery.address,
+                                                'style': 'min-height: 131px;'
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Комментарий',
+                                            'type': 'textarea',
+                                            'name': 'comment',
+                                            'args': {
+                                                'value': order.comment,
+                                                'style': 'min-height: 131px;'
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
                             </div>
+
+
+                            <div class="col-md-6">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Дата создания',
+                                            'type': 'date',
+                                            'args': {
+                                                'value': order.date|date('d.m.Y H:i:s'),
+                                                'placeholder': '20.01.2019 12:34',
+                                                'readonly': true
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Телефон',
+                                            'type': 'text',
+                                            'name': 'phone',
+                                            'args': {
+                                                'value': order.phone,
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'E-Mail',
+                                            'type': 'date',
+                                            'name': 'email',
+                                            'args': {
+                                                'value': order.email,
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Статус',
+                                            'type': 'select',
+                                            'name': 'status',
+                                            'args': {
+                                                'option': reference('/Domain/Types/Catalog/OrderStatusType::LIST'),
+                                                'selected': order.status ? order.status : reference('/Domain/Types/Catalog/OrderStatusType::STATUS_PROCESS')
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Доставка',
+                                            'type': 'date',
+                                            'name': 'shipping',
+                                            'args': {
+                                                'value': order.shipping|date('d.m.Y H:i:s'),
+                                                'placeholder': '20.01.2019 12:34',
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <div class="card-title">Состав заказа</div>
+                            <a href="/cup/catalog/order/product-list" rel="modal:open" class="btn btn-primary btn-round ml-auto">
+                                <i class="fa fa-plus"></i>
+                                Добавить товар
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table data-table class="display table table-striped table-hover" >
+                            <thead>
+                                <tr>
+                                    <th class="no-sorting">Позиция</th>
+                                    <th width="15%" class="no-sorting">Цена</th>
+                                    <th width="15%" class="no-sorting">Количество</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% set sum = 0 %}
+                                {% for product in products %}
+                                    {% set count = order.list[product.uuid.toString()] %}
+                                    {% set sum = sum + (product.price * count) %}
+                                    <tr>
+                                        <td>{{ product.title }}</td>
+                                        <td>{{ product.price|format_number({fraction_digit: 2}) }}</td>
+                                        <td>
+                                            {% include 'cup/form.twig' with {
+                                                'type': 'number',
+                                                'name': 'list['~ product.uuid ~']',
+                                                'args': {
+                                                    'value': count,
+                                                    'placeholder': '1',
+                                                    'step': 'any',
+                                                    'min': '0',
+                                                }
+                                            } %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row justify-content-center">
                             <div class="col-md-3">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Идентификатор пользователя',
@@ -42,10 +207,11 @@
                                     'name': 'user_uuid',
                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
                                     'args': {
-                                        'value': item.user ? item.user.uuid : ''
+                                        'value': order.user ? order.user.uuid : ''
                                     }
                                 } %}
                             </div>
+
                             <div class="col-md-3">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Внешний ID',
@@ -53,118 +219,17 @@
                                     'name': 'external_id',
                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
                                     'args': {
-                                        'value': item.external_id,
+                                        'value': order.external_id,
                                     }
                                 } %}
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Адрес доставки',
-                                    'type': 'textarea',
-                                    'name': 'delivery[address]',
-                                    'args': {
-                                        'value': item.delivery.address,
-                                        'style': 'min-height: 131px;'
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Статус',
-                                            'type': 'select',
-                                            'name': 'status',
-                                            'args': {
-                                                'option': reference('/Domain/Types/OrderStatusType::LIST'),
-                                                'selected': item.status
-                                            }
-                                        } %}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Дата создания',
-                                            'type': 'date',
-                                            'args': {
-                                                'value': item.date|date('d.m.Y H:i'),
-                                                'placeholder': '20.01.2019 12:34',
-                                                'readonly': true
-                                            }
-                                        } %}
-                                    </div>
-                                    <div class="col-md-6">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Дата завершения',
-                                            'type': 'date',
-                                            'name': 'shipping',
-                                            'args': {
-                                                'value': item.shipping|date('d.m.Y H:i'),
-                                                'placeholder': '20.01.2019 12:34',
-                                            }
-                                        } %}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Комментарий',
-                                    'type': 'textarea',
-                                    'name': 'comment',
-                                    'args': {
-                                        'value': item.comment,
-                                        'style': 'min-height: 131px;'
-                                    }
-                                } %}
-                            </div>
-                        </div>
-
-                        <hr/>
-
-                        <table data-table class="display table table-striped table-hover" >
-                            <thead>
-                                <tr>
-                                    <th width="5%" class="no-sorting text-center">#</th>
-                                    <th class="no-sorting">Позиция</th>
-                                    <th width="10%" class="no-sorting">Цена</th>
-                                    <th width="10%" class="no-sorting">Сумма</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% set sum = 0 %}
-                                {% for product in item.items %}
-                                    {% set sum = sum + product.price %}
-                                    <tr>
-                                        <td>
-                                            {% include 'cup/form.twig' with {
-                                                'label': loop.index,
-                                                'type': 'checkbox',
-                                                'name': 'items['~ loop.index ~']',
-                                                'args': {
-                                                    'value': product.uuid,
-                                                    'checked': true,
-                                                }
-                                            } %}
-                                        </td>
-                                        <td>{{ product.title }}</td>
-                                        <td>{{ product.price|format_number({fraction_digit: 2}) }}</td>
-                                        <td>{{ sum|format_number({fraction_digit: 2}) }}</td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
                     </div>
                     <div class="card-action">
                         <button type="submit" class="btn btn-success">Сохранить</button>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
-    </div>
+    </form>
 {% endblock %}

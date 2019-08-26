@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Каталог</h2>
+                <h2 class="text-white pb-2 fw-bold">Заказы</h2>
             </div>
         </div>
     </div>
@@ -27,55 +27,57 @@
                     <div class="table-responsive">
                         <table data-table class="display table table-striped table-hover">
                             <thead>
-                            <tr>
-                                <th width="5%">#</th>
-                                <th>Заказчик</th>
-                                <th>Статус</th>
-                                <th>Комментарий</th>
-                                <th width="15%">Товаров</th>
-                                <th width="15%">Дата добавления</th>
-                                <th width="15%">Дата завершения</th>
-                                <th width="10%" class="text-center no-sorting"></th>
-                            </tr>
+                                <tr>
+                                    <th width="5%">#</th>
+                                    <th>Заказчик</th>
+                                    <th width="10%">Статус</th>
+                                    <th>Комментарий</th>
+                                    <th width="10%">Товаров</th>
+                                    <th width="15%">Дата добавления</th>
+                                    <th width="15%">Доставка</th>
+                                    <th width="10%" class="text-center no-sorting"></th>
+                                </tr>
                             </thead>
                             <tbody>
-                            {% for item in orders %}
-                                <tr>
-                                    <td>{{ item.serial }}</td>
-                                    <td>{{ item.user.getName() }}</td>
-                                    <td>{{ reference('/Domain/Types/Catalog/OrderStatusType::LIST', item.status) }}</td>
-                                    <td>
-                                        <pre class="mt-2 mb-2">{{ item.comment|truncate(250) }}</pre>
-                                    </td>
-                                    <td>{{ item.items|length }}</td>
-                                    <td>{{ item.date|date('d.m.Y H:i') }}</td>
-                                    <td>{{ item.shipping|date('d.m.Y H:i') }}</td>
-                                    <td class="text-center">
-                                        <div class="btn-group">
-                                            <div class="btn-group dropdown">
-                                                <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                                                    <i class="fas fa-bars"></i>
-                                                </button>
-                                                <ul class="dropdown-menu" role="menu">
-                                                    <li>
-                                                        <a href="/cup/catalog/order/{{ item.uuid }}/edit" class="btn btn-link"><i class="fas fa-edit"></i>Изменить</a>
-                                                    </li>
-                                                    <li>
-                                                        <div class="dropdown-divider"></div>
-                                                    </li>
-                                                    <li>
-                                                        <form action="/cup/catalog/order/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить публикацию?');">
-                                                            <button type="submit" class="btn btn-link text-danger">
-                                                                <i class="fas fa-trash-alt"></i> Удалить
-                                                            </button>
-                                                        </form>
-                                                    </li>
-                                                </ul>
+                                {% for item in orders %}
+                                    <tr>
+                                        <td>{{ item.serial }}</td>
+                                        <td>{{ item.user ? item.user.getName() : item.delivery.client }}</td>
+                                        <td>
+                                            <span class="badge badge-secondary">{{ reference('/Domain/Types/Catalog/OrderStatusType::LIST', item.status) }}</span>
+                                        </td>
+                                        <td>
+                                            <pre class="mt-2 mb-2">{{ item.comment|truncate(250) }}</pre>
+                                        </td>
+                                        <td>{{ item.list|length }}</td>
+                                        <td>{{ item.date|date('d.m.Y H:i') }}</td>
+                                        <td>{{ item.shipping|date('d.m.Y H:i') }}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <div class="btn-group dropdown">
+                                                    <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                                                        <i class="fas fa-bars"></i>
+                                                    </button>
+                                                    <ul class="dropdown-menu" role="menu">
+                                                        <li>
+                                                            <a href="/cup/catalog/order/{{ item.uuid }}/edit" class="btn btn-link"><i class="fas fa-edit"></i>Изменить</a>
+                                                        </li>
+                                                        <li>
+                                                            <div class="dropdown-divider"></div>
+                                                        </li>
+                                                        <li>
+                                                            <form action="/cup/catalog/order/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить публикацию?');">
+                                                                <button type="submit" class="btn btn-link text-danger">
+                                                                    <i class="fas fa-trash-alt"></i> Удалить
+                                                                </button>
+                                                            </form>
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>

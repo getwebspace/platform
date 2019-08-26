@@ -15,12 +15,17 @@ class OrderUpdateAction extends CatalogAction
             $order = $this->orderRepository->findOneBy(['uuid' => $this->resolveArg('order')]);
 
             if (!$order->isEmpty()) {
+                $products = collect($this->productRepository->findBy(['uuid' => array_keys($order->list)]));
+
                 if ($this->request->isPost()) {
                     $data = [
                         'uuid' => $order->uuid,
+                        'serial' => $order->serial,
                         'delivery' => $this->request->getParam('delivery'),
                         'user_uuid' => $this->request->getParam('user_uuid'),
-                        'items' => (array)$this->request->getParam('items', []),
+                        'list' => (array)$this->request->getParam('list', []),
+                        'phone' => $this->request->getParam('phone'),
+                        'email' => $this->request->getParam('email'),
                         'status' => $this->request->getParam('status'),
                         'comment' => $this->request->getParam('comment'),
                         'shipping' => $this->request->getParam('shipping'),
@@ -30,16 +35,12 @@ class OrderUpdateAction extends CatalogAction
                     $check = \Domain\Filters\Catalog\Order::check($data);
 
                     if ($check === true) {
-                        exit;
-
-
                         try {
-                            $product->replace($data);
-                            $this->entityManager->persist($product);
-                            $this->handlerFileUpload($product);
+                            $order->replace($data);
+                            $this->entityManager->persist($order);
                             $this->entityManager->flush();
 
-                            return $this->response->withAddedHeader('Location', '/cup/catalog/' . $category->uuid . '/product');
+                            return $this->response->withAddedHeader('Location', '/cup/catalog/order');
                         } catch (Exception $e) {
                             // todo nothing
                         }
@@ -47,7 +48,8 @@ class OrderUpdateAction extends CatalogAction
                 }
 
                 return $this->respondRender('cup/catalog/order/form.twig', [
-                    'item' => $order
+                    'order' => $order,
+                    'products' => $products,
                 ]);
             }
         }

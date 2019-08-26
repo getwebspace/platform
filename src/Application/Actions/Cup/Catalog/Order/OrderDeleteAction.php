@@ -10,9 +10,9 @@ class OrderDeleteAction extends CatalogAction
 {
     protected function action(): \Slim\Http\Response
     {
-        if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            /** @var \Domain\Entities\Page $item */
-            $item = $this->pageRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
+        if ($this->resolveArg('order') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('order'))) {
+            /** @var \Domain\Entities\Catalog\Order $item */
+            $item = $this->orderRepository->findOneBy(['uuid' => $this->resolveArg('order')]);
 
             if (!$item->isEmpty() && $this->request->isPost()) {
                 $this->entityManager->remove($item);
@@ -20,6 +20,6 @@ class OrderDeleteAction extends CatalogAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/page');
+        return $this->response->withAddedHeader('Location', '/cup/catalog/order');
     }
 }

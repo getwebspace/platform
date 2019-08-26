@@ -88,6 +88,7 @@ $app
                         $app->map(['get', 'post'], '/add', \Application\Actions\Cup\Catalog\Order\OrderCreateAction::class);
                         $app->map(['get', 'post'], '/{order}/edit', \Application\Actions\Cup\Catalog\Order\OrderUpdateAction::class);
                         $app->map(['get', 'post'], '/{order}/delete', \Application\Actions\Cup\Catalog\Order\OrderDeleteAction::class);
+                        $app->map(['get', 'post'], '/product-list', \Application\Actions\Cup\Catalog\Order\OrderProductListAction::class);
                     });
                 });
 
