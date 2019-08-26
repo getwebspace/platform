@@ -1,10 +1,7 @@
 <div class="row">
     <div class="col-12">
         <div data-input="" class="form-group ">
-            <label class="placeholder">
-                <b>Товар</b>
-            </label>
-
+            <label class="placeholder"><b>Товар</b></label>
             <select type="select">
                 {% for product in products %}
                     <option value="{{ product.uuid }}" data-price="{{ product.price }}">{{ product.title }}</option>
@@ -58,14 +55,12 @@
 
                 $input
                     .attr('name', 'list[' + $selected.attr('value') + ']')
-                    .val($quantity.val())
-                ;
+                    .val($quantity.val());
 
                 table.row.add([$selected.text(), $selected.data('price'), $quantity.val()])
                     .draw(true)
                     .nodes().to$()
-                    .find('td:last-child').html($inputBlock)
-                ;
+                    .find('td:last-child').html($inputBlock);
 
                 $.modal.close();
             }
