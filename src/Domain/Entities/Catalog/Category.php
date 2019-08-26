@@ -87,6 +87,13 @@ class Category extends Model
     public $order;
 
     /**
+     * @var string
+     * @see \Domain\Types\Catalog\CategoryStatusType::LIST
+     * @ORM\Column(type="CatalogCategoryStatusType", length=50)
+     */
+    public $status = \Domain\Types\Catalog\CategoryStatusType::STATUS_WORK;
+
+    /**
      * @var array
      * @ORM\Column(type="array")
      */

@@ -10,24 +10,29 @@ class CategoryDeleteAction extends CatalogAction
     {
         if ($this->resolveArg('category') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('category'))) {
             /** @var \Domain\Entities\Catalog\Category $item */
-            $item = $this->categoryRepository->findOneBy(['uuid' => $this->resolveArg('category')]);
+            $item = $this->categoryRepository->findOneBy(['uuid' => $this->resolveArg('category'), 'status' => \Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]);
 
             if (!$item->isEmpty() && $this->request->isPost()) {
-                $categories = collect($this->categoryRepository->findAll());
+                $categories = collect($this->categoryRepository->findBy([
+                    'status' => \Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+                ]));
                 $childCategoriesUuid = $this->getCategoryChildrenUUID($categories, $item);
 
                 // remove children category
-                foreach ($this->categoryRepository->findBy(['uuid' => $childCategoriesUuid]) as $child) {
-                    $this->entityManager->remove($child);
+                foreach ($this->categoryRepository->findBy(['uuid' => $childCategoriesUuid, 'status' => \Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]) as $child) {
+                    $child->set('status', \Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE);
+                    $this->entityManager->persist($child);
                 }
 
                 // remove children category
-                foreach ($this->productRepository->findBy(['category' => $childCategoriesUuid]) as $child) {
-                    $this->entityManager->remove($child);
+                foreach ($this->productRepository->findBy(['category' => $childCategoriesUuid, 'status' => \Domain\Types\Catalog\ProductStatusType::STATUS_WORK]) as $child) {
+                    $child->set('status', \Domain\Types\Catalog\ProductStatusType::STATUS_DELETE);
+                    $this->entityManager->persist($child);
                 }
 
                 // remove category
-                $this->entityManager->remove($item);
+                $item->set('status', \Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE);
+                $this->entityManager->persist($item);
 
                 // commit
                 $this->entityManager->flush();
@@ -45,11 +50,10 @@ class CategoryDeleteAction extends CatalogAction
      */
     protected function getCategoryChildrenUUID(\AEngine\Entity\Collection $categories, \Domain\Entities\Catalog\Category $curCategory = null)
     {
-        $result = [];
+        $result = [$curCategory->uuid->toString()];
 
         /** @var \Domain\Entities\Catalog\Category $category */
         foreach ($categories->where('parent', $curCategory->uuid) as $childCategory) {
-            $result[] = $childCategory->uuid->toString();
             $result = array_merge($result, $this->getCategoryChildrenUUID($categories, $childCategory));
         }
 

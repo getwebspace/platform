@@ -35,6 +35,7 @@ class ProductCreateAction extends CatalogAction
                 'country' => $this->request->getParam('country'),
                 'manufacturer' => $this->request->getParam('manufacturer'),
                 'order' => $this->request->getParam('order'),
+                'date' => $this->request->getParam('date'),
                 'external_id' => $this->request->getParam('external_id'),
             ];
 

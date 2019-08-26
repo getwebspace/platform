@@ -14,10 +14,11 @@ class ProductDeleteAction extends CatalogAction
 
         if ($this->resolveArg('product') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('product'))) {
             /** @var \Domain\Entities\Catalog\Product $item */
-            $item = $this->productRepository->findOneBy(['uuid' => $this->resolveArg('product')]);
+            $item = $this->productRepository->findOneBy(['uuid' => $this->resolveArg('product'), 'status' => \Domain\Types\Catalog\ProductStatusType::STATUS_WORK]);
 
             if (!$item->isEmpty() && $this->request->isPost()) {
-                $this->entityManager->remove($item);
+                $item->set('status', \Domain\Types\Catalog\ProductStatusType::STATUS_DELETE);
+                $this->entityManager->persist($item);
                 $this->entityManager->flush();
             }
         }

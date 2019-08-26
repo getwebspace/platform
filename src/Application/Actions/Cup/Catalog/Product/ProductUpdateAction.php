@@ -11,7 +11,7 @@ class ProductUpdateAction extends CatalogAction
     {
         if ($this->resolveArg('product') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('product'))) {
             /** @var \Domain\Entities\Catalog\Product $product */
-            $product = $this->productRepository->findOneBy(['uuid' => $this->resolveArg('product')]);
+            $product = $this->productRepository->findOneBy(['uuid' => $this->resolveArg('product'), 'status' => \Domain\Types\Catalog\ProductStatusType::STATUS_WORK]);
 
             if (!$product->isEmpty()) {
                 if ($this->request->isPost()) {
@@ -52,6 +52,7 @@ class ProductUpdateAction extends CatalogAction
                             'country' => $this->request->getParam('country'),
                             'manufacturer' => $this->request->getParam('manufacturer'),
                             'order' => $this->request->getParam('order'),
+                            'date' => $this->request->getParam('date'),
                             'external_id' => $this->request->getParam('external_id'),
                         ];
 

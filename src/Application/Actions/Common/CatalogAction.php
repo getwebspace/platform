@@ -44,7 +44,9 @@ class CatalogAction extends Action
     protected function action(): \Slim\Http\Response
     {
         $params = $this->parsePath();
-        $categories = collect($this->categoryRepository->findAll());
+        $categories = collect($this->categoryRepository->findBy([
+            'status' => \Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+        ]));
         $files = collect(
             $this->fileRepository->findBy([
                 'item' => \Domain\Types\FileItemType::ITEM_CATALOG_CATEGORY,
@@ -84,9 +86,18 @@ class CatalogAction extends Action
         if ($params['address']['category'] == '' && $params['address']['product'] == '') {
             $pagination = $this->getParameter('catalog_category_pagination');
             $products = collect(
-                $this->productRepository->findBy([], null, $pagination, $params['offset'] * $pagination)
+                $this->productRepository->findBy(
+                    [
+                        'status' => \Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+                    ],
+                    null,
+                    $pagination,
+                    $params['offset'] * $pagination
+                )
             );
-            $productsCount = $this->productRepository->count([]);
+            $productsCount = $this->productRepository->count([
+                'status' => \Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+            ]);
             $files = $files->merge(
                 $this->fileRepository->findBy([
                     'item' => \Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
@@ -126,9 +137,20 @@ class CatalogAction extends Action
             $products = collect(
                 $this
                     ->productRepository
-                    ->findBy(['category' => $categoryUUIDs], null, $category->pagination, $params['offset'] * $category->pagination)
+                    ->findBy(
+                        [
+                            'category' => $categoryUUIDs,
+                            'status' => \Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+                        ],
+                        null,
+                        $category->pagination,
+                        $params['offset'] * $category->pagination
+                    )
             );
-            $productsCount = $this->productRepository->count(['category' => $categoryUUIDs]);
+            $productsCount = $this->productRepository->count([
+                'category' => $categoryUUIDs,
+                'status' => \Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+            ]);
             $files = $files->merge(
                 $this->fileRepository->findBy([
                     'item' => \Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
@@ -160,7 +182,14 @@ class CatalogAction extends Action
     protected function prepareProduct(array &$params, &$categories, &$files)
     {
         /** @var \Domain\Entities\Catalog\Product $product */
-        $product = $this->productRepository->findOneBy(['address' => $params['address']['product']]);
+        $product = $this->productRepository->findOneBy([
+            'address' => $params['address']['product'],
+            'status' => \Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+        ]);
+
+        pre($product);
+
+        exit;
 
         if (is_null($product) === false) {
             $category = $categories->firstWhere('uuid', $product->category);

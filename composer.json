@@ -16,7 +16,6 @@
         "slim/twig-view": "^2.4",
         "slim/http-cache": "^0.4.0",
         "doctrine/orm": "^2",
-        "aengine/memory": "^1.0",
         "aengine/entity": "^1.0",
         "aengine/validator": "^1.0",
         "aengine/support": "^1.0",

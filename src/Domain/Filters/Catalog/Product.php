@@ -81,6 +81,8 @@ class Product extends Filter
                 ->addRule($filter->leadInteger())
             ->attr('meta')
                 ->addRule($filter->ValidMeta())
+            ->attr('date')
+                ->addRule($filter->ValidDate())
             ->attr('external_id')
                 ->addRule($filter->leadStr());
 

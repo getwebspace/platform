@@ -143,6 +143,19 @@ class Product extends Model
     public $order = 1;
 
     /**
+     * @var string
+     * @see \Domain\Types\Catalog\ProductStatusType::LIST
+     * @ORM\Column(type="CatalogProductStatusType", length=50)
+     */
+    public $status = \Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
+
+    /**
+     * @var DateTime
+     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
+     */
+    public $date;
+
+    /**
      * @var array
      * @ORM\Column(type="array")
      */

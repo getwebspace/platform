@@ -3,8 +3,6 @@
 namespace Application\Actions\Cup\Catalog\Product;
 
 use Application\Actions\Cup\Catalog\CatalogAction;
-use Psr\Container\ContainerInterface;
-use Slim\Http\Response;
 
 class ProductListAction extends CatalogAction
 {
@@ -15,7 +13,10 @@ class ProductListAction extends CatalogAction
         if (!empty($this->args['category'])) {
             if (\Ramsey\Uuid\Uuid::isValid($this->resolveArg('category'))) {
                 /** @var \Domain\Entities\Catalog\Category $category */
-                $category = $this->categoryRepository->findOneBy(['uuid' => $this->resolveArg('category')]);
+                $category = $this->categoryRepository->findOneBy([
+                    'uuid' => $this->resolveArg('category'),
+                    'status' => \Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+                ]);
             } else {
                 return $this->response->withAddedHeader('Location', '/cup/shop/product');
             }
@@ -25,10 +26,16 @@ class ProductListAction extends CatalogAction
 
         switch (is_null($category)) {
             case true:
-                $products = collect($this->productRepository->findAll());
+                $products = collect($this->productRepository->findBy([
+                    'status' => \Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+                ]));
                 break;
             case false:
-                $products = collect($this->productRepository->findBy(['category' => $this->getCategoryChildrenUUID($categories, $category)]));
+            default:
+                $products = collect($this->productRepository->findBy([
+                    'category' => $this->getCategoryChildrenUUID($categories, $category),
+                    'status' => \Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+                ]));
                 break;
         }
 

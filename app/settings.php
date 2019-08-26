@@ -24,7 +24,9 @@ return [
             Domain\Types\FileItemType::NAME => \Domain\Types\FileItemType::class,
             Domain\Types\PageTypeType::NAME => \Domain\Types\PageTypeType::class,
             Domain\Types\GuestBookStatusType::NAME => \Domain\Types\GuestBookStatusType::class,
-            Domain\Types\OrderStatusType::NAME => \Domain\Types\OrderStatusType::class,
+            Domain\Types\Catalog\CategoryStatusType::NAME => \Domain\Types\Catalog\CategoryStatusType::class,
+            Domain\Types\Catalog\ProductStatusType::NAME => \Domain\Types\Catalog\ProductStatusType::class,
+            Domain\Types\Catalog\OrderStatusType::NAME => \Domain\Types\Catalog\OrderStatusType::class,
         ],
 
         // Connection to DB settings

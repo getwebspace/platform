@@ -72,10 +72,10 @@ class Order extends Model
 
     /**
      * @var string
-     * @see \Domain\Types\OrderStatusType::LIST
-     * @ORM\Column(type="OrderStatusType", length=50)
+     * @see \Domain\Types\Catalog\OrderStatusType::LIST
+     * @ORM\Column(type="CatalogOrderStatusType", length=50)
      */
-    public $status = \Domain\Types\OrderStatusType::STATUS_NEW;
+    public $status = \Domain\Types\Catalog\OrderStatusType::STATUS_NEW;
 
     /**
      * @var DateTime

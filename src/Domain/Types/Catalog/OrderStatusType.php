@@ -1,12 +1,12 @@
 <?php
 
-namespace Domain\Types;
+namespace Domain\Types\Catalog;
 
 use Application\Types\EnumType;
 
 class OrderStatusType extends EnumType
 {
-    const NAME = 'OrderStatusType';
+    const NAME = 'CatalogOrderStatusType';
 
     const STATUS_NEW = 'new',
           STATUS_PROCESS = 'process',

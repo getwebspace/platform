@@ -13,7 +13,10 @@ class CategoryListAction extends CatalogAction
         if (!empty($this->args['parent'])) {
             if (\Ramsey\Uuid\Uuid::isValid($this->resolveArg('parent'))) {
                 /** @var \Domain\Entities\Catalog\Category $category */
-                $category = $this->categoryRepository->findOneBy(['uuid' => $this->resolveArg('parent')]);
+                $category = $this->categoryRepository->findOneBy([
+                    'uuid' => $this->resolveArg('parent'),
+                    'status' => \Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+                ]);
             } else {
                 return $this->response->withAddedHeader('Location', '/cup/catalog/category');
             }
@@ -21,10 +24,17 @@ class CategoryListAction extends CatalogAction
 
         switch (is_null($category)) {
             case true:
-                $categories = collect($this->categoryRepository->findBy(['parent' => \Ramsey\Uuid\Uuid::NIL]));
+                $categories = collect($this->categoryRepository->findBy([
+                    'parent' => \Ramsey\Uuid\Uuid::NIL,
+                    'status' => \Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+                ]));
                 break;
             case false:
-                $categories = collect($this->categoryRepository->findBy(['parent' => $category->uuid]));
+            default:
+                $categories = collect($this->categoryRepository->findBy([
+                    'parent' => $category->uuid,
+                    'status' => \Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+                ]));
                 break;
         }
 

@@ -12,7 +12,7 @@ class CategoryUpdateAction extends CatalogAction
     {
         if ($this->resolveArg('category') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('category'))) {
             /** @var \Domain\Entities\Catalog\Category $item */
-            $item = $this->categoryRepository->findOneBy(['uuid' => $this->resolveArg('category')]);
+            $item = $this->categoryRepository->findOneBy(['uuid' => $this->resolveArg('category'), 'status' => \Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]);
 
             if (!$item->isEmpty()) {
                 if ($this->request->isPost()) {
