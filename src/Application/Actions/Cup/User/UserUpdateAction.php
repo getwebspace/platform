@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Actions\Cup\User;
+namespace App\Application\Actions\Cup\User;
 
 use Exception;
 
@@ -9,7 +9,7 @@ class UserUpdateAction extends UserAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            /** @var \Domain\Entities\User $item */
+            /** @var \App\Domain\Entities\User $item */
             $item = $this->userRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
 
             if (!$item->isEmpty()) {
@@ -25,7 +25,7 @@ class UserUpdateAction extends UserAction
                         'status' => $this->request->getParam('status'),
                     ];
 
-                    $check = \Domain\Filters\User::check($data);
+                    $check = \App\Domain\Filters\User::check($data);
 
                     if ($check === true) {
                         try {

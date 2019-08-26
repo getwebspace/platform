@@ -1,8 +1,8 @@
 <?php
 
-namespace Application\Actions\Common;
+namespace App\Application\Actions\Common;
 
-use Application\Actions\Action;
+use App\Application\Actions\Action;
 use Psr\Container\ContainerInterface;
 
 class GuestBookAction extends Action
@@ -19,7 +19,7 @@ class GuestBookAction extends Action
     {
         parent::__construct($container);
 
-        $this->gbookRepository = $this->entityManager->getRepository(\Domain\Entities\GuestBook::class);
+        $this->gbookRepository = $this->entityManager->getRepository(\App\Domain\Entities\GuestBook::class);
     }
 
     protected function action(): \Slim\Http\Response
@@ -31,11 +31,11 @@ class GuestBookAction extends Action
                 'message' => $this->request->getParam('message'),
             ];
 
-            $check = \Domain\Filters\GuestBook::check($data);
+            $check = \App\Domain\Filters\GuestBook::check($data);
 
             if ($check === true) {
-                $model = new \Domain\Entities\GuestBook($data);
-                $model->status = \Domain\Types\GuestBookStatusType::STATUS_MODERATE;
+                $model = new \App\Domain\Entities\GuestBook($data);
+                $model->status = \App\Domain\Types\GuestBookStatusType::STATUS_MODERATE;
 
                 $this->entityManager->persist($model);
                 $this->entityManager->flush();
@@ -53,7 +53,7 @@ class GuestBookAction extends Action
         // get list of comments and obfuscate email address
         $list = collect(
             $this->gbookRepository->findBy(
-                ['status' => \Domain\Types\GuestBookStatusType::STATUS_WORK],
+                ['status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK],
                 [],
                 $this->getParameter('guestbook_pagination', 10),
                 (int)($this->args['page'] ?? 0)

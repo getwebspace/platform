@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\Entities;
+namespace App\Domain\Entities;
 
 use AEngine\Entity\Model;
 use DateTime;
@@ -45,10 +45,10 @@ class Page extends Model
 
     /**
      * @var string
-     * @see \Domain\Types\PageTypeType::LIST
+     * @see \App\Domain\Types\PageTypeType::LIST
      * @ORM\Column(type="PageTypeType", length=50)
      */
-    public $type = \Domain\Types\PageTypeType::TYPE_HTML;
+    public $type = \App\Domain\Types\PageTypeType::TYPE_HTML;
 
     /**
      * @var array

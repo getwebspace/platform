@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Actions;
+namespace App\Application\Actions;
 
 use JsonSerializable;
 

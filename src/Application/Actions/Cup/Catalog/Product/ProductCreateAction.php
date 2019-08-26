@@ -1,9 +1,8 @@
 <?php
 
-namespace Application\Actions\Cup\Catalog\Product;
+namespace App\Application\Actions\Cup\Catalog\Product;
 
-use AEngine\Support\Str;
-use Application\Actions\Cup\Catalog\CatalogAction;
+use App\Application\Actions\Cup\Catalog\CatalogAction;
 use Exception;
 
 class ProductCreateAction extends CatalogAction
@@ -39,11 +38,11 @@ class ProductCreateAction extends CatalogAction
                 'external_id' => $this->request->getParam('external_id'),
             ];
 
-            $check = \Domain\Filters\Catalog\Product::check($data);
+            $check = \App\Domain\Filters\Catalog\Product::check($data);
 
             if ($check === true) {
                 try {
-                    $model = new \Domain\Entities\Catalog\Product($data);
+                    $model = new \App\Domain\Entities\Catalog\Product($data);
                     $this->entityManager->persist($model);
                     $this->handlerFileUpload($model);
                     $this->entityManager->flush();

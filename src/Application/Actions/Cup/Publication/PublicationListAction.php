@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Actions\Cup\Publication;
+namespace App\Application\Actions\Cup\Publication;
 
 class PublicationListAction extends PublicationAction
 {

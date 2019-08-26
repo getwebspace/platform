@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\Filters\Traits;
+namespace App\Domain\Filters\Traits;
 
 use Slim\App;
 
@@ -18,9 +18,9 @@ trait FormFilterRules
             $app = $GLOBALS['app'];
 
             /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $formRepository */
-            $formRepository = $app->getContainer()->get(\Doctrine\ORM\EntityManager::class)->getRepository(\Domain\Entities\Form::class);
+            $formRepository = $app->getContainer()->get(\Doctrine\ORM\EntityManager::class)->getRepository(\App\Domain\Entities\Form::class);
 
-            /** @var \Domain\Entities\Page $form */
+            /** @var \App\Domain\Entities\Page $form */
             $form = $formRepository->findOneBy(['address' => str_escape($data[$field])]);
 
             return $form === null || (!empty($data['uuid']) && $form->uuid === $data['uuid']);

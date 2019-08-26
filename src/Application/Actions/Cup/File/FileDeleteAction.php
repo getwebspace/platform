@@ -1,16 +1,13 @@
 <?php
 
-namespace Application\Actions\Cup\File;
-
-use Psr\Container\ContainerInterface;
-use Slim\Http\Response;
+namespace App\Application\Actions\Cup\File;
 
 class FileDeleteAction extends FileAction
 {
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            /** @var \Domain\Entities\File $item */
+            /** @var \App\Domain\Entities\File $item */
             $item = $this->fileRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
 
             if (!$item->isEmpty() && $this->request->isPost()) {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Application\Actions\Cup\Publication\Category;
+namespace App\Application\Actions\Cup\Publication\Category;
 
-use Application\Actions\Cup\Publication\PublicationAction;
+use App\Application\Actions\Cup\Publication\PublicationAction;
 use Exception;
 
 class CategoryUpdateAction extends PublicationAction
@@ -10,7 +10,7 @@ class CategoryUpdateAction extends PublicationAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            /** @var \Domain\Entities\Publication\Category $item */
+            /** @var \App\Domain\Entities\Publication\Category $item */
             $item = $this->categoryRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
 
             if (!$item->isEmpty()) {
@@ -28,7 +28,7 @@ class CategoryUpdateAction extends PublicationAction
                         'template' => $this->request->getParam('template'),
                     ];
 
-                    $check = \Domain\Filters\Publication\Category::check($data);
+                    $check = \App\Domain\Filters\Publication\Category::check($data);
 
                     if ($check === true) {
                         try {

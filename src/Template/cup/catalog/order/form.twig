@@ -118,8 +118,8 @@
                                             'type': 'select',
                                             'name': 'status',
                                             'args': {
-                                                'option': reference('/Domain/Types/Catalog/OrderStatusType::LIST'),
-                                                'selected': order.status ? order.status : reference('/Domain/Types/Catalog/OrderStatusType::STATUS_PROCESS')
+                                                'option': reference('/App/Domain/Types/Catalog/OrderStatusType::LIST'),
+                                                'selected': order.status ? order.status : reference('/App/Domain/Types/Catalog/OrderStatusType::STATUS_PROCESS')
                                             }
                                         } %}
                                     </div>

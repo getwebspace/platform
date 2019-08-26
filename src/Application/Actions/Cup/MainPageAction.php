@@ -1,11 +1,8 @@
 <?php
 
-namespace Application\Actions\Cup;
+namespace App\Application\Actions\Cup;
 
-use Application\Actions\Action;
-use DateTime;
-use Exception;
-use Psr\Container\ContainerInterface;
+use App\Application\Actions\Action;
 
 class MainPageAction extends Action
 {
@@ -14,16 +11,16 @@ class MainPageAction extends Action
         return $this->respondRender('cup/layout.twig', [
             'notepad' => $this->getParameter('notepad_' . $this->request->getAttribute('user')->username, ''),
             'stats' => [
-                'pages' => $this->entityManager->getRepository(\Domain\Entities\Page::class)->count([]),
-                'users' => $this->entityManager->getRepository(\Domain\Entities\User::class)->count([]),
-                'publications' => $this->entityManager->getRepository(\Domain\Entities\Publication::class)->count([]),
-                'guestbook' => $this->entityManager->getRepository(\Domain\Entities\GuestBook::class)->count([]),
+                'pages' => $this->entityManager->getRepository(\App\Domain\Entities\Page::class)->count([]),
+                'users' => $this->entityManager->getRepository(\App\Domain\Entities\User::class)->count([]),
+                'publications' => $this->entityManager->getRepository(\App\Domain\Entities\Publication::class)->count([]),
+                'guestbook' => $this->entityManager->getRepository(\App\Domain\Entities\GuestBook::class)->count([]),
                 'catalog' => [
-                    'category' => $this->entityManager->getRepository(\Domain\Entities\Catalog\Category::class)->count([]),
-                    'product' => $this->entityManager->getRepository(\Domain\Entities\Catalog\Product::class)->count([]),
-                    'order' => $this->entityManager->getRepository(\Domain\Entities\Catalog\Order::class)->count([]),
+                    'category' => $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class)->count([]),
+                    'product' => $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class)->count([]),
+                    'order' => $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Order::class)->count([]),
                 ],
-                'files' => $this->entityManager->getRepository(\Domain\Entities\File::class)->count([]),
+                'files' => $this->entityManager->getRepository(\App\Domain\Entities\File::class)->count([]),
             ],
             'properties' => [
                 'os' => @implode(' ', [php_uname('s'), php_uname('r'), php_uname('m')]),

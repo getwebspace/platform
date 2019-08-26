@@ -1,9 +1,8 @@
 <?php
 
-namespace Application\Actions\Cup\Catalog\Order;
+namespace App\Application\Actions\Cup\Catalog\Order;
 
-use AEngine\Support\Str;
-use Application\Actions\Cup\Catalog\CatalogAction;
+use App\Application\Actions\Cup\Catalog\CatalogAction;
 use Exception;
 
 class OrderCreateAction extends CatalogAction
@@ -23,11 +22,11 @@ class OrderCreateAction extends CatalogAction
                 'external_id' => $this->request->getParam('external_id'),
             ];
 
-            $check = \Domain\Filters\Catalog\Order::check($data);
+            $check = \App\Domain\Filters\Catalog\Order::check($data);
 
             if ($check === true) {
                 try {
-                    $model = new \Domain\Entities\Catalog\Order($data);
+                    $model = new \App\Domain\Entities\Catalog\Order($data);
                     $this->entityManager->persist($model);
                     $this->entityManager->flush();
 

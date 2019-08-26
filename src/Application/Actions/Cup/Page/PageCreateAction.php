@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Actions\Cup\Page;
+namespace App\Application\Actions\Cup\Page;
 
 use Exception;
 
@@ -19,11 +19,11 @@ class PageCreateAction extends PageAction
                 'template' => $this->request->getParam('template'),
             ];
 
-            $check = \Domain\Filters\Page::check($data);
+            $check = \App\Domain\Filters\Page::check($data);
 
             if ($check === true) {
                 try {
-                    $model = new \Domain\Entities\Page($data);
+                    $model = new \App\Domain\Entities\Page($data);
                     $this->entityManager->persist($model);
                     $this->entityManager->flush();
 

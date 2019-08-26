@@ -1,11 +1,11 @@
 <?php
 
-namespace Domain\Filters;
+namespace App\Domain\Filters;
 
 use AEngine\Validator\Filter;
 use AEngine\Validator\Traits\FilterRules;
-use Domain\Filters\Traits\CommonFilterRules;
-use Domain\Filters\Traits\UserFilterRules;
+use App\Domain\Filters\Traits\CommonFilterRules;
+use App\Domain\Filters\Traits\UserFilterRules;
 
 class User extends Filter
 {
@@ -27,12 +27,12 @@ class User extends Filter
         $filter
             ->addGlobalRule($filter->leadTrim())
             ->option('username')
-                ->addRule($filter->leadStr(), \Domain\References\Errors\User::WRONG_USERNAME)
+                ->addRule($filter->leadStr(), \App\Domain\References\Errors\User::WRONG_USERNAME)
             ->option('email')
-                ->addRule($filter->checkEmail(), \Domain\References\Errors\User::WRONG_EMAIL)
+                ->addRule($filter->checkEmail(), \App\Domain\References\Errors\User::WRONG_EMAIL)
             ->attr('password')
                 ->addRule($filter->leadStr())
-                ->addRule($filter->checkStrlenBetween(3, 20), \Domain\References\Errors\User::WRONG_PASSWORD_LENGTH)
+                ->addRule($filter->checkStrlenBetween(3, 20), \App\Domain\References\Errors\User::WRONG_PASSWORD_LENGTH)
             ->attr('agent')
                 ->addRule($filter->leadStr())
             ->attr('ip')
@@ -84,11 +84,11 @@ class User extends Filter
         $filter
             ->addGlobalRule($filter->leadTrim())
             ->attr('username')
-                ->addRule($filter->leadStr(), \Domain\References\Errors\User::WRONG_USERNAME)
-                ->addRule($filter->UniqueUserUsername(), \Domain\References\Errors\User::WRONG_USERNAME_UNIQUE)
+            ->addRule($filter->leadStr(), \App\Domain\References\Errors\User::WRONG_USERNAME)
+            ->addRule($filter->UniqueUserUsername(), \App\Domain\References\Errors\User::WRONG_USERNAME_UNIQUE)
             ->attr('email')
-                ->addRule($filter->checkEmail(), \Domain\References\Errors\User::WRONG_EMAIL)
-                ->addRule($filter->UniqueUserEmail(), \Domain\References\Errors\User::WRONG_EMAIL_UNIQUE)
+            ->addRule($filter->checkEmail(), \App\Domain\References\Errors\User::WRONG_EMAIL)
+            ->addRule($filter->UniqueUserEmail(), \App\Domain\References\Errors\User::WRONG_EMAIL_UNIQUE)
             ->option('firstname')
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 20))
@@ -96,9 +96,9 @@ class User extends Filter
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 20))
             ->option('status')
-                ->addRule($filter->checkInKeys(\Domain\Types\UserStatusType::LIST))
+            ->addRule($filter->checkInKeys(\App\Domain\Types\UserStatusType::LIST))
             ->option('level')
-                ->addRule($filter->checkInKeys(\Domain\Types\UserLevelType::LIST));
+            ->addRule($filter->checkInKeys(\App\Domain\Types\UserLevelType::LIST));
 
         // если длинна пароля не 140 символов - значит пароль
         // был изменен и его следует хешировать
@@ -106,7 +106,7 @@ class User extends Filter
             $filter
                 ->attr('password')
                     ->addRule($filter->leadStr())
-                    ->addRule($filter->checkStrlenBetween(3, 20), \Domain\References\Errors\User::WRONG_PASSWORD_LENGTH)
+                ->addRule($filter->checkStrlenBetween(3, 20), \App\Domain\References\Errors\User::WRONG_PASSWORD_LENGTH)
                     ->addRule($filter->ValidPassword())
                 ->option('password_again')
                     ->addRule($filter->checkEqualToField('password'));

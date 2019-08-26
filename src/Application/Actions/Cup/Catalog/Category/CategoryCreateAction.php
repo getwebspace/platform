@@ -1,8 +1,8 @@
 <?php
 
-namespace Application\Actions\Cup\Catalog\Category;
+namespace App\Application\Actions\Cup\Catalog\Category;
 
-use Application\Actions\Cup\Catalog\CatalogAction;
+use App\Application\Actions\Cup\Catalog\CatalogAction;
 use Exception;
 
 class CategoryCreateAction extends CatalogAction
@@ -29,11 +29,11 @@ class CategoryCreateAction extends CatalogAction
                 'external_id' => $this->request->getParam('external_id'),
             ];
 
-            $check = \Domain\Filters\Catalog\Category::check($data);
+            $check = \App\Domain\Filters\Catalog\Category::check($data);
 
             if ($check === true) {
                 try {
-                    $model = new \Domain\Entities\Catalog\Category($data);
+                    $model = new \App\Domain\Entities\Catalog\Category($data);
                     $this->entityManager->persist($model);
                     $this->handlerFileUpload($model);
                     $this->entityManager->flush();

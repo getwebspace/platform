@@ -1,11 +1,11 @@
 <?php
 
-namespace Domain\Filters;
+namespace App\Domain\Filters;
 
 use AEngine\Validator\Filter;
 use AEngine\Validator\Traits\FilterRules;
-use \Domain\Filters\Traits\CommonFilterRules;
-use \Domain\Filters\Traits\FormFilterRules;
+use App\Domain\Filters\Traits\CommonFilterRules;
+use App\Domain\Filters\Traits\FormFilterRules;
 
 class Form extends Filter
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\Entities\Catalog;
+namespace App\Domain\Entities\Catalog;
 
 use AEngine\Entity\Model;
 use DateTime;
@@ -37,7 +37,7 @@ class Order extends Model
     public $user_uuid;
 
     /**
-     * @ORM\OneToOne(targetEntity="\Domain\Entities\User")
+     * @ORM\OneToOne(targetEntity="\App\Domain\Entities\User")
      * @ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid")
      */
     public $user;
@@ -85,10 +85,10 @@ class Order extends Model
 
     /**
      * @var string
-     * @see \Domain\Types\Catalog\OrderStatusType::LIST
+     * @see \App\Domain\Types\Catalog\OrderStatusType::LIST
      * @ORM\Column(type="CatalogOrderStatusType", length=50)
      */
-    public $status = \Domain\Types\Catalog\OrderStatusType::STATUS_NEW;
+    public $status = \App\Domain\Types\Catalog\OrderStatusType::STATUS_NEW;
 
     /**
      * @var DateTime

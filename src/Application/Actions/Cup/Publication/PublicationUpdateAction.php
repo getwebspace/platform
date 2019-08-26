@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Actions\Cup\Publication;
+namespace App\Application\Actions\Cup\Publication;
 
 use Exception;
 
@@ -9,7 +9,7 @@ class PublicationUpdateAction extends PublicationAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            /** @var \Domain\Entities\Publication $item */
+            /** @var \App\Domain\Entities\Publication $item */
             $item = $this->publicationRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
 
             if (!$item->isEmpty()) {
@@ -25,7 +25,7 @@ class PublicationUpdateAction extends PublicationAction
                         'meta' => $this->request->getParam('meta'),
                     ];
 
-                    $check = \Domain\Filters\Publication::check($data);
+                    $check = \App\Domain\Filters\Publication::check($data);
 
                     if ($check === true) {
                         try {

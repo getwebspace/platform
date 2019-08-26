@@ -1,9 +1,9 @@
 <?php
 
-namespace Application\Actions\Cup\Catalog;
+namespace App\Application\Actions\Cup\Catalog;
 
 use AEngine\Support\Str;
-use Application\Actions\Action;
+use App\Application\Actions\Action;
 use Psr\Container\ContainerInterface;
 
 abstract class CatalogAction extends Action
@@ -35,10 +35,10 @@ abstract class CatalogAction extends Action
     {
         parent::__construct($container);
 
-        $this->categoryRepository = $this->entityManager->getRepository(\Domain\Entities\Catalog\Category::class);
-        $this->productRepository = $this->entityManager->getRepository(\Domain\Entities\Catalog\Product::class);
-        $this->orderRepository = $this->entityManager->getRepository(\Domain\Entities\Catalog\Order::class);
-        $this->fileRepository = $this->entityManager->getRepository(\Domain\Entities\File::class);
+        $this->categoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class);
+        $this->productRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
+        $this->orderRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Order::class);
+        $this->fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
     }
 
     /**
@@ -64,13 +64,13 @@ abstract class CatalogAction extends Action
                 }
 
                 // create model
-                $fileModel = new \Domain\Entities\File([
+                $fileModel = new \App\Domain\Entities\File([
                     'name' => $name,
                     'type' => $file->getClientMediaType(),
                     'size' => (int)$file->getSize(),
                     'salt' => $salt,
                     'date' => new \DateTime(),
-                    'item' => is_a($model, \Domain\Entities\Catalog\Category::class) ? \Domain\Types\FileItemType::ITEM_CATALOG_CATEGORY : \Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
+                    'item' => is_a($model, \App\Domain\Entities\Catalog\Category::class) ? \App\Domain\Types\FileItemType::ITEM_CATALOG_CATEGORY : \App\Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
                     'item_uuid' => $model->uuid,
                 ]);
 

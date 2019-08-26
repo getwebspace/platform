@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\Filters\Traits;
+namespace App\Domain\Filters\Traits;
 
 use Slim\App;
 
@@ -18,9 +18,9 @@ trait UserFilterRules
             $app = $GLOBALS['app'];
 
             /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $userRepository */
-            $userRepository = $app->getContainer()->get(\Doctrine\ORM\EntityManager::class)->getRepository(\Domain\Entities\User::class);
+            $userRepository = $app->getContainer()->get(\Doctrine\ORM\EntityManager::class)->getRepository(\App\Domain\Entities\User::class);
 
-            /** @var \Domain\Entities\User $user */
+            /** @var \App\Domain\Entities\User $user */
             $user = $userRepository->findOneBy(['email' => str_escape($data[$field])]);
 
             return $user === null || (!empty($data['uuid']) && $user->uuid === $data['uuid']);
@@ -39,9 +39,9 @@ trait UserFilterRules
             $app = $GLOBALS['app'];
 
             /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $userRepository */
-            $userRepository = $app->getContainer()->get(\Doctrine\ORM\EntityManager::class)->getRepository(\Domain\Entities\User::class);
+            $userRepository = $app->getContainer()->get(\Doctrine\ORM\EntityManager::class)->getRepository(\App\Domain\Entities\User::class);
 
-            /** @var \Domain\Entities\User $user */
+            /** @var \App\Domain\Entities\User $user */
             $user = $userRepository->findOneBy(['username' => str_escape($data[$field])]);
 
             return $user === null || (!empty($data['uuid']) && $user->uuid === $data['uuid']);

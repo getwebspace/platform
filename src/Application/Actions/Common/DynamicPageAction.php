@@ -1,8 +1,8 @@
 <?php
 
-namespace Application\Actions\Common;
+namespace App\Application\Actions\Common;
 
-use Application\Actions\Action;
+use App\Application\Actions\Action;
 use Psr\Container\ContainerInterface;
 
 class DynamicPageAction extends Action
@@ -29,9 +29,9 @@ class DynamicPageAction extends Action
     {
         parent::__construct($container);
 
-        $this->pageRepository = $this->entityManager->getRepository(\Domain\Entities\Page::class);
-        $this->publicationCategoryRepository = $this->entityManager->getRepository(\Domain\Entities\Publication\Category::class);
-        $this->publicationRepository = $this->entityManager->getRepository(\Domain\Entities\Publication::class);
+        $this->pageRepository = $this->entityManager->getRepository(\App\Domain\Entities\Page::class);
+        $this->publicationCategoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Publication\Category::class);
+        $this->publicationRepository = $this->entityManager->getRepository(\App\Domain\Entities\Publication::class);
     }
 
     protected function action(): \Slim\Http\Response
@@ -89,17 +89,17 @@ class DynamicPageAction extends Action
     }
 
     /**
-     * @param \AEngine\Entity\Collection              $categories
-     * @param \Domain\Entities\Catalog\Category|null $curCategory
+     * @param \AEngine\Entity\Collection                 $categories
+     * @param \App\Domain\Entities\Catalog\Category|null $curCategory
      *
      * @return array
      */
-    protected function getCategoryChildrenUUID(\AEngine\Entity\Collection $categories, \Domain\Entities\Publication\Category $curCategory)
+    protected function getCategoryChildrenUUID(\AEngine\Entity\Collection $categories, \App\Domain\Entities\Publication\Category $curCategory)
     {
         $result = [$curCategory->uuid->toString()];
 
         if ($curCategory->children) {
-            /** @var \Domain\Entities\Publication\Category $category */
+            /** @var \App\Domain\Entities\Publication\Category $category */
             foreach ($categories->where('parent', $curCategory->uuid) as $childCategory) {
                 $result = array_merge($result, $this->getCategoryChildrenUUID($categories, $childCategory));
             }

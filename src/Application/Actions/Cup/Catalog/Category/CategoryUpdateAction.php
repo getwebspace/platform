@@ -1,9 +1,8 @@
 <?php
 
-namespace Application\Actions\Cup\Catalog\Category;
+namespace App\Application\Actions\Cup\Catalog\Category;
 
-use AEngine\Support\Str;
-use Application\Actions\Cup\Catalog\CatalogAction;
+use App\Application\Actions\Cup\Catalog\CatalogAction;
 use Exception;
 
 class CategoryUpdateAction extends CatalogAction
@@ -11,14 +10,14 @@ class CategoryUpdateAction extends CatalogAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('category') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('category'))) {
-            /** @var \Domain\Entities\Catalog\Category $item */
-            $item = $this->categoryRepository->findOneBy(['uuid' => $this->resolveArg('category'), 'status' => \Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]);
+            /** @var \App\Domain\Entities\Catalog\Category $item */
+            $item = $this->categoryRepository->findOneBy(['uuid' => $this->resolveArg('category'), 'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]);
 
             if (!$item->isEmpty()) {
                 if ($this->request->isPost()) {
                     // remove uploaded image
                     if (($uuidFile = $this->request->getParam('delete-image')) !== null && \Ramsey\Uuid\Uuid::isValid($uuidFile)) {
-                        /** @var \Domain\Entities\File $file */
+                        /** @var \App\Domain\Entities\File $file */
                         $file = $this->fileRepository->findOneBy(['uuid' => $uuidFile]);
 
                         if (!$file->isEmpty()) {
@@ -48,7 +47,7 @@ class CategoryUpdateAction extends CatalogAction
                             'external_id' => $this->request->getParam('external_id'),
                         ];
 
-                        $check = \Domain\Filters\Catalog\Category::check($data);
+                        $check = \App\Domain\Filters\Catalog\Category::check($data);
 
                         if ($check === true) {
                             try {
@@ -67,7 +66,7 @@ class CategoryUpdateAction extends CatalogAction
 
                 $categories = collect($this->categoryRepository->findAll());
                 $files = collect($this->fileRepository->findBy([
-                    'item' => \Domain\Types\FileItemType::ITEM_CATALOG_CATEGORY,
+                    'item' => \App\Domain\Types\FileItemType::ITEM_CATALOG_CATEGORY,
                     'item_uuid' => $item->uuid,
                 ]));
 

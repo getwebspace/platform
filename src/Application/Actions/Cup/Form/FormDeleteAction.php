@@ -1,16 +1,13 @@
 <?php
 
-namespace Application\Actions\Cup\Form;
-
-use Psr\Container\ContainerInterface;
-use Slim\Http\Response;
+namespace App\Application\Actions\Cup\Form;
 
 class FormDeleteAction extends FormAction
 {
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            /** @var \Domain\Entities\Form $item */
+            /** @var \App\Domain\Entities\Form $item */
             $item = $this->formRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
 
             if (!$item->isEmpty() && $this->request->isPost()) {

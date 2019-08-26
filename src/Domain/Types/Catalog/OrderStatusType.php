@@ -1,8 +1,8 @@
 <?php
 
-namespace Domain\Types\Catalog;
+namespace App\Domain\Types\Catalog;
 
-use Application\Types\EnumType;
+use App\Application\Types\EnumType;
 
 class OrderStatusType extends EnumType
 {

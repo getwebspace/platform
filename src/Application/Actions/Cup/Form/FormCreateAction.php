@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Actions\Cup\Form;
+namespace App\Application\Actions\Cup\Form;
 
 use Exception;
 
@@ -17,11 +17,11 @@ class FormCreateAction extends FormAction
                 'origin' => $this->request->getParam('origin'),
             ];
 
-            $check = \Domain\Filters\Form::check($data);
+            $check = \App\Domain\Filters\Form::check($data);
 
             if ($check === true) {
                 try {
-                    $model = new \Domain\Entities\Form($data);
+                    $model = new \App\Domain\Entities\Form($data);
                     $this->entityManager->persist($model);
                     $this->entityManager->flush();
 

@@ -1,9 +1,6 @@
 <?php
 
-namespace Application\Actions\Cup\Page;
-
-use Psr\Container\ContainerInterface;
-use Slim\Http\Response;
+namespace App\Application\Actions\Cup\Page;
 
 class PageListAction extends PageAction
 {

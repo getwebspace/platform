@@ -108,10 +108,10 @@
                                 {% for item in list %}
                                     <tr class="
                                         {{
-                                            item.status == reference('/Domain/Types/UserStatusType::STATUS_DELETE')
+                                            item.status == reference('/App/Domain/Types/UserStatusType::STATUS_DELETE')
                                             ? 'bg-danger'
                                             : (
-                                                item.status == reference('/Domain/Types/UserStatusType::STATUS_BLOCK')
+                                                item.status == reference('/App/Domain/Types/UserStatusType::STATUS_BLOCK')
                                                 ? 'bg-warning'
                                                 : ''
                                             )
@@ -121,8 +121,8 @@
                                             {{ item.username }}
                                         </td>
                                         <td>
-                                            {{ reference('/Domain/Types/UserLevelType::LIST', item.level) }}
-                                            ({{ reference('/Domain/Types/UserStatusType::LIST', item.status) }})
+                                            {{ reference('/App/Domain/Types/UserLevelType::LIST', item.level) }}
+                                            ({{ reference('/App/Domain/Types/UserStatusType::LIST', item.status) }})
                                         </td>
                                         <td>{{ item.register|date('d.m.Y H:i:s') }}</td>
                                         <td>{{ item.session.date ? item.session.date|date('d.m.Y H:i:s') : '' }}</td>

@@ -40,7 +40,7 @@ $container['view'] = function (ContainerInterface $c) {
     $view['styles'] = new ArrayObject();
     $view['scripts'] = new ArrayObject();
 
-    $view->addExtension(new \Application\TwigExtension($c->get('router'), \Slim\Http\Uri::createFromEnvironment(new \Slim\Http\Environment($_SERVER))));
+    $view->addExtension(new \App\Application\TwigExtension($c, \Slim\Http\Uri::createFromEnvironment(new \Slim\Http\Environment($_SERVER))));
     $view->addExtension(new \Twig\Extra\Intl\IntlExtension());
     $view->addExtension(new \Twig_Extensions_Extension_Text());
     $view->addExtension(new \Twig\Extension\StringLoaderExtension());

@@ -1,10 +1,8 @@
 <?php
 
-namespace Application\Actions\Cup\Page;
+namespace App\Application\Actions\Cup\Page;
 
-use Application\Actions\Action;
-use DateTime;
-use Exception;
+use App\Application\Actions\Action;
 use Psr\Container\ContainerInterface;
 
 abstract class PageAction extends Action
@@ -21,6 +19,6 @@ abstract class PageAction extends Action
     {
         parent::__construct($container);
 
-        $this->pageRepository = $this->entityManager->getRepository(\Domain\Entities\Page::class);
+        $this->pageRepository = $this->entityManager->getRepository(\App\Domain\Entities\Page::class);
     }
 }

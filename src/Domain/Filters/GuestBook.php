@@ -1,10 +1,10 @@
 <?php
 
-namespace Domain\Filters;
+namespace App\Domain\Filters;
 
 use AEngine\Validator\Filter;
 use AEngine\Validator\Traits\FilterRules;
-use Domain\Filters\Traits\CommonFilterRules;
+use App\Domain\Filters\Traits\CommonFilterRules;
 
 class GuestBook extends Filter
 {

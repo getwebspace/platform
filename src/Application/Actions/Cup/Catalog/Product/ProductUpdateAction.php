@@ -1,8 +1,8 @@
 <?php
 
-namespace Application\Actions\Cup\Catalog\Product;
+namespace App\Application\Actions\Cup\Catalog\Product;
 
-use Application\Actions\Cup\Catalog\CatalogAction;
+use App\Application\Actions\Cup\Catalog\CatalogAction;
 use Exception;
 
 class ProductUpdateAction extends CatalogAction
@@ -10,14 +10,14 @@ class ProductUpdateAction extends CatalogAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('product') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('product'))) {
-            /** @var \Domain\Entities\Catalog\Product $product */
-            $product = $this->productRepository->findOneBy(['uuid' => $this->resolveArg('product'), 'status' => \Domain\Types\Catalog\ProductStatusType::STATUS_WORK]);
+            /** @var \App\Domain\Entities\Catalog\Product $product */
+            $product = $this->productRepository->findOneBy(['uuid' => $this->resolveArg('product'), 'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK]);
 
             if (!$product->isEmpty()) {
                 if ($this->request->isPost()) {
                     // remove uploaded image
                     if (($uuidFile = $this->request->getParam('delete-image')) !== null && \Ramsey\Uuid\Uuid::isValid($uuidFile)) {
-                        /** @var \Domain\Entities\File $file */
+                        /** @var \App\Domain\Entities\File $file */
                         $file = $this->fileRepository->findOneBy(['uuid' => $uuidFile]);
 
                         if (!$file->isEmpty()) {
@@ -56,7 +56,7 @@ class ProductUpdateAction extends CatalogAction
                             'external_id' => $this->request->getParam('external_id'),
                         ];
 
-                        $check = \Domain\Filters\Catalog\Product::check($data);
+                        $check = \App\Domain\Filters\Catalog\Product::check($data);
 
                         if ($check === true) {
                             try {
@@ -76,7 +76,7 @@ class ProductUpdateAction extends CatalogAction
                 $categories = collect($this->categoryRepository->findAll());
 
                 $files = collect($this->fileRepository->findBy([
-                    'item' => \Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
+                    'item' => \App\Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
                     'item_uuid' => $product->uuid,
                 ]));
 

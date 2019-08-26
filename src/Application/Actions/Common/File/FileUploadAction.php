@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Actions\Common\File;
+namespace App\Application\Actions\Common\File;
 
 use AEngine\Support\Str;
 use Slim\Http\UploadedFile;
@@ -25,7 +25,7 @@ class FileUploadAction extends FileAction
                 }
 
                 // create model
-                $model = new \Domain\Entities\File([
+                $model = new \App\Domain\Entities\File([
                     'name' => $name,
                     'type' => $item->getClientMediaType(),
                     'size' => (int)$item->getSize(),

@@ -19,14 +19,14 @@ return [
 
         'types' => [
             Ramsey\Uuid\Doctrine\UuidType::NAME => Ramsey\Uuid\Doctrine\UuidType::class,
-            Domain\Types\UserLevelType::NAME => \Domain\Types\UserLevelType::class,
-            Domain\Types\UserStatusType::NAME => \Domain\Types\UserStatusType::class,
-            Domain\Types\FileItemType::NAME => \Domain\Types\FileItemType::class,
-            Domain\Types\PageTypeType::NAME => \Domain\Types\PageTypeType::class,
-            Domain\Types\GuestBookStatusType::NAME => \Domain\Types\GuestBookStatusType::class,
-            Domain\Types\Catalog\CategoryStatusType::NAME => \Domain\Types\Catalog\CategoryStatusType::class,
-            Domain\Types\Catalog\ProductStatusType::NAME => \Domain\Types\Catalog\ProductStatusType::class,
-            Domain\Types\Catalog\OrderStatusType::NAME => \Domain\Types\Catalog\OrderStatusType::class,
+            App\Domain\Types\UserLevelType::NAME => \App\Domain\Types\UserLevelType::class,
+            App\Domain\Types\UserStatusType::NAME => \App\Domain\Types\UserStatusType::class,
+            App\Domain\Types\FileItemType::NAME => \App\Domain\Types\FileItemType::class,
+            App\Domain\Types\PageTypeType::NAME => \App\Domain\Types\PageTypeType::class,
+            App\Domain\Types\GuestBookStatusType::NAME => \App\Domain\Types\GuestBookStatusType::class,
+            App\Domain\Types\Catalog\CategoryStatusType::NAME => \App\Domain\Types\Catalog\CategoryStatusType::class,
+            App\Domain\Types\Catalog\ProductStatusType::NAME => \App\Domain\Types\Catalog\ProductStatusType::class,
+            App\Domain\Types\Catalog\OrderStatusType::NAME => \App\Domain\Types\Catalog\OrderStatusType::class,
         ],
 
         // Connection to DB settings

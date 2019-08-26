@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\Exceptions;
+namespace App\Domain\Exceptions;
 
 class HttpNotFoundException extends HttpException
 {

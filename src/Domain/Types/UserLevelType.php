@@ -1,8 +1,8 @@
 <?php
 
-namespace Domain\Types;
+namespace App\Domain\Types;
 
-use Application\Types\EnumType;
+use App\Application\Types\EnumType;
 
 class UserLevelType extends EnumType
 {

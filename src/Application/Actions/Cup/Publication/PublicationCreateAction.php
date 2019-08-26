@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Actions\Cup\Publication;
+namespace App\Application\Actions\Cup\Publication;
 
 use Exception;
 
@@ -19,11 +19,11 @@ class PublicationCreateAction extends PublicationAction
                 'meta' => $this->request->getParam('meta'),
             ];
 
-            $check = \Domain\Filters\Publication::check($data);
+            $check = \App\Domain\Filters\Publication::check($data);
 
             if ($check === true) {
                 try {
-                    $model = new \Domain\Entities\Publication($data);
+                    $model = new \App\Domain\Entities\Publication($data);
                     $this->entityManager->persist($model);
                     $this->entityManager->flush();
 

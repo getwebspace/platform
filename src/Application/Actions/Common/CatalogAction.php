@@ -1,9 +1,9 @@
 <?php
 
-namespace Application\Actions\Common;
+namespace App\Application\Actions\Common;
 
 use AEngine\Entity\Collection;
-use Application\Actions\Action;
+use App\Application\Actions\Action;
 use Psr\Container\ContainerInterface;
 use Slim\Http\Response;
 
@@ -31,25 +31,25 @@ class CatalogAction extends Action
     {
         parent::__construct($container);
 
-        $this->categoryRepository = $this->entityManager->getRepository(\Domain\Entities\Catalog\Category::class);
-        $this->productRepository = $this->entityManager->getRepository(\Domain\Entities\Catalog\Product::class);
-        $this->fileRepository = $this->entityManager->getRepository(\Domain\Entities\File::class);
+        $this->categoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class);
+        $this->productRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
+        $this->fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
     }
 
     /**
      * @return Response
      * @throws \Doctrine\DBAL\DBALException
-     * @throws \Domain\Exceptions\HttpBadRequestException
+     * @throws \App\Domain\Exceptions\HttpBadRequestException
      */
     protected function action(): \Slim\Http\Response
     {
         $params = $this->parsePath();
         $categories = collect($this->categoryRepository->findBy([
-            'status' => \Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+            'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
         ]));
         $files = collect(
             $this->fileRepository->findBy([
-                'item' => \Domain\Types\FileItemType::ITEM_CATALOG_CATEGORY,
+                'item' => \App\Domain\Types\FileItemType::ITEM_CATALOG_CATEGORY,
                 'item_uuid' => array_map('strval', $categories->pluck('uuid')->all()),
             ])
         );
@@ -79,7 +79,7 @@ class CatalogAction extends Action
      * @param Collection $files
      *
      * @return Response
-     * @throws \Domain\Exceptions\HttpBadRequestException
+     * @throws \App\Domain\Exceptions\HttpBadRequestException
      */
     protected function prepareMain(array &$params, &$categories, &$files)
     {
@@ -88,7 +88,7 @@ class CatalogAction extends Action
             $products = collect(
                 $this->productRepository->findBy(
                     [
-                        'status' => \Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+                        'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
                     ],
                     null,
                     $pagination,
@@ -96,11 +96,11 @@ class CatalogAction extends Action
                 )
             );
             $productsCount = $this->productRepository->count([
-                'status' => \Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+                'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
             ]);
             $files = $files->merge(
                 $this->fileRepository->findBy([
-                    'item' => \Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
+                    'item' => \App\Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
                     'item_uuid' => array_map('strval', $products->pluck('uuid')->all()),
                 ])
             );
@@ -125,12 +125,12 @@ class CatalogAction extends Action
      * @param Collection $files
      *
      * @return Response
-     * @throws \Domain\Exceptions\HttpBadRequestException
+     * @throws \App\Domain\Exceptions\HttpBadRequestException
      */
     protected function prepareCategory(array &$params, &$categories, &$files)
     {
         /**
-         * @var \Domain\Entities\Catalog\Category $category
+         * @var \App\Domain\Entities\Catalog\Category $category
          */
         $category = $categories->firstWhere('address', $params['address']['category']);
 
@@ -142,7 +142,7 @@ class CatalogAction extends Action
                     ->findBy(
                         [
                             'category' => $categoryUUIDs,
-                            'status' => \Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+                            'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
                         ],
                         null,
                         $category->pagination,
@@ -151,11 +151,11 @@ class CatalogAction extends Action
             );
             $productsCount = $this->productRepository->count([
                 'category' => $categoryUUIDs,
-                'status' => \Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+                'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
             ]);
             $files = $files->merge(
                 $this->fileRepository->findBy([
-                    'item' => \Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
+                    'item' => \App\Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
                     'item_uuid' => array_map('strval', $products->pluck('uuid')->all()),
                 ])
             );
@@ -181,21 +181,21 @@ class CatalogAction extends Action
      * @param Collection $files
      *
      * @return Response
-     * @throws \Domain\Exceptions\HttpBadRequestException
+     * @throws \App\Domain\Exceptions\HttpBadRequestException
      */
     protected function prepareProduct(array &$params, &$categories, &$files)
     {
-        /** @var \Domain\Entities\Catalog\Product $product */
+        /** @var \App\Domain\Entities\Catalog\Product $product */
         $product = $this->productRepository->findOneBy([
             'address' => $params['address']['product'],
-            'status' => \Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+            'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
         ]);
 
         if (is_null($product) === false) {
             $category = $categories->firstWhere('uuid', $product->category);
             $files = $files->merge(
                 $this->fileRepository->findBy([
-                    'item' => \Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
+                    'item' => \App\Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
                     'item_uuid' => $product->uuid,
                 ])
             );
@@ -231,17 +231,17 @@ class CatalogAction extends Action
     }
 
     /**
-     * @param \AEngine\Entity\Collection             $categories
-     * @param \Domain\Entities\Catalog\Category|null $curCategory
+     * @param \AEngine\Entity\Collection                 $categories
+     * @param \App\Domain\Entities\Catalog\Category|null $curCategory
      *
      * @return array
      */
-    protected function getCategoryChildrenUUID(\AEngine\Entity\Collection $categories, \Domain\Entities\Catalog\Category $curCategory = null)
+    protected function getCategoryChildrenUUID(\AEngine\Entity\Collection $categories, \App\Domain\Entities\Catalog\Category $curCategory = null)
     {
         $result = [$curCategory->uuid->toString()];
 
         if ($curCategory->children) {
-            /** @var \Domain\Entities\Catalog\Category $category */
+            /** @var \App\Domain\Entities\Catalog\Category $category */
             foreach ($categories->where('parent', $curCategory->uuid) as $childCategory) {
                 $result = array_merge($result, $this->getCategoryChildrenUUID($categories, $childCategory));
             }

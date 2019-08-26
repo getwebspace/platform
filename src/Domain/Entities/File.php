@@ -1,13 +1,11 @@
 <?php
 
-namespace Domain\Entities;
+namespace App\Domain\Entities;
 
 use AEngine\Entity\Model;
-use AEngine\Support\Str;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
-use Slim\Http\UploadedFile;
 
 /**
  * @ORM\Entity

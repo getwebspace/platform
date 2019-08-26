@@ -29,11 +29,6 @@
                                 </a>
                             </li>
                             <li class="nav-item submenu">
-                                <a class="nav-link" data-toggle="pill" href="#optimisation" role="tab">
-                                    Оптимизация
-                                </a>
-                            </li>
-                            <li class="nav-item submenu">
                                 <a class="nav-link" data-toggle="pill" href="#file" role="tab">
                                     Файлы
                                 </a>
@@ -133,50 +128,6 @@
                                     'name': 'security[recaptcha_private]',
                                     'args': {
                                         'placeholder': '6Le_gY8UAAAAAAx1_Lv3aKo-L1QnxE2QWhOHCgxS'
-                                    }
-                                } %}
-                            </div>
-
-                            {# TAB: Optimisation #}
-                            <div class="tab-pane fade" id="optimisation" role="tabpanel">
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Кеширующий сервер',
-                                    'description': 'Выберите тип кеширующего сервера который планируется использовать',
-                                    'type': 'select',
-                                    'name': 'cache[type]',
-                                    'args': {
-                                        'option': {'':'Нет', 'memcache':'Memcache', 'redis':'Redis'}
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Хост сервера',
-                                    'description': 'Обычно - localhost',
-                                    'type': 'text',
-                                    'name': 'cache[host]',
-                                    'args': {
-                                        'value': 'localhost',
-                                        'placeholder': 'localhost'
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Порт сервера',
-                                    'description': 'Обычно - localhost',
-                                    'type': 'select',
-                                    'name': 'cache[port]',
-                                    'args': {
-                                        'option': {'':'-', '11211': 'Memcache - 11211', '6379': 'Redis - 6379'}
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Ключевая соль',
-                                    'description': 'Комбинация символов которая будет добавлена к ключам кеширующего сервера',
-                                    'type': 'text',
-                                    'name': 'cache[salt]',
-                                    'args': {
-                                        'value': random()
                                     }
                                 } %}
                             </div>

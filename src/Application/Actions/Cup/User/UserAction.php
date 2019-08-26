@@ -1,10 +1,8 @@
 <?php
 
-namespace Application\Actions\Cup\User;
+namespace App\Application\Actions\Cup\User;
 
-use Application\Actions\Action;
-use DateTime;
-use Exception;
+use App\Application\Actions\Action;
 use Psr\Container\ContainerInterface;
 
 abstract class UserAction extends Action
@@ -21,6 +19,6 @@ abstract class UserAction extends Action
     {
         parent::__construct($container);
 
-        $this->userRepository = $this->entityManager->getRepository(\Domain\Entities\User::class);
+        $this->userRepository = $this->entityManager->getRepository(\App\Domain\Entities\User::class);
     }
 }

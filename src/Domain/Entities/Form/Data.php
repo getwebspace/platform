@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\Entities\Form;
+namespace App\Domain\Entities\Form;
 
 use AEngine\Entity\Model;
 use DateTime;

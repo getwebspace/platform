@@ -1,8 +1,8 @@
 <?php
 
-namespace Application\Actions\Cup;
+namespace App\Application\Actions\Cup;
 
-use Application\Actions\Action;
+use App\Application\Actions\Action;
 use DateTime;
 use Exception;
 use Psr\Container\ContainerInterface;
@@ -21,7 +21,7 @@ class LoginPageAction extends Action
     {
         parent::__construct($container);
 
-        $this->userRepository = $this->entityManager->getRepository(\Domain\Entities\User::class);
+        $this->userRepository = $this->entityManager->getRepository(\App\Domain\Entities\User::class);
     }
 
     protected function action(): \Slim\Http\Response
@@ -39,10 +39,10 @@ class LoginPageAction extends Action
                 'redirect' => $this->request->getParam('redirect'),
             ];
 
-            $check = \Domain\Filters\User::login($data);
+            $check = \App\Domain\Filters\User::login($data);
 
             if ($check === true) {
-                /** @var \Domain\Entities\User $user */
+                /** @var \App\Domain\Entities\User $user */
                 $user = $this->userRepository->findOneBy([$identifier => $data[$identifier]]);
 
                 if ($user) {
@@ -60,18 +60,18 @@ class LoginPageAction extends Action
 
                             $hash = $this->session($session);
 
-                            setcookie('uuid', $user->uuid, time() + \Domain\References\Date::YEAR, '/');
-                            setcookie('session', $hash, time() + \Domain\References\Date::YEAR, '/');
+                            setcookie('uuid', $user->uuid, time() + \App\Domain\References\Date::YEAR, '/');
+                            setcookie('session', $hash, time() + \App\Domain\References\Date::YEAR, '/');
 
                             return $this->response->withAddedHeader('Location', $data['redirect'] ? $data['redirect'] : '/cup');
                         } catch (Exception $e) {
                             $this->logger->warning('/login failure', $data);
                         }
                     } else {
-                        \AEngine\Support\Form::$globalError['password'] = \Domain\References\Errors\User::WRONG_PASSWORD;
+                        \AEngine\Support\Form::$globalError['password'] = \App\Domain\References\Errors\User::WRONG_PASSWORD;
                     }
                 } else {
-                    \AEngine\Support\Form::$globalError[$identifier] = \Domain\References\Errors\User::NOT_FOUND;
+                    \AEngine\Support\Form::$globalError[$identifier] = \App\Domain\References\Errors\User::NOT_FOUND;
                 }
             } else {
                 \AEngine\Support\Form::$globalError = $check;
@@ -84,12 +84,12 @@ class LoginPageAction extends Action
     /**
      * Возвращает ключ сессии
      *
-     * @param \Domain\Entities\User\Session $model
+     * @param \App\Domain\Entities\User\Session $model
      *
      * @return string
      * @throws \Exception
      */
-    protected function session(\Domain\Entities\User\Session $model)
+    protected function session(\App\Domain\Entities\User\Session $model)
     {
         if (!$model->isEmpty()) {
             $default = [

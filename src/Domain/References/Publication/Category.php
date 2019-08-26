@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\References\Publication;
+namespace App\Domain\References\Publication;
 
 class Category
 {

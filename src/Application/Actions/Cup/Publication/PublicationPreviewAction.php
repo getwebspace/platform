@@ -1,8 +1,6 @@
 <?php
 
-namespace Application\Actions\Cup\Publication;
-
-use Exception;
+namespace App\Application\Actions\Cup\Publication;
 
 class PublicationPreviewAction extends PublicationAction
 {

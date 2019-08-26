@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Actions;
+namespace App\Application\Actions;
 
 use JsonSerializable;
 
@@ -10,10 +10,12 @@ class ActionPayload implements JsonSerializable
      * @var int
      */
     private $statusCode;
+
     /**
      * @var array|object|null
      */
     private $data;
+
     /**
      * @var ActionError|null
      */

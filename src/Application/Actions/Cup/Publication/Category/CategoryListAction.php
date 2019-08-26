@@ -1,8 +1,8 @@
 <?php
 
-namespace Application\Actions\Cup\Publication\Category;
+namespace App\Application\Actions\Cup\Publication\Category;
 
-use Application\Actions\Cup\Publication\PublicationAction;
+use App\Application\Actions\Cup\Publication\PublicationAction;
 
 class CategoryListAction extends PublicationAction
 {

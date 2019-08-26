@@ -1,10 +1,10 @@
 <?php
 
-namespace Domain\Filters;
+namespace App\Domain\Filters;
 
 use AEngine\Validator\Filter;
 use AEngine\Validator\Traits\FilterRules;
-use Domain\Filters\Traits\CommonFilterRules;
+use App\Domain\Filters\Traits\CommonFilterRules;
 
 class Parameter extends Filter
 {
@@ -26,10 +26,10 @@ class Parameter extends Filter
             ->addGlobalRule($filter->leadTrim())
             ->attr('key')
                 ->addRule($filter->leadStr())
-                ->addRule($filter->checkStrlenBetween(3, 50), \Domain\References\Errors\Parameter::WRONG_KEY)
+                ->addRule($filter->checkStrlenBetween(3, 50), \App\Domain\References\Errors\Parameter::WRONG_KEY)
             ->attr('value')
                 ->addRule($filter->leadStr())
-                ->addRule($filter->checkStrlenBetween(0, 1024), \Domain\References\Errors\Parameter::WRONG_VALUE);
+                ->addRule($filter->checkStrlenBetween(0, 1024), \App\Domain\References\Errors\Parameter::WRONG_VALUE);
 
         return $filter->run();
     }

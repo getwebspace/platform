@@ -1,11 +1,8 @@
 <?php
 
-namespace Application\Actions\Cup;
+namespace App\Application\Actions\Cup;
 
-use Application\Actions\Action;
-use DateTime;
-use Exception;
-use Psr\Container\ContainerInterface;
+use App\Application\Actions\Action;
 
 class DocsPageAction extends Action
 {

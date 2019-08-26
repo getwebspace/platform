@@ -1,9 +1,8 @@
 <?php
 
-namespace Domain\Entities\Publication;
+namespace App\Domain\Entities\Publication;
 
 use AEngine\Entity\Model;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface;
 
@@ -57,8 +56,8 @@ class Category extends Model
      * @ORM\Column(type="array", nullable=true)
      */
     public $sort = [
-        'by' => \Domain\References\Publication\Category::ORDER_BY_DATE,
-        'direction' => \Domain\References\Publication\Category::ORDER_DIRECTION_ASC,
+        'by' => \App\Domain\References\Publication\Category::ORDER_BY_DATE,
+        'direction' => \App\Domain\References\Publication\Category::ORDER_DIRECTION_ASC,
     ];
 
     /**

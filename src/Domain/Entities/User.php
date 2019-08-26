@@ -1,11 +1,10 @@
 <?php
 
-namespace Domain\Entities;
+namespace App\Domain\Entities;
 
 use AEngine\Entity\Model;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Entity\User\Session;
 use Ramsey\Uuid\UuidInterface;
 
 /**
@@ -55,17 +54,17 @@ class User extends Model
 
     /**
      * @var string
-     * @see \Domain\Types\UserStatusType::LIST
+     * @see \App\Domain\Types\UserStatusType::LIST
      * @ORM\Column(type="UserStatusType", length=50)
      */
-    public $status = \Domain\Types\UserStatusType::STATUS_WORK;
+    public $status = \App\Domain\Types\UserStatusType::STATUS_WORK;
 
     /**
      * @var string
-     * @see \Domain\Types\UserLevelType::LIST
+     * @see \App\Domain\Types\UserLevelType::LIST
      * @ORM\Column(type="UserLevelType", length=50)
      */
-    public $level = \Domain\Types\UserLevelType::LEVEL_USER;
+    public $level = \App\Domain\Types\UserLevelType::LEVEL_USER;
 
     /**
      * @var DateTime
@@ -80,8 +79,8 @@ class User extends Model
     public $change;
 
     /**
-     * @var \Domain\Entities\User\Session
-     * @ORM\OneToOne(targetEntity="Domain\Entities\User\Session")
+     * @var \App\Domain\Entities\User\Session
+     * @ORM\OneToOne(targetEntity="App\Domain\Entities\User\Session")
      * @ORM\JoinColumn(name="uuid", referencedColumnName="uuid")
      */
     public $session;

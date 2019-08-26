@@ -1,11 +1,11 @@
 <?php
 
-namespace Domain\Filters;
+namespace App\Domain\Filters;
 
 use AEngine\Validator\Filter;
 use AEngine\Validator\Traits\FilterRules;
-use \Domain\Filters\Traits\CommonFilterRules;
-use \Domain\Filters\Traits\PageFilterRules;
+use App\Domain\Filters\Traits\CommonFilterRules;
+use App\Domain\Filters\Traits\PageFilterRules;
 
 class Page extends Filter
 {
@@ -38,7 +38,7 @@ class Page extends Filter
             ->attr('content')
                 ->addRule($filter->leadStr())
             ->attr('type')
-                ->addRule($filter->checkInKeys(\Domain\Types\PageTypeType::LIST))
+                ->addRule($filter->checkInKeys(\App\Domain\Types\PageTypeType::LIST))
             ->attr('meta')
                 ->addRule($filter->ValidMeta())
             ->attr('template')

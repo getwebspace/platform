@@ -1,8 +1,8 @@
 <?php
 
-namespace Application\Actions\Cup\Form\Data;
+namespace App\Application\Actions\Cup\Form\Data;
 
-use Application\Actions\Cup\Form\FormAction;
+use App\Application\Actions\Cup\Form\FormAction;
 
 class DataViewAction extends FormAction
 {
@@ -12,7 +12,7 @@ class DataViewAction extends FormAction
             $this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid')) &&
             $this->resolveArg('data') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('data'))
         ) {
-            /** @var \Domain\Entities\Form\Data $item */
+            /** @var \App\Domain\Entities\Form\Data $item */
             $item = $this->dataRepository->findOneBy([
                 'form_uuid' => $this->resolveArg('uuid'),
                 'uuid' => $this->resolveArg('data'),
@@ -20,7 +20,7 @@ class DataViewAction extends FormAction
 
             if (!$item->isEmpty()) {
                 $files = $this->fileRepository->findBy([
-                    'item' => \Domain\Types\FileItemType::ITEM_FORM_DATA,
+                    'item' => \App\Domain\Types\FileItemType::ITEM_FORM_DATA,
                     'item_uuid' => $this->resolveArg('data'),
                 ]);
 

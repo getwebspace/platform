@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\Filters\Traits;
+namespace App\Domain\Filters\Traits;
 
 use AEngine\Support\Str;
 use Ramsey\Uuid\Uuid;

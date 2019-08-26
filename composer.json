@@ -11,6 +11,7 @@
     ],
     "require": {
         "php": ">=7.1",
+        "ext-json": "*",
         "slim/slim": "^3.1",
         "slim/php-view": "^2.0",
         "slim/twig-view": "^2.4",
@@ -37,9 +38,9 @@
         "phpunit/phpunit": "^7.5"
     },
     "autoload": {
-        "classmap": [
-            "src"
-        ]
+        "psr-4": {
+            "App\\": "src/"
+        }
     },
     "scripts": {
         "post-create-project-cmd": [

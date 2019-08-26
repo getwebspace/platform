@@ -1,10 +1,8 @@
 <?php
 
-namespace Application\Actions\Cup\Form\Data;
+namespace App\Application\Actions\Cup\Form\Data;
 
-use Application\Actions\Cup\Form\FormAction;
-use Psr\Container\ContainerInterface;
-use Slim\Http\Response;
+use App\Application\Actions\Cup\Form\FormAction;
 
 class DataDeleteAction extends FormAction
 {
@@ -14,7 +12,7 @@ class DataDeleteAction extends FormAction
             $this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid')) &&
             $this->resolveArg('data') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('data'))
         ) {
-            /** @var \Domain\Entities\Form\Data $item */
+            /** @var \App\Domain\Entities\Form\Data $item */
             $item = $this->dataRepository->findOneBy([
                 'form_uuid' => $this->resolveArg('uuid'),
                 'uuid' => $this->resolveArg('data'),

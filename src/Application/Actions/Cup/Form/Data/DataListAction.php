@@ -1,17 +1,15 @@
 <?php
 
-namespace Application\Actions\Cup\Form\Data;
+namespace App\Application\Actions\Cup\Form\Data;
 
-use Application\Actions\Cup\Form\FormAction;
-use Psr\Container\ContainerInterface;
-use Slim\Http\Response;
+use App\Application\Actions\Cup\Form\FormAction;
 
 class DataListAction extends FormAction
 {
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            /** @var \Domain\Entities\Form $item */
+            /** @var \App\Domain\Entities\Form $item */
             $item = $this->formRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
 
             if (!$item->isEmpty()) {

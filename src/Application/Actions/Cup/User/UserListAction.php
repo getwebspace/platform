@@ -1,16 +1,13 @@
 <?php
 
-namespace Application\Actions\Cup\User;
-
-use Psr\Container\ContainerInterface;
-use Slim\Http\Response;
+namespace App\Application\Actions\Cup\User;
 
 class UserListAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
         $criteria = [
-            'status' => [\Domain\Types\UserStatusType::STATUS_WORK],
+            'status' => [\App\Domain\Types\UserStatusType::STATUS_WORK],
         ];
         $orderBy = [];
 
@@ -36,11 +33,11 @@ class UserListAction extends UserAction
             }
 
             if ($data['status_block']) {
-                $criteria['status'][] = \Domain\Types\UserStatusType::STATUS_BLOCK;
+                $criteria['status'][] = \App\Domain\Types\UserStatusType::STATUS_BLOCK;
             }
 
             if ($data['status_delete']) {
-                $criteria['status'][] = \Domain\Types\UserStatusType::STATUS_DELETE;
+                $criteria['status'][] = \App\Domain\Types\UserStatusType::STATUS_DELETE;
             }
         }
 

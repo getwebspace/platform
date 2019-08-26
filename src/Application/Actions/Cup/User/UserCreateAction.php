@@ -1,11 +1,9 @@
 <?php
 
-namespace Application\Actions\Cup\User;
+namespace App\Application\Actions\Cup\User;
 
 use Exception;
-use Psr\Container\ContainerInterface;
 use Ramsey\Uuid\Uuid;
-use Slim\Http\Response;
 
 class UserCreateAction extends UserAction
 {
@@ -21,16 +19,16 @@ class UserCreateAction extends UserAction
                 'level' => $this->request->getParam('level'),
             ];
 
-            $check = \Domain\Filters\User::check($data);
+            $check = \App\Domain\Filters\User::check($data);
 
             if ($check === true) {
                 try {
                     $uuid = Uuid::uuid4();
-                    $session = new \Domain\Entities\User\Session();
+                    $session = new \App\Domain\Entities\User\Session();
                     $session->set('uuid', $uuid);
                     $this->entityManager->persist($session);
 
-                    $model = new \Domain\Entities\User($data);
+                    $model = new \App\Domain\Entities\User($data);
                     $model->set('uuid', $uuid);
                     $model->register = $model->change = new \DateTime();
                     $model->session = $session;

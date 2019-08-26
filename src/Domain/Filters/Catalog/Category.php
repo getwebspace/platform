@@ -1,11 +1,11 @@
 <?php
 
-namespace Domain\Filters\Catalog;
+namespace App\Domain\Filters\Catalog;
 
 use AEngine\Validator\Filter;
 use AEngine\Validator\Traits\FilterRules;
-use \Domain\Filters\Traits\CommonFilterRules;
-use \Domain\Filters\Traits\CatalogFilterRules;
+use App\Domain\Filters\Traits\CatalogFilterRules;
+use App\Domain\Filters\Traits\CommonFilterRules;
 
 class Category extends Filter
 {

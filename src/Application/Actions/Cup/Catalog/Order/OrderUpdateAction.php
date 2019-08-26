@@ -1,9 +1,8 @@
 <?php
 
-namespace Application\Actions\Cup\Catalog\Order;
+namespace App\Application\Actions\Cup\Catalog\Order;
 
-use AEngine\Support\Str;
-use Application\Actions\Cup\Catalog\CatalogAction;
+use App\Application\Actions\Cup\Catalog\CatalogAction;
 use Exception;
 
 class OrderUpdateAction extends CatalogAction
@@ -11,7 +10,7 @@ class OrderUpdateAction extends CatalogAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('order') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('order'))) {
-            /** @var \Domain\Entities\Catalog\Order $order */
+            /** @var \App\Domain\Entities\Catalog\Order $order */
             $order = $this->orderRepository->findOneBy(['uuid' => $this->resolveArg('order')]);
 
             if (!$order->isEmpty()) {
@@ -32,7 +31,7 @@ class OrderUpdateAction extends CatalogAction
                         'external_id' => $this->request->getParam('external_id'),
                     ];
 
-                    $check = \Domain\Filters\Catalog\Order::check($data);
+                    $check = \App\Domain\Filters\Catalog\Order::check($data);
 
                     if ($check === true) {
                         try {

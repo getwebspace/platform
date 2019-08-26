@@ -1,9 +1,6 @@
 <?php
 
-namespace Application\Actions\Cup\Form;
-
-use Psr\Container\ContainerInterface;
-use Slim\Http\Response;
+namespace App\Application\Actions\Cup\Form;
 
 class FormListAction extends FormAction
 {

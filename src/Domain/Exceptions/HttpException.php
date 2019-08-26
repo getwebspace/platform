@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\Exceptions;
+namespace App\Domain\Exceptions;
 
 use Exception;
 use Psr\Http\Message\ServerRequestInterface;

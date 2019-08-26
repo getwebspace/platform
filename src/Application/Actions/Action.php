@@ -1,12 +1,12 @@
 <?php
 
-namespace Application\Actions;
+namespace App\Application\Actions;
 
-use Application\Mail;
+use App\Application\Mail;
+use App\Domain\Exceptions\HttpBadRequestException;
+use App\Domain\Exceptions\HttpException;
+use App\Domain\Exceptions\HttpNotFoundException;
 use Doctrine\ORM\EntityManager;
-use Domain\Exceptions\HttpBadRequestException;
-use Domain\Exceptions\HttpException;
-use Domain\Exceptions\HttpNotFoundException;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Slim\Http\Request;
@@ -75,7 +75,7 @@ abstract class Action
         $this->entityManager = $container->get(\Doctrine\ORM\EntityManager::class);
         $this->renderer = $container->get('view');
 
-        $this->parametersRepository = $this->entityManager->getRepository(\Domain\Entities\Parameter::class);
+        $this->parametersRepository = $this->entityManager->getRepository(\App\Domain\Entities\Parameter::class);
     }
 
     /**

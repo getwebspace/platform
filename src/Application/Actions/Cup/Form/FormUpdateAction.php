@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Actions\Cup\Form;
+namespace App\Application\Actions\Cup\Form;
 
 use Exception;
 
@@ -9,7 +9,7 @@ class FormUpdateAction extends FormAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            /** @var \Domain\Entities\Form $item */
+            /** @var \App\Domain\Entities\Form $item */
             $item = $this->formRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
 
             if (!$item->isEmpty()) {
@@ -23,7 +23,7 @@ class FormUpdateAction extends FormAction
                         'origin' => $this->request->getParam('origin'),
                     ];
 
-                    $check = \Domain\Filters\Form::check($data);
+                    $check = \App\Domain\Filters\Form::check($data);
 
                     if ($check === true) {
                         try {

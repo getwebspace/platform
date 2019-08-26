@@ -1,10 +1,8 @@
 <?php
 
-namespace Application\Actions\Cup\Catalog\Order;
+namespace App\Application\Actions\Cup\Catalog\Order;
 
-use Application\Actions\Cup\Catalog\CatalogAction;
-use Psr\Container\ContainerInterface;
-use Slim\Http\Response;
+use App\Application\Actions\Cup\Catalog\CatalogAction;
 
 class OrderListAction extends CatalogAction
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Application\Actions\Common;
+namespace App\Application\Actions\Common;
 
-use Application\Actions\Action;
+use App\Application\Actions\Action;
 
 class MainPageAction extends Action
 {

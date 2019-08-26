@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\References\Errors;
+namespace App\Domain\References\Errors;
 
 class Parameter
 {

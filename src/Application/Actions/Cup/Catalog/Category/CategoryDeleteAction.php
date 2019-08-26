@@ -1,37 +1,37 @@
 <?php
 
-namespace Application\Actions\Cup\Catalog\Category;
+namespace App\Application\Actions\Cup\Catalog\Category;
 
-use Application\Actions\Cup\Catalog\CatalogAction;
+use App\Application\Actions\Cup\Catalog\CatalogAction;
 
 class CategoryDeleteAction extends CatalogAction
 {
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('category') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('category'))) {
-            /** @var \Domain\Entities\Catalog\Category $item */
-            $item = $this->categoryRepository->findOneBy(['uuid' => $this->resolveArg('category'), 'status' => \Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]);
+            /** @var \App\Domain\Entities\Catalog\Category $item */
+            $item = $this->categoryRepository->findOneBy(['uuid' => $this->resolveArg('category'), 'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]);
 
             if (!$item->isEmpty() && $this->request->isPost()) {
                 $categories = collect($this->categoryRepository->findBy([
-                    'status' => \Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+                    'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
                 ]));
                 $childCategoriesUuid = $this->getCategoryChildrenUUID($categories, $item);
 
                 // remove children category
-                foreach ($this->categoryRepository->findBy(['uuid' => $childCategoriesUuid, 'status' => \Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]) as $child) {
-                    $child->set('status', \Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE);
+                foreach ($this->categoryRepository->findBy(['uuid' => $childCategoriesUuid, 'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]) as $child) {
+                    $child->set('status', \App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE);
                     $this->entityManager->persist($child);
                 }
 
                 // remove children category
-                foreach ($this->productRepository->findBy(['category' => $childCategoriesUuid, 'status' => \Domain\Types\Catalog\ProductStatusType::STATUS_WORK]) as $child) {
-                    $child->set('status', \Domain\Types\Catalog\ProductStatusType::STATUS_DELETE);
+                foreach ($this->productRepository->findBy(['category' => $childCategoriesUuid, 'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK]) as $child) {
+                    $child->set('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_DELETE);
                     $this->entityManager->persist($child);
                 }
 
                 // remove category
-                $item->set('status', \Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE);
+                $item->set('status', \App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE);
                 $this->entityManager->persist($item);
 
                 // commit
@@ -43,16 +43,16 @@ class CategoryDeleteAction extends CatalogAction
     }
 
     /**
-     * @param \AEngine\Entity\Collection             $categories
-     * @param \Domain\Entities\Catalog\Category|null $curCategory
+     * @param \AEngine\Entity\Collection                 $categories
+     * @param \App\Domain\Entities\Catalog\Category|null $curCategory
      *
      * @return array
      */
-    protected function getCategoryChildrenUUID(\AEngine\Entity\Collection $categories, \Domain\Entities\Catalog\Category $curCategory = null)
+    protected function getCategoryChildrenUUID(\AEngine\Entity\Collection $categories, \App\Domain\Entities\Catalog\Category $curCategory = null)
     {
         $result = [$curCategory->uuid->toString()];
 
-        /** @var \Domain\Entities\Catalog\Category $category */
+        /** @var \App\Domain\Entities\Catalog\Category $category */
         foreach ($categories->where('parent', $curCategory->uuid) as $childCategory) {
             $result = array_merge($result, $this->getCategoryChildrenUUID($categories, $childCategory));
         }

@@ -1,8 +1,6 @@
 <?php
 
-namespace Application\Actions\Cup\File;
-
-use Slim\Http\Response;
+namespace App\Application\Actions\Cup\File;
 
 class FileListAction extends FileAction
 {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Application\Actions\Common\File;
+namespace App\Application\Actions\Common\File;
 
-use Application\Actions\Action;
+use App\Application\Actions\Action;
 use Psr\Container\ContainerInterface;
 
 abstract class FileAction extends Action
@@ -19,6 +19,6 @@ abstract class FileAction extends Action
     {
         parent::__construct($container);
 
-        $this->fileRepository = $this->entityManager->getRepository(\Domain\Entities\File::class);
+        $this->fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
     }
 }

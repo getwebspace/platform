@@ -1,9 +1,7 @@
 <?php
 
-namespace Domain\Filters\Traits;
+namespace App\Domain\Filters\Traits;
 
-use AEngine\Support\Str;
-use Ramsey\Uuid\Uuid;
 use Slim\App;
 
 trait PageFilterRules
@@ -20,9 +18,9 @@ trait PageFilterRules
             $app = $GLOBALS['app'];
 
             /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $pageRepository */
-            $pageRepository = $app->getContainer()->get(\Doctrine\ORM\EntityManager::class)->getRepository(\Domain\Entities\Page::class);
+            $pageRepository = $app->getContainer()->get(\Doctrine\ORM\EntityManager::class)->getRepository(\App\Domain\Entities\Page::class);
 
-            /** @var \Domain\Entities\Page $page */
+            /** @var \App\Domain\Entities\Page $page */
             $page = $pageRepository->findOneBy(['address' => str_escape($data[$field])]);
 
             return $page === null || (!empty($data['uuid']) && $page->uuid === $data['uuid']);

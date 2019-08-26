@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Actions\Cup\GuestBook;
+namespace App\Application\Actions\Cup\GuestBook;
 
 use Exception;
 
@@ -9,7 +9,7 @@ class GuestBookUpdateAction extends GuestBookAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            /** @var \Domain\Entities\GuestBook $item */
+            /** @var \App\Domain\Entities\GuestBook $item */
             $item = $this->gbookRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
 
             if (!$item->isEmpty()) {
@@ -24,7 +24,7 @@ class GuestBookUpdateAction extends GuestBookAction
                         'status' => $this->request->getParam('status'),
                     ];
 
-                    $check = \Domain\Filters\GuestBook::check($data);
+                    $check = \App\Domain\Filters\GuestBook::check($data);
 
                     if ($check === true) {
                         try {

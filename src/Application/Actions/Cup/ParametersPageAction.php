@@ -1,11 +1,8 @@
 <?php
 
-namespace Application\Actions\Cup;
+namespace App\Application\Actions\Cup;
 
-use Application\Actions\Action;
-use DateTime;
-use Exception;
-use Psr\Container\ContainerInterface;
+use App\Application\Actions\Action;
 
 class ParametersPageAction extends Action
 {
@@ -21,14 +18,14 @@ class ParametersPageAction extends Action
                         'value' => $value,
                     ];
 
-                    $check = \Domain\Filters\Parameter::check($data);
+                    $check = \App\Domain\Filters\Parameter::check($data);
 
                     if ($check === true) {
-                        $model = $models->firstWhere('key', $data['key']) ?? new \Domain\Entities\Parameter();
+                        $model = $models->firstWhere('key', $data['key']) ?? new \App\Domain\Entities\Parameter();
                         $model->replace($data);
                         $this->entityManager->persist($model);
                     } else {
-                        \AEngine\Support\Form::$globalError[$group . '[' . $key . ']'] = \Domain\References\Errors\Parameter::WRONG_VALUE;
+                        \AEngine\Support\Form::$globalError[$group . '[' . $key . ']'] = \App\Domain\References\Errors\Parameter::WRONG_VALUE;
                     }
                 }
             }

@@ -1,11 +1,10 @@
 <?php
 
-namespace Application\Middlewares;
+namespace App\Application\Middlewares;
 
 use DateTime;
 use Psr\Container\ContainerInterface;
 use Ramsey\Uuid\Uuid;
-use Slim\App;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
@@ -28,8 +27,8 @@ class AuthorizationMiddleware extends Middleware
     {
         parent::__construct($container);
 
-        $this->userRepository = $this->entityManager->getRepository(\Domain\Entities\User::class);
-        $this->userSessionRepository = $this->entityManager->getRepository(\Domain\Entities\User\Session::class);
+        $this->userRepository = $this->entityManager->getRepository(\App\Domain\Entities\User::class);
+        $this->userSessionRepository = $this->entityManager->getRepository(\App\Domain\Entities\User\Session::class);
     }
 
     /**
@@ -47,13 +46,13 @@ class AuthorizationMiddleware extends Middleware
         ];
 
         if ($data['uuid'] && Uuid::isValid($data['uuid']) && $data['session']) {
-            /** @var \Domain\Entities\User\Session $session */
+            /** @var \App\Domain\Entities\User\Session $session */
             $session = $this->userSessionRepository->findOneBy(['uuid' => $data['uuid']]);
 
             if ($session && $data['session'] === $this->session($session)) {
                 $user = $this->userRepository->findOneBy([
                     'uuid' => $session->uuid,
-                    'status' => \Domain\Types\UserStatusType::STATUS_WORK,
+                    'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
                 ]);
 
                 if ($user) {
@@ -68,12 +67,12 @@ class AuthorizationMiddleware extends Middleware
     /**
      * Возвращает ключ сессии
      *
-     * @param \Domain\Entities\User\Session $model
+     * @param \App\Domain\Entities\User\Session $model
      *
      * @return string
      * @throws \Exception
      */
-    protected function session(\Domain\Entities\User\Session $model)
+    protected function session(\App\Domain\Entities\User\Session $model)
     {
         if (!$model->isEmpty()) {
             $default = [

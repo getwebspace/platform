@@ -5,7 +5,8 @@ require __DIR__ . '/../config/vars.php';
 /**
  * @return \Slim\App
  */
-function app_create() {
+function app_create()
+{
     // upload dir
     if (!file_exists(PUBLIC_DIR . '/uploads')) {
         symlink(UPLOAD_DIR, PUBLIC_DIR . '/uploads');

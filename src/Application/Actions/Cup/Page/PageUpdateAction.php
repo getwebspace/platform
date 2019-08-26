@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Actions\Cup\Page;
+namespace App\Application\Actions\Cup\Page;
 
 use Exception;
 
@@ -9,7 +9,7 @@ class PageUpdateAction extends PageAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            /** @var \Domain\Entities\Page $item */
+            /** @var \App\Domain\Entities\Page $item */
             $item = $this->pageRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
 
             if (!$item->isEmpty()) {
@@ -25,7 +25,7 @@ class PageUpdateAction extends PageAction
                         'template' => $this->request->getParam('template'),
                     ];
 
-                    $check = \Domain\Filters\Page::check($data);
+                    $check = \App\Domain\Filters\Page::check($data);
 
                     if ($check === true) {
                         try {

@@ -1,9 +1,6 @@
 <?php
 
-namespace Application\Actions\Cup\GuestBook;
-
-use Psr\Container\ContainerInterface;
-use Slim\Http\Response;
+namespace App\Application\Actions\Cup\GuestBook;
 
 class GuestBookListAction extends GuestBookAction
 {

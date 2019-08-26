@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\References;
+namespace App\Domain\References;
 
 class Date
 {

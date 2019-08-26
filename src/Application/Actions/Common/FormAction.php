@@ -1,12 +1,12 @@
 <?php
 
-namespace Application\Actions\Common;
+namespace App\Application\Actions\Common;
 
 use AEngine\Support\Str;
-use Application\Actions\Action;
+use App\Application\Actions\Action;
+use App\Domain\Exceptions\HttpBadRequestException;
+use App\Domain\Exceptions\HttpNotFoundException;
 use DateTime;
-use Domain\Exceptions\HttpBadRequestException;
-use Domain\Exceptions\HttpNotFoundException;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Slim\Http\UploadedFile;
@@ -35,14 +35,14 @@ class FormAction extends Action
     {
         parent::__construct($container);
 
-        $this->formRepository = $this->entityManager->getRepository(\Domain\Entities\Form::class);
-        $this->formDataRepository = $this->entityManager->getRepository(\Domain\Entities\Form\Data::class);
-        $this->fileRepository = $this->entityManager->getRepository(\Domain\Entities\File::class);
+        $this->formRepository = $this->entityManager->getRepository(\App\Domain\Entities\Form::class);
+        $this->formDataRepository = $this->entityManager->getRepository(\App\Domain\Entities\Form\Data::class);
+        $this->fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
     }
 
     protected function action(): \Slim\Http\Response
     {
-        /** @var \Domain\Entities\Form $item */
+        /** @var \App\Domain\Entities\Form $item */
         $item = $this->formRepository->findOneBy([
             'address' => $this->resolveArg('unique'),
         ]);
@@ -111,9 +111,9 @@ class FormAction extends Action
 
             /**
              * save request
-             * @var \Domain\Entities\Form\Data $bid
+             * @var \App\Domain\Entities\Form\Data $bid
              */
-            $bid = new \Domain\Entities\Form\Data([
+            $bid = new \App\Domain\Entities\Form\Data([
                 'form_uuid' => $item->uuid,
                 'message' => $body,
                 'date' => new DateTime(),
@@ -136,13 +136,13 @@ class FormAction extends Action
                     }
 
                     // create model
-                    $model = new \Domain\Entities\File([
+                    $model = new \App\Domain\Entities\File([
                         'name' => $name,
                         'type' => $file->getClientMediaType(),
                         'size' => (int)$file->getSize(),
                         'salt' => $salt,
                         'date' => new \DateTime(),
-                        'item' => \Domain\Types\FileItemType::ITEM_FORM_DATA,
+                        'item' => \App\Domain\Types\FileItemType::ITEM_FORM_DATA,
                         'item_uuid' => $bid->uuid,
                     ]);
 

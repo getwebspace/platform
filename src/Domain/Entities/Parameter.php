@@ -1,9 +1,8 @@
 <?php
 
-namespace Domain\Entities;
+namespace App\Domain\Entities;
 
 use AEngine\Entity\Model;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**

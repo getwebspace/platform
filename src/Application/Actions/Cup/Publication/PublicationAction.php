@@ -1,10 +1,8 @@
 <?php
 
-namespace Application\Actions\Cup\Publication;
+namespace App\Application\Actions\Cup\Publication;
 
-use Application\Actions\Action;
-use DateTime;
-use Exception;
+use App\Application\Actions\Action;
 use Psr\Container\ContainerInterface;
 
 abstract class PublicationAction extends Action
@@ -26,7 +24,7 @@ abstract class PublicationAction extends Action
     {
         parent::__construct($container);
 
-        $this->publicationRepository = $this->entityManager->getRepository(\Domain\Entities\Publication::class);
-        $this->categoryRepository = $this->entityManager->getRepository(\Domain\Entities\Publication\Category::class);
+        $this->publicationRepository = $this->entityManager->getRepository(\App\Domain\Entities\Publication::class);
+        $this->categoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Publication\Category::class);
     }
 }

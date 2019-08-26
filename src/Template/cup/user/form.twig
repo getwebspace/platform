@@ -95,7 +95,7 @@
                                     'type': 'select',
                                     'name': 'level',
                                     'args': {
-                                        'option': reference('/Domain/Types/UserLevelType::LIST'),
+                                        'option': reference('/App/Domain/Types/UserLevelType::LIST'),
                                         'selected': item.level
                                     }
                                 } %}
@@ -107,7 +107,7 @@
                                         'type': 'select',
                                         'name': 'status',
                                         'args': {
-                                            'option': reference('/Domain/Types/UserStatusType::LIST'),
+                                            'option': reference('/App/Domain/Types/UserStatusType::LIST'),
                                             'selected': item.status
                                         }
                                     } %}
@@ -131,7 +131,7 @@
                                 <img src="{{ item.avatar(80) }}" alt="{{ item.name('full') }}" class="avatar-img rounded-circle">
                             </div>
                             <div class="name">{{ item.username }}</div>
-                            <div class="text-muted">{{ reference('/Domain/Types/UserLevelType::LIST', item.level) }}</div>
+                            <div class="text-muted">{{ reference('/App/Domain/Types/UserLevelType::LIST', item.level) }}</div>
                             <div class="text-muted">{{ item.uuid }}</div>
                         </div>
                     </div>

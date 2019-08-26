@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\Entities\Catalog;
+namespace App\Domain\Entities\Catalog;
 
 use AEngine\Entity\Model;
 use Doctrine\ORM\Mapping as ORM;
@@ -88,10 +88,10 @@ class Category extends Model
 
     /**
      * @var string
-     * @see \Domain\Types\Catalog\CategoryStatusType::LIST
+     * @see \App\Domain\Types\Catalog\CategoryStatusType::LIST
      * @ORM\Column(type="CatalogCategoryStatusType", length=50)
      */
-    public $status = \Domain\Types\Catalog\CategoryStatusType::STATUS_WORK;
+    public $status = \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK;
 
     /**
      * @var array

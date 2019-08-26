@@ -1,11 +1,10 @@
 <?php
 
-namespace Domain\Entities;
+namespace App\Domain\Entities;
 
 use AEngine\Entity\Model;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Entity\User\Session;
 use Ramsey\Uuid\UuidInterface;
 
 /**
@@ -45,10 +44,10 @@ class GuestBook extends Model
 
     /**
      * @var string
-     * @see \Domain\Types\GuestBookStatusType::LIST
+     * @see \App\Domain\Types\GuestBookStatusType::LIST
      * @ORM\Column(type="GuestBookStatusType", length=50)
      */
-    public $status = \Domain\Types\GuestBookStatusType::STATUS_WORK;
+    public $status = \App\Domain\Types\GuestBookStatusType::STATUS_WORK;
 
     /**
      * @var DateTime

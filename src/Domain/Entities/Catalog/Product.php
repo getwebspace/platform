@@ -1,6 +1,6 @@
 <?php
 
-namespace Domain\Entities\Catalog;
+namespace App\Domain\Entities\Catalog;
 
 use AEngine\Entity\Model;
 use DateTime;
@@ -144,10 +144,10 @@ class Product extends Model
 
     /**
      * @var string
-     * @see \Domain\Types\Catalog\ProductStatusType::LIST
+     * @see \App\Domain\Types\Catalog\ProductStatusType::LIST
      * @ORM\Column(type="CatalogProductStatusType", length=50)
      */
-    public $status = \Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
+    public $status = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
 
     /**
      * @var DateTime

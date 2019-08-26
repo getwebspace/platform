@@ -1,10 +1,8 @@
 <?php
 
-namespace Application\Actions\Cup\GuestBook;
+namespace App\Application\Actions\Cup\GuestBook;
 
-use Application\Actions\Action;
-use DateTime;
-use Exception;
+use App\Application\Actions\Action;
 use Psr\Container\ContainerInterface;
 
 abstract class GuestBookAction extends Action
@@ -21,6 +19,6 @@ abstract class GuestBookAction extends Action
     {
         parent::__construct($container);
 
-        $this->gbookRepository = $this->entityManager->getRepository(\Domain\Entities\GuestBook::class);
+        $this->gbookRepository = $this->entityManager->getRepository(\App\Domain\Entities\GuestBook::class);
     }
 }

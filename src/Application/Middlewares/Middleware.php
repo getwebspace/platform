@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\Middlewares;
+namespace App\Application\Middlewares;
 
 use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;

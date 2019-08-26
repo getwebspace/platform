@@ -1,8 +1,8 @@
 <?php
 
-namespace Application\Actions\Cup\Publication\Category;
+namespace App\Application\Actions\Cup\Publication\Category;
 
-use Application\Actions\Cup\Publication\PublicationAction;
+use App\Application\Actions\Cup\Publication\PublicationAction;
 use Exception;
 
 class CategoryCreateAction extends PublicationAction
@@ -22,11 +22,11 @@ class CategoryCreateAction extends PublicationAction
                 'template' => $this->request->getParam('template'),
             ];
 
-            $check = \Domain\Filters\Publication\Category::check($data);
+            $check = \App\Domain\Filters\Publication\Category::check($data);
 
             if ($check === true) {
                 try {
-                    $model = new \Domain\Entities\Publication\Category($data);
+                    $model = new \App\Domain\Entities\Publication\Category($data);
                     $this->entityManager->persist($model);
                     $this->entityManager->flush();
 

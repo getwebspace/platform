@@ -1,10 +1,8 @@
 <?php
 
-namespace Application\Actions\Cup\Form;
+namespace App\Application\Actions\Cup\Form;
 
-use Application\Actions\Action;
-use DateTime;
-use Exception;
+use App\Application\Actions\Action;
 use Psr\Container\ContainerInterface;
 
 abstract class FormAction extends Action
@@ -31,8 +29,8 @@ abstract class FormAction extends Action
     {
         parent::__construct($container);
 
-        $this->formRepository = $this->entityManager->getRepository(\Domain\Entities\Form::class);
-        $this->dataRepository = $this->entityManager->getRepository(\Domain\Entities\Form\Data::class);
-        $this->fileRepository = $this->entityManager->getRepository(\Domain\Entities\File::class);
+        $this->formRepository = $this->entityManager->getRepository(\App\Domain\Entities\Form::class);
+        $this->dataRepository = $this->entityManager->getRepository(\App\Domain\Entities\Form\Data::class);
+        $this->fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
     }
 }
