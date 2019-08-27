@@ -34,7 +34,8 @@
                         <table data-table class="display table table-striped table-hover" >
                             <thead>
                                 <tr>
-                                    <th width="5%"><i class="fas fa-sort" data-toggle="tooltip" data-placement="top" title="Название категории. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов"></i></th>
+                                    {# поле для сортировки данных в таблице #}
+                                    <th style="display: none"></th>
                                     <th>Наименование</th>
                                     <th>Основная категория</th>
                                     <th>{{ fields.catalog_category_field_1 ?? 'Поле 1' }}</th>
@@ -46,7 +47,8 @@
                             <tbody>
                                 {% for category in categories %}
                                     <tr>
-                                        <td class="text-center">{{ category.order }}</td>
+                                        {# поле для сортировки данных в таблице #}
+                                        <td style="display: none">{{ category.order }}</td>
                                         <td>
                                             <a href="/catalog/{{ category.address }}" target="_blank">
                                                 {{ category.title }}
