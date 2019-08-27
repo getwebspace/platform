@@ -30,9 +30,10 @@
                     <div class="filter-widget">
                         <h2 class="fw-title">Категории</h2>
                         <ul class="category-menu">
-                            {% for cat in categories %}
+                            {% include 'publication.menu.twig' with {'categories':categories} only %}
+                            {#{% for cat in categories %}
                                 <li class=""><a href="/{{ cat.address }}">{{ cat.title }}</a></li>
-                            {% endfor %}
+                            {% endfor %}#}
                         </ul>
                     </div>
                 </div>

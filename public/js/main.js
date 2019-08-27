@@ -8,17 +8,13 @@
 
 'use strict';
 
-
-$(window).on('load', function() {
+(function($) {
 	/*------------------
 		Preloder
 	--------------------*/
 	$(".loader").fadeOut();
 	$("#preloder").delay(400).fadeOut("slow");
-
-});
-
-(function($) {
+	
 	/*------------------
 		Navigation
 	--------------------*/
@@ -42,16 +38,18 @@ $(window).on('load', function() {
 	/*------------------
 		Category menu
 	--------------------*/
-	$('.category-menu > li').hover( function(e) {
-		$(this).addClass('active');
-		e.preventDefault();
+	$('.category-menu .sub-menu').parents('li').on('click', function(e) {
+		let $el = $(this);
+		
+		if (!$el.is('.active') && $el.has('.sub-menu')) {
+			e.preventDefault();
+			$el.addClass('active');
+		}
 	});
-	$('.category-menu').mouseleave( function(e) {
-		$('.category-menu li').removeClass('active');
-		e.preventDefault();
-	});
-
-
+	
+	setTimeout(() => { $('.category-menu a[href="'+ location.pathname +'"]').parents('li').addClass('active'); }, 700);
+	
+	
 	/*------------------
 		Background Set
 	--------------------*/
@@ -59,7 +57,6 @@ $(window).on('load', function() {
 		var bg = $(this).data('setbg');
 		$(this).css('background-image', 'url(' + bg + ')');
 	});
-
 
 
 	/*------------------
@@ -90,7 +87,6 @@ $(window).on('load', function() {
 
 	hero_s.append('<div class="slider-nav-warp"><div class="slider-nav"></div></div>');
 	$(".hero-slider .owl-nav, .hero-slider .owl-dots").appendTo('.slider-nav');
-
 
 
 	/*------------------
