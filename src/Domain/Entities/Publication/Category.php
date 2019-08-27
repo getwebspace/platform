@@ -4,7 +4,7 @@ namespace App\Domain\Entities\Publication;
 
 use AEngine\Entity\Model;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\UuidInterface;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity
@@ -13,7 +13,7 @@ use Ramsey\Uuid\UuidInterface;
 class Category extends Model
 {
     /**
-     * @var UuidInterface
+     * @var Uuid
      * @ORM\Id
      * @ORM\Column(type="uuid")
      * @ORM\GeneratedValue(strategy="CUSTOM")

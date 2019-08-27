@@ -5,7 +5,7 @@ namespace App\Domain\Entities\Catalog;
 use AEngine\Entity\Model;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\UuidInterface;
+use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity
@@ -22,7 +22,7 @@ use Ramsey\Uuid\UuidInterface;
 class Product extends Model
 {
     /**
-     * @var UuidInterface
+     * @var Uuid
      * @ORM\Id
      * @ORM\Column(type="uuid")
      * @ORM\GeneratedValue(strategy="CUSTOM")
