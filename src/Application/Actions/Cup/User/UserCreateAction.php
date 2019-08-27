@@ -16,6 +16,7 @@ class UserCreateAction extends UserAction
                 'firstname' => $this->request->getParam('firstname'),
                 'lastname' => $this->request->getParam('lastname'),
                 'email' => $this->request->getParam('email'),
+                'phone' => $this->request->getParam('phone'),
                 'level' => $this->request->getParam('level'),
             ];
 

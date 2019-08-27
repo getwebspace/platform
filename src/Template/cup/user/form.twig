@@ -37,7 +37,7 @@
                                 {% include 'cup/form.twig' with {
                                     'label': 'Новый пароль',
                                     'type': 'text',
-                                    'name': 'password',
+                                    'name': 'password','postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Оставьте пустым, если не хотите менять"></i>',
                                     'args': {
                                         'required': item.uuid ? false : true,
                                     }
@@ -81,6 +81,16 @@
                                     'args': {
                                         'value': item.email,
                                         'required': true,
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Телефон',
+                                    'type': 'tel',
+                                    'name': 'phone',
+                                    'args': {
+                                        'value': item.phone,
                                     }
                                 } %}
                             </div>
