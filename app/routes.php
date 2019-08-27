@@ -123,7 +123,9 @@ $app
     });
 
 // main path
-$app->get('/', \App\Application\Actions\Common\MainPageAction::class);
+$app
+    ->get('/', \App\Application\Actions\Common\MainPageAction::class)
+    ->setName('main');
 
 // file worker
 $app->group('/file', function (App $app) {

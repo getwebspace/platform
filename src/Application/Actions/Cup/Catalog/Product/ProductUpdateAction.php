@@ -65,7 +65,9 @@ class ProductUpdateAction extends CatalogAction
                                 $this->handlerFileUpload($product);
                                 $this->entityManager->flush();
 
-                                return $this->response->withAddedHeader('Location', '/cup/catalog/product/' . $product->category);
+                                if ($this->request->getParam('save', 'exit') === 'exit') {
+                                    return $this->response->withAddedHeader('Location', '/cup/catalog/product/' . $product->category);
+                                }
                             } catch (Exception $e) {
                                 // todo nothing
                             }

@@ -47,7 +47,12 @@ class ProductCreateAction extends CatalogAction
                     $this->handlerFileUpload($model);
                     $this->entityManager->flush();
 
-                    return $this->response->withAddedHeader('Location', '/cup/catalog/product/' . $model->category);
+                    switch (true) {
+                        case $this->request->getParam('save', 'exit') === 'exit':
+                            return $this->response->withAddedHeader('Location', '/cup/catalog/product/' . $model->category);
+                        default:
+                            return $this->response->withAddedHeader('Location', '/cup/catalog/product/' . $model->uuid . '/edit');
+                    }
                 } catch (Exception $e) {
                     // todo nothing
                 }

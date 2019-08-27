@@ -25,7 +25,12 @@ class FormCreateAction extends FormAction
                     $this->entityManager->persist($model);
                     $this->entityManager->flush();
 
-                    return $this->response->withAddedHeader('Location', '/cup/form');
+                    switch (true) {
+                        case $this->request->getParam('save', 'exit') === 'exit':
+                            return $this->response->withAddedHeader('Location', '/cup/form');
+                        default:
+                            return $this->response->withAddedHeader('Location', '/cup/form/' . $model->uuid . '/edit');
+                    }
                 } catch (Exception $e) {
                     // todo nothing
                 }

@@ -27,7 +27,12 @@ class PageCreateAction extends PageAction
                     $this->entityManager->persist($model);
                     $this->entityManager->flush();
 
-                    return $this->response->withAddedHeader('Location', '/cup/page');
+                    switch (true) {
+                        case $this->request->getParam('save', 'exit') === 'exit':
+                            return $this->response->withAddedHeader('Location', '/cup/page');
+                        default:
+                            return $this->response->withAddedHeader('Location', '/cup/page/' . $model->uuid . '/edit');
+                    }
                 } catch (Exception $e) {
                     // todo nothing
                 }

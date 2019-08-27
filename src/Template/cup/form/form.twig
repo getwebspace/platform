@@ -95,9 +95,9 @@
                                     'type': 'textarea',
                                     'name': 'origin',
                                     'args': {
-                                        'value': item.origin ? item.origin|join('\n') : '*',
+                                        'value': item.origin ? item.origin|join('\n') : full_url_for('main'),
                                         'required': true,
-                                        'placeholder': 'https://example.com/my-page',
+                                        'placeholder': full_url_for('main'),
                                         'style': 'min-height: 150px;'
                                     }
                                 } %}
@@ -106,7 +106,8 @@
                         </div>
                     </div>
                     <div class="card-action">
-                        <button type="submit" class="btn btn-success">Сохранить</button>
+                        <button type="submit" name="save" value="exit" class="btn btn-primary">Сохранить и выйти</button>
+                        <button type="submit" name="save" class="btn btn-info">Сохранить</button>
                     </div>
                 </form>
             </div>

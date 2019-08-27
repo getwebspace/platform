@@ -39,7 +39,9 @@ class OrderUpdateAction extends CatalogAction
                             $this->entityManager->persist($order);
                             $this->entityManager->flush();
 
-                            return $this->response->withAddedHeader('Location', '/cup/catalog/order');
+                            if ($this->request->getParam('save', 'exit') === 'exit') {
+                                return $this->response->withAddedHeader('Location', '/cup/catalog/order');
+                            }
                         } catch (Exception $e) {
                             // todo nothing
                         }

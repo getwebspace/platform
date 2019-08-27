@@ -33,7 +33,9 @@ class PageUpdateAction extends PageAction
                             $this->entityManager->persist($item);
                             $this->entityManager->flush();
 
-                            return $this->response->withAddedHeader('Location', '/cup/page');
+                            if ($this->request->getParam('save', 'exit') === 'exit') {
+                                return $this->response->withAddedHeader('Location', '/cup/page');
+                            }
                         } catch (Exception $e) {
                             // todo nothing
                         }

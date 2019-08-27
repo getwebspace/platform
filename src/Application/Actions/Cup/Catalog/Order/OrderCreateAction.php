@@ -30,7 +30,12 @@ class OrderCreateAction extends CatalogAction
                     $this->entityManager->persist($model);
                     $this->entityManager->flush();
 
-                    return $this->response->withAddedHeader('Location', '/cup/catalog/order');
+                    switch (true) {
+                        case $this->request->getParam('save', 'exit') === 'exit':
+                            return $this->response->withAddedHeader('Location', '/cup/catalog/order');
+                        default:
+                            return $this->response->withAddedHeader('Location', '/cup/catalog/order/' . $model->uuid . '/edit');
+                    }
                 } catch (Exception $e) {
                     // todo nothing
                 }

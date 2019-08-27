@@ -27,7 +27,12 @@ class PublicationCreateAction extends PublicationAction
                     $this->entityManager->persist($model);
                     $this->entityManager->flush();
 
-                    return $this->response->withAddedHeader('Location', '/cup/publication');
+                    switch (true) {
+                        case $this->request->getParam('save', 'exit') === 'exit':
+                            return $this->response->withAddedHeader('Location', '/cup/publication');
+                        default:
+                            return $this->response->withAddedHeader('Location', '/cup/publication/' . $model->uuid . '/edit');
+                    }
                 } catch (Exception $e) {
                     // todo nothing
                 }

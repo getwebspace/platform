@@ -32,7 +32,9 @@ class GuestBookUpdateAction extends GuestBookAction
                             $this->entityManager->persist($item);
                             $this->entityManager->flush();
 
-                            return $this->response->withAddedHeader('Location', '/cup/guestbook');
+                            if ($this->request->getParam('save', 'exit') === 'exit') {
+                                return $this->response->withAddedHeader('Location', '/cup/guestbook');
+                            }
                         } catch (Exception $e) {
                             // todo nothing
                         }

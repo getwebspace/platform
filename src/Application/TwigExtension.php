@@ -61,7 +61,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
      * slim functions
      */
 
-    public function pathFor($name, $data = [], $queryParams = [], $appName = 'default')
+    public function pathFor($name, $data = [], $queryParams = [])
     {
         return $this->router->pathFor($name, $data, $queryParams);
     }
@@ -72,13 +72,12 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
      * @param string $name The name of the route
      * @param array  $data Route placeholders
      * @param array  $queryParams
-     * @param string $appName
      *
      * @return string fully qualified URL
      */
-    public function fullUrlFor($name, $data = [], $queryParams = [], $appName = 'default')
+    public function fullUrlFor($name, $data = [], $queryParams = [])
     {
-        $path = $this->pathFor($name, $data, $queryParams, $appName);
+        $path = $this->pathFor($name, $data, $queryParams);
 
         /** @var Uri $uri */
         if (is_string($this->uri)) {

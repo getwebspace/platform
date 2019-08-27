@@ -37,7 +37,12 @@ class UserCreateAction extends UserAction
 
                     $this->entityManager->flush();
 
-                    return $this->response->withAddedHeader('Location', '/cup/user');
+                    switch (true) {
+                        case $this->request->getParam('save', 'exit') === 'exit':
+                            return $this->response->withAddedHeader('Location', '/cup/user');
+                        default:
+                            return $this->response->withAddedHeader('Location', '/cup/user/' . $model->uuid . '/edit');
+                    }
                 } catch (Exception $e) {
                     // todo nothing
                 }

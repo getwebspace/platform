@@ -35,7 +35,9 @@ class UserUpdateAction extends UserAction
                             $this->entityManager->persist($item);
                             $this->entityManager->flush();
 
-                            return $this->response->withAddedHeader('Location', '/cup/user');
+                            if ($this->request->getParam('save', 'exit') === 'exit') {
+                                return $this->response->withAddedHeader('Location', '/cup/user');
+                            }
                         } catch (Exception $e) {
                             // todo nothing
                         }

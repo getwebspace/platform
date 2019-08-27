@@ -33,7 +33,9 @@ class PublicationUpdateAction extends PublicationAction
                             $this->entityManager->persist($item);
                             $this->entityManager->flush();
 
-                            return $this->response->withAddedHeader('Location', '/cup/publication');
+                            if ($this->request->getParam('save', 'exit') === 'exit') {
+                                return $this->response->withAddedHeader('Location', '/cup/publication');
+                            }
                         } catch (Exception $e) {
                             // todo nothing
                         }

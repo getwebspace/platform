@@ -38,7 +38,12 @@ class CategoryCreateAction extends CatalogAction
                     $this->handlerFileUpload($model);
                     $this->entityManager->flush();
 
-                    return $this->response->withAddedHeader('Location', '/cup/catalog/category/' . $model->parent);
+                    switch (true) {
+                        case $this->request->getParam('save', 'exit') === 'exit':
+                            return $this->response->withAddedHeader('Location', '/cup/catalog/category/' . $model->parent);
+                        default:
+                            return $this->response->withAddedHeader('Location', '/cup/catalog/category/' . $model->uuid . '/edit');
+                    }
                 } catch (Exception $e) {
                     // todo nothing
                 }

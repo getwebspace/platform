@@ -30,7 +30,12 @@ class CategoryCreateAction extends PublicationAction
                     $this->entityManager->persist($model);
                     $this->entityManager->flush();
 
-                    return $this->response->withAddedHeader('Location', '/cup/publication/category');
+                    switch (true) {
+                        case $this->request->getParam('save', 'exit') === 'exit':
+                            return $this->response->withAddedHeader('Location', '/cup/publication/category');
+                        default:
+                            return $this->response->withAddedHeader('Location', '/cup/publication/category/' . $model->uuid . '/edit');
+                    }
                 } catch (Exception $e) {
                     // todo nothing
                 }
