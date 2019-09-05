@@ -268,7 +268,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
         $repository = $this->entityManager->getRepository(\App\Domain\Entities\Publication::class);
 
-        return collect($repository->findBy($criteria, $order, $limit, $offset));
+        return $limit > 1 ? collect($repository->findBy($criteria, $order, $limit, $offset)) : $repository->findOneBy($criteria, $order);
     }
 
     /*
@@ -304,7 +304,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
         $repository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
 
-        return collect($repository->findBy($criteria, $order, $limit, $offset));
+        return $limit > 1 ? collect($repository->findBy($criteria, $order, $limit, $offset)) : $repository->findOneBy($criteria, $order);
     }
 
     // получение заказа

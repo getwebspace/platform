@@ -32,11 +32,11 @@
                     <h2>Микро-Блог</h2>
                     <div class="fw-latest-post-widget">
                         <div class="lp-item">
-                            <div class="lp-thumb set-bg" data-setbg="img/blog-thumbs/1.jpg"></div>
                             <div class="lp-content">
-                                <h6>Наши партнеры</h6>
-                                <span>Oct 21, 2018</span>
-                                <a href="#" class="readmore">Читать дальше</a>
+                                {% set publication = publication(null, {'date': 'desc'}, 1) %}
+                                <h6>{{ publication.title }}</h6>
+                                <span>{{ publication.date|date('d.m.Y') }}</span>
+                                <p>{{ publication.content.short|raw }}</p>
                             </div>
                         </div>
                     </div>
