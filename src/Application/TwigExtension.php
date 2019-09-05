@@ -2,6 +2,7 @@
 
 namespace App\Application;
 
+use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
 use Slim\Http\Uri;
 
@@ -11,6 +12,11 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
      * @var ContainerInterface
      */
     protected $container;
+
+    /**
+     * @var EntityManager
+     */
+    protected $entityManager;
 
     /**
      * @var \Slim\Interfaces\RouterInterface
@@ -25,6 +31,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     public function __construct(ContainerInterface $container, $uri)
     {
         $this->container = $container;
+        $this->entityManager = $container->get(\Doctrine\ORM\EntityManager::class);
         $this->router = $container->get('router');
         $this->uri = $uri;
     }
@@ -53,6 +60,15 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
                 new \Twig\TwigFunction('non_page_path', [$this, 'non_page_path']),
                 new \Twig\TwigFunction('current_page_number', [$this, 'current_page_number']),
                 new \Twig\TwigFunction('is_current_page_number', [$this, 'is_current_page_number']),
+
+                // publication functions
+                new \Twig\TwigFunction('publication', [$this, 'publication']),
+                new \Twig\TwigFunction('publication_category', [$this, 'publication_category']),
+
+                // catalog functions
+                new \Twig\TwigFunction('catalog_category', [$this, 'catalog_category']),
+                new \Twig\TwigFunction('catalog_product', [$this, 'catalog_product']),
+                new \Twig\TwigFunction('catalog_order', [$this, 'catalog_order']),
             ]
         );
     }
@@ -217,5 +233,98 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     public function is_current_page_number($number)
     {
         return $this->current_page_number() == $number;
+    }
+
+    /*
+     * publication functions
+     */
+
+    // получение списка категорий публикаций
+    public function publication_category($limit = null)
+    {
+        /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
+        $repository = $this->entityManager->getRepository(\App\Domain\Entities\Publication\Category::class);
+
+        return collect($repository->findAll());
+    }
+
+    // получение списка публикаций
+    public function publication($category = null, $order = [], $limit = 10, $offset = null)
+    {
+        $criteria = [];
+
+        if ($category) {
+            switch (true) {
+                case \Ramsey\Uuid\Uuid::isValid($category) === true:
+                    $criteria['uuid'] = $category;
+                    break;
+
+                default:
+                    $criteria['address'] = $category;
+                    break;
+            }
+        }
+
+        /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
+        $repository = $this->entityManager->getRepository(\App\Domain\Entities\Publication::class);
+
+        return collect($repository->findBy($criteria, $order, $limit, $offset));
+    }
+
+    /*
+     * publication functions
+     */
+
+    // получение списка категорий товаров
+    public function catalog_category()
+    {
+        /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
+        $repository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class);
+
+        return collect($repository->findAll());
+    }
+
+    // получение списка товаров
+    public function catalog_product($category = null, $order = [], $limit = 10, $offset = null)
+    {
+        $criteria = [];
+
+        if ($category) {
+            switch (true) {
+                case \Ramsey\Uuid\Uuid::isValid($category) === true:
+                    $criteria['uuid'] = $category;
+                    break;
+
+                default:
+                    $criteria['address'] = $category;
+                    break;
+            }
+        }
+
+        /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
+        $repository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
+
+        return collect($repository->findBy($criteria, $order, $limit, $offset));
+    }
+
+    // получение заказа
+    public function catalog_order($unique)
+    {
+        $criteria = [];
+
+        switch (true) {
+            case \Ramsey\Uuid\Uuid::isValid($unique) === true:
+                $criteria['uuid'] = $unique;
+                break;
+
+            default:
+                $criteria['secret'] = $unique;
+                break;
+        }
+
+        /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
+        $repository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Order::class);
+
+        return collect($repository->findOneBy($criteria));
     }
 }
