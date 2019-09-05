@@ -86,9 +86,10 @@ class User extends Model
     public $session;
 
     /**
+     * @param String $type
      * @return string
      */
-    public function getName($type = 'full')
+    public function getName(string $type = 'full')
     {
         switch ($type) {
             case 'full':

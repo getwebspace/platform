@@ -1,0 +1,130 @@
+<div class="pt-2">
+    <h4 class="text-center">Модель пользователя</h4>
+
+    <h5>Поля</h5>
+    <table class="table">
+        <tr>
+            <th>Поле</th>
+            <th width="10%">Тип</th>
+            <th>Описание</th>
+            <th width="5%">Required</th>
+            <th width="5%">Unique</th>
+            <th width="5%">Null</th>
+        </tr>
+        <tr>
+            <td>uuid</td>
+            <td>Uuid(36)</td>
+            <td>Уникальный идентификатор</td>
+            <td class="text-center">+</td>
+            <td class="text-center">+</td>
+            <td class="text-center">-</td>
+        </tr>
+        <tr>
+            <td>username</td>
+            <td>String(50)</td>
+            <td>Имя пользователя (логин)</td>
+            <td class="text-center">+</td>
+            <td class="text-center">+</td>
+            <td class="text-center">-</td>
+        </tr>
+        <tr>
+            <td>email</td>
+            <td>String(120)</td>
+            <td>E-Mail адрес пользователя</td>
+            <td class="text-center">+</td>
+            <td class="text-center">+</td>
+            <td class="text-center">-</td>
+        </tr>
+        <tr>
+            <td>phone</td>
+            <td>String(25)</td>
+            <td>Телефон пользователя</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">+</td>
+        </tr>
+        <tr>
+            <td>password</td>
+            <td>String(140)</td>
+            <td>Хешированный пароль пользователя</td>
+            <td class="text-center">+</td>
+            <td class="text-center">+</td>
+            <td class="text-center">-</td>
+        </tr>
+        <tr>
+            <td>firstname</td>
+            <td>String(50)</td>
+            <td>Имя пользователя</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">+</td>
+        </tr>
+        <tr>
+            <td>lastname</td>
+            <td>String(50)</td>
+            <td>Фамилия пользователя</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">+</td>
+        </tr>
+        <tr>
+            <td>status</td>
+            <td>UserStatusType(50)</td>
+            <td>Статус пользователя</td>
+            <td class="text-center">+</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+        </tr>
+        <tr>
+            <td>level</td>
+            <td>UserLevelType(50)</td>
+            <td>Уровень доступа пользователя</td>
+            <td class="text-center">+</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+        </tr>
+        <tr>
+            <td>register</td>
+            <td>DateTime</td>
+            <td>Дата регистрации пользователя</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+        </tr>
+        <tr>
+            <td>change</td>
+            <td>DateTime</td>
+            <td>Дата последнего изменения пользователя</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+        </tr>
+        <tr>
+            <td>session</td>
+            <td>App\Domain\Entities\User\Session</td>
+            <td>Сессия пользователя</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+        </tr>
+    </table>
+
+    <h5>Методы</h5>
+    <table class="table">
+        <tr>
+            <th width="30%">Сигнатура</th>
+            <th>Описание</th>
+            <th width="10%">Результат</th>
+        </tr>
+        <tr>
+            <td>getName(string $type = 'full')</td>
+            <td>Имя пользователя ($type &dash; full - полные имя и фамилия; short - краткая форма)</td>
+            <td>string</td>
+        </tr>
+        <tr>
+            <td>avatar(int $size = 40)</td>
+            <td>Вернет ссылку на Gravatar пользователя</td>
+            <td>string</td>
+        </tr>
+    </table>
+</div>

@@ -1,0 +1,80 @@
+<div class="pt-2">
+    <h4 class="text-center">Модель записи в Гостевой Книге</h4>
+
+    <h5>Поля</h5>
+    <table class="table">
+        <tr>
+            <th>Поле</th>
+            <th width="10%">Тип</th>
+            <th>Описание</th>
+            <th width="5%">Required</th>
+            <th width="5%">Unique</th>
+            <th width="5%">Null</th>
+        </tr>
+        <tr>
+            <td>uuid</td>
+            <td>Uuid(36)</td>
+            <td>Уникальный идентификатор</td>
+            <td class="text-center">+</td>
+            <td class="text-center">+</td>
+            <td class="text-center">-</td>
+        </tr>
+        <tr>
+            <td>name</td>
+            <td>string(50)</td>
+            <td>Имя автора</td>
+            <td class="text-center">+</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+        </tr>
+        <tr>
+            <td>email</td>
+            <td>string(50)</td>
+            <td>E-Mail автора</td>
+            <td class="text-center">+</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+        </tr>
+        <tr>
+            <td>message</td>
+            <td>String</td>
+            <td>Текст сообщения</td>
+            <td class="text-center">+</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+        </tr>
+        <tr>
+            <td>response</td>
+            <td>String</td>
+            <td>Текст ответа администратора</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+        </tr>
+        <tr>
+            <td>status</td>
+            <td>GuestBookStatusType(50)</td>
+            <td>Статус записи</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+        </tr>
+        <tr>
+            <td>date</td>
+            <td>DateTime</td>
+            <td>Дата публикации</td>
+            <td class="text-center">+</td>
+            <td class="text-center">-</td>
+            <td class="text-center">-</td>
+        </tr>
+    </table>
+
+    <h5>Методы</h5>
+    <table class="table">
+        <tr>
+            <th width="30%">Сигнатура</th>
+            <th>Описание</th>
+            <th width="10%">Результат</th>
+        </tr>
+    </table>
+</div>
