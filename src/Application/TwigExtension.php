@@ -382,13 +382,15 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
                 return $list;
 
             case Uuid::isValid($uuid) === true:
+                $list[] = $uuid->toString();
+                $list = array_unique($list);
+
                 // shift first element
                 if (count($list) > $limit) {
                     $list = array_slice($list, 0 - $limit, $limit);
                 }
 
-                $list[] = $uuid->toString();
-                $_SESSION['catalog_product_view'] = array_unique($list);
+                $_SESSION['catalog_product_view'] = $list;
         }
     }
 
