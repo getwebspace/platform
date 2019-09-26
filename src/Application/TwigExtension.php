@@ -42,6 +42,13 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         return '0x12f';
     }
 
+    public function getFilters()
+    {
+        return [
+            new \Twig\TwigFilter('count', [$this, 'count']),
+        ];
+    }
+
     public function getFunctions()
     {
         return [
@@ -56,6 +63,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             new \Twig\TwigFunction('form', [$this, 'form'], ['is_safe' => ['html']]),
             new \Twig\TwigFunction('reference', [$this, 'reference']),
             new \Twig\TwigFunction('pre', [$this, 'pre']),
+            new \Twig\TwigFunction('count', [$this, 'count']),
             new \Twig\TwigFunction('collect', [$this, 'collect']),
             new \Twig\TwigFunction('non_page_path', [$this, 'non_page_path']),
             new \Twig\TwigFunction('current_page_number', [$this, 'current_page_number']),
@@ -202,6 +210,11 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     public function pre(...$args)
     {
         call_user_func_array('pre', $args);
+    }
+
+    public function count($obj)
+    {
+        return is_countable($obj) ? count($obj) : false;
     }
 
     public function collect(array $array = [])
@@ -370,12 +383,11 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
             case Uuid::isValid($uuid) === true:
                 // shift first element
-                if (count($list) >= $limit) {
-                    array_shift($list);
+                if (count($list) > $limit) {
+                    $list = array_slice($list, 0 - $limit, $limit);
                 }
 
                 $list[] = $uuid->toString();
-
                 $_SESSION['catalog_product_view'] = array_unique($list);
         }
     }

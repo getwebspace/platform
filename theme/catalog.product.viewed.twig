@@ -1,42 +1,39 @@
 {% set uuids = catalog_product_view() %}
 
-{% if uuids %}
+{% if uuids and uuids|count > 4 %}
     {% set viewed = catalog_product(uuids) %}
+    {% set files = files({'item': 'catalog_product', 'item_uuid': uuids}) %}
 
-    {% if viewed.count() >= 4 %}
-        {% set files = files({'item': 'catalog_product', 'item_uuid': uuids}) %}
+    <!-- VIEWED PRODUCTS section -->
+    <section class="related-product-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Просмотренные товары</h2>
+            </div>
 
-        <!-- VIEWED PRODUCTS section -->
-        <section class="related-product-section">
-            <div class="container">
-                <div class="section-title">
-                    <h2>Просмотренные товары</h2>
-                </div>
-
-                <div class="product-slider owl-carousel">
-                    {% for product in viewed %}
-                        <div class="product-item">
-                            <div class="pi-pic">
-                                <a href="/catalog/{{ categories.firstWhere('uuid', product.category).address }}/{{ product.address }}">
-                                    <img src="{{ files.firstWhere('item_uuid', product.uuid).getPublicPath() }}" alt="">
-                                </a>
-                                <div class="pi-links">
-                                    <a href="#" class="add-card"><i class="flaticon-bag"></i><span>В корзину</span></a>
-                                </div>
-                            </div>
-                            <div class="pi-text">
-                                <a href="/catalog/{{ categories.firstWhere('uuid', product.category).address }}/{{ product.address }}">
-                                    <h6>{{ product.price }}</h6>
-                                    <p>{{ product.title }}</p>
-                                </a>
+            <div class="product-slider owl-carousel">
+                {% for product in viewed %}
+                    <div class="product-item">
+                        <div class="pi-pic">
+                            <a href="/catalog/{{ categories.firstWhere('uuid', product.category).address }}/{{ product.address }}">
+                                <img src="{{ files.firstWhere('item_uuid', product.uuid).getPublicPath() }}" alt="">
+                            </a>
+                            <div class="pi-links">
+                                <a href="#" class="add-card"><i class="flaticon-bag"></i><span>В корзину</span></a>
                             </div>
                         </div>
-                    {% endfor %}
-                </div>
+                        <div class="pi-text">
+                            <a href="/catalog/{{ categories.firstWhere('uuid', product.category).address }}/{{ product.address }}">
+                                <h6>{{ product.price }}</h6>
+                                <p>{{ product.title }}</p>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-        </section>
-        <!-- VIEWED PRODUCTS section end -->
-    {% endif %}
+        </div>
+    </section>
+    <!-- VIEWED PRODUCTS section end -->
 {% endif %}
 
 {# сохраняем просмотренный товар #}
