@@ -91,12 +91,12 @@ class Product extends Model
     /**
      * @ORM\Column(type="string", nullable=true)
      */
-    public $unit = 'kg'; // TODO: Reference
+    public $unit = 'kg';
 
     /**
      * @ORM\Column(type="float", scale=2, precision=10)
      */
-    public $stock;
+    public $stock = 0;
 
     /**
      * @ORM\Column(type="text", nullable=true)

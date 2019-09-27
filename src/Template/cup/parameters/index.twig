@@ -386,15 +386,6 @@
                                 <h4 class="mt-4">TradeMaster</h4>
                                 <p>Управленческий учет</p>
                                 {% include 'cup/field.twig' with {
-                                    'label': 'Включение и выключение TradeMaster',
-                                    'type': 'select',
-                                    'name': 'integration[trademaster]',
-                                    'args': {
-                                        'option': {'off':'Выключена', 'on':'Включена'}
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
                                     'label': 'API Host',
                                     'description': 'Хост API сервера',
                                     'type': 'text',

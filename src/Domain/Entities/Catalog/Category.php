@@ -75,7 +75,7 @@ class Category extends Model
     /**
      * @ORM\Column(type="integer", options={"default": "10"})
      */
-    public $pagination;
+    public $pagination = 10;
 
     /**
      * @ORM\Column(type="boolean", options={"default": false})

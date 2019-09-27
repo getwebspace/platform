@@ -66,6 +66,11 @@ $container['twig_profile'] = function (ContainerInterface $c) {
     return new \Twig\Profiler\Profile();
 };
 
+// trademaster api
+$container['trademaster'] = function (ContainerInterface $c) {
+    return new \App\Application\TradeMaster($c);
+};
+
 // monolog
 $container['monolog'] = function (ContainerInterface $c) {
     $settings = $c->get('logger');
