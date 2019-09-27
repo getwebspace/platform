@@ -25,6 +25,7 @@ class Category extends Model
     public $uuid;
 
     /**
+     * @var Uuid
      * @ORM\Column(type="uuid", options={"default": NULL})
      */
     public $parent;

@@ -78,6 +78,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
             // catalog functions
             new \Twig\TwigFunction('catalog_category', [$this, 'catalog_category']),
+            new \Twig\TwigFunction('catalog_breadcrumb', [$this, 'catalog_breadcrumb']),
             new \Twig\TwigFunction('catalog_product', [$this, 'catalog_product']),
             new \Twig\TwigFunction('catalog_product_view', [$this, 'catalog_product_view']),
             new \Twig\TwigFunction('catalog_order', [$this, 'catalog_order']),
@@ -363,6 +364,27 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         }
 
         return $buf;
+    }
+
+    // вернет список родительских категорий
+    public function catalog_breadcrumb(\App\Domain\Entities\Catalog\Category $category = null)
+    {
+        $categories = $this->catalog_category();
+        $breadcrumb = [];
+
+        if (!is_null($category)) {
+            $breadcrumb[] = $category;
+
+            while($category->parent->toString() != Uuid::NIL) {
+                /**
+                 * @var \App\Domain\Entities\Catalog\Category $category;
+                 */
+                $category = $categories->firstWhere('uuid', $category->parent);
+                $breadcrumb[] = $category;
+            }
+        }
+
+        return collect($breadcrumb)->reverse();
     }
 
     // получение списка товаров

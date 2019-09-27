@@ -31,6 +31,7 @@ class Product extends Model
     public $uuid;
 
     /**
+     * @var Uuid
      * @ORM\Column(type="uuid", options={"default": NULL})
      */
     public $category;
