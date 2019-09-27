@@ -110,6 +110,7 @@ class TradeMaster
                 'field2' => $data['ind2'],
                 'field3' => $data['ind3'],
                 'template' => $template,
+                'children' => true,
                 'meta' => [
                     'title' => $data['nameZvena'],
                     'description' => $data['opisanie'],
