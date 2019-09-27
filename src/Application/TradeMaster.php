@@ -63,6 +63,7 @@ class TradeMaster
                     'integration_trademaster_scheme', 'integration_trademaster_storage',
                     'integration_trademaster_struct', 'integration_trademaster_user',
                     'integration_trademaster_version',
+                    'catalog_category_template', 'catalog_product_template',
                 ],
             ])
         )
@@ -88,6 +89,12 @@ class TradeMaster
 
         $list = collect();
 
+        // параметры отображения категорий и товаров
+        $template = [
+            'category' => $this->params->get('catalog_category_template', 'catalog.category.twig'),
+            'product' => $this->params->get('catalog_product_template', 'catalog.product.twig'),
+        ];
+
         $result = $this->api(['endpoint' => 'catalog/list']);
 
         // полученные данные записываем в модели категорий
@@ -102,6 +109,7 @@ class TradeMaster
                 'field1' => $data['ind1'],
                 'field2' => $data['ind2'],
                 'field3' => $data['ind3'],
+                'template' => $template,
                 'meta' => [
                     'title' => $data['nameZvena'],
                     'description' => $data['opisanie'],

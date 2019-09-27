@@ -259,6 +259,17 @@
                                 } %}
 
                                 {% include 'cup/field.twig' with {
+                                    'label': 'Шаблон раздела',
+                                    'description': 'Значение по-умолчанию',
+                                    'type': 'text',
+                                    'name': 'catalog[product_template]',
+                                    'args': {
+                                        'placeholder': 'catalog.product.twig',
+                                        'value': 'catalog.product.twig'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
                                     'label': 'Количество товаров на страницу',
                                     'description': 'Значение по-умолчанию, так же это значение будет использовано для ограничения количества товаров на главной странице',
                                     'type': 'number',
