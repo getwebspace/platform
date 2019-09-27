@@ -339,10 +339,16 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     // получение списка категорий товаров
     public function catalog_category()
     {
-        /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
-        $repository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class);
+        static $buf;
 
-        return collect($repository->findAll());
+        if (!$buf) {
+            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
+            $repository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class);
+
+            $buf = collect($repository->findAll());
+        }
+
+        return $buf;
     }
 
     // получение списка товаров
@@ -405,13 +411,19 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
                 break;
 
             default:
-                $criteria['secret'] = $unique;
+                $criteria['serial'] = $unique;
                 break;
         }
 
-        /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
-        $repository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Order::class);
+        static $buf = [];
 
-        return collect($repository->findOneBy($criteria));
+        if (!isset($buf[$unique])) {
+            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
+            $repository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Order::class);
+
+            $buf[$unique] = collect($repository->findOneBy($criteria));
+        }
+
+        return $buf[$unique];
     }
 }
