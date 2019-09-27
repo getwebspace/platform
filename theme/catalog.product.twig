@@ -9,6 +9,19 @@
 {% endblock %}
 
 {% block page %}
+    <div class="page-top-info">
+        <div class="container">
+            <h4>{{ category.meta.title ? category.meta.title : (category.title ?? 'Каталог') }}</h4>
+            <div class="site-pagination">
+                <a href="/">Главная</a> /
+                <a href="/catalog">Каталог</a>
+                {% for breadcrumb in catalog_breadcrumb(category) %}
+                    / <a href="/catalog/{{ breadcrumb.address }}">{{ breadcrumb.meta.title ? breadcrumb.meta.title : breadcrumb.title }}</a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
     <section class="product-section">
         <div class="container">
             <div class="back-link">
