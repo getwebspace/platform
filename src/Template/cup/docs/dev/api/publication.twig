@@ -1,0 +1,112 @@
+<div class="pt-2">
+    <h4>Публикации на сайте</h4>
+
+    <h5>Список категорий публикаций</h5>
+    <code style="display:block; padding-bottom: 20px;">
+        curl -X GET \<br/>
+        -H "Accept: application/json" \<br/>
+        "{{ base_url() }}/api/publication/category?limit=10"
+    </code>
+
+    <h5>Параметры запроса</h5>
+    <table class="table">
+        <tr>
+            <th>Параметр</th>
+            <th>Обязательный?</th>
+            <th>Описание</th>
+        </tr>
+        <tr>
+            <td>uuid[]</td>
+            <td></td>
+            <td>Уникальный идентификатор категории</td>
+        </tr>
+        <tr>
+            <td>parent[]</td>
+            <td></td>
+            <td>Идентификатор родительской категории</td>
+        </tr>
+        <tr>
+            <td>address</td>
+            <td></td>
+            <td>Адрес категории</td>
+        </tr>
+
+        <tr>
+            <td>order[]</td>
+            <td></td>
+            <td>Сортировка по указанным полям</td>
+        </tr>
+        <tr>
+            <td>limit</td>
+            <td></td>
+            <td>
+                Количество строк результатов
+                <span class="d-block text-muted">по-умолчанию: 10</span>
+            </td>
+        </tr>
+        <tr>
+            <td>offset</td>
+            <td></td>
+            <td>
+                Отступ строк от начала
+                <span class="d-block text-muted">по-умолчанию: 0</span>
+            </td>
+        </tr>
+    </table>
+
+    <hr>
+
+    <h5>Список публикаций</h5>
+    <code style="display:block; margin-bottom: 20px;">
+        curl -X GET \<br/>
+        -H "Accept: application/json" \<br/>
+        "{{ base_url() }}/api/publication?order[date]=desc&limit=10"
+    </code>
+
+    <h5>Параметры запроса</h5>
+    <table class="table">
+        <tr>
+            <th>Параметр</th>
+            <th>Обязательный?</th>
+            <th>Описание</th>
+        </tr>
+        <tr>
+            <td>uuid[]</td>
+            <td></td>
+            <td>Уникальный идентификатор публикации</td>
+        </tr>
+        <tr>
+            <td>category[]</td>
+            <td></td>
+            <td>Идентификатор родительской категории</td>
+        </tr>
+        <tr>
+            <td>address</td>
+            <td></td>
+            <td>Адрес публикации</td>
+        </tr>
+
+        <tr>
+            <td>order[]</td>
+            <td></td>
+            <td>Сортировка по указанным полям</td>
+        </tr>
+        <tr>
+            <td>limit</td>
+            <td></td>
+            <td>
+                Количество строк результатов
+                <span class="d-block text-muted">по-умолчанию: 10</span>
+            </td>
+        </tr>
+        <tr>
+            <td>offset</td>
+            <td></td>
+            <td>
+                Отступ строк от начала
+                <span class="d-block text-muted">по-умолчанию: 0</span>
+            </td>
+        </tr>
+    </table>
+
+</div>

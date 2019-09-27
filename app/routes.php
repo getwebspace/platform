@@ -5,6 +5,21 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 
 $app
+    ->group('/api', function (App $app) {
+        // publications
+        $app->group('/publication', function (App $app) {
+            $app->get('', \App\Application\Actions\Api\Publication\Publication::class);
+            $app->get('/category', \App\Application\Actions\Api\Publication\Category::class);
+        });
+
+        // catalog
+        $app->group('/catalog', function (App $app) {
+            $app->get('/category', \App\Application\Actions\Api\Catalog\Category::class);
+            $app->get('/product', \App\Application\Actions\Api\Catalog\Product::class);
+        });
+    });
+
+$app
     ->group('/cup', function (App $app) {
         $app->map(['get', 'post'], '/login', \App\Application\Actions\Cup\LoginPageAction::class);
 

@@ -95,6 +95,7 @@ abstract class Action
         if ($key === null) {
             return self::$parameters->mapWithKeys(function ($item) {
                 list($group, $key) = explode('_', $item->key, 2);
+
                 return [$group . '[' . $key . ']' => $item];
             });
         }
@@ -255,7 +256,7 @@ abstract class Action
      */
     protected function respond(ActionPayload $payload): Response
     {
-        $json = json_encode($payload, JSON_PRETTY_PRINT);
+        $json = json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         $this->response->getBody()->write($json);
 
         return $this->response->withHeader('Content-Type', 'application/json');
