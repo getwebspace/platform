@@ -24,11 +24,6 @@
                                 </a>
                             </li>
                             <li class="nav-item submenu">
-                                <a class="nav-link" data-toggle="pill" href="#security" role="tab">
-                                    Безопасность
-                                </a>
-                            </li>
-                            <li class="nav-item submenu">
                                 <a class="nav-link" data-toggle="pill" href="#file" role="tab">
                                     Файлы
                                 </a>
@@ -54,13 +49,18 @@
                                 </a>
                             </li>
                             <li class="nav-item submenu">
+                                <a class="nav-link" data-toggle="pill" href="#catalog" role="tab">
+                                    Каталог
+                                </a>
+                            </li>
+                            <li class="nav-item submenu">
                                 <a class="nav-link" data-toggle="pill" href="#guestbook" role="tab">
                                     Гостевая книга
                                 </a>
                             </li>
                             <li class="nav-item submenu">
-                                <a class="nav-link" data-toggle="pill" href="#catalog" role="tab">
-                                    Каталог
+                                <a class="nav-link" data-toggle="pill" href="#integration" role="tab">
+                                    Интеграции
                                 </a>
                             </li>
                         </ul>
@@ -96,39 +96,6 @@
                                     'description': 'Краткое описание, не более 200 символов',
                                     'type': 'textarea',
                                     'name': 'common[keywords]',
-                                } %}
-                            </div>
-
-                            {# TAB: Security #}
-                            <div class="tab-pane fade" id="security" role="tabpanel">
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Включение и выключение reCAPTCHA',
-                                    'description': 'Защита от роботов',
-                                    'type': 'select',
-                                    'name': 'security[recaptcha]',
-                                    'args': {
-                                        'option': {'off':'Выключена', 'on':'Включена'}
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Публичный ключ сервиса reCAPTCHA',
-                                    'description': 'Этот ключ будет использован в HTML-коде сайта на устройства пользователей',
-                                    'type': 'text',
-                                    'name': 'security[recaptcha_public]',
-                                    'args': {
-                                        'placeholder': '6Le_gY8UAAAAAKv9EUVJxlAQTchtx2ACG6B616Eu'
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Секретный ключ сервиса reCAPTCHA',
-                                    'description': 'Этот ключ нужен для связи между сайтом и сервисом reCAPTCHA. Никому его не сообщайте',
-                                    'type': 'text',
-                                    'name': 'security[recaptcha_private]',
-                                    'args': {
-                                        'placeholder': '6Le_gY8UAAAAAAx1_Lv3aKo-L1QnxE2QWhOHCgxS'
-                                    }
                                 } %}
                             </div>
 
@@ -278,40 +245,6 @@
                                 } %}
                             </div>
 
-                            {# TAB: Guestbook #}
-                            <div class="tab-pane fade" id="guestbook" role="tabpanel">
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Формат времени',
-                                    'description': '',
-                                    'type': 'text',
-                                    'name': 'guestbook[date_format]',
-                                    'args': {
-                                        'placeholder': 'j-m-Y, H:i',
-                                        'value': 'j-m-Y, H:i'
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Шаблон раздела',
-                                    'type': 'text',
-                                    'name': 'guestbook[template]',
-                                    'args': {
-                                        'placeholder': 'guestbook.twig',
-                                        'value': 'guestbook.twig'
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Количество товаров на страницу',
-                                    'type': 'number',
-                                    'name': 'guestbook[pagination]',
-                                    'args': {
-                                        'placeholder': '10',
-                                        'value': '10'
-                                    }
-                                } %}
-                            </div>
-
                             {# TAB: Catalog #}
                             <div class="tab-pane fade" id="catalog" role="tabpanel">
                                 {% include 'cup/field.twig' with {
@@ -382,6 +315,240 @@
                                     }
                                 } %}
                             </div>
+
+                            {# TAB: Guestbook #}
+                            <div class="tab-pane fade" id="guestbook" role="tabpanel">
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Формат времени',
+                                    'description': '',
+                                    'type': 'text',
+                                    'name': 'guestbook[date_format]',
+                                    'args': {
+                                        'placeholder': 'j-m-Y, H:i',
+                                        'value': 'j-m-Y, H:i'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Шаблон раздела',
+                                    'type': 'text',
+                                    'name': 'guestbook[template]',
+                                    'args': {
+                                        'placeholder': 'guestbook.twig',
+                                        'value': 'guestbook.twig'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Количество товаров на страницу',
+                                    'type': 'number',
+                                    'name': 'guestbook[pagination]',
+                                    'args': {
+                                        'placeholder': '10',
+                                        'value': '10'
+                                    }
+                                } %}
+                            </div>
+
+                            {# TAB: Integration #}
+                            <div class="tab-pane fade" id="integration" role="tabpanel">
+                                <h4>reCAPTCHA</h4>
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Включение и выключение reCAPTCHA',
+                                    'description': 'Защита от роботов',
+                                    'type': 'select',
+                                    'name': 'integration[recaptcha]',
+                                    'args': {
+                                        'option': {'off':'Выключена', 'on':'Включена'}
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Публичный ключ сервиса reCAPTCHA',
+                                    'description': 'Этот ключ будет использован в HTML-коде сайта на устройства пользователей',
+                                    'type': 'text',
+                                    'name': 'integration[recaptcha_public]',
+                                    'args': {
+                                        'placeholder': '6Le_gY8UAAAAAKv9EUVJxlAQTchtx2ACG6B616Eu'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Секретный ключ сервиса reCAPTCHA',
+                                    'description': 'Этот ключ нужен для связи между сайтом и сервисом reCAPTCHA. Никому его не сообщайте',
+                                    'type': 'text',
+                                    'name': 'integration[recaptcha_private]',
+                                    'args': {
+                                        'placeholder': '6Le_gY8UAAAAAAx1_Lv3aKo-L1QnxE2QWhOHCgxS'
+                                    }
+                                } %}
+
+                                <h4 class="mt-4">TradeMaster</h4>
+                                <p>Управленческий учет</p>
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Включение и выключение TradeMaster',
+                                    'type': 'select',
+                                    'name': 'integration[trademaster]',
+                                    'args': {
+                                        'option': {'off':'Выключена', 'on':'Включена'}
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'API Host',
+                                    'description': 'Хост API сервера',
+                                    'type': 'text',
+                                    'name': 'integration[trademaster_host]',
+                                    'args': {
+                                        'value': 'https://api.trademaster.pro',
+                                        'readonly': true,
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'API Version',
+                                    'description': 'Версия API сервера',
+                                    'type': 'text',
+                                    'name': 'integration[trademaster_version]',
+                                    'args': {
+                                        'value': '2',
+                                        'readonly': true,
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'API Key',
+                                    'description': 'Введите полученный вами ключ',
+                                    'type': 'text',
+                                    'name': 'integration[trademaster_key]'
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'API Currency',
+                                    'description': 'Валюта отправляемая по API',
+                                    'type': 'text',
+                                    'name': 'integration[trademaster_currency]',
+                                    'args': {
+                                        'value': 'RUB',
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Cache host',
+                                    'description': 'Хост кеш файлов',
+                                    'type': 'text',
+                                    'name': 'integration[trademaster_cache_host]',
+                                    'args': {
+                                        'value': 'https://trademaster.pro',
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Cache folder',
+                                    'description': 'Папка кеш файлов',
+                                    'type': 'text',
+                                    'name': 'integration[trademaster_cache_folder]',
+                                    'args': {
+                                        'value': '0',
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Struct',
+                                    'type': 'number',
+                                    'name': 'integration[trademaster_struct]',
+                                    'args': {
+                                        'value': '0',
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Storage',
+                                    'type': 'number',
+                                    'name': 'integration[trademaster_storage]',
+                                    'args': {
+                                        'value': '0',
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Legal',
+                                    'type': 'number',
+                                    'name': 'integration[trademaster_legal]',
+                                    'args': {
+                                        'value': '0',
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Checkout',
+                                    'type': 'number',
+                                    'name': 'integration[trademaster_checkout]',
+                                    'args': {
+                                        'value': '0',
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Contractor',
+                                    'type': 'number',
+                                    'name': 'integration[trademaster_contractor]',
+                                    'args': {
+                                        'value': '0',
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Scheme',
+                                    'type': 'number',
+                                    'name': 'integration[trademaster_scheme]',
+                                    'args': {
+                                        'value': '0',
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'User ID',
+                                    'type': 'number',
+                                    'name': 'integration[trademaster_user]',
+                                    'args': {
+                                        'value': '0',
+                                    }
+                                } %}
+
+                                <h4 class="mt-4">Merchant</h4>
+                                <p>Параметры интеграции с Google Merchant Feed и/или Yandex Market</p>
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Название компании',
+                                    'type': 'text',
+                                    'name': 'integration[merchant_company_title]'
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Название магазина',
+                                    'type': 'text',
+                                    'name': 'integration[merchant_shop_title]'
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Описание магазина',
+                                    'type': 'text',
+                                    'name': 'integration[merchant_shop_desc]'
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Стоимость доставки',
+                                    'type': 'number',
+                                    'name': 'integration[merchant_delivery]'
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Валюта',
+                                    'type': 'text',
+                                    'name': 'integration[merchant_currency]'
+                                } %}
+                            </div>
+
                         </div>
                     </div>
                     <div class="card-action">
