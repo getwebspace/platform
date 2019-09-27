@@ -303,15 +303,23 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     // получение списка категорий публикаций
     public function publication_category($limit = null)
     {
-        /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
-        $repository = $this->entityManager->getRepository(\App\Domain\Entities\Publication\Category::class);
+        static $buf;
 
-        return collect($repository->findAll());
+        if (!$buf) {
+            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
+            $repository = $this->entityManager->getRepository(\App\Domain\Entities\Publication\Category::class);
+
+            $buf = collect($repository->findAll());
+        }
+
+        return $buf;
     }
 
     // получение списка публикаций
     public function publication($category = null, $order = [], $limit = 10, $offset = null)
     {
+        static $buf;
+
         $criteria = [];
 
         if ($category) {
@@ -326,10 +334,16 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             }
         }
 
-        /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
-        $repository = $this->entityManager->getRepository(\App\Domain\Entities\Publication::class);
+        $key = json_encode($criteria, JSON_UNESCAPED_UNICODE).$limit.$offset;
 
-        return $limit > 1 ? collect($repository->findBy($criteria, $order, $limit, $offset)) : $repository->findOneBy($criteria, $order);
+        if (!isset($buf[$key])) {
+            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
+            $repository = $this->entityManager->getRepository(\App\Domain\Entities\Publication::class);
+
+            $buf[$key] = $limit > 1 ? collect($repository->findBy($criteria, $order, $limit, $offset)) : $repository->findOneBy($criteria, $order);
+        }
+
+        return $buf[$key];
     }
 
     /*
@@ -354,7 +368,11 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     // получение списка товаров
     public function catalog_product($category = null, $order = [], $limit = 10, $offset = null)
     {
-        $criteria = [];
+        static $buf;
+
+        $criteria = [
+            'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+        ];
 
         if ($category) {
             if (!is_array($category)) $category = [$category];
@@ -372,10 +390,16 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             }
         }
 
-        /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
-        $repository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
+        $key = json_encode($criteria, JSON_UNESCAPED_UNICODE).$limit.$offset;
 
-        return $limit > 1 ? collect($repository->findBy($criteria, $order, $limit, $offset)) : $repository->findOneBy($criteria, $order);
+        if (!isset($buf[$key])) {
+            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
+            $repository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
+
+            $buf[$key] = $limit > 1 ? collect($repository->findBy($criteria, $order, $limit, $offset)) : $repository->findOneBy($criteria, $order);
+        }
+
+        return $buf[$key];
     }
 
     // сохраняет переданный в аргумент uuid товара, если null возвращает список товаров
@@ -403,6 +427,8 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     // получение заказа
     public function catalog_order($unique)
     {
+        static $buf;
+
         $criteria = [];
 
         switch (true) {
@@ -415,15 +441,15 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
                 break;
         }
 
-        static $buf = [];
+        $key = json_encode($criteria, JSON_UNESCAPED_UNICODE);
 
-        if (!isset($buf[$unique])) {
+        if (!isset($buf[$key])) {
             /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
             $repository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Order::class);
 
-            $buf[$unique] = collect($repository->findOneBy($criteria));
+            $buf[$key] = collect($repository->findOneBy($criteria));
         }
 
-        return $buf[$unique];
+        return $buf[$key];
     }
 }
