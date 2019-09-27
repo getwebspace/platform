@@ -82,6 +82,9 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             new \Twig\TwigFunction('catalog_product', [$this, 'catalog_product']),
             new \Twig\TwigFunction('catalog_product_view', [$this, 'catalog_product_view']),
             new \Twig\TwigFunction('catalog_order', [$this, 'catalog_order']),
+
+            // trademaster
+            new \Twig\TwigFunction('tm_api', [$this, 'tm_api']),
         ];
     }
 
@@ -348,7 +351,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     }
 
     /*
-     * publication functions
+     * catalog functions
      */
 
     // получение списка категорий товаров
@@ -473,5 +476,19 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         }
 
         return $buf[$key];
+    }
+
+    /*
+     * trademaster functions
+     */
+
+    // tm api
+    public function tm_api($endpoint, array $params = [], $method = 'GET')
+    {
+        return $this->container->get('trademaster')->api([
+            'endpoint' => $endpoint,
+            'params' => $params,
+            'method' => $method,
+        ]);
     }
 }
