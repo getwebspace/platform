@@ -485,7 +485,10 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     // tm api
     public function tm_api($endpoint, array $params = [], $method = 'GET')
     {
-        return $this->container->get('trademaster')->api([
+        /** @var \App\Application\TradeMaster $trademaster */
+        $trademaster = $this->container->get('trademaster');
+
+        return $trademaster->api([
             'endpoint' => $endpoint,
             'params' => $params,
             'method' => $method,
