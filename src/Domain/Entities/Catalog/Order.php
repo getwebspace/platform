@@ -100,4 +100,9 @@ class Order extends Model
      * @ORM\Column(type="string", length=50, nullable=true)
      */
     public $external_id;
+
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    public $export = 'manual';
 }

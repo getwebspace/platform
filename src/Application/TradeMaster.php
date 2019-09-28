@@ -77,15 +77,15 @@ class TradeMaster
     }
 
     /**
-     * Загружает категории из Trademaster, проверяет и настраивает связи
+     * Загружает категории из TradeMaster, проверяет и настраивает связи
      *
      * @return Collection|array
      * @throws \Exception
      */
-    protected function catalog_category()
+    protected function catalog_get_category()
     {
         $this->logger->info('TradeMaster: get catalog list');
-        \RunTracy\Helpers\Profiler\Profiler::start('tm:catalog_category');
+        \RunTracy\Helpers\Profiler\Profiler::start('tm:catalog_get_category');
 
         $list = collect();
 
@@ -95,11 +95,16 @@ class TradeMaster
             'product' => $this->params->get('catalog_product_template', 'catalog.product.twig'),
         ];
 
+        // идентификаторы категорий получивших обновление
+        $noRemove = [];
+
+        // получаем данные
         $result = $this->api(['endpoint' => 'catalog/list']);
 
-        // полученные данные записываем в модели категорий
+        // полученные данные проверяем и записываем в модели категорий
         foreach ($result as $data) {
-            $list[] = new \App\Domain\Entities\Catalog\Category([
+            $noRemove[] = $data['idZvena'];
+            $data = [
                 'external_id' => $data['idZvena'],
                 'parent' => $data['idParent'],
                 'title' => $data['nameZvena'],
@@ -115,23 +120,18 @@ class TradeMaster
                     'title' => $data['nameZvena'],
                     'description' => $data['opisanie'],
                 ],
-            ]);
-        }
+                'pagination' => 10,
+                'export' => 'trademaster',
+            ];
 
-        // проверяем данные
-        foreach ($list as $key => $model) {
-            /** @var \App\Domain\Entities\Catalog\Category $model */
-            $data = $model->toArray();
             $result = \App\Domain\Filters\Catalog\Category::check($data);
 
-            if ($result !== true) {
+            if ($result === true) {
+                $list[] = $model = new \App\Domain\Entities\Catalog\Category($data);
+                $this->entityManager->persist($model);
+            } else {
                 $this->logger->info('TradeMaster: invalid category data', $result);
-                $list->remove($key);
-                continue;
             }
-
-            $model->replace($data);
-            $this->entityManager->persist($model);
         }
 
         // обрабатываем связи
@@ -144,32 +144,52 @@ class TradeMaster
             }
         }
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('tm:catalog_category');
+        $this->entityManager->flush();
+
+        // удаляем категории которые не получили обновления
+        $query = $this->entityManager->createQueryBuilder()
+            ->update(\App\Domain\Entities\Catalog\Category::class, 'c')
+            ->set('c.status', '?1')
+            ->where('c.external_id NOT IN (?2)')
+            ->andWhere('c.export = ?3')
+            ->setParameter(1, \App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE)
+            ->setParameter(2, $noRemove)
+            ->setParameter(3, 'trademaster');
+
+        $query->getQuery()->execute();
+
+        \RunTracy\Helpers\Profiler\Profiler::finish('tm:catalog_get_category');
 
         return $list;
     }
 
     /**
-     * Загружает товары из Trademaster, проверяет и настраивает связи
+     * Загружает товары из TradeMaster, проверяет и настраивает связи
      *
      * @param Collection $categories
+     *
      * @return Collection|array
      * @throws \Exception
      */
-    protected function catalog_product($categories)
+    protected function catalog_get_product($categories)
     {
         $this->logger->info('TradeMaster: get catalog item');
-        \RunTracy\Helpers\Profiler\Profiler::start('tm:catalog_product');
+        \RunTracy\Helpers\Profiler\Profiler::start('tm:catalog_get_product');
 
         $list = collect();
 
+        // идентификаторы товаров получивших обновление
+        $noRemove = [];
 
         $result = $this->api(['endpoint' => 'item/count']);
 
         if ($result) {
             $count = (int)$result['count'];
-            $i = 0; $step = 100; $go = true;
+            $i = 0;
+            $step = 250;
+            $go = true;
 
+            // получаем данные
             while ($go) {
                 $result = $this->api([
                     'endpoint' => 'item/list',
@@ -180,8 +200,10 @@ class TradeMaster
                     ],
                 ]);
 
+                // полученные данные проверяем и записываем в модели товара
                 foreach ($result as $data) {
-                    $list[] = new \App\Domain\Entities\Catalog\Product([
+                    $noRemove[] = $data['idTovar'];
+                    $data = [
                         'external_id' => $data['idTovar'],
                         'category' => $data['vStrukture'],
                         'title' => $data['name'],
@@ -209,40 +231,55 @@ class TradeMaster
                             'title' => $data['name'],
                             'description' => $data['opisanie'],
                         ],
-                    ]);
+                        'stock' => $data['kolvo'],
+                        'export' => 'trademaster',
+                    ];
+
+                    $result = \App\Domain\Filters\Catalog\Product::check($data);
+
+                    if ($result === true) {
+                        $list[] = $model = new \App\Domain\Entities\Catalog\Product($data);
+                        $this->entityManager->persist($model);
+                    } else {
+                        $this->logger->info('TradeMaster: invalid product data', $result);
+                    }
                 }
 
                 $go = $step * ++$i <= $count;
-            }
-
-            // проверяем данные
-            foreach ($list as $key => $model) {
-                /** @var \App\Domain\Entities\Catalog\Product $model */
-                $data = $model->toArray();
-                $result = \App\Domain\Filters\Catalog\Product::check($data);
-
-                if ($result !== true) {
-                    $this->logger->info('TradeMaster: invalid product data', $result);
-                    $categories->remove($key);
-                    continue;
-                }
-
-                $model->replace($data);
-                $this->entityManager->persist($model);
             }
 
             // обрабатываем связи
             foreach ($list as $model) {
                 /** @var \App\Domain\Entities\Catalog\Product $model */
                 if (+$model->category) {
-                    $model->set('category', $categories->firstWhere('external_id', $model->category)->get('uuid'));
+                    $category = $categories->firstWhere('external_id', $model->category);
+
+                    $model->set('category',
+                        $category ?
+                            $category->get('uuid') :
+                            \Ramsey\Uuid\Uuid::fromString(\Ramsey\Uuid\Uuid::NIL)
+                    );
                 } else {
                     $model->set('category', \Ramsey\Uuid\Uuid::fromString(\Ramsey\Uuid\Uuid::NIL));
                 }
             }
+
+            $this->entityManager->flush();
+
+            // удаляем категории которые не получили обновления
+            $query = $this->entityManager->createQueryBuilder()
+                ->update(\App\Domain\Entities\Catalog\Product::class, 'p')
+                ->set('p.status', '?1')
+                ->where('p.external_id NOT IN (?2)')
+                ->andWhere('p.export = ?3')
+                ->setParameter(1, \App\Domain\Types\Catalog\ProductStatusType::STATUS_DELETE)
+                ->setParameter(2, $noRemove)
+                ->setParameter(3, 'trademaster');
+
+            $query->getQuery()->execute();
         };
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('tm:catalog_product');
+        \RunTracy\Helpers\Profiler\Profiler::finish('tm:catalog_get_product');
 
         return $list;
     }
@@ -250,13 +287,16 @@ class TradeMaster
     /**
      * @throws \Exception
      */
-    public function catalog_load() {
+    public function catalog_update()
+    {
+        \RunTracy\Helpers\Profiler\Profiler::start('tm:catalog_update');
+
         $this->entityManager->clear();
 
-        $categories = $this->catalog_category();
-        $products = $this->catalog_product($categories);
+        $categories = $this->catalog_get_category();
+        $products = $this->catalog_get_product($categories);
 
-        $this->entityManager->flush();
+        \RunTracy\Helpers\Profiler\Profiler::finish('tm:catalog_update');
 
         return [
             'categories' => $categories,
@@ -279,27 +319,31 @@ class TradeMaster
         $data = array_merge($default, $data);
         $data['method'] = strtoupper($data['method']);
 
-        $pathParts = [$this->params->get('host'), 'v' . $this->params->get('version'), $data['endpoint']];
+        if (($key = $this->params->get('key', null)) != null) {
+            $pathParts = [$this->params->get('host'), 'v' . $this->params->get('version'), $data['endpoint']];
 
-        if ($data['method'] == "GET") {
-            $data['params']['apikey'] = $this->params->get('key');
-            $path = implode('/', $pathParts) . '?' . http_build_query($data['params']);
+            if ($data['method'] == "GET") {
+                $data['params']['apikey'] = $key;
+                $path = implode('/', $pathParts) . '?' . http_build_query($data['params']);
 
-            $result = file_get_contents($path);
-        } else {
-            $path = implode('/', $pathParts) . '?' . http_build_query(['apikey' => $this->params->get('key')]);
+                $result = file_get_contents($path);
+            } else {
+                $path = implode('/', $pathParts) . '?' . http_build_query(['apikey' => $key]);
 
-            $result = file_get_contents($path, false, stream_context_create([
-                'http' =>
-                    [
-                        'method' => 'POST',
-                        'header' => 'Content-type: application/x-www-form-urlencoded',
-                        'content' => http_build_query($data['params']),
-                        'timeout' => 60,
-                    ],
-            ]));
+                $result = file_get_contents($path, false, stream_context_create([
+                    'http' =>
+                        [
+                            'method' => 'POST',
+                            'header' => 'Content-type: application/x-www-form-urlencoded',
+                            'content' => http_build_query($data['params']),
+                            'timeout' => 60,
+                        ],
+                ]));
+            }
+
+            return json_decode($result, true);
         }
 
-        return json_decode($result, true);
+        return [];
     }
 }

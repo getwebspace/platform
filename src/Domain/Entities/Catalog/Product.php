@@ -10,6 +10,7 @@ use Ramsey\Uuid\Uuid;
 /**
  * @ORM\Entity
  * @ORM\Table(name="catalog_product", indexes={
+ *     @ORM\Index(name="address_idx", columns={"address"}),
  *     @ORM\Index(name="category_idx", columns={"category"}),
  *     @ORM\Index(name="price_idx", columns={"price", "priceFirst", "priceWholesale"}),
  *     @ORM\Index(name="volume_idx", columns={"volume", "unit"}),
@@ -170,6 +171,11 @@ class Product extends Model
      * @ORM\Column(type="string", length=50, nullable=true)
      */
     public $external_id;
+
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    public $export = 'manual';
 
     /**
      * Вернет габариты товара

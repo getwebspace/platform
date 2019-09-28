@@ -123,6 +123,9 @@ $app
                 // docs
                 $app->get('/docs', \App\Application\Actions\Cup\DocsPageAction::class);
 
+                // trademaster
+                $app->post('/trademaster', \App\Application\Actions\Cup\TradeMasterAction::class);
+
                 // dev console
                 $app->post('/console', '\RunTracy\Controllers\RunTracyConsole:index');
             })

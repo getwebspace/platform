@@ -1,0 +1,25 @@
+{% if trademaster == 'on' %}
+    <li class="nav-item dropdown hidden-caret">
+        <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
+            <i class="fas fa-trademark"></i>
+        </a>
+        <div class="dropdown-menu quick-actions quick-actions-info animated fadeIn">
+            <div class="quick-actions-header">
+                <span class="title mb-1">TradeMaster</span>
+                <span class="subtitle op-8">Быстрые действия</span>
+            </div>
+            <div class="quick-actions-scroll scrollbar-outer">
+                <div class="quick-actions-items">
+                    <form action="/cup/trademaster" method="post" class="row m-0">
+                        <button type="submit" name="action" value="update" class="col-12 col-md-12 p-0 btn btn-link">
+                            <div class="quick-actions-item">
+                                <i class="fas fa-store"></i>
+                                <span class="text">Синхронизировать каталог</span>
+                            </div>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </li>
+{% endif %}

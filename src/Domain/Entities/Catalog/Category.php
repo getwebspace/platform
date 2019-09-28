@@ -9,6 +9,7 @@ use Ramsey\Uuid\Uuid;
 /**
  * @ORM\Entity
  * @ORM\Table(name="catalog_category", indexes={
+ *     @ORM\Index(name="address_idx", columns={"address"}),
  *     @ORM\Index(name="parent_idx", columns={"parent"}),
  *     @ORM\Index(name="order_idx", columns={"order"})
  * })
@@ -116,4 +117,9 @@ class Category extends Model
      * @ORM\Column(type="string", length=50, nullable=true)
      */
     public $external_id;
+
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    public $export = 'manual';
 }

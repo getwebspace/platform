@@ -16,8 +16,8 @@ class MainPageAction extends Action
                 'publications' => $this->entityManager->getRepository(\App\Domain\Entities\Publication::class)->count([]),
                 'guestbook' => $this->entityManager->getRepository(\App\Domain\Entities\GuestBook::class)->count([]),
                 'catalog' => [
-                    'category' => $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class)->count([]),
-                    'product' => $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class)->count([]),
+                    'category' => $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class)->count(['status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]),
+                    'product' => $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class)->count(['status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK]),
                     'order' => $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Order::class)->count([]),
                 ],
                 'files' => $this->entityManager->getRepository(\App\Domain\Entities\File::class)->count([]),

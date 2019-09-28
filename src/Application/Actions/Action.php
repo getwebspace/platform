@@ -223,6 +223,7 @@ abstract class Action
                 [
                     //'parameter' => $this->getParameter(),
                     'user' => $this->request->getAttribute('user', null),
+                    'trademaster' => $this->getParameter('integration_trademaster_enable', 'off'),
                     '_error' => array_merge($this->error, \AEngine\Support\Form::$globalError),
                 ],
                 $data
