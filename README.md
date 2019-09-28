@@ -1,9 +1,9 @@
-CMS Structure
+CMS 0x12f
 ====
-Content Management System structure by 0x12f
+Content Management System by 0x12f
 
 #### Requirements
-- PHP >= 7.0
+- PHP >= 7.1
 
 #### Installation
 
