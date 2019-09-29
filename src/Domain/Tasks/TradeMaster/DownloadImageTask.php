@@ -22,25 +22,29 @@ class DownloadImageTask extends Task
         $this->trademaster = $this->container->get('trademaster');
         $this->fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
 
-        foreach (explode(';', $this->entity->params['photo']) as $name) {
-            $file = $this->trademaster->getFile($name);
+        if ($this->entity->params['photo']) {
+            foreach (explode(';', $this->entity->params['photo']) as $name) {
+                $file = $this->trademaster->getFile($name);
 
-            if ($file) {
-                $file_model = new \App\Domain\Entities\File([
-                    'name' => $name,
-                    'type' => $file['type'],
-                    'size' => $file['size'],
-                    'salt' => $file['salt'],
-                    'hash' => $file['hash'],
-                    'date' => new \DateTime(),
-                    'item' => $this->entity->params['item'],
-                    'item_uuid' => $this->entity->params['item_uuid'],
-                ]);
+                if ($file) {
+                    $file_model = new \App\Domain\Entities\File([
+                        'name' => $file['name'],
+                        'type' => $file['type'],
+                        'size' => $file['size'],
+                        'salt' => $file['salt'],
+                        'hash' => $file['hash'],
+                        'date' => new \DateTime(),
+                        'item' => $this->entity->params['item'],
+                        'item_uuid' => $this->entity->params['item_uuid'],
+                    ]);
 
-                $this->entityManager->persist($file_model);
+                    $this->entityManager->persist($file_model);
+                }
             }
-        }
 
-        $this->status_done();
+            $this->status_done();
+        } else {
+            $this->status_fail();
+        }
     }
 }

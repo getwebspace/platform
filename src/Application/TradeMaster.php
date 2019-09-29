@@ -154,7 +154,7 @@ class TradeMaster
      */
     public function getFile(string $name)
     {
-        $remotePath = $this->params->get('cache_host') . '/tradeMasterImages/' . $this->params->get('integration_trademaster_cache_folder') . '/' . str_replace(' ', '%20', trim($name));
+        $remotePath = $this->params->get('integration_trademaster_cache_host') . '/tradeMasterImages/' . $this->params->get('integration_trademaster_cache_folder') . '/' . trim($name);
         $file = $this->downloadFileIfExists($remotePath);
 
         if ($file) {
@@ -173,6 +173,7 @@ class TradeMaster
                 'dir'  => $path . '/',
                 'name' => $name,
                 'path' => $path . '/' . $name,
+                'salt' => $salt,
                 'type' => filetype($path . '/' . $name),
                 'size' => filesize($path . '/' . $name),
                 'hash' => sha1_file($path . '/' . $name),
@@ -184,8 +185,8 @@ class TradeMaster
 
     protected function downloadFileIfExists($path)
     {
-        $entities = ['%21', '%2A', '%27', '%28', '%29', '%3B', '%3A', '%40', '%26', '%3D', '%2B', '%24', '%2C', '%2F', '%3F', '%25', '%23', '%5B', '%5D'];
-        $replacements = ['!', '*', "'", "(", ")", ";", ":", "@", "&", "=", "+", "$", ",", "/", "?", "%", "#", "[", "]"];
+        $entities = ['%20', '%21', '%2A', '%27', '%28', '%29', '%3B', '%3A', '%40', '%26', '%3D', '%2B', '%24', '%2C', '%2F', '%3F', '%25', '%23', '%5B', '%5D'];
+        $replacements = [' ', '!', '*', "'", "(", ")", ";", ":", "@", "&", "=", "+", "$", ",", "/", "?", "%", "#", "[", "]"];
 
         $path = str_replace($entities, $replacements, urlencode($path));
 
