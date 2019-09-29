@@ -103,6 +103,8 @@ $(() => {
         }, 500);
     });
     
+    moment.locale('ru');
+    
     // modal window settings
     $.modal.defaults = {
         closeExisting: true,      // Close existing modals. Set this to false if you need to stack multiple modal instances.

@@ -26,8 +26,6 @@ if ($queue) {
     $task->run();
 
     register_shutdown_function(function () {
-        sleep(3);
-
         exec('php ' . CONFIG_DIR . '/cli-task.php > /dev/null 2>&1 &');
     });
 }

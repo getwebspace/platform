@@ -24,8 +24,13 @@ class TaskListAction extends Action
 
     protected function action(): \Slim\Http\Response
     {
-        return $this->respondWithData(
-            $this->taskRepository->findBy([], ['status', 'desc'], 25)
+        $tasks = collect(
+            $this->taskRepository->findBy(['status' => [\App\Domain\Types\TaskStatusType::STATUS_QUEUE, \App\Domain\Types\TaskStatusType::STATUS_WORK]], ['status' => 'desc'])
         );
+        $tasks->map(function ($obj) {
+            $obj->action = str_replace('App\Domain\Tasks\\', '', $obj->action);
+        });
+
+        return $this->respondWithData($tasks);
     }
 }

@@ -128,7 +128,7 @@ $app
 
                 // task
                 $app->group('/task', function (App $app) {
-                    $app->post('', \App\Application\Actions\Cup\Task\TaskListAction::class);
+                    $app->get('', \App\Application\Actions\Cup\Task\TaskListAction::class);
                     $app->post('/run', \App\Application\Actions\Cup\Task\TaskRunAction::class);
                 });
 
