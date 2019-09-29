@@ -20,10 +20,10 @@ trait CatalogFilterRules
             /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $categoryRepository */
             $categoryRepository = $app->getContainer()->get(\Doctrine\ORM\EntityManager::class)->getRepository(\App\Domain\Entities\Catalog\Category::class);
 
-            /** @var \App\Domain\Entities\Page $category */
+            /** @var \App\Domain\Entities\Catalog\Category $category */
             $category = $categoryRepository->findOneBy(['address' => str_escape($data[$field]), 'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]);
 
-            return $category === null || (!empty($data['uuid']) && $category->uuid === $data['uuid']);
+            return $category === null || (!empty($data['uuid']) && $category->uuid === $data['uuid']) || (!empty($data['external_id']) && $category->external_id === $data['external_id']);
         };
     }
 
@@ -118,10 +118,10 @@ trait CatalogFilterRules
             /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $productRepository */
             $productRepository = $app->getContainer()->get(\Doctrine\ORM\EntityManager::class)->getRepository(\App\Domain\Entities\Catalog\Product::class);
 
-            /** @var \App\Domain\Entities\Page $product */
+            /** @var \App\Domain\Entities\Catalog\Product $product */
             $product = $productRepository->findOneBy(['address' => str_escape($data[$field]), 'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK]);
 
-            return $product === null || (!empty($data['uuid']) && $product->uuid === $data['uuid']);
+            return $product === null || (!empty($data['uuid']) && $product->uuid === $data['uuid']) || (!empty($data['external_id']) && $product->external_id === $data['external_id']);
         };
     }
 

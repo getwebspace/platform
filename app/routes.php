@@ -126,6 +126,12 @@ $app
                 // trademaster
                 $app->post('/trademaster', \App\Application\Actions\Cup\TradeMasterAction::class);
 
+                // task
+                $app->group('/task', function (App $app) {
+                    $app->post('', \App\Application\Actions\Cup\Task\TaskListAction::class);
+                    $app->post('/run', \App\Application\Actions\Cup\Task\TaskRunAction::class);
+                });
+
                 // dev console
                 $app->post('/console', '\RunTracy\Controllers\RunTracyConsole:index');
             })

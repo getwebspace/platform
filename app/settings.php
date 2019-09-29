@@ -27,6 +27,7 @@ return [
             App\Domain\Types\Catalog\CategoryStatusType::NAME => \App\Domain\Types\Catalog\CategoryStatusType::class,
             App\Domain\Types\Catalog\ProductStatusType::NAME => \App\Domain\Types\Catalog\ProductStatusType::class,
             App\Domain\Types\Catalog\OrderStatusType::NAME => \App\Domain\Types\Catalog\OrderStatusType::class,
+            App\Domain\Types\TaskStatusType::NAME => \App\Domain\Types\TaskStatusType::class,
         ],
 
         // Connection to DB settings
