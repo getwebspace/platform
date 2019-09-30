@@ -126,6 +126,24 @@ trait CatalogFilterRules
     }
 
     /**
+     * Проверяет строку тегов
+     *
+     * @return \Closure
+     */
+    public function ValidTags()
+    {
+        return function (&$data, $field) {
+            $value = &$data[$field];
+
+            if ($value) {
+                $value = explode(';', (string)$value);
+            }
+
+            return is_array($value);
+        };
+    }
+
+    /**
      * Генерирует строку криптографически случайных байт произвольной длины
      *
      * @param int $length

@@ -52,6 +52,7 @@ class ProductUpdateAction extends CatalogAction
                             'field5' => $this->request->getParam('field5'),
                             'country' => $this->request->getParam('country'),
                             'manufacturer' => $this->request->getParam('manufacturer'),
+                            'tags' => $this->request->getParam('tags'),
                             'order' => $this->request->getParam('order'),
                             'date' => $this->request->getParam('date'),
                             'external_id' => $this->request->getParam('external_id'),

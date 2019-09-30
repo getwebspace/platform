@@ -54,6 +54,7 @@ class Category extends Filter
                 ->addRule($filter->leadBoolean())
             ->attr('order')
                 ->addRule($filter->leadInteger())
+                ->addRule($filter->leadMin(1))
             ->attr('meta')
                 ->addRule($filter->ValidMeta())
             ->attr('template')

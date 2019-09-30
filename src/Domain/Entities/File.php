@@ -91,7 +91,14 @@ class File extends Model
         return str_replace(static::$entities, static::$replacements, urlencode($path));
     }
 
-    public static function getFromPath(string $path, string $name_with_ext = null): File
+    /**
+     * @param string      $path
+     * @param string|null $name_with_ext
+     *
+     * @return static|null
+     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
+     */
+    public static function getFromPath(string $path, string $name_with_ext = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('file:getFromPath (%s)', $path);
 
