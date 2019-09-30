@@ -7,11 +7,12 @@ class FileDeleteAction extends FileAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            /** @var \App\Domain\Entities\File $item */
-            $item = $this->fileRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
+            /** @var \App\Domain\Entities\File $file */
+            $file = $this->fileRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
 
-            if (!$item->isEmpty() && $this->request->isPost()) {
-                $this->entityManager->remove($item);
+            if (!$file->isEmpty() && $this->request->isPost()) {
+                $file->unlink();
+                $this->entityManager->remove($file);
                 $this->entityManager->flush();
             }
         }

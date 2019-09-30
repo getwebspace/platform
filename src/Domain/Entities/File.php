@@ -74,6 +74,23 @@ class File extends Model
      */
     public $date;
 
+    protected static $entities = ['%20', '%21', '%2A', '%27', '%28', '%29', '%3B', '%3A', '%40', '%26', '%3D', '%2B', '%24', '%2C', '%2F', '%3F', '%25', '%23', '%5B', '%5D'];
+    protected static $replacements = [' ', '_', '-', '!', '*', "'", "(", ")", ";", ":", "@", "&", "=", "+", "$", ",", "/", "?", "%", "#", "[", "]"];
+
+    protected static function prepareFileName($name)
+    {
+        $name = strtolower($name);
+        $name = str_replace(array_merge(static::$entities, static::$replacements), '', urlencode($name));
+        $name = \AEngine\Support\Str::translate(strtolower($name));
+
+        return $name;
+    }
+
+    protected static function prepareFilePath($path)
+    {
+        return str_replace(static::$entities, static::$replacements, urlencode($path));
+    }
+
     public static function getFromPath(string $path, string $name_with_ext = null): File
     {
         \RunTracy\Helpers\Profiler\Profiler::start('file:getFromPath (%s)', $path);
@@ -81,7 +98,7 @@ class File extends Model
         $salt = uniqid();
         $info = pathinfo($name_with_ext ?? $path);
         $dir = UPLOAD_DIR . '/' . $salt;
-        $name = \AEngine\Support\Str::translate(strtolower($info['filename']));
+        $name = static::prepareFileName($info['filename']);
         $ext = strtolower($info['extension']);
 
         // change ext
@@ -92,10 +109,8 @@ class File extends Model
         $saved = false;
 
         switch (true) {
-            case Str::start(['http://', 'https://'], $path) === true:
-                $entities = ['%20', '%21', '%2A', '%27', '%28', '%29', '%3B', '%3A', '%40', '%26', '%3D', '%2B', '%24', '%2C', '%2F', '%3F', '%25', '%23', '%5B', '%5D'];
-                $replacements = [' ', '!', '*', "'", "(", ")", ";", ":", "@", "&", "=", "+", "$", ",", "/", "?", "%", "#", "[", "]"];
-                $path = str_replace($entities, $replacements, urlencode($path));
+            case Str::start(['http://', 'https://'], $path):
+                $path = static::prepareFilePath($path);
 
                 $headers = get_headers($path);
                 $code = substr($headers[0], 9, 3);
@@ -222,9 +237,9 @@ class File extends Model
      *
      * @return string
      */
-    public function getDir(string $size = 'full')
+    public function getDir(string $size = '')
     {
-        return UPLOAD_DIR . '/' . $this->salt . ($this->isValidSizeAndFileExists($size) ? '/' . $size : '');
+        return UPLOAD_DIR . '/' . $this->salt . ($size && $this->isValidSizeAndFileExists($size) ? '/' . $size : '');
     }
 
     /**
@@ -234,7 +249,7 @@ class File extends Model
      *
      * @return string
      */
-    public function getInternalPath(string $size = 'full')
+    public function getInternalPath(string $size = '')
     {
         return $this->getDir($size) . '/' . $this->getName();
     }
@@ -242,14 +257,30 @@ class File extends Model
     /**
      * Return public path with salt and hash
      *
+     * @param string $size
+     *
      * @return string
      */
-    public function getPublicPath(string $size = 'full')
+    public function getPublicPath(string $size = '')
     {
         if ($this->private) {
-            return '/file/get/' . $this->salt . '/' . $this->hash . ($this->isValidSizeAndFileExists($size) ? '/' . $size : '');
+            return '/file/get/' . $this->salt . '/' . $this->hash . ($size && $this->isValidSizeAndFileExists($size) ? '/' . $size : '');
         }
 
-        return '/uploads/' . $this->salt . ($this->isValidSizeAndFileExists($size) ? '/' . $size : '') . '/' . $this->getName();
+        return '/uploads/' . $this->salt . ($size && $this->isValidSizeAndFileExists($size) ? '/' . $size : '') . '/' . $this->getName();
+    }
+
+    /**
+     * Remove local files
+     */
+    public function unlink()
+    {
+        if (Str::start('image/', $this->type)) {
+            @unlink($this->getInternalPath('full'));
+            @unlink($this->getInternalPath('middle'));
+            @unlink($this->getInternalPath('small'));
+        }
+
+        @unlink($this->getInternalPath(''));
     }
 }
