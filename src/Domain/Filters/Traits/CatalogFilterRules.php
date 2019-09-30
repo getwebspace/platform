@@ -135,11 +135,11 @@ trait CatalogFilterRules
         return function (&$data, $field) {
             $value = &$data[$field];
 
-            if ($value) {
+            if ($value && !is_array($value)) {
                 $value = explode(';', (string)$value);
             }
 
-            return is_array($value);
+            return true;
         };
     }
 

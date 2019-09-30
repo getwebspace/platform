@@ -35,16 +35,21 @@ class DownloadImageTask extends Task
 
         if ($this->entity->params['photo']) {
             foreach (explode(';', $this->entity->params['photo']) as $name) {
-                $file_model = \App\Domain\Entities\File::getFromPath(
-                    $this->trademaster->getFilePath($name)
-                );
+                $path = $this->trademaster->getFilePath($name);
+                $file_model = \App\Domain\Entities\File::getFromPath($path);
 
                 if ($file_model) {
+                    $file_model->replace([
+                        'item' => $this->entity->params['item'],
+                        'item_uuid' => $this->entity->params['item_uuid'],
+                    ]);
                     $this->entityManager->persist($file_model);
 
                     // add task convert
                     $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
                     $task->execute(['uuid' => $file_model->uuid]);
+                } else {
+                    $this->logger->info('TradeMaster: file not loaded (%s)', $path);
                 }
             }
 

@@ -74,21 +74,16 @@ class File extends Model
      */
     public $date;
 
-    protected static $entities = ['%20', '%21', '%2A', '%27', '%28', '%29', '%3B', '%3A', '%40', '%26', '%3D', '%2B', '%24', '%2C', '%2F', '%3F', '%25', '%23', '%5B', '%5D'];
-    protected static $replacements = [' ', '_', '-', '!', '*', "'", "(", ")", ";", ":", "@", "&", "=", "+", "$", ",", "/", "?", "%", "#", "[", "]"];
-
     protected static function prepareFileName($name)
     {
+        $entities = ['%20', '%21', '%2A', '%27', '%28', '%29', '%3B', '%3A', '%40', '%26', '%3D', '%2B', '%24', '%2C', '%2F', '%3F', '%25', '%23', '%5B', '%5D'];
+        $replacements = [' ', '!', '*', "'", "(", ")", ";", ":", "@", "&", "=", "+", "$", ",", "/", "?", "%", "#", "[", "]"];
+
         $name = strtolower($name);
-        $name = str_replace(array_merge(static::$entities, static::$replacements), '', urlencode($name));
+        $name = str_replace(array_merge($entities, $replacements), '', urlencode($name));
         $name = \AEngine\Support\Str::translate(strtolower($name));
 
         return $name;
-    }
-
-    protected static function prepareFilePath($path)
-    {
-        return str_replace(static::$entities, static::$replacements, urlencode($path));
     }
 
     /**
@@ -117,8 +112,6 @@ class File extends Model
 
         switch (true) {
             case Str::start(['http://', 'https://'], $path):
-                $path = static::prepareFilePath($path);
-
                 $headers = get_headers($path);
                 $code = substr($headers[0], 9, 3);
 
