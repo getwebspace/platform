@@ -127,40 +127,20 @@ class FormAction extends Action
 
                 /* @var UploadedFile $file */
                 foreach ($files as $file) {
-                    $salt = uniqid();
-                    $name = Str::translate(strtolower($file->getClientFilename()));
-                    $path = UPLOAD_DIR . '/' . $salt;
+                    if (!$file->getError()) {
+                        $file_model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename());
 
-                    if (!file_exists($path)) {
-                        mkdir($path, 0777, true);
+                        if ($file_model) {
+                            $this->entityManager->persist($file_model);
+
+                            // add task convert
+                            $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
+                            $task->execute(['uuid' => $file_model->uuid]);
+
+                            // add to attachments
+                            $attachments[$file_model->getName()] = $file_model->getInternalPath();
+                        }
                     }
-                    $file->moveTo($path . '/' . $name);
-
-                    // get file info
-                    $info = \App\Domain\Entities\File::info($path . '/' . $name);
-
-                    // create model
-                    $file_model = new \App\Domain\Entities\File([
-                        'name' => $info['name'],
-                        'ext'  => $info['ext'],
-                        'type' => $info['type'],
-                        'size' => $info['size'],
-                        'hash' => $info['hash'],
-                        'salt' => $salt,
-                        'date' => new \DateTime(),
-                        'item' => \App\Domain\Types\FileItemType::ITEM_FORM_DATA,
-                        'item_uuid' => $bid->uuid,
-                    ]);
-
-                    // save model
-                    $this->entityManager->persist($file_model);
-
-                    // add task convert
-                    $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
-                    $task->execute(['uuid' => $file_model->uuid]);
-
-                    // add to attachments
-                    $attachments[$file_model->getName()] = $file_model->getInternalPath();
                 }
             }
 

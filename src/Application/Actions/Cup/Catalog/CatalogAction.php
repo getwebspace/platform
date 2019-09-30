@@ -54,38 +54,21 @@ abstract class CatalogAction extends Action
         $files = $this->request->getUploadedFiles()['files'] ?? [];
 
         foreach ($files as $file) {
-            if ($file->getSize() && !$file->getError()) {
-                $salt = uniqid();
-                $name = Str::translate(strtolower($file->getClientFilename()));
-                $path = UPLOAD_DIR . '/' . $salt;
+            if (!$file->getError()) {
+                $file_model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename());
 
-                if (!file_exists($path)) {
-                    mkdir($path, 0777, true);
+                if ($file_model) {
+                    $file_model->replace([
+                        'item' => is_a($model, \App\Domain\Entities\Catalog\Category::class) ? \App\Domain\Types\FileItemType::ITEM_CATALOG_CATEGORY : \App\Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
+                        'item_uuid' => $model->uuid,
+                    ]);
+
+                    $this->entityManager->persist($file_model);
+
+                    // add task convert
+                    $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
+                    $task->execute(['uuid' => $file_model->uuid]);
                 }
-                $file->moveTo($path . '/' . $name);
-
-                // get file info
-                $info = \App\Domain\Entities\File::info($path . '/' . $name);
-
-                // create model
-                $file_model = new \App\Domain\Entities\File([
-                    'name' => $info['name'],
-                    'ext'  => $info['ext'],
-                    'type' => $info['type'],
-                    'size' => $info['size'],
-                    'hash' => $info['hash'],
-                    'salt' => $salt,
-                    'date' => new \DateTime(),
-                    'item' => is_a($model, \App\Domain\Entities\Catalog\Category::class) ? \App\Domain\Types\FileItemType::ITEM_CATALOG_CATEGORY : \App\Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
-                    'item_uuid' => $model->uuid,
-                ]);
-
-                // save model
-                $this->entityManager->persist($file_model);
-
-                // add task convert
-                $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
-                $task->execute(['uuid' => $file_model->uuid]);
             }
         }
     }

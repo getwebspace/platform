@@ -25,7 +25,7 @@ class ConvertImageTask extends Task
         $file = $fileRepository->findOneBy(['uuid' => $this->params['uuid']]);
 
         if ($file && Str::start('image/', $file->type)) {
-            $folder = $file->getInternalFolder();
+            $folder = $file->getDir('');
             $original = $file->getInternalPath();
 
             $command = $this->getParameter('image_convert_bin', '/usr/bin/convert');

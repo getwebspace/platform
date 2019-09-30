@@ -98,51 +98,14 @@ class TradeMaster
     }
 
     /**
-     * Загружает файл
+     * Возвращает путь до удаленного файла по имени файла
      *
      * @param string $name
      *
-     * @return array
+     * @return string
      */
-    public function getFile(string $name)
+    public function getFilePath(string $name)
     {
-        $remotePath = $this->params->get('integration_trademaster_cache_host') . '/tradeMasterImages/' . $this->params->get('integration_trademaster_cache_folder') . '/' . trim($name);
-        $file = $this->downloadFileIfExists($remotePath);
-
-        if ($file) {
-            $info = pathinfo($remotePath);
-            $salt = uniqid();
-            $name = \AEngine\Support\Str::translate(strtolower($info['basename']));
-            $path = UPLOAD_DIR . '/' . $salt;
-
-            if (!file_exists($path)) {
-                mkdir($path, 0777, true);
-            }
-
-            file_put_contents($path . '/' . $name, $file);
-
-            return array_merge(['salt' => $salt], \App\Domain\Entities\File::info($path . '/' . $name));
-        }
-
-        return [];
-    }
-
-    protected function downloadFileIfExists($path)
-    {
-        $entities = ['%20', '%21', '%2A', '%27', '%28', '%29', '%3B', '%3A', '%40', '%26', '%3D', '%2B', '%24', '%2C', '%2F', '%3F', '%25', '%23', '%5B', '%5D'];
-        $replacements = [' ', '!', '*', "'", "(", ")", ";", ":", "@", "&", "=", "+", "$", ",", "/", "?", "%", "#", "[", "]"];
-
-        $path = str_replace($entities, $replacements, urlencode($path));
-
-        $headers = get_headers($path);
-        $code = substr($headers[0], 9, 3);
-
-        if ($code == 200) {
-            return @file_get_contents($path);
-        }
-
-        $this->logger->error('File upload failed from remote', ['code' => $code, 'path' => $path]);
-
-        return null;
+        return $this->params->get('integration_trademaster_cache_host') . '/tradeMasterImages/' . $this->params->get('integration_trademaster_cache_folder') . '/' . trim($name);
     }
 }

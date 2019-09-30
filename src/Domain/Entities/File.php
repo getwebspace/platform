@@ -3,6 +3,7 @@
 namespace App\Domain\Entities;
 
 use AEngine\Entity\Model;
+use AEngine\Support\Str;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
@@ -73,6 +74,74 @@ class File extends Model
      */
     public $date;
 
+    public static function getFromPath(string $path, string $name_with_ext = null): File
+    {
+        \RunTracy\Helpers\Profiler\Profiler::start('file:getFromPath (%s)', $path);
+
+        $salt = uniqid();
+        $info = pathinfo($name_with_ext ?? $path);
+        $dir = UPLOAD_DIR . '/' . $salt;
+        $name = \AEngine\Support\Str::translate(strtolower($info['filename']));
+        $ext = strtolower($info['extension']);
+
+        // change ext
+        if (!in_array($ext, ['jpg', 'jpeg', 'png'])) {
+            $ext = 'jpg';
+        }
+
+        $saved = false;
+
+        switch (true) {
+            case Str::start(['http://', 'https://'], $path) === true:
+                $entities = ['%20', '%21', '%2A', '%27', '%28', '%29', '%3B', '%3A', '%40', '%26', '%3D', '%2B', '%24', '%2C', '%2F', '%3F', '%25', '%23', '%5B', '%5D'];
+                $replacements = [' ', '!', '*', "'", "(", ")", ";", ":", "@", "&", "=", "+", "$", ",", "/", "?", "%", "#", "[", "]"];
+                $path = str_replace($entities, $replacements, urlencode($path));
+
+                $headers = get_headers($path);
+                $code = substr($headers[0], 9, 3);
+
+                if ($code == 200) {
+                    $file = @file_get_contents($path);
+
+                    if ($file) {
+                        if (!file_exists($dir)) {
+                            mkdir($dir, 0777, true);
+                        }
+                        $path = $dir . '/' . $name . '.' . $ext;
+                        $saved = file_put_contents($path, $file);
+                    }
+                }
+                break;
+            default:
+                $file = @file_get_contents($path);
+
+                if ($file) {
+                    if (!file_exists($dir)) {
+                        mkdir($dir, 0777, true);
+                    }
+                    $path = $dir . '/' . $name . '.' . $ext;
+                    $saved = file_put_contents($path, $file);
+                }
+                break;
+        }
+
+        if ($saved) {
+            $model = new static([
+                'name' => $name,
+                'ext' => $ext,
+                'type' => addslashes(exec('file -bi ' . $path)),
+                'size' => filesize($path),
+                'salt' => $salt,
+                'hash' => sha1_file($path),
+                'date' => new \DateTime(),
+            ]);
+        }
+
+        \RunTracy\Helpers\Profiler\Profiler::finish('file:getFromPath (%s)', $path);
+
+        return $model ?? null;
+    }
+
     /**
      * File details by path
      *
@@ -81,16 +150,15 @@ class File extends Model
      * @return array
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
-    public static function info($path)
+    public static function info($path): array
     {
         \RunTracy\Helpers\Profiler\Profiler::start('file:info (%s)', $path);
 
         $info = pathinfo($path);
         $result = [
             'dir' => $info['dirname'],
-            'name' => \AEngine\Support\Str::translate(strtolower($info['filename'])),
-            'ext' => strtolower($info['extension']),
-            'path' => $path,
+            'name' => $info['filename'],
+            'ext' => $info['extension'],
             'type' => addslashes(exec('file -bi ' . $path)),
             'size' => filesize($path),
             'hash' => sha1_file($path),
@@ -132,15 +200,19 @@ class File extends Model
     }
 
     /**
-     * Return file path
+     * Valid size correct and check exist file
      *
-     * @param string|null $size
+     * @param string $size
      *
-     * @return string
+     * @return bool
      */
-    public function getInternalFolder(string $size = null)
+    protected function isValidSizeAndFileExists(string $size): bool
     {
-        return UPLOAD_DIR . '/' . $this->salt . ($size ? '/' . $size : '');
+        if (in_array($size, ['full', 'middle', 'small'])) {
+            return file_exists(UPLOAD_DIR . '/' . $this->salt . '/' . $size . '/' . $this->getName());
+        }
+
+        return false;
     }
 
     /**
@@ -150,9 +222,21 @@ class File extends Model
      *
      * @return string
      */
-    public function getInternalPath(string $size = null)
+    public function getDir(string $size = 'full')
     {
-        return UPLOAD_DIR . '/' . $this->salt . ($size ? '/' . $size : '') . '/' . $this->name . '.' . $this->ext;
+        return UPLOAD_DIR . '/' . $this->salt . ($this->isValidSizeAndFileExists($size) ? '/' . $size : '');
+    }
+
+    /**
+     * Return file path
+     *
+     * @param string|null $size
+     *
+     * @return string
+     */
+    public function getInternalPath(string $size = 'full')
+    {
+        return $this->getDir($size) . '/' . $this->getName();
     }
 
     /**
@@ -160,12 +244,12 @@ class File extends Model
      *
      * @return string
      */
-    public function getPublicPath(string $size = null)
+    public function getPublicPath(string $size = 'full')
     {
         if ($this->private) {
-            return '/file/get/' . $this->salt . '/' . $this->hash . ($size ? '/' . $size : '');
+            return '/file/get/' . $this->salt . '/' . $this->hash . ($this->isValidSizeAndFileExists($size) ? '/' . $size : '');
         }
 
-        return '/uploads/' . $this->salt . ($size ? '/' . $size : '') . '/' . $this->name . '.' . $this->ext;
+        return '/uploads/' . $this->salt . ($this->isValidSizeAndFileExists($size) ? '/' . $size : '') . '/' . $this->getName();
     }
 }

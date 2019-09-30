@@ -30,13 +30,13 @@
             <div class="row">
                 <div class="col-lg-6">
                     <div class="product-pic-zoom">
-                        <img class="product-big-img" src="{{ files.firstWhere('item_uuid', product.uuid).getPublicPath() }}" alt="{{ product.title }}">
+                        <img class="product-big-img" src="{{ files.firstWhere('item_uuid', product.uuid).getPublicPath('full') }}" alt="{{ product.title }}">
                     </div>
                     <div class="product-thumbs" tabindex="1" style="overflow: hidden; outline: none;">
                         <div class="product-thumbs-track">
                             {% for index, file in files.where('item_uuid', product.uuid) %}
-                                <div class="pt {{ index == 0 ? 'active' : '' }}" data-imgbigurl="{{ file.getPublicPath() }}">
-                                    <img src="{{ file.getPublicPath() }}" alt="{{ product.title }} {{ index }}" />
+                                <div class="pt {{ index == 0 ? 'active' : '' }}" data-imgbigurl="{{ file.getPublicPath('full') }}">
+                                    <img src="{{ file.getPublicPath('small') }}" alt="{{ product.title }} {{ index }}" />
                                 </div>
                             {% endfor %}
                         </div>

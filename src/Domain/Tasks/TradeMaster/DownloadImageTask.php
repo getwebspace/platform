@@ -3,7 +3,6 @@
 namespace App\Domain\Tasks\TradeMaster;
 
 use App\Domain\Tasks\Task;
-use Psr\Container\ContainerInterface;
 
 class DownloadImageTask extends Task
 {
@@ -36,21 +35,11 @@ class DownloadImageTask extends Task
 
         if ($this->entity->params['photo']) {
             foreach (explode(';', $this->entity->params['photo']) as $name) {
-                $file = $this->trademaster->getFile($name);
+                $file_model = \App\Domain\Entities\File::getFromPath(
+                    $this->trademaster->getFilePath($name)
+                );
 
-                if ($file) {
-                    $file_model = new \App\Domain\Entities\File([
-                        'name' => $file['name'],
-                        'ext'  => $file['ext'],
-                        'type' => $file['type'],
-                        'size' => $file['size'],
-                        'salt' => $file['salt'],
-                        'hash' => $file['hash'],
-                        'date' => new \DateTime(),
-                        'item' => $this->entity->params['item'],
-                        'item_uuid' => $this->entity->params['item_uuid'],
-                    ]);
-
+                if ($file_model) {
                     $this->entityManager->persist($file_model);
 
                     // add task convert

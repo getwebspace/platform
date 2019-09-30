@@ -30,7 +30,7 @@
                     <div class="row">
                         {% for file in files %}
                             <div class="col-sm-6 col-md-3">
-                                <a href="{{ file.getPublicPath() }}" class="d-block card card-stats card-round" target="_blank">
+                                <a href="{{ file.getPublicPath('full') }}" class="d-block card card-stats card-round" target="_blank">
                                     <div class="card-body ">
                                         <div class="row align-items-center">
                                             <div class="col-icon">
@@ -41,7 +41,7 @@
                                             <div class="col col-stats ml-3 ml-sm-0">
                                                 <div class="numbers">
                                                     <p class="card-category">{{ file.type }} ({{ file.getSize() }})</p>
-                                                    <h4 class="card-title">{{ file.name }}</h4>
+                                                    <h4 class="card-title">{{ file.getName() }}</h4>
                                                 </div>
                                             </div>
                                         </div>
