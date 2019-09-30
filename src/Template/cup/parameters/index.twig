@@ -552,15 +552,23 @@
                                 } %}
 
                                 {% include 'cup/field.twig' with {
-                                    'label': 'Стоимость доставки',
-                                    'type': 'number',
-                                    'name': 'integration[merchant_delivery]'
-                                } %}
-
-                                {% include 'cup/field.twig' with {
                                     'label': 'Валюта',
                                     'type': 'text',
                                     'name': 'integration[merchant_currency]'
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Стоимость доставки',
+                                    'description': 'Указывается в валюте указанной полем выше',
+                                    'type': 'number',
+                                    'name': 'integration[merchant_delivery_cost]'
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Срок доставки',
+                                    'description': 'Указывается в днях',
+                                    'type': 'number',
+                                    'name': 'integration[merchant_delivery_days]'
                                 } %}
                             </div>
 
