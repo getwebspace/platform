@@ -55,54 +55,6 @@ class TradeMaster
     }
 
     /**
-     * Загружает файлы
-     *
-     * @param \App\Domain\Entities\Catalog\Category|\App\Domain\Entities\Catalog\Product $model
-     * @param string                                                                     $photo
-     *
-     * @throws \Doctrine\ORM\ORMException
-     */
-    public function proccess_photo($model, string $photo)
-    {
-        foreach (explode(';', $photo) as $name) {
-            $remotePath = $this->params->get('cache_host') . '/tradeMasterImages/' . $this->params->get('cache_folder') . '/' . str_replace(' ', '%20', trim($name));
-            $file = $this->getFileIfExists($remotePath);
-
-            if ($file) {
-                $hash = sha1($file);
-
-                if (!$this->fileRepository->count(['hash' => $hash])) {
-                    $file_info = pathinfo($remotePath);
-                    $salt = uniqid();
-                    $name = Str::translate(strtolower($file_info['basename']));
-                    $path = UPLOAD_DIR . '/' . $salt;
-
-                    if (!file_exists($path)) {
-                        mkdir($path);
-                    }
-
-                    file_put_contents($path . '/' . $name, $file);
-
-                    // create model
-                    $file_model = new \App\Domain\Entities\File([
-                        'name' => $name,
-                        'type' => filetype($path),
-                        'size' => filesize($path),
-                        'salt' => $salt,
-                        'hash' => $hash,
-                        'date' => new \DateTime(),
-                        'item' => is_a($model, \App\Domain\Entities\Catalog\Category::class) ? \App\Domain\Types\FileItemType::ITEM_CATALOG_CATEGORY : \App\Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
-                        'item_uuid' => $model->uuid,
-                    ]);
-
-                    // save model
-                    $this->entityManager->persist($file_model);
-                }
-            }
-        }
-    }
-
-    /**
      * @param array $data
      *
      * @return mixed
@@ -146,7 +98,7 @@ class TradeMaster
     }
 
     /**
-     * Загружает файл в временную папку
+     * Загружает файл
      *
      * @param string $name
      *
@@ -164,20 +116,12 @@ class TradeMaster
             $path = UPLOAD_DIR . '/' . $salt;
 
             if (!file_exists($path)) {
-                mkdir($path);
+                mkdir($path, 0777, true);
             }
 
             file_put_contents($path . '/' . $name, $file);
 
-            return [
-                'dir'  => $path . '/',
-                'name' => $name,
-                'path' => $path . '/' . $name,
-                'salt' => $salt,
-                'type' => filetype($path . '/' . $name),
-                'size' => filesize($path . '/' . $name),
-                'hash' => sha1_file($path . '/' . $name),
-            ];
+            return array_merge(['salt' => $salt], \App\Domain\Entities\File::info($path . '/' . $name));
         }
 
         return [];

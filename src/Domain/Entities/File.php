@@ -28,6 +28,11 @@ class File extends Model
     public $name;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    public $ext;
+
+    /**
      * @ORM\Column(type="string")
      */
     public $type;
@@ -69,6 +74,34 @@ class File extends Model
     public $date;
 
     /**
+     * File details by path
+     *
+     * @param $path
+     *
+     * @return array
+     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
+     */
+    public static function info($path)
+    {
+        \RunTracy\Helpers\Profiler\Profiler::start('file:info (%s)', $path);
+
+        $info = pathinfo($path);
+        $result = [
+            'dir' => $info['dirname'],
+            'name' => \AEngine\Support\Str::translate(strtolower($info['filename'])),
+            'ext' => strtolower($info['extension']),
+            'path' => $path,
+            'type' => addslashes(exec('file -bi ' . $path)),
+            'size' => filesize($path),
+            'hash' => sha1_file($path),
+        ];
+
+        \RunTracy\Helpers\Profiler\Profiler::finish('file:info (%s)', $path);
+
+        return $result;
+    }
+
+    /**
      * @return bool|resource
      */
     public function getResource() {
@@ -79,7 +112,7 @@ class File extends Model
     }
 
     /**
-     * Formated file size
+     * Formatted file size
      *
      * @return string
      */
@@ -89,13 +122,37 @@ class File extends Model
     }
 
     /**
-     * Return file path
+     * File name with extension
      *
      * @return string
      */
-    public function getInternalPath()
+    public function getName()
     {
-        return UPLOAD_DIR . '/' . $this->salt . '/' . $this->name;
+        return $this->name . '.' . $this->ext;
+    }
+
+    /**
+     * Return file path
+     *
+     * @param string|null $size
+     *
+     * @return string
+     */
+    public function getInternalFolder(string $size = null)
+    {
+        return UPLOAD_DIR . '/' . $this->salt . ($size ? '/' . $size : '');
+    }
+
+    /**
+     * Return file path
+     *
+     * @param string|null $size
+     *
+     * @return string
+     */
+    public function getInternalPath(string $size = null)
+    {
+        return UPLOAD_DIR . '/' . $this->salt . ($size ? '/' . $size : '') . '/' . $this->name . '.' . $this->ext;
     }
 
     /**
@@ -103,12 +160,12 @@ class File extends Model
      *
      * @return string
      */
-    public function getPublicPath()
+    public function getPublicPath(string $size = null)
     {
         if ($this->private) {
-            return '/file/get/' . $this->salt . '/' . $this->hash;
+            return '/file/get/' . $this->salt . '/' . $this->hash . ($size ? '/' . $size : '');
         }
 
-        return '/uploads/' . $this->salt . '/' . $this->name;
+        return '/uploads/' . $this->salt . ($size ? '/' . $size : '') . '/' . $this->name . '.' . $this->ext;
     }
 }

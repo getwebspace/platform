@@ -7,6 +7,16 @@ use App\Domain\Tasks\Task;
 
 class CatalogSyncTask extends Task
 {
+    public function execute(array $params = []): \App\Domain\Entities\Task
+    {
+        $default = [
+            // nothing
+        ];
+        $params = array_merge($default, $params);
+
+        return parent::execute($params);
+    }
+
     /**
      * @var \App\Application\TradeMaster
      */

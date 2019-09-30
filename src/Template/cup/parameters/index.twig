@@ -24,11 +24,6 @@
                                 </a>
                             </li>
                             <li class="nav-item submenu">
-                                <a class="nav-link" data-toggle="pill" href="#file" role="tab">
-                                    Файлы
-                                </a>
-                            </li>
-                            <li class="nav-item submenu">
                                 <a class="nav-link" data-toggle="pill" href="#image" role="tab">
                                     Изображения
                                 </a>
@@ -110,24 +105,11 @@
                                 } %}
                             </div>
 
-                            {# TAB: File #}
-                            <div class="tab-pane fade" id="file" role="tabpanel">
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Разрешить загрузку файлов на сервер',
-                                    'description': 'Будет разрешена загрузка не только картинок на сервер, но и других файлов',
-                                    'type': 'select',
-                                    'name': 'file[enable]',
-                                    'args': {
-                                        'option': {'yes':'Да', 'no':'Нет'}
-                                    }
-                                } %}
-                            </div>
-
                             {# TAB: Image #}
                             <div class="tab-pane fade" id="image" role="tabpanel">
                                 {% include 'cup/field.twig' with {
                                     'label': 'Разрешить конвертацию загруженных изображений',
-                                    'description': 'Будет разрешена загрузка не только картинок на сервер, но и других файлов',
+                                    'description': 'Будет разрешена загрузка картинок на сервер',
                                     'type': 'select',
                                     'name': 'image[enable]',
                                     'args': {
@@ -139,7 +121,7 @@
                                     'label': 'Размер маленькой превью копии загруженного изображения',
                                     'description': 'Вы можете указать 0, если не хотите создавать превью копии загружаемых картинок на сервер',
                                     'type': 'number',
-                                    'name': 'image[size_small]',
+                                    'name': 'image[convert_size_small]',
                                     'args': {
                                         'placeholder': 'my.site@company.com',
                                         'value': '200'
@@ -150,10 +132,21 @@
                                     'label': 'Размер средней копии загруженного изображения',
                                     'description': 'Вы можете указать 0, если не хотите создавать превью копии загружаемых картинок на сервер',
                                     'type': 'number',
-                                    'name': 'image[size_middle]',
+                                    'name': 'image[convert_size_middle]',
                                     'args': {
                                         'placeholder': 'my.site@company.com',
                                         'value': '450'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Исполняемый файл ImageMagick',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
+                                    'type': 'text',
+                                    'name': 'image[convert_bin]',
+                                    'args': {
+                                        'placeholder': '/usr/bin/convert',
+                                        'value': '/usr/bin/convert'
                                     }
                                 } %}
                             </div>

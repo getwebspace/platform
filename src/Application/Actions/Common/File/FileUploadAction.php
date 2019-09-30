@@ -21,25 +21,32 @@ class FileUploadAction extends FileAction
                 $path = UPLOAD_DIR . '/' . $salt;
 
                 if (!file_exists($path)) {
-                    mkdir($path);
+                    mkdir($path, 0777, true);
                 }
+                $item->moveTo($path . '/' . $name);
+
+                // get file info
+                $info = \App\Domain\Entities\File::info($path . '/' . $name);
 
                 // create model
-                $model = new \App\Domain\Entities\File([
-                    'name' => $name,
-                    'type' => $item->getClientMediaType(),
-                    'size' => (int)$item->getSize(),
+                $file_model = new \App\Domain\Entities\File([
+                    'name' => $info['name'],
+                    'ext'  => $info['ext'],
+                    'type' => $info['type'],
+                    'size' => $info['size'],
+                    'hash' => $info['hash'],
                     'salt' => $salt,
                     'date' => new \DateTime(),
                 ]);
 
-                $item->moveTo($path . '/' . $name);
-                $model->set('hash', sha1_file($path . '/' . $name));
+                $this->entityManager->persist($file_model);
 
-                $this->entityManager->persist($model);
+                // add task convert
+                $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
+                $task->execute(['uuid' => $file_model->uuid]);
 
                 // save model
-                $models[$field][] = $model;
+                $models[$field][] = $file_model;
             }
         }
 

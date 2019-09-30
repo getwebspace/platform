@@ -55,7 +55,7 @@
             {% endif %}
             {% if description is not empty %}
                 <br>
-                <span class="text-muted">{{ description }}</span>
+                <span class="text-muted">{{ description|raw }}</span>
             {% endif %}
         </div>
 
