@@ -25,11 +25,9 @@ $container[\Doctrine\ORM\EntityManager::class] = function (ContainerInterface $c
 // view twig file render
 $container['view'] = function (ContainerInterface $c) {
     $settings = array_merge(
-        $c->get('renderer'),
+        ['template_path' => VIEW_DIR],
         $c->get('twig'),
-        [
-            'displayErrorDetails' => $c->get('settings')['displayErrorDetails'],
-        ]
+        ['displayErrorDetails' => $c->get('settings')['displayErrorDetails']]
     );
 
     $view = new \Slim\Views\Twig($settings['template_path'], [

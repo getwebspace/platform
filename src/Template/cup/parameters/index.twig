@@ -97,6 +97,17 @@
                                     'type': 'textarea',
                                     'name': 'common[keywords]',
                                 } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Шаблон сайта',
+                                    'description': 'По-умолчанию: "default"',
+                                    'type': 'text',
+                                    'name': 'common[theme]',
+                                    'args': {
+                                        'placeholder': 'default',
+                                        'value': 'default'
+                                    }
+                                } %}
                             </div>
 
                             {# TAB: File #}

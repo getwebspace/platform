@@ -228,6 +228,7 @@ abstract class Action
                 ],
                 $data
             );
+            $this->renderer->getLoader()->addPath(THEME_DIR . '/' . $this->getParameter('common_theme', 'default'));
             $this->response->getBody()->write($this->renderer->fetch($template, $data));
 
             \RunTracy\Helpers\Profiler\Profiler::finish('render (%s)', $template);

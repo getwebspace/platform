@@ -46,14 +46,6 @@ return [
         ]
     ],
 
-    // Render settings
-    'renderer' => [
-        'template_path' => [
-            VIEW_DIR,
-            THEME_DIR,
-        ],
-    ],
-
     // Twig settings
     'twig' => [
         'caches_path' => CACHE_DIR,
