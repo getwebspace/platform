@@ -116,7 +116,7 @@ class File extends Model
                 $code = substr($headers[0], 9, 3);
 
                 if ($code == 200) {
-                    $file = @file_get_contents($path);
+                    $file = @file_get_contents($path, false, stream_context_create(['http' => ['timeout' => 15]]));
 
                     if ($file) {
                         if (!file_exists($dir)) {

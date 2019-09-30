@@ -49,7 +49,7 @@ class DownloadImageTask extends Task
                     $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
                     $task->execute(['uuid' => $file_model->uuid]);
                 } else {
-                    $this->logger->info('TradeMaster: file not loaded (%s)', $path);
+                    $this->logger->info('TradeMaster: file not loaded (%s)', ['path' => $path]);
                 }
             }
 

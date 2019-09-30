@@ -111,6 +111,7 @@ abstract class Task
     public function run()
     {
         $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_WORK);
+        $this->entityManager->flush();
         $this->action();
         $this->entityManager->flush();
     }
