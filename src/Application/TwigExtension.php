@@ -262,6 +262,8 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     // получает файлы по параметрам
     public function files($data = [])
     {
+        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:files', $data);
+
         $default = [
             'uuid' => '',
             'item' => '',
@@ -271,7 +273,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         $criteria = [];
 
         if ($data['uuid']) {
-            if (!is_array($data['uuid'])) $data['uuid'] = [$data['uuid']];
+            if (!is_a($data['item_uuid'], \AEngine\Entity\Collection::class) && !is_array($data['uuid'])) $data['uuid'] = [$data['uuid']];
 
             foreach ($data['uuid'] as $value) {
                 if (\Ramsey\Uuid\Uuid::isValid($value) === true) {
@@ -285,7 +287,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         }
 
         if ($data['item_uuid']) {
-            if (!is_array($data['item_uuid'])) $data['item_uuid'] = [$data['item_uuid']];
+            if (!is_a($data['item_uuid'], Collection::class) && !is_array($data['item_uuid'])) $data['item_uuid'] = [$data['item_uuid']];
 
             foreach ($data['item_uuid'] as $value) {
                 if (\Ramsey\Uuid\Uuid::isValid($value) === true) {
@@ -296,8 +298,11 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
         /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
         $repository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
+        $result = collect($repository->findBy($criteria));
 
-        return collect($repository->findBy($criteria));
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:files', $data);
+
+        return $result;
     }
 
     /*
@@ -307,6 +312,8 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     // получение списка категорий публикаций
     public function publication_category($limit = null)
     {
+        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:publication_category');
+
         static $buf;
 
         if (!$buf) {
@@ -316,12 +323,16 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             $buf = collect($repository->findAll());
         }
 
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:publication_category');
+
         return $buf;
     }
 
     // получение списка публикаций
     public function publication($category = null, $order = [], $limit = 10, $offset = null)
     {
+        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:publication');
+
         static $buf;
 
         $criteria = [];
@@ -347,6 +358,8 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             $buf[$key] = $limit > 1 ? collect($repository->findBy($criteria, $order, $limit, $offset)) : $repository->findOneBy($criteria, $order);
         }
 
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:publication');
+
         return $buf[$key];
     }
 
@@ -357,6 +370,8 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     // получение списка категорий товаров
     public function catalog_category()
     {
+        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_category');
+
         static $buf;
 
         if (!$buf) {
@@ -366,12 +381,16 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             $buf = collect($repository->findAll());
         }
 
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_category');
+
         return $buf;
     }
 
     // вернет список родительских категорий
     public function catalog_breadcrumb(\App\Domain\Entities\Catalog\Category $category = null)
     {
+        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_breadcrumb');
+
         $categories = $this->catalog_category();
         $breadcrumb = [];
 
@@ -387,12 +406,18 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             }
         }
 
-        return collect($breadcrumb)->reverse();
+        $result = collect($breadcrumb)->reverse();
+
+        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_breadcrumb');
+
+        return $result;
     }
 
     // получение списка товаров
     public function catalog_product($category = null, $order = [], $limit = 10, $offset = null)
     {
+        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_product');
+
         static $buf;
 
         $criteria = [
@@ -424,6 +449,8 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             $buf[$key] = $limit > 1 ? collect($repository->findBy($criteria, $order, $limit, $offset)) : $repository->findOneBy($criteria, $order);
         }
 
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_product');
+
         return $buf[$key];
     }
 
@@ -452,6 +479,8 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     // получение заказа
     public function catalog_order($unique)
     {
+        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_order');
+
         static $buf;
 
         $criteria = [];
@@ -475,6 +504,8 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             $buf[$key] = collect($repository->findOneBy($criteria));
         }
 
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_order');
+
         return $buf[$key];
     }
 
@@ -485,13 +516,18 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     // tm api
     public function tm_api($endpoint, array $params = [], $method = 'GET')
     {
+        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:tm_api');
+
         /** @var \App\Application\TradeMaster $trademaster */
         $trademaster = $this->container->get('trademaster');
-
-        return $trademaster->api([
+        $result = $trademaster->api([
             'endpoint' => $endpoint,
             'params' => $params,
             'method' => $method,
         ]);
+
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:tm_api');
+
+        return $result;
     }
 }

@@ -4,11 +4,12 @@
         <div class="section-title">
             <h2>Новые товары</h2>
         </div>
-        <div class="product-slider owl-carousel">
-            {% set categories = catalog_category() %}
-            {% set products = catalog_product({}, {'date': 'desc'}, 10) %}
-            {% set files = files({'item': 'catalog_product', 'item_uuid': products.pluck('uuid')}) %}
 
+        {% set categories = catalog_category() %}
+        {% set products = catalog_product({}, {'date': 'desc'}, 10) %}
+        {% set files = files({'item': 'catalog_product', 'item_uuid': products.pluck('uuid')}) %}
+
+        <div class="product-slider owl-carousel">
             {% for product in products %}
                 <div class="product-item">
                     <div class="pi-pic">

@@ -12,6 +12,7 @@ abstract class ActionApi extends Action
         $result = [];
 
         if (!is_array($data)) $data = [$data];
+
         foreach ($data as $value) {
             if (\Ramsey\Uuid\Uuid::isValid($value) === true) {
                 $result[] = $value;
