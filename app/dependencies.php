@@ -141,7 +141,7 @@ $container['notFoundHandler'] = function (ContainerInterface $c) {
     return function (\Slim\Http\Request $request, \Slim\Http\Response $response) use ($c) {
         /** @var \Slim\Views\Twig $renderer */
         $renderer = $c->get('view');
-        $renderer->getLoader()->addPath(THEME_DIR . '/' . $c->get('parameters')->get('common_theme', 'default'));
+        $renderer->getLoader()->addPath(THEME_DIR . '/' . $c->get('parameter')->get('common_theme', 'default'));
         $response->getBody()->write($renderer->fetch('p404.twig'));
         $response->withStatus(404);
 
@@ -154,7 +154,7 @@ $container['notAllowedHandler'] = function (ContainerInterface $c) {
     return function (\Slim\Http\Request $request, \Slim\Http\Response $response, $methods) use ($c) {
         /** @var \Slim\Views\Twig $renderer */
         $renderer = $c->get('view');
-        $renderer->getLoader()->addPath(THEME_DIR . '/' . $c->get('parameters')->get('common_theme', 'default'));
+        $renderer->getLoader()->addPath(THEME_DIR . '/' . $c->get('parameter')->get('common_theme', 'default'));
         $response->getBody()->write($renderer->fetch('p405.twig', ['methods' => $methods]));
         $response->withStatus(405);
 
@@ -167,7 +167,7 @@ $container['errorHandler'] = function (ContainerInterface $c) {
     return function (\Slim\Http\Request $request, \Slim\Http\Response $response, $exception) use ($c) {
         /** @var \Slim\Views\Twig $renderer */
         $renderer = $c->get('view');
-        $renderer->getLoader()->addPath(THEME_DIR . '/' . $c->get('parameters')->get('common_theme', 'default'));
+        $renderer->getLoader()->addPath(THEME_DIR . '/' . $c->get('parameter')->get('common_theme', 'default'));
         $response->getBody()->write($renderer->fetch('p500.twig', ['exception' => $exception]));
         $response->withStatus(500);
 

@@ -2,7 +2,6 @@
 
 namespace App\Application\Actions\Common;
 
-use AEngine\Support\Str;
 use App\Application\Actions\Action;
 use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Exceptions\HttpNotFoundException;
@@ -80,7 +79,6 @@ class FormAction extends Action
                 }
             }
 
-            $body = '';
             $isHtml = true;
 
             // mail body prepare
@@ -131,6 +129,10 @@ class FormAction extends Action
                         $file_model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename());
 
                         if ($file_model) {
+                            $file_model->replace([
+                                'item' => \App\Domain\Types\FileItemType::ITEM_FORM_DATA,
+                                'item_uuid' => $bid->uuid,
+                            ]);
                             $this->entityManager->persist($file_model);
 
                             // add task convert
