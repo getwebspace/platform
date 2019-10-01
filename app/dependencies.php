@@ -22,6 +22,62 @@ $container[\Doctrine\ORM\EntityManager::class] = function (ContainerInterface $c
     return \Doctrine\ORM\EntityManager::create($settings['connection'], $config);
 };
 
+// wrapper around collection with params
+$container['parameter'] = function (ContainerInterface $c) {
+    \RunTracy\Helpers\Profiler\Profiler::start('parameters');
+
+    /** @var \AEngine\Entity\Collection $parameters */
+    static $parameters;
+
+    if (!$parameters) {
+        /** @var \Doctrine\ORM\EntityManager $em */
+        $em = $c->get(\Doctrine\ORM\EntityManager::class);
+
+        /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $parametersRepository */
+        $parametersRepository = $em->getRepository(\App\Domain\Entities\Parameter::class);
+        $parameters = collect($parametersRepository->findAll());
+    }
+
+    \RunTracy\Helpers\Profiler\Profiler::finish('parameters');
+
+    return new class($parameters)
+    {
+        /** @var \AEngine\Entity\Collection */
+        private static $parameters;
+
+        public final function __construct(\AEngine\Entity\Collection &$parameters)
+        {
+            static::$parameters = &$parameters;
+        }
+
+        /**
+         * Return value by key
+         * if key is array return array founded keys with values
+         *
+         * @param string|string[] $key
+         * @param mixed           $default
+         *
+         * @return array|string|mixed
+         */
+        public final function get($key = null, $default = null)
+        {
+            //
+            if ($key === null) {
+                return static::$parameters->mapWithKeys(function ($item) {
+                    list($group, $key) = explode('_', $item->key, 2);
+
+                    return [$group . '[' . $key . ']' => $item];
+                });
+            }
+            if (is_string($key)) {
+                return static::$parameters->firstWhere('key', $key)->value ?? $default;
+            }
+
+            return static::$parameters->whereIn('key', $key)->pluck('value', 'key')->all() ?? $default;
+        }
+    };
+};
+
 // view twig file render
 $container['view'] = function (ContainerInterface $c) {
     $settings = array_merge(
@@ -81,23 +137,40 @@ $container['monolog'] = function (ContainerInterface $c) {
 };
 
 // not found
-$container['notFoundHandler'] = function ($c) {
-    return function ($request, $response) use ($c) {
-        return $c->get('view')->render($response, 'p404.twig')->withStatus(404);
+$container['notFoundHandler'] = function (ContainerInterface $c) {
+    return function (\Slim\Http\Request $request, \Slim\Http\Response $response) use ($c) {
+        /** @var \Slim\Views\Twig $renderer */
+        $renderer = $c->get('view');
+        $renderer->getLoader()->addPath(THEME_DIR . '/' . $c->get('parameters')->get('common_theme', 'default'));
+        $response->getBody()->write($renderer->fetch('p404.twig'));
+        $response->withStatus(404);
+
+        return $response;
     };
 };
 
 // not allowed
-$container['notAllowedHandler'] = function ($c) {
-    return function ($request, $response, $methods) use ($c) {
-        return $c->get('view')->render($response, 'p405.twig', ['methods' => $methods])->withStatus(401);
+$container['notAllowedHandler'] = function (ContainerInterface $c) {
+    return function (\Slim\Http\Request $request, \Slim\Http\Response $response, $methods) use ($c) {
+        /** @var \Slim\Views\Twig $renderer */
+        $renderer = $c->get('view');
+        $renderer->getLoader()->addPath(THEME_DIR . '/' . $c->get('parameters')->get('common_theme', 'default'));
+        $response->getBody()->write($renderer->fetch('p405.twig', ['methods' => $methods]));
+        $response->withStatus(405);
+
+        return $response;
     };
 };
 
 // error
-$container['errorHandler'] = function ($c) {
-    return function ($request, $response, $exception) use ($c) {
-        return $c->get('view')->render($response, 'p500.twig', ['exception' => $exception])->withStatus(500)
-        ;
+$container['errorHandler'] = function (ContainerInterface $c) {
+    return function (\Slim\Http\Request $request, \Slim\Http\Response $response, $exception) use ($c) {
+        /** @var \Slim\Views\Twig $renderer */
+        $renderer = $c->get('view');
+        $renderer->getLoader()->addPath(THEME_DIR . '/' . $c->get('parameters')->get('common_theme', 'default'));
+        $response->getBody()->write($renderer->fetch('p500.twig', ['exception' => $exception]));
+        $response->withStatus(500);
+
+        return $response;
     };
 };

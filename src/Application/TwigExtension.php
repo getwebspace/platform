@@ -62,6 +62,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             // 0x12f functions
             new \Twig\TwigFunction('form', [$this, 'form'], ['is_safe' => ['html']]),
             new \Twig\TwigFunction('reference', [$this, 'reference']),
+            new \Twig\TwigFunction('parameter', [$this, 'parameter']),
             new \Twig\TwigFunction('pre', [$this, 'pre']),
             new \Twig\TwigFunction('count', [$this, 'count']),
             new \Twig\TwigFunction('collect', [$this, 'collect']),
@@ -204,6 +205,12 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         }
 
         return $value;
+    }
+
+    // возвращает значение параметра
+    public function parameter($key = null, $default = null)
+    {
+        return $this->container->get('parameter')->get($key, $default);
     }
 
     /**

@@ -34,24 +34,7 @@ class TradeMaster
         $this->container = $container;
         $this->logger = $container->get('monolog');
         $this->entityManager = $container->get(\Doctrine\ORM\EntityManager::class);
-
-        // получение параметров интеграции
-
-        /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $parametersRepository */
-        $parametersRepository = $this->entityManager->getRepository(\App\Domain\Entities\Parameter::class);
-
-        $this->params = collect($parametersRepository->findBy([
-            'key' => [
-                'integration_trademaster_cache_folder', 'integration_trademaster_cache_host',
-                'integration_trademaster_checkout', 'integration_trademaster_contractor',
-                'integration_trademaster_currency', 'integration_trademaster_host',
-                'integration_trademaster_key', 'integration_trademaster_legal',
-                'integration_trademaster_scheme', 'integration_trademaster_storage',
-                'integration_trademaster_struct', 'integration_trademaster_user',
-                'integration_trademaster_version',
-                'catalog_category_template', 'catalog_product_template',
-            ],
-        ]))->pluck('value', 'key');
+        $this->params = $container->get('parameter');
     }
 
     /**
