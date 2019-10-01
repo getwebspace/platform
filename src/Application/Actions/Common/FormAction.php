@@ -135,10 +135,6 @@ class FormAction extends Action
                             ]);
                             $this->entityManager->persist($file_model);
 
-                            // add task convert
-                            $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
-                            $task->execute(['uuid' => $file_model->uuid]);
-
                             // add to attachments
                             $attachments[$file_model->getName()] = $file_model->getInternalPath();
                         }
