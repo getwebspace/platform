@@ -17,7 +17,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
-                        <h4 class="card-title">Детали полученной заявки ({{ item.uuid }})</h4>
+                        <h4 class="card-title">Детали полученных данных ({{ item.uuid }})</h4>
                         <a href="/cup/form/{{ item.form_uuid }}/view" class="btn btn-secondary btn-round ml-auto">
                             <i class="fas fa-long-arrow-alt-left"></i>
                             Назад
@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <iframe srcdoc="{{ item.message|raw }}" frameborder="0" style="width: 100%; min-height: 500px;"></iframe>
+                    <iframe srcdoc="{{ item.message|raw }}" frameborder="0" style="width: 100%; min-height: 350px; overflow-y: scroll"></iframe>
 
                     <div class="row">
                         {% for file in files %}
@@ -38,10 +38,11 @@
                                                     <i class="flaticon-file"></i>
                                                 </div>
                                             </div>
-                                            <div class="col col-stats ml-3 ml-sm-0">
+                                            <div class="col col-8 col-stats ml-3 ml-sm-0">
                                                 <div class="numbers">
-                                                    <p class="card-category">{{ file.type }} ({{ file.getSize() }})</p>
-                                                    <h4 class="card-title">{{ file.getName() }}</h4>
+                                                    <p class="card-category">{{ file.getName() }}</p>
+                                                    <p class="card-category">{{ file.type }}</p>
+                                                    <p class="card-category">{{ file.getSize() }}</p>
                                                 </div>
                                             </div>
                                         </div>
