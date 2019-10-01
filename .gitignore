@@ -2,6 +2,9 @@
 .vscode
 .DS_Store
 
+/theme/*
+!/theme/default
+
 /vendor/*
 !/vendor/.gitkeep
 /var/db.sqlite
