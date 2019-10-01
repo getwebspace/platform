@@ -77,6 +77,9 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             new \Twig\TwigFunction('publication', [$this, 'publication']),
             new \Twig\TwigFunction('publication_category', [$this, 'publication_category']),
 
+            // guestbook functions
+            new \Twig\TwigFunction('guestbook', [$this, 'guestbook']),
+
             // catalog functions
             new \Twig\TwigFunction('catalog_category', [$this, 'catalog_category']),
             new \Twig\TwigFunction('catalog_breadcrumb', [$this, 'catalog_breadcrumb']),
@@ -368,6 +371,29 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:publication');
 
         return $buf[$key];
+    }
+
+    /*
+     * guestbook functions
+     */
+
+    // получение списка записей в гостевой книге
+    public function guestbook($order = [], $limit = 10, $offset = null)
+    {
+        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:guestbook');
+
+        static $buf;
+
+        if (!$buf) {
+            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
+            $repository = $this->entityManager->getRepository(\App\Domain\Entities\GuestBook::class);
+
+            $buf = $limit > 1 ? collect($repository->findBy([], $order, $limit, $offset)) : $repository->findOneBy([], $order);
+        }
+
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:guestbook');
+
+        return $buf;
     }
 
     /*

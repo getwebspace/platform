@@ -37,7 +37,7 @@ class Order extends Model
     public $user_uuid;
 
     /**
-     * @ORM\OneToOne(targetEntity="\App\Domain\Entities\User")
+     * @ORM\ManyToOne(targetEntity="\App\Domain\Entities\User")
      * @ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid")
      */
     public $user;
