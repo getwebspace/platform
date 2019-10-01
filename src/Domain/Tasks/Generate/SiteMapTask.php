@@ -57,7 +57,7 @@ class SiteMapTask extends Task
         // catalog category
         foreach ($data['category'] as $model) {
             /** @var \App\Domain\Entities\Catalog\Category $model */
-            $sitemap->addItem($url . $model->address, time(), Sitemap::WEEKLY, 0.5);
+            $sitemap->addItem($url . 'catalog/' . $model->address, time(), Sitemap::WEEKLY, 0.5);
         }
 
         // catalog products
