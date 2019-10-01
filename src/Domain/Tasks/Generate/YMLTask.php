@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Domain\Tasks;
+namespace App\Domain\Tasks\Generate;
 
+use App\Domain\Tasks\Task;
 use Bukashk0zzz\YmlGenerator\Generator;
 use Bukashk0zzz\YmlGenerator\Model\Category;
 use Bukashk0zzz\YmlGenerator\Model\Currency;
@@ -22,23 +23,17 @@ class YMLTask extends Task
         return parent::execute($params);
     }
 
-    /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
-     */
-    protected $categoryRepository;
-
-    /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
-     */
-    protected $productRepository;
-
     protected function action()
     {
-        $this->categoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class);
-        $this->productRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
+        /**
+         * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $categoryRepository
+         * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $productRepository
+         */
+        $categoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class);
+        $productRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
         $data = [
-            'category' => collect($this->categoryRepository->findAll()),
-            'product' => collect($this->productRepository->findAll()),
+            'category' => collect($categoryRepository->findAll()),
+            'product' => collect($productRepository->findAll()),
         ];
 
         $settings = new Settings();

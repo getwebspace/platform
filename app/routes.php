@@ -123,9 +123,6 @@ $app
                 // docs
                 $app->get('/docs', \App\Application\Actions\Cup\DocsPageAction::class);
 
-                // trademaster
-                $app->post('/trademaster', \App\Application\Actions\Cup\TradeMasterAction::class);
-
                 // task
                 $app->group('/task', function (App $app) {
                     $app->get('', \App\Application\Actions\Cup\Task\TaskListAction::class);

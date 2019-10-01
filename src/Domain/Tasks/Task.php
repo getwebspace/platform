@@ -39,11 +39,6 @@ abstract class Task
     protected $taskRepository;
 
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
-     */
-    protected $parametersRepository;
-
-    /**
      * @var \AEngine\Entity\Collection
      */
     private static $parameters;
@@ -55,7 +50,6 @@ abstract class Task
         $this->entityManager = $container->get(\Doctrine\ORM\EntityManager::class);
 
         $this->taskRepository = $this->entityManager->getRepository(\App\Domain\Entities\Task::class);
-        $this->parametersRepository = $this->entityManager->getRepository(\App\Domain\Entities\Parameter::class);
 
         $this->entity = $entity ?? new \App\Domain\Entities\Task();
         $this->params = $this->entity->params;
@@ -72,21 +66,7 @@ abstract class Task
      */
     protected function getParameter($key = null, $default = null)
     {
-        if (!self::$parameters) {
-            self::$parameters = collect($this->parametersRepository->findAll());
-        }
-        if ($key === null) {
-            return self::$parameters->mapWithKeys(function ($item) {
-                list($group, $key) = explode('_', $item->key, 2);
-
-                return [$group . '[' . $key . ']' => $item];
-            });
-        }
-        if (is_string($key)) {
-            return self::$parameters->firstWhere('key', $key)->value ?? $default;
-        }
-
-        return self::$parameters->whereIn('key', $key)->pluck('value', 'key')->all() ?? $default;
+        return $this->container->get('parameter')->get($key, $default);
     }
 
     /**
