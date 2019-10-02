@@ -135,8 +135,11 @@ $app
             ->add(function (Request $request, Response $response, $next) {
                 $user = $request->getAttribute('user', false);
 
-                if ($user === false || $user->level !== \App\Domain\Types\UserLevelType::LEVEL_ADMIN) {
+                if ($user === false || !in_array($user->level, \App\Domain\Types\UserLevelType::CUP_ACCESS)) {
                     return $response->withHeader('Location', '/cup/login?redirect=' . $request->getUri()->getPath());
+                }
+                if ($request->isPost() && $user && $user->level === \App\Domain\Types\UserLevelType::LEVEL_DEMO) {
+                    return $response->withHeader('Location', $request->getUri()->getPath());
                 }
 
                 return $next($request, $response);
