@@ -1,12 +1,13 @@
 <div class="col-lg-4 col-sm-6">
-    <div class="product-item">
+    <div class="product-item simpleCart_shelfItem">
         <div class="pi-pic">
             {#<div class="tag-sale">ON SALE</div>#}
             <a href="/catalog/{{ categories.firstWhere('uuid', product.category).address }}/{{ product.address }}">
                 <img src="{{ files.firstWhere('item_uuid', product.uuid).getPublicPath('middle') }}" alt="">
             </a>
             <div class="pi-links">
-                <a href="#" class="add-card"><i class="flaticon-bag"></i><span>В корзину</span></a>
+                {# add class item_add to btn #}
+                <a href="javascript:;" class="add-card item_add"><i class="flaticon-bag"></i><span>В корзину</span></a>
             </div>
         </div>
         <div class="pi-text">
@@ -15,5 +16,8 @@
                 <p>{{ product.title }}</p>
             </a>
         </div>
+
+        {# include product options #}
+        {% include 'catalog.product.options.twig' with {'categories': categories, 'product': product, 'files': files} only %}
     </div>
 </div>

@@ -22,7 +22,7 @@
         </div>
     </div>
 
-    <section class="product-section">
+    <section class="product-section simpleCart_shelfItem">
         <div class="container">
             <div class="back-link">
                 <a href="/catalog/{{ category.address }}">&lt;&lt; В категорию "{{ category.title }}"</a>
@@ -46,11 +46,18 @@
                     <h2 class="p-title">{{ product.title }}</h2>
                     <h3 class="p-price">{{ product.price }}</h3>
                     <h4 class="p-stock">Наличие: {{ product.stock >= 0 ? '<span>На складе</span>' : '<span>Отсутствует</span>' }}</h4>
+
+                    {# add class item_quantity to quantity input #}
                     <div class="quantity">
                         <p>Количество</p>
-                        <div class="pro-qty"><input type="text" value="1"></div>
+                        <div class="pro-qty">
+                            <input type="text" class="item_quantity" value="1">
+                        </div>
                     </div>
-                    <a href="#" class="site-btn">В корзину</a>
+
+                    {# add class item_add to btn #}
+                    <a href="javascript:;" class="site-btn item_add">В корзину</a>
+
                     <div id="accordion" class="accordion-area">
                         <div class="panel">
                             <div class="panel-header" id="headingOne">
@@ -87,6 +94,9 @@
                     </div>
                 </div>
             </div>
+
+            {# include product options #}
+            {% include 'catalog.product.options.twig' with {'categories': categories, 'product': product, 'files': files} only %}
         </div>
     </section>
 

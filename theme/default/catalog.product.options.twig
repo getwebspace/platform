@@ -1,0 +1,18 @@
+{% if product is not empty %}
+    <!-- auto generated product options: (uuid:{{ product.uuid }}, external_id:{{ product.external_id }}) -->
+    <div style="display: none;">
+        {% if categories is not empty %}
+            <span class="item_link">/catalog/{{ categories.firstWhere('uuid', product.category).address }}/{{ product.address }}</span>
+        {% endif %}
+
+        <span class="item_name">{{ product.title }}</span>
+        <span class="item_id item_product">{{ product.uuid }}</span>
+        <span class="item_price">{{ product.price }}</span>
+        <span class="item_artikul">{{ product.vendorcode }}</span>
+
+        {% if files is not empty %}
+            <span class="item_thumb">{{ files.firstWhere('item_uuid', product.uuid).getPublicPath('full') }}</span>
+        {% endif %}
+    </div>
+    <!-- auto generated product options: end -->
+{% endif %}
