@@ -15,10 +15,17 @@ $(() => {
     
     $('[data-toggle="tooltip"]').tooltip();
     
-    $('[data-input] select').select2({
-        theme: 'bootstrap',
-        width: '100%',
-        minimumResultsForSearch: -1,
+    // select2 init
+    $('[data-input] select').each((i, el) => {
+        let $el = $(el);
+        
+        $el.select2({
+            theme: 'bootstrap',
+            width: '100%',
+            placeholder: $el.data('placeholder') ? $el.data('placeholder') : null,
+            minimumResultsForSearch: $el.data('data-search') ? $el.data('search') : -1,
+            allowClear: $el.data('allow-clear') ? $el.data('allow-clear') : false,
+        });
     });
     
     $('[data-table]').DataTable({

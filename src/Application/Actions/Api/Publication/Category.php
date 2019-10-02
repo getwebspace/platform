@@ -12,7 +12,7 @@ class Category extends PublicationAction
             'address' => $this->request->getParam('address'),
 
             'order' => $this->request->getParam('order', []),
-            'limit' => $this->request->getParam('limit', 10),
+            'limit' => $this->request->getParam('limit', 1000),
             'offset' => $this->request->getParam('offset', 0),
         ];
 

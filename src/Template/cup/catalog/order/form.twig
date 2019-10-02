@@ -68,7 +68,6 @@
                                 </div>
                             </div>
 
-
                             <div class="col-md-6">
                                 <div class="row">
                                     <div class="col-md-12">
@@ -84,7 +83,6 @@
                                     </div>
                                 </div>
 
-
                                 <div class="row">
                                     <div class="col-md-12">
                                         {% include 'cup/form.twig' with {
@@ -92,7 +90,8 @@
                                             'type': 'tel',
                                             'name': 'phone',
                                             'args': {
-                                                'value': order.phone,
+                                                'value': order.user and order.user.phone ? order.user.phone : order.phone,
+                                                'readonly': order.user and order.user.phone ? true : false
                                             }
                                         } %}
                                     </div>
@@ -105,7 +104,8 @@
                                             'type': 'date',
                                             'name': 'email',
                                             'args': {
-                                                'value': order.email,
+                                                'value': order.user and order.user.email ? order.user.email : order.email,
+                                                'readonly': order.user and order.user.email ? true : false
                                             }
                                         } %}
                                     </div>
@@ -151,10 +151,10 @@
                     <div class="card-header">
                         <div class="d-flex align-items-center">
                             <div class="card-title">Состав заказа</div>
-                            <a href="/cup/catalog/order/product-list" rel="modal:open" class="btn btn-primary btn-round ml-auto">
+                            <button type="button" data-btn-modal-products class="btn btn-primary btn-round ml-auto">
                                 <i class="fa fa-plus"></i>
                                 Добавить товар
-                            </a>
+                            </button>
                         </div>
                     </div>
                     <div class="card-body">
@@ -233,4 +233,130 @@
             </div>
         </div>
     </form>
+
+    <div data-modal-products class="modal">
+        <div class="row">
+            <div class="col-12">
+                {% include 'cup/form.twig' with {
+                    'label': 'Категория',
+                    'name': 'category',
+                    'type': 'select',
+                    'args': {
+                        'data': {'search': 5, 'placeholder': 'Выберете категорию', 'allow-clear': true},
+                    }
+                } %}
+            </div>
+            <div class="col-12">
+                {% include 'cup/form.twig' with {
+                    'label': 'Товар',
+                    'name': 'product',
+                    'type': 'select',
+                    'args': {
+                        'data': {'search': 5, 'placeholder': 'Выберете товар'}
+                    }
+                } %}
+            </div>
+            <div class="col-6">
+                {% include 'cup/form.twig' with {
+                    'label': 'Количество',
+                    'type': 'number',
+                    'args': {
+                        'value': '1',
+                        'placeholder': '1',
+                        'step': 'any',
+                        'min': '0',
+                    }
+                } %}
+            </div>
+            <div class="col-6">
+                <div class="text-right" style="margin-top: 37px;">
+                    <button type="button" class="btn btn-success">Добавить товар</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    {{ parent() }}
+
+    <script>
+        $(() => {
+            let
+                $table = $('[data-table]'),
+                table = $table.DataTable(),
+                $modal = $('[data-modal-products].modal'),
+                $category = $modal.find('[type="select"][name="category"]'),
+                $product = $modal.find('[type="select"][name="product"]'),
+                $option = $('<option>'),
+                $quantity = $modal.find('[type="number"]'),
+                $btnSuccess = $modal.find('button')
+            ;
+
+            $('[data-btn-modal-products]').click((e) => {
+                e.preventDefault();
+                this.blur();
+
+                let handler = (e) => {
+                    $product
+                        .html('')
+                        .prop('disabled', true);
+
+                    $.get('/api/catalog/product', {category: $(e.currentTarget).val()}, (res) => {
+                        if (res.data.length) {
+                            for (let item of res.data) {
+                                $product.append(
+                                    $option
+                                        .clone()
+                                        .text(item.title)
+                                        .val(item.uuid)
+                                        .data('price', item.price)
+                                );
+                            }
+                        }
+
+                        $product
+                            .trigger('change.select2')
+                            .prop('disabled', false);
+                    });
+                };
+                $category.off('change', handler).on('change', handler);
+
+                $.get('/api/catalog/category', (res) => {
+                    if (res.data.length) {
+                        for (let item of res.data) {
+                            $category.append(
+                                $option
+                                    .clone()
+                                    .text(item.title)
+                                    .val(item.uuid)
+                                    .data('price', item.price)
+                            );
+                        }
+
+                        $category.trigger('change').trigger('change.select2');
+                        $modal.modal();
+                    }
+                });
+            });
+
+            $btnSuccess.on('click', () => {
+                if ($product.val() && $quantity.val() >= 1) {
+                    let
+                        $selected = $product.find(':selected'),
+                        $input = $('<input class="form-control" type="number" placeholder="1" min="0" step="any">')
+                            .attr('name', 'list[' + $selected.attr('value') + ']')
+                            .val($quantity.val())
+                    ;
+
+                    table.row.add([$selected.text(), $selected.data('price'), $quantity.val()])
+                        .draw(true)
+                        .nodes().to$()
+                        .find('td:last-child').html($('<div class="form-group">').append($input));
+
+                    $.modal.close();
+                }
+            });
+        })
+    </script>
 {% endblock %}
