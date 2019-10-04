@@ -1,41 +1,13 @@
 <?php
 
-namespace App\Application\Actions\Common;
+namespace App\Application\Actions\Common\Catalog;
 
 use AEngine\Entity\Collection;
-use App\Application\Actions\Action;
 use Psr\Container\ContainerInterface;
 use Slim\Http\Response;
 
-class CatalogAction extends Action
+class ListAction extends CatalogAction
 {
-    /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
-     */
-    protected $categoryRepository;
-
-    /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
-     */
-    protected $productRepository;
-
-    /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
-     */
-    protected $fileRepository;
-
-    /**
-     * @inheritDoc
-     */
-    public function __construct(ContainerInterface $container)
-    {
-        parent::__construct($container);
-
-        $this->categoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class);
-        $this->productRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
-        $this->fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
-    }
-
     /**
      * @return Response
      * @throws \Doctrine\DBAL\DBALException
@@ -84,7 +56,7 @@ class CatalogAction extends Action
     protected function prepareMain(array &$params, &$categories, &$files)
     {
         if ($params['address']['category'] == '' && $params['address']['product'] == '') {
-            $pagination = $this->getParameter('catalog_category_pagination');
+            $pagination = $this->getParameter('catalog_category_pagination', 10);
             $products = collect(
                 $this->productRepository->findBy(
                     [
@@ -105,7 +77,7 @@ class CatalogAction extends Action
                 ])
             );
 
-            return $this->respondRender($this->getParameter('catalog_category_template'), [
+            return $this->respondRender($this->getParameter('catalog_category_template', 'catalog.category.twig'), [
                 'categories' => $categories,
                 'products' => $products,
                 'pagination' => [

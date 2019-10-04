@@ -38,16 +38,14 @@ class Order extends Filter
                 ->addRule($filter->checkPhone())
             ->attr('email')
                 ->addRule($filter->checkEmail())
-            ->attr('shipping')
-                ->addRule($filter->ValidDate())
-            ->attr('comment')
+            ->option('comment')
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 500))
             ->attr('shipping')
                 ->addRule($filter->ValidDate())
             ->attr('date')
                 ->addRule($filter->ValidDate())
-            ->attr('external_id')
+            ->option('external_id')
                 ->addRule($filter->leadStr());
 
         return $filter->run();

@@ -229,10 +229,7 @@ trait CatalogFilterRules
             }
 
             foreach ($value as $uuid => $count) {
-                if (!\Ramsey\Uuid\Uuid::isValid($uuid)) {
-                    return false;
-                }
-                if (!ctype_digit($count) || $count <= 0) {
+                if (!\Ramsey\Uuid\Uuid::isValid($uuid) || gettype($count) !== 'integer' || $count <= 0) {
                     unset($value[$uuid]);
                 }
             }

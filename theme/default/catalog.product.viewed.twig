@@ -36,5 +36,7 @@
     <!-- VIEWED PRODUCTS section end -->
 {% endif %}
 
-{# сохраняем просмотренный товар #}
-{{ catalog_product_view(product.uuid) }}
+{% if product is not empty %}
+    {# save viewed product #}
+    {{ catalog_product_view(product.uuid) }}
+{% endif %}

@@ -159,8 +159,10 @@ $app->group('/file', function (App $app) {
 // form worker
 $app->post('/form/{unique}', \App\Application\Actions\Common\FormAction::class);
 
-// catalog worker
-$app->get('/catalog[/{args:.*}]', \App\Application\Actions\Common\CatalogAction::class);
+// catalog
+$app->get('/catalog[/{args:.*}]', \App\Application\Actions\Common\Catalog\ListAction::class);
+$app->map(['get', 'post'], '/cart', \App\Application\Actions\Common\Catalog\CartAction::class);
+$app->get('/cart/done/{order}', \App\Application\Actions\Common\Catalog\CartCompleteAction::class);
 
 // guestbook worker
 $app->map(['get', 'post'], '/guestbook[/{page:[0-9]+}}]', \App\Application\Actions\Common\GuestBookAction::class);

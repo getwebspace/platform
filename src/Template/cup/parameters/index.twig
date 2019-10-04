@@ -263,13 +263,35 @@
                                 } %}
 
                                 {% include 'cup/field.twig' with {
-                                    'label': 'Шаблон раздела',
+                                    'label': 'Шаблон товара',
                                     'description': 'Значение по-умолчанию',
                                     'type': 'text',
                                     'name': 'catalog[product_template]',
                                     'args': {
                                         'placeholder': 'catalog.product.twig',
                                         'value': 'catalog.product.twig'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Шаблон корзины',
+                                    'description': 'Значение по-умолчанию',
+                                    'type': 'text',
+                                    'name': 'catalog[cart_template]',
+                                    'args': {
+                                        'placeholder': 'catalog.cart.twig',
+                                        'value': 'catalog.cart.twig'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Шаблон заказа',
+                                    'description': 'Значение по-умолчанию',
+                                    'type': 'text',
+                                    'name': 'catalog[cart_complete_template]',
+                                    'args': {
+                                        'placeholder': 'catalog.cart.complete.twig',
+                                        'value': 'catalog.cart.complete.twig'
                                     }
                                 } %}
 

@@ -6,12 +6,12 @@
         {% endif %}
 
         <span class="item_name">{{ product.title }}</span>
-        <span class="item_id item_product">{{ product.uuid }}</span>
+        <span class="item_id item_uuid">{{ product.uuid }}</span>
         <span class="item_price">{{ product.price }}</span>
         <span class="item_artikul">{{ product.vendorcode }}</span>
 
         {% if files is not empty %}
-            <span class="item_thumb">{{ files.firstWhere('item_uuid', product.uuid).getPublicPath('full') }}</span>
+            <span class="item_thumb">{{ files.firstWhere('item_uuid', product.uuid).getPublicPath('small') }}</span>
         {% endif %}
     </div>
     <!-- auto generated product options: end -->

@@ -1,0 +1,135 @@
+{% extends 'main.twig' %}
+
+{% block title %}Корзина | {{ parent() }}{% endblock %}
+
+{% block style %}
+    {{ parent() }}
+
+    <style>
+        .simpleCart_items table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .simpleCart_items table th,
+        .simpleCart_items table td {
+            padding-top: 16px;
+            padding-bottom: 16px;
+        }
+
+        .simpleCart_items table .itemRow {
+            border-top: 1px solid #e6e6e6;
+            border-bottom: 1px solid #e6e6e6;
+        }
+
+        .simpleCart_items table .item-thumb {
+            width: 150px;
+            padding-left: 15px;
+        }
+
+        .simpleCart_items table .item-thumb img {
+            max-width: 90px;
+            max-height: 90px;
+            width: 90px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .simpleCart_items table .item-link {
+            width: 330px;
+            padding-right: 15px;
+            font-size: 15px;
+        }
+
+        .simpleCart_items table .item-price {
+            width: 133px;
+            padding-right: 15px;
+        }
+
+        .simpleCart_items table .item-cell {
+            text-align: center;
+        }
+
+        .simpleCart_items table .item-quantity {
+            text-align: center;
+            width: 80px;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        .simpleCart_items table .item-attr {
+            padding-right: 30px;
+        }
+
+        .simpleCart_items table .item-total {
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+
+{% block page %}
+    <div class="page-top-info">
+        <div class="container">
+            <h4>Корзина</h4>
+            <div class="site-pagination">
+                <a href="/">Главная</a> /
+                <a href="/catalog">Каталог</a> /
+                <a href="/cart">Корзина</a>
+            </div>
+        </div>
+    </div>
+
+    <section class="">
+        <div class="container pt-5">
+            <div class="row pt-5 pb-5"  style="display: none" data-cart-empty>
+                <div class="col-md-12 text-center">
+                    <h3 class="pb-3">Ваша корзина еще пуста, почему?</h3>
+                    <p>Посомотрите наш <a href="/catalog">каталог</a>, может быть вам что-то понравится!</p>
+                </div>
+            </div>
+
+            <div style="display: none" data-cart-not-empty>
+                <div class="row pt-5 pb-5">
+                    <div class="col-md-12">
+                        <div class="simpleCart_items"></div>
+                    </div>
+                </div>
+
+                <div class="contact-form">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div>
+                                <input type="text" name="delivery[client]" placeholder="Ваше имя *" required>
+                            </div>
+                            <div>
+                                <input type="tel" name="phone" placeholder="Ваш телефон *" required>
+                            </div>
+                            <div>
+                                <input type="email" name="email" placeholder="Ваш E-Mail *" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                <input type="datetime" name="shipping" placeholder="Дата и время доставки ({{ 'now'|date_modify('+1 day')|date('d.m.Y H:00') }})">
+                            </div>
+                            <div>
+                                <textarea name="delivery[address]" placeholder="Адрес доставки.. *" style="height: 105px; margin-bottom: 16px;" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 order-1 order-md-0">
+                            <button class="site-btn simpleCart_checkout" style="margin-bottom: 16px;">Отправить</button>
+                        </div>
+                        <div class="col-md-6 order-0 order-md-1">
+                            <div>
+                                <textarea name="comment" placeholder="Комментарий" style="height: 70px; margin-bottom: 16px;"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+{% endblock %}

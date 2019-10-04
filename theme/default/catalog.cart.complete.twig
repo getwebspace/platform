@@ -1,0 +1,82 @@
+{% extends 'main.twig' %}
+
+{% block title %}Заказ {{ order.serial }} | {{ parent() }}{% endblock %}
+
+{% block page %}
+    <div class="page-top-info">
+        <div class="container">
+            <h4>Заказ</h4>
+            <div class="site-pagination">
+                <a href="/">Главная</a> /
+                <a href="/catalog">Каталог</a> /
+                <a href="/cart">Корзина</a> /
+                <a href="/cart/done/{{ order.uuid }}">Заказ</a>
+            </div>
+        </div>
+    </div>
+
+    <section class="">
+        <div class="container pt-5">
+            <div class="row pt-5 pb-5">
+                <div class="col-md-12 text-center">
+                    <h3 class="pb-3">Информация о заказе {{ order.serial }}</h3>
+                    <p>Благодарим вас за заказ</p>
+                </div>
+            </div>
+
+            <div class="row pb-5">
+                <div class="col-md-6">
+                    <h4>Заказчик</h4>
+
+                    <table class="table mt-3 mb-5">
+                        <tr>
+                            <td style="width: 50%">Имя</td>
+                            <td style="width: 50%">{{ order.delivery.client }}</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Телефон</td>
+                            <td>{{ order.phone }}</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>E-Mail</td>
+                            <td>{{ order.email }}</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Адрес доставки</td>
+                            <td>{{ order.delivery.address }}</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Дата доставки</td>
+                            <td>{{ order.shipping|date('d.m.Y H:i') }}</td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="col-md-6">
+                    <h4>Состав заказа</h4>
+
+                    <table class="table mt-3 mb-5" style="width: 100%;">
+                        <tr>
+                            <td>Название</td>
+                            <td>Цена</td>
+                            <td>Кол-во</td>
+                        </tr>
+
+                        {% for product in products %}
+                            <tr>
+                                <td>{{ product.title }}</td>
+                                <td>{{ product.price }}</td>
+                                <td>{{ order.list[product.uuid.toString()] }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
