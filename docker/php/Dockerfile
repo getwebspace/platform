@@ -33,20 +33,21 @@ RUN if [ ${XDEBUG_INSTALL} = true ]; then \
 # Copy xdebug configuration for remote debugging
 COPY config/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
-###########################################################################
-# Clean up
-###########################################################################
-RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    rm /var/log/lastlog /var/log/faillog
-
 RUN docker-php-ext-install pdo_mysql && docker-php-ext-enable pdo_mysql
+RUN apt-get install sqlite3
 RUN docker-php-ext-install pdo_sqlite && docker-php-ext-enable pdo_sqlite
 
 RUN mkdir /var/www/var
 RUN mkdir /var/www/var/cache      && chown www-data:www-data /var/www/var/cache
 RUN mkdir /var/www/var/log        && chown www-data:www-data /var/www/var/log
 RUN mkdir /var/www/var/upload        && chown www-data:www-data /var/www/var/upload
+
+###########################################################################
+# Clean up
+###########################################################################
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+    rm /var/log/lastlog /var/log/faillog
 
 # Permission fix
 RUN usermod -u 1000 www-data
