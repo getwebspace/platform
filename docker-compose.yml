@@ -1,0 +1,34 @@
+ersion: '2'
+networks:
+    web:
+        external: true
+    internal:
+        external: false
+services:
+    0x12f:
+        image: php:7-alpine
+        working_dir: /var/www
+        command: php -S 0.0.0.0:8080 -t public
+        env_file:
+            - .env
+        environment:
+            docker: "true"
+        ports:
+            - 8080:8080
+        volumes:
+            - .:/var/www
+            - var/log:/var/www/var/log
+        labels:
+            - traefik.backend=0x12f
+            - traefik.frontend.rule=Host:exmaple.local
+            - traefik.docker.network=web
+            - traefik.port=8080
+        networks:
+            - internal
+            - web
+    cache:
+        image: redis:4-alpine
+        networks:
+            - internal
+        labels:
+            - traefik.enable=false
