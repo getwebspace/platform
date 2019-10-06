@@ -33,9 +33,8 @@ RUN if [ ${XDEBUG_INSTALL} = true ]; then \
 # Copy xdebug configuration for remote debugging
 COPY config/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
+RUN docker-php-ext-install pdo && docker-php-ext-enable pdo
 RUN docker-php-ext-install pdo_mysql && docker-php-ext-enable pdo_mysql
-RUN apt-get install sqlite sqlite3
-RUN docker-php-ext-install pdo_sqlite && docker-php-ext-enable pdo_sqlite
 
 RUN mkdir /var/www/var
 RUN mkdir /var/www/var/cache      && chown www-data:www-data /var/www/var/cache
