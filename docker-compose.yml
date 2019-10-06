@@ -9,8 +9,6 @@ services:
         image: php:7-alpine
         working_dir: /var/www
         command: php -S 0.0.0.0:8080 -t public
-        env_file:
-            - .env
         environment:
             docker: "true"
         ports:
@@ -20,7 +18,7 @@ services:
             - var/log:/var/www/var/log
         labels:
             - traefik.backend=0x12f
-            - traefik.frontend.rule=Host:exmaple.local
+            - traefik.frontend.rule=Host:test.site.0x12f.com
             - traefik.docker.network=web
             - traefik.port=8080
         networks:

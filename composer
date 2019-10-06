@@ -1,6 +1,5 @@
 #!/bin/sh
 
 docker run --rm --interactive --tty \
-    --env-file .env \
     --volume $PWD:/app \
     composer "$@"
