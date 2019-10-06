@@ -34,7 +34,7 @@ RUN if [ ${XDEBUG_INSTALL} = true ]; then \
 COPY config/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 RUN docker-php-ext-install pdo_mysql && docker-php-ext-enable pdo_mysql
-RUN apt-get install sqlite3
+RUN apt-get install sqlite sqlite3
 RUN docker-php-ext-install pdo_sqlite && docker-php-ext-enable pdo_sqlite
 
 RUN mkdir /var/www/var
