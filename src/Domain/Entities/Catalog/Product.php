@@ -10,14 +10,14 @@ use Ramsey\Uuid\Uuid;
 /**
  * @ORM\Entity
  * @ORM\Table(name="catalog_product", indexes={
- *     @ORM\Index(name="address_idx", columns={"address"}),
- *     @ORM\Index(name="category_idx", columns={"category"}),
- *     @ORM\Index(name="price_idx", columns={"price", "priceFirst", "priceWholesale"}),
- *     @ORM\Index(name="volume_idx", columns={"volume", "unit"}),
- *     @ORM\Index(name="stock_idx", columns={"stock"}),
- *     @ORM\Index(name="manufacturer_idx", columns={"manufacturer"}),
- *     @ORM\Index(name="country_idx", columns={"country"}),
- *     @ORM\Index(name="order_idx", columns={"order"})
+ *     @ORM\Index(name="catalog_product_address_idx", columns={"address"}),
+ *     @ORM\Index(name="catalog_product_category_idx", columns={"category"}),
+ *     @ORM\Index(name="catalog_product_price_idx", columns={"price", "priceFirst", "priceWholesale"}),
+ *     @ORM\Index(name="catalog_product_volume_idx", columns={"volume", "unit"}),
+ *     @ORM\Index(name="catalog_product_stock_idx", columns={"stock"}),
+ *     @ORM\Index(name="catalog_product_manufacturer_idx", columns={"manufacturer"}),
+ *     @ORM\Index(name="catalog_product_country_idx", columns={"country"}),
+ *     @ORM\Index(name="catalog_product_order_idx", columns={"order"})
  * })
  */
 class Product extends Model

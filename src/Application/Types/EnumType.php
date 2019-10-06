@@ -10,14 +10,22 @@ use Doctrine\DBAL\Types\Type;
  */
 abstract class EnumType extends Type
 {
-    const NAME = null, LIST = [];
+    /**
+     * Unique name of type
+     */
+    const NAME = null;
+
+    /**
+     * List of values
+     */
+    const LIST = [];
 
     /**
      * @inheritDoc
      */
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        return "ENUM('" . implode("', '", array_keys(static::LIST)) . "')";
+        return 'VARCHAR(' . max(array_map('strlen', static::LIST)) . ')';
     }
 
     /**

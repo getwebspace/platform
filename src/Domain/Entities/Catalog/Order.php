@@ -10,7 +10,7 @@ use Ramsey\Uuid\Uuid;
 /**
  * @ORM\Entity
  * @ORM\Table(name="catalog_order", indexes={
- *     @ORM\Index(name="status_idx", columns={"status"}),
+ *     @ORM\Index(name="catalog_order_status_idx", columns={"status"}),
  * })
  */
 class Order extends Model
