@@ -5,7 +5,7 @@ networks:
     internal:
         external: false
 services:
-    0x12f:
+    cms:
         image: php:7-alpine
         working_dir: /var/www
         command: php -S 0.0.0.0:8080 -t public
