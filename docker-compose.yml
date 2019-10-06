@@ -5,8 +5,9 @@ networks:
     internal:
         external: false
 services:
-    cms:
-        image: php:7-alpine
+    php:
+        build:
+            context: docker/php
         working_dir: /var/www
         command: php -S 0.0.0.0:8080 -t public
         environment:
