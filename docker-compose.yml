@@ -14,8 +14,8 @@ services:
         ports:
             - 8080:8080
         volumes:
-            - .:/var/www
-            - var/log:/var/www/var/log
+            - $PWD:/var/www
+            - $PWD/var/log:/var/www/var/log
         labels:
             - traefik.backend=0x12f
             - traefik.frontend.rule=Host:test.site.0x12f.com
