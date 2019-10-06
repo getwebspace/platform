@@ -40,12 +40,13 @@ RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     rm /var/log/lastlog /var/log/faillog
 
-RUN docker-php-ext-install pdo_mysql
+RUN docker-php-ext-install pdo_mysql && docker-php-ext-enable pdo_mysql
+RUN docker-php-ext-install pdo_sqlite && docker-php-ext-enable pdo_sqlite
 
 RUN mkdir /var/www/var
 RUN mkdir /var/www/var/cache      && chown www-data:www-data /var/www/var/cache
 RUN mkdir /var/www/var/log        && chown www-data:www-data /var/www/var/log
-RUN mkdir /var/www/var/session    && chown www-data:www-data /var/www/var/session
+RUN mkdir /var/www/var/upload        && chown www-data:www-data /var/www/var/upload
 
 # Permission fix
 RUN usermod -u 1000 www-data
