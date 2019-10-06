@@ -7,8 +7,8 @@ require __DIR__ . '/../config/vars.php';
  */
 function app_create()
 {
-    // upload dir
-    if (!file_exists(PUBLIC_DIR . '/uploads')) {
+    // check upload dir exists
+    if (PHP_SAPI == 'fpm-fcgi' && !file_exists(PUBC_DIR . '/uploads')) {
         symlink(UPLOAD_DIR, PUBLIC_DIR . '/uploads');
     }
 
