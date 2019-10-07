@@ -461,16 +461,6 @@
                                 } %}
 
                                 {% include 'cup/field.twig' with {
-                                    'label': 'API Currency',
-                                    'description': 'Валюта отправляемая по API',
-                                    'type': 'text',
-                                    'name': 'integration[trademaster_currency]',
-                                    'args': {
-                                        'value': 'RUB',
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
                                     'label': 'Cache host',
                                     'description': 'Хост кеш файлов',
                                     'type': 'text',
@@ -550,6 +540,16 @@
                                     'name': 'integration[trademaster_user]',
                                     'args': {
                                         'value': '0',
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'API Currency',
+                                    'description': 'Валюта отправляемая по API',
+                                    'type': 'text',
+                                    'name': 'integration[trademaster_currency]',
+                                    'args': {
+                                        'value': 'RUB',
                                     }
                                 } %}
 

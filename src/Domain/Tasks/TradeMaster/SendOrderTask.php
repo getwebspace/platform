@@ -64,7 +64,7 @@ class SendOrderTask extends Task
                     'ds' => $this->getParameter('integration_trademaster_checkout'),
                     'kontragent' => $this->getParameter('integration_trademaster_contractor'),
                     'shema' => $this->getParameter('integration_trademaster_scheme'),
-                    'valuta' => $this->getParameter('integration_merchant_currency'),
+                    'valuta' => $this->getParameter('integration_trademaster_currency'),
                     'userID' => $this->getParameter('integration_trademaster_user'),
                     'nameKontakt' => $order->delivery['client'],
                     'adresKontakt' => $order->delivery['address'],

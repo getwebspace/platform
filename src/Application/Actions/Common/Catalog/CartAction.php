@@ -50,6 +50,16 @@ class CartAction extends CatalogAction
                     $this->entityManager->persist($model);
                     $this->entityManager->flush();
 
+                    // if TM is enabled
+                    if ($this->getParameter('integration_trademaster_enable', 'off') === 'off') {
+                        // add task send to TradeMaster
+                        $task = new \App\Domain\Tasks\TradeMaster\SendOrderTask($this->container);
+                        $task->execute(['uuid' => $model->uuid]);
+
+                        // run worker
+                        \App\Domain\Tasks\Task::worker();
+                    }
+
                     return $this->response->withAddedHeader('Location', '/cart/done/' . $model->uuid);
                 } catch (Exception $e) {
                     // todo nothing

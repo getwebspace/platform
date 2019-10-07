@@ -1,10 +1,15 @@
 <?php
 
-
 // Include global const's
 use App\Domain\Tasks\TradeMaster\CatalogSyncTask;
 
 require __DIR__ . '/../src/bootstrap.php';
+
+// exit if another worker works
+if (file_exists(\App\Domain\Tasks\Task::$pid_file)) exit;
+
+// before work write self PID to file
+file_put_contents(\App\Domain\Tasks\Task::$pid_file, getmypid());
 
 // App container
 $c = $container = $app->getContainer();
@@ -24,8 +29,13 @@ if ($queue) {
     /** @var \App\Domain\Tasks\Task $task */
     $task = new $queue->action($c, $queue);
     $task->run();
-
-    register_shutdown_function(function () {
-        exec('php ' . CONFIG_DIR . '/cli-task.php > /dev/null 2>&1 &');
-    });
 }
+
+// rerun worker
+register_shutdown_function(function () use ($queue) {
+    unlink(\App\Domain\Tasks\Task::$pid_file);
+
+    if ($queue) {
+        \App\Domain\Tasks\Task::worker();
+    }
+});

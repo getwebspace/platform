@@ -15,15 +15,13 @@ class TaskRunAction extends Action
                 $task = new $name($this->container);
                 $task->execute($this->request->getParam('params', []));
                 $this->entityManager->flush();
+
+                // run worker
+                \App\Domain\Tasks\Task::worker();
             }
             return $this->response->withAddedHeader('Location', '/cup');
         }
 
         return $this->respondWithData(['run' => time()]);
-    }
-
-    public function __destruct()
-    {
-        exec('php ' . CONFIG_DIR . '/cli-task.php > /dev/null 2>&1 &');
     }
 }

@@ -28,6 +28,18 @@ abstract class Task
      */
     private $entity;
 
+    public static $pid_file = VAR_DIR . '/worker.pid';
+
+    /**
+     * Запускает исполнение воркера задач
+     */
+    public static function worker()
+    {
+        if (!file_exists(static::$pid_file)) {
+            exec('php ' . CONFIG_DIR . '/cli-task.php > /dev/null 2>&1 &');
+        }
+    }
+
     public function __construct(ContainerInterface $container, \App\Domain\Entities\Task $entity = null)
     {
         $this->container = $container;
