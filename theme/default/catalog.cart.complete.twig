@@ -1,6 +1,15 @@
 {% extends 'main.twig' %}
 
-{% block title %}Заказ {{ order.serial }} | {{ parent() }}{% endblock %}
+{% block title %}Заказ {{ order.serial }} {{ order.external_id ? '(' ~ order.external_id ~ ')' : '' }} | {{ parent() }}{% endblock %}
+
+{% block script %}
+    {{ parent() }}
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', () => {
+            simpleCart.empty();
+        });
+    </script>
+{% endblock %}
 
 {% block page %}
     <div class="page-top-info">
@@ -19,7 +28,9 @@
         <div class="container pt-5">
             <div class="row pt-5 pb-5">
                 <div class="col-md-12 text-center">
-                    <h3 class="pb-3">Информация о заказе {{ order.serial }}</h3>
+                    <h3 class="pb-3">
+                        Информация о заказе {{ order.serial }} {{ order.external_id ? '(' ~ order.external_id ~ ')' : '' }}
+                    </h3>
                     <p>Благодарим вас за заказ</p>
                 </div>
             </div>

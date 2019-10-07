@@ -43,7 +43,7 @@ class Order extends Model
     public $user;
 
     /**
-     * @var string
+     * @var array
      * @ORM\Column(type="array", nullable=true)
      */
     public $delivery = [

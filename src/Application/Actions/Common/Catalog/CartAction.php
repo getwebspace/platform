@@ -51,10 +51,11 @@ class CartAction extends CatalogAction
                     $this->entityManager->flush();
 
                     // if TM is enabled
-                    if ($this->getParameter('integration_trademaster_enable', 'off') === 'off') {
+                    if ($this->getParameter('integration_trademaster_enable', 'off') === 'on') {
                         // add task send to TradeMaster
                         $task = new \App\Domain\Tasks\TradeMaster\SendOrderTask($this->container);
                         $task->execute(['uuid' => $model->uuid]);
+                        $this->entityManager->flush();
 
                         // run worker
                         \App\Domain\Tasks\Task::worker();
