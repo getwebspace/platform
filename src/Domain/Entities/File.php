@@ -144,7 +144,7 @@ class File extends Model
             $model = new static([
                 'name' => $name,
                 'ext' => $ext,
-                'type' => addslashes(exec('file -bi ' . $path)),
+                'type' => addslashes(@exec('file -bi ' . $path)),
                 'size' => filesize($path),
                 'salt' => $salt,
                 'hash' => sha1_file($path),
@@ -174,7 +174,7 @@ class File extends Model
             'dir' => $info['dirname'],
             'name' => $info['filename'],
             'ext' => $info['extension'],
-            'type' => addslashes(exec('file -bi ' . $path)),
+            'type' => addslashes(@exec('file -bi ' . $path)),
             'size' => filesize($path),
             'hash' => sha1_file($path),
         ];

@@ -23,6 +23,7 @@ class MainPageAction extends Action
                 'files' => $this->entityManager->getRepository(\App\Domain\Entities\File::class)->count([]),
             ],
             'properties' => [
+                'version' => @exec('git rev-parse --short HEAD'),
                 'os' => @implode(' ', [php_uname('s'), php_uname('r'), php_uname('m')]),
                 'php' => PHP_VERSION,
                 'memory_limit' => ini_get('memory_limit'),

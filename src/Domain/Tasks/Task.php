@@ -36,7 +36,7 @@ abstract class Task
     public static function worker()
     {
         if (!file_exists(static::$pid_file)) {
-            exec('php ' . CONFIG_DIR . '/cli-task.php > /dev/null 2>&1 &');
+            @exec('php ' . CONFIG_DIR . '/cli-task.php > /dev/null 2>&1 &');
         }
     }
 
