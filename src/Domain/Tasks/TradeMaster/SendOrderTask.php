@@ -46,13 +46,15 @@ class SendOrderTask extends Task
 
             /** @var \App\Domain\Entities\Catalog\Product $model */
             foreach ($this->productRepository->findBy(['uuid' => array_keys($order->list)]) as $model) {
-                $quantity = $order->list[$model->uuid->toString()];
-                $products[] = [
-                    'id' => $model->external_id ? $model->external_id : $model->uuid->toString(),
-                    'name' => $model->title,
-                    'quantity' => $quantity,
-                    'price' => (float)$model->price * $quantity,
-                ];
+                if ($model->external_id) {
+                    $quantity = $order->list[$model->uuid->toString()];
+                    $products[] = [
+                        'id' => $model->external_id,
+                        'name' => $model->title,
+                        'quantity' => $quantity,
+                        'price' => (float)$model->price * $quantity,
+                    ];
+                }
             }
 
             $result = $this->trademaster->api([
@@ -66,8 +68,8 @@ class SendOrderTask extends Task
                     'shema' => $this->getParameter('integration_trademaster_scheme'),
                     'valuta' => $this->getParameter('integration_trademaster_currency'),
                     'userID' => $this->getParameter('integration_trademaster_user'),
-                    'nameKontakt' => $order->delivery['client'],
-                    'adresKontakt' => $order->delivery['address'],
+                    'nameKontakt' => $order->delivery['client'] ?? '',
+                    'adresKontakt' => $order->delivery['address'] ?? '',
                     'telefonKontakt' => $order->phone,
                     'other1Kontakt' => $order->email,
                     'dateDost' => $order->shipping->format('Y-m-d H:i:s'),
