@@ -33,7 +33,7 @@ class DownloadImageTask extends Task
         $this->trademaster = $this->container->get('trademaster');
         $this->fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
 
-        if ($this->entity->params['photo']) {
+        if ($args['photo']) {
             foreach (explode(';', $args['photo']) as $name) {
                 $path = $this->trademaster->getFilePath($name);
                 $file_model = \App\Domain\Entities\File::getFromPath($path);

@@ -293,6 +293,14 @@
                 $btnSuccess = $modal.find('button')
             ;
 
+            $table.find('tr [type="number"]').on('change', (e) => {
+                let $el = $(e.currentTarget);
+
+                if ($el.val() <= 0) {
+                    $el.parents('tr').remove();
+                }
+            });
+
             $('[data-btn-modal-products]').click((e) => {
                 e.preventDefault();
                 this.blur();
