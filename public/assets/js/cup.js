@@ -1,6 +1,36 @@
 "use strict";
 
 $(() => {
+    // toolbar
+    let topbar_open = 0,
+        topbar = $('.topbar-toggler');
+    topbar.on('click', function() {
+        if (topbar_open === 1) {
+            $('html').removeClass('topbar_open');
+            topbar.removeClass('toggled');
+            topbar_open = 0;
+        } else {
+            $('html').addClass('topbar_open');
+            topbar.addClass('toggled');
+            topbar_open = 1;
+        }
+    });
+    
+    // sidenav
+    let nav_open = 0,
+        nav_el = $('.sidenav-toggler');
+    nav_el.on('click', function(){
+        if (nav_open === 1){
+            $('html').removeClass('nav_open');
+            nav_el.removeClass('toggled');
+            nav_open = 0;
+        }  else {
+            $('html').addClass('nav_open');
+            nav_el.addClass('toggled');
+            nav_open = 1;
+        }
+    });
+    
     // navigation highlight
     let buf = 0, $active = null;
     $('.sidebar a').each((i, el) => {
