@@ -8,7 +8,7 @@ class MainPageAction extends Action
 {
     protected function action(): \Slim\Http\Response
     {
-        $version = @exec('git rev-parse --short HEAD');
+        $version = @exec('cd ' . BASE_DIR . ' && git rev-parse --short HEAD');
 
         return $this->respondRender('cup/layout.twig', [
             'notepad' => $this->getParameter('notepad_' . $this->request->getAttribute('user')->username, ''),
