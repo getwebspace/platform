@@ -31,23 +31,16 @@ class SendOrderTask extends Task
      */
     protected $orderRepository;
 
-    /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
-     */
-    protected $fileRepository;
-
     protected function action(array $args = [])
     {
         $this->trademaster = $this->container->get('trademaster');
         $this->productRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
         $this->orderRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Order::class);
-        $this->fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
 
         /**
          * @var \App\Domain\Entities\Catalog\Order $order
          */
         $order = $this->orderRepository->findOneBy(['uuid' => $args['uuid']]);
-
         if ($order) {
             $products = [];
 
