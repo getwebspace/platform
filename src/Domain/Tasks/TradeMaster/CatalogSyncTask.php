@@ -35,7 +35,7 @@ class CatalogSyncTask extends Task
     /**
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
-    protected function action()
+    protected function action(array $args = [])
     {
         $this->trademaster = $this->container->get('trademaster');
         $this->categoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class);
@@ -69,8 +69,8 @@ class CatalogSyncTask extends Task
 
         // параметры отображения категорий и товаров
         $template = [
-            'category' => $this->trademaster->params->get('catalog_category_template', 'catalog.category.twig'),
-            'product' => $this->trademaster->params->get('catalog_product_template', 'catalog.product.twig'),
+            'category' => $this->getParameter('catalog_category_template', 'catalog.category.twig'),
+            'product' => $this->getParameter('catalog_product_template', 'catalog.product.twig'),
         ];
 
         $list = $this->trademaster->api(['endpoint' => 'catalog/list']);
@@ -141,7 +141,7 @@ class CatalogSyncTask extends Task
                 $list = $this->trademaster->api([
                     'endpoint' => 'item/list',
                     'params' => [
-                        'sklad' => $this->trademaster->params->get('integration_trademaster_storage', 0),
+                        'sklad' => $this->getParameter('integration_trademaster_storage', 0),
                         'offset' => $i * $step,
                         'limit' => $step,
                     ],

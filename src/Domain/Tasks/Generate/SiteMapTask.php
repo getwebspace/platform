@@ -24,7 +24,7 @@ class SiteMapTask extends Task
         return parent::execute($params);
     }
 
-    protected function action()
+    protected function action(array $args = [])
     {
         /**
          * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $pageRepository
