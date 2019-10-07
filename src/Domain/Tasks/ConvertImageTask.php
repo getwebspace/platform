@@ -16,13 +16,13 @@ class ConvertImageTask extends Task
         return parent::execute($params);
     }
 
-    protected function action()
+    protected function action(array $args = [])
     {
         /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $fileRepository */
         $fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
 
         /** @var \App\Domain\Entities\File $file */
-        $file = $fileRepository->findOneBy(['uuid' => $this->params['uuid']]);
+        $file = $fileRepository->findOneBy(['uuid' => $args['uuid']]);
 
         if ($file && Str::start('image/', $file->type)) {
             $folder = $file->getDir('');

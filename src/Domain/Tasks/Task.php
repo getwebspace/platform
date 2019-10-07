@@ -26,22 +26,7 @@ abstract class Task
     /**
      * @var \App\Domain\Entities\Task
      */
-    protected $entity;
-
-    /**
-     * @var array
-     */
-    protected $params;
-
-    /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
-     */
-    protected $taskRepository;
-
-    /**
-     * @var \AEngine\Entity\Collection
-     */
-    private static $parameters;
+    private $entity;
 
     public function __construct(ContainerInterface $container, \App\Domain\Entities\Task $entity = null)
     {
@@ -49,10 +34,11 @@ abstract class Task
         $this->logger = $container->get('monolog');
         $this->entityManager = $container->get(\Doctrine\ORM\EntityManager::class);
 
-        $this->taskRepository = $this->entityManager->getRepository(\App\Domain\Entities\Task::class);
-
-        $this->entity = $entity ?? new \App\Domain\Entities\Task();
-        $this->params = $this->entity->params;
+        if (!$entity) {
+            $entity = new \App\Domain\Entities\Task();
+            $this->entityManager->persist($entity);
+        }
+        $this->entity = $entity;
     }
 
     /**
@@ -74,6 +60,7 @@ abstract class Task
      *
      * @return \App\Domain\Entities\Task
      * @throws \Doctrine\ORM\ORMException
+     * @throws \Exception
      */
     public function execute(array $params = []): \App\Domain\Entities\Task
     {
@@ -83,7 +70,6 @@ abstract class Task
             'status' => \App\Domain\Types\TaskStatusType::STATUS_QUEUE,
             'date' => new \DateTime(),
         ]);
-        $this->entityManager->persist($this->entity);
 
         return $this->entity;
     }
@@ -92,21 +78,19 @@ abstract class Task
     {
         $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_WORK);
         $this->entityManager->flush();
-        $this->action();
+        $this->action($this->entity->params);
         $this->entityManager->flush();
     }
 
-    abstract protected function action();
+    abstract protected function action(array $args = []);
 
     protected function status_done()
     {
         $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_DONE);
-        $this->entityManager->persist($this->entity);
     }
 
     protected function status_fail()
     {
         $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_FAIL);
-        $this->entityManager->persist($this->entity);
     }
 }

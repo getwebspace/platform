@@ -28,20 +28,20 @@ class DownloadImageTask extends Task
      */
     protected $fileRepository;
 
-    protected function action()
+    protected function action(array $args = [])
     {
         $this->trademaster = $this->container->get('trademaster');
         $this->fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
 
         if ($this->entity->params['photo']) {
-            foreach (explode(';', $this->entity->params['photo']) as $name) {
+            foreach (explode(';', $args['photo']) as $name) {
                 $path = $this->trademaster->getFilePath($name);
                 $file_model = \App\Domain\Entities\File::getFromPath($path);
 
                 if ($file_model) {
                     $file_model->replace([
-                        'item' => $this->entity->params['item'],
-                        'item_uuid' => $this->entity->params['item_uuid'],
+                        'item' => $args['item'],
+                        'item_uuid' => $args['item_uuid'],
                     ]);
                     $this->entityManager->persist($file_model);
 

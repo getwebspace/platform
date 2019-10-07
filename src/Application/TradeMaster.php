@@ -24,17 +24,11 @@ class TradeMaster
      */
     protected $entityManager;
 
-    /**
-     * @var Collection
-     */
-    public $params;
-
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
         $this->logger = $container->get('monolog');
         $this->entityManager = $container->get(\Doctrine\ORM\EntityManager::class);
-        $this->params = $container->get('parameter');
     }
 
     /**
@@ -52,8 +46,8 @@ class TradeMaster
         $data = array_merge($default, $data);
         $data['method'] = strtoupper($data['method']);
 
-        if (($key = $this->params->get('integration_trademaster_key', null)) != null) {
-            $pathParts = [$this->params->get('integration_trademaster_host'), 'v' . $this->params->get('integration_trademaster_version'), $data['endpoint']];
+        if (($key = $this->container->get('parameter')->get('integration_trademaster_key', null)) != null) {
+            $pathParts = [$this->container->get('parameter')->get('integration_trademaster_host'), 'v' . $this->container->get('parameter')->get('integration_trademaster_version'), $data['endpoint']];
 
             if ($data['method'] == "GET") {
                 $data['params']['apikey'] = $key;
@@ -94,6 +88,6 @@ class TradeMaster
 
         $name = str_replace($entities, $replacements, urlencode($name));
 
-        return $this->params->get('integration_trademaster_cache_host') . '/tradeMasterImages/' . $this->params->get('integration_trademaster_cache_folder') . '/' . trim($name);
+        return $this->container->get('parameter')->get('integration_trademaster_cache_host') . '/tradeMasterImages/' . $this->container->get('parameter')->get('integration_trademaster_cache_folder') . '/' . trim($name);
     }
 }
