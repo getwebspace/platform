@@ -22,6 +22,6 @@ class DataListAction extends FormAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/form');
+        return $this->response->withAddedHeader('Location', '/cup/form')->withStatus(301);
     }
 }

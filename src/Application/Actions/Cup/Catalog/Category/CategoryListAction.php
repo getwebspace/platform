@@ -18,7 +18,7 @@ class CategoryListAction extends CatalogAction
                     'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
                 ]);
             } else {
-                return $this->response->withAddedHeader('Location', '/cup/catalog/category');
+                return $this->response->withAddedHeader('Location', '/cup/catalog/category')->withStatus(301);
             }
         }
 

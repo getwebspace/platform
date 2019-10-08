@@ -27,9 +27,9 @@ class FormCreateAction extends FormAction
 
                     switch (true) {
                         case $this->request->getParam('save', 'exit') === 'exit':
-                            return $this->response->withAddedHeader('Location', '/cup/form');
+                            return $this->response->withAddedHeader('Location', '/cup/form')->withStatus(301);
                         default:
-                            return $this->response->withAddedHeader('Location', '/cup/form/' . $model->uuid . '/edit');
+                            return $this->response->withAddedHeader('Location', '/cup/form/' . $model->uuid . '/edit')->withStatus(301);
                     }
                 } catch (Exception $e) {
                     // todo nothing

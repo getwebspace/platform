@@ -28,6 +28,6 @@ class CartCompleteAction extends CatalogAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cart');
+        return $this->response->withAddedHeader('Location', '/cart')->withStatus(301);
     }
 }

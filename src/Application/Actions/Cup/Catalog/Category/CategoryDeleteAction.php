@@ -39,7 +39,7 @@ class CategoryDeleteAction extends CatalogAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/catalog/category');
+        return $this->response->withAddedHeader('Location', '/cup/catalog/category')->withStatus(301);
     }
 
     /**

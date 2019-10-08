@@ -33,7 +33,7 @@ class GuestBookUpdateAction extends GuestBookAction
                             $this->entityManager->flush();
 
                             if ($this->request->getParam('save', 'exit') === 'exit') {
-                                return $this->response->withAddedHeader('Location', '/cup/guestbook');
+                                return $this->response->withAddedHeader('Location', '/cup/guestbook')->withStatus(301);
                             }
                         } catch (Exception $e) {
                             // todo nothing
@@ -45,6 +45,6 @@ class GuestBookUpdateAction extends GuestBookAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/guestbook');
+        return $this->response->withAddedHeader('Location', '/cup/guestbook')->withStatus(301);
     }
 }

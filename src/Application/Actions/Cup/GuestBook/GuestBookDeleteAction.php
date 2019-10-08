@@ -16,6 +16,6 @@ class GuestBookDeleteAction extends GuestBookAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/guestbook');
+        return $this->response->withAddedHeader('Location', '/cup/guestbook')->withStatus(301);
     }
 }

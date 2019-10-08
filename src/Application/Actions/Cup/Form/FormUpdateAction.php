@@ -32,7 +32,7 @@ class FormUpdateAction extends FormAction
                             $this->entityManager->flush();
 
                             if ($this->request->getParam('save', 'exit') === 'exit') {
-                                return $this->response->withAddedHeader('Location', '/cup/form');
+                                return $this->response->withAddedHeader('Location', '/cup/form')->withStatus(301);
                             }
                         } catch (Exception $e) {
                             // todo nothing
@@ -44,6 +44,6 @@ class FormUpdateAction extends FormAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/form');
+        return $this->response->withAddedHeader('Location', '/cup/form')->withStatus(301);
     }
 }

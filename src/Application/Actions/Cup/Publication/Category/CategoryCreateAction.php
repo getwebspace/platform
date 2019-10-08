@@ -32,9 +32,9 @@ class CategoryCreateAction extends PublicationAction
 
                     switch (true) {
                         case $this->request->getParam('save', 'exit') === 'exit':
-                            return $this->response->withAddedHeader('Location', '/cup/publication/category');
+                            return $this->response->withAddedHeader('Location', '/cup/publication/category')->withStatus(301);
                         default:
-                            return $this->response->withAddedHeader('Location', '/cup/publication/category/' . $model->uuid . '/edit');
+                            return $this->response->withAddedHeader('Location', '/cup/publication/category/' . $model->uuid . '/edit')->withStatus(301);
                     }
                 } catch (Exception $e) {
                     // todo nothing

@@ -50,7 +50,7 @@ class PageUpdateAction extends PageAction
                                 $this->entityManager->flush();
 
                                 if ($this->request->getParam('save', 'exit') === 'exit') {
-                                    return $this->response->withAddedHeader('Location', '/cup/page');
+                                    return $this->response->withAddedHeader('Location', '/cup/page')->withStatus(301);
                                 }
                             } catch (Exception $e) {
                                 // todo nothing
@@ -68,6 +68,6 @@ class PageUpdateAction extends PageAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/page');
+        return $this->response->withAddedHeader('Location', '/cup/page')->withStatus(301);
     }
 }

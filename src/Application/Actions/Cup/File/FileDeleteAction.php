@@ -17,6 +17,6 @@ class FileDeleteAction extends FileAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/file');
+        return $this->response->withAddedHeader('Location', '/cup/file')->withStatus(301);
     }
 }

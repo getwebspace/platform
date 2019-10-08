@@ -41,53 +41,5 @@
         "psr-4": {
             "App\\": "src/"
         }
-    },
-    "scripts": {
-        "post-create-project-cmd": [
-            "php -r \"@chmod('./', 0777);\"",
-            "php -r \"@chmod('./app', 0555);\"",
-            "php -r \"@chmod('./config', 0555);\"",
-            "php -r \"@chmod('./public', 0777);\"",
-            "php -r \"@chmod('./src', 0775);\"",
-            "php -r \"@chmod('./themes', 0555);\"",
-            "php -r \"@chmod('./var', 0777);\"",
-            "php -r \"@chmod('./var/cache', 0777);\"",
-            "php -r \"@chmod('./var/log', 0777);\"",
-            "php -r \"@chmod('./var/upload', 0777);\"",
-            "php -r \"@chmod('./vendor', 0775);\"",
-            "php ./vendor/bin/doctrine orm:schema-tool:create",
-            "php -r \"@chmod('./var/database.sqlite', 0777);\""
-        ],
-        "post-install-cmd": [
-            "php -r \"@chmod('./', 0777);\"",
-            "php -r \"@chmod('./app', 0555);\"",
-            "php -r \"@chmod('./config', 0555);\"",
-            "php -r \"@chmod('./public', 0777);\"",
-            "php -r \"@chmod('./src', 0775);\"",
-            "php -r \"@chmod('./themes', 0555);\"",
-            "php -r \"@chmod('./var', 0777);\"",
-            "php -r \"@chmod('./var/cache', 0777);\"",
-            "php -r \"@chmod('./var/log', 0777);\"",
-            "php -r \"@chmod('./var/upload', 0777);\"",
-            "php -r \"@chmod('./vendor', 0775);\"",
-            "php -r \"@chmod('./var/database.sqlite', 0777);\"",
-            "php ./vendor/bin/doctrine orm:schema-tool:update --force",
-            "php -r \"@chmod('./var/database.sqlite', 0777);\""
-        ],
-        "post-update-cmd": [
-            "php -r \"@chmod('./', 0777);\"",
-            "php -r \"@chmod('./app', 0555);\"",
-            "php -r \"@chmod('./config', 0555);\"",
-            "php -r \"@chmod('./public', 0777);\"",
-            "php -r \"@chmod('./src', 0775);\"",
-            "php -r \"@chmod('./themes', 0555);\"",
-            "php -r \"@chmod('./var', 0777);\"",
-            "php -r \"@chmod('./var/cache', 0777);\"",
-            "php -r \"@chmod('./var/log', 0777);\"",
-            "php -r \"@chmod('./var/upload', 0777);\"",
-            "php -r \"@chmod('./vendor', 0775);\"",
-            "php -r \"@chmod('./var/database.sqlite', 0777);\"",
-            "php ./vendor/bin/doctrine orm:schema-tool:update --force"
-        ]
     }
 }

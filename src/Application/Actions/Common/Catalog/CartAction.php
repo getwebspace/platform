@@ -61,7 +61,7 @@ class CartAction extends CatalogAction
                         \App\Domain\Tasks\Task::worker();
                     }
 
-                    return $this->response->withAddedHeader('Location', '/cart/done/' . $model->uuid);
+                    return $this->response->withAddedHeader('Location', '/cart/done/' . $model->uuid)->withStatus(301);
                 } catch (Exception $e) {
                     // todo nothing
                 }

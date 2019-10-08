@@ -32,7 +32,7 @@ class ParametersPageAction extends Action
 
             $this->entityManager->flush();
 
-            return $this->response->withAddedHeader('Location', $this->request->getQueryParam('return', '/cup/parameters'));
+            return $this->response->withAddedHeader('Location', $this->request->getQueryParam('return', '/cup/parameters'))->withStatus(301);
         }
 
         return $this->respondRender('cup/parameters/index.twig', ['parameter' => $this->getParameter()]);
