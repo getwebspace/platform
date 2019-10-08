@@ -97,18 +97,11 @@ class File extends Model
     {
         \RunTracy\Helpers\Profiler\Profiler::start('file:getFromPath (%s)', $path);
 
-        $salt = uniqid();
-        $info = pathinfo($name_with_ext ?? $path);
-        $dir = UPLOAD_DIR . '/' . $salt;
-        $name = static::prepareFileName($info['filename']);
-        $ext = strtolower($info['extension']);
-
-        // change ext
-        if (!in_array($ext, ['jpg', 'jpeg', 'png'])) {
-            $ext = 'jpg';
-        }
-
+        // file is saved ?
         $saved = false;
+
+        // tmp file path
+        $tmp = CACHE_DIR . '/tmp_' . uniqid();
 
         switch (true) {
             case Str::start(['http://', 'https://'], $path):
@@ -119,11 +112,7 @@ class File extends Model
                     $file = @file_get_contents($path, false, stream_context_create(['http' => ['timeout' => 15]]));
 
                     if ($file) {
-                        if (!file_exists($dir)) {
-                            mkdir($dir, 0777, true);
-                        }
-                        $path = $dir . '/' . $name . '.' . $ext;
-                        $saved = file_put_contents($path, $file);
+                        $saved = file_put_contents($tmp, $file);
                     }
                 }
                 break;
@@ -131,25 +120,46 @@ class File extends Model
                 $file = @file_get_contents($path);
 
                 if ($file) {
-                    if (!file_exists($dir)) {
-                        mkdir($dir, 0777, true);
-                    }
-                    $path = $dir . '/' . $name . '.' . $ext;
-                    $saved = file_put_contents($path, $file);
+                    $saved = file_put_contents($tmp, $file);
                 }
                 break;
         }
 
         if ($saved) {
-            $model = new static([
-                'name' => $name,
-                'ext' => $ext,
-                'type' => addslashes(exec('file -bi ' . $path)),
-                'size' => filesize($path),
-                'salt' => $salt,
-                'hash' => sha1_file($path),
-                'date' => new \DateTime(),
-            ]);
+            $salt = uniqid();
+            $dir = UPLOAD_DIR . '/' . $salt;
+
+            if (!is_dir($dir)) {
+                mkdir($dir, 0777, true);
+            }
+
+            $type = addslashes(@exec('file -bi ' . $path));
+            $info = pathinfo($name_with_ext ?? $path);
+            $name = static::prepareFileName($info['filename']);
+            $ext = strtolower($info['extension']);
+
+            // change ext
+            switch (true) {
+                case Str::start('image/', $type):
+                    if (!in_array($ext, ['jpg', 'jpeg', 'png'])) {
+                        $ext = 'jpg';
+                    }
+                    break;
+            }
+
+            $save = $dir . '/' . $name . '.' . $ext;
+
+            if (rename($tmp, $save)) {
+                $model = new static([
+                    'name' => $name,
+                    'ext' => $ext,
+                    'type' => addslashes(@exec('file -bi ' . $path)),
+                    'size' => filesize($path),
+                    'salt' => $salt,
+                    'hash' => sha1_file($path),
+                    'date' => new \DateTime(),
+                ]);
+            }
         }
 
         \RunTracy\Helpers\Profiler\Profiler::finish('file:getFromPath (%s)', $path);
@@ -174,7 +184,7 @@ class File extends Model
             'dir' => $info['dirname'],
             'name' => $info['filename'],
             'ext' => $info['extension'],
-            'type' => addslashes(exec('file -bi ' . $path)),
+            'type' => addslashes(@exec('file -bi ' . $path)),
             'size' => filesize($path),
             'hash' => sha1_file($path),
         ];

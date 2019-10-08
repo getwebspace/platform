@@ -182,11 +182,54 @@ abstract class Action
     }
 
     /**
+     * Upload image files and claim to model
+     *
+     * @param string            $type
+     * @param \Ramsey\Uuid\Uuid $uuid
+     * @param string            $field
+     *
+     * @return array
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
+     */
+    protected function handlerFileUpload(string $type, \Ramsey\Uuid\Uuid $uuid, string $field = 'files')
+    {
+        $result = [];
+
+        /** @var \Psr\Http\Message\UploadedFileInterface[] $files */
+        $files = $this->request->getUploadedFiles()[$field] ?? [];
+
+        foreach ($files as $file) {
+            if (!$file->getError()) {
+                $file_model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename());
+
+                if ($file_model) {
+                    $result[] = $file_model->replace(['item' => $type, 'item_uuid' => $uuid]);
+                    $this->entityManager->persist($file_model);
+
+                    // is image
+                    if (\AEngine\Support\Str::start('image/', $file_model->type)) {
+                        // add task convert
+                        $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
+                        $task->execute(['uuid' => $file_model->uuid]);
+
+                        // run worker
+                        \App\Domain\Tasks\Task::worker();
+                    }
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * @param string $template
      * @param array  $data
      *
      * @return Response
      * @throws HttpBadRequestException
+     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
     protected function respondRender($template, array $data = [])
     {

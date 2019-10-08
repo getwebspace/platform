@@ -39,7 +39,7 @@ class ConvertImageTask extends Task
                     mkdir($path, 0777, true);
                 }
 
-                exec($command . " '" . $original . "'" . ($options ? ' ' . $options : '') . " -set comment 'Converted in 0x12f CMS' " . $path . '/' . $file->name . '.jpg');
+                @exec($command . " '" . $original . "'" . ($options ? ' ' . $options : '') . " -set comment 'Converted in 0x12f CMS' " . $path . '/' . $file->name . '.jpg');
             }
         }
 

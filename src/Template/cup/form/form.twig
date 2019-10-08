@@ -55,17 +55,11 @@
 
                         <div class="row">
                             <div class="col-md-12">
-                                {% include 'cup/form.twig' with {
+                                {% include 'cup/editor.twig' with {
                                     'label': 'Шаблон письма',
-                                    'type': 'textarea',
                                     'name': 'template',
                                     'args': {
-                                        'method': 'null',
-                                        'value': item.template,
-                                        'data': {
-                                            'summernote': true,
-                                            'summernote-code': true,
-                                        }
+                                        'value': item.template
                                     }
                                 } %}
                             </div>

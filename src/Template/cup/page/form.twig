@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     <div class="card-header">
                         <div class="card-head-row">
                             <div class="card-title">{{ item.uuid ? 'Редактирование страницы ' ~ item.title : 'Создание новой страницы' }}</div>
@@ -67,17 +67,11 @@
 
                         <div class="row">
                             <div class="col-md-12">
-                                {% include 'cup/form.twig' with {
+                                {% include 'cup/editor.twig' with {
                                     'label': 'Текст страницы',
-                                    'type': 'textarea',
                                     'name': 'content',
                                     'args': {
-                                        'method': 'null',
-                                        'value': item.content,
-                                        'data': {
-                                            'summernote': true,
-                                            'summernote-code': true,
-                                        }
+                                        'value': item.content
                                     }
                                 } %}
                             </div>
@@ -109,6 +103,38 @@
                                         'required': true,
                                     }
                                 } %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Изображения',
+                                    'type': 'file',
+                                    'name': 'files[]',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Здесь можно выбрать несколько изображений"></i>',
+                                    'args': {
+                                        'class': ['d-block', 'btn', 'btn-sm', 'bg-grey2'],
+                                        'multiple': true,
+                                        'accept': 'image/*'
+                                    }
+                                } %}
+
+                                {% for file in files %}
+                                    <div class="p-2 d-inline-block m-2 bg-grey2 rounded">
+                                        <a href="{{ file.getPublicPath('full') }}" target="_blank">
+                                            <img class="rounded" height="100" src="{{ file.getPublicPath('small') }}" alt="preview" data-toggle="tooltip" data-placement="top" title="{{ file.getName() }}" />
+                                        </a>
+                                        <div class="pt-2">
+                                            <span class="d-inline-block text-small">{{ file.getSize() }}</span>
+                                            <button type="submit" name="delete-image" value="{{ file.uuid }}" class="float-right btn btn-danger btn-icon btn-xs">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                {% endfor %}
                             </div>
                         </div>
 

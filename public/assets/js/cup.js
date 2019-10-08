@@ -1,6 +1,36 @@
 "use strict";
 
 $(() => {
+    // toolbar
+    let topbar_open = 0,
+        topbar = $('.topbar-toggler');
+    topbar.on('click', function() {
+        if (topbar_open === 1) {
+            $('html').removeClass('topbar_open');
+            topbar.removeClass('toggled');
+            topbar_open = 0;
+        } else {
+            $('html').addClass('topbar_open');
+            topbar.addClass('toggled');
+            topbar_open = 1;
+        }
+    });
+    
+    // sidenav
+    let nav_open = 0,
+        nav_el = $('.sidenav-toggler');
+    nav_el.on('click', function(){
+        if (nav_open === 1){
+            $('html').removeClass('nav_open');
+            nav_el.removeClass('toggled');
+            nav_open = 0;
+        }  else {
+            $('html').addClass('nav_open');
+            nav_el.addClass('toggled');
+            nav_open = 1;
+        }
+    });
+    
     // navigation highlight
     let buf = 0, $active = null;
     $('.sidebar a').each((i, el) => {
@@ -43,52 +73,6 @@ $(() => {
                 'last':       'В конец'
             },
         }
-    });
-    
-    // editor
-    $('[data-summernote]').each((i, el) => {
-        let $el = $(el);
-        
-        $el.summernote({
-            codeviewFilter: false,
-            codeviewIframeFilter: false,
-            codeviewFilterRegex: '',
-            lang: 'ru-RU',
-            height: 350,
-            placeholder: 'вводите текст здесь...',
-            callbacks: {
-                onInit: function (e) {
-                    let $this = $(this);
-                    
-                    $this.summernote('code', 'Загрузка..');
-                    
-                    setTimeout(() => {
-                        $this.summernote('code', $this.data('value') || '');
-                        
-                        setInterval(() => {
-                            $this.val($this.summernote('code'));
-                        }, 250);
-                    }, 500);
-                },
-            },
-            codemirror: {
-                theme: 'monokai',
-                lineNumbers: true,
-            }
-        });
-        
-        setTimeout(() => {
-            if ($el.data('summernote-code') === '') {
-                $el.next().find('.btn-codeview').click();
-            }
-            
-            if ($el.data('summernote-toolbar-disable') === '') {
-                $el.next().find('.note-toolbar').remove();
-            }
-            
-            // kostil.js
-            $('html, body').animate({scrollTop: 0}, 'fast').find(':focus').blur();
-        }, 50);
     });
     
     // publication preview

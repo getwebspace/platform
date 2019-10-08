@@ -50,32 +50,20 @@
 
                         <div class="row">
                             <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
+                                {% include 'cup/editor.twig' with {
                                     'label': 'Сообщение',
-                                    'type': 'textarea',
                                     'name': 'message',
                                     'args': {
-                                        'method': 'null',
-                                        'value': item.message,
-                                        'data': {
-                                            'summernote': true,
-                                            'summernote-code': true,
-                                        }
+                                        'value': item.message
                                     }
                                 } %}
                             </div>
                             <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
+                                {% include 'cup/editor.twig' with {
                                     'label': 'Ответ',
-                                    'type': 'textarea',
                                     'name': 'response',
                                     'args': {
-                                        'method': 'null',
-                                        'value': item.response,
-                                        'data': {
-                                            'summernote': true,
-                                            'summernote-code': true,
-                                        }
+                                        'value': item.response
                                     }
                                 } %}
                             </div>

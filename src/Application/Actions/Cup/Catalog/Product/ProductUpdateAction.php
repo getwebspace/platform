@@ -64,7 +64,7 @@ class ProductUpdateAction extends CatalogAction
                             try {
                                 $product->replace($data);
                                 $this->entityManager->persist($product);
-                                $this->handlerFileUpload($product);
+                                $this->handlerFileUpload(\App\Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT, $product->uuid);
                                 $this->entityManager->flush();
 
                                 if ($this->request->getParam('save', 'exit') === 'exit') {

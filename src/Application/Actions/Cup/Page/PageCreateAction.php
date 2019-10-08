@@ -25,6 +25,7 @@ class PageCreateAction extends PageAction
                 try {
                     $model = new \App\Domain\Entities\Page($data);
                     $this->entityManager->persist($model);
+                    $this->handlerFileUpload(\App\Domain\Types\FileItemType::ITEM_PAGE, $model->uuid);
                     $this->entityManager->flush();
 
                     switch (true) {

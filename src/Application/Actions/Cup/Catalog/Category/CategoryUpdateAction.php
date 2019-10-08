@@ -54,7 +54,7 @@ class CategoryUpdateAction extends CatalogAction
                             try {
                                 $item->replace($data);
                                 $this->entityManager->persist($item);
-                                $this->handlerFileUpload($item);
+                                $this->handlerFileUpload(\App\Domain\Types\FileItemType::ITEM_CATALOG_CATEGORY, $item->uuid);
                                 $this->entityManager->flush();
 
                                 if ($this->request->getParam('save', 'exit') === 'exit') {

@@ -25,6 +25,7 @@ class PublicationCreateAction extends PublicationAction
                 try {
                     $model = new \App\Domain\Entities\Publication($data);
                     $this->entityManager->persist($model);
+                    $this->handlerFileUpload(\App\Domain\Types\FileItemType::ITEM_PUBLICATION, $model->uuid);
                     $this->entityManager->flush();
 
                     switch (true) {
