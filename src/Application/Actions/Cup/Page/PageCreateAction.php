@@ -30,9 +30,9 @@ class PageCreateAction extends PageAction
 
                     switch (true) {
                         case $this->request->getParam('save', 'exit') === 'exit':
-                            return $this->response->withAddedHeader('Location', '/cup/page');
+                            return $this->response->withAddedHeader('Location', '/cup/page')->withStatus(301);
                         default:
-                            return $this->response->withAddedHeader('Location', '/cup/page/' . $model->uuid . '/edit');
+                            return $this->response->withAddedHeader('Location', '/cup/page/' . $model->uuid . '/edit')->withStatus(301);
                     }
                 } catch (Exception $e) {
                     // todo nothing

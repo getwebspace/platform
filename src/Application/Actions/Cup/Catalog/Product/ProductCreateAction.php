@@ -50,9 +50,9 @@ class ProductCreateAction extends CatalogAction
 
                     switch (true) {
                         case $this->request->getParam('save', 'exit') === 'exit':
-                            return $this->response->withAddedHeader('Location', '/cup/catalog/product/' . $model->category);
+                            return $this->response->withAddedHeader('Location', '/cup/catalog/product/' . $model->category)->withStatus(301);
                         default:
-                            return $this->response->withAddedHeader('Location', '/cup/catalog/product/' . $model->uuid . '/edit');
+                            return $this->response->withAddedHeader('Location', '/cup/catalog/product/' . $model->uuid . '/edit')->withStatus(301);
                     }
                 } catch (Exception $e) {
                     // todo nothing

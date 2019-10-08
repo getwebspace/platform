@@ -50,7 +50,7 @@ class PublicationUpdateAction extends PublicationAction
                                 $this->entityManager->flush();
 
                                 if ($this->request->getParam('save', 'exit') === 'exit') {
-                                    return $this->response->withAddedHeader('Location', '/cup/publication');
+                                    return $this->response->withAddedHeader('Location', '/cup/publication')->withStatus(301);
                                 }
                             } catch (Exception $e) {
                                 // todo nothing
@@ -69,6 +69,6 @@ class PublicationUpdateAction extends PublicationAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/publication');
+        return $this->response->withAddedHeader('Location', '/cup/publication')->withStatus(301);
     }
 }

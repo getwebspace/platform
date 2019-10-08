@@ -68,7 +68,7 @@ class ProductUpdateAction extends CatalogAction
                                 $this->entityManager->flush();
 
                                 if ($this->request->getParam('save', 'exit') === 'exit') {
-                                    return $this->response->withAddedHeader('Location', '/cup/catalog/product/' . $product->category);
+                                    return $this->response->withAddedHeader('Location', '/cup/catalog/product/' . $product->category)->withStatus(301);
                                 }
                             } catch (Exception $e) {
                                 // todo nothing
@@ -93,9 +93,9 @@ class ProductUpdateAction extends CatalogAction
                 ]);
             }
 
-            return $this->response->withAddedHeader('Location', '/cup/catalog/product/' . $product->category);
+            return $this->response->withAddedHeader('Location', '/cup/catalog/product/' . $product->category)->withStatus(301);
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/catalog');
+        return $this->response->withAddedHeader('Location', '/cup/catalog')->withStatus(301);
     }
 }

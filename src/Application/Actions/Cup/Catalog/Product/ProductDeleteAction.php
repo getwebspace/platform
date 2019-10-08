@@ -21,6 +21,6 @@ class ProductDeleteAction extends CatalogAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/catalog/product' . ($item ? '/' . $item->category : ''));
+        return $this->response->withAddedHeader('Location', '/cup/catalog/product' . ($item ? '/' . $item->category : ''))->withStatus(301);
     }
 }

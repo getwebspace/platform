@@ -63,7 +63,7 @@ class LoginPageAction extends Action
                             setcookie('uuid', $user->uuid, time() + \App\Domain\References\Date::YEAR, '/');
                             setcookie('session', $hash, time() + \App\Domain\References\Date::YEAR, '/');
 
-                            return $this->response->withAddedHeader('Location', $data['redirect'] ? $data['redirect'] : '/cup');
+                            return $this->response->withAddedHeader('Location', $data['redirect'] ? $data['redirect'] : '/cup')->withStatus(301);
                         } catch (Exception $e) {
                             $this->logger->warning('/login failure', $data);
                         }

@@ -18,6 +18,6 @@ class OrderDeleteAction extends CatalogAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/catalog/order');
+        return $this->response->withAddedHeader('Location', '/cup/catalog/order')->withStatus(301);
     }
 }

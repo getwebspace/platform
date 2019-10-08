@@ -17,6 +17,6 @@ class UserDeleteAction extends UserAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/user');
+        return $this->response->withAddedHeader('Location', '/cup/user')->withStatus(301);
     }
 }

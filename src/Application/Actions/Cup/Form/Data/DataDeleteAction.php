@@ -26,6 +26,6 @@ class DataDeleteAction extends FormAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/form/' . $this->resolveArg('uuid') . '/view');
+        return $this->response->withAddedHeader('Location', '/cup/form/' . $this->resolveArg('uuid') . '/view')->withStatus(301);
     }
 }

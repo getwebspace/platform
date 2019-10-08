@@ -17,9 +17,7 @@ $app->add(function (Request $request, Response $response, $next) {
     $path = $request->getUri()->getPath();
 
     if ($path != '/' && str_ends_with('/', $path)) {
-        return $response
-            ->withStatus(308)
-            ->withAddedHeader('Location', rtrim($path, '/'));
+        return $response->withAddedHeader('Location', rtrim($path, '/'))->withStatus(308);
     }
 
     return $next($request, $response);

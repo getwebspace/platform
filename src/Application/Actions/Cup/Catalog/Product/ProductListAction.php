@@ -18,7 +18,7 @@ class ProductListAction extends CatalogAction
                     'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
                 ]);
             } else {
-                return $this->response->withAddedHeader('Location', '/cup/shop/product');
+                return $this->response->withAddedHeader('Location', '/cup/shop/product')->withStatus(301);
             }
         }
 

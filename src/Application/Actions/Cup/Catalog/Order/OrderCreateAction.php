@@ -32,9 +32,9 @@ class OrderCreateAction extends CatalogAction
 
                     switch (true) {
                         case $this->request->getParam('save', 'exit') === 'exit':
-                            return $this->response->withAddedHeader('Location', '/cup/catalog/order');
+                            return $this->response->withAddedHeader('Location', '/cup/catalog/order')->withStatus(301);
                         default:
-                            return $this->response->withAddedHeader('Location', '/cup/catalog/order/' . $model->uuid . '/edit');
+                            return $this->response->withAddedHeader('Location', '/cup/catalog/order/' . $model->uuid . '/edit')->withStatus(301);
                     }
                 } catch (Exception $e) {
                     // todo nothing
