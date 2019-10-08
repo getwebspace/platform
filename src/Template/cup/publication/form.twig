@@ -88,34 +88,22 @@
 
                                 <div class="row">
                                     <div class="col-md-12">
-                                        {% include 'cup/form.twig' with {
+                                        {% include 'cup/editor.twig' with {
                                             'label': 'Краткое описание',
-                                            'type': 'textarea',
                                             'name': 'content[short]',
                                             'args': {
-                                                'method': 'null',
-                                                'value': item.content.short,
-                                                'data': {
-                                                    'summernote': true,
-                                                    'summernote-code': true,
-                                                }
+                                                'value': item.content.short
                                             }
                                         } %}
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-12">
-                                        {% include 'cup/form.twig' with {
+                                        {% include 'cup/editor.twig' with {
                                             'label': 'Полное описание',
-                                            'type': 'textarea',
                                             'name': 'content[full]',
                                             'args': {
-                                                'method': 'null',
-                                                'value': item.content.full,
-                                                'data': {
-                                                    'summernote': true,
-                                                    'summernote-code': true,
-                                                }
+                                                'value': item.content.full
                                             }
                                         } %}
                                     </div>

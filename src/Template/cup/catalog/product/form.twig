@@ -58,32 +58,20 @@
 
                         <div class="row">
                             <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
+                                {% include 'cup/editor.twig' with {
                                     'label': 'Описание товара',
-                                    'type': 'textarea',
                                     'name': 'description',
                                     'args': {
-                                        'method': 'null',
-                                        'value': item.description,
-                                        'data': {
-                                            'summernote': true,
-                                            'summernote-code': true,
-                                        }
+                                        'value': item.description
                                     }
                                 } %}
                             </div>
                             <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
+                                {% include 'cup/editor.twig' with {
                                     'label': 'Дополнительное описание товара',
-                                    'type': 'textarea',
                                     'name': 'extra',
                                     'args': {
-                                        'method': 'null',
-                                        'value': item.extra,
-                                        'data': {
-                                            'summernote': true,
-                                            'summernote-code': true,
-                                        }
+                                        'value': item.extra
                                     }
                                 } %}
                             </div>

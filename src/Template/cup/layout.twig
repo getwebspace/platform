@@ -3,16 +3,16 @@
 {% set title = 'ЦУП | 0x12f' %}
 
 {% block head %}
-    {{ styles.append('/assets/js/plugin/summernote/summernote-bs4.css') }}
+    {{ styles.append('https://use.fontawesome.com/releases/v5.11.2/css/all.css') }}
     {{ styles.append('/assets/css/bootstrap.min.css') }}
     {{ styles.append('/assets/css/fonts.css') }}
 
     {{ styles.append('/assets/css/datatables.min.css') }}
     {{ styles.append('/assets/js/plugin/jquery.modal/jquery.modal.min.css') }}
+    {{ styles.append('/assets/js/plugin/froala/froala_editor.pkgd.css') }}
+    {{ styles.append('/assets/js/plugin/froala/froala_style.css') }}
 
     {{ styles.append('/assets/css/atlantis.css') }}
-
-    <script src="https://use.fontawesome.com/releases/v5.9.0/js/all.js" data-auto-replace-svg="nest"></script>
 
     {{ scripts.append('/assets/js/core/jquery.3.2.1.min.js') }}
     {{ scripts.append('/assets/js/core/popper.min.js') }}
@@ -28,8 +28,8 @@
     {{ scripts.append('/assets/js/plugin/jquery.modal/jquery.modal.min.js') }}
     {{ scripts.append('/assets/js/plugin/sweetalert/sweetalert.min.js') }}
     {{ scripts.append('/assets/js/plugin/select2/select2.full.min.js') }}
-    {{ scripts.append('/assets/js/plugin/summernote/summernote-bs4.min.js') }}
-    {{ scripts.append('/assets/js/plugin/summernote/lang/summernote-ru-RU.js') }}
+    {{ scripts.append('/assets/js/plugin/froala/froala_editor.pkgd.js') }}
+    {{ scripts.append('/assets/js/plugin/froala/ru.js') }}
 
     {{ scripts.append('/assets/js/cup.js') }}
 {% endblock %}
@@ -130,7 +130,7 @@
                     <div class="page-inner mt--5">
                         {% block content %}
                             <div class="row">
-                                <div class="col-md-8">
+                                <div class="col-md-12">
                                     <div class="card full-height">
                                         <div class="card-header">
                                             <ul class="nav nav-pills nav-secondary nav-pills-no-bd" role="tablist">
@@ -194,18 +194,8 @@
                                                         <div class="row">
                                                             <div class="col-md-12">
                                                                 <p class="text-muted text-center">Здесь вы можете сохранять собственные заметки и памятки.</p>
-                                                                {% include 'cup/form.twig' with {
-                                                                    'type': 'textarea',
-                                                                    'name': 'notepad[' ~ user.username ~ ']',
-                                                                    'args': {
-                                                                        'method': 'null',
-                                                                        'value': notepad,
-                                                                        'required': true,
-                                                                        'data': {
-                                                                            'summernote': true
-                                                                        }
-                                                                    }
-                                                                } %}
+
+                                                                {% include 'cup/editor.twig' with {'name': 'notepad[' ~ user.username ~ ']', 'args': {'value': notepad, 'required': true}} %}
                                                             </div>
                                                             <div class="col-md-12">
                                                                 <button type="submit" class="btn btn-success">Сохранить</button>

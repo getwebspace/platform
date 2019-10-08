@@ -75,52 +75,6 @@ $(() => {
         }
     });
     
-    // editor
-    $('[data-summernote]').each((i, el) => {
-        let $el = $(el);
-        
-        $el.summernote({
-            codeviewFilter: false,
-            codeviewIframeFilter: false,
-            codeviewFilterRegex: '',
-            lang: 'ru-RU',
-            height: 350,
-            placeholder: 'вводите текст здесь...',
-            callbacks: {
-                onInit: function (e) {
-                    let $this = $(this);
-                    
-                    $this.summernote('code', 'Загрузка..');
-                    
-                    setTimeout(() => {
-                        $this.summernote('code', $this.data('value') || '');
-                        
-                        setInterval(() => {
-                            $this.val($this.summernote('code'));
-                        }, 250);
-                    }, 500);
-                },
-            },
-            codemirror: {
-                theme: 'monokai',
-                lineNumbers: true,
-            }
-        });
-        
-        setTimeout(() => {
-            if ($el.data('summernote-code') === '') {
-                $el.next().find('.btn-codeview').click();
-            }
-            
-            if ($el.data('summernote-toolbar-disable') === '') {
-                $el.next().find('.note-toolbar').remove();
-            }
-            
-            // kostil.js
-            $('html, body').animate({scrollTop: 0}, 'fast').find(':focus').blur();
-        }, 50);
-    });
-    
     // publication preview
     $('form [data-click="preview"]').on('click', function (e) {
         e.preventDefault();
