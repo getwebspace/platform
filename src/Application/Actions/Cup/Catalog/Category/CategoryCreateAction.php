@@ -35,7 +35,7 @@ class CategoryCreateAction extends CatalogAction
                 try {
                     $model = new \App\Domain\Entities\Catalog\Category($data);
                     $this->entityManager->persist($model);
-                    $this->handlerFileUpload($model);
+                    $this->handlerFileUpload(\App\Domain\Types\FileItemType::ITEM_CATALOG_CATEGORY, $model->uuid);
                     $this->entityManager->flush();
 
                     switch (true) {

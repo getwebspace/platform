@@ -14,37 +14,58 @@ class PublicationUpdateAction extends PublicationAction
 
             if (!$item->isEmpty()) {
                 if ($this->request->isPost()) {
-                    $data = [
-                        'uuid' => $item->uuid,
-                        'title' => $this->request->getParam('title'),
-                        'address' => $this->request->getParam('address'),
-                        'date' => $this->request->getParam('date'),
-                        'category' => $this->request->getParam('category'),
-                        'content' => $this->request->getParam('content'),
-                        'poll' => $this->request->getParam('poll'),
-                        'meta' => $this->request->getParam('meta'),
-                    ];
+                    // remove uploaded image
+                    if (($uuidFile = $this->request->getParam('delete-image')) !== null && \Ramsey\Uuid\Uuid::isValid($uuidFile)) {
+                        /** @var \App\Domain\Entities\File $file */
+                        $file = $this->fileRepository->findOneBy(['uuid' => $uuidFile]);
 
-                    $check = \App\Domain\Filters\Publication::check($data);
-
-                    if ($check === true) {
-                        try {
-                            $item->replace($data);
-                            $this->entityManager->persist($item);
-                            $this->entityManager->flush();
-
-                            if ($this->request->getParam('save', 'exit') === 'exit') {
-                                return $this->response->withAddedHeader('Location', '/cup/publication');
+                        if ($file) {
+                            try {
+                                $file->unlink();
+                                $this->entityManager->remove($file);
+                                $this->entityManager->flush();
+                            } catch (Exception $e) {
+                                // todo nothing
                             }
-                        } catch (Exception $e) {
-                            // todo nothing
+                        }
+                    } else {
+                        $data = [
+                            'uuid' => $item->uuid,
+                            'title' => $this->request->getParam('title'),
+                            'address' => $this->request->getParam('address'),
+                            'date' => $this->request->getParam('date'),
+                            'category' => $this->request->getParam('category'),
+                            'content' => $this->request->getParam('content'),
+                            'poll' => $this->request->getParam('poll'),
+                            'meta' => $this->request->getParam('meta'),
+                        ];
+
+                        $check = \App\Domain\Filters\Publication::check($data);
+
+                        if ($check === true) {
+                            try {
+                                $item->replace($data);
+                                $this->entityManager->persist($item);
+                                $this->handlerFileUpload(\App\Domain\Types\FileItemType::ITEM_PUBLICATION, $item->uuid);
+                                $this->entityManager->flush();
+
+                                if ($this->request->getParam('save', 'exit') === 'exit') {
+                                    return $this->response->withAddedHeader('Location', '/cup/publication');
+                                }
+                            } catch (Exception $e) {
+                                // todo nothing
+                            }
                         }
                     }
                 }
 
                 $list = collect($this->categoryRepository->findAll());
+                $files = collect($this->fileRepository->findBy([
+                    'item' => \App\Domain\Types\FileItemType::ITEM_PUBLICATION,
+                    'item_uuid' => $item->uuid,
+                ]));
 
-                return $this->respondRender('cup/publication/form.twig', ['list' => $list, 'item' => $item]);
+                return $this->respondRender('cup/publication/form.twig', ['list' => $list, 'item' => $item, 'files' => $files]);
             }
         }
 

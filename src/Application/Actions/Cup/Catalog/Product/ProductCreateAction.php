@@ -45,7 +45,7 @@ class ProductCreateAction extends CatalogAction
                 try {
                     $model = new \App\Domain\Entities\Catalog\Product($data);
                     $this->entityManager->persist($model);
-                    $this->handlerFileUpload($model);
+                    $this->handlerFileUpload(\App\Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT, $model->uuid);
                     $this->entityManager->flush();
 
                     switch (true) {

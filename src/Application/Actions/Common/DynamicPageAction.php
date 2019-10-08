@@ -23,6 +23,11 @@ class DynamicPageAction extends Action
     protected $publicationRepository;
 
     /**
+     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     */
+    protected $fileRepository;
+
+    /**
      * @inheritDoc
      */
     public function __construct(ContainerInterface $container)
@@ -32,6 +37,7 @@ class DynamicPageAction extends Action
         $this->pageRepository = $this->entityManager->getRepository(\App\Domain\Entities\Page::class);
         $this->publicationCategoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Publication\Category::class);
         $this->publicationRepository = $this->entityManager->getRepository(\App\Domain\Entities\Publication::class);
+        $this->fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
     }
 
     protected function action(): \Slim\Http\Response
@@ -47,8 +53,15 @@ class DynamicPageAction extends Action
 
         if ($this->pageRepository->count(['address' => $path])) {
             $page = $this->pageRepository->findOneBy(['address' => $path]);
+            $files = collect($this->fileRepository->findBy([
+                'item' => \App\Domain\Types\FileItemType::ITEM_PAGE,
+                'item_uuid' => $page->uuid,
+            ]));
 
-            return $this->respondRender($page->template, ['page' => $page]);
+            return $this->respondRender($page->template, [
+                'page' => $page,
+                'files' => $files,
+            ]);
         } else {
             $categories = collect($this->publicationCategoryRepository->findAll());
 
@@ -74,12 +87,17 @@ class DynamicPageAction extends Action
                 if ($category) {
                     $path = str_replace($category->address . '/', '', $path);
                     $publication = $this->publicationRepository->findOneBy(['address' => $path]);
+                    $files = collect($this->fileRepository->findBy([
+                        'item' => \App\Domain\Types\FileItemType::ITEM_PAGE,
+                        'item_uuid' => $category->uuid,
+                    ]));
 
                     return $this->respondRender($category->template['full'], [
                         'publication' => $publication,
                         'categories' => $categories,
                         'category' => $category,
                         'date_format' => $this->getParameter('publication_date_format'),
+                        'files' => $files,
                     ]);
                 }
             }

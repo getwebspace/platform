@@ -42,38 +42,6 @@ abstract class CatalogAction extends Action
     }
 
     /**
-     * Upload image files
-     *
-     * @param $model
-     *
-     * @throws \Doctrine\ORM\ORMException
-     */
-    protected function handlerFileUpload($model)
-    {
-        /** @var \Psr\Http\Message\UploadedFileInterface[] $files */
-        $files = $this->request->getUploadedFiles()['files'] ?? [];
-
-        foreach ($files as $file) {
-            if (!$file->getError()) {
-                $file_model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename());
-
-                if ($file_model) {
-                    $file_model->replace([
-                        'item' => is_a($model, \App\Domain\Entities\Catalog\Category::class) ? \App\Domain\Types\FileItemType::ITEM_CATALOG_CATEGORY : \App\Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
-                        'item_uuid' => $model->uuid,
-                    ]);
-
-                    $this->entityManager->persist($file_model);
-
-                    // add task convert
-                    $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
-                    $task->execute(['uuid' => $file_model->uuid]);
-                }
-            }
-        }
-    }
-
-    /**
      * @param bool $list
      * if false return key:value
      * if true return key:list
