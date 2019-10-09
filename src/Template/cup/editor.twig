@@ -10,7 +10,7 @@
 
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', () => {
-            $('#wysiwygeditor-{{ editorId }}')
+            let $editor = $('#wysiwygeditor-{{ editorId }}')
                 .froalaEditor({
                     width: '100%',
                     height: '300',
@@ -41,8 +41,26 @@
                     videoUploadParam: 'video',
                     videoUploadParams: {'path_only': true},
                     videoUploadURL: '/file/upload',
-                })
-            ;
+
+                    codeBeautifierOptions: {
+                        end_with_newline: true,
+                        indent_inner_html: true,
+                        extra_liners: "['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'pre', 'ul', 'ol', 'table', 'dl']",
+                        brace_style: 'expand',
+                        indent_char: ' ',
+                        indent_size: 4,
+                        wrap_line_length: 0
+                    },
+
+                    pastePlain: true,
+                    htmlUntouched: true,
+                    htmlExecuteScripts: false,
+                    fullPage: false,
+                });
+
+            if ('{{ item.type }}' === 'text') {
+                $editor.froalaEditor('codeView.toggle');
+            }
         });
     </script>
 {% endblock %}
