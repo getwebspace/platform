@@ -83,9 +83,9 @@ class FormAction extends Action
 
             // mail body prepare
             if ($item->template && $item->template != '<p><br></p>') {
-                $filter = new class($data) extends \AEngine\Validator\Filter
+                $filter = new class($data) extends \Alksily\Validator\Filter
                 {
-                    use \AEngine\Validator\Traits\FilterRules;
+                    use \Alksily\Validator\Traits\FilterRules;
                 };
                 $filter->addGlobalRule($filter->leadEscape());
                 $filter->addGlobalRule($filter->leadTrim());

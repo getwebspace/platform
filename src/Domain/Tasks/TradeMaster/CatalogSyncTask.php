@@ -2,7 +2,7 @@
 
 namespace App\Domain\Tasks\TradeMaster;
 
-use AEngine\Entity\Collection;
+use Alksily\Entity\Collection;
 use App\Domain\Tasks\Task;
 
 class CatalogSyncTask extends Task

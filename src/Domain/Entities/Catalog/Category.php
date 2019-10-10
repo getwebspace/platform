@@ -2,7 +2,7 @@
 
 namespace App\Domain\Entities\Catalog;
 
-use AEngine\Entity\Model;
+use Alksily\Entity\Model;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 

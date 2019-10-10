@@ -2,7 +2,7 @@
 
 namespace App\Application;
 
-use AEngine\Entity\Collection;
+use Alksily\Entity\Collection;
 use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;

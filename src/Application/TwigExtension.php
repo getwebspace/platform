@@ -283,7 +283,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         $criteria = [];
 
         if ($data['uuid']) {
-            if (!is_a($data['item_uuid'], \AEngine\Entity\Collection::class) && !is_array($data['uuid'])) $data['uuid'] = [$data['uuid']];
+            if (!is_a($data['item_uuid'], \Alksily\Entity\Collection::class) && !is_array($data['uuid'])) $data['uuid'] = [$data['uuid']];
 
             foreach ($data['uuid'] as $value) {
                 if (\Ramsey\Uuid\Uuid::isValid($value) === true) {

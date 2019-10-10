@@ -26,7 +26,7 @@ $container[\Doctrine\ORM\EntityManager::class] = function (ContainerInterface $c
 $container['parameter'] = function (ContainerInterface $c) {
     \RunTracy\Helpers\Profiler\Profiler::start('parameters');
 
-    /** @var \AEngine\Entity\Collection $parameters */
+    /** @var \Alksily\Entity\Collection $parameters */
     static $parameters;
 
     if (!$parameters) {
@@ -42,10 +42,10 @@ $container['parameter'] = function (ContainerInterface $c) {
 
     return new class($parameters)
     {
-        /** @var \AEngine\Entity\Collection */
+        /** @var \Alksily\Entity\Collection */
         private static $parameters;
 
-        public final function __construct(\AEngine\Entity\Collection &$parameters)
+        public final function __construct(\Alksily\Entity\Collection &$parameters)
         {
             static::$parameters = &$parameters;
         }

@@ -2,8 +2,8 @@
 
 namespace App\Domain\Filters;
 
-use AEngine\Validator\Filter;
-use AEngine\Validator\Traits\FilterRules;
+use Alksily\Validator\Filter;
+use Alksily\Validator\Traits\FilterRules;
 use App\Domain\Filters\Traits\CommonFilterRules;
 use App\Domain\Filters\Traits\UserFilterRules;
 

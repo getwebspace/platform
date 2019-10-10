@@ -29,7 +29,7 @@ class FileUploadAction extends FileAction
                         $this->entityManager->persist($file_model);
 
                         // is image
-                        if (\AEngine\Support\Str::start('image/', $file_model->type)) {
+                        if (\Alksily\Support\Str::start('image/', $file_model->type)) {
                             // add task convert
                             $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
                             $task->execute(['uuid' => $file_model->uuid]);
