@@ -47,12 +47,12 @@ class ProductListAction extends CatalogAction
     }
 
     /**
-     * @param \AEngine\Entity\Collection                 $categories
+     * @param \Alksily\Entity\Collection                 $categories
      * @param \App\Domain\Entities\Catalog\Category|null $curCategory
      *
      * @return array
      */
-    protected function getCategoryChildrenUUID(\AEngine\Entity\Collection $categories, \App\Domain\Entities\Catalog\Category $curCategory = null)
+    protected function getCategoryChildrenUUID(\Alksily\Entity\Collection $categories, \App\Domain\Entities\Catalog\Category $curCategory = null)
     {
         $result = [$curCategory->uuid->toString()];
 

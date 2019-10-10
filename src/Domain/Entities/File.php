@@ -2,8 +2,8 @@
 
 namespace App\Domain\Entities;
 
-use AEngine\Entity\Model;
-use AEngine\Support\Str;
+use Alksily\Entity\Model;
+use Alksily\Support\Str;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
@@ -81,7 +81,7 @@ class File extends Model
 
         $name = strtolower($name);
         $name = str_replace(array_merge($entities, $replacements), '', urlencode($name));
-        $name = \AEngine\Support\Str::translate(strtolower($name));
+        $name = \Alksily\Support\Str::translate(strtolower($name));
 
         return $name;
     }

@@ -36,7 +36,7 @@ trait FormFilterRules
     {
         return function (&$data, $field) {
             $values = &$data[$field]; // array !
-            $checker = new \AEngine\Validator\Check\Url();
+            $checker = new \Alksily\Validator\Check\Url();
 
             foreach ($values as $index => $url) {
                 if ($checker($values, $index) === false) { // kostil

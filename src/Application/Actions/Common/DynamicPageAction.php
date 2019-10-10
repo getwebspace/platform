@@ -107,12 +107,12 @@ class DynamicPageAction extends Action
     }
 
     /**
-     * @param \AEngine\Entity\Collection                 $categories
+     * @param \Alksily\Entity\Collection                 $categories
      * @param \App\Domain\Entities\Catalog\Category|null $curCategory
      *
      * @return array
      */
-    protected function getCategoryChildrenUUID(\AEngine\Entity\Collection $categories, \App\Domain\Entities\Publication\Category $curCategory)
+    protected function getCategoryChildrenUUID(\Alksily\Entity\Collection $categories, \App\Domain\Entities\Publication\Category $curCategory)
     {
         $result = [$curCategory->uuid->toString()];
 

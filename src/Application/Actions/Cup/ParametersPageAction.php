@@ -25,7 +25,7 @@ class ParametersPageAction extends Action
                         $model->replace($data);
                         $this->entityManager->persist($model);
                     } else {
-                        \AEngine\Support\Form::$globalError[$group . '[' . $key . ']'] = \App\Domain\References\Errors\Parameter::WRONG_VALUE;
+                        \Alksily\Support\Form::$globalError[$group . '[' . $key . ']'] = \App\Domain\References\Errors\Parameter::WRONG_VALUE;
                     }
                 }
             }

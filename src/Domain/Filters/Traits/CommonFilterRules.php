@@ -2,7 +2,7 @@
 
 namespace App\Domain\Filters\Traits;
 
-use AEngine\Support\Str;
+use Alksily\Support\Str;
 use Ramsey\Uuid\Uuid;
 use Slim\App;
 

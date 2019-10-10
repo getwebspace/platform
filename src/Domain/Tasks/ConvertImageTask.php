@@ -2,7 +2,7 @@
 
 namespace App\Domain\Tasks;
 
-use AEngine\Support\Str;
+use Alksily\Support\Str;
 
 class ConvertImageTask extends Task
 {
