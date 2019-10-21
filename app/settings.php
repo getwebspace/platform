@@ -31,19 +31,10 @@ return [
         ],
 
         // Connection to DB settings
-        //            'connection' => [
-        //                'driver' => 'pdo_sqlite',
-        //                'path' => VAR_DIR . '/database.sqlite',
-        //            ],
-
-        // Connection to Dev DB TODO remove this!
         'connection' => [
-            'driver' => 'pdo_mysql',
-            'dbname' => 'cms',
-            'user' => 'root',
-            'password' => '123100',
-            'host' => 'localhost',
-        ]
+            'driver' => 'pdo_sqlite',
+            'path' => VAR_DIR . '/database.sqlite',
+        ],
     ],
 
     // Twig settings

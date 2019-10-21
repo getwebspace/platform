@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+    php:
+        image: 0x12f/php:1.0
+        working_dir: /var/www
+        command: php -S 0.0.0.0:9000 -t public
+        environment:
+            docker: "true"
+        ports:
+            - 9000:9000
+        volumes:
+            - $PWD/app:/var/www/app:ro
+            - $PWD/config:/var/www/config:ro
+            - $PWD/public:/var/www/public:ro
+            - $PWD/src:/var/www/src:ro
+            - $PWD/theme:/var/www/theme:ro
+            - $PWD/var:/var/www/var:rw
+            - $PWD/var/upload:/var/www/public/uploads:rw
+            - $PWD/vendor:/var/www/vendor:ro
