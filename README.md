@@ -1,29 +1,32 @@
-CMS 0x12f
+Бесплатная CMS для сайта
 ====
-Content Management System by 0x12f
+Перед вами система управления сайтом которая используюется и поддерживается для воплащения фантазий клиентов.
+Поддержите разработку движка https://www.paypal.me/alksily
 
-#### Requirements
-- PHP >= 7.1
+#### Требования
+- PHP >= 7.2
 
-#### Installation
-
-Run this command from the directory in which you want to install.
-
+#### Установка
+Запустите команду:
 ```
 composer create-project 0x12f/cms-structure [my-app-name]
 ```
-
-Replace `[my-app-name]` with the desired directory name for your new application.
+Замените `[my-app-name]` на название папки в которой будет создан проект.
 
 #### Doctrine
-
+Краткий справочник:
 ```
-php engine/libs/bin/doctrine
-php engine/libs/bin/doctrine orm:schema-tool:create
-php engine/libs/bin/doctrine orm:schema-tool:update
+php vendor/bin/doctrine
+php vendor/bin/doctrine orm:schema-tool:create
+php vendor/bin/doctrine orm:schema-tool:update
 ```
 
-#### NGINX 
+#### Docker+Traefik
+Впоследнее время перешли на Docker+Traefik для поддержки кучи сайтов на одном сервере.
+Пример файла `docker-compose.yml` вложен.
+
+#### NGINX
+До Docker мы делали так:
 ```
 map $sent_http_content_type $expires {
     default                    off;
@@ -53,6 +56,7 @@ server {
         try_files /uploads$query /index.php;
     }
     
+    # на production этого правила быть не должно
     location /robots.txt {
         add_header Content-Type text/plain;
         return 200 "User-agent: *\nDisallow: /\n";
@@ -64,7 +68,7 @@ server {
     }
     
     location ~ \.php$ {
-        fastcgi_pass                unix:/run/php/php7.0-fpm.sock;
+        fastcgi_pass                unix:/run/php/php7.2-fpm.sock;
         fastcgi_index               index.php;
         fastcgi_split_path_info     ^(.+.php)(.*)$;
         fastcgi_param               SCRIPT_FILENAME $document_root$fastcgi_script_name;
