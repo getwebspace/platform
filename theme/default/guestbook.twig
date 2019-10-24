@@ -35,6 +35,7 @@
                             <div class="panel-header" id="headingOne">
                                 <button class="panel-link {{ loop.index < 3 ? 'active' : '' }}" data-toggle="collapse" data-target="#comment{{ loop.index }}" aria-expanded="false" aria-controls="collapse">
                                     {{ item.name }} ({{ item.email }})
+                                    <span class="float-right" style="margin-right: 30px;">{{ item.date|df }}</span>
                                 </button>
                             </div>
                             <div id="comment{{ loop.index }}" class="collapse {{ loop.index < 3 ? 'show' : 'collapsed' }}" aria-labelledby="headingOne" data-parent="#accordion">
@@ -42,10 +43,8 @@
                                     <p>{{ item.message|nl2br|raw }}</p>
 
                                     <div class="alert alert-light">
-
                                         <p style="margin: 0; padding: 0;">
-                                            <b>Ответ:</b>
-                                            {{ item.response }}
+                                            <b>Ответ:</b> {{ item.response }}
                                         </p>
                                     </div>
                                 </div>

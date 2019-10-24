@@ -46,6 +46,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     {
         return [
             new \Twig\TwigFilter('count', [$this, 'count']),
+            new \Twig\TwigFilter('df', [$this, 'df']),
         ];
     }
 
@@ -65,6 +66,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             new \Twig\TwigFunction('parameter', [$this, 'parameter']),
             new \Twig\TwigFunction('pre', [$this, 'pre']),
             new \Twig\TwigFunction('count', [$this, 'count']),
+            new \Twig\TwigFunction('df', [$this, 'df']),
             new \Twig\TwigFunction('collect', [$this, 'collect']),
             new \Twig\TwigFunction('non_page_path', [$this, 'non_page_path']),
             new \Twig\TwigFunction('current_page_number', [$this, 'current_page_number']),
@@ -218,7 +220,6 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
     /**
      * Debug function
-     *
      * @param mixed ...$args
      */
     public function pre(...$args)
@@ -229,6 +230,23 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     public function count($obj)
     {
         return is_countable($obj) ? count($obj) : false;
+    }
+
+    /**
+     * Date format function
+     * @param \DateTime|string $obj
+     * @param string $default
+     * @return string
+     */
+    public function df($obj = 'now', $default = 'j-m-Y, H:i')
+    {
+        $format = $this->parameter('common_date_format', $default);
+
+        if (is_string($obj) || is_numeric($obj)) {
+            return date($format, strtotime($obj));
+        }
+
+        return $obj->format($format);
     }
 
     public function collect(array $array = [])

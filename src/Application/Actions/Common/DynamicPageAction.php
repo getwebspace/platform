@@ -79,7 +79,6 @@ class DynamicPageAction extends Action
                     'categories' => $categories,
                     'category' => $category,
                     'publications' => $publications,
-                    'date_format' => $this->getParameter('publication_date_format'),
                 ]);
             } else {
                 $category = $categories->filter(function ($model) use ($path) { return strpos($path, $model->address) !== false; })->first();
@@ -96,7 +95,6 @@ class DynamicPageAction extends Action
                         'publication' => $publication,
                         'categories' => $categories,
                         'category' => $category,
-                        'date_format' => $this->getParameter('publication_date_format'),
                         'files' => $files,
                     ]);
                 }

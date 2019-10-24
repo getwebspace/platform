@@ -39,11 +39,6 @@
                                 </a>
                             </li>
                             <li class="nav-item submenu">
-                                <a class="nav-link" data-toggle="pill" href="#publication" role="tab">
-                                    Публикации
-                                </a>
-                            </li>
-                            <li class="nav-item submenu">
                                 <a class="nav-link" data-toggle="pill" href="#catalog" role="tab">
                                     Каталог
                                 </a>
@@ -101,6 +96,17 @@
                                     'args': {
                                         'placeholder': 'default',
                                         'value': 'default'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Формат времени',
+                                    'description': '',
+                                    'type': 'text',
+                                    'name': 'common[date_format]',
+                                    'args': {
+                                        'placeholder': 'j-m-Y, H:i',
+                                        'value': 'j-m-Y, H:i'
                                     }
                                 } %}
                             </div>
@@ -235,20 +241,6 @@
                                 } %}
                             </div>
 
-                            {# TAB: Publication #}
-                            <div class="tab-pane fade" id="publication" role="tabpanel">
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Формат времени',
-                                    'description': '',
-                                    'type': 'text',
-                                    'name': 'publication[date_format]',
-                                    'args': {
-                                        'placeholder': 'j-m-Y, H:i',
-                                        'value': 'j-m-Y, H:i'
-                                    }
-                                } %}
-                            </div>
-
                             {# TAB: Catalog #}
                             <div class="tab-pane fade" id="catalog" role="tabpanel">
                                 {% include 'cup/field.twig' with {
@@ -355,17 +347,6 @@
 
                             {# TAB: Guestbook #}
                             <div class="tab-pane fade" id="guestbook" role="tabpanel">
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Формат времени',
-                                    'description': '',
-                                    'type': 'text',
-                                    'name': 'guestbook[date_format]',
-                                    'args': {
-                                        'placeholder': 'j-m-Y, H:i',
-                                        'value': 'j-m-Y, H:i'
-                                    }
-                                } %}
-
                                 {% include 'cup/field.twig' with {
                                     'label': 'Шаблон раздела',
                                     'type': 'text',
