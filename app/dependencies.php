@@ -33,9 +33,13 @@ $container['parameter'] = function (ContainerInterface $c) {
         /** @var \Doctrine\ORM\EntityManager $em */
         $em = $c->get(\Doctrine\ORM\EntityManager::class);
 
-        /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $parametersRepository */
-        $parametersRepository = $em->getRepository(\App\Domain\Entities\Parameter::class);
-        $parameters = collect($parametersRepository->findAll());
+        try {
+            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $parametersRepository */
+            $parametersRepository = $em->getRepository(\App\Domain\Entities\Parameter::class);
+            $parameters = collect($parametersRepository->findAll());
+        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
+            $parameters = collect();
+        }
     }
 
     \RunTracy\Helpers\Profiler\Profiler::finish('parameters');

@@ -37,6 +37,7 @@ class AuthorizationMiddleware extends Middleware
      * @param callable $next
      *
      * @return Response
+     * @throws \Exception
      */
     public function __invoke(Request $request, Response $response, $next): \Slim\Http\Response
     {
@@ -46,18 +47,21 @@ class AuthorizationMiddleware extends Middleware
         ];
 
         if ($data['uuid'] && Uuid::isValid($data['uuid']) && $data['session']) {
-            /** @var \App\Domain\Entities\User\Session $session */
-            $session = $this->userSessionRepository->findOneBy(['uuid' => $data['uuid']]);
+            try {
+                /** @var \App\Domain\Entities\User\Session $session */
+                $session = $this->userSessionRepository->findOneBy(['uuid' => $data['uuid']]);
 
-            if ($session && $data['session'] === $this->session($session)) {
-                $user = $this->userRepository->findOneBy([
-                    'uuid' => $session->uuid,
-                    'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
-                ]);
+                if ($session && $data['session'] === $this->session($session)) {
+                    $user = $this->userRepository->findOneBy([
+                        'uuid' => $session->uuid,
+                        'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
+                    ]);
 
-                if ($user) {
-                    $request = $request->withAttribute('user', $user);
+                    if ($user) {
+                        $request = $request->withAttribute('user', $user);
+                    }
                 }
+            } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
             }
         }
 
