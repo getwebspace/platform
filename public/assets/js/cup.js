@@ -59,6 +59,7 @@ $(() => {
     });
     
     $('[data-table]').DataTable({
+        'stateSave': true,
         'language': {
             'search': 'Поиск:',
             'lengthMenu': 'Отображать _MENU_ строк на страницу',
