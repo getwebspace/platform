@@ -73,7 +73,7 @@
             <h4>Корзина</h4>
             <div class="site-pagination">
                 <a href="/">Главная</a> /
-                <a href="/catalog">Каталог</a> /
+                <a href="/{{ parameter('catalog_address', 'catalog') }}">Каталог</a> /
                 <a href="/cart">Корзина</a>
             </div>
         </div>
@@ -84,7 +84,7 @@
             <div class="row pt-5 pb-5"  style="display: none" data-cart-empty>
                 <div class="col-md-12 text-center">
                     <h3 class="pb-3">Ваша корзина еще пуста, почему?</h3>
-                    <p>Посомотрите наш <a href="/catalog">каталог</a>, может быть вам что-то понравится!</p>
+                    <p>Посомотрите наш <a href="/{{ parameter('catalog_address', 'catalog') }}">каталог</a>, может быть вам что-то понравится!</p>
                 </div>
             </div>
 

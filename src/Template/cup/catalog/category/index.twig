@@ -50,7 +50,7 @@
                                         {# поле для сортировки данных в таблице #}
                                         <td style="display: none">{{ category.order }}</td>
                                         <td>
-                                            <a href="/catalog/{{ category.address }}" target="_blank">
+                                            <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ category.address }}" target="_blank">
                                                 {{ category.title }}
                                                 <i class="fas fa-external-link-alt"></i>
                                             </a>

@@ -160,7 +160,8 @@ $app->group('/file', function (App $app) {
 $app->post('/form/{unique}', \App\Application\Actions\Common\FormAction::class);
 
 // catalog
-$app->get('/catalog[/{args:.*}]', \App\Application\Actions\Common\Catalog\ListAction::class);
+$pathCatalog = $container->get('parameter')->get('catalog_address', 'catalog');
+$app->get("/{$pathCatalog}[/{args:.*}]", \App\Application\Actions\Common\Catalog\ListAction::class);
 $app->map(['get', 'post'], '/cart', \App\Application\Actions\Common\Catalog\CartAction::class);
 $app->get('/cart/done/{order}', \App\Application\Actions\Common\Catalog\CartCompleteAction::class);
 

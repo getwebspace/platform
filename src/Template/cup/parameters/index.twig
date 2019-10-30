@@ -244,6 +244,17 @@
                             {# TAB: Catalog #}
                             <div class="tab-pane fade" id="catalog" role="tabpanel">
                                 {% include 'cup/field.twig' with {
+                                    'label': 'Адрес раздела',
+                                    'type': 'text',
+                                    'name': 'catalog[address]',
+                                    'prefix': base_url() ~ '/',
+                                    'args': {
+                                        'placeholder': 'catalog',
+                                        'value': 'catalog'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
                                     'label': 'Шаблон раздела',
                                     'description': 'Значение по-умолчанию, так же это значение будет использовано для главной страницы каталога',
                                     'type': 'text',

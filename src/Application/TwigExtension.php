@@ -506,7 +506,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     }
 
     // сохраняет переданный в аргумент uuid товара, если null возвращает список товаров
-    public function catalog_product_view(\Ramsey\Uuid\DegradedUuid $uuid = null, $limit = 10)
+    public function catalog_product_view(\Ramsey\Uuid\UuidInterface $uuid = null, $limit = 10)
     {
         $list = $_SESSION['catalog_product_view'] ?? [];
 

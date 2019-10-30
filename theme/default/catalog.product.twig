@@ -14,9 +14,9 @@
             <h4>{{ category.meta.title ? category.meta.title : (category.title ?? 'Каталог') }}</h4>
             <div class="site-pagination">
                 <a href="/">Главная</a> /
-                <a href="/catalog">Каталог</a>
+                <a href="/{{ parameter('catalog_address', 'catalog') }}">Каталог</a>
                 {% for breadcrumb in catalog_breadcrumb(category) %}
-                    / <a href="/catalog/{{ breadcrumb.address }}">{{ breadcrumb.meta.title ? breadcrumb.meta.title : breadcrumb.title }}</a>
+                    / <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ breadcrumb.address }}">{{ breadcrumb.meta.title ? breadcrumb.meta.title : breadcrumb.title }}</a>
                 {% endfor %}
             </div>
         </div>
@@ -25,7 +25,7 @@
     <section class="product-section simpleCart_shelfItem">
         <div class="container">
             <div class="back-link">
-                <a href="/catalog/{{ category.address }}">&lt;&lt; В категорию "{{ category.title }}"</a>
+                <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ category.address }}">&lt;&lt; В категорию "{{ category.title }}"</a>
             </div>
             <div class="row">
                 <div class="col-lg-6">

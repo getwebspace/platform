@@ -17,7 +17,7 @@
             <h4>Заказ</h4>
             <div class="site-pagination">
                 <a href="/">Главная</a> /
-                <a href="/catalog">Каталог</a> /
+                <a href="/{{ parameter('catalog_address', 'catalog') }}">Каталог</a> /
                 <a href="/cart">Корзина</a> /
                 <a href="/cart/done/{{ order.uuid }}">Заказ</a>
             </div>

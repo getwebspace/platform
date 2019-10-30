@@ -188,7 +188,8 @@ class ListAction extends CatalogAction
      */
     protected function parsePath()
     {
-        $parts = explode('/', ltrim(str_replace('/catalog', '', $this->request->getUri()->getPath()), '/'));
+        $pathCatalog = $this->getParameter('catalog_address', 'catalog');
+        $parts = explode('/', ltrim(str_replace("/{$pathCatalog}", '', $this->request->getUri()->getPath()), '/'));
         $offset = 0;
 
         if (($buf = $parts[count($parts) - 1]) && ctype_digit($buf)) {

@@ -40,7 +40,7 @@
                                     'label': 'Адрес',
                                     'type': 'text',
                                     'name': 'address',
-                                    'prefix': base_url() ~ '/catalog/',
+                                    'prefix': base_url() ~ '/' ~ parameter('catalog_address', 'catalog') ~ '/',
                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Название категории. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов"></i>',
                                     'args': {
                                         'value': item.address,
