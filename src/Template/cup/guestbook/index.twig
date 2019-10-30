@@ -26,6 +26,7 @@
                             <thead>
                                 <tr>
                                     <th width="15%">Имя</th>
+                                    <th width="5%">Статус</th>
                                     <th>Сообщение</th>
                                     <th width="15%">Дата создания</th>
                                     <th width="10%" class="text-center no-sorting"></th>
@@ -35,16 +36,17 @@
                                 {% for item in list %}
                                     <tr>
                                         <td>
-                                            {% if item.status == 'moderate' %}
-                                                <span class="badge badge-secondary">New</span>
-                                            {% endif %}
-
                                             {{ item.name }}
 
                                             {% if item.email %}
                                                 <a href="mailto:{{ item.email }}" class="text-black-50 float-right">
                                                     <i class="fa fa-envelope"></i>
                                                 </a>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if item.status == 'moderate' %}
+                                                <span class="badge badge-secondary">New</span>
                                             {% endif %}
                                         </td>
                                         <td>
