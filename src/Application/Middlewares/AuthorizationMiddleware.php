@@ -98,37 +98,4 @@ class AuthorizationMiddleware extends Middleware
 
         return null;
     }
-
-    /**
-     * Метод проверки reCAPTCHA
-     *
-     * @param array $data
-     *
-     * @return bool
-     */
-    public function checkReCAPTCHA(array $data = [])
-    {
-        $default = [
-            'secret' => Common::get('recaptcha_private'),
-            'response' => '',
-            'remoteip' => '',
-        ];
-        $data = array_merge($default, $data);
-
-        if (Common::get('security_recaptcha') === 'on') {
-            $query = http_build_query($data);
-            $verify = json_decode(file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, stream_context_create([
-                'http' => [
-                    'method' => 'POST',
-                    'header' => "Content-Type: application/x-www-form-urlencoded\r\n".
-                        "Content-Length: ".strlen($query)."\r\n",
-                    'content' => $query,
-                ],
-            ])));
-
-            return $verify->success;
-        }
-
-        return true;
-    }
 }

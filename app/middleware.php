@@ -9,7 +9,7 @@ $app->add(new RunTracy\Middlewares\TracyMiddleware($app));
 // http cache
 $app->add(new \Slim\HttpCache\Cache('public', 86400));
 
-// add user
+// check user auth
 $app->add(\App\Application\Middlewares\AuthorizationMiddleware::class);
 
 // redirect to address without slash in end

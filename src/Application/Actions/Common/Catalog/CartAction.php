@@ -44,7 +44,7 @@ class CartAction extends CatalogAction
 
             $check = \App\Domain\Filters\Catalog\Order::check($data);
 
-            if ($check === true) {
+            if ($check === true && $this->isRecaptchaChecked()) {
                 try {
                     $model = new \App\Domain\Entities\Catalog\Order($data);
                     $this->entityManager->persist($model);

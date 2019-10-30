@@ -41,7 +41,7 @@ class LoginPageAction extends Action
 
             $check = \App\Domain\Filters\User::login($data);
 
-            if ($check === true) {
+            if ($check === true && $this->isRecaptchaChecked()) {
                 /** @var \App\Domain\Entities\User $user */
                 $user = $this->userRepository->findOneBy([$identifier => $data[$identifier]]);
 

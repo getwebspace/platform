@@ -1,5 +1,9 @@
 {% extends 'cup/layout.twig' %}
 
+{% block head %}
+    {% include 'recaptcha.twig' %}
+{% endblock %}
+
 {% block body %}
     <body class="login">
         <div class="wrapper wrapper-login wrapper-login-full p-0">
@@ -12,7 +16,7 @@
                 <div class="container container-login container-transparent animated fadeIn">
                     <h3 class="text-center">Вход в панель администратора</h3>
                     <div class="login-form">
-                        <form method="post">
+                        <form method="post" data-grecaptcha>
                             {% if identifier == 'email' %}
                                 {% include 'cup/form.twig' with {
                                     'label': 'E-Mail',

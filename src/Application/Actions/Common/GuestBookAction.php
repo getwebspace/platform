@@ -33,7 +33,7 @@ class GuestBookAction extends Action
 
             $check = \App\Domain\Filters\GuestBook::check($data);
 
-            if ($check === true) {
+            if ($check === true && $this->isRecaptchaChecked()) {
                 $model = new \App\Domain\Entities\GuestBook($data);
                 $model->status = \App\Domain\Types\GuestBookStatusType::STATUS_MODERATE;
 

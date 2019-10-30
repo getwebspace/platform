@@ -46,7 +46,7 @@ class FormAction extends Action
             'address' => $this->resolveArg('unique'),
         ]);
 
-        if ($item) {
+        if ($item && $this->isRecaptchaChecked()) {
             $remote = $_SERVER['HTTP_ORIGIN'] ?? $_SERVER['HTTP_REFERER'] ?? false;
             $data = $this->request->getParams();
 

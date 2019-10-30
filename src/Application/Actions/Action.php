@@ -238,10 +238,9 @@ abstract class Action
 
             $data = array_merge(
                 [
-                    //'parameter' => $this->getParameter(),
                     'user' => $this->request->getAttribute('user', null),
                     'trademaster' => $this->getParameter('integration_trademaster_enable', 'off'),
-                    '_error' => array_merge($this->error, \Alksily\Support\Form::$globalError),
+                    '_error' => array_merge($this->error, (array)\Alksily\Support\Form::$globalError),
                 ],
                 $data
             );
@@ -254,6 +253,40 @@ abstract class Action
         } catch (\Twig\Error\LoaderError $exception) {
             throw new HttpBadRequestException($this->request, $exception->getMessage());
         }
+    }
+
+    /**
+     * Return recaptcha status if is enabled
+     *
+     * @return bool
+     */
+    protected function isRecaptchaChecked(): bool
+    {
+        if ($this->request->isPost() && $this->getParameter('integration_recaptcha', 'off') == 'on') {
+            \RunTracy\Helpers\Profiler\Profiler::start('recaptcha');
+
+            $query = http_build_query([
+                'secret' => $this->getParameter('integration_recaptcha_private'),
+                'response' => $this->request->getParam('recaptcha', ''),
+                'remoteip' => $this->request->getServerParam('REMOTE_ADDR'),
+            ]);
+            $verify = json_decode(file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, stream_context_create([
+                'http' => [
+                    'method' => 'POST',
+                    'header' => "Content-Type: application/x-www-form-urlencoded\r\n" .
+                                "Content-Length: " . strlen($query) . "\r\n",
+                    'content' => $query,
+                ],
+            ])));
+
+            \RunTracy\Helpers\Profiler\Profiler::finish('recaptcha');
+
+            $this->logger->info('Check reCAPTCHA', ['status' => $verify->success]);
+
+            return $verify->success;
+        }
+
+        return true;
     }
 
     /**
