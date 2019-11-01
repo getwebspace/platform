@@ -16,17 +16,16 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
+                        {% if category %}
+                            <a href="/cup/catalog/category/{{ category.parent }}" class="btn btn-white btn-icon mr-1">
+                                <i class="fas fa-arrow-left"></i>
+                            </a>
+                        {% endif %}
                         <h4 class="card-title">Список категорий {{ category ? 'вложенный в ' ~ category.title : '' }} ({{ categories.count() }})</h4>
                         <a href="/cup/catalog/category/add{{ category ? '?parent=' ~ category.uuid : '' }}" class="btn btn-primary btn-round ml-auto">
                             <i class="fa fa-plus"></i>
                             Добавить категорию
                         </a>
-
-                        {% if category %}
-                            <a href="/cup/catalog/category/{{ category.parent }}" class="btn btn-secondary btn-round ml-1">
-                                <i class="fas fa-arrow-up"></i>
-                            </a>
-                        {% endif %}
                     </div>
                 </div>
                 <div class="card-body">

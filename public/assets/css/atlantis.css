@@ -6881,7 +6881,7 @@ label.error {
     line-height: normal;
     min-width: 2.5125rem;
     overflow: hidden;
-    padding: 0;
+    padding: .65rem 0;
     position: relative;
     width: 2.5125rem;
 }
