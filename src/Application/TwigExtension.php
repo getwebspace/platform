@@ -402,16 +402,35 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
         static $buf;
 
+        $key = json_encode($order, JSON_UNESCAPED_UNICODE).$limit.$offset;
+
         if (!$buf) {
             /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
             $repository = $this->entityManager->getRepository(\App\Domain\Entities\GuestBook::class);
 
-            $buf = $limit > 1 ? collect($repository->findBy([], $order, $limit, $offset)) : $repository->findOneBy([], $order);
+            // get list of comments and obfuscate email address
+            $buf[$key] = collect(
+                $limit > 1
+                    ? $repository->findBy(['status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK], $order, $limit, $offset)
+                    : $repository->findOneBy([], $order)
+            )->map(
+                function ($el) {
+                    if ($el->email) {
+                        $em = explode('@', $el->email);
+                        $name = implode(array_slice($em, 0, count($em) - 1), '@');
+                        $len = floor(strlen($name) / 2);
+
+                        $el->email = substr($name, 0, $len) . str_repeat('*', $len) . '@' . end($em);
+                    }
+
+                    return $el;
+                }
+            );
         }
 
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:guestbook');
 
-        return $buf;
+        return $buf[$key];
     }
 
     /*
