@@ -45,13 +45,16 @@
                                             {% endif %}
                                         </td>
                                         <td class="text-center">
+                                            {% if item.status == 'work' %}
+                                                <span class="badge badge-default">Активный</span>
+                                            {% endif %}
                                             {% if item.status == 'moderate' %}
-                                                <span class="badge badge-secondary">New</span>
+                                                <span class="badge badge-secondary">Новый</span>
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <pre class="mt-2">{{ item.message|truncate(250) }}</pre>
-                                            <pre class="mb-2 text-primary">{{ item.response|truncate(250) }}</pre>
+                                            <pre class="mt-2">{{ item.message|truncate(100) }}</pre>
+                                            <pre class="mb-2 text-primary">{{ item.response|truncate(100) }}</pre>
                                         </td>
                                         <td>{{ item.date|date('d.m.Y H:i:s') }}</td>
                                         <td class="text-center">
