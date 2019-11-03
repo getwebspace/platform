@@ -500,7 +500,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             foreach ($category as $value) {
                 switch (true) {
                     case \Ramsey\Uuid\Uuid::isValid($value) === true:
-                        $criteria['uuid'][] = $value;
+                        $criteria['category'][] = $value;
                         break;
 
                     default:
