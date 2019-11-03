@@ -39,30 +39,31 @@
     <script src="/assets/js/public/libs/sweetalert2.all.min.js"></script>
     <script src="/assets/js/public/libs/simpleCart.min.js"></script>
     <script src="/assets/js/public/script.js"></script>
-
-    {% include 'mixin/recaptcha.twig' %}
 {% endblock %}
 
 {% block body %}
     <body>
-    {% block bodyinner %}
-        <!-- Page Preloder -->
-        <div id="preloder">
-            <div class="loader"></div>
-        </div>
+        {% block bodyinner %}
+            <!-- Page Preloder -->
+            <div id="preloder">
+                <div class="loader"></div>
+            </div>
 
-        {% include 'common/header.twig' %}
+            {% include 'common/header.twig' %}
 
-        {% block page %}
-            {% include 'parts/slider.twig' %}
-            {% include 'parts/features.twig' %}
-            {% include 'products/last-list.twig' %}
-            {% include 'common/banner.twig' %}
-            {% include 'products/filter.twig' %}
+            {% block page %}
+                {% include 'parts/slider.twig' %}
+                {% include 'parts/features.twig' %}
+                {% include 'products/last-list.twig' %}
+                {% include 'common/banner.twig' %}
+                {% include 'products/filter.twig' %}
+            {% endblock %}
+
+            {% include 'common/footer.twig' %}
         {% endblock %}
 
-        {% include 'common/footer.twig' %}
-    {% endblock %}
+        {% include 'mixin/adbd.twig' %}
+        {% include 'mixin/recaptcha.twig' %}
     </body>
 {% endblock %}
 
