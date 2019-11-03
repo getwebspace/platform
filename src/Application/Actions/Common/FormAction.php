@@ -161,13 +161,11 @@ class FormAction extends Action
                 ) {
                     $this->response = $this->response->withHeader('Location', $_SERVER['HTTP_REFERER']);
                 }
-
-                return $this->respondWithData(['description' => 'Message sent',]);
             } else {
                 $this->logger->warn('Form will not sended: fail', ['mailto' => $item->mailto, 'error' => $mail->ErrorInfo]);
-
-                throw new HttpBadRequestException($this->request, 'Message not sent');
             }
+
+            return $this->respondWithData(['status' => !$mail->isError(), 'error' => $mail->ErrorInfo]);
         }
 
         throw new HttpNotFoundException($this->request);
