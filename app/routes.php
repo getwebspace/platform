@@ -160,6 +160,7 @@ $app->group('/file', function (App $app) {
 $app->group('/user', function (App $app) {
     $app->map(['get', 'post'], '/login', \App\Application\Actions\Common\User\UserLoginAction::class);
     $app->map(['get', 'post'], '/register', \App\Application\Actions\Common\User\UserRegisterAction::class);
+    $app->map(['get', 'post'], '/logout', \App\Application\Actions\Common\User\UserLogoutAction::class);
     $app->map(['get', 'post'], '/profile', \App\Application\Actions\Common\User\UserProfileAction::class);
 });
 
