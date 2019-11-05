@@ -33,20 +33,26 @@ class GuestBookAction extends Action
 
             $check = \App\Domain\Filters\GuestBook::check($data);
 
-            if ($check === true && $this->isRecaptchaChecked()) {
-                $model = new \App\Domain\Entities\GuestBook($data);
-                $model->status = \App\Domain\Types\GuestBookStatusType::STATUS_MODERATE;
+            if ($this->isRecaptchaChecked()) {
+                if ($check === true) {
+                    $model = new \App\Domain\Entities\GuestBook($data);
+                    $model->status = \App\Domain\Types\GuestBookStatusType::STATUS_MODERATE;
 
-                $this->entityManager->persist($model);
-                $this->entityManager->flush();
+                    $this->entityManager->persist($model);
+                    $this->entityManager->flush();
 
-                if (
-                    (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != 'xmlhttprequest') && !empty($_SERVER['HTTP_REFERER'])
-                ) {
-                    $this->response = $this->response->withHeader('Location', $_SERVER['HTTP_REFERER']);
+                    if (
+                        (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != 'xmlhttprequest') && !empty($_SERVER['HTTP_REFERER'])
+                    ) {
+                        $this->response = $this->response->withHeader('Location', $_SERVER['HTTP_REFERER']);
+                    }
+
+                    return $this->respondWithData(['description' => 'Message added']);
+                } else {
+                    $this->addErrorFromCheck($check);
                 }
-
-                return $this->respondWithData(['description' => 'Message added']);
+            } else {
+                $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
             }
         }
 

@@ -3,7 +3,6 @@
 namespace App\Application\Actions\Common;
 
 use App\Application\Actions\Action;
-use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Exceptions\HttpNotFoundException;
 use DateTime;
 use InvalidArgumentException;

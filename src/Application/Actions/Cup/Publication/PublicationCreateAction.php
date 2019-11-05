@@ -22,21 +22,19 @@ class PublicationCreateAction extends PublicationAction
             $check = \App\Domain\Filters\Publication::check($data);
 
             if ($check === true) {
-                try {
-                    $model = new \App\Domain\Entities\Publication($data);
-                    $this->entityManager->persist($model);
-                    $this->handlerFileUpload(\App\Domain\Types\FileItemType::ITEM_PUBLICATION, $model->uuid);
-                    $this->entityManager->flush();
+                $model = new \App\Domain\Entities\Publication($data);
+                $this->entityManager->persist($model);
+                $this->handlerFileUpload(\App\Domain\Types\FileItemType::ITEM_PUBLICATION, $model->uuid);
+                $this->entityManager->flush();
 
-                    switch (true) {
-                        case $this->request->getParam('save', 'exit') === 'exit':
-                            return $this->response->withAddedHeader('Location', '/cup/publication')->withStatus(301);
-                        default:
-                            return $this->response->withAddedHeader('Location', '/cup/publication/' . $model->uuid . '/edit')->withStatus(301);
-                    }
-                } catch (Exception $e) {
-                    // todo nothing
+                switch (true) {
+                    case $this->request->getParam('save', 'exit') === 'exit':
+                        return $this->response->withAddedHeader('Location', '/cup/publication')->withStatus(301);
+                    default:
+                        return $this->response->withAddedHeader('Location', '/cup/publication/' . $model->uuid . '/edit')->withStatus(301);
                 }
+            } else {
+                $this->addErrorFromCheck($check);
             }
         }
 

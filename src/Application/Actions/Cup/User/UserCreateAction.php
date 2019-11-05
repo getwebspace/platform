@@ -23,29 +23,27 @@ class UserCreateAction extends UserAction
             $check = \App\Domain\Filters\User::check($data);
 
             if ($check === true) {
-                try {
-                    $uuid = Uuid::uuid4();
-                    $session = new \App\Domain\Entities\User\Session();
-                    $session->set('uuid', $uuid);
-                    $this->entityManager->persist($session);
+                $uuid = Uuid::uuid4();
+                $session = new \App\Domain\Entities\User\Session();
+                $session->set('uuid', $uuid);
+                $this->entityManager->persist($session);
 
-                    $model = new \App\Domain\Entities\User($data);
-                    $model->set('uuid', $uuid);
-                    $model->register = $model->change = new \DateTime();
-                    $model->session = $session;
-                    $this->entityManager->persist($model);
+                $model = new \App\Domain\Entities\User($data);
+                $model->set('uuid', $uuid);
+                $model->register = $model->change = new \DateTime();
+                $model->session = $session;
+                $this->entityManager->persist($model);
 
-                    $this->entityManager->flush();
+                $this->entityManager->flush();
 
-                    switch (true) {
-                        case $this->request->getParam('save', 'exit') === 'exit':
-                            return $this->response->withAddedHeader('Location', '/cup/user')->withStatus(301);
-                        default:
-                            return $this->response->withAddedHeader('Location', '/cup/user/' . $model->uuid . '/edit')->withStatus(301);
-                    }
-                } catch (Exception $e) {
-                    // todo nothing
+                switch (true) {
+                    case $this->request->getParam('save', 'exit') === 'exit':
+                        return $this->response->withAddedHeader('Location', '/cup/user')->withStatus(301);
+                    default:
+                        return $this->response->withAddedHeader('Location', '/cup/user/' . $model->uuid . '/edit')->withStatus(301);
                 }
+            } else {
+                $this->addErrorFromCheck($check);
             }
         }
 

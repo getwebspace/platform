@@ -86,7 +86,7 @@ abstract class Action
      */
     protected function addError($field, $reason)
     {
-        $this->error[$field] = $reason;
+        $this->error[$field] = $reason ?? \App\Domain\References\Errors\Common::WRONG_COMMON;
     }
 
     /**
@@ -246,7 +246,7 @@ abstract class Action
 
             $data = array_merge(
                 [
-                    '_error' => $this->error,
+                    '_error' => \Alksily\Support\Form::$globalError = $this->error,
                     'user' => $this->request->getAttribute('user', false),
                     'trademaster' => $this->getParameter('integration_trademaster_enable', 'off'),
                 ],

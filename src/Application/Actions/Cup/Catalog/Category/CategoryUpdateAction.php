@@ -51,18 +51,16 @@ class CategoryUpdateAction extends CatalogAction
                         $check = \App\Domain\Filters\Catalog\Category::check($data);
 
                         if ($check === true) {
-                            try {
-                                $item->replace($data);
-                                $this->entityManager->persist($item);
-                                $this->handlerFileUpload(\App\Domain\Types\FileItemType::ITEM_CATALOG_CATEGORY, $item->uuid);
-                                $this->entityManager->flush();
+                            $item->replace($data);
+                            $this->entityManager->persist($item);
+                            $this->handlerFileUpload(\App\Domain\Types\FileItemType::ITEM_CATALOG_CATEGORY, $item->uuid);
+                            $this->entityManager->flush();
 
-                                if ($this->request->getParam('save', 'exit') === 'exit') {
-                                    return $this->response->withAddedHeader('Location', '/cup/catalog/category/' . $item->parent)->withStatus(301);
-                                }
-                            } catch (Exception $e) {
-                                // todo nothing
+                            if ($this->request->getParam('save', 'exit') === 'exit') {
+                                return $this->response->withAddedHeader('Location', '/cup/catalog/category/' . $item->parent)->withStatus(301);
                             }
+                        } else {
+                            $this->addErrorFromCheck($check);
                         }
                     }
                 }

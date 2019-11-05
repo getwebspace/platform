@@ -32,21 +32,19 @@ class CategoryCreateAction extends CatalogAction
             $check = \App\Domain\Filters\Catalog\Category::check($data);
 
             if ($check === true) {
-                try {
-                    $model = new \App\Domain\Entities\Catalog\Category($data);
-                    $this->entityManager->persist($model);
-                    $this->handlerFileUpload(\App\Domain\Types\FileItemType::ITEM_CATALOG_CATEGORY, $model->uuid);
-                    $this->entityManager->flush();
+                $model = new \App\Domain\Entities\Catalog\Category($data);
+                $this->entityManager->persist($model);
+                $this->handlerFileUpload(\App\Domain\Types\FileItemType::ITEM_CATALOG_CATEGORY, $model->uuid);
+                $this->entityManager->flush();
 
-                    switch (true) {
-                        case $this->request->getParam('save', 'exit') === 'exit':
-                            return $this->response->withAddedHeader('Location', '/cup/catalog/category/' . $model->parent)->withStatus(301);
-                        default:
-                            return $this->response->withAddedHeader('Location', '/cup/catalog/category/' . $model->uuid . '/edit')->withStatus(301);
-                    }
-                } catch (Exception $e) {
-                    // todo nothing
+                switch (true) {
+                    case $this->request->getParam('save', 'exit') === 'exit':
+                        return $this->response->withAddedHeader('Location', '/cup/catalog/category/' . $model->parent)->withStatus(301);
+                    default:
+                        return $this->response->withAddedHeader('Location', '/cup/catalog/category/' . $model->uuid . '/edit')->withStatus(301);
                 }
+            } else {
+                $this->addErrorFromCheck($check);
             }
         }
 
