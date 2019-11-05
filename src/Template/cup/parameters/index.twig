@@ -89,13 +89,24 @@
                                 } %}
 
                                 {% include 'cup/field.twig' with {
-                                    'label': 'Шаблон сайта',
+                                    'label': 'Тема оформления сайта',
                                     'description': 'По-умолчанию: "default"',
                                     'type': 'text',
                                     'name': 'common[theme]',
                                     'args': {
                                         'placeholder': 'default',
                                         'value': 'default'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Шаблон главной страницы',
+                                    'description': 'По-умолчанию: "default"',
+                                    'type': 'text',
+                                    'name': 'common[template]',
+                                    'args': {
+                                        'placeholder': 'main.twig',
+                                        'value': 'main.twig'
                                     }
                                 } %}
 
