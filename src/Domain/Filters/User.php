@@ -106,12 +106,13 @@ class User extends Filter
         // был изменен и его следует хешировать
         if ($data['password'] && strlen($data['password']) !== 140) {
             $filter
+                ->option('password_again')
+                    ->addRule($filter->checkEqualToField('password'))
+                    ->addRule($filter->leadRemove())
                 ->attr('password')
                     ->addRule($filter->leadStr())
-                ->addRule($filter->checkStrlenBetween(3, 20), \App\Domain\References\Errors\User::WRONG_PASSWORD_LENGTH)
-                    ->addRule($filter->ValidPassword())
-                ->option('password_again')
-                    ->addRule($filter->checkEqualToField('password'));
+                    ->addRule($filter->checkStrlenBetween(3, 20), \App\Domain\References\Errors\User::WRONG_PASSWORD_LENGTH)
+                    ->addRule($filter->ValidPassword());
         }
 
         return $filter->run();

@@ -246,9 +246,9 @@ abstract class Action
 
             $data = array_merge(
                 [
+                    '_error' => $this->error,
                     'user' => $this->request->getAttribute('user', null),
                     'trademaster' => $this->getParameter('integration_trademaster_enable', 'off'),
-                    '_error' => array_merge($this->error, (array)\Alksily\Support\Form::$globalError),
                 ],
                 $data
             );

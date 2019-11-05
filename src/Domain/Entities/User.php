@@ -91,15 +91,18 @@ class User extends Model
      */
     public function getName(string $type = 'full')
     {
-        switch ($type) {
-            case 'full':
-                return implode(' ', [$this->lastname, $this->firstname]);
-                break;
-            case 'short':
-                return implode(' ', [substr($this->lastname, 0, 1) . '.', $this->firstname]);
-                break;
+        if ($this->lastname || $this->firstname) {
+            switch ($type) {
+                case 'full':
+                    return implode(' ', [$this->lastname, $this->firstname]);
+                    break;
+                case 'short':
+                    return implode(' ', [substr($this->lastname, 0, 1) . '.', $this->firstname]);
+                    break;
+            }
         }
 
+        return null;
     }
 
     /**
