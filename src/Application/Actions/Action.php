@@ -53,7 +53,7 @@ abstract class Action
     /**
      * @var array
      */
-    protected $error = [];
+    private $error = [];
 
     /**
      * @param ContainerInterface $container
@@ -87,6 +87,14 @@ abstract class Action
     protected function addError($field, $reason)
     {
         $this->error[$field] = $reason;
+    }
+
+    /**
+     * @param array $check
+     */
+    protected function addErrorFromCheck(array $check)
+    {
+        $this->error = array_merge($this->error, $check);
     }
 
     /**

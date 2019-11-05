@@ -150,13 +150,20 @@ $app
     ->get('/', \App\Application\Actions\Common\MainPageAction::class)
     ->setName('main');
 
-// file worker
+// file
 $app->group('/file', function (App $app) {
     $app->get('/get/{salt}/{hash}', \App\Application\Actions\Common\File\FileGetAction::class);
     $app->post('/upload', \App\Application\Actions\Common\File\FileUploadAction::class);
 });
 
-// form worker
+// user
+$app->group('/user', function (App $app) {
+    $app->map(['get', 'post'], '/login', \App\Application\Actions\Common\User\UserLoginAction::class);
+    $app->map(['get', 'post'], '/register', \App\Application\Actions\Common\User\UserRegisterAction::class);
+    $app->map(['get', 'post'], '/profile', \App\Application\Actions\Common\User\UserProfileAction::class);
+});
+
+// form
 $app->post('/form/{unique}', \App\Application\Actions\Common\FormAction::class);
 
 // catalog
@@ -165,7 +172,7 @@ $app->get("/{$pathCatalog}[/{args:.*}]", \App\Application\Actions\Common\Catalog
 $app->map(['get', 'post'], '/cart', \App\Application\Actions\Common\Catalog\CartAction::class);
 $app->get('/cart/done/{order}', \App\Application\Actions\Common\Catalog\CartCompleteAction::class);
 
-// guestbook worker
+// guest book
 $app->map(['get', 'post'], '/guestbook[/{page:[0-9]+}}]', \App\Application\Actions\Common\GuestBookAction::class);
 
 // dynamic path handler

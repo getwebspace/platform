@@ -101,7 +101,6 @@
 
                                 {% include 'cup/field.twig' with {
                                     'label': 'Шаблон главной страницы',
-                                    'description': 'По-умолчанию: "default"',
                                     'type': 'text',
                                     'name': 'common[template]',
                                     'args': {
@@ -248,6 +247,46 @@
                                     'name': 'user[login_type]',
                                     'args': {
                                         'option': {'username':'Логин', 'email':'E-Mail'}
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Шаблон страницы авторизации',
+                                    'type': 'text',
+                                    'name': 'user[login_template]',
+                                    'args': {
+                                        'placeholder': 'user.login.twig',
+                                        'value': 'user.login.twig'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Шаблон страницы регистрации',
+                                    'type': 'text',
+                                    'name': 'user[register_template]',
+                                    'args': {
+                                        'placeholder': 'user.register.twig',
+                                        'value': 'user.register.twig'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Шаблон страницы восстановления пароля',
+                                    'type': 'text',
+                                    'name': 'user[lostpassword_template]',
+                                    'args': {
+                                        'placeholder': 'user.lostpassword.twig',
+                                        'value': 'user.lostpassword.twig'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Шаблон страницы профиля пользователя',
+                                    'type': 'text',
+                                    'name': 'user[profile_template]',
+                                    'args': {
+                                        'placeholder': 'user.profile.twig',
+                                        'value': 'user.profile.twig'
                                     }
                                 } %}
                             </div>
