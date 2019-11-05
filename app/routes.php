@@ -161,7 +161,17 @@ $app->group('/user', function (App $app) {
     $app->map(['get', 'post'], '/login', \App\Application\Actions\Common\User\UserLoginAction::class);
     $app->map(['get', 'post'], '/register', \App\Application\Actions\Common\User\UserRegisterAction::class);
     $app->map(['get', 'post'], '/logout', \App\Application\Actions\Common\User\UserLogoutAction::class);
-    $app->map(['get', 'post'], '/profile', \App\Application\Actions\Common\User\UserProfileAction::class);
+    $app
+        ->map(['get', 'post'], '/profile', \App\Application\Actions\Common\User\UserProfileAction::class)
+        ->add(function (Request $request, Response $response, $next) {
+            $user = $request->getAttribute('user', false);
+
+            if ($user === false) {
+                return $response->withHeader('Location', '/user/login');
+            }
+
+            return $next($request, $response);
+        });
 });
 
 // form

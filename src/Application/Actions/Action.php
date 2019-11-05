@@ -247,7 +247,7 @@ abstract class Action
             $data = array_merge(
                 [
                     '_error' => $this->error,
-                    'user' => $this->request->getAttribute('user', null),
+                    'user' => $this->request->getAttribute('user', false),
                     'trademaster' => $this->getParameter('integration_trademaster_enable', 'off'),
                 ],
                 $data
