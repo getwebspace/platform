@@ -1,9 +1,5 @@
 {% extends 'cup/layout.twig' %}
 
-{% block head %}
-    {% include 'mixin/recaptcha.twig' %}
-{% endblock %}
-
 {% block body %}
     <body class="login">
         <div class="wrapper wrapper-login wrapper-login-full p-0">
@@ -45,5 +41,7 @@
                 </div>
             </div>
         </div>
+
+        {% include 'mixin/recaptcha.twig' %}
     </body>
 {% endblock %}
