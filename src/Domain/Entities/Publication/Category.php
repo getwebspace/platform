@@ -56,8 +56,8 @@ class Category extends Model
      * @ORM\Column(type="array", nullable=true)
      */
     public $sort = [
-        'by' => \App\Domain\References\Publication\Category::ORDER_BY_DATE,
-        'direction' => \App\Domain\References\Publication\Category::ORDER_DIRECTION_ASC,
+        'by' => \App\Domain\References\Publication::ORDER_BY_DATE,
+        'direction' => \App\Domain\References\Publication::ORDER_DIRECTION_ASC,
     ];
 
     /**

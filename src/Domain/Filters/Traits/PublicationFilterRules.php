@@ -126,8 +126,8 @@ trait PublicationFilterRules
     {
         return function (&$data, $field) {
             $buf = [
-                'by' => \App\Domain\References\Publication\Category::ORDER_BY_DATE,
-                'direction' => \App\Domain\References\Publication\Category::ORDER_DIRECTION_ASC,
+                'by' => \App\Domain\References\Publication::ORDER_BY_DATE,
+                'direction' => \App\Domain\References\Publication::ORDER_DIRECTION_ASC,
             ];
             $value = &$data[$field];
 
@@ -137,10 +137,16 @@ trait PublicationFilterRules
                 return true;
             }
 
-            if (isset($value['by'])) {
+            if (
+                isset($value['by']) &&
+                in_array($value['by'], \App\Domain\References\Publication::ORDER_BY)
+            ) {
                 $buf['by'] = $value['by'];
             }
-            if (isset($value['direction'])) {
+            if (
+                isset($value['direction']) &&
+                in_array($value['direction'], \App\Domain\References\Publication::ORDER_DIRECTION)
+            ) {
                 $buf['direction'] = $value['direction'];
             }
 
