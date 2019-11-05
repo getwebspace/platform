@@ -5,7 +5,7 @@
     <link href="img/favicon.ico" rel="shortcut icon" />
 
     <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,300i,400,400i,700,700i" rel="stylesheet">
+    {{ styles.append('https://fonts.googleapis.com/css?family=Josefin+Sans:300,300i,400,400i,700,700i') }}
 
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
@@ -14,29 +14,27 @@
 {% endblock %}
 
 {% block style %}
-    <link rel="stylesheet" href="/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="/css/flaticon.css" />
-    <link rel="stylesheet" href="/css/slicknav.min.css" />
-    <link rel="stylesheet" href="/css/jquery-ui.min.css" />
-    <link rel="stylesheet" href="/css/owl.carousel.min.css" />
-    <link rel="stylesheet" href="/css/animate.css" />
-    <link rel="stylesheet" href="/css/style.css" />
+    {{ styles.append('/css/bootstrap.min.css') }}
+    {{ styles.append('/css/font-awesome.min.css') }}
+    {{ styles.append('/css/flaticon.css') }}
+    {{ styles.append('/css/slicknav.min.css') }}
+    {{ styles.append('/css/jquery-ui.min.css') }}
+    {{ styles.append('/css/owl.carousel.min.css') }}
+    {{ styles.append('/css/animate.css') }}
+    {{ styles.append('/css/style.css') }}
 {% endblock %}
 
 {% block script %}
-    <script src="/js/jquery-3.2.1.min.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
-    <script src="/js/jquery.slicknav.min.js"></script>
-    <script src="/js/owl.carousel.min.js"></script>
-    <script src="/js/jquery.nicescroll.min.js"></script>
-    <script src="/js/jquery.zoom.min.js"></script>
-    <script src="/js/jquery-ui.min.js"></script>
-    <script src="/js/main.js"></script>
+    {{ scripts.append('/js/jquery-3.2.1.min.js') }}
+    {{ scripts.append('/js/bootstrap.min.js') }}
+    {{ scripts.append('/js/jquery.slicknav.min.js') }}
+    {{ scripts.append('/js/owl.carousel.min.js') }}
+    {{ scripts.append('/js/jquery.nicescroll.min.js') }}
+    {{ scripts.append('/js/jquery.zoom.min.js') }}
+    {{ scripts.append('/js/jquery-ui.min.js') }}
+    {{ scripts.append('/js/main.js') }}
 
-    <script src="/assets/js/public/libs/sweetalert2.all.min.js"></script>
-    <script src="/assets/js/public/libs/simpleCart.min.js"></script>
-    <script src="/assets/js/public/script.js"></script>
+    {{ scripts.append('/assets/js/public/script.js') }}
 {% endblock %}
 
 {% block body %}

@@ -4,14 +4,19 @@
         stamp = (date.getHours() * 100) + (date.getMinutes() * 10) + date.getSeconds(),
         
         list = [
-            'polyfills.js',
-            'catalog.js?',
+            // libs
+            '/libs/simpleCart.min.js',
+            '/libs/sweetalert2.all.min.js',
+            
+            // plugins
+            '/plugins/catalog.js',
+            '/plugins/polyfills.js',
         ];
     
     list.forEach((file) => {
         let script = document.createElement('script');
-            script.src = '/assets/js/public/' + file;
+            script.src = '/assets/js/public' + file;
         
-        document.head.appendChild(script);
+        document.body.appendChild(script);
     });
 })();
