@@ -96,7 +96,23 @@
                                     }
                                 } %}
                             </div>
+                        </div>
 
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Включить проверку reCAPTCHA',
+                                    'message': 'Возможность отключить проверку reCAPTCHA индивидуально для текущей формы. По-умолчанию: включена',
+                                    'type': 'select',
+                                    'name': 'recaptcha',
+                                    'args': {
+                                        'option': {'yes':'Да', 'no':'Нет'},
+                                        'selected': item.recaptcha ? 'yes' : 'no'
+                                    }
+                                } %}
+                            </div>
                         </div>
                     </div>
                     <div class="card-action">

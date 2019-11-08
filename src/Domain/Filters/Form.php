@@ -33,13 +33,17 @@ class Form extends Filter
             ->attr('title')
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 255))
-            ->attr('mailto')
+            ->attr('template')
                 ->addRule($filter->leadStr())
-                ->addRule($filter->StrSplit('/\r\n/'))
+            ->attr('recaptcha')
+                ->addRule($filter->leadBoolean())
             ->attr('origin')
                 ->addRule($filter->leadStr())
                 ->addRule($filter->StrSplit('/\r\n/'))
                 ->addRule($filter->ValidFormOrigin())
+            ->attr('mailto')
+                ->addRule($filter->leadStr())
+                ->addRule($filter->StrSplit('/\r\n/'))
         ;
 
         return $filter->run();

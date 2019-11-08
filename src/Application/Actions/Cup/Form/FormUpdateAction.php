@@ -19,8 +19,9 @@ class FormUpdateAction extends FormAction
                         'title' => $this->request->getParam('title'),
                         'address' => $this->request->getParam('address'),
                         'template' => $this->request->getParam('template'),
-                        'mailto' => $this->request->getParam('mailto'),
+                        'recaptcha' => $this->request->getParam('recaptcha'),
                         'origin' => $this->request->getParam('origin'),
+                        'mailto' => $this->request->getParam('mailto'),
                     ];
 
                     $check = \App\Domain\Filters\Form::check($data);
