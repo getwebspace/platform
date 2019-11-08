@@ -14,8 +14,15 @@ $app
 
         // catalog
         $app->group('/catalog', function (App $app) {
-            $app->get('/category', \App\Application\Actions\Api\Catalog\Category::class);
-            $app->get('/product', \App\Application\Actions\Api\Catalog\Product::class);
+            $app
+                ->get('/category', \App\Application\Actions\Api\Catalog\Category::class)
+                ->setName('catalog')
+                ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+
+            $app
+                ->get('/product', \App\Application\Actions\Api\Catalog\Product::class)
+                ->setName('catalog')
+                ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
         });
     });
 
@@ -153,16 +160,33 @@ $app
 // file
 $app->group('/file', function (App $app) {
     $app->get('/get/{salt}/{hash}', \App\Application\Actions\Common\File\FileGetAction::class);
-    $app->post('/upload', \App\Application\Actions\Common\File\FileUploadAction::class);
+    $app
+        ->post('/upload', \App\Application\Actions\Common\File\FileUploadAction::class)
+        ->setName('file')
+        ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
 });
 
 // user
 $app->group('/user', function (App $app) {
-    $app->map(['get', 'post'], '/login', \App\Application\Actions\Common\User\UserLoginAction::class);
-    $app->map(['get', 'post'], '/register', \App\Application\Actions\Common\User\UserRegisterAction::class);
-    $app->map(['get', 'post'], '/logout', \App\Application\Actions\Common\User\UserLogoutAction::class);
+    $app
+        ->map(['get', 'post'], '/login', \App\Application\Actions\Common\User\UserLoginAction::class)
+        ->setName('user')
+        ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+
+    $app
+        ->map(['get', 'post'], '/register', \App\Application\Actions\Common\User\UserRegisterAction::class)
+        ->setName('user')
+        ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+
+    $app
+        ->map(['get', 'post'], '/logout', \App\Application\Actions\Common\User\UserLogoutAction::class)
+        ->setName('user')
+        ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+
     $app
         ->map(['get', 'post'], '/profile', \App\Application\Actions\Common\User\UserProfileAction::class)
+        ->setName('user')
+        ->add(\App\Application\Middlewares\IsEnabledMiddleware::class)
         ->add(function (Request $request, Response $response, $next) {
             $user = $request->getAttribute('user', false);
 
@@ -175,16 +199,41 @@ $app->group('/user', function (App $app) {
 });
 
 // form
-$app->post('/form/{unique}', \App\Application\Actions\Common\FormAction::class);
+$app
+    ->post('/form/{unique}', \App\Application\Actions\Common\FormAction::class)
+    ->setName('form')
+    ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
 
 // catalog
-$pathCatalog = $container->get('parameter')->get('catalog_address', 'catalog');
-$app->get("/{$pathCatalog}[/{args:.*}]", \App\Application\Actions\Common\Catalog\ListAction::class);
-$app->map(['get', 'post'], '/cart', \App\Application\Actions\Common\Catalog\CartAction::class);
-$app->get('/cart/done/{order}', \App\Application\Actions\Common\Catalog\CartCompleteAction::class);
+$app
+    ->group('', function (App $app) use ($container) {
+        $pathCatalog = $container->get('parameter')->get('catalog_address', 'catalog');
+
+        // view categories and products
+        $app
+            ->get("/{$pathCatalog}[/{args:.*}]", \App\Application\Actions\Common\Catalog\ListAction::class)
+            ->setName('catalog')
+            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+
+        // view cart
+        $app
+            ->map(['get', 'post'], '/cart', \App\Application\Actions\Common\Catalog\CartAction::class)
+            ->setName('catalog')
+            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+
+        // view order confirm
+        $app
+            ->get('/cart/done/{order}', \App\Application\Actions\Common\Catalog\CartCompleteAction::class)
+            ->setName('catalog')
+            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+    });
+
 
 // guest book
-$app->map(['get', 'post'], '/guestbook[/{page:[0-9]+}}]', \App\Application\Actions\Common\GuestBookAction::class);
+$app
+    ->map(['get', 'post'], '/guestbook[/{page:[0-9]+}}]', \App\Application\Actions\Common\GuestBookAction::class)
+    ->setName('guestbook')
+    ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
 
 // dynamic path handler
 $app->get('/{args:.*}', \App\Application\Actions\Common\DynamicPageAction::class);

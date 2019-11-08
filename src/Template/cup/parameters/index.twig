@@ -60,65 +60,120 @@
 
                             {# TAB: Common #}
                             <div class="tab-pane fade active show" id="common" role="tabpanel">
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Название сайта',
-                                    'description': 'например: "Моя домашняя страница"',
-                                    'type': 'text',
-                                    'name': 'common[title]',
-                                } %}
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6">
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Название сайта',
+                                            'description': 'например: "Моя домашняя страница"',
+                                            'type': 'text',
+                                            'name': 'common[title]',
+                                        } %}
 
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Домашняя страница сайта',
-                                    'description': 'Укажите имя основного домена на котором располагается ваш сайт. Например: http://yoursite.com/',
-                                    'type': 'text',
-                                    'name': 'common[homepage]',
-                                } %}
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Домашняя страница сайта',
+                                            'description': 'Укажите имя основного домена на котором располагается ваш сайт. Например: http://yoursite.com/',
+                                            'type': 'text',
+                                            'name': 'common[homepage]',
+                                        } %}
 
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Описание (Description) сайта',
-                                    'description': 'Краткое описание, не более 200 символов',
-                                    'type': 'text',
-                                    'name': 'common[description]',
-                                } %}
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Описание (Description) сайта',
+                                            'description': 'Краткое описание, не более 200 символов',
+                                            'type': 'text',
+                                            'name': 'common[description]',
+                                        } %}
 
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Описание (Description) сайта',
-                                    'description': 'Краткое описание, не более 200 символов',
-                                    'type': 'textarea',
-                                    'name': 'common[keywords]',
-                                } %}
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Описание (Description) сайта',
+                                            'description': 'Краткое описание, не более 200 символов',
+                                            'type': 'textarea',
+                                            'name': 'common[keywords]',
+                                        } %}
 
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Тема оформления сайта',
-                                    'description': 'По-умолчанию: "default"',
-                                    'type': 'text',
-                                    'name': 'common[theme]',
-                                    'args': {
-                                        'placeholder': 'default',
-                                        'value': 'default'
-                                    }
-                                } %}
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Тема оформления сайта',
+                                            'description': 'По-умолчанию: "default"',
+                                            'type': 'text',
+                                            'name': 'common[theme]',
+                                            'args': {
+                                                'placeholder': 'default',
+                                                'value': 'default'
+                                            }
+                                        } %}
 
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Шаблон главной страницы',
-                                    'type': 'text',
-                                    'name': 'common[template]',
-                                    'args': {
-                                        'placeholder': 'main.twig',
-                                        'value': 'main.twig'
-                                    }
-                                } %}
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Шаблон главной страницы',
+                                            'type': 'text',
+                                            'name': 'common[template]',
+                                            'args': {
+                                                'placeholder': 'main.twig',
+                                                'value': 'main.twig'
+                                            }
+                                        } %}
 
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Формат времени',
-                                    'description': '',
-                                    'type': 'text',
-                                    'name': 'common[date_format]',
-                                    'args': {
-                                        'placeholder': 'j-m-Y, H:i',
-                                        'value': 'j-m-Y, H:i'
-                                    }
-                                } %}
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Формат времени',
+                                            'description': '',
+                                            'type': 'text',
+                                            'name': 'common[date_format]',
+                                            'args': {
+                                                'placeholder': 'j-m-Y, H:i',
+                                                'value': 'j-m-Y, H:i'
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6">
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Включить пользователей',
+                                            'description': 'Позволяет пользователям регистрироваться на сайте',
+                                            'type': 'select',
+                                            'name': 'user[is_enabled]',
+                                            'args': {
+                                                'option': {'yes':'Да', 'no':'Нет'}
+                                            }
+                                        } %}
+
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Включить каталог',
+                                            'description': 'Возможность управлять категориями, товарами и заказами',
+                                            'type': 'select',
+                                            'name': 'catalog[is_enabled]',
+                                            'args': {
+                                                'option': {'yes':'Да', 'no':'Нет'}
+                                            }
+                                        } %}
+
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Включить формы',
+                                            'description': 'Возможность делать формы для получения заполненных анкет от клиентов',
+                                            'type': 'select',
+                                            'name': 'form[is_enabled]',
+                                            'args': {
+                                                'option': {'yes':'Да', 'no':'Нет'}
+                                            }
+                                        } %}
+
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Включить гостевую книгу',
+                                            'description': 'Позволяет пользователям оставлять отзывы о сайте',
+                                            'type': 'select',
+                                            'name': 'guestbook[is_enabled]',
+                                            'args': {
+                                                'option': {'yes':'Да', 'no':'Нет'}
+                                            }
+                                        } %}
+
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Включить загрузку файлов',
+                                            'description': 'Позволяет пользователям загружать файлы на сайт',
+                                            'type': 'select',
+                                            'name': 'file[is_enabled]',
+                                            'args': {
+                                                'option': {'yes':'Да', 'no':'Нет'}
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
                             </div>
 
                             {# TAB: Image #}

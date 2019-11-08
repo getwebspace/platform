@@ -39,6 +39,8 @@ return [
     ],
 
     'settings' => [
+        'determineRouteBeforeAppMiddleware' => true,
+
         'tracy' => [
             'showPhpInfoPanel' => 0,
             'showSlimRouterPanel' => 0,

@@ -10,7 +10,7 @@ function app_create()
     session_start();
 
     // Get app settings
-    $settings = array_merge_recursive(
+    $settings = array_replace_recursive(
         require APP_DIR . '/settings.php',
         require CONFIG_DIR . '/settings.php'
     );
