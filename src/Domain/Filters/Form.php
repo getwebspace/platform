@@ -35,6 +35,8 @@ class Form extends Filter
                 ->addRule($filter->checkStrlenBetween(0, 255))
             ->attr('template')
                 ->addRule($filter->leadStr())
+            ->attr('save_data')
+                ->addRule($filter->leadBoolean())
             ->attr('recaptcha')
                 ->addRule($filter->leadBoolean())
             ->attr('origin')

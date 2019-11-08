@@ -142,7 +142,9 @@ class FormAction extends Action
                     }
                 }
 
-                $this->entityManager->flush();
+                if ($item->save_data === true) {
+                    $this->entityManager->flush();
+                }
 
                 // send mail
                 $mail = $this->send_mail([

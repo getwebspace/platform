@@ -13,6 +13,7 @@ class FormCreateAction extends FormAction
                 'title' => $this->request->getParam('title'),
                 'address' => $this->request->getParam('address'),
                 'template' => $this->request->getParam('template'),
+                'save_data' => $this->request->getParam('save_data'),
                 'recaptcha' => $this->request->getParam('recaptcha'),
                 'origin' => $this->request->getParam('origin'),
                 'mailto' => $this->request->getParam('mailto'),
