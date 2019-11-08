@@ -11,6 +11,11 @@ class FormDeleteAction extends FormAction
             $item = $this->formRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
 
             if (!$item->isEmpty() && $this->request->isPost()) {
+                // remove children category
+                foreach ($this->dataRepository->findBy(['form_uuid' => $item->uuid]) as $row) {
+                    $this->entityManager->remove($row);
+                }
+
                 $this->entityManager->remove($item);
                 $this->entityManager->flush();
             }
