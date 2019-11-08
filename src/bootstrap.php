@@ -10,7 +10,10 @@ function app_create()
     session_start();
 
     // Get app settings
-    $settings = require APP_DIR . '/settings.php';
+    $settings = array_merge_recursive(
+        require APP_DIR . '/settings.php',
+        require CONFIG_DIR . '/settings.php'
+    );
 
     $debug = !isset($settings['settings']['displayErrorDetails']) || $settings['settings']['displayErrorDetails'] === true;
 

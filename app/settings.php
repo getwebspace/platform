@@ -1,11 +1,6 @@
 <?php
 
 return [
-    // secret salt
-    'secret' => [
-        'salt' => "Li8.1Ej2-<Cid3[bE",
-    ],
-
     // Doctrine settings
     'doctrine' => [
         'meta' => [
@@ -28,13 +23,7 @@ return [
             App\Domain\Types\Catalog\ProductStatusType::NAME => \App\Domain\Types\Catalog\ProductStatusType::class,
             App\Domain\Types\Catalog\OrderStatusType::NAME => \App\Domain\Types\Catalog\OrderStatusType::class,
             App\Domain\Types\TaskStatusType::NAME => \App\Domain\Types\TaskStatusType::class,
-        ],
-
-        // Connection to DB settings
-        'connection' => [
-            'driver' => 'pdo_sqlite',
-            'path' => VAR_DIR . '/database.sqlite',
-        ],
+        ]
     ],
 
     // Twig settings
@@ -50,9 +39,6 @@ return [
     ],
 
     'settings' => [
-        'displayErrorDetails' => true, // set to false in production
-        'addContentLengthHeader' => false, // allow the web server to send the content-length header
-
         'tracy' => [
             'showPhpInfoPanel' => 0,
             'showSlimRouterPanel' => 0,
