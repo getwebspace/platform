@@ -24,35 +24,39 @@ class UserLoginAction extends UserAction
 
             $check = \App\Domain\Filters\User::login($data);
 
-            if ($check === true && $this->isRecaptchaChecked()) {
-                /** @var \App\Domain\Entities\User $user */
-                $user = $this->userRepository->findOneBy([$identifier => $data[$identifier]]);
+            if ($check === true) {
+                if ($this->isRecaptchaChecked()) {
+                    /** @var \App\Domain\Entities\User $user */
+                    $user = $this->userRepository->findOneBy([$identifier => $data[$identifier]]);
 
-                if ($user) {
-                    if (crypta_hash_check($data['password'], $user->password)) {
-                        try {
-                            $session = $user->session->replace([
-                                'uuid' => $user->uuid,
-                                'agent' => $data['agent'],
-                                'ip' => $data['ip'],
-                                'date' => new DateTime(),
-                            ]);
-                            $this->entityManager->flush();
+                    if ($user) {
+                        if (crypta_hash_check($data['password'], $user->password)) {
+                            try {
+                                $session = $user->session->replace([
+                                    'uuid' => $user->uuid,
+                                    'agent' => $data['agent'],
+                                    'ip' => $data['ip'],
+                                    'date' => new DateTime(),
+                                ]);
+                                $this->entityManager->flush();
 
-                            $hash = $this->session($session);
+                                $hash = $this->session($session);
 
-                            setcookie('uuid', $user->uuid, time() + \App\Domain\References\Date::YEAR, '/');
-                            setcookie('session', $hash, time() + \App\Domain\References\Date::YEAR, '/');
+                                setcookie('uuid', $user->uuid, time() + \App\Domain\References\Date::YEAR, '/');
+                                setcookie('session', $hash, time() + \App\Domain\References\Date::YEAR, '/');
 
-                            return $this->response->withAddedHeader('Location', $data['redirect'] ? $data['redirect'] : '/user/profile')->withStatus(301);
-                        } catch (Exception $e) {
-                            $this->logger->warning('/login failure', $data);
+                                return $this->response->withAddedHeader('Location', $data['redirect'] ? $data['redirect'] : '/user/profile')->withStatus(301);
+                            } catch (Exception $e) {
+                                $this->logger->warning('/login failure', $data);
+                            }
+                        } else {
+                            $this->addError('password', \App\Domain\References\Errors\User::WRONG_PASSWORD);
                         }
                     } else {
-                        $this->addError('password', \App\Domain\References\Errors\User::WRONG_PASSWORD);
+                        $this->addError($identifier, \App\Domain\References\Errors\User::NOT_FOUND);
                     }
                 } else {
-                    $this->addError($identifier, \App\Domain\References\Errors\User::NOT_FOUND);
+                    $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
                 }
             } else {
                 $this->addErrorFromCheck($check);

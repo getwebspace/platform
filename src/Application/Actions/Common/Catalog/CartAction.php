@@ -45,26 +45,22 @@ class CartAction extends CatalogAction
             $check = \App\Domain\Filters\Catalog\Order::check($data);
 
             if ($check === true && $this->isRecaptchaChecked()) {
-                try {
-                    $model = new \App\Domain\Entities\Catalog\Order($data);
-                    $this->entityManager->persist($model);
+                $model = new \App\Domain\Entities\Catalog\Order($data);
+                $this->entityManager->persist($model);
+                $this->entityManager->flush();
+
+                // if TM is enabled
+                if ($this->getParameter('integration_trademaster_enable', 'off') === 'on') {
+                    // add task send to TradeMaster
+                    $task = new \App\Domain\Tasks\TradeMaster\SendOrderTask($this->container);
+                    $task->execute(['uuid' => $model->uuid]);
                     $this->entityManager->flush();
 
-                    // if TM is enabled
-                    if ($this->getParameter('integration_trademaster_enable', 'off') === 'on') {
-                        // add task send to TradeMaster
-                        $task = new \App\Domain\Tasks\TradeMaster\SendOrderTask($this->container);
-                        $task->execute(['uuid' => $model->uuid]);
-                        $this->entityManager->flush();
-
-                        // run worker
-                        \App\Domain\Tasks\Task::worker();
-                    }
-
-                    return $this->response->withAddedHeader('Location', '/cart/done/' . $model->uuid)->withStatus(301);
-                } catch (Exception $e) {
-                    // todo nothing
+                    // run worker
+                    \App\Domain\Tasks\Task::worker();
                 }
+
+                return $this->response->withAddedHeader('Location', '/cart/done/' . $model->uuid)->withStatus(301);
             }
         }
 

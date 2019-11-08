@@ -24,15 +24,11 @@ class UserProfileAction extends UserAction
             $check = \App\Domain\Filters\User::check($data);
 
             if ($check === true) {
-                try {
-                    $user->replace($data);
-                    $user->change = new \DateTime();
-                    $this->entityManager->flush();
+                $user->replace($data);
+                $user->change = new \DateTime();
+                $this->entityManager->flush();
 
-                    return $this->response->withAddedHeader('Location', '/user/profile')->withStatus(301);
-                } catch (Exception $e) {
-                    // todo nothing
-                }
+                return $this->response->withAddedHeader('Location', '/user/profile')->withStatus(301);
             } else {
                 $this->addErrorFromCheck($check);
             }

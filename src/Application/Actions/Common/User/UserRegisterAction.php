@@ -2,7 +2,6 @@
 
 namespace App\Application\Actions\Common\User;
 
-use Exception;
 use Ramsey\Uuid\Uuid;
 
 class UserRegisterAction extends UserAction
@@ -20,7 +19,7 @@ class UserRegisterAction extends UserAction
             $check = \App\Domain\Filters\User::check($data);
 
             if ($check === true) {
-                try {
+                if ($this->isRecaptchaChecked()) {
                     $uuid = Uuid::uuid4();
                     $session = new \App\Domain\Entities\User\Session();
                     $session->set('uuid', $uuid);
@@ -35,8 +34,8 @@ class UserRegisterAction extends UserAction
                     $this->entityManager->flush();
 
                     return $this->response->withAddedHeader('Location', '/user/login')->withStatus(301);
-                } catch (Exception $e) {
-                    // todo nothing
+                } else {
+                    $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
                 }
             } else {
                 $this->addErrorFromCheck($check);

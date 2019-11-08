@@ -21,13 +21,9 @@ class CategoryUpdateAction extends CatalogAction
                         $file = $this->fileRepository->findOneBy(['uuid' => $uuidFile]);
 
                         if ($file) {
-                            try {
-                                $file->unlink();
-                                $this->entityManager->remove($file);
-                                $this->entityManager->flush();
-                            } catch (Exception $e) {
-                                // todo nothing
-                            }
+                            $file->unlink();
+                            $this->entityManager->remove($file);
+                            $this->entityManager->flush();
                         }
                     } else {
                         $data = [

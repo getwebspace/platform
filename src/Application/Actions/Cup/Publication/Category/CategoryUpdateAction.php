@@ -31,16 +31,12 @@ class CategoryUpdateAction extends PublicationAction
                     $check = \App\Domain\Filters\Publication\Category::check($data);
 
                     if ($check === true) {
-                        try {
-                            $item->replace($data);
-                            $this->entityManager->persist($item);
-                            $this->entityManager->flush();
+                        $item->replace($data);
+                        $this->entityManager->persist($item);
+                        $this->entityManager->flush();
 
-                            if ($this->request->getParam('save', 'exit') === 'exit') {
-                                return $this->response->withAddedHeader('Location', '/cup/publication/category')->withStatus(301);
-                            }
-                        } catch (Exception $e) {
-                            // todo nothing
+                        if ($this->request->getParam('save', 'exit') === 'exit') {
+                            return $this->response->withAddedHeader('Location', '/cup/publication/category')->withStatus(301);
                         }
                     }
                 }
