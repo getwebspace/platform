@@ -37,7 +37,7 @@
                             {% for item in list %}
                                 <tr>
                                     <td>
-                                        <a href="/{{ item.getPublicPath() }}" target="_blank">
+                                        <a href="{{ item.getPublicPath() }}" target="_blank">
                                             {{ item.getName() }}
                                             <i class="fas fa-external-link-alt"></i>
                                         </a>
