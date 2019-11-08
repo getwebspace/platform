@@ -14,7 +14,7 @@ class ProductDeleteAction extends CatalogAction
             /** @var \App\Domain\Entities\Catalog\Product $item */
             $item = $this->productRepository->findOneBy(['uuid' => $this->resolveArg('product'), 'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK]);
 
-            if (!$item->isEmpty() && $this->request->isPost()) {
+            if (!$item->isEmpty()) {
                 $item->set('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_DELETE);
                 $this->entityManager->persist($item);
                 $this->entityManager->flush();

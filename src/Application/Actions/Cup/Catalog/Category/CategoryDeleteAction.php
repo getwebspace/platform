@@ -12,7 +12,7 @@ class CategoryDeleteAction extends CatalogAction
             /** @var \App\Domain\Entities\Catalog\Category $item */
             $item = $this->categoryRepository->findOneBy(['uuid' => $this->resolveArg('category'), 'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]);
 
-            if (!$item->isEmpty() && $this->request->isPost()) {
+            if (!$item->isEmpty()) {
                 $categories = collect($this->categoryRepository->findBy([
                     'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
                 ]));
