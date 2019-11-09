@@ -13,8 +13,11 @@ class MainPageAction extends Action
         if (file_exists(VAR_DIR . '/version_hash.txt')) {
             if (file_exists(VAR_DIR . '/version_tag.txt')) {
                 $tag = file_get_contents(VAR_DIR . '/version_tag.txt');
+                $tag = '<a href="https://github.com/0x12f/platform/tree/' . $tag . '">' . $tag . '</a>';
             }
+
             $hash = file_get_contents(VAR_DIR . '/version_hash.txt');
+            $hash = empty($tag) ? '<a href="https://github.com/0x12f/platform/tree/' . $hash . '">' . $hash . '</a>' : $hash;
 
             $version = !empty($tag) ? $tag . ' (' . $hash . ')' : $hash;
         }
