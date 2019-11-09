@@ -18,6 +18,5 @@ return [
     // App settings
     'settings' => [
         'displayErrorDetails' => true, // set to false in production
-        'addContentLengthHeader' => false, // allow the web server to send the content-length header
     ],
 ];

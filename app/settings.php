@@ -39,6 +39,7 @@ return [
     ],
 
     'settings' => [
+        'addContentLengthHeader' => false, // allow the web server to send the content-length header
         'determineRouteBeforeAppMiddleware' => true,
 
         'tracy' => [
