@@ -8,7 +8,16 @@ class MainPageAction extends Action
 {
     protected function action(): \Slim\Http\Response
     {
-        $version = @exec('cd ' . BASE_DIR . ' && git rev-parse --short HEAD');
+        $version = 'dev';
+
+        if (file_exists(VAR_DIR . '/version_hash.txt')) {
+            if (file_exists(VAR_DIR . '/version_tag.txt')) {
+                $tag = file_get_contents(VAR_DIR . '/version_tag.txt');
+            }
+            $hash = file_get_contents(VAR_DIR . '/version_hash.txt');
+
+            $version = !empty($tag) ? $tag . ' (' . $hash . ')' : $hash;
+        }
 
         return $this->respondRender('cup/layout.twig', [
             'notepad' => $this->getParameter('notepad_' . $this->request->getAttribute('user')->username, ''),
@@ -25,7 +34,7 @@ class MainPageAction extends Action
                 'files' => $this->entityManager->getRepository(\App\Domain\Entities\File::class)->count([]),
             ],
             'properties' => [
-                'version' => $version ? $version : 'dev',
+                'version' => $version,
                 'os' => @implode(' ', [php_uname('s'), php_uname('r'), php_uname('m')]),
                 'php' => PHP_VERSION,
                 'memory_limit' => ini_get('memory_limit'),
