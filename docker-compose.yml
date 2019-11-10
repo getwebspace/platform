@@ -1,20 +1,38 @@
-version: '3'
+version: "2"
+
+networks:
+    lan:
+        external: false
 
 services:
     php:
-        image: 0x12f/php:1.0
-        working_dir: /var/www
-        command: php -S 0.0.0.0:9000 -t public
-        environment:
-            docker: "true"
-        ports:
-            - 9000:9000
+        image: 0x12f/php:latest
         volumes:
-            - $PWD/app:/var/www/app:ro
-            - $PWD/config:/var/www/config:ro
-            - $PWD/public:/var/www/public:ro
-            - $PWD/src:/var/www/src:ro
-            - $PWD/theme:/var/www/theme:ro
-            - $PWD/var:/var/www/var:rw
-            - $PWD/var/upload:/var/www/public/uploads:rw
-            - $PWD/vendor:/var/www/vendor:ro
+            - $PWD/app:/var/container/app:ro
+            - $PWD/config:/var/container/config:ro
+            - $PWD/public:/var/container/public:ro
+            - $PWD/src:/var/container/src:ro
+            - $PWD/theme:/var/container/theme:ro
+            - $PWD/var:/var/container/var:rw
+            - $PWD/var/upload:/var/container/public/uploads:rw
+            - $PWD/vendor:/var/container/vendor:ro
+        networks:
+            - lan
+
+    web:
+        image: alksily/nginx-push-stream-module:latest
+        volumes_from:
+            - php
+        volumes:
+            - $PWD/config/nginx.conf:/etc/nginx/nginx.conf:ro
+            - $PWD/var/log/nginx:/var/log/nginx
+        ports:
+            - 9000:80
+        networks:
+            - lan
+
+    cache:
+        image: redis:4-alpine
+        restart: always
+        networks:
+            - lan
