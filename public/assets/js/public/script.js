@@ -1,3 +1,5 @@
+"use strict";
+
 (() => {
     let
         date = new Date(),
@@ -5,17 +7,17 @@
         
         list = [
             // libs
-            '/libs/simpleCart.min.js',
-            '/libs/sweetalert2.all.min.js',
+            '/assets/js/plugin/simpleCart/simpleCart.min.js',
+            '/assets/js/plugin/sweetalert/sweetalert2.all.min.js',
             
             // plugins
-            '/plugins/catalog.js',
-            '/plugins/polyfills.js',
+            '/assets/js/plugin/polyfills.js',
+            '/assets/js/public/catalog.js',
         ];
     
     list.forEach((file) => {
         let script = document.createElement('script');
-            script.src = '/assets/js/public' + file;
+            script.src = file;
         
         document.body.appendChild(script);
     });
