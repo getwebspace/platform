@@ -113,19 +113,4 @@ $(() => {
         fadeDelay: 1.0            // Point during the overlay's fade-in that the modal begins to fade in (.5 = 50%, 1.5 = 150%, etc.)
     };
     
-    // notification function
-    $.show_notify = (title, message = '', type = 'info', url = '') => {
-        $.notify({
-            title,
-            message,
-            url,
-            target: '_blank'
-        }, {
-            type,
-            animate: {
-                enter: 'animated fadeInRight',
-                exit: 'animated fadeOutRight'
-            }
-        });
-    };
 });

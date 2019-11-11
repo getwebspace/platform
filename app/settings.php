@@ -1,6 +1,11 @@
 <?php
 
 return [
+    // Secret salt
+    'secret' => [
+        'salt' => ($_ENV['ANALYTICS'] ?? "Li8.1Ej2-<Cid3[bE"),
+    ],
+
     // Doctrine settings
     'doctrine' => [
         'meta' => [
@@ -14,16 +19,22 @@ return [
 
         'types' => [
             Ramsey\Uuid\Doctrine\UuidType::NAME => Ramsey\Uuid\Doctrine\UuidType::class,
-            App\Domain\Types\UserLevelType::NAME => \App\Domain\Types\UserLevelType::class,
-            App\Domain\Types\UserStatusType::NAME => \App\Domain\Types\UserStatusType::class,
-            App\Domain\Types\FileItemType::NAME => \App\Domain\Types\FileItemType::class,
-            App\Domain\Types\PageTypeType::NAME => \App\Domain\Types\PageTypeType::class,
-            App\Domain\Types\GuestBookStatusType::NAME => \App\Domain\Types\GuestBookStatusType::class,
             App\Domain\Types\Catalog\CategoryStatusType::NAME => \App\Domain\Types\Catalog\CategoryStatusType::class,
             App\Domain\Types\Catalog\ProductStatusType::NAME => \App\Domain\Types\Catalog\ProductStatusType::class,
             App\Domain\Types\Catalog\OrderStatusType::NAME => \App\Domain\Types\Catalog\OrderStatusType::class,
+            App\Domain\Types\FileItemType::NAME => \App\Domain\Types\FileItemType::class,
+            App\Domain\Types\GuestBookStatusType::NAME => \App\Domain\Types\GuestBookStatusType::class,
+            App\Domain\Types\PageTypeType::NAME => \App\Domain\Types\PageTypeType::class,
             App\Domain\Types\TaskStatusType::NAME => \App\Domain\Types\TaskStatusType::class,
-        ]
+            App\Domain\Types\UserLevelType::NAME => \App\Domain\Types\UserLevelType::class,
+            App\Domain\Types\UserStatusType::NAME => \App\Domain\Types\UserStatusType::class,
+        ],
+
+        // Connection to DB settings
+        'connection' => [
+            'driver' => 'pdo_sqlite',
+            'path' => VAR_DIR . '/database.sqlite',
+        ],
     ],
 
     // Twig settings
@@ -39,6 +50,8 @@ return [
     ],
 
     'settings' => [
+        'enableSentryAnalytics' => (bool)((int)$_ENV['ANALYTICS'] ?? true),
+        'displayErrorDetails' => ((bool)$_ENV['DEBUG'] ?? true), // set to false in production
         'addContentLengthHeader' => false, // allow the web server to send the content-length header
         'determineRouteBeforeAppMiddleware' => true,
 

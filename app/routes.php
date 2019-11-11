@@ -129,11 +129,8 @@ $app
                 // docs
                 $app->get('/docs', \App\Application\Actions\Cup\DocsPageAction::class);
 
-                // task
-                $app->group('/task', function (App $app) {
-                    $app->get('', \App\Application\Actions\Cup\Task\TaskListAction::class);
-                    $app->post('/run', \App\Application\Actions\Cup\Task\TaskRunAction::class);
-                });
+                // task add to queue
+                $app->post('/task/run', \App\Application\Actions\Cup\Task\TaskRunAction::class);
 
                 // dev console
                 $app->post('/console', '\RunTracy\Controllers\RunTracyConsole:index');

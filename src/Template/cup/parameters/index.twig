@@ -112,6 +112,17 @@
                                         } %}
 
                                         {% include 'cup/field.twig' with {
+                                            'label': 'Часовой пояс',
+                                            'description': 'Список поддерживаемых временных зон можно посмотреть <a href="https://www.php.net/manual/ru/timezones.php" target="_blank">тут</a>',
+                                            'type': 'text',
+                                            'name': 'common[timezone]',
+                                            'args': {
+                                                'placeholder': 'Europe/Kiev',
+                                                'value': 'Europe/Kiev'
+                                            }
+                                        } %}
+
+                                        {% include 'cup/field.twig' with {
                                             'label': 'Формат времени',
                                             'description': '',
                                             'type': 'text',
@@ -170,6 +181,20 @@
                                             'name': 'file[is_enabled]',
                                             'args': {
                                                 'option': {'yes':'Да', 'no':'Нет'}
+                                            }
+                                        } %}
+
+                                        <hr>
+
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Период отображение уведомлений',
+                                            'description': 'Укажите количество часов за которые отображать уведомления',
+                                            'postfix': 'часов',
+                                            'type': 'number',
+                                            'name': 'common[notification_period]',
+                                            'args': {
+                                                'placeholder': '24',
+                                                'value': '24'
                                             }
                                         } %}
                                     </div>

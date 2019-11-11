@@ -1,7 +1,9 @@
-<li data-task-list class="nav-item dropdown hidden-caret" style="display: none;">
+{% set tasks = task() %}
+
+<li data-task-list class="nav-item dropdown hidden-caret" {{ tasks.count() ? '' : 'style="display: none"' }}>
     <a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fas fa-tasks"></i>
-        <span class="notification">0</span>
+        <span class="notification">{{ tasks.count() }}</span>
     </a>
     <ul class="dropdown-menu notif-box animated fadeIn" aria-labelledby="notifDropdown">
         <li>
@@ -12,38 +14,16 @@
         <li>
             <div class="notif-scroll scrollbar-outer" style="overflow-y: scroll">
                 <div class="notif-center">
-                    <a href="#">
-                        <div class="notif-content p-2">
-                            <span class="block"></span>
-                            <span class="time"></span>
-                        </div>
-                    </a>
+                    {% for task in tasks %}
+                        <a href="#">
+                            <div class="notif-content pl-4 pr-3">
+                                <span class="block">{{ task.action }}</span>
+                                <span class="time">{{ task.date|date('d.m.Y H:i:s') }}</span>
+                            </div>
+                        </a>
+                    {% endfor %}
                 </div>
             </div>
         </li>
     </ul>
 </li>
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        let $list = $('[data-task-list]'),
-            $listHolder = $list.find('.notif-scroll'),
-            $listEl = $listHolder.find('.notif-center').detach();
-
-        $.get('/cup/task', (res) => {
-            if (res.statusCode === 200 && res.data.length) {
-                $list.find('span.notification').text(res.data.length);
-
-                let $buf;
-                for(let el of res.data) {
-                    $buf = $listEl.clone();
-                    $buf.find('.block').text(el.action);
-                    $buf.find('.time').text(moment(el.date.date).fromNow());
-                    $buf.appendTo($listHolder);
-                }
-
-                $list.show();
-            }
-        })
-    });
-</script>

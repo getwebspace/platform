@@ -102,7 +102,7 @@ abstract class Action
      *
      * @param array $data
      *
-     * @return \PHPMailer\PHPMailer\PHPMailer
+     * @return bool|\PHPMailer\PHPMailer\PHPMailer
      * @throws \PHPMailer\PHPMailer\Exception
      */
     protected function send_mail(array $data = [])
@@ -120,7 +120,11 @@ abstract class Action
             $data
         );
 
-        return Mail::send($data);
+        if ($data['smtp_host'] && $data['smtp_login'] && $data['smtp_pass']) {
+            return Mail::send($data);
+        }
+
+        return false;
     }
 
     /**

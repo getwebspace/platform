@@ -107,16 +107,18 @@ class FormAction extends Action
                     }
                 }
 
-                /**
-                 * save request
-                 * @var \App\Domain\Entities\Form\Data $bid
-                 */
-                $bid = new \App\Domain\Entities\Form\Data([
-                    'form_uuid' => $item->uuid,
-                    'message' => $body,
-                    'date' => new DateTime(),
-                ]);
-                $this->entityManager->persist($bid);
+                if ($item->save_data === true) {
+                    /**
+                     * save request
+                     * @var \App\Domain\Entities\Form\Data $bid
+                     */
+                    $bid = new \App\Domain\Entities\Form\Data([
+                        'form_uuid' => $item->uuid,
+                        'message' => $body,
+                        'date' => new DateTime(),
+                    ]);
+                    $this->entityManager->persist($bid);
+                }
 
                 // prepare mail attachments
                 $attachments = [];
@@ -129,21 +131,19 @@ class FormAction extends Action
                             $file_model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename());
 
                             if ($file_model) {
-                                $file_model->replace([
-                                    'item' => \App\Domain\Types\FileItemType::ITEM_FORM_DATA,
-                                    'item_uuid' => $bid->uuid,
-                                ]);
-                                $this->entityManager->persist($file_model);
+                                if ($item->save_data === true) {
+                                    $file_model->replace([
+                                        'item' => \App\Domain\Types\FileItemType::ITEM_FORM_DATA,
+                                        'item_uuid' => $bid->uuid,
+                                    ]);
+                                    $this->entityManager->persist($file_model);
+                                }
 
                                 // add to attachments
                                 $attachments[$file_model->getName()] = $file_model->getInternalPath();
                             }
                         }
                     }
-                }
-
-                if ($item->save_data === true) {
-                    $this->entityManager->flush();
                 }
 
                 // send mail
@@ -155,19 +155,39 @@ class FormAction extends Action
                     'attachments' => $attachments,
                 ]);
 
-                if (!$mail->isError()) {
-                    $this->logger->info('Form sended: ' . $item->title, ['mailto' => $item->mailto]);
+                // create notify
+                $notify = new \App\Domain\Entities\Notification([
+                    'title' => 'Ответ на форму: ' . $item->title,
+                    'message' => 'Была заполнена форма, проверьте список ответов и/или почту',
+                    'date' => new DateTime(),
+                ]);
+                $this->entityManager->persist($notify);
 
-                    if (
-                        (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != 'xmlhttprequest') && !empty($_SERVER['HTTP_REFERER'])
-                    ) {
-                        $this->response = $this->response->withHeader('Location', $_SERVER['HTTP_REFERER']);
+                // send push stream
+                $this->container->get('pushstream')->send([
+                    'group' => \App\Domain\Types\UserLevelType::LEVEL_ADMIN,
+                    'content' => $notify,
+                ]);
+
+                $this->entityManager->flush();
+
+                if ($mail !== false) {
+                    if (!$mail->isError()) {
+                        $this->logger->info('Form sended: ' . $item->title, ['mailto' => $item->mailto]);
+
+                        if (
+                            (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != 'xmlhttprequest') && !empty($_SERVER['HTTP_REFERER'])
+                        ) {
+                            $this->response = $this->response->withHeader('Location', $_SERVER['HTTP_REFERER']);
+                        }
+                    } else {
+                        $this->logger->warn('Form will not sended: fail', ['mailto' => $item->mailto, 'error' => $mail->ErrorInfo]);
                     }
-                } else {
-                    $this->logger->warn('Form will not sended: fail', ['mailto' => $item->mailto, 'error' => $mail->ErrorInfo]);
+
+                    return $this->respondWithData(['status' => !$mail->isError() ? 'ok' : 'fail', 'error' => $mail->ErrorInfo]);
                 }
 
-                return $this->respondWithData(['status' => !$mail->isError(), 'error' => $mail->ErrorInfo]);
+                return $this->respondWithData(['status' => 'ok']);
             } else {
                 $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
             }

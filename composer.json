@@ -33,7 +33,8 @@
         "samdark/sitemap": "^2.2",
         "monolog/monolog": "^1.17",
         "runcmf/runtracy": "^0.2.10",
-        "twig/intl-extra": "3.x-dev"
+        "twig/intl-extra": "3.x-dev",
+        "sentry/sdk": "2.0.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.5"

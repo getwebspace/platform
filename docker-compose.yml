@@ -7,6 +7,9 @@ networks:
 services:
     php:
         image: 0x12f/php:latest
+        environment:
+            - DEBUG=1
+            - ANALYTICS=0
         volumes:
             - $PWD/app:/var/container/app:ro
             - $PWD/config:/var/container/config:ro

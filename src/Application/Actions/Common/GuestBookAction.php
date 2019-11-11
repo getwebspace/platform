@@ -3,6 +3,7 @@
 namespace App\Application\Actions\Common;
 
 use App\Application\Actions\Action;
+use DateTime;
 use Psr\Container\ContainerInterface;
 
 class GuestBookAction extends Action
@@ -37,8 +38,22 @@ class GuestBookAction extends Action
                 if ($check === true) {
                     $model = new \App\Domain\Entities\GuestBook($data);
                     $model->status = \App\Domain\Types\GuestBookStatusType::STATUS_MODERATE;
-
                     $this->entityManager->persist($model);
+
+                    // create notify
+                    $notify = new \App\Domain\Entities\Notification([
+                        'title' => 'Добавлен отзыв',
+                        'message' => 'Был добавлен отзыв в гостевой книге',
+                        'date' => new DateTime(),
+                    ]);
+                    $this->entityManager->persist($notify);
+
+                    // send push stream
+                    $this->container->get('pushstream')->send([
+                        'group' => \App\Domain\Types\UserLevelType::LEVEL_ADMIN,
+                        'content' => $notify,
+                    ]);
+
                     $this->entityManager->flush();
 
                     if (

@@ -2,7 +2,7 @@
 
 namespace App\Application\Actions\Common\Catalog;
 
-use Exception;
+use DateTime;
 use Slim\Http\Response;
 
 class CartAction extends CatalogAction
@@ -44,23 +44,44 @@ class CartAction extends CatalogAction
 
             $check = \App\Domain\Filters\Catalog\Order::check($data);
 
-            if ($check === true && $this->isRecaptchaChecked()) {
-                $model = new \App\Domain\Entities\Catalog\Order($data);
-                $this->entityManager->persist($model);
-                $this->entityManager->flush();
+            if ($check === true) {
+                if ($this->isRecaptchaChecked()) {
+                    $model = new \App\Domain\Entities\Catalog\Order($data);
+                    $this->entityManager->persist($model);
 
-                // if TM is enabled
-                if ($this->getParameter('integration_trademaster_enable', 'off') === 'on') {
-                    // add task send to TradeMaster
-                    $task = new \App\Domain\Tasks\TradeMaster\SendOrderTask($this->container);
-                    $task->execute(['uuid' => $model->uuid]);
+                    // create notify
+                    $notify = new \App\Domain\Entities\Notification([
+                        'title' => 'Добавлен заказ: ' . $model->serial,
+                        'message' => 'Поступил новый заказ, проверьте список заказов',
+                        'date' => new DateTime(),
+                    ]);
+                    $this->entityManager->persist($notify);
+
+                    // send push stream
+                    $this->container->get('pushstream')->send([
+                        'group' => \App\Domain\Types\UserLevelType::LEVEL_ADMIN,
+                        'content' => $notify,
+                    ]);
+
                     $this->entityManager->flush();
 
-                    // run worker
-                    \App\Domain\Tasks\Task::worker();
-                }
+                    // if TM is enabled
+                    if ($this->getParameter('integration_trademaster_enable', 'off') === 'on') {
+                        // add task send to TradeMaster
+                        $task = new \App\Domain\Tasks\TradeMaster\SendOrderTask($this->container);
+                        $task->execute(['uuid' => $model->uuid]);
+                        $this->entityManager->flush();
 
-                return $this->response->withAddedHeader('Location', '/cart/done/' . $model->uuid)->withStatus(301);
+                        // run worker
+                        \App\Domain\Tasks\Task::worker();
+                    }
+
+                    return $this->response->withAddedHeader('Location', '/cart/done/' . $model->uuid)->withStatus(301);
+                } else {
+                    $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
+                }
+            } else {
+                $this->addErrorFromCheck($check);
             }
         }
 

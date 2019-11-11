@@ -86,7 +86,7 @@ class Order extends Model
     /**
      * @var string
      * @see \App\Domain\Types\Catalog\OrderStatusType::LIST
-     * @ORM\Column(type="CatalogOrderStatusType", length=50)
+     * @ORM\Column(type="CatalogOrderStatusType")
      */
     public $status = \App\Domain\Types\Catalog\OrderStatusType::STATUS_NEW;
 

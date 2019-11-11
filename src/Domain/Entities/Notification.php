@@ -9,9 +9,9 @@ use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="task")
+ * @ORM\Table(name="notification")
  */
-class Task extends Model
+class Notification extends Model
 {
     /**
      * @var Uuid
@@ -23,16 +23,22 @@ class Task extends Model
     public $uuid;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @var Uuid
+     * @ORM\Column(type="uuid", options={"default": NULL}, nullable=true)
      */
-    public $action;
+    public $user_uuid;
 
     /**
      * @var string
-     * @see \App\Domain\Types\TaskStatusType::LIST
-     * @ORM\Column(type="TaskStatusType")
+     * @ORM\Column(type="string", nullable=true)
      */
-    public $status = \App\Domain\Types\TaskStatusType::STATUS_QUEUE;
+    public $title;
+
+    /**
+     * @var string
+     * @ORM\Column(type="text", nullable=true)
+     */
+    public $message;
 
     /**
      * @ORM\Column(type="array")

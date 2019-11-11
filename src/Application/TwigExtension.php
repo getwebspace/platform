@@ -71,6 +71,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             new \Twig\TwigFunction('non_page_path', [$this, 'non_page_path']),
             new \Twig\TwigFunction('current_page_number', [$this, 'current_page_number']),
             new \Twig\TwigFunction('is_current_page_number', [$this, 'is_current_page_number']),
+            new \Twig\TwigFunction('pushstream_channel', [$this, 'pushstream_channel']),
 
             // publication functions
             new \Twig\TwigFunction('files', [$this, 'files']),
@@ -91,6 +92,10 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
             // trademaster
             new \Twig\TwigFunction('tm_api', [$this, 'tm_api']),
+
+            // other
+            new \Twig\TwigFunction('task', [$this, 'task']),
+            new \Twig\TwigFunction('notification', [$this, 'notification']),
         ];
     }
 
@@ -281,6 +286,11 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     public function is_current_page_number($number)
     {
         return $this->current_page_number() == $number;
+    }
+
+    public function pushstream_channel($user_uuid)
+    {
+        return $this->container->get('pushstream')->getChannel($user_uuid);
     }
 
     /*
@@ -597,6 +607,58 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         ]);
 
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:tm_api');
+
+        return $result;
+    }
+
+    /*
+     * other functions
+     */
+
+    public function task($limit = 30)
+    {
+        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:task');
+
+        /** @var \App\Application\TradeMaster $trademaster */
+
+        $qb = $this->entityManager->createQueryBuilder();
+        $query = $qb->select('t')
+            ->from(\App\Domain\Entities\Task::class, 't')
+            ->orderBy('t.date', 'DESC')
+            ->setMaxResults($limit);
+
+        $result = collect($query->getQuery()->getResult());
+        $result->map(function ($obj) {
+            $obj->action = str_replace('App\Domain\Tasks\\', '', $obj->action);
+        });
+
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:task');
+
+        return $result;
+    }
+
+    public function notification($user = null, $limit = 30)
+    {
+        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:notification');
+
+        $qb = $this->entityManager->createQueryBuilder();
+        $query = $qb->select('n')
+            ->from(\App\Domain\Entities\Notification::class, 'n')
+            ->where('n.user_uuid IS NULL' . ($user ? ' OR n.user_uuid = :uuid' : ''))
+            ->andWhere('n.date > :period')
+            ->orderBy('n.date', 'DESC')
+            ->setMaxResults($limit)
+            ->setParameter('uuid', $user)
+            ->setParameter('period',
+                date(
+                    \App\Domain\References\Date::DATETIME,
+                    time() - ($this->parameter('notification_period', \App\Domain\References\Date::HOUR) * 24)
+                )
+            );
+
+        $result = collect($query->getQuery()->getResult());
+
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:notification');
 
         return $result;
     }

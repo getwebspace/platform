@@ -129,6 +129,11 @@ $container['trademaster'] = function (ContainerInterface $c) {
     return new \App\Application\TradeMaster($c);
 };
 
+// push stream
+$container['pushstream'] = function (ContainerInterface $c) {
+    return new \App\Application\PushStream($c);
+};
+
 // monolog
 $container['monolog'] = function (ContainerInterface $c) {
     $settings = $c->get('logger');

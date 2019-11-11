@@ -55,14 +55,14 @@ class User extends Model
     /**
      * @var string
      * @see \App\Domain\Types\UserStatusType::LIST
-     * @ORM\Column(type="UserStatusType", length=50)
+     * @ORM\Column(type="UserStatusType")
      */
     public $status = \App\Domain\Types\UserStatusType::STATUS_WORK;
 
     /**
      * @var string
      * @see \App\Domain\Types\UserLevelType::LIST
-     * @ORM\Column(type="UserLevelType", length=50)
+     * @ORM\Column(type="UserLevelType")
      */
     public $level = \App\Domain\Types\UserLevelType::LEVEL_USER;
 
