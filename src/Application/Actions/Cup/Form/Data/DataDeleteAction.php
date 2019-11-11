@@ -20,14 +20,17 @@ class DataDeleteAction extends FormAction
 
             if (!$item->isEmpty()) {
                 /** @var \App\Domain\Entities\File $file */
-                foreach (
-                    $this->fileRepository->findOneBy([
-                        'item' => \App\Domain\Types\FileItemType::ITEM_FORM_DATA,
-                        'item_uuid' => $this->resolveArg('data'),
-                    ]) as $file
-                ) {
-                    $file->unlink();
-                    $this->entityManager->remove($file);
+
+                $files = $this->fileRepository->findOneBy([
+                    'item' => \App\Domain\Types\FileItemType::ITEM_FORM_DATA,
+                    'item_uuid' => $this->resolveArg('data'),
+                ]);
+
+                if ($files) {
+                    foreach ($files as $file) {
+                        $file->unlink();
+                        $this->entityManager->remove($file);
+                    }
                 }
 
                 $this->entityManager->remove($item);
