@@ -45,7 +45,8 @@ class CartAction extends CatalogAction
             $check = \App\Domain\Filters\Catalog\Order::check($data);
 
             if ($check === true) {
-                if ($this->isRecaptchaChecked()) {
+                // todo включить когда будет переписан скрипт корзины
+                // if ($this->isRecaptchaChecked()) {
                     $model = new \App\Domain\Entities\Catalog\Order($data);
                     $this->entityManager->persist($model);
 
@@ -77,9 +78,9 @@ class CartAction extends CatalogAction
                     }
 
                     return $this->response->withAddedHeader('Location', '/cart/done/' . $model->uuid)->withStatus(301);
-                } else {
-                    $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
-                }
+                // } else {
+                //     $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
+                // }
             } else {
                 $this->addErrorFromCheck($check);
             }
