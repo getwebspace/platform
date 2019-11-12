@@ -15,10 +15,16 @@
             '/assets/js/public/catalog.js',
         ];
     
-    list.forEach((file) => {
-        let script = document.createElement('script');
-            script.src = file;
+    let script,
+        loader = () => {
+            if (list.length) {
+                let script = document.createElement('script');
+                    script.src = list.shift();
+                    script.onload = loader;
         
-        document.body.appendChild(script);
-    });
+                document.body.appendChild(script);
+            }
+        };
+    
+    loader();
 })();
