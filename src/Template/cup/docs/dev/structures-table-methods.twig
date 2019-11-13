@@ -7,7 +7,7 @@
         <tr>
             <td>{{ item.signature }}</td>
             <td>
-                {{ item.description }}
+                {{ item.description|raw }}
                 {% if item.args %}
                     {% for key, args in item.args %}
                         <span class="d-block text-muted">

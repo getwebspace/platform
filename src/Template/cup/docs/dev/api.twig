@@ -11,27 +11,25 @@
 
     <div id="apiCollapse" class="collapse" data-parent="#accordion">
         <div class="card-body">
-            <div class="accordion accordion-secondary">
-                <ul class="nav nav-pills nav-secondary" id="pills-tab" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link" id="v-api-tab-user" data-toggle="pill" href="#v-api-file">File</a>
-                    </li>
-                    <li class="nav-item">
+            <div class="row">
+                <div class="col-xs-12 col-sm-5 col-md-4">
+                    <div class="nav flex-column nav-pills nav-secondary" id="pills-tab" role="tablist">
+                        <a class="nav-link" id="v-api-tab-file" data-toggle="pill" href="#v-api-file">File</a>
                         <a class="nav-link" id="v-api-tab-user" data-toggle="pill" href="#v-api-publication">Publication</a>
-                    </li>
-                    <li class="nav-item submenu">
                         <a class="nav-link" id="v-api-tab-page" data-toggle="pill" href="#v-api-catalog">Catalog</a>
-                    </li>
-                </ul>
-                <div class="tab-content">
-                    <div class="tab-pane fade" id="v-api-file">
-                        {% include 'cup/docs/dev/api/file.twig' %}
                     </div>
-                    <div class="tab-pane fade" id="v-api-publication">
-                        {% include 'cup/docs/dev/api/publication.twig' %}
-                    </div>
-                    <div class="tab-pane fade" id="v-api-catalog">
-                        {% include 'cup/docs/dev/api/catalog.twig' %}
+                </div>
+                <div class="col-xs-12 col-sm-7 col-md-8 mt-5 mt-sm-0">
+                    <div class="tab-content">
+                        <div class="tab-pane fade" id="v-api-file">
+                            {% include 'cup/docs/dev/api/file.twig' %}
+                        </div>
+                        <div class="tab-pane fade" id="v-api-publication">
+                            {% include 'cup/docs/dev/api/publication.twig' %}
+                        </div>
+                        <div class="tab-pane fade" id="v-api-catalog">
+                            {% include 'cup/docs/dev/api/catalog.twig' %}
+                        </div>
                     </div>
                 </div>
             </div>

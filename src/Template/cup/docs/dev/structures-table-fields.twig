@@ -9,7 +9,7 @@
             <td>{{ item.field }} {{ item.requried ? '<b>*</b>'|raw : '' }}</td>
             <td>{{ item.type }}</td>
             <td>
-                {{ item.description }}
+                {{ item.description|raw }}
                 {{ item.unique ? '<b class="d-block">Unique</b>'|raw : '' }}
                 {{ item.null ? '<b class="d-block">Nullable</b>'|raw : '' }}
             </td>

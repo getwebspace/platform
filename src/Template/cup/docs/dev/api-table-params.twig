@@ -7,7 +7,7 @@
         <tr>
             <td>{{ item.key }} {{ item.requried ? '<b>*</b>'|raw : '' }}</td>
             <td>
-                {{ item.description }}
+                {{ item.description|raw }}
                 {% if item.default %}
                     <span class="d-block text-muted">по-умолчанию: {{ item.default }}</span>
                 {% endif %}
