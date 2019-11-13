@@ -1,80 +1,54 @@
 <div class="pt-2">
-    <h4>Модель записи в Гостевой Книге</h4>
+    <h3>Модель записи в Гостевой Книге</h3>
 
-    <h5>Поля</h5>
-    <table class="table">
-        <tr>
-            <th>Поле</th>
-            <th width="10%">Тип</th>
-            <th>Описание</th>
-            <th width="5%">Required</th>
-            <th width="5%">Unique</th>
-            <th width="5%">Null</th>
-        </tr>
-        <tr>
-            <td>uuid</td>
-            <td>Uuid(36)</td>
-            <td>Уникальный идентификатор</td>
-            <td class="text-center">+</td>
-            <td class="text-center">+</td>
-            <td class="text-center">-</td>
-        </tr>
-        <tr>
-            <td>name</td>
-            <td>string(50)</td>
-            <td>Имя автора</td>
-            <td class="text-center">+</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-        </tr>
-        <tr>
-            <td>email</td>
-            <td>string(50)</td>
-            <td>E-Mail автора</td>
-            <td class="text-center">+</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-        </tr>
-        <tr>
-            <td>message</td>
-            <td>String</td>
-            <td>Текст сообщения</td>
-            <td class="text-center">+</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-        </tr>
-        <tr>
-            <td>response</td>
-            <td>String</td>
-            <td>Текст ответа администратора</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-        </tr>
-        <tr>
-            <td>status</td>
-            <td>GuestBookStatusType(50)</td>
-            <td>Статус записи</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-        </tr>
-        <tr>
-            <td>date</td>
-            <td>DateTime</td>
-            <td>Дата публикации</td>
-            <td class="text-center">+</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-        </tr>
-    </table>
+    <ul class="mt-3 mb-3">
+        <li>Поля</li>
+    </ul>
 
-    <h5>Методы</h5>
-    <table class="table">
-        <tr>
-            <th width="30%">Сигнатура</th>
-            <th>Описание</th>
-            <th width="10%">Результат</th>
-        </tr>
-    </table>
+    <h4>Поля</h4>
+    {% include "cup/docs/dev/structures-table-fields.twig" with {
+        "list": collect([
+            {
+                "field": "uuid",
+                "type": "Uuid(36)",
+                "description": "Уникальный идентификатор",
+                "requried": true,
+                "unique": true,
+            },
+            {
+                "field": "name",
+                "type": "String(50)",
+                "description": "Имя автора",
+                "requried": true,
+            },
+            {
+                "field": "email",
+                "type": "String(50)",
+                "description": "E-Mail адрес автора",
+                "requried": true,
+            },
+            {
+                "field": "message",
+                "type": "String",
+                "description": "Текст сообщения",
+                "requried": true,
+            },
+            {
+                "field": "response",
+                "type": "String",
+                "description": "Текст сообщения",
+            },
+            {
+                "field": "status",
+                "type": "GuestBookStatusType",
+                "description": "Статус записи",
+            },
+            {
+                "field": "date",
+                "type": "DateTime",
+                "description": "Дата публикации",
+                "requried": true,
+            },
+        ])
+    } %}
 </div>

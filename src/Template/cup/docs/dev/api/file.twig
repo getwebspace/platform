@@ -1,7 +1,7 @@
 <div class="pt-2">
     <h3>Файлы</h3>
 
-    <ul class="mt-3 mb-5">
+    <ul class="mt-3 mb-3">
         <li>Список файлов</li>
     </ul>
 
@@ -15,14 +15,14 @@
     <h5>Параметры запроса</h5>
     {% include "cup/docs/dev/api-table-params.twig" with {
         "list": collect([
-            {'key': 'uuid[]', 'description': 'Уникальный идентификатор категории'},
-            {'key': 'item[]', 'description': 'Тип сущности к которой привязан файл'},
-            {'key': 'item_uuid[]', 'description': 'Уникальный идентификатор сущности к которой привязан файл'},
-            {'key': 'ext[]', 'description': 'Расширение файла'},
+            {"key": "uuid[]", "description": "Уникальный идентификатор категории"},
+            {"key": "item[]", "description": "Тип сущности к которой привязан файл"},
+            {"key": "item_uuid[]", "description": "Уникальный идентификатор сущности к которой привязан файл"},
+            {"key": "ext[]", "description": "Расширение файла"},
 
-            {'key': 'order[]', 'description': 'Сортировка по указанным полям'},
-            {'key': 'limit', 'description': 'Количество строк результатов', 'default': '1000'},
-            {'key': 'offset', 'description': 'Отступ строк от начала'},
+            {"key": "order[]", "description": "Сортировка по указанным полям"},
+            {"key": "limit", "description": "Количество строк результатов", "default": "1000"},
+            {"key": "offset", "description": "Отступ строк от начала"},
         ])
     } %}
 </div>

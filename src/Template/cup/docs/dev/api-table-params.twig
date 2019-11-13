@@ -1,13 +1,11 @@
 <table class="table">
     <tr>
         <th>Параметр</th>
-        <th>Обязательный?</th>
         <th>Описание</th>
     </tr>
     {% for item in list %}
         <tr>
-            <td class="text-center">{{ item.key }}</td>
-            <td class="text-center">{{ item.requried ? '+' : '-' }}</td>
+            <td>{{ item.key }} {{ item.requried ? '<b>*</b>'|raw : '' }}</td>
             <td>
                 {{ item.description }}
                 {% if item.default %}
@@ -16,4 +14,7 @@
             </td>
         </tr>
     {% endfor %}
+    <tr>
+        <td class="text-center" colspan="2"><span class="d-block text-muted">* - обязательный параметр запроса</span></td>
+    </tr>
 </table>
