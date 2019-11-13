@@ -6,6 +6,9 @@ use Slim\Http\Response;
 
 $app
     ->group('/api', function (App $app) {
+        // files
+        $app->get('/files', \App\Application\Actions\Api\File\File::class);
+
         // publications
         $app->group('/publication', function (App $app) {
             $app->get('', \App\Application\Actions\Api\Publication\Publication::class);

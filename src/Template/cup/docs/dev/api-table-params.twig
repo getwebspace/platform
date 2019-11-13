@@ -1,0 +1,19 @@
+<table class="table">
+    <tr>
+        <th>Параметр</th>
+        <th>Обязательный?</th>
+        <th>Описание</th>
+    </tr>
+    {% for item in list %}
+        <tr>
+            <td class="text-center">{{ item.key }}</td>
+            <td class="text-center">{{ item.requried ? '+' : '-' }}</td>
+            <td>
+                {{ item.description }}
+                {% if item.default %}
+                    <span class="d-block text-muted">по-умолчанию: {{ item.default }}</span>
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+</table>

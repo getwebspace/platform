@@ -1,138 +1,54 @@
 <div class="pt-2">
-    <h4>Каталог товаров</h4>
+    <h3>Каталог товаров</h3>
 
-    <h5>Список категорий товаров</h5>
-    <code style="display:block; margin-bottom: 20px;">
+    <ul class="mt-3 mb-5">
+        <li>Список категорий товаров</li>
+        <li>Список товаров</li>
+    </ul>
+
+    <h4>Список категорий товаров</h4>
+    <code class="block pt-3 pb-3">
         curl -X GET \<br/>
         -H "Accept: application/json" \<br/>
         "{{ base_url() }}/api/catalog/category?status=work&order[field1]=desc&limit=10"
     </code>
 
     <h5>Параметры запроса</h5>
-    <table class="table">
-        <tr>
-            <th>Параметр</th>
-            <th>Обязательный?</th>
-            <th>Описание</th>
-        </tr>
-        <tr>
-            <td>uuid[]</td>
-            <td></td>
-            <td>Уникальный идентификатор категории</td>
-        </tr>
-        <tr>
-            <td>parent[]</td>
-            <td></td>
-            <td>Идентификатор родительской категории</td>
-        </tr>
-        <tr>
-            <td>address</td>
-            <td></td>
-            <td>Адрес категории</td>
-        </tr>
-        <tr>
-            <td>status</td>
-            <td></td>
-            <td>
-                Статус категории
-                <span class="d-block text-muted">по-умолчанию: work</span>
-            </td>
-        </tr>
-        <tr>
-            <td>external_id[]</td>
-            <td></td>
-            <td>Внешний идентификатор</td>
-        </tr>
+    {% include "cup/docs/dev/api-table-params.twig" with {
+        "list": collect([
+            {'key': 'uuid[]', 'description': 'Уникальный идентификатор категории'},
+            {'key': 'parent[]', 'description': 'Идентификатор родительской категории'},
+            {'key': 'address', 'description': 'Адрес категории'},
+            {'key': 'status', 'description': 'Статус категории', 'default': 'work'},
+            {'key': 'external_id', 'description': 'Внешний идентификатор'},
 
-        <tr>
-            <td>order[]</td>
-            <td></td>
-            <td>Сортировка по указанным полям</td>
-        </tr>
-        <tr>
-            <td>limit</td>
-            <td></td>
-            <td>
-                Количество строк результатов
-                <span class="d-block text-muted">по-умолчанию: 10</span>
-            </td>
-        </tr>
-        <tr>
-            <td>offset</td>
-            <td></td>
-            <td>
-                Отступ строк от начала
-                <span class="d-block text-muted">по-умолчанию: 0</span>
-            </td>
-        </tr>
-    </table>
+            {'key': 'order[]', 'description': 'Сортировка по указанным полям'},
+            {'key': 'limit', 'description': 'Количество строк результатов', 'default': '1000'},
+            {'key': 'offset', 'description': 'Отступ строк от начала'},
+        ])
+    } %}
 
-    <hr>
+    <hr class="pb-2">
 
-    <h5>Список товаров</h5>
-    <code style="display:block; padding-bottom: 20px;">
+    <h4>Список товаров</h4>
+    <code class="block pt-3 pb-3">
         curl -X GET \<br/>
         -H "Accept: application/json" \<br/>
         "{{ base_url() }}/api/catalog/product?order[field1]=desc&limit=10"
     </code>
 
     <h5>Параметры запроса</h5>
-    <table class="table">
-        <tr>
-            <th>Параметр</th>
-            <th>Обязательный?</th>
-            <th>Описание</th>
-        </tr>
-        <tr>
-            <td>uuid[]</td>
-            <td></td>
-            <td>Уникальный идентификатор товара</td>
-        </tr>
-        <tr>
-            <td>category[]</td>
-            <td></td>
-            <td>Идентификатор категории</td>
-        </tr>
-        <tr>
-            <td>address</td>
-            <td></td>
-            <td>Адрес товара</td>
-        </tr>
-        <tr>
-            <td>status</td>
-            <td></td>
-            <td>
-                Статус товара
-                <span class="d-block text-muted">по-умолчанию: work</span>
-            </td>
-        </tr>
-        <tr>
-            <td>external_id[]</td>
-            <td></td>
-            <td>Внешний идентификатор</td>
-        </tr>
+    {% include "cup/docs/dev/api-table-params.twig" with {
+        "list": collect([
+            {'key': 'uuid[]', 'description': 'Уникальный идентификатор категории'},
+            {'key': 'category[]', 'description': 'Идентификатор категории'},
+            {'key': 'address', 'description': 'Адрес товара'},
+            {'key': 'status', 'description': 'Статус товара', 'default': 'work'},
+            {'key': 'external_id', 'description': 'Внешний идентификатор'},
 
-        <tr>
-            <td>order[]</td>
-            <td></td>
-            <td>Сортировка по указанным полям</td>
-        </tr>
-        <tr>
-            <td>limit</td>
-            <td></td>
-            <td>
-                Количество строк результатов
-                <span class="d-block text-muted">по-умолчанию: 10</span>
-            </td>
-        </tr>
-        <tr>
-            <td>offset</td>
-            <td></td>
-            <td>
-                Отступ строк от начала
-                <span class="d-block text-muted">по-умолчанию: 0</span>
-            </td>
-        </tr>
-    </table>
-
+            {'key': 'order[]', 'description': 'Сортировка по указанным полям'},
+            {'key': 'limit', 'description': 'Количество строк результатов', 'default': '1000'},
+            {'key': 'offset', 'description': 'Отступ строк от начала'},
+        ])
+    } %}
 </div>
