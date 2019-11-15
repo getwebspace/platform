@@ -90,10 +90,13 @@ class PushStream
      *
      * @return bool
      */
-    protected function isOnline($user_uuid)
+    public function isOnline($channel)
     {
-        if ($user_uuid) {
-            $result = @$this->http(['url' => '/channels-stats?id=' . $this->getChannel($user_uuid)]);
+        if ($channel) {
+            if (\Ramsey\Uuid\Uuid::isValid($channel)) {
+                $channel = $this->getChannel($channel);
+            }
+            $result = @$this->http(['url' => '/channels-stats?id=' . $channel]);
             $stat = json_decode($result, true);
             if ($stat && $stat['subscribers'] > 0) {
                 return true;
