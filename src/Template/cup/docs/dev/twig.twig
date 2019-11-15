@@ -1,0 +1,81 @@
+<div class="card">
+    <div class="card-header collapsed" id="twigCollapseHeading" data-toggle="collapse" data-target="#twigCollapse">
+        <div class="span-icon">
+            <div class="flaticon-box-1"></div>
+        </div>
+        <div class="span-title">
+            Описание дополнительных функций TWIG
+        </div>
+        <div class="span-mode"></div>
+    </div>
+
+    <div id="twigCollapse" class="collapse" data-parent="#accordion">
+        <div class="card-body">
+            <p>
+                Здесь содержится список функций добавленных в Twig при разработке движка.
+            </p>
+
+            <b>Filters</b>
+            <ul>
+                <li><b>count</b> - возвращает количество элементов в объекте <code>interface Countable</code></li>
+                <li><b>df</b> - форматирует дату в формат указанный в настройках системы</li>
+            </ul>
+
+            <b>Functions</b>
+            <span class="d-block text-muted">(slimframework functions)</span>
+            <ul>
+                <li><b>path_for($name, $data = [], $queryParams = [])</b> - возвращает путь для <code>Route</code></li>
+                <li><b>full_url_for($name, $data = [], $queryParams = [])</b> - метод похож на path_for</li>
+                <li><b>base_url()</b> - возвращает хост</li>
+                <li><b>is_current_path($name, $data = [])</b> - сранивает текущий пути</li>
+                <li><b>current_path($withQueryString = false)</b> - возвращает текущий путь</li>
+            </ul>
+
+            <span class="d-block text-muted">(0x12f functions)</span>
+            <ul>
+                <li><b>form($type, $name, $args = [])</b> - возвращает элемент формы (<a href="https://github.com/alksily/support/blob/master/src/Form.php#L31" target="_blank">src</a>)</li>
+                <li><b>reference($reference, $value = null)</b> - возвращает значение константы</li>
+                <li><b>parameter($key = null, $default = null)</b> - возвращает значение параметры или значение по-умолчанию</li>
+                <li><b>pre(...$args)</b> - функция для отладки</li>
+                <li><b>count($obj)</b> - возвращает количество элементов в объекте <code>interface Countable</code></li>
+                <li><b>df($obj = 'now', $default = 'j-m-Y, H:i')</b> - форматирует дату в формат указанный в настройках системы</li>
+                <li><b>collect(array $array = [])</b> - возвращает коллекцию (<a href="https://github.com/alksily/entity/blob/master/src/Collection.php#L39" target="_blank">src</a>)</li>
+                <li><b>non_page_path()</b> - возвращает текущий путь страницы без указания номера pagination</li>
+                <li><b>is_current_page_number()</b> - сравнивает номер pagination с переданным</li>
+                <li><b>current_page_number($number)</b> - возвращает текущий номер pagination</li>
+                <li><b>pushstream_channel($user_uuid)</b> - возвращает канал pushstream для текущего пользователя</li>
+            </ul>
+
+            <span class="d-block text-muted">(files functions)</span>
+            <ul>
+                <li><b>files($data = [])</b> - возвращает список файлов подходящий под выборку (ищет по uuid, item, item_uuid)</li>
+            </ul>
+
+            <span class="d-block text-muted">(publication functions)</span>
+            <ul>
+                <li><b>publication($category = null, $order = [], $limit = 10, $offset = null)</b> - получение списка публикаций (ищет по uuid, address)</li>
+                <li><b>publication_category($limit = null)</b> - получение списка категорий публикаций</li>
+            </ul>
+
+            <span class="d-block text-muted">(guestbook functions)</span>
+            <ul>
+                <li><b>guestbook($order = [], $limit = 10, $offset = null)</b> - получение списка записей в гостевой книге</li>
+            </ul>
+
+            <span class="d-block text-muted">(catalog functions)</span>
+            <ul>
+                <li><b>catalog_category()</b> - возвращает список категорий товаров</li>
+                <li><b>catalog_breadcrumb(\App\Domain\Entities\Catalog\Category $category = null)</b> - возвращает список родительских категорий для выбранной категории</li>
+                <li><b>catalog_product($category = null, $order = [], $limit = 10, $offset = null)</b> - возвращает список товаров (ищет по category, address)</li>
+                <li><b>catalog_product_view(\Ramsey\Uuid\UuidInterface $uuid = null, $limit = 10)</b> - сохраняет переданный в аргумент uuid товара, если null возвращает список товаров</li>
+                <li><b>catalog_order($unique)</b> - получение заказа</li>
+            </ul>
+
+            <span class="d-block text-muted">(other functions)</span>
+            <ul>
+                <li><b>task($limit = 30)</b> - возвращает список фоновых задач</li>
+                <li><b>notification($user = null, $limit = 30)</b> - возвращает список уведомлений</li>
+            </ul>
+        </div>
+    </div>
+</div>

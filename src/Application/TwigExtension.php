@@ -73,7 +73,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             new \Twig\TwigFunction('is_current_page_number', [$this, 'is_current_page_number']),
             new \Twig\TwigFunction('pushstream_channel', [$this, 'pushstream_channel']),
 
-            // publication functions
+            // files functions
             new \Twig\TwigFunction('files', [$this, 'files']),
 
             // publication functions
@@ -181,10 +181,10 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
      *
      * @return void
      */
-    public function setBaseUrl($baseUrl)
-    {
-        $this->uri = $baseUrl;
-    }
+//    public function setBaseUrl($baseUrl)
+//    {
+//        $this->uri = $baseUrl;
+//    }
 
     /*
      * 0x12f functions
