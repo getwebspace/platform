@@ -72,6 +72,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             new \Twig\TwigFunction('current_page_number', [$this, 'current_page_number']),
             new \Twig\TwigFunction('is_current_page_number', [$this, 'is_current_page_number']),
             new \Twig\TwigFunction('pushstream_channel', [$this, 'pushstream_channel']),
+            new \Twig\TwigFunction('qr_code', [$this, 'qr_code'], ['is_safe' => ['html']]),
 
             // files functions
             new \Twig\TwigFunction('files', [$this, 'files']),
@@ -291,6 +292,17 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     public function pushstream_channel($user_uuid)
     {
         return $this->container->get('pushstream')->getChannel($user_uuid);
+    }
+
+    public function qr_code($value, $width = 256, $height = 256)
+    {
+        $renderer = new \BaconQrCode\Renderer\Image\Png();
+        $renderer->setWidth($width);
+        $renderer->setHeight($height);
+
+        $writer = new \BaconQrCode\Writer($renderer);
+
+        return '<img src="data:image/png;base64,' . base64_encode($writer->writeString($value)) . '" height="'.$height.'" width="'.$width.'">';
     }
 
     /*
