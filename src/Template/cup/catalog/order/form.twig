@@ -151,7 +151,13 @@
                     <div class="card-header">
                         <div class="d-flex align-items-center">
                             <div class="card-title">Состав заказа</div>
-                            <button type="button" data-btn-modal-products class="btn btn-primary btn-round ml-auto">
+
+                            <a href="#btn-modal-scan" rel="modal:open" class="btn btn-icon btn-info ml-auto">
+                                <i class="fas fa-barcode"></i>
+                            </a>
+                            {% include "cup/catalog/barcode-modal.twig" %}
+
+                            <button type="button" data-btn-modal-products class="btn btn-primary btn-round ml-1">
                                 <i class="fa fa-plus"></i>
                                 Добавить товар
                             </button>
@@ -363,6 +369,49 @@
                         .find('td:last-child').html($('<div class="form-group">').append($input));
 
                     $.modal.close();
+                }
+            });
+
+            $(window).on('event:barcode_scan:result', (e, data) => {
+                if (data.barcode) {
+                    $.get('/api/catalog/product', {'barcode': data.barcode}, (res) => {
+                        if (res && res.statusCode === 200) {
+                            if (res.data.legend) {
+                                let product = res.data[0],
+                                    $input = $('<input class="form-control" type="number" placeholder="1" min="0" step="any">')
+                                        .attr('name', 'list[' + product.uuid + ']').val(1)
+                                ;
+
+                                table.row.add([product.title, product.price, 1])
+                                    .draw(true)
+                                    .nodes().to$()
+                                    .find('td:last-child').html($('<div class="form-group">').append($input));
+
+                                $.notify({
+                                    title: 'Отсканирован код',
+                                    message: 'В перечень товаров был добавлен товар: ' + product.title
+                                }, {
+                                    type: 'info',
+                                    animate: {
+                                        enter: 'animated fadeInRight',
+                                        exit: 'animated fadeOutRight'
+                                    }
+                                });
+                            } else {
+                                $.notify({
+                                    title: 'Отсканирован код',
+                                    message: 'Товар с кодом: ' + data.barcode + ' не найден'
+                                }, {
+                                    type: 'warning',
+                                    animate: {
+                                        enter: 'animated fadeInRight',
+                                        exit: 'animated fadeOutRight'
+                                    }
+                                });
+                            }
+
+                        }
+                    });
                 }
             });
         })

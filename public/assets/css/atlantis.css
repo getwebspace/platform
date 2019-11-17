@@ -20228,3 +20228,7 @@ body[data-background-color="dark"] .board {
 .table.table-properties {
     word-break: break-all;
 }
+
+.blocker {
+    z-index: 10;
+}

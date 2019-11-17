@@ -22,7 +22,13 @@
                             </a>
                         {% endif %}
                         <h4 class="card-title">Список товаров {{ category ? 'в категории ' ~ category.title : '' }} ({{ products.count() }})</h4>
-                        <a href="/cup/catalog/product/add{{ category ? '?category=' ~ category.uuid : '' }}" class="btn btn-primary btn-round ml-auto">
+
+                        <a href="#btn-modal-scan" rel="modal:open" class="btn btn-icon btn-info ml-auto">
+                            <i class="fas fa-barcode"></i>
+                        </a>
+                        {% include "cup/catalog/barcode-modal.twig" %}
+
+                        <a href="/cup/catalog/product/add{{ category ? '?category=' ~ category.uuid : '' }}" class="btn btn-primary btn-round ml-1">
                             <i class="fa fa-plus"></i>
                             Добавить товар
                         </a>
@@ -53,7 +59,14 @@
                                     <tr>
                                         {# поле для сортировки данных в таблице #}
                                         <td style="display: none">{{ item.order }}</td>
-                                        <td>{{ item.vendorcode }}</td>
+                                        <td>
+                                            {% if item.vendorcode %}
+                                                <div>{{ item.vendorcode }}</div>
+                                            {% endif %}
+                                            {% if item.barcode %}
+                                                <div><i class="fas fa-barcode d-inline pr-1"></i>{{ item.barcode }}</div>
+                                            {% endif %}
+                                        </td>
                                         <td>
                                             <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ buf.address }}/{{ item.address }}" target="_blank">
                                                 {{ item.title }}
@@ -117,4 +130,33 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block script %}
+    {{ parent() }}
+
+    <script>
+        $(() => {
+            let
+                $table = $('[data-table]'),
+                table = $table.DataTable();
+
+            $(window).on('event:barcode_scan:result', (e, data) => {
+                if (data.barcode) {
+                    table.search(data.barcode).draw();
+
+                    $.notify({
+                        title: 'Отсканирован код',
+                        message: data.barcode
+                    }, {
+                        type: 'info',
+                        animate: {
+                            enter: 'animated fadeInRight',
+                            exit: 'animated fadeOutRight'
+                        }
+                    });
+                }
+            });
+        })
+    </script>
 {% endblock %}

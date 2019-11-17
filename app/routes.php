@@ -33,6 +33,9 @@ $app
     ->group('/cup', function (App $app) {
         $app->map(['get', 'post'], '/login', \App\Application\Actions\Cup\LoginPageAction::class);
 
+        // catalog scan
+        $app->get('/catalog/product/scan/{channel}', \App\Application\Actions\Cup\Catalog\CatalogScanAction::class);
+
         $app
             ->group('', function (App $app) {
                 // main page
