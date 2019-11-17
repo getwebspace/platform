@@ -86,7 +86,7 @@ class GuestBookAction extends Action
                     $name = implode(array_slice($em, 0, count($em) - 1), '@');
                     $len = floor(strlen($name) / 2);
 
-                    $el->email = substr($name, 0, $len) . str_repeat('*', $len) . '@' . end($em);
+                    $el->email = mb_substr($name, 0, $len) . str_repeat('*', $len) . '@' . end($em);
                 }
 
                 return $el;

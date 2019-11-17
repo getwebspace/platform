@@ -97,7 +97,7 @@ class User extends Model
                     return implode(' ', [$this->lastname, $this->firstname]);
                     break;
                 case 'short':
-                    return implode(' ', [substr($this->lastname, 0, 1) . '.', $this->firstname]);
+                    return implode(' ', [mb_substr($this->lastname, 0, 1) . '.', $this->firstname]);
                     break;
             }
         }
