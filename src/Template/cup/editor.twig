@@ -5,13 +5,14 @@
         'label': label,
         'type': 'textarea',
         'name': name,
-        'args': args|merge({'id': 'wysiwygeditor-' ~ editorId})
+        'args': args|merge({'id': 'wysiwygeditor-' ~ editorId, 'method': null})
     } %}
 
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', () => {
             let $editor = $('#wysiwygeditor-{{ editorId }}')
                 .froalaEditor({
+                    iframe: true,
                     width: '100%',
                     height: '300',
                     language: 'ru',
@@ -56,6 +57,7 @@
                     htmlUntouched: true,
                     htmlExecuteScripts: false,
                     fullPage: false,
+                    entities: ''
                 });
 
             if ('{{ item.type }}' === 'text') {
