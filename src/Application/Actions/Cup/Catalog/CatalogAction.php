@@ -42,6 +42,26 @@ abstract class CatalogAction extends Action
     }
 
     /**
+     * @param \Alksily\Entity\Collection                 $categories
+     * @param \App\Domain\Entities\Catalog\Category|null $curCategory
+     *
+     * @return array
+     */
+    protected function getCategoryChildrenUUID(\Alksily\Entity\Collection $categories, \App\Domain\Entities\Catalog\Category $curCategory = null)
+    {
+        $result = [$curCategory->uuid->toString()];
+
+        if ($curCategory->children) {
+            /** @var \App\Domain\Entities\Catalog\Category $category */
+            foreach ($categories->where('parent', $curCategory->uuid) as $childCategory) {
+                $result = array_merge($result, $this->getCategoryChildrenUUID($categories, $childCategory));
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * @param bool $list
      * if false return key:value
      * if true return key:list

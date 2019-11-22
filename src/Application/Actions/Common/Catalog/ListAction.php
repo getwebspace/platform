@@ -3,7 +3,6 @@
 namespace App\Application\Actions\Common\Catalog;
 
 use Alksily\Entity\Collection;
-use Psr\Container\ContainerInterface;
 use Slim\Http\Response;
 
 class ListAction extends CatalogAction

@@ -4,7 +4,7 @@ namespace App\Application\Actions\Cup\Catalog\Product;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
 
-class ProductListAction extends CatalogAction
+class ProductExportAction extends CatalogAction
 {
     protected function action(): \Slim\Http\Response
     {
@@ -38,10 +38,13 @@ class ProductListAction extends CatalogAction
                 break;
         }
 
-        return $this->respondRender('cup/catalog/product/index.twig', [
-            'categories' => $categories,
-            'category' => $category,
-            'products' => $products
-        ]);
+        return $this->response
+            ->withAddedHeader('Content-type', 'application/excel; charset=utf-8')
+            ->withAddedHeader('Content-Disposition', 'attachment; filename="export products ' . ($category ? '"' . $category->title . '"' : '') . date(\App\Domain\References\Date::DATETIME) . '.xls"')
+            ->write("\xEF\xBB\xBF" . $this->renderer->fetch('cup/catalog/product/export.twig', [
+                'categories' => $categories,
+                'category' => $category,
+                'products' => $products,
+            ]));
     }
 }

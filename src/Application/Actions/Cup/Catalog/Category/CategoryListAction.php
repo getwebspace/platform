@@ -29,7 +29,6 @@ class CategoryListAction extends CatalogAction
                     'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
                 ]));
                 break;
-            case false:
             default:
                 $categories = collect($this->categoryRepository->findBy([
                     'parent' => $category->uuid,

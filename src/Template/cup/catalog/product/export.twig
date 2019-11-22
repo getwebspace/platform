@@ -1,0 +1,41 @@
+<table border="1">
+    <thead>
+    <tr>
+        <th>Наименование</th>
+        <th>Категория</th>
+        <th>Цена</th>
+        <th>Себестоимость</th>
+        <th>Оптовая цена</th>
+        <th>Артикул</th>
+        <th>Штрихкод</th>
+        <th>{{ category.product.field_1 ? category.product.field_1 : 'Поле 1' }}</th>
+        <th>{{ category.product.field_2 ? category.product.field_2 : 'Поле 2' }}</th>
+        <th>{{ category.product.field_3 ? category.product.field_3 : 'Поле 3' }}</th>
+        <th>Объем упаковки</th>
+        <th>На складе</th>
+        <th>Идентификатор</th>
+        <th>Идентификатор внешний</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in products.sortBy('order') %}
+        {% set buf = categories.firstWhere('uuid', item.category) %}
+        <tr>
+            <td>{{ item.title }}</td>
+            <td>{{ buf.title }}</td>
+            <td>{{ item.price }}</td>
+            <td>{{ item.priceFirst }}</td>
+            <td>{{ item.priceWholesale }}</td>
+            <td>{{ item.vendorcode }}</td>
+            <td>{{ item.barcode ? item.barcode : '' }}</td>
+            <td>{{ item.field1 }}</td>
+            <td>{{ item.field2 }}</td>
+            <td>{{ item.field3 }}</td>
+            <td style="text-align: center">{{ item.getVolume() }}</td>
+            <td style="text-align: center">{{ item.stock|format_number({fraction_digit: 2}) }}</td>
+            <td>{{ item.uuid }}</td>
+            <td>{{ item.external_id }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

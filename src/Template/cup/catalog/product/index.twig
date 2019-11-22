@@ -115,12 +115,12 @@
                     <div class="d-flex align-items-center">
                         {#<a href="#" class="btn btn-secondary btn-icon ml-auto" data-toggle="tooltip" data-placement="top" title="Импорт списка товаров">
                             <i class="fas fa-file-import"></i>
-                        </a>
-                        <a href="#" class="btn btn-secondary btn-icon ml-1" data-toggle="tooltip" data-placement="top" title="Экспорт списка товаров">
-                            <i class="fas fa-file-export"></i>
                         </a>#}
+                        <a href="/cup/catalog/product/{{ category.uuid ?? '00000000-0000-0000-0000-000000000000' }}/export" class="btn btn-secondary btn-icon ml-auto" data-toggle="tooltip" data-placement="top" title="Экспорт списка товаров">
+                            <i class="fas fa-file-export"></i>
+                        </a>
                         {% if category.uuid %}
-                            <a href="/cup/catalog/category/{{ category.uuid }}/edit" class="btn btn-info btn-round ml-auto">
+                            <a href="/cup/catalog/category/{{ category.uuid }}/edit" class="btn btn-info btn-round ml-1">
                                 <i class="fa fa-edit"></i>
                                 Изменить категорию
                             </a>
