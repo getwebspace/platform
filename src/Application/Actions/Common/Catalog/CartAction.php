@@ -64,8 +64,6 @@ class CartAction extends CatalogAction
                         \App\Domain\Tasks\Task::worker();
                     }
 
-
-                    exit;
                     if (
                         (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != 'XMLHttpRequest') && !empty($_SERVER['HTTP_REFERER'])
                     ) {
