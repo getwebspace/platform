@@ -2,16 +2,16 @@
     <!-- auto generated product options: (uuid:{{ product.uuid }}, external_id:{{ product.external_id }}) -->
     <div style="display: none;">
         {% if categories is not empty %}
-            <span class="item_link">/{{ parameter('catalog_address', 'catalog') }}/{{ categories.firstWhere('uuid', product.category).address }}/{{ product.address }}</span>
+            <span data-catalog-product-attr="url">/{{ parameter('catalog_address', 'catalog') }}/{{ categories.firstWhere('uuid', product.category).address }}/{{ product.address }}</span>
         {% endif %}
 
-        <span class="item_name">{{ product.title }}</span>
-        <span class="item_id item_uuid">{{ product.uuid }}</span>
-        <span class="item_price">{{ product.price }}</span>
-        <span class="item_artikul">{{ product.vendorcode }}</span>
+        <span data-catalog-product-attr="title">{{ product.title }}</span>
+        <span data-catalog-product-attr="uuid">{{ product.uuid }}</span>
+        <span data-catalog-product-attr="price">{{ product.price }}</span>
+        <span data-catalog-product-attr="vendorcode">{{ product.vendorcode }}</span>
 
         {% if files is not empty %}
-            <span class="item_thumb">{{ files.firstWhere('item_uuid', product.uuid).getPublicPath('small') }}</span>
+            <span data-catalog-product-attr="thumb">{{ files.firstWhere('item_uuid', product.uuid).getPublicPath('small') }}</span>
         {% endif %}
     </div>
     <!-- auto generated product options: end -->

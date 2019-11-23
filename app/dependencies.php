@@ -95,8 +95,6 @@ $container['view'] = function (ContainerInterface $c) {
     ]);
 
     $view['_request'] = $_REQUEST;
-    $view['styles'] = new ArrayObject();
-    $view['scripts'] = new ArrayObject();
 
     $view->addExtension(new \App\Application\TwigExtension($c, \Slim\Http\Uri::createFromEnvironment(new \Slim\Http\Environment($_SERVER))));
     $view->addExtension(new \Twig\Extra\Intl\IntlExtension());

@@ -146,10 +146,10 @@ $app
                 $user = $request->getAttribute('user', false);
 
                 if ($user === false || !in_array($user->level, \App\Domain\Types\UserLevelType::CUP_ACCESS)) {
-                    return $response->withHeader('Location', '/cup/login?redirect=' . $request->getUri()->getPath());
+                    return $response->withHeader('Location', '/cup/login?redirect=' . $request->getUri()->getPath())->withStatus(301);
                 }
                 if ($request->isPost() && $user && $user->level === \App\Domain\Types\UserLevelType::LEVEL_DEMO) {
-                    return $response->withHeader('Location', $request->getUri()->getPath());
+                    return $response->withHeader('Location', $request->getUri()->getPath())->withStatus(301);
                 }
 
                 return $next($request, $response);
@@ -195,7 +195,7 @@ $app->group('/user', function (App $app) {
             $user = $request->getAttribute('user', false);
 
             if ($user === false) {
-                return $response->withHeader('Location', '/user/login');
+                return $response->withHeader('Location', '/user/login')->withStatus(301);
             }
 
             return $next($request, $response);

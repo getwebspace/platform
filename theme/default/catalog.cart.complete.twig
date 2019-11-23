@@ -2,15 +2,6 @@
 
 {% block title %}Заказ {{ order.serial }} {{ order.external_id ? '(' ~ order.external_id ~ ')' : '' }} | {{ parent() }}{% endblock %}
 
-{% block script %}
-    {{ parent() }}
-    <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', () => {
-            simpleCart.empty();
-        });
-    </script>
-{% endblock %}
-
 {% block page %}
     <div class="page-top-info">
         <div class="container">

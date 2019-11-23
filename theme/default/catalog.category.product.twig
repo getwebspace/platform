@@ -1,5 +1,5 @@
 <div class="col-lg-4 col-sm-6">
-    <div class="product-item simpleCart_shelfItem">
+    <div class="product-item" data-catalog-product>
         <div class="pi-pic">
             {#<div class="tag-sale">ON SALE</div>#}
             <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ categories.firstWhere('uuid', product.category).address }}/{{ product.address }}">
@@ -7,7 +7,7 @@
             </a>
             <div class="pi-links">
                 {# add class item_add to btn #}
-                <a href="javascript:;" class="add-card item_add"><i class="flaticon-bag"></i><span>В корзину</span></a>
+                <a href="javascript:;" class="add-card" data-catalog-product-add><i class="flaticon-bag"></i><span>В корзину</span></a>
             </div>
         </div>
         <div class="pi-text">

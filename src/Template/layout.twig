@@ -14,25 +14,13 @@
             {% block title deferred %}{{ title ? title ~ ' | ' : '' }}{{ parameter('common_title') }}{% endblock %}
         </title>
         {% block head '' %}
-
-        {% block stylesheet deferred %}
-            {% for style in styles %}
-                <link rel="stylesheet" href="{{ style }}">
-            {% endfor %}
-        {% endblock %}
         {% block style '' %}
     </head>
 
     {% block body %}
         <body>
             {% block bodyinner '' %}
+            {% block script '' %}
         </body>
     {% endblock %}
-
-    {% block javascript deferred %}
-        {% for script in scripts %}
-            <script src="{{ script }}"></script>
-        {% endfor %}
-    {% endblock %}
-    {% block script '' %}
 </html>

@@ -3,307 +3,307 @@
 {% block title %}ЦУП CMS{% endblock %}
 
 {% block head %}
-    {{ styles.append('https://use.fontawesome.com/releases/v5.11.2/css/all.css') }}
-    {{ styles.append('/assets/css/bootstrap.min.css') }}
-    {{ styles.append('/assets/css/fonts.css') }}
-
-    {{ styles.append('/assets/css/datatables.min.css') }}
-    {{ styles.append('/assets/js/plugin/jquery.modal/jquery.modal.min.css') }}
-    {{ styles.append('/assets/js/plugin/froala/froala_editor.pkgd.css') }}
-    {{ styles.append('/assets/js/plugin/froala/froala_style.css') }}
-
-    {{ styles.append('/assets/css/atlantis.css') }}
-
-    {{ scripts.append('/assets/js/core/jquery.3.2.1.min.js') }}
-    {{ scripts.append('/assets/js/core/popper.min.js') }}
-    {{ scripts.append('/assets/js/core/tooltip.min.js') }}
-    {{ scripts.append('/assets/js/core/bootstrap.min.js') }}
-    {{ scripts.append('/assets/js/core/moment.min.js') }}
-    {{ scripts.append('/assets/js/core/moment-with-locales.min.js') }}
-
-    {{ scripts.append('/assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js') }}
-    {{ scripts.append('/assets/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js') }}
-    {{ scripts.append('/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js') }}
-    {{ scripts.append('/assets/js/plugin/datatables/datatables.min.js') }}
-    {{ scripts.append('/assets/js/plugin/jquery.modal/jquery.modal.min.js') }}
-    {{ scripts.append('/assets/js/plugin/sweetalert/sweetalert.min.js') }}
-    {{ scripts.append('/assets/js/plugin/select2/select2.full.min.js') }}
-    {{ scripts.append('/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js') }}
-    {{ scripts.append('/assets/js/plugin/froala/froala_editor.pkgd.js') }}
-    {{ scripts.append('/assets/js/plugin/froala/ru.js') }}
-
-    {{ scripts.append('/assets/js/cup/script.js') }}
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/fonts.css">
+    <link rel="stylesheet" href="/assets/css/datatables.min.css">
+    <link rel="stylesheet" href="/assets/js/plugin/jquery.modal/jquery.modal.min.css">
+    <link rel="stylesheet" href="/assets/js/plugin/froala/froala_editor.pkgd.css">
+    <link rel="stylesheet" href="/assets/js/plugin/froala/froala_style.css">
+    <link rel="stylesheet" href="/assets/css/atlantis.css">
 {% endblock %}
 
 {% block body %}
     <body data-background-color="bg3">
-        <div class="wrapper">
-            <div class="main-header">
-                <!-- Logo Header -->
-                <div class="logo-header" data-background-color="blue">
-                    <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon">
-                            <i class="icon-menu"></i>
-                        </span>
-                    </button>
-                    <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
-                    <div class="nav-toggle">
-                        <button class="btn btn-toggle toggle-sidebar">
-                            <i class="icon-menu"></i>
+        {% block bodyinner %}
+            <div class="wrapper">
+                <div class="main-header">
+                    <!-- Logo Header -->
+                    <div class="logo-header" data-background-color="blue">
+                        <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon">
+                                <i class="icon-menu"></i>
+                            </span>
                         </button>
-                    </div>
-                </div>
-                <!-- End Logo Header -->
-
-                <!-- Navbar Header -->
-                <nav class="navbar navbar-header navbar-expand-lg" data-background-color="blue2">
-                    <div class="container-fluid">
-                        <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
-                            {% include 'cup/notification.twig' %}
-                            {% include 'cup/task.twig' %}
-                            {% include 'cup/quickaction.twig' %}
-                            {% include 'cup/trademaster.twig' %}
-
-                            <li class="nav-item">
-                                <a class="nav-link" href="/" target="_blank">
-                                    <i class="fas fa-globe"></i>
-                                </a>
-                            </li>
-
-                            <li class="nav-item dropdown hidden-caret">
-                                <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
-                                    <div class="avatar-sm">
-                                        <img src="{{ user.avatar(40) }}" alt="{{ user.firstname }}" class="avatar-img rounded-circle">
-                                    </div>
-                                </a>
-                                <ul class="dropdown-menu dropdown-user animated fadeIn">
-                                    <div class="dropdown-user-scroll scrollbar-outer">
-                                        <li>
-                                            <div class="user-box">
-                                                <div class="avatar-lg"><img src="{{ user.avatar(60) }}" alt="image profile" class="avatar-img rounded"></div>
-                                                <div class="u-text">
-                                                    <h4>{{ user.getName('short') }}</h4>
-                                                    <p class="text-muted">{{ user.email }}</p>
-                                                </div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="/user/logout">Выход</a>
-                                        </li>
-                                    </div>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
-                </nav>
-                <!-- End Navbar -->
-            </div>
-
-            <!-- Sidebar -->
-            <div class="sidebar sidebar-style-2">
-                <div class="sidebar-wrapper scrollbar scrollbar-inner">
-                    <div class="sidebar-content">
-                        {% include 'cup/navigation.twig'  %}
-                    </div>
-                </div>
-            </div>
-            <!-- End Sidebar -->
-
-            <div class="main-panel">
-                <div class="content">
-                    <div class="panel-header bg-primary-gradient">
-                        {% block breadcrumb %}
-                            <div class="page-inner py-5">
-                                <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
-                                    <div>
-                                        <h2 class="text-white pb-2 fw-bold">Доска управления</h2>
-                                        <h5 class="text-white op-7 mb-2">Добро пожаловать в панель администратора</h5>
-                                    </div>
-                                    <div class="ml-md-auto py-2 py-md-0">
-                                        {#<a href="#" class="btn btn-white btn-border btn-round mr-2">Manage</a>
-                                        <a href="#" class="btn btn-secondary btn-round">Add Customer</a>#}
-                                    </div>
-                                </div>
-                            </div>
-                        {% endblock %}
-                    </div>
-
-                    <div class="page-inner mt--5">
-                        {% block content %}
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="card full-height">
-                                        <div class="card-header">
-                                            <ul class="nav nav-pills nav-secondary nav-pills-no-bd" role="tablist">
-                                                <li class="nav-item">
-                                                    <a class="nav-link active show" data-toggle="pill" href="#stats" role="tab">
-                                                        Статистика сайта
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link" data-toggle="pill" href="#notepad" role="tab">
-                                                        Блокнот
-                                                    </a>
-                                                </li>
-                                                <li class="nav-item">
-                                                    <a class="nav-link" data-toggle="pill" href="#properties" role="tab">
-                                                        Свойства системы
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="tab-content">
-
-                                                {# Tab: Статистика #}
-                                                <div class="tab-pane fade show active" id="stats" role="tabpanel">
-                                                    <table class="table table-stats">
-                                                        <tr>
-                                                            <th width="50%">Количество страниц:</th>
-                                                            <td width="50%">{{ stats.pages }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th width="50%">Количество публикаций:</th>
-                                                            <td width="50%">{{ stats.publications }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th width="50%">Количество отзвывов:</th>
-                                                            <td width="50%">{{ stats.guestbook }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th width="50%">Количество пользователей:</th>
-                                                            <td width="50%">{{ stats.users }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th width="50%">Количество категорий и товаров:</th>
-                                                            <td width="50%">{{ stats.catalog.category }} | {{ stats.catalog.product }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th width="50%">Количество заказов:</th>
-                                                            <td width="50%">{{ stats.catalog.order }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th width="50%">Количество файлов:</th>
-                                                            <td width="50%">{{ stats.files }}</td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-
-                                                {# Tab: Блокнот #}
-                                                <div class="tab-pane fade" id="notepad" role="tabpanel">
-                                                    <form action="/cup/parameters?return=/cup" method="post">
-                                                        <div class="row">
-                                                            <div class="col-md-12">
-                                                                <p class="text-muted text-center">Здесь вы можете сохранять собственные заметки и памятки.</p>
-
-                                                                {% include 'cup/editor.twig' with {'name': 'notepad[' ~ user.username ~ ']', 'args': {'value': notepad, 'required': true}} %}
-                                                            </div>
-                                                            <div class="col-md-12">
-                                                                <button type="submit" class="btn btn-success">Сохранить</button>
-                                                            </div>
-                                                        </div>
-                                                    </form>
-                                                </div>
-
-                                                {# Tab: Свойства #}
-                                                <div class="tab-pane fade" id="properties" role="tabpanel">
-                                                    <table class="table table-properties">
-                                                        <tr>
-                                                            <th width="50%">Версия движка:</th>
-                                                            <td width="50%">{{ properties.version }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th width="50%">Операционная система:</th>
-                                                            <td width="50%">{{ properties.os }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th width="50%">Выделено ОЗУ:</th>
-                                                            <td width="50%">{{ properties.memory_limit }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th width="50%">Версия PHP:</th>
-                                                            <td width="50%">{{ properties.php }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th width="50%">Отключенные функции:</th>
-                                                            <td width="50%">{{ properties.disable_functions }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th width="50%">Отключенные классы:</th>
-                                                            <td width="50%">{{ properties.disable_classes }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th width="50%">Максимальный размер загружаемого файла:</th>
-                                                            <td width="50%">{{ properties.upload_max_filesize }}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th width="50%">Максимальное количество загружаемых файлов:</th>
-                                                            <td width="50%">{{ properties.max_file_uploads }}</td>
-                                                        </tr>
-                                                    </table>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    {#<div class="card card-primary bg-primary-gradient">
-                                        <div class="card-body">
-                                            <h4 class="mt-3 b-b1 pb-2 mb-4 fw-bold">Сейчас на сайте</h4>
-                                            <h1 class="mb-4 fw-bold">17</h1>
-                                            <h4 class="mt-3 b-b1 pb-2 mb-5 fw-bold">Просмотров страниц в минуту</h4>
-                                            <div id="activeUsersChart">
-                                                <canvas style="display: inline-block; width: 294px; height: 100px; vertical-align: top;" width="294" height="100"></canvas>
-                                            </div>
-                                            <h4 class="mt-5 pb-3 mb-0 fw-bold">Популярные страницы</h4>
-                                            <ul class="list-unstyled">
-                                                <li class="d-flex justify-content-between pb-1 pt-1"><small>/product/readypro/index.html</small> <span>7</span></li>
-                                                <li class="d-flex justify-content-between pb-1 pt-1"><small>/product/atlantis/demo.html</small> <span>10</span></li>
-                                            </ul>
-                                        </div>
-                                    </div>#}
-                                </div>
-                            </div>
-                        {% endblock %}
-                    </div>
-                </div>
-
-                <footer class="footer">
-                    <div class="container-fluid">
-                        <nav class="pull-left">
-                            <ul class="nav">
-                                <li class="nav-item">
-                                    <a class="nav-link" target="_blank" href="https://t.me/ThreeHundredThree">
-                                        Блог
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" target="_blank" href="https://t.me/ThreeHundredThreeCommunity">
-                                        Сообщество
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" target="_blank" href="https://www.facebook.com/ThreeHundredThree">
-                                        Facebook
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" target="_blank" href="https://github.com/0x12f">
-                                        GitHub
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                        <div class="copyright ml-auto">
-                            Сделано с <i class="fa fa-heart heart text-danger"></i> в <a href="https://github.com/0x12f">0x12f</a>, {{ 'now'|date('Y') }}
+                        <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
+                        <div class="nav-toggle">
+                            <button class="btn btn-toggle toggle-sidebar">
+                                <i class="icon-menu"></i>
+                            </button>
                         </div>
                     </div>
-                </footer>
+                    <!-- End Logo Header -->
+
+                    <!-- Navbar Header -->
+                    <nav class="navbar navbar-header navbar-expand-lg" data-background-color="blue2">
+                        <div class="container-fluid">
+                            <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
+                                {% include 'cup/notification.twig' %}
+                                {% include 'cup/task.twig' %}
+                                {% include 'cup/quickaction.twig' %}
+                                {% include 'cup/trademaster.twig' %}
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/" target="_blank">
+                                        <i class="fas fa-globe"></i>
+                                    </a>
+                                </li>
+
+                                <li class="nav-item dropdown hidden-caret">
+                                    <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
+                                        <div class="avatar-sm">
+                                            <img src="{{ user.avatar(40) }}" alt="{{ user.firstname }}" class="avatar-img rounded-circle">
+                                        </div>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-user animated fadeIn">
+                                        <div class="dropdown-user-scroll scrollbar-outer">
+                                            <li>
+                                                <div class="user-box">
+                                                    <div class="avatar-lg"><img src="{{ user.avatar(60) }}" alt="image profile" class="avatar-img rounded"></div>
+                                                    <div class="u-text">
+                                                        <h4>{{ user.getName('short') }}</h4>
+                                                        <p class="text-muted">{{ user.email }}</p>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                            <li>
+                                                <div class="dropdown-divider"></div>
+                                                <a class="dropdown-item" href="/user/logout">Выход</a>
+                                            </li>
+                                        </div>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                    <!-- End Navbar -->
+                </div>
+
+                <!-- Sidebar -->
+                <div class="sidebar sidebar-style-2">
+                    <div class="sidebar-wrapper scrollbar scrollbar-inner">
+                        <div class="sidebar-content">
+                            {% include 'cup/navigation.twig'  %}
+                        </div>
+                    </div>
+                </div>
+                <!-- End Sidebar -->
+
+                <div class="main-panel">
+                    <div class="content">
+                        <div class="panel-header bg-primary-gradient">
+                            {% block breadcrumb %}
+                                <div class="page-inner py-5">
+                                    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+                                        <div>
+                                            <h2 class="text-white pb-2 fw-bold">Доска управления</h2>
+                                            <h5 class="text-white op-7 mb-2">Добро пожаловать в панель администратора</h5>
+                                        </div>
+                                        <div class="ml-md-auto py-2 py-md-0">
+                                            {#<a href="#" class="btn btn-white btn-border btn-round mr-2">Manage</a>
+                                            <a href="#" class="btn btn-secondary btn-round">Add Customer</a>#}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endblock %}
+                        </div>
+
+                        <div class="page-inner mt--5">
+                            {% block content %}
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="card full-height">
+                                            <div class="card-header">
+                                                <ul class="nav nav-pills nav-secondary nav-pills-no-bd" role="tablist">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link active show" data-toggle="pill" href="#stats" role="tab">
+                                                            Статистика сайта
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" data-toggle="pill" href="#notepad" role="tab">
+                                                            Блокнот
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link" data-toggle="pill" href="#properties" role="tab">
+                                                            Свойства системы
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="tab-content">
+
+                                                    {# Tab: Статистика #}
+                                                    <div class="tab-pane fade show active" id="stats" role="tabpanel">
+                                                        <table class="table table-stats">
+                                                            <tr>
+                                                                <th width="50%">Количество страниц:</th>
+                                                                <td width="50%">{{ stats.pages }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th width="50%">Количество публикаций:</th>
+                                                                <td width="50%">{{ stats.publications }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th width="50%">Количество отзвывов:</th>
+                                                                <td width="50%">{{ stats.guestbook }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th width="50%">Количество пользователей:</th>
+                                                                <td width="50%">{{ stats.users }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th width="50%">Количество категорий и товаров:</th>
+                                                                <td width="50%">{{ stats.catalog.category }} | {{ stats.catalog.product }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th width="50%">Количество заказов:</th>
+                                                                <td width="50%">{{ stats.catalog.order }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th width="50%">Количество файлов:</th>
+                                                                <td width="50%">{{ stats.files }}</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+
+                                                    {# Tab: Блокнот #}
+                                                    <div class="tab-pane fade" id="notepad" role="tabpanel">
+                                                        <form action="/cup/parameters?return=/cup" method="post">
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <p class="text-muted text-center">Здесь вы можете сохранять собственные заметки и памятки.</p>
+
+                                                                    {% include 'cup/editor.twig' with {'name': 'notepad[' ~ user.username ~ ']', 'args': {'value': notepad, 'required': true}} %}
+                                                                </div>
+                                                                <div class="col-md-12">
+                                                                    <button type="submit" class="btn btn-success">Сохранить</button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+
+                                                    {# Tab: Свойства #}
+                                                    <div class="tab-pane fade" id="properties" role="tabpanel">
+                                                        <table class="table table-properties">
+                                                            <tr>
+                                                                <th width="50%">Версия движка:</th>
+                                                                <td width="50%">{{ properties.version }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th width="50%">Операционная система:</th>
+                                                                <td width="50%">{{ properties.os }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th width="50%">Выделено ОЗУ:</th>
+                                                                <td width="50%">{{ properties.memory_limit }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th width="50%">Версия PHP:</th>
+                                                                <td width="50%">{{ properties.php }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th width="50%">Отключенные функции:</th>
+                                                                <td width="50%">{{ properties.disable_functions }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th width="50%">Отключенные классы:</th>
+                                                                <td width="50%">{{ properties.disable_classes }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th width="50%">Максимальный размер загружаемого файла:</th>
+                                                                <td width="50%">{{ properties.upload_max_filesize }}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th width="50%">Максимальное количество загружаемых файлов:</th>
+                                                                <td width="50%">{{ properties.max_file_uploads }}</td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        {#<div class="card card-primary bg-primary-gradient">
+                                            <div class="card-body">
+                                                <h4 class="mt-3 b-b1 pb-2 mb-4 fw-bold">Сейчас на сайте</h4>
+                                                <h1 class="mb-4 fw-bold">17</h1>
+                                                <h4 class="mt-3 b-b1 pb-2 mb-5 fw-bold">Просмотров страниц в минуту</h4>
+                                                <div id="activeUsersChart">
+                                                    <canvas style="display: inline-block; width: 294px; height: 100px; vertical-align: top;" width="294" height="100"></canvas>
+                                                </div>
+                                                <h4 class="mt-5 pb-3 mb-0 fw-bold">Популярные страницы</h4>
+                                                <ul class="list-unstyled">
+                                                    <li class="d-flex justify-content-between pb-1 pt-1"><small>/product/readypro/index.html</small> <span>7</span></li>
+                                                    <li class="d-flex justify-content-between pb-1 pt-1"><small>/product/atlantis/demo.html</small> <span>10</span></li>
+                                                </ul>
+                                            </div>
+                                        </div>#}
+                                    </div>
+                                </div>
+                            {% endblock %}
+                        </div>
+                    </div>
+
+                    <footer class="footer">
+                        <div class="container-fluid">
+                            <nav class="pull-left">
+                                <ul class="nav">
+                                    <li class="nav-item">
+                                        <a class="nav-link" target="_blank" href="https://t.me/ThreeHundredThree">
+                                            Блог
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" target="_blank" href="https://t.me/ThreeHundredThreeCommunity">
+                                            Сообщество
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" target="_blank" href="https://www.facebook.com/ThreeHundredThree">
+                                            Facebook
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" target="_blank" href="https://github.com/0x12f">
+                                            GitHub
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
+                            <div class="copyright ml-auto">
+                                Сделано с <i class="fa fa-heart heart text-danger"></i> в <a href="https://github.com/0x12f">0x12f</a>, {{ 'now'|date('Y') }}
+                            </div>
+                        </div>
+                    </footer>
+                </div>
             </div>
-        </div>
+        {% endblock %}
     </body>
+
+    <script src="/assets/js/core/jquery.3.2.1.min.js"></script>
+    <script src="/assets/js/core/popper.min.js"></script>
+    <script src="/assets/js/core/tooltip.min.js"></script>
+    <script src="/assets/js/core/bootstrap.min.js"></script>
+    <script src="/assets/js/core/moment.min.js"></script>
+    <script src="/assets/js/core/moment-with-locales.min.js"></script>
+
+    <script src="/assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+    <script src="/assets/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
+    <script src="/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="/assets/js/plugin/datatables/datatables.min.js"></script>
+    <script src="/assets/js/plugin/jquery.modal/jquery.modal.min.js"></script>
+    <script src="/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+    <script src="/assets/js/plugin/select2/select2.full.min.js"></script>
+    <script src="/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+    <script src="/assets/js/plugin/froala/froala_editor.pkgd.js"></script>
+    <script src="/assets/js/plugin/froala/ru.js"></script>
+
+    <script src="/assets/js/cup/script.js"></script>
 
     {% include 'mixin/pushstream.twig' %}
 {% endblock %}

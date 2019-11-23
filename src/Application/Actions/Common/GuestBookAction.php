@@ -57,9 +57,9 @@ class GuestBookAction extends Action
                     $this->entityManager->flush();
 
                     if (
-                        (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != 'xmlhttprequest') && !empty($_SERVER['HTTP_REFERER'])
+                        (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != 'XMLHttpRequest') && !empty($_SERVER['HTTP_REFERER'])
                     ) {
-                        $this->response = $this->response->withHeader('Location', $_SERVER['HTTP_REFERER']);
+                        $this->response = $this->response->withHeader('Location', $_SERVER['HTTP_REFERER'])->withStatus(301);
                     }
 
                     return $this->respondWithData(['description' => 'Message added']);

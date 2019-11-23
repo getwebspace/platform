@@ -13,13 +13,13 @@
 
             <div class="product-slider owl-carousel">
                 {% for product in viewed %}
-                    <div class="product-item">
+                    <div class="product-item" data-catalog-product>
                         <div class="pi-pic">
                             <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ categories.firstWhere('uuid', product.category).address }}/{{ product.address }}">
                                 <img src="{{ files.firstWhere('item_uuid', product.uuid).getPublicPath('middle') }}" alt="">
                             </a>
                             <div class="pi-links">
-                                <a href="#" class="add-card"><i class="flaticon-bag"></i><span>В корзину</span></a>
+                                <a href="#" class="add-card" data-catalog-product-add><i class="flaticon-bag"></i><span>В корзину</span></a>
                             </div>
                         </div>
                         <div class="pi-text">
@@ -28,6 +28,9 @@
                                 <p>{{ product.title }}</p>
                             </a>
                         </div>
+
+                        {# include product options #}
+                        {% include 'catalog.product.options.twig' with {'categories': categories, 'product': product, 'files': files} only %}
                     </div>
                 {% endfor %}
             </div>

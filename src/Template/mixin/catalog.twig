@@ -1,0 +1,444 @@
+{# Catalog script #}
+<script>
+    (($, undefined) => {
+        // объект реализующий работу с каталогом и корзиной
+        window.catalog = new class {
+            constructor(options) {
+                // опции
+                let defaults = {
+                    init: {
+                        listeners: true,
+                        handlers: true,
+                    },
+                    cart: {
+                        columns: [
+                            {label: '', attr: 'thumb', view: null, text: null, class: null, style: 'width: 10%; text-align: center;'},
+                            {label: 'Наименование', attr: 'title', view: null, text: null, class: null, style: null},
+                            {label: 'Артикул', attr: 'vendorcode', view: null, text: null, class: null, style: null},
+                            {label: '-', attr: 'decrement', view: null, text: null, class: null, style: 'width: 10%; text-align: center;'},
+                            {label: 'Количество', attr: 'quantity', view: null, text: null, class: null, style: 'width: 15%;'},
+                            {label: '+', attr: 'increment', view: null, text: null, class: null, style: 'width: 10%; text-align: center;'},
+                            {label: 'Стоимость', attr: 'price', view: null, text: null, class: null, style: 'text-align: right;'},
+                            {label: 'Всего', attr: 'total', view: null, text: null, class: null, style: 'text-align: right;'},
+                        ],
+                        style: 'table', // div
+                        class: '', // table class
+                        url: '', // server handler url
+                    },
+                    selectors: {
+                        'product': 'data-catalog-product', // продукт
+                        'product-attr': 'data-catalog-product-attr', // атрибут продукта
+                        'product-add': 'data-catalog-product-add', // кнопка добавления продукта в корзину
+                        'cart': 'data-catalog-cart', // место для корзины
+                        'cart-data': 'data-catalog-cart-data', // поле корзины
+                        'cart-checkout': 'data-catalog-cart-checkout', // кнопка отправки корзины
+                        'count-items': 'data-catalog-cart-count', // счетчик количества наименований
+                        'count-total': 'data-catalog-cart-total', // счетчик общей стоимости товаров
+                    },
+                    events: {
+                        'on:ready': null,
+                        'on:cart': null,
+                        'on:cart:add': null,
+                        'on:cart:update': null,
+                        'on:cart:remove': null,
+                        'on:cart:remove:all': null,
+                        'on:cart:checkout:before': null,
+                        'on:cart:checkout:after': null,
+                    }
+                };
+
+                // свойства
+                this.$window = $(window);
+                this.options = Object.assign({}, defaults, options);
+                this.cart = this.readCartData();
+
+                // инициализации
+                if (this.options.init.listeners) {
+                    this.$window.on('event:catalog:ready event:catalog:cart:add event:catalog:cart:update event:catalog:cart:remove', () => {
+                        $(this.getSelector('cart')).html(this.cartRender());
+                        $(this.getSelector('count-items')).text(this.cartCount());
+                        $(this.getSelector('count-total')).text(this.cartTotal());
+                    });
+                }
+
+                // обработчики
+                if (this.options.init.handlers) {
+                    $(this.getSelector('product-add')).on('click', (e) => {
+                        this.cartAddProduct($(e.currentTarget).parents(this.getSelector('product')));
+                    });
+                    $(this.getSelector('cart-checkout')).on('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        this.cartCheckout($(this.getSelector('cart-data')));
+                    });
+                }
+
+                // готов к работе
+                this.triggerEvent('ready', this.cart);
+            }
+
+            // вернет сгенерированную корзину как объект jQuery
+            cartRender() {
+                let $Tag = this.cartRenderGet$El.bind(this),
+                    $root = $Tag('root').addClass(this.options.cart.class),
+                    $table = $Tag('table'),
+                    $thead = $Tag('thead'),
+                    $tbody = $Tag('tbody'),
+                    $items = $Tag('items')
+                ;
+
+                // head
+                for (let column of this.options.cart.columns) {
+                    let $column = $Tag('th').attr('data-attr', column.attr).text(column.label);
+
+                    if (column.class) {
+                        $column.addClass(column.class);
+                    }
+                    if (column.style) {
+                        $column.attr('style', column.style);
+                    }
+
+                    $thead.append($column);
+                }
+
+                // body
+                for (let product of this.cart) {
+                    let $row = $Tag('tr').data('uuid', product.uuid);
+
+                    for (let column of this.options.cart.columns) {
+                        let $column = $Tag('td').attr('data-attr', column.attr);
+
+                        if (column.class) {
+                            $column.addClass(column.class);
+                        }
+                        if (column.style) {
+                            $column.attr('style', column.style);
+                        }
+
+                        if (!column.view) {
+                            // значение по атрибуту колонки
+                            switch (column.attr) {
+                                case 'url':
+                                case 'thumb':
+                                    $column.html(
+                                        $('<img>')
+                                            .attr('src', product.thumb)
+                                            .attr('alt', product.title)
+                                    );
+                                    break;
+                                case 'decrement':
+                                    $column.html(
+                                        $('<button>')
+                                            .addClass('btn btn-icon')
+                                            .text('-')
+                                            .on('click', () => {
+                                                this.cartProductDecrement(product.uuid, 'uuid');
+                                            })
+                                    );
+                                    break;
+                                case 'increment':
+                                    $column.html(
+                                        $('<button>')
+                                            .addClass('btn btn-icon')
+                                            .text('+')
+                                            .on('click', () => {
+                                                this.cartProductIncrement(product.uuid, 'uuid');
+                                            })
+                                    );
+                                    break;
+                                case 'quantity':
+                                    $column.html(
+                                        $('<input>')
+                                            .attr('type', 'number')
+                                            .val(product.quantity)
+                                            .on('change keyup', (e) => {
+                                                this.cartProductChangeCount($(e.currentTarget).val(), product.uuid, 'uuid');
+                                            })
+                                    );
+                                    break;
+                                case 'total':
+                                    $column.text((product.price * product.quantity).toFixed(2));
+                                    break;
+                                default:
+                                    $column.text(product[column.attr]);
+                            }
+                        } else {
+                            $column.html(column.view);
+                        }
+
+                        $row.append($column);
+                    }
+
+                    $tbody.append($row);
+
+                    // добавляем техническую строку с содержимым корзины
+                    $items.append(
+                        $('<input '+ this.options.selectors['cart-data'] +'>')
+                            .attr('type', 'number')
+                            .attr('name', 'list[' + product.uuid + ']')
+                            .val(product.quantity)
+                    );
+                }
+
+                return $root
+                    .append(
+                        $table
+                            .append($thead)
+                            .append($tbody)
+                    )
+                    .append($items)
+                ;
+            }
+
+            // возращает jQuery элемент для генерации структуры таблицы в зависимости от стиля корзины
+            cartRenderGet$El(tag) {
+                let selector = '';
+
+                switch (tag) {
+                    case 'root': selector = '<div class="container">'; break;
+                    case 'table': {
+                        switch (this.options.cart.style) {
+                            case 'table': selector = '<table class="table">'; break;
+                            case 'div': selector = '<div>'; break;
+                        }
+                        break;
+                    }
+                    case 'thead': {
+                        switch (this.options.cart.style) {
+                            case 'table': selector = '<tr>'; break;
+                            case 'div': selector = '<div class="row">'; break;
+                        }
+                        break;
+                    }
+                    case 'th': {
+                        switch (this.options.cart.style) {
+                            case 'table': selector = '<th>'; break;
+                            case 'div': selector = '<div class="col">'; break;
+                        }
+                        break;
+                    }
+                    case 'tbody': {
+                        switch (this.options.cart.style) {
+                            case 'table': selector = '<tbody>'; break;
+                            case 'div': selector = '<div>'; break;
+                        }
+                        break;
+                    }
+                    case 'tr': {
+                        switch (this.options.cart.style) {
+                            case 'table': selector = '<tr>'; break;
+                            case 'div': selector = '<div class="row">'; break;
+                        }
+                        break;
+                    }
+                    case 'td': {
+                        switch (this.options.cart.style) {
+                            case 'table': selector = '<td>'; break;
+                            case 'div': selector = '<div class="col">'; break;
+                        }
+                        break;
+                    }
+                    case 'items': selector = '<div style="display: none;">'; break;
+                }
+
+                return $(selector);
+            }
+
+            // добавление товара в корзину
+            // так же увеличивает количество товаров если добавляется дубликат
+            // принимает jQuery элемент с продуктом
+            cartAddProduct($product) {
+                let index,
+                    properties = {
+                        'uuid': '',
+                        'url': '',
+                        'thumb': '',
+                        'title': '',
+                        'price': '',
+                        'vendorcode': '',
+                        'quantity': 1,
+                    };
+
+                for (let key in properties) {
+                    let $attr = $product.find(this.getSelector('product-attr', key));
+
+                    properties[key] = $attr.val() || $attr.text() || properties[key];
+                }
+
+                // это числа
+                properties['price'] = +properties['price'];
+                properties['quantity'] = +properties['quantity'];
+
+                if ((index = this.cartFindProductByField(properties['uuid'], 'uuid')) >= 0) {
+                    this.cart[index].quantity += (+properties['quantity']);
+                    this.triggerEvent('cart:update', this.cart[index]);
+                } else {
+                    this.cart.push(properties);
+                    this.triggerEvent('cart:add', properties);
+                }
+                this.saveCartData();
+
+                return this.cart.length;
+            }
+
+            // ищет index товара по значению указанного поля
+            cartFindProductByField(value, field = 'uuid') {
+                return this.cart.findIndex(obj => obj[field] === value);
+            }
+
+            // увеличивает количество указанного товара в корзине на один
+            cartProductIncrement(value, field = 'uuid') {
+                let index = this.cartFindProductByField(value, field);
+
+                this.cart[index].quantity += 1;
+                this.triggerEvent('cart:update', this.cart[index]);
+                this.saveCartData();
+            }
+
+            // уменьшает количество указанного товара в корзине на один
+            cartProductDecrement(value, field = 'uuid') {
+                let index = this.cartFindProductByField(value, field);
+
+                this.cart[index].quantity -= 1;
+
+                if (this.cart[index].quantity === 0) {
+                    this.cartRemoveProductById(index);
+                }
+
+                this.triggerEvent('cart:update', this.cart[index]);
+                this.saveCartData();
+            }
+
+            // указывает конкретное количество указанного товара
+            cartProductChangeCount(count, value, field = 'uuid') {
+                let index = this.cartFindProductByField(value, field);
+
+                this.cart[index].quantity = +count;
+
+                if (this.cart[index].quantity === 0) {
+                    this.cartRemoveProductById(index);
+                }
+
+                this.triggerEvent('cart:update', this.cart[index]);
+                this.saveCartData();
+            }
+
+            // удаляет товар из корзины по id в корзине
+            cartRemoveProductById(id) {
+                if (this.cart[id]) {
+                    this.cart.splice(id, 1);
+                    this.triggerEvent('cart:remove', this.cart);
+                    this.saveCartData();
+                }
+            }
+
+            // удаляет товар из корзины по указанному полю
+            cartRemoveProductByField(value, field = 'uuid') {
+                this.cartRemoveProductById(
+                    this.cartFindProductByField(value, field)
+                );
+            }
+
+            // удаляет все товары из корзины
+            cartRemoveAllProducts() {
+                this.cart = [];
+                this.triggerEvent('cart:remove:all', this.cart);
+                this.saveCartData();
+            }
+
+            // вернет количество наименований
+            cartCount() {
+                return this.cart.length;
+            }
+
+            // вернет общую стоимость товаров в корзине
+            cartTotal() {
+                if (this.cart.length) {
+                    return Object.keys(this.cart)
+                        .map(f => this.cart[f].quantity * this.cart[f].price)
+                        .reduce((a, b) => a + b)
+                        .toFixed(2)
+                    ;
+                }
+
+                return 0;
+            }
+
+            // отправляет корзину
+            // принимает jQuery объекты полей, которые необходимо отправить на сервер
+            async cartCheckout($fields) {
+                this.triggerEvent('cart:checkout:before', $fields);
+
+                let error = false,
+                    data = new FormData();
+
+                $fields.each((i, el) => {
+                    if (el.required === true && el.value === '') {
+                        el.classList.add('check-error');
+                        throw new Error('Required field');
+                    }
+                    if (el.type === 'email') {
+                        // todo регулярку заменить
+                        if (/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(el.value) === false) {
+                            el.classList.add('check-error');
+                            throw new Error('Invalid E-Mail address');
+                        }
+                    }
+
+                    data.append(el.name, el.value);
+                });
+
+                if (!error) {
+                    // Google reCAPTCHA работает если подключен mixin/recaptcha.twig
+                    if (grecaptcha && grecaptcha.getToken) {
+                        data.append('recaptcha', await grecaptcha.getToken());
+                    }
+
+                    $.ajax({
+                        url: this.options.cart.handler || location.pathname,
+                        type: 'POST',
+                        data: data,
+                        contentType: false,
+                        cache: false,
+                        processData: false,
+                        success: (res) => {
+                            this.cartRemoveAllProducts();
+                            this.triggerEvent('cart:checkout:after', $fields);
+
+                            if (res && res.statusCode === 200) {
+                                location = res.data.redirect;
+                            }
+                        }
+                    });
+                }
+            }
+
+            // читает данные корзины из localstorage
+            readCartData() {
+                return JSON.parse(localStorage.getItem('catalog-cart') || '[]');
+            }
+
+            // сохраняет данные корзины в localstorage
+            saveCartData() {
+                localStorage.setItem('catalog-cart', JSON.stringify(this.cart));
+                this.triggerEvent('cart', this.cart);
+            }
+
+            // собирает селектор
+            getSelector(selector, value = false) {
+                return '[' + this.options.selectors[selector] + (value ? '="' + value + '"' : '') + ']';
+            }
+
+            // дергает событие
+            triggerEvent(event, data) {
+                this.$window.trigger('event:catalog:' + event, data);
+
+                // вызывает обработчик
+                if (this.options.events['on:' + event]) {
+                    this.options.events['on:' + event](data, this.cart, this);
+                }
+            }
+        }(window.catalog || {});
+    })(jQuery);
+</script>
