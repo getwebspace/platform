@@ -8,7 +8,7 @@ services:
     php:
         image: 0x12f/php:latest
         environment:
-            - DEBUG=0
+            - DEBUG=
             - ANALYTICS=0
           # - SALT=Please-Change-Me
           # - DATABASE=mysql://user:secret@localhost/mydb

@@ -636,8 +636,13 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         $qb = $this->entityManager->createQueryBuilder();
         $query = $qb->select('t')
             ->from(\App\Domain\Entities\Task::class, 't')
+            ->where('t.status IN (:status)')
             ->orderBy('t.date', 'DESC')
-            ->setMaxResults($limit);
+            ->setMaxResults($limit)
+            ->setParameter('status', [
+                \App\Domain\Types\TaskStatusType::STATUS_QUEUE,
+                \App\Domain\Types\TaskStatusType::STATUS_WORK,
+            ]);
 
         $result = collect($query->getQuery()->getResult());
         $result->map(function ($obj) {
@@ -660,12 +665,12 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             ->andWhere('n.date > :period')
             ->orderBy('n.date', 'DESC')
             ->setMaxResults($limit)
-            ->setParameter('uuid', $user)
+            ->setParameter('uuid', $user, \Ramsey\Uuid\Doctrine\UuidType::NAME)
             ->setParameter('period',
                 date(
                     \App\Domain\References\Date::DATETIME,
                     time() - ($this->parameter('notification_period', \App\Domain\References\Date::HOUR) * 24)
-                )
+                ), \Doctrine\DBAL\Types\Type::STRING
             );
 
         $result = collect($query->getQuery()->getResult());
