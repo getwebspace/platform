@@ -3,7 +3,7 @@
 return [
     // Secret salt
     'secret' => [
-        'salt' => ($_ENV['ANALYTICS'] ?? "Li8.1Ej2-<Cid3[bE"),
+        'salt' => ($_ENV['SALT'] ?? "Li8.1Ej2-<Cid3[bE"),
     ],
 
     // Doctrine settings
@@ -31,7 +31,7 @@ return [
         ],
 
         // Connection to DB settings
-        'connection' => [
+        'connection' => isset($_ENV['DATABASE']) ? $_ENV['DATABASE'] : [
             'driver' => 'pdo_sqlite',
             'path' => VAR_DIR . '/database.sqlite',
         ],
@@ -51,7 +51,7 @@ return [
 
     'settings' => [
         'enableSentryAnalytics' => (bool)((int)$_ENV['ANALYTICS'] ?? true),
-        'displayErrorDetails' => ((bool)$_ENV['DEBUG'] ?? true), // set to false in production
+        'displayErrorDetails' => ((bool)$_ENV['DEBUG'] ?? false), // set to false in production
         'addContentLengthHeader' => false, // allow the web server to send the content-length header
         'determineRouteBeforeAppMiddleware' => true,
 
