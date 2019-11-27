@@ -64,12 +64,6 @@ class FileUploadAction extends FileAction
 
             if ($file) {
                 /** @var \App\Domain\Entities\File $file */
-                if ($file->ext !== 'jpg') {
-                    // костыль: сбрасываем связи и ждем ожидание worker
-                    sleep(1); $this->entityManager->clear();
-                    $file = $this->fileRepository->findOneBy(['uuid' => $file->uuid]);
-                }
-
                 return $this->respondWithJson(['link' => $file->getPublicPath()]);
             }
         }

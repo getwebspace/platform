@@ -275,11 +275,6 @@ class File extends Model
      */
     public function unlink()
     {
-        if (Str::start('image/', $this->type)) {
-            @unlink($this->getInternalPath('middle'));
-            @unlink($this->getInternalPath('small'));
-        }
-
-        @unlink($this->getInternalPath(''));
+        @exec('rm -rf ' . $this->getDir());
     }
 }
