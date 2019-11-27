@@ -40,10 +40,10 @@ class SiteMapTask extends Task
             'product' => collect($productRepository->findAll()),
         ];
 
-        $url = $this->getParameter('common_homepage', 'http://shop.0x12f.com');
+        $url = $this->getParameter('common_homepage', 'http://site.0x12f.com');
 
         // create sitemap
-        $sitemap = new Sitemap(PUBLIC_DIR . '/sitemap.xml');
+        $sitemap = new Sitemap(VAR_DIR . '/xml/sitemap.xml');
 
         // main page
         $sitemap->addItem($url, time(), Sitemap::WEEKLY, 0.5);

@@ -17,7 +17,7 @@
                     {% for task in tasks %}
                         <a href="#">
                             <div class="notif-content pl-4 pr-3">
-                                <span class="block">{{ task.action }}</span>
+                                <span class="block">{{ task.action }} ({{ task.status }})</span>
                                 <span class="time">{{ task.date|date('d.m.Y H:i:s') }}</span>
                             </div>
                         </a>

@@ -37,8 +37,8 @@ class GMFTask extends Task
 
         $feed = new Feed(
             $this->getParameter('integration_merchant_shop_title', 'Shop on CMS 0x12f'),
-            $this->getParameter('common_homepage', 'http://shop.0x12f.com'),
-            $this->getParameter('integration_merchant_shop_description', 'http://shop.0x12f.com')
+            $this->getParameter('common_homepage', 'http://site.0x12f.com'),
+            $this->getParameter('integration_merchant_shop_description', 'http://site.0x12f.com')
         );
 
         // Put products to the feed ($products - some data from database for example)
@@ -47,7 +47,7 @@ class GMFTask extends Task
             /** @var \App\Domain\Entities\Catalog\Product $model */
             $category = $data['category']->firstWhere('uuid', $model->category);
 
-            $url = $this->getParameter('common_homepage', 'http://shop.0x12f.com/') . 'catalog/';
+            $url = $this->getParameter('common_homepage', 'http://site.0x12f.com/') . 'catalog/';
             if ($category) {
                 $url .= $category->address;
             }
@@ -58,27 +58,35 @@ class GMFTask extends Task
             // Set common product properties
             $item->setId($model->uuid->toString());
             $item->setTitle($model->title);
-            $item->setDescription($model->description);
+            if ($model->description) {
+                $item->setDescription($model->description);
+            }
             $item->setLink($url);
-            $item->setImage($data['file']->firstWhere('item_uuid', $model->uuid));
+            if (($imageUrl = $data['file']->firstWhere('item_uuid', $model->uuid)) !== null) {
+                $item->setImage($imageUrl);
+            }
             if ($model->stock > 0) {
                 $item->setAvailability(Availability::IN_STOCK);
             } else {
                 $item->setAvailability(Availability::OUT_OF_STOCK);
             }
-            $item->setPrice("{$model->price} USD");
+            $item->setPrice("{$model->price} RUB");
             if ($category) {
                 $item->setGoogleCategory($category->title);
             }
-            $item->setBrand($model->manufacturer);
-            $item->setGtin($model->barcode);
+            if ($model->manufacturer) {
+                $item->setBrand($model->manufacturer);
+            }
+            if ($model->barcode) {
+                $item->setGtin($model->barcode);
+            }
             $item->setCondition('new');
 
             // Add this product to the feed
             $feed->addProduct($item);
         }
 
-        file_put_contents(PUBLIC_DIR . '/gmf.xml', $feed->build());
+        file_put_contents(VAR_DIR . '/xml/gmf.xml', $feed->build());
 
         $this->status_done();
     }

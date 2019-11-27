@@ -244,5 +244,8 @@ $app
     ->setName('guestbook')
     ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
 
+// xml files
+$app->get('/xml/{name}', \App\Application\Actions\Common\XMLFileAction::class);
+
 // dynamic path handler
 $app->get('/{args:.*}', \App\Application\Actions\Common\DynamicPageAction::class);

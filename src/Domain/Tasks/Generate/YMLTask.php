@@ -38,14 +38,14 @@ class YMLTask extends Task
 
         $settings = new Settings();
         $settings
-            ->setOutputFile(PUBLIC_DIR . '/yml.xml')
+            ->setOutputFile(VAR_DIR . '/xml/yml.xml')
             ->setEncoding('UTF-8');
 
         $shopInfo = new ShopInfo();
         $shopInfo
             ->setName($this->getParameter('integration_merchant_shop_title', 'Shop on CMS 0x12f'))
             ->setCompany($this->getParameter('integration_merchant_company_title', 'My own company'))
-            ->setUrl($this->getParameter('common_homepage', 'http://shop.0x12f.com'));
+            ->setUrl($this->getParameter('common_homepage', 'http://site.0x12f.com'));
 
         $currencies = [];
         $currencies[] = (new Currency())->setId($this->getParameter('integration_merchant_currency', 'RUB'))->setRate(1);
@@ -64,7 +64,7 @@ class YMLTask extends Task
             /** @var \App\Domain\Entities\Catalog\Product $model */
             $category = $data['category']->firstWhere('uuid', $model->category);
 
-            $url = $this->getParameter('common_homepage', 'http://shop.0x12f.com/') . 'catalog/';
+            $url = $this->getParameter('common_homepage', 'http://site.0x12f.com/') . 'catalog/';
             if ($category) {
                 $url .= $category->address;
             }
