@@ -29,18 +29,23 @@ class ConvertImageTask extends Task
             $original = $file->getInternalPath();
 
             $command = $this->getParameter('image_convert_bin', '/usr/bin/convert');
-            $sizeMiddle = '-resize x' . $this->getParameter('image_convert_size_middle', '450') . '\>';
-            $sizeSmall = '-resize x' . $this->getParameter('image_convert_size_small', '200') . '\>';
             $params = "-background white -alpha remove -alpha off -set comment 'Converted in 0x12f CMS'";
 
-            foreach (['middle' => $sizeMiddle, 'small' => $sizeSmall] as $size => $options) {
-                $path = $folder . '/' . $size;
+            foreach (
+                [
+                    'middle' => $this->getParameter('image_convert_size_middle'),
+                    'small' => $this->getParameter('image_convert_size_small'),
+                ] as $size => $pixels
+            ) {
+                if ($pixels > 0) {
+                    $path = $folder . '/' . $size;
 
-                if (!file_exists($path)) {
-                    mkdir($path, 0777, true);
+                    if (!file_exists($path)) {
+                        mkdir($path, 0777, true);
+                    }
+
+                    @exec($command . " '" . $original . "' -resize x " . $pixels . "\> " . $params . " '" . $path . "/" . $file->name . ".jpg'");
                 }
-
-                @exec($command . " '" . $original . "'" . ($options ? ' ' . $options : '') . " " . $params . " '" . $path . "/" . $file->name . ".jpg'");
             }
 
             @exec($command . " '" . $original . "' " . $params . " '" . $folder . "/" . $file->name . ".jpg'");
