@@ -129,6 +129,11 @@ $app
 
                 // files
                 $app->group('/file', function (App $app) {
+                    $app->group('/image', function (App $app) {
+                        $app->get('', \App\Application\Actions\Cup\File\Image\GetAction::class);
+                        $app->post('/delete', \App\Application\Actions\Cup\File\Image\DeleteAction::class);
+                    });
+
                     $app->get('', \App\Application\Actions\Cup\File\FileListAction::class);
                     $app->any('/{uuid}/delete', \App\Application\Actions\Cup\File\FileDeleteAction::class);
                 });

@@ -176,7 +176,16 @@
                                                                 <div class="col-md-12">
                                                                     <p class="text-muted text-center">Здесь вы можете сохранять собственные заметки и памятки.</p>
 
-                                                                    {% include 'cup/editor.twig' with {'name': 'notepad[' ~ user.username ~ ']', 'args': {'value': notepad, 'required': true}} %}
+                                                                    {% include 'cup/editor.twig' with {
+                                                                        'name': 'notepad[' ~ user.username ~ ']',
+                                                                        'args': {
+                                                                            'value': notepad, 'required': true
+                                                                        },
+                                                                        'options': {
+                                                                            'item': reference('/App/Domain/Types/FileItemType::ITEM_USER_UPLOAD'),
+                                                                            'item_uuid': user.uuid.toString(),
+                                                                        }
+                                                                    } %}
                                                                 </div>
                                                                 <div class="col-md-12">
                                                                     <button type="submit" class="btn btn-success">Сохранить</button>

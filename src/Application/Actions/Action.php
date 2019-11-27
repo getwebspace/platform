@@ -302,6 +302,19 @@ abstract class Action
     }
 
     /**
+     * @param array $payload
+     *
+     * @return Response
+     */
+    protected function respondWithJson(array $payload = null): Response
+    {
+        $json = json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $this->response->getBody()->write($json);
+
+        return $this->response->withHeader('Content-Type', 'application/json');
+    }
+
+    /**
      * @param array|object|null $data
      *
      * @return Response

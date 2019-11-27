@@ -6902,6 +6902,7 @@ label.error {
     height: 1.6875rem;
     min-width: 1.6875rem;
     width: 1.6875rem;
+    padding: 5px 0;
 }
 
 /*      Button States      */

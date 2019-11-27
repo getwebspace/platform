@@ -19,6 +19,7 @@ class TaskRunAction extends Action
                 // run worker
                 \App\Domain\Tasks\Task::worker();
             }
+
             return $this->response->withAddedHeader('Location', '/cup')->withStatus(301);
         }
 

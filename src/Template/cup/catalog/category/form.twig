@@ -59,6 +59,10 @@
                                     'name': 'description',
                                     'args': {
                                         'value': item.description
+                                    },
+                                    'options': {
+                                        'item': reference('/App/Domain/Types/FileItemType::ITEM_CATALOG_CATEGORY'),
+                                        'item_uuid': item.uuid ? item.uuid.toString() : '',
                                     }
                                 } %}
                             </div>
@@ -249,7 +253,7 @@
 
                                 {% for file in files %}
                                     <div class="p-2 d-inline-block m-2 bg-grey2 rounded">
-                                        <a href="{{ file.getPublicPath('full') }}" target="_blank">
+                                        <a href="{{ file.getPublicPath() }}" target="_blank">
                                             <img class="rounded" height="100" src="{{ file.getPublicPath('small') }}" alt="preview" data-toggle="tooltip" data-placement="top" title="{{ file.getName() }}" />
                                         </a>
                                         <div class="pt-2">

@@ -31,15 +31,24 @@ class ConvertImageTask extends Task
             $command = $this->getParameter('image_convert_bin', '/usr/bin/convert');
             $sizeMiddle = '-resize x' . $this->getParameter('image_convert_size_middle', '450') . '\>';
             $sizeSmall = '-resize x' . $this->getParameter('image_convert_size_small', '200') . '\>';
+            $params = "-background white -alpha remove -alpha off -set comment 'Converted in 0x12f CMS'";
 
-            foreach (['full' => '', 'middle' => $sizeMiddle, 'small' => $sizeSmall] as $size => $options) {
+            foreach (['middle' => $sizeMiddle, 'small' => $sizeSmall] as $size => $options) {
                 $path = $folder . '/' . $size;
 
                 if (!file_exists($path)) {
                     mkdir($path, 0777, true);
                 }
 
-                @exec($command . " '" . $original . "'" . ($options ? ' ' . $options : '') . " -set comment 'Converted in 0x12f CMS' " . $path . '/' . $file->name . '.jpg');
+                @exec($command . " '" . $original . "'" . ($options ? ' ' . $options : '') . " " . $params . " '" . $path . "/" . $file->name . ".jpg'");
+            }
+
+            @exec($command . " '" . $original . "' " . $params . " '" . $folder . "/" . $file->name . ".jpg'");
+
+            // установка расширения файла и типа
+            if ($file->ext !== 'jpg') {
+                $file->ext = 'jpg';
+                $file->type = 'image/jpeg; charset=binary';
             }
         }
 
