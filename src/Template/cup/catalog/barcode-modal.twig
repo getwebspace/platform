@@ -21,7 +21,7 @@
                 // action
                 // data.barcode = code
             })
-            .on('event:barcode_scan:close', () => {
+            .on('event:barcode_scan:open', () => {
                 $.modal.close();
             });
     });

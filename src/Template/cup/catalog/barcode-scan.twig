@@ -36,7 +36,7 @@
 {% block script %}
     <script type="text/javascript">
         $(() => {
-            $.post(location.origin + '/pub?id={{ channel }}', JSON.stringify({'type': 'barcode_scan:close'}));
+            $.post(location.origin + '/pub?id={{ channel }}', JSON.stringify({'type': 'barcode_scan:open'}));
 
             let codeReader = new ZXing.BrowserMultiFormatReader(),
                 $startBtn = $('#start'),
