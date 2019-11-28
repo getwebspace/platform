@@ -376,7 +376,7 @@
                 if (data.barcode) {
                     $.get('/api/catalog/product', {'barcode': data.barcode}, (res) => {
                         if (res && res.statusCode === 200) {
-                            if (res.data.legend) {
+                            if (res.data.length) {
                                 let product = res.data[0],
                                     $input = $('<input class="form-control" type="number" placeholder="1" min="0" step="any">')
                                         .attr('name', 'list[' + product.uuid + ']').val(1)
@@ -409,7 +409,6 @@
                                     }
                                 });
                             }
-
                         }
                     });
                 }
