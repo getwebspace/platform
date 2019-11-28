@@ -3,6 +3,8 @@ version: "2"
 networks:
     lan:
         external: false
+  # web:
+  #     external: true
 
 services:
     php:
@@ -13,14 +15,16 @@ services:
           # - SALT=Please-Change-Me
           # - DATABASE=mysql://user:secret@localhost/mydb
         volumes:
-            - $PWD/app:/var/container/app:ro
-            - $PWD/config:/var/container/config:ro
-            - $PWD/public:/var/container/public:ro
-            - $PWD/src:/var/container/src:ro
-            - $PWD/theme:/var/container/theme:ro
-            - $PWD/var:/var/container/var:rw
-            - $PWD/var/upload:/var/container/public/uploads:rw
-            - $PWD/vendor:/var/container/vendor:ro
+            - ./app:/var/container/app:ro
+            - ./config:/var/container/config:ro
+            - ./public:/var/container/public:ro
+            - ./src:/var/container/src:ro
+            - ./theme:/var/container/theme:ro
+            - ./var:/var/container/var:rw
+            - ./var/upload:/var/container/public/uploads:rw
+            - ./vendor:/var/container/vendor:ro
+      # labels:
+      #     - traefik.enable=false
         networks:
             - lan
 
@@ -29,15 +33,25 @@ services:
         volumes_from:
             - php
         volumes:
-            - $PWD/config/nginx.conf:/etc/nginx/nginx.conf:ro
-            - $PWD/var/log/nginx:/var/log/nginx
+            - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
+            - ./var/log/nginx:/var/log/nginx
         ports:
             - 9000:80
+      # labels:
+      #     - traefik.enable=true
+      #     - traefik.port=80
+      #     - traefik.backend=demo.site.0x12f.com
+      #     - traefik.frontend.rule=Host:demo.site.0x12f.com
+      #     - traefik.frontend.redirect.entryPoint=https
+      #     - traefik.docker.network=web
         networks:
             - lan
+      #     - web
 
     cache:
         image: redis:4-alpine
         restart: always
+      # labels:
+      #     - traefik.enable=false
         networks:
             - lan
