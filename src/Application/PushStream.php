@@ -120,15 +120,31 @@ class PushStream
             'params' => '',
         ];
         $data = array_merge($default, $data);
+        $result = false;
 
-        return file_get_contents('http://' . $_ENV['SERVER_ADDR'] . ':' . $_ENV['SERVER_PORT'] . $data['url'], false, stream_context_create([
-            'http' =>
-                [
-                    'method' => $data['params'] ? 'POST' : 'GET',
-                    'header' => 'Content-type: application/' . ($data['params'] ? 'x-www-form-urlencoded' : 'json'),
-                    'content' => $data['params'] ? $data['params'] : '',
-                    'timeout' => 30,
-                ],
-        ]));
+        foreach (
+            [
+                $this->container->get('parameter')->get('common_homepage', false),
+                'http://' . $_ENV['SERVER_ADDR'] . ':' . $_ENV['SERVER_PORT'],
+            ] as $host
+        ) {
+            if ($host) {
+                $result = file_get_contents($host . $data['url'], false, stream_context_create([
+                    'http' =>
+                        [
+                            'method' => $data['params'] ? 'POST' : 'GET',
+                            'header' => 'Content-type: application/' . ($data['params'] ? 'x-www-form-urlencoded' : 'json'),
+                            'content' => $data['params'] ? $data['params'] : '',
+                            'timeout' => 3,
+                        ],
+                ]));
+
+                if ($http_response_header !== null) {
+                    break;
+                }
+            }
+        }
+
+        return $result;
     }
 }
