@@ -48,7 +48,9 @@ class CategoryCreateAction extends CatalogAction
             }
         }
 
-        $categories = collect($this->categoryRepository->findAll());
+        $categories = collect($this->categoryRepository->findBy([
+            'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+        ]));
 
         return $this->respondRender('cup/catalog/category/form.twig', [
             'parent' => $parent,

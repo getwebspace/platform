@@ -61,7 +61,9 @@ class CategoryUpdateAction extends CatalogAction
                     }
                 }
 
-                $categories = collect($this->categoryRepository->findAll());
+                $categories = collect($this->categoryRepository->findBy([
+                    'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+                ]));
                 $files = collect($this->fileRepository->findBy([
                     'item' => \App\Domain\Types\FileItemType::ITEM_CATALOG_CATEGORY,
                     'item_uuid' => $item->uuid,
