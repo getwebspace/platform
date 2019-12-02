@@ -288,6 +288,7 @@ abstract class Action
                     'header' => "Content-Type: application/x-www-form-urlencoded\r\n" .
                                 "Content-Length: " . strlen($query) . "\r\n",
                     'content' => $query,
+                    'timeout' => 10,
                 ],
             ])));
 
