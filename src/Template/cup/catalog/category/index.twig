@@ -21,7 +21,7 @@
                                 <i class="fas fa-arrow-left"></i>
                             </a>
                         {% endif %}
-                        <h4 class="card-title">Список категорий {{ category ? 'вложенный в ' ~ category.title : '' }} ({{ categories.count() }})</h4>
+                        <h4 class="card-title">Список категорий {{ category ? 'вложенный в ' ~ category.title : '' }} ({{ categories.where('parent', category ? category.uuid : '00000000-0000-0000-0000-000000000000').count() }})</h4>
                         <a href="/cup/catalog/category/add{{ category ? '?parent=' ~ category.uuid : '' }}" class="btn btn-primary btn-round ml-auto">
                             <i class="fa fa-plus"></i>
                             Добавить категорию
@@ -65,7 +65,7 @@
                                                 </button>
                                                 <ul class="dropdown-menu" role="menu">
                                                     <li>
-                                                        <a href="/cup/catalog/category/{{ category.uuid }}" class="btn btn-link"><i class="fas fa-sitemap"></i> Категории</a>
+                                                        <a href="/cup/catalog/category/{{ category.uuid }}" class="btn btn-link"><i class="fas fa-sitemap"></i> Вложенные категории</a>
                                                     </li>
                                                     <li>
                                                         <a href="/cup/catalog/product/{{ category.uuid }}" class="btn btn-link"><i class="fas fa-eye"></i> Номенклатура</a>
