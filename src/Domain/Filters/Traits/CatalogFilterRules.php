@@ -7,7 +7,39 @@ use Slim\App;
 trait CatalogFilterRules
 {
     /**
-     * Проверяет уникальность адреса публикации
+     * Вставляет адрес родительной категории
+     *
+     * @return \Closure
+     */
+    public function InsertParentCategoryAddress()
+    {
+        return function (&$data, $field) {
+            if ($data['parent'] && $data['parent'] !== \Ramsey\Uuid\Uuid::NIL) {
+                /** @var App $app */
+                $app = $GLOBALS['app'];
+
+                /** @var \Psr\Container\ContainerInterface $container */
+                $container = $app->getContainer();
+
+                if ($container->get('parameter')->get('catalog_auto_generate_address', 'no') === 'yes') {
+                    /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $categoryRepository */
+                    $categoryRepository = $container->get(\Doctrine\ORM\EntityManager::class)->getRepository(\App\Domain\Entities\Catalog\Category::class);
+
+                    /** @var \App\Domain\Entities\Catalog\Category $category */
+                    $category = $categoryRepository->findOneBy(['uuid' => str_escape($data['parent']), 'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]);
+
+                    if ($category && !str_starts_with($category->address, $data[$field])) {
+                        $data[$field] = $category->address . '/' . $data[$field];
+                    }
+                }
+            }
+
+            return true;
+        };
+    }
+
+    /**
+     * Проверяет уникальность адреса категории
      *
      * @return \Closure
      */
@@ -105,7 +137,37 @@ trait CatalogFilterRules
     }
 
     /**
-     * Проверяет уникальность адреса публикации
+     * Вставляет адрес родительной категории
+     *
+     * @return \Closure
+     */
+    public function InsertParentProductAddress()
+    {
+        return function (&$data, $field) {
+            /** @var App $app */
+            $app = $GLOBALS['app'];
+
+            /** @var \Psr\Container\ContainerInterface $container */
+            $container = $app->getContainer();
+
+            if ($container->get('parameter')->get('catalog_auto_generate_address', 'no') === 'yes') {
+                /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $categoryRepository */
+                $categoryRepository = $app->getContainer()->get(\Doctrine\ORM\EntityManager::class)->getRepository(\App\Domain\Entities\Catalog\Category::class);
+
+                /** @var \App\Domain\Entities\Catalog\Category $category */
+                $category = $categoryRepository->findOneBy(['uuid' => str_escape($data['category']), 'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]);
+
+                if ($category && !str_starts_with($category->address, $data[$field])) {
+                    $data[$field] = $category->address . '/' . $data[$field];
+                }
+            }
+
+            return true;
+        };
+    }
+
+    /**
+     * Проверяет уникальность адреса продукта
      *
      * @return \Closure
      */
@@ -156,7 +218,7 @@ trait CatalogFilterRules
             $value = &$data[$field];
 
             if (!$value) {
-                $value = strtoupper(substr(bin2hex(random_bytes(10)), 0, $length));
+                $value = strtoupper(substr(bin2hex(random_bytes(10 + $length)), 0, $length));
             }
 
             return true;

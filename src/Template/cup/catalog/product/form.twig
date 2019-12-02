@@ -16,397 +16,424 @@
             <div class="card">
                 <form method="post" enctype="multipart/form-data">
                     <div class="card-header">
-                        <div class="card-head-row">
+                        <div class="d-flex align-items-center">
                             <a href="/cup/catalog/product/{{ category.uuid }}" class="btn btn-secondary btn-icon mr-1">
                                 <i class="fas fa-long-arrow-alt-left"></i>
                             </a>
                             <div class="card-title">{{ item.uuid ? 'Редактирование товара ' ~ item.title : 'Создание нового товара' }}</div>
+
+                            <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active show" data-toggle="pill" href="#product" role="tab">
+                                        Товар
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="pill" href="#other" role="tab">
+                                        Дополнительно
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Наименование',
-                                    'type': 'text',
-                                    'name': 'title',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Краткое описание товара"></i>',
-                                    'args': {
-                                        'value': item.title,
-                                        'required': true,
-                                        'placeholder': 'Еда',
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Адрес',
-                                    'type': 'text',
-                                    'name': 'address',
-                                    'prefix': base_url() ~ '/catalog/ ... /',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Название товара. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов"></i>',
-                                    'args': {
-                                        'value': item.address,
-                                        'placeholder': 'food',
-                                    }
-                                } %}
-                            </div>
-                        </div>
-
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include 'cup/editor.twig' with {
-                                    'label': 'Описание товара',
-                                    'name': 'description',
-                                    'args': {
-                                        'value': item.description
-                                    },
-                                    'options': {
-                                        'item': reference('/App/Domain/Types/FileItemType::ITEM_CATALOG_PRODUCT'),
-                                        'item_uuid': item.uuid ? item.uuid.toString() : '',
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include 'cup/editor.twig' with {
-                                    'label': 'Дополнительное описание товара',
-                                    'name': 'extra',
-                                    'args': {
-                                        'value': item.extra
-                                    },
-                                    'options': {
-                                        'item': reference('/App/Domain/Types/FileItemType::ITEM_CATALOG_PRODUCT'),
-                                        'item_uuid': item.uuid ? item.uuid.toString() : '',
-                                    }
-                                } %}
-                            </div>
-                        </div>
-
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Категория',
-                                    'type': 'select',
-                                    'name': 'category',
-                                    'args': {
-                                        'option': categories.pluck('title', 'uuid').all(),
-                                        'selected': item.category ?? category.uuid
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-3">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Артикул',
-                                    'type': 'text',
-                                    'name': 'vendorcode',
-                                    'args': {
-                                        'value': item.vendorcode,
-                                        'placeholder': 'KB162309',
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-3">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Штрих код',
-                                    'type': 'number',
-                                    'name': 'barcode',
-                                    'postfix': '<a href="#btn-modal-scan" rel="modal:open" style="color: #495057" data-toggle="tooltip" data-placement="top" title="Сканер QR/Bar кодов"><i class="fas fa-barcode"></i></a>',
-                                    'args': {
-                                        'value': item.barcode,
-                                        'placeholder': '4820038494130',
-                                    }
-                                } %}
-                                {% include "cup/catalog/barcode-modal.twig" %}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-3">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Цена закупки',
-                                    'type': 'number',
-                                    'name': 'priceFirst',
-                                    'args': {
-                                        'value': item.priceFirst,
-                                        'placeholder': '1.0',
-                                        'step': 'any',
-                                        'min': '0',
-                                    }
-                                } %}
-                            </div>
-
-                            <div class="col-md-3">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Цена продажи',
-                                    'type': 'number',
-                                    'name': 'price',
-                                    'args': {
-                                        'value': item.price,
-                                        'placeholder': '1.0',
-                                        'step': 'any',
-                                        'min': '0',
-                                    }
-                                } %}
-                            </div>
-
-                            <div class="col-md-3">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Цена оптовая',
-                                    'type': 'number',
-                                    'name': 'priceWholesale',
-                                    'args': {
-                                        'value': item.priceWholesale,
-                                        'placeholder': '1.0',
-                                        'step': 'any',
-                                        'min': '0',
-                                    }
-                                } %}
-                            </div>
-                        </div>
-
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'На складе',
-                                    'type': 'number',
-                                    'name': 'stock',
-                                    'args': {
-                                        'value': item.stock,
-                                        'placeholder': '1',
-                                        'step': 'any',
-                                        'min': '0',
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-3">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Объем',
-                                    'type': 'number',
-                                    'name': 'volume',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Зависит от выбранной размерности"></i>',
-                                    'args': {
-                                        'value': item.volume,
-                                        'placeholder': '1',
-                                        'step': 'any',
-                                        'min': '0',
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-3">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Размерность',
-                                    'type': 'select',
-                                    'name': 'unit',
-                                    'args': {
-                                        'option': {'null': '---'}|merge(measure),
-                                        'selected': item.unit
-                                    }
-                                } %}
-                            </div>
-                        </div>
-
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Страна',
-                                    'type': 'text',
-                                    'name': 'country',
-                                    'args': {
-                                        'value': item.country,
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Производитель',
-                                    'type': 'text',
-                                    'name': 'manufacturer',
-                                    'args': {
-                                        'value': item.manufacturer,
-                                    }
-                                } %}
-                            </div>
-                        </div>
-
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Теги',
-                                    'message': 'Для разделения используйте символ точки с запятой (;).',
-                                    'type': 'textarea',
-                                    'name': 'tags',
-                                    'args': {
-                                        'value': item.tags ? item.origin|join(';') : '',
-                                        'style': 'min-height: 100px;'
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-3">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Порядок',
-                                    'type': 'number',
-                                    'name': 'order',
-                                    'args': {
-                                        'value': item.order is not empty ? item.order : '1',
-                                        'placeholder': '1',
-                                        'min': '1'
-                                    }
-                                } %}
-                            </div>
-
-                            <div class="col-md-3">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Внешний ID',
-                                    'type': 'text',
-                                    'name': 'external_id',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
-                                    'args': {
-                                        'value': item.external_id,
-                                    }
-                                } %}
-                            </div>
-                        </div>
-
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                {% include 'cup/form.twig' with {
-                                    'label': category.product.field_1 ? category.product.field_1 : 'Поле 1',
-                                    'type': 'text',
-                                    'name': 'field1',
-                                    'message': 'Индивидуальное поле',
-                                    'args': {
-                                        'value': item.field1,
-                                    }
-                                } %}
-                            </div>
-
-                            <div class="col-md-4">
-                                {% include 'cup/form.twig' with {
-                                    'label': category.product.field_2 ? category.product.field_2 : 'Поле 2',
-                                    'type': 'text',
-                                    'name': 'field2',
-                                    'message': 'Индивидуальное поле',
-                                    'args': {
-                                        'value': item.field2,
-                                    }
-                                } %}
-                            </div>
-
-                            <div class="col-md-4">
-                                {% include 'cup/form.twig' with {
-                                    'label': category.product.field_3 ? category.product.field_3 : 'Поле 3',
-                                    'type': 'text',
-                                    'name': 'field3',
-                                    'message': 'Индивидуальное поле',
-                                    'args': {
-                                        'value': item.field3,
-                                    }
-                                } %}
-                            </div>
-
-                            <div class="col-md-4">
-                                {% include 'cup/form.twig' with {
-                                    'label': category.product.field_4 ? category.product.field_4 : 'Поле 4',
-                                    'type': 'text',
-                                    'name': 'field4',
-                                    'message': 'Индивидуальное поле',
-                                    'args': {
-                                        'value': item.field4,
-                                    }
-                                } %}
-                            </div>
-
-                            <div class="col-md-4">
-                                {% include 'cup/form.twig' with {
-                                    'label': category.product.field_5 ? category.product.field_5 : 'Поле 5',
-                                    'type': 'text',
-                                    'name': 'field5',
-                                    'message': 'Индивидуальное поле',
-                                    'args': {
-                                        'value': item.field5,
-                                    }
-                                } %}
-                            </div>
-                        </div>
-
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Изображения',
-                                    'type': 'file',
-                                    'name': 'files[]',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Здесь можно выбрать несколько изображений"></i>',
-                                    'args': {
-                                        'class': ['d-block', 'btn', 'btn-sm', 'bg-grey2'],
-                                        'multiple': true,
-                                        'accept': 'image/*'
-                                    }
-                                } %}
-
-                                {% for file in files %}
-                                    <div class="p-2 d-inline-block m-2 bg-grey2 rounded">
-                                        <a href="{{ file.getPublicPath() }}" target="_blank">
-                                            <img class="rounded" height="100" src="{{ file.getPublicPath('small') }}" alt="preview" data-toggle="tooltip" data-placement="top" title="{{ file.getName() }}" />
-                                        </a>
-                                        <div class="pt-2">
-                                            <span class="d-inline-block text-small">{{ file.getSize() }}</span>
-                                            <button type="submit" name="delete-image" value="{{ file.uuid }}" class="float-right btn btn-danger btn-icon btn-xs">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
-                                        </div>
+                        <div class="tab-content">
+                            {# Tab: Товар #}
+                            <div class="tab-pane fade show active" id="product" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Наименование',
+                                            'type': 'text',
+                                            'name': 'title',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Краткое описание товара"></i>',
+                                            'args': {
+                                                'value': item.title,
+                                                'required': true,
+                                                'placeholder': 'Еда',
+                                            }
+                                        } %}
                                     </div>
-                                {% endfor %}
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Категория',
+                                            'type': 'select',
+                                            'name': 'category',
+                                            'args': {
+                                                'option': categories.pluck('title', 'uuid').all(),
+                                                'selected': item.category ?? category.uuid
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {% include 'cup/editor.twig' with {
+                                            'label': 'Описание товара',
+                                            'name': 'description',
+                                            'args': {
+                                                'value': item.description
+                                            },
+                                            'options': {
+                                                'item': reference('/App/Domain/Types/FileItemType::ITEM_CATALOG_PRODUCT'),
+                                                'item_uuid': item.uuid ? item.uuid.toString() : '',
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Страна',
+                                            'type': 'text',
+                                            'name': 'country',
+                                            'args': {
+                                                'value': item.country,
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Производитель',
+                                            'type': 'text',
+                                            'name': 'manufacturer',
+                                            'args': {
+                                                'value': item.manufacturer,
+                                            }
+                                        } %}
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Артикул',
+                                            'type': 'text',
+                                            'name': 'vendorcode',
+                                            'args': {
+                                                'value': item.vendorcode,
+                                                'placeholder': 'KB162309',
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Штрих код',
+                                            'type': 'number',
+                                            'name': 'barcode',
+                                            'postfix': '<a href="#btn-modal-scan" rel="modal:open" style="color: #495057" data-toggle="tooltip" data-placement="top" title="Сканер QR/Bar кодов"><i class="fas fa-barcode"></i></a>',
+                                            'args': {
+                                                'value': item.barcode,
+                                                'placeholder': '4820038494130',
+                                            }
+                                        } %}
+                                        {% include "cup/catalog/barcode-modal.twig" %}
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Цена закупки',
+                                            'type': 'number',
+                                            'name': 'priceFirst',
+                                            'args': {
+                                                'value': item.priceFirst,
+                                                'placeholder': '1.0',
+                                                'step': 'any',
+                                                'min': '0',
+                                            }
+                                        } %}
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Цена продажи',
+                                            'type': 'number',
+                                            'name': 'price',
+                                            'args': {
+                                                'value': item.price,
+                                                'placeholder': '1.0',
+                                                'step': 'any',
+                                                'min': '0',
+                                            }
+                                        } %}
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Цена оптовая',
+                                            'type': 'number',
+                                            'name': 'priceWholesale',
+                                            'args': {
+                                                'value': item.priceWholesale,
+                                                'placeholder': '1.0',
+                                                'step': 'any',
+                                                'min': '0',
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'На складе',
+                                            'type': 'number',
+                                            'name': 'stock',
+                                            'args': {
+                                                'value': item.stock,
+                                                'placeholder': '1',
+                                                'step': 'any',
+                                                'min': '0',
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Объем',
+                                            'type': 'number',
+                                            'name': 'volume',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Зависит от выбранной размерности"></i>',
+                                            'args': {
+                                                'value': item.volume,
+                                                'placeholder': '1',
+                                                'step': 'any',
+                                                'min': '0',
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Размерность',
+                                            'type': 'select',
+                                            'name': 'unit',
+                                            'args': {
+                                                'option': {'null': '---'}|merge(measure),
+                                                'selected': item.unit
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': category.product.field_1 ? category.product.field_1 : 'Поле 1',
+                                            'type': 'text',
+                                            'name': 'field1',
+                                            'message': 'Индивидуальное поле',
+                                            'args': {
+                                                'value': item.field1,
+                                            }
+                                        } %}
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': category.product.field_2 ? category.product.field_2 : 'Поле 2',
+                                            'type': 'text',
+                                            'name': 'field2',
+                                            'message': 'Индивидуальное поле',
+                                            'args': {
+                                                'value': item.field2,
+                                            }
+                                        } %}
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': category.product.field_3 ? category.product.field_3 : 'Поле 3',
+                                            'type': 'text',
+                                            'name': 'field3',
+                                            'message': 'Индивидуальное поле',
+                                            'args': {
+                                                'value': item.field3,
+                                            }
+                                        } %}
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': category.product.field_4 ? category.product.field_4 : 'Поле 4',
+                                            'type': 'text',
+                                            'name': 'field4',
+                                            'message': 'Индивидуальное поле',
+                                            'args': {
+                                                'value': item.field4,
+                                            }
+                                        } %}
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': category.product.field_5 ? category.product.field_5 : 'Поле 5',
+                                            'type': 'text',
+                                            'name': 'field5',
+                                            'message': 'Индивидуальное поле',
+                                            'args': {
+                                                'value': item.field5,
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Изображения',
+                                            'type': 'file',
+                                            'name': 'files[]',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Здесь можно выбрать несколько изображений"></i>',
+                                            'args': {
+                                                'class': ['d-block', 'btn', 'btn-sm', 'bg-grey2'],
+                                                'multiple': true,
+                                                'accept': 'image/*'
+                                            }
+                                        } %}
+
+                                        {% for file in files %}
+                                            <div class="p-2 d-inline-block m-2 bg-grey2 rounded">
+                                                <a href="{{ file.getPublicPath() }}" target="_blank">
+                                                    <img class="rounded" height="100" src="{{ file.getPublicPath('small') }}" alt="preview" data-toggle="tooltip" data-placement="top" title="{{ file.getName() }}" />
+                                                </a>
+                                                <div class="pt-2">
+                                                    <span class="d-inline-block text-small">{{ file.getSize() }}</span>
+                                                    <button type="submit" name="delete-image" value="{{ file.uuid }}" class="float-right btn btn-danger btn-icon btn-xs">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
 
-                        <hr>
+                            {# Tab: Дополнительно #}
+                            <div class="tab-pane fade" id="other" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Адрес',
+                                            'type': 'text',
+                                            'name': 'address',
+                                            'prefix': base_url() ~ '/catalog/',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Название товара. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов"></i>',
+                                            'args': {
+                                                'value': item.address,
+                                                'placeholder': 'food',
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Порядок',
+                                            'type': 'number',
+                                            'name': 'order',
+                                            'args': {
+                                                'value': item.order is not empty ? item.order : '1',
+                                                'placeholder': '1',
+                                                'min': '1'
+                                            }
+                                        } %}
+                                    </div>
 
-                        <div class="row">
-                            <div class="col-md-4">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Метатег Title',
-                                    'type': 'text',
-                                    'name': 'meta[title]',
-                                    'args': {
-                                        'value': item.meta.title,
-                                    }
-                                } %}
-                            </div>
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Внешний ID',
+                                            'type': 'text',
+                                            'name': 'external_id',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
+                                            'args': {
+                                                'value': item.external_id,
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
 
-                            <div class="col-md-4">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Метатег Description',
-                                    'type': 'text',
-                                    'name': 'meta[description]',
-                                    'args': {
-                                        'value': item.meta.description,
-                                    }
-                                } %}
-                            </div>
+                                <hr>
 
-                            <div class="col-md-4">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Метатег Keywords',
-                                    'type': 'text',
-                                    'name': 'meta[keywords]',
-                                    'args': {
-                                        'value': item.meta.keywords,
-                                    }
-                                } %}
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {% include 'cup/editor.twig' with {
+                                            'label': 'Дополнительное описание товара',
+                                            'name': 'extra',
+                                            'args': {
+                                                'value': item.extra
+                                            },
+                                            'options': {
+                                                'item': reference('/App/Domain/Types/FileItemType::ITEM_CATALOG_PRODUCT'),
+                                                'item_uuid': item.uuid ? item.uuid.toString() : '',
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Теги',
+                                            'message': 'Для разделения используйте символ точки с запятой (;).',
+                                            'type': 'textarea',
+                                            'name': 'tags',
+                                            'args': {
+                                                'value': item.tags ? item.origin|join(';') : '',
+                                                'style': 'min-height: 100px;'
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Метатег Title',
+                                            'type': 'text',
+                                            'name': 'meta[title]',
+                                            'args': {
+                                                'value': item.meta.title,
+                                            }
+                                        } %}
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Метатег Description',
+                                            'type': 'text',
+                                            'name': 'meta[description]',
+                                            'args': {
+                                                'value': item.meta.description,
+                                            }
+                                        } %}
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Метатег Keywords',
+                                            'type': 'text',
+                                            'name': 'meta[keywords]',
+                                            'args': {
+                                                'value': item.meta.keywords,
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -38,6 +38,7 @@ class Category extends Filter
                 ->addRule($filter->checkStrlenBetween(0, 10000))
             ->attr('address')
                 ->addRule($filter->ValidAddress())
+                ->addRule($filter->InsertParentCategoryAddress())
                 ->addRule($filter->UniqueCategoryAddress())
                 ->addRule($filter->checkStrlenBetween(0, 255))
             ->attr('field1')

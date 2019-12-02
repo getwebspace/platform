@@ -40,6 +40,7 @@ class Product extends Filter
                 ->addRule($filter->checkStrlenBetween(0, 10000))
             ->attr('address')
                 ->addRule($filter->ValidAddress())
+                ->addRule($filter->InsertParentProductAddress())
                 ->addRule($filter->UniqueProductAddress())
                 ->addRule($filter->checkStrlenBetween(0, 255))
             ->attr('vendorcode')

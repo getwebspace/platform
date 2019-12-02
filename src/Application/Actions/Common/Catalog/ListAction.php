@@ -54,7 +54,7 @@ class ListAction extends CatalogAction
      */
     protected function prepareMain(array &$params, &$categories, &$files)
     {
-        if ($params['address']['category'] == '' && $params['address']['product'] == '') {
+        if ($params['address'] == '') {
             $pagination = $this->getParameter('catalog_category_pagination', 10);
 
             $qb = $this->entityManager->createQueryBuilder();
@@ -140,7 +140,7 @@ class ListAction extends CatalogAction
         /**
          * @var \App\Domain\Entities\Catalog\Category $category
          */
-        $category = $categories->firstWhere('address', $params['address']['category']);
+        $category = $categories->firstWhere('address', $params['address']);
 
         if (is_null($category) === false) {
             $categoryUUIDs = $this->getCategoryChildrenUUID($categories, $category);
@@ -229,7 +229,7 @@ class ListAction extends CatalogAction
     {
         /** @var \App\Domain\Entities\Catalog\Product $product */
         $product = $this->productRepository->findOneBy([
-            'address' => $params['address']['product'],
+            'address' => $params['address'],
             'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
         ]);
 
@@ -268,10 +268,7 @@ class ListAction extends CatalogAction
             unset($parts[count($parts) - 1]);
         }
 
-        $product = count($parts) ? $parts[count($parts) - 1] : '';
-        $category = implode('/', $parts);
-
-        return ['address' => ['category' => $category, 'product' => $product], 'offset' => $offset];
+        return ['address' => implode('/', $parts), 'offset' => $offset];
     }
 
     /**
