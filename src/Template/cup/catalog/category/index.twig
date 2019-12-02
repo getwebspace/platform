@@ -35,8 +35,8 @@
                                 <tr>
                                     {# поле для сортировки данных в таблице #}
                                     <th style="display: none"></th>
-                                    <th>Наименование</th>
-                                    <th>Основная категория</th>
+                                    <th width="20%">Наименование</th>
+                                    <th width="15%">Основная категория</th>
                                     <th>{{ fields.catalog_category_field_1 ?? 'Поле 1' }}</th>
                                     <th>{{ fields.catalog_category_field_2 ?? 'Поле 2' }}</th>
                                     <th>{{ fields.catalog_category_field_3 ?? 'Поле 3' }}</th>
@@ -44,7 +44,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for category in categories %}
+                                {% for category in categories.where('parent', category ? category.uuid : '00000000-0000-0000-0000-000000000000') %}
                                     <tr>
                                         {# поле для сортировки данных в таблице #}
                                         <td style="display: none">{{ category.order }}</td>
@@ -54,36 +54,34 @@
                                                 <i class="fas fa-external-link-alt"></i>
                                             </a>
                                         </td>
-                                        <td>{{ category.where('uuid', category.parent).first().title ?? '&mdash;' }}</td>
+                                        <td>{{ categories.where('uuid', category.parent).first().title ?? '&mdash;' }}</td>
                                         <td>{{ category.field1 }}</td>
                                         <td>{{ category.field2 }}</td>
                                         <td>{{ category.field3 }}</td>
                                         <td class="text-center">
-                                            <div class="btn-group">
-                                                <a href="/cup/catalog/product/{{ category.uuid }}" class="btn btn-outline-info btn-sm">
-                                                    <i class="fas fa-eye fa-lg"></i>
-                                                </a>
-                                                <a href="/cup/catalog/category/{{ category.uuid }}" class="btn btn-outline-info btn-sm">
-                                                    <i class="fas fa-folder-open"></i>
-                                                </a>
-                                                <div class="btn-group dropdown">
-                                                    <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                                                        <i class="fas fa-bars"></i>
-                                                    </button>
-                                                    <ul class="dropdown-menu" role="menu">
-                                                        <li>
-                                                            <a href="/cup/catalog/category/{{ category.uuid }}/edit" class="btn btn-link"><i class="fas fa-edit"></i> Изменить</a>
-                                                        </li>
-                                                        <li><div class="dropdown-divider"></div></li>
-                                                        <li>
-                                                            <form action="/cup/catalog/category/{{ category.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить категорию?');">
-                                                                <button type="submit" class="btn btn-link text-danger">
-                                                                    <i class="fas fa-trash-alt"></i> Удалить
-                                                                </button>
-                                                            </form>
-                                                        </li>
-                                                    </ul>
-                                                </div>
+                                            <div class="btn-group dropdown">
+                                                <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                                                    <i class="fas fa-bars"></i>
+                                                </button>
+                                                <ul class="dropdown-menu" role="menu">
+                                                    <li>
+                                                        <a href="/cup/catalog/category/{{ category.uuid }}" class="btn btn-link"><i class="fas fa-sitemap"></i> Категории</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="/cup/catalog/product/{{ category.uuid }}" class="btn btn-link"><i class="fas fa-eye"></i> Номенклатура</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="/cup/catalog/category/{{ category.uuid }}/edit" class="btn btn-link"><i class="fas fa-edit"></i> Изменить</a>
+                                                    </li>
+                                                    <li><div class="dropdown-divider"></div></li>
+                                                    <li>
+                                                        <form action="/cup/catalog/category/{{ category.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить категорию?');">
+                                                            <button type="submit" class="btn btn-link text-danger">
+                                                                <i class="fas fa-trash-alt"></i> Удалить
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
                                             </div>
                                         </td>
                                     </tr>

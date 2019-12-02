@@ -41,9 +41,9 @@
                                 <tr>
                                     {# поле для сортировки данных в таблице #}
                                     <th style="display: none"></th>
-                                    <th>Артикул</th>
                                     <th>Наименование</th>
-                                    <th>Категория</th>
+                                    <th width="10%">Категория</th>
+                                    <th>Артикул</th>
                                     <th>Цена</th>
                                     <th width="10%">{{ category.product.field_1 ?? 'Поле 1' }}</th>
                                     <th width="10%">{{ category.product.field_2 ?? 'Поле 2' }}</th>
@@ -60,14 +60,6 @@
                                         {# поле для сортировки данных в таблице #}
                                         <td style="display: none">{{ item.order }}</td>
                                         <td>
-                                            {% if item.vendorcode %}
-                                                <div>{{ item.vendorcode }}</div>
-                                            {% endif %}
-                                            {% if item.barcode %}
-                                                <div><i class="fas fa-barcode d-inline pr-1"></i>{{ item.barcode }}</div>
-                                            {% endif %}
-                                        </td>
-                                        <td>
                                             <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ buf.address }}/{{ item.address }}" target="_blank">
                                                 {{ item.title }}
                                                 <i class="fas fa-external-link-alt"></i>
@@ -77,6 +69,14 @@
                                             <a href="/cup/catalog/product/{{ buf.uuid }}">
                                                 {{ buf.title }}
                                             </a>
+                                        </td>
+                                        <td>
+                                            {% if item.vendorcode %}
+                                                <div>{{ item.vendorcode }}</div>
+                                            {% endif %}
+                                            {% if item.barcode %}
+                                                <div><i class="fas fa-barcode d-inline pr-1"></i>{{ item.barcode }}</div>
+                                            {% endif %}
                                         </td>
                                         <td>{{ item.price|format_number({fraction_digit: 2}) }}</td>
                                         <td>{{ item.field1 }}</td>
