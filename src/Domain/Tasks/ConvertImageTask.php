@@ -33,8 +33,8 @@ class ConvertImageTask extends Task
 
             foreach (
                 [
-                    'middle' => $this->getParameter('image_convert_size_middle'),
-                    'small' => $this->getParameter('image_convert_size_small'),
+                    'middle' => $this->getParameter('image_convert_size_middle', 450),
+                    'small' => $this->getParameter('image_convert_size_small', 200),
                 ] as $size => $pixels
             ) {
                 if ($pixels > 0) {
@@ -44,10 +44,12 @@ class ConvertImageTask extends Task
                         mkdir($path, 0777, true);
                     }
 
-                    @exec($command . " '" . $original . "' -resize x " . $pixels . "\> " . $params . " '" . $path . "/" . $file->name . ".jpg'");
+                    $this->logger->info('Task: convert image', ['size' => $size, 'pixels' => $pixels]);
+                    @exec($command . " '" . $original . "' -resize x" . $pixels . "\> " . $params . " '" . $path . "/" . $file->name . ".jpg'");
                 }
             }
 
+            $this->logger->info('Task: convert image', ['size' => 'original',]);
             @exec($command . " '" . $original . "' " . $params . " '" . $folder . "/" . $file->name . ".jpg'");
 
             // установка расширения файла и типа
