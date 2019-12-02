@@ -1315,7 +1315,10 @@ ol {
 }
 
 .category-menu li .sub-menu li a {
-	padding-left: 45px;
+	padding-left: 30px;
+}
+.category-menu li .sub-menu li .sub-menu li a {
+	padding-left: 40px;
 }
 
 .category-menu li:hover>a {
