@@ -70,6 +70,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             new \Twig\TwigFunction('collect', [$this, 'collect']),
             new \Twig\TwigFunction('non_page_path', [$this, 'non_page_path']),
             new \Twig\TwigFunction('current_page_number', [$this, 'current_page_number']),
+            new \Twig\TwigFunction('current_query', [$this, 'current_query'], ['is_safe' => ['html']]),
             new \Twig\TwigFunction('is_current_page_number', [$this, 'is_current_page_number']),
             new \Twig\TwigFunction('pushstream_channel', [$this, 'pushstream_channel']),
             new \Twig\TwigFunction('qr_code', [$this, 'qr_code'], ['is_safe' => ['html']]),
@@ -282,6 +283,23 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         }
 
         return $page;
+    }
+
+    public function current_query($key = null, $value = null)
+    {
+        $query = [];
+
+        foreach (explode('&', rawurldecode($this->uri->getQuery())) as $fragment) {
+            if ($fragment) {
+                $buf = explode('=', $fragment);
+                $query[$buf[0]] = $buf[1];
+            }
+        }
+        if ($key) {
+            $query[$key] = $value;
+        }
+
+        return '?' . http_build_query($query);
     }
 
     public function is_current_page_number($number)

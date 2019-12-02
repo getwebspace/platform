@@ -5,7 +5,7 @@
         <ul class="pagination justify-content-center">
             {% for page in 0..pages-1 %}
                 <li class="page-item {{ is_current_page_number(page) ? 'active' : '' }}">
-                    <a class="page-link" href="{{ non_page_path() }}{{ page ? '/' ~ page : '' }}">{{ page + 1 }}</a>
+                    <a class="page-link" href="{{ non_page_path() }}{{ page ? '/' ~ page : '' }}{{ current_query() }}">{{ page + 1 }}</a>
                 </li>
             {% endfor %}
         </ul>

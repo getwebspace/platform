@@ -1249,7 +1249,7 @@ ol {
 ------------------*/
 
 .filter-widget {
-	margin-bottom: 100px;
+	margin-bottom: 45px;
 }
 
 .filter-widget .fw-title {
@@ -1257,7 +1257,7 @@ ol {
 	font-weight: 700;
 	color: #414141;
 	text-transform: uppercase;
-	margin-bottom: 45px;
+	margin-bottom: 10px;
 }
 
 .category-menu {
