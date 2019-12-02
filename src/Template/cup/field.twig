@@ -19,7 +19,7 @@
         {% set args = {} %}
     {% endif %}
 
-    {% if parameter[name].value %}
+    {% if parameter[name].value is not empty %}
         {% if type in ['checkbox'] and parameter[name].value == 1 %}
             {% set args = args|merge({'checked': true}) %}
         {% elseif type in ['select'] %}
