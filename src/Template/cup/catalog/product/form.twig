@@ -282,7 +282,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 {% include 'cup/form.twig' with {
-                                    'label': category.product.field_1 ?? 'Поле 1',
+                                    'label': category.product.field_1 ? category.product.field_1 : 'Поле 1',
                                     'type': 'text',
                                     'name': 'field1',
                                     'message': 'Индивидуальное поле',
@@ -294,7 +294,7 @@
 
                             <div class="col-md-4">
                                 {% include 'cup/form.twig' with {
-                                    'label': category.product.field_2 ?? 'Поле 2',
+                                    'label': category.product.field_2 ? category.product.field_2 : 'Поле 2',
                                     'type': 'text',
                                     'name': 'field2',
                                     'message': 'Индивидуальное поле',
@@ -306,7 +306,7 @@
 
                             <div class="col-md-4">
                                 {% include 'cup/form.twig' with {
-                                    'label': category.product.field_3 ?? 'Поле 3',
+                                    'label': category.product.field_3 ? category.product.field_3 : 'Поле 3',
                                     'type': 'text',
                                     'name': 'field3',
                                     'message': 'Индивидуальное поле',
@@ -318,7 +318,7 @@
 
                             <div class="col-md-4">
                                 {% include 'cup/form.twig' with {
-                                    'label': category.product.field_4 ?? 'Поле 4',
+                                    'label': category.product.field_4 ? category.product.field_4 : 'Поле 4',
                                     'type': 'text',
                                     'name': 'field4',
                                     'message': 'Индивидуальное поле',
@@ -330,7 +330,7 @@
 
                             <div class="col-md-4">
                                 {% include 'cup/form.twig' with {
-                                    'label': category.product.field_5 ?? 'Поле 5',
+                                    'label': category.product.field_5 ? category.product.field_5 : 'Поле 5',
                                     'type': 'text',
                                     'name': 'field5',
                                     'message': 'Индивидуальное поле',
