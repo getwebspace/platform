@@ -13,7 +13,7 @@
 
 	// build query params
 	window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (m, key, value) => {
-		location.query[decodeURIComponent(key)] = value;
+		location.query[key] = value;
 	});
 	
 	/*------------------
@@ -168,13 +168,7 @@
 		$maxamount = $("#maxamount"),
 		minPrice = rangeSlider.data('min'),
 		maxPrice = rangeSlider.data('max'),
-		interval = '',
-		changeLocation = () => {
-			let esc = encodeURIComponent,
-				query = Object.keys(location.query).map(k => esc(k) + '=' + esc(location.query[k])).join('&');
-			
-			location = location.pathname + '?' + query;
-		};
+		interval = '';
 	
 	rangeSlider.slider({
 		range: true,
@@ -189,7 +183,9 @@
 			$maxamount.val(location.query['price[max]'] = ui.values[1]);
 			
 			if (interval) clearTimeout(interval);
-			interval = setTimeout(changeLocation, 1500);
+			interval = setTimeout(() => {
+				location = location.pathname + '?' + Object.keys(location.query).map(k => k + '=' + location.query[k]).join('&');
+			}, 1500);
 		}
 	});
 	
@@ -217,8 +213,6 @@
 		}
 		$button.parent().find('input').val(newVal);
 	});
-
-
 
 	/*------------------
 		Single Product
