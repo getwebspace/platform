@@ -15,7 +15,7 @@
                 {% for product in viewed %}
                     <div class="product-item" data-catalog-product>
                         <div class="pi-pic">
-                            <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ categories.firstWhere('uuid', product.category).address }}/{{ product.address }}">
+                            <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ product.address }}">
                                 <img src="{{ files.firstWhere('item_uuid', product.uuid).getPublicPath('middle') }}" alt="">
                             </a>
                             <div class="pi-links">
@@ -23,7 +23,7 @@
                             </div>
                         </div>
                         <div class="pi-text">
-                            <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ categories.firstWhere('uuid', product.category).address }}/{{ product.address }}">
+                            <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ product.address }}">
                                 <h6>{{ product.price }}</h6>
                                 <p>{{ product.title }}</p>
                             </a>

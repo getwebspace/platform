@@ -2,7 +2,7 @@
     <!-- auto generated product options: (uuid:{{ product.uuid }}, external_id:{{ product.external_id }}) -->
     <div style="display: none;">
         {% if categories is not empty %}
-            <span data-catalog-product-attr="url">/{{ parameter('catalog_address', 'catalog') }}/{{ categories.firstWhere('uuid', product.category).address }}/{{ product.address }}</span>
+            <span data-catalog-product-attr="url">/{{ parameter('catalog_address', 'catalog') }}/{{ product.address }}</span>
         {% endif %}
 
         <span data-catalog-product-attr="title">{{ product.title }}</span>
