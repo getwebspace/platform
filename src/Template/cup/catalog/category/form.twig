@@ -17,6 +17,9 @@
                 <form method="post" enctype="multipart/form-data">
                     <div class="card-header">
                         <div class="d-flex align-items-center">
+                            <a href="/cup/catalog/category{{ item.parent ? '/' ~ item.parent : (parent ? '/' ~ parent : '') }}" class="btn btn-secondary btn-icon mr-1">
+                                <i class="fas fa-long-arrow-alt-left"></i>
+                            </a>
                             <div class="card-title">{{ item.uuid ? 'Редактирование категории ' ~ item.title : 'Создание новой категории' }}</div>
 
                             <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
