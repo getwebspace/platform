@@ -3,7 +3,7 @@
 <li data-notification-list class="nav-item dropdown hidden-caret submenu" {{ notifications.count() ? '' : 'style="display: none"' }}>
     <a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <i class="fa fa-bell"></i>
-        <span class="notification">{{ notifications.where('user_uuid', user.uuid).count() }}</span>
+        {#<span class="notification">{{ notifications.where('user_uuid', user.uuid).count() }}</span>#}
     </a>
     <ul class="dropdown-menu notif-box animated fadeIn" aria-labelledby="notifDropdown">
         <li>
