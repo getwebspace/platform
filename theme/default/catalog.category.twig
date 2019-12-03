@@ -87,11 +87,7 @@
                         </div>
                     {% endif %}
 
-                    <hr class="mt-5 mb-5">
-
-                    <div class="row">
-                        {% include 'catalog.category.filter.twig' with {'category': category, 'products': products} only %}
-                    </div>
+                    {% include 'catalog.category.filter.twig' with {'category': category, 'products': products} only %}
                 </div>
             </div>
         </div>
