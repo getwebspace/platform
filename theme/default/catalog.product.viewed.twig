@@ -16,7 +16,7 @@
                     <div class="product-item" data-catalog-product>
                         <div class="pi-pic">
                             <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ product.address }}">
-                                <img src="{{ files.firstWhere('item_uuid', product.uuid).getPublicPath('middle') }}" alt="">
+                                <img src="{{ files.firstWhere('item_uuid', product.uuid).getPublicPath('middle') }}" alt="{{ product.title }}">
                             </a>
                             <div class="pi-links">
                                 <a href="#" class="add-card" data-catalog-product-add><i class="flaticon-bag"></i><span>В корзину</span></a>
