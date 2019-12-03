@@ -7,7 +7,9 @@
         {% set field = loop.index %}
 
         {% for product in buf %}
-            {% set variants = variants.push(product.get('field' ~ field)|trim) %}
+            {% if product.get('field' ~ field)|trim is not empty %}
+                {% set variants = variants.push(product.get('field' ~ field)|trim) %}
+            {% endif %}
         {% endfor %}
 
         {% set variants = variants.unique() %}
