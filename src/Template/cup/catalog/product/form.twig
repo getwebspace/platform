@@ -59,6 +59,7 @@
                                             'label': 'Категория',
                                             'type': 'select',
                                             'name': 'category',
+                                            'message': '<a href="/cup/catalog/category/add" class="btn btn-xs btn-info float-right"><i class="fa fa-plus"></i> Добавить категорию</a>',
                                             'args': {
                                                 'option': categories.pluck('title', 'uuid').all(),
                                                 'selected': item.category ?? category.uuid
