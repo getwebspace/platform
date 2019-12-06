@@ -61,7 +61,7 @@ class ListAction extends CatalogAction
             $query = $qb
                 ->from(\App\Domain\Entities\Catalog\Product::class, 'p')
                 ->where('p.status = :status')
-                ->orderBy('p.order', 'desc')
+                ->orderBy('p.order', 'ASC')
                 ->setParameter('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK, \App\Domain\Types\Catalog\ProductStatusType::NAME);
 
             $products = collect($query->select('p')->getQuery()->getResult());
@@ -89,6 +89,15 @@ class ListAction extends CatalogAction
                         ->andWhere('p.price <= :maxPrice')
                         ->setParameter('maxPrice', (int)$price['max'], \Doctrine\DBAL\Types\Type::INTEGER);
                 }
+            }
+            if (($order = $this->request->getParam('order', false)) !== false) {
+                $direction = $this->request->getParam('direction', 'asc');
+
+                if (in_array($order, ['title', 'price', 'field1', 'field2', 'field3', 'field4', 'field5'])) {
+                    $query->addOrderBy('p.' . $order, in_array(strtolower($direction), ['asc', 'desc']) ? $direction : 'ASC');
+                }
+            } else {
+                $query->addOrderBy('p.title', 'ASC');
             }
 
             $filtered = collect(
@@ -150,6 +159,7 @@ class ListAction extends CatalogAction
                 ->from(\App\Domain\Entities\Catalog\Product::class, 'p')
                 ->where('p.status = :status')
                 ->andWhere('p.category IN (:category)')
+                ->orderBy('p.order', 'ASC')
                 ->setParameter('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK, \App\Domain\Types\Catalog\ProductStatusType::NAME)
                 ->setParameter('category', $categoryUUIDs);
 
@@ -178,6 +188,15 @@ class ListAction extends CatalogAction
                         ->andWhere('p.price <= :maxPrice')
                         ->setParameter('maxPrice', (int)$price['max'], \Doctrine\DBAL\Types\Type::INTEGER);
                 }
+            }
+            if (($order = $this->request->getParam('order', false)) !== false) {
+                $direction = $this->request->getParam('direction', 'asc');
+
+                if (in_array($order, ['title', 'price', 'field1', 'field2', 'field3', 'field4', 'field5'])) {
+                    $query->addOrderBy('p.' . $order, in_array(strtolower($direction), ['asc', 'desc']) ? $direction : 'ASC');
+                }
+            } else {
+                $query->addOrderBy('p.title', 'ASC');
             }
 
             $filtered = collect(
