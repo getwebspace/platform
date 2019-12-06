@@ -29,7 +29,19 @@ class ConvertImageTask extends Task
             $original = $file->getInternalPath();
 
             $command = $this->getParameter('image_convert_bin', '/usr/bin/convert');
-            $params = "-background white -alpha remove -alpha off -set comment 'Converted in 0x12f CMS'";
+            $params = [
+                '-sampling-factor 4:2:0',
+                '-strip',
+                '-quality 75%',
+                '-depth 8',
+                '-define jpeg:extent=300k',
+                '-interlace JPEG',
+                '-colorspace RGB',
+                '-background white',
+                '-alpha remove',
+                '-alpha off',
+                '-set comment "Converted in 0x12f CMS"',
+            ];
 
             foreach (
                 [
@@ -44,19 +56,23 @@ class ConvertImageTask extends Task
                         mkdir($path, 0777, true);
                     }
 
-                    $this->logger->info('Task: convert image', ['size' => $size, 'pixels' => $pixels]);
-                    @exec($command . " '" . $original . "' -resize x" . $pixels . "\> " . $params . " '" . $path . "/" . $file->name . ".jpg'");
+                    $buf = array_merge($params, ['-resize x' . $pixels . '\>']);
+                    @exec($command . " '" . $original . "' " . implode(' ', $buf) . " '" . $path . "/" . $file->name . ".jpg'");
+                    $this->logger->info('Task: convert image', ['size' => $size, 'salt' => $file->salt, 'params' => $buf]);
                 }
             }
 
-            $this->logger->info('Task: convert image', ['size' => 'original',]);
-            @exec($command . " '" . $original . "' " . $params . " '" . $folder . "/" . $file->name . ".jpg'");
+            @exec($command . " '" . $original . "' " . implode(' ', $params) . " '" . $folder . "/" . $file->name . ".jpg'");
+            $this->logger->info('Task: convert image', ['size' => 'original', 'salt' => $file->salt, 'params' => $params]);
 
             // установка расширения файла и типа
             if ($file->ext !== 'jpg') {
                 $file->ext = 'jpg';
                 $file->type = 'image/jpeg; charset=binary';
             }
+
+            // обновление размера файла
+            $file->size = filesize($folder . '/' . $file->name . '.jpg');
         }
 
         $this->status_done();
