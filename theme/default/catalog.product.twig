@@ -77,17 +77,19 @@
                                 <button class="panel-link active" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collapse1">Информация</button>
                             </div>
                             <div id="collapse1" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-                                <div class="panel-body"><p>{{ product.description|raw }}</p></div>
+                                <div class="panel-body">{{ product.description|raw }}</div>
                             </div>
                         </div>
-                        <div class="panel">
-                            <div class="panel-header" id="headingTwo">
-                                <button class="panel-link" data-toggle="collapse" data-target="#collapse2" aria-expanded="false" aria-controls="collapse2">Дополнительно</button>
+                        {% if product.extra is not empty %}
+                            <div class="panel">
+                                <div class="panel-header" id="headingTwo">
+                                    <button class="panel-link" data-toggle="collapse" data-target="#collapse2" aria-expanded="false" aria-controls="collapse2">Дополнительно</button>
+                                </div>
+                                <div id="collapse2" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                                    <div class="panel-body">{{ product.extra|raw }}</div>
+                                </div>
                             </div>
-                            <div id="collapse2" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-                                <div class="panel-body"><p>{{ product.extra|raw }}</p></div>
-                            </div>
-                        </div>
+                        {% endif %}
                         <div class="panel">
                             <div class="panel-header" id="headingTwo">
                                 <button class="panel-link" data-toggle="collapse" data-target="#collapse3" aria-expanded="false" aria-controls="collapse2">Характеристики</button>
@@ -95,11 +97,14 @@
                             <div id="collapse3" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
                                 <div class="panel-body">
                                     <p>
+                                        {% if product.country %}<b>Страна</b>: {{ product.country|raw }}<br/>{% endif %}
+                                        {% if product.manufacturer %}<b>Производитель</b>: {{ product.manufacturer|raw }}<br/>{% endif %}
                                         {% if product.field1 %}<b>{{ category.product.field_1 }}</b>: {{ product.field1|raw }}<br/>{% endif %}
                                         {% if product.field2 %}<b>{{ category.product.field_2 }}</b>: {{ product.field2|raw }}<br/>{% endif %}
                                         {% if product.field3 %}<b>{{ category.product.field_3 }}</b>: {{ product.field3|raw }}<br/>{% endif %}
                                         {% if product.field4 %}<b>{{ category.product.field_4 }}</b>: {{ product.field4|raw }}<br/>{% endif %}
                                         {% if product.field5 %}<b>{{ category.product.field_5 }}</b>: {{ product.field5|raw }}<br/>{% endif %}
+                                        {% if product.volume and product.unit %}<b>Цена за</b>: {{ product.getVolume() }}<br/>{% endif %}
                                     </p>
                                 </div>
                             </div>
