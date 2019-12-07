@@ -51,6 +51,7 @@ class DynamicPageAction extends Action
             $path = str_replace('/' . $offset , '', $path);
         }
 
+        // страницы
         if ($this->pageRepository->count(['address' => $path])) {
             $page = $this->pageRepository->findOneBy(['address' => $path]);
             $files = collect($this->fileRepository->findBy([
@@ -62,46 +63,51 @@ class DynamicPageAction extends Action
                 'page' => $page,
                 'files' => $files,
             ]);
-        } else {
-            $categories = collect($this->publicationCategoryRepository->findAll());
+        }
 
-            if ($this->publicationCategoryRepository->count(['address' => $path])) {
-                $category = $categories->firstWhere('address', $path);
+        $categories = collect($this->publicationCategoryRepository->findAll());
 
-                $publications = collect($this->publicationRepository->findBy(
-                    ['category' => $this->getCategoryChildrenUUID($categories, $category)],
-                    [$category->sort['by'] => $category->sort['direction']],
-                    $category->pagination,
-                    $category->pagination * $offset
-                ));
+        // категории публикаций
+        if ($this->publicationCategoryRepository->count(['address' => $path])) {
+            $category = $categories->firstWhere('address', $path);
 
-                return $this->respondRender($category->template['list'], [
+            $publications = collect($this->publicationRepository->findBy(
+                ['category' => $this->getCategoryChildrenUUID($categories, $category)],
+                [$category->sort['by'] => $category->sort['direction']],
+                $category->pagination,
+                $category->pagination * $offset
+            ));
+
+            return $this->respondRender($category->template['list'], [
+                'categories' => $categories,
+                'category' => $category,
+                'publications' => $publications,
+                'pagination' => [
+                    'count' => $this->publicationRepository->count(['category' => $this->getCategoryChildrenUUID($categories, $category)]),
+                    'page' => $category->pagination,
+                ],
+            ]);
+        }
+
+        // публикации
+        if ($this->publicationRepository->count(['address' => $path])) {
+            $category = $categories->filter(function ($model) use ($path) {
+                return strpos($path, $model->address) !== false;
+            })->first();
+
+            if ($category) {
+                $publication = $this->publicationRepository->findOneBy(['address' => $path]);
+                $files = collect($this->fileRepository->findBy([
+                    'item' => \App\Domain\Types\FileItemType::ITEM_PAGE,
+                    'item_uuid' => $category->uuid,
+                ]));
+
+                return $this->respondRender($category->template['full'], [
+                    'publication' => $publication,
                     'categories' => $categories,
                     'category' => $category,
-                    'publications' => $publications,
-                    'pagination' => [
-                        'count' => $this->publicationRepository->count(['category' => $this->getCategoryChildrenUUID($categories, $category)]),
-                        'page' => $category->pagination,
-                    ],
+                    'files' => $files,
                 ]);
-            } else {
-                $category = $categories->filter(function ($model) use ($path) { return strpos($path, $model->address) !== false; })->first();
-
-                if ($category) {
-                    $path = str_replace($category->address . '/', '', $path);
-                    $publication = $this->publicationRepository->findOneBy(['address' => $path]);
-                    $files = collect($this->fileRepository->findBy([
-                        'item' => \App\Domain\Types\FileItemType::ITEM_PAGE,
-                        'item_uuid' => $category->uuid,
-                    ]));
-
-                    return $this->respondRender($category->template['full'], [
-                        'publication' => $publication,
-                        'categories' => $categories,
-                        'category' => $category,
-                        'files' => $files,
-                    ]);
-                }
             }
         }
 

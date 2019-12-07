@@ -28,6 +28,7 @@ class Category extends Filter
             ->addGlobalRule($filter->leadTrim())
             ->attr('address')
                 ->addRule($filter->ValidAddress())
+                ->addRule($filter->InsertParentCategoryAddress())
                 ->addRule($filter->UniqueCategoryAddress())
                 ->addRule($filter->checkStrlenBetween(0, 255))
             ->attr('title')

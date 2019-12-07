@@ -132,6 +132,16 @@
                                                 'value': 'j-m-Y, H:i'
                                             }
                                         } %}
+
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Автоматически генерировать адреса',
+                                            'description': 'Адреса некоторых сущностей будут сгенерированы автоматически при создании',
+                                            'type': 'select',
+                                            'name': 'common[auto_generate_address]',
+                                            'args': {
+                                                'option': {'yes':'Да', 'no':'Нет'}
+                                            }
+                                        } %}
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
                                         {% include 'cup/field.twig' with {
@@ -381,16 +391,6 @@
                                     'args': {
                                         'placeholder': 'catalog',
                                         'value': 'catalog'
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Автоматически генерировать адреса',
-                                    'description': 'Адреса для категорий каталога и единиц номенклатуры будут сгенерированы автоматически при создании',
-                                    'type': 'select',
-                                    'name': 'catalog[auto_generate_address]',
-                                    'args': {
-                                        'option': {'yes':'Да', 'no':'Нет'}
                                     }
                                 } %}
 

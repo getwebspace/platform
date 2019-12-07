@@ -21,7 +21,7 @@ trait CatalogFilterRules
                 /** @var \Psr\Container\ContainerInterface $container */
                 $container = $app->getContainer();
 
-                if ($container->get('parameter')->get('catalog_auto_generate_address', 'no') === 'yes') {
+                if ($container->get('parameter')->get('common_auto_generate_address', 'no') === 'yes') {
                     /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $categoryRepository */
                     $categoryRepository = $container->get(\Doctrine\ORM\EntityManager::class)->getRepository(\App\Domain\Entities\Catalog\Category::class);
 
@@ -150,7 +150,7 @@ trait CatalogFilterRules
             /** @var \Psr\Container\ContainerInterface $container */
             $container = $app->getContainer();
 
-            if ($container->get('parameter')->get('catalog_auto_generate_address', 'no') === 'yes') {
+            if ($container->get('parameter')->get('common_auto_generate_address', 'no') === 'yes') {
                 /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $categoryRepository */
                 $categoryRepository = $app->getContainer()->get(\Doctrine\ORM\EntityManager::class)->getRepository(\App\Domain\Entities\Catalog\Category::class);
 

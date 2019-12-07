@@ -39,7 +39,7 @@
                                     {% set category = categories.where('uuid', item.category).first() %}
                                     <tr>
                                         <td>
-                                            <a href="/{{ category.address }}/{{ item.address }}" target="_blank">
+                                            <a href="/{{ item.address }}" target="_blank">
                                                 {{ item.title }}
                                                 <i class="fas fa-external-link-alt"></i>
                                             </a>
