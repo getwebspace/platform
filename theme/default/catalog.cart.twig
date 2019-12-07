@@ -93,7 +93,7 @@
                         </div>
                         <div class="col-md-6">
                             <div>
-                                <input type="datetime" name="shipping" placeholder="Дата и время доставки ({{ 'now'|date_modify('+1 day')|date('d.m.Y H:00') }})" data-catalog-cart-data>
+                                <input type="datetime" name="shipping" placeholder="Дата и время доставки" value="{{ 'now'|date_modify('+1 day')|date('d.m.Y H:00') }}" data-catalog-cart-data>
                             </div>
                             <div>
                                 <textarea name="delivery[address]" placeholder="Адрес доставки.. *" style="height: 105px; margin-bottom: 16px;" data-catalog-cart-data required></textarea>
