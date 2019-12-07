@@ -36,7 +36,7 @@
                                 {% set publication = publication(null, {'date': 'desc'}, 1) %}
                                 <h6>{{ publication.title }}</h6>
                                 <span>{{ publication.date|date('d.m.Y') }}</span>
-                                <p>{{ publication.content.short|raw }}</p>
+                                {{ publication.content.short|truncate(250)|raw }}
                             </div>
                         </div>
                     </div>
