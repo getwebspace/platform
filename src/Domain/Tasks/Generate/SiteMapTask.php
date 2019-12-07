@@ -28,16 +28,19 @@ class SiteMapTask extends Task
     {
         /**
          * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $pageRepository
+         * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $publicationRepository
          * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $categoryRepository
          * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $productRepository
          */
         $pageRepository = $this->entityManager->getRepository(\App\Domain\Entities\Page::class);
+        $publicationRepository = $this->entityManager->getRepository(\App\Domain\Entities\Page::class);
         $categoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class);
         $productRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
         $data = [
             'page' => collect($pageRepository->findAll()),
-            'category' => collect($categoryRepository->findAll()),
-            'product' => collect($productRepository->findAll()),
+            'publication' => collect($publicationRepository->findAll()),
+            'category' => collect($categoryRepository->findBy(['status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK])),
+            'product' => collect($productRepository->findBy(['status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK])),
         ];
 
         $url = $this->getParameter('common_homepage', 'http://site.0x12f.com');
@@ -51,6 +54,12 @@ class SiteMapTask extends Task
         // other pages
         foreach ($data['page'] as $model) {
             /** @var \App\Domain\Entities\Page $model */
+            $sitemap->addItem($url . $model->address, time(), Sitemap::WEEKLY, 0.3);
+        }
+
+        // publications
+        foreach ($data['publication'] as $model) {
+            /** @var \App\Domain\Entities\Publication $model */
             $sitemap->addItem($url . $model->address, time(), Sitemap::WEEKLY, 0.3);
         }
 

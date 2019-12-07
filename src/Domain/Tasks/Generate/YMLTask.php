@@ -32,8 +32,8 @@ class YMLTask extends Task
         $categoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class);
         $productRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
         $data = [
-            'category' => collect($categoryRepository->findAll()),
-            'product' => collect($productRepository->findAll()),
+            'category' => collect($categoryRepository->findBy(['status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK])),
+            'product' => collect($productRepository->findBy(['status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK])),
         ];
 
         $settings = new Settings();

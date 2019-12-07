@@ -30,8 +30,8 @@ class GMFTask extends Task
         $productRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
         $fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
         $data = [
-            'category' => collect($categoryRepository->findAll()),
-            'product' => collect($productRepository->findAll()),
+            'category' => collect($categoryRepository->findBy(['status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK])),
+            'product' => collect($productRepository->findBy(['status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK])),
         ];
         $data['file'] = collect($fileRepository->findBy(['item' => 'catalog_product', 'item_uuid' => $data['product']->pluck('uuid')->all()]));
 
