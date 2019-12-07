@@ -397,7 +397,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     }
 
     // получение списка публикаций
-    public function publication($category = null, $order = [], $limit = 10, $offset = null)
+    public function publication($unique = null, $order = [], $limit = 10, $offset = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:publication');
 
@@ -405,14 +405,14 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
         $criteria = [];
 
-        if ($category) {
+        if ($unique) {
             switch (true) {
-                case \Ramsey\Uuid\Uuid::isValid($category) === true:
-                    $criteria['uuid'] = $category;
+                case \Ramsey\Uuid\Uuid::isValid($unique) === true:
+                    $criteria['uuid'] = $unique;
                     break;
 
                 default:
-                    $criteria['address'] = $category;
+                    $criteria['address'] = $unique;
                     break;
             }
         }
@@ -524,7 +524,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     }
 
     // получение списка товаров
-    public function catalog_product($category = null, $order = [], $limit = 10, $offset = null)
+    public function catalog_product($unique = null, $order = [], $limit = 10, $offset = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_product');
 
@@ -534,10 +534,10 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
         ];
 
-        if ($category) {
-            if (!is_array($category)) $category = [$category];
+        if ($unique) {
+            if (!is_array($unique)) $unique = [$unique];
 
-            foreach ($category as $value) {
+            foreach ($unique as $value) {
                 switch (true) {
                     case \Ramsey\Uuid\Uuid::isValid($value) === true:
                         $criteria['uuid'][] = $value;

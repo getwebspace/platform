@@ -55,7 +55,7 @@
 
             <span class="d-block text-muted">(publication functions)</span>
             <ul>
-                <li><b>publication($category = null, $order = [], $limit = 10, $offset = null)</b> - получение списка публикаций (ищет по uuid, address)</li>
+                <li><b>publication($unique = null, $order = [], $limit = 10, $offset = null)</b> - получение списка публикаций (ищет по uuid, address)</li>
                 <li><b>publication_category($limit = null)</b> - получение списка категорий публикаций</li>
             </ul>
 
@@ -68,7 +68,7 @@
             <ul>
                 <li><b>catalog_category()</b> - возвращает список категорий товаров</li>
                 <li><b>catalog_breadcrumb(\App\Domain\Entities\Catalog\Category $category = null)</b> - возвращает список родительских категорий для выбранной категории</li>
-                <li><b>catalog_product($category = null, $order = [], $limit = 10, $offset = null)</b> - возвращает список товаров (ищет по category, address)</li>
+                <li><b>catalog_product($unique = null, $order = [], $limit = 10, $offset = null)</b> - возвращает список товаров (ищет по uuid, address)</li>
                 <li><b>catalog_product_view(\Ramsey\Uuid\UuidInterface $uuid = null, $limit = 10)</b> - сохраняет переданный в аргумент uuid товара, если null возвращает список товаров</li>
                 <li><b>catalog_order($unique)</b> - получение заказа</li>
             </ul>
