@@ -42,11 +42,11 @@
                             </div>
                             <div id="comment{{ loop.index }}" class="collapse {{ loop.index < 3 ? 'show' : 'collapsed' }}" aria-labelledby="headingOne" data-parent="#accordion">
                                 <div class="panel-body">
-                                    <p>{{ item.message|nl2br|raw }}</p>
+                                    <p>{{ item.message|raw|nl2br }}</p>
 
                                     <div class="alert alert-light">
                                         <p style="margin: 0; padding: 0;">
-                                            <b>Ответ:</b> {{ item.response|nl2br|raw}}
+                                            <b>Ответ:</b> {{ item.response|raw|nl2br }}
                                         </p>
                                     </div>
                                 </div>
