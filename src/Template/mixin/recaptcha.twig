@@ -15,7 +15,7 @@
             // auto handle function with [data-grecaptcha] flag
             // <form data-grecaptcha ..
             for (let form of document.querySelectorAll('form[data-grecaptcha]')) {
-                let handler = async (e) => {
+                let handler = async function (e) {
                     e.preventDefault();
 
                     // remove listener

@@ -171,15 +171,17 @@ class FormAction extends Action
 
                 $this->entityManager->flush();
 
+                if (
+                    (
+                        empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != 'XMLHttpRequest'
+                    ) && !empty($_SERVER['HTTP_REFERER'])
+                ) {
+                    $this->response = $this->response->withHeader('Location', $_SERVER['HTTP_REFERER'])->withStatus(301);
+                }
+
                 if ($mail !== false) {
                     if (!$mail->isError()) {
                         $this->logger->info('Form sended: ' . $item->title, ['mailto' => $item->mailto]);
-
-                        if (
-                            (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != 'XMLHttpRequest') && !empty($_SERVER['HTTP_REFERER'])
-                        ) {
-                            $this->response = $this->response->withHeader('Location', $_SERVER['HTTP_REFERER'])->withStatus(301);
-                        }
                     } else {
                         $this->logger->warn('Form will not sended: fail', ['mailto' => $item->mailto, 'error' => $mail->ErrorInfo]);
                     }
