@@ -43,7 +43,7 @@
             <div class="row">
                 <div class="col-lg-6">
                     <div class="product-pic-zoom">
-                        <img class="product-big-img" src="{{ files.firstWhere('item_uuid', product.uuid).getPublicPath() }}" style="max-height: 300px; width: auto; object-fit: contain; object-position: center center;" alt="{{ product.title }}">
+                        <img class="product-big-img" src="{{ files.firstWhere('item_uuid', product.uuid).getPublicPath() }}" style="max-height: 300px; width: 100%; object-fit: contain; object-position: center center;" alt="{{ product.title }}">
                     </div>
                     <div class="product-thumbs" tabindex="1" style="overflow: hidden; outline: none;">
                         <div class="product-thumbs-track">
