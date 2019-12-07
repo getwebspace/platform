@@ -41,6 +41,12 @@
                     {% for item in publications %}
                         {% include category.template.short with {'categories': categories, 'item': item} only %}
                     {% endfor %}
+
+                    <div class="row justify-content-center">
+                        <div class="col-6">
+                            {% include 'pagination.twig' with {'pagination':pagination} only %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

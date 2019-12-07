@@ -79,6 +79,10 @@ class DynamicPageAction extends Action
                     'categories' => $categories,
                     'category' => $category,
                     'publications' => $publications,
+                    'pagination' => [
+                        'count' => $this->publicationRepository->count(['category' => $this->getCategoryChildrenUUID($categories, $category)]),
+                        'page' => $category->pagination,
+                    ],
                 ]);
             } else {
                 $category = $categories->filter(function ($model) use ($path) { return strpos($path, $model->address) !== false; })->first();
