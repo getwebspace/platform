@@ -3,6 +3,13 @@
 namespace App\Domain\Tasks\Generate;
 
 use App\Domain\Tasks\Task;
+use Bukashk0zzz\YmlGenerator\Generator;
+use Bukashk0zzz\YmlGenerator\Model\Category;
+use Bukashk0zzz\YmlGenerator\Model\Currency;
+use Bukashk0zzz\YmlGenerator\Model\Delivery;
+use Bukashk0zzz\YmlGenerator\Model\Offer\OfferSimple;
+use Bukashk0zzz\YmlGenerator\Model\ShopInfo;
+use Bukashk0zzz\YmlGenerator\Settings;
 use samdark\sitemap\Sitemap;
 
 class SiteMapTask extends Task
@@ -44,7 +51,7 @@ class SiteMapTask extends Task
         // other pages
         foreach ($data['page'] as $model) {
             /** @var \App\Domain\Entities\Page $model */
-            $sitemap->addItem($url . '/' . $model->address, time(), Sitemap::WEEKLY, 0.3);
+            $sitemap->addItem($url . $model->address, time(), Sitemap::WEEKLY, 0.3);
         }
 
         // catalog category
