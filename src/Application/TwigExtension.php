@@ -46,6 +46,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     {
         return [
             new \Twig\TwigFilter('count', [$this, 'count']),
+            new \Twig\TwigFilter('df', [$this, 'df']),
         ];
     }
 
@@ -65,12 +66,16 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             new \Twig\TwigFunction('parameter', [$this, 'parameter']),
             new \Twig\TwigFunction('pre', [$this, 'pre']),
             new \Twig\TwigFunction('count', [$this, 'count']),
+            new \Twig\TwigFunction('df', [$this, 'df']),
             new \Twig\TwigFunction('collect', [$this, 'collect']),
             new \Twig\TwigFunction('non_page_path', [$this, 'non_page_path']),
             new \Twig\TwigFunction('current_page_number', [$this, 'current_page_number']),
+            new \Twig\TwigFunction('current_query', [$this, 'current_query'], ['is_safe' => ['html']]),
             new \Twig\TwigFunction('is_current_page_number', [$this, 'is_current_page_number']),
+            new \Twig\TwigFunction('pushstream_channel', [$this, 'pushstream_channel']),
+            new \Twig\TwigFunction('qr_code', [$this, 'qr_code'], ['is_safe' => ['html']]),
 
-            // publication functions
+            // files functions
             new \Twig\TwigFunction('files', [$this, 'files']),
 
             // publication functions
@@ -89,6 +94,10 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
             // trademaster
             new \Twig\TwigFunction('tm_api', [$this, 'tm_api']),
+
+            // other
+            new \Twig\TwigFunction('task', [$this, 'task']),
+            new \Twig\TwigFunction('notification', [$this, 'notification']),
         ];
     }
 
@@ -174,10 +183,10 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
      *
      * @return void
      */
-    public function setBaseUrl($baseUrl)
-    {
-        $this->uri = $baseUrl;
-    }
+//    public function setBaseUrl($baseUrl)
+//    {
+//        $this->uri = $baseUrl;
+//    }
 
     /*
      * 0x12f functions
@@ -218,7 +227,6 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
     /**
      * Debug function
-     *
      * @param mixed ...$args
      */
     public function pre(...$args)
@@ -229,6 +237,23 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     public function count($obj)
     {
         return is_countable($obj) ? count($obj) : false;
+    }
+
+    /**
+     * Date format function
+     * @param \DateTime|string $obj
+     * @param string $default
+     * @return string
+     */
+    public function df($obj = 'now', $default = 'j-m-Y, H:i')
+    {
+        $format = $this->parameter('common_date_format', $default);
+
+        if (is_string($obj) || is_numeric($obj)) {
+            return date($format, strtotime($obj));
+        }
+
+        return $obj->format($format);
     }
 
     public function collect(array $array = [])
@@ -260,9 +285,42 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         return $page;
     }
 
+    public function current_query($key = null, $value = null)
+    {
+        $query = [];
+
+        foreach (explode('&', rawurldecode($this->uri->getQuery())) as $fragment) {
+            if ($fragment) {
+                $buf = explode('=', $fragment);
+                $query[$buf[0]] = $buf[1];
+            }
+        }
+        if ($key) {
+            $query[$key] = $value;
+        }
+
+        return '?' . http_build_query($query);
+    }
+
     public function is_current_page_number($number)
     {
         return $this->current_page_number() == $number;
+    }
+
+    public function pushstream_channel($user_uuid)
+    {
+        return $this->container->get('pushstream')->getChannel($user_uuid);
+    }
+
+    public function qr_code($value, $width = 256, $height = 256)
+    {
+        $renderer = new \BaconQrCode\Renderer\Image\Png();
+        $renderer->setWidth($width);
+        $renderer->setHeight($height);
+
+        $writer = new \BaconQrCode\Writer($renderer);
+
+        return '<img src="data:image/png;base64,' . base64_encode($writer->writeString($value)) . '" height="'.$height.'" width="'.$width.'">';
     }
 
     /*
@@ -339,7 +397,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     }
 
     // получение списка публикаций
-    public function publication($category = null, $order = [], $limit = 10, $offset = null)
+    public function publication($unique = null, $order = [], $limit = 10, $offset = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:publication');
 
@@ -347,14 +405,14 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
         $criteria = [];
 
-        if ($category) {
+        if ($unique) {
             switch (true) {
-                case \Ramsey\Uuid\Uuid::isValid($category) === true:
-                    $criteria['uuid'] = $category;
+                case \Ramsey\Uuid\Uuid::isValid($unique) === true:
+                    $criteria['uuid'] = $unique;
                     break;
 
                 default:
-                    $criteria['address'] = $category;
+                    $criteria['address'] = $unique;
                     break;
             }
         }
@@ -384,16 +442,35 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
         static $buf;
 
+        $key = json_encode($order, JSON_UNESCAPED_UNICODE).$limit.$offset;
+
         if (!$buf) {
             /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
             $repository = $this->entityManager->getRepository(\App\Domain\Entities\GuestBook::class);
 
-            $buf = $limit > 1 ? collect($repository->findBy([], $order, $limit, $offset)) : $repository->findOneBy([], $order);
+            // get list of comments and obfuscate email address
+            $buf[$key] = collect(
+                $limit > 1
+                    ? $repository->findBy(['status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK], $order, $limit, $offset)
+                    : $repository->findOneBy([], $order)
+            )->map(
+                function ($el) {
+                    if ($el->email) {
+                        $em = explode('@', $el->email);
+                        $name = implode(array_slice($em, 0, count($em) - 1), '@');
+                        $len = floor(strlen($name) / 2);
+
+                        $el->email = mb_substr($name, 0, $len) . str_repeat('*', $len) . '@' . end($em);
+                    }
+
+                    return $el;
+                }
+            );
         }
 
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:guestbook');
 
-        return $buf;
+        return $buf[$key];
     }
 
     /*
@@ -447,7 +524,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     }
 
     // получение списка товаров
-    public function catalog_product($category = null, $order = [], $limit = 10, $offset = null)
+    public function catalog_product($unique = null, $order = [], $limit = 10, $offset = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_product');
 
@@ -457,10 +534,10 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
         ];
 
-        if ($category) {
-            if (!is_array($category)) $category = [$category];
+        if ($unique) {
+            if (!is_array($unique)) $unique = [$unique];
 
-            foreach ($category as $value) {
+            foreach ($unique as $value) {
                 switch (true) {
                     case \Ramsey\Uuid\Uuid::isValid($value) === true:
                         $criteria['uuid'][] = $value;
@@ -488,7 +565,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     }
 
     // сохраняет переданный в аргумент uuid товара, если null возвращает список товаров
-    public function catalog_product_view(\Ramsey\Uuid\DegradedUuid $uuid = null, $limit = 10)
+    public function catalog_product_view(\Ramsey\Uuid\UuidInterface $uuid = null, $limit = 10)
     {
         $list = $_SESSION['catalog_product_view'] ?? [];
 
@@ -560,6 +637,63 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         ]);
 
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:tm_api');
+
+        return $result;
+    }
+
+    /*
+     * other functions
+     */
+
+    public function task($limit = 30)
+    {
+        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:task');
+
+        /** @var \App\Application\TradeMaster $trademaster */
+
+        $qb = $this->entityManager->createQueryBuilder();
+        $query = $qb->select('t')
+            ->from(\App\Domain\Entities\Task::class, 't')
+            ->where('t.status IN (:status)')
+            ->orderBy('t.date', 'DESC')
+            ->setMaxResults($limit)
+            ->setParameter('status', [
+                \App\Domain\Types\TaskStatusType::STATUS_QUEUE,
+                \App\Domain\Types\TaskStatusType::STATUS_WORK,
+            ]);
+
+        $result = collect($query->getQuery()->getResult());
+        $result->map(function ($obj) {
+            $obj->action = str_replace('App\Domain\Tasks\\', '', $obj->action);
+        });
+
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:task');
+
+        return $result;
+    }
+
+    public function notification($user = null, $limit = 30)
+    {
+        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:notification');
+
+        $qb = $this->entityManager->createQueryBuilder();
+        $query = $qb->select('n')
+            ->from(\App\Domain\Entities\Notification::class, 'n')
+            ->where('n.user_uuid IS NULL' . ($user ? ' OR n.user_uuid = :uuid' : ''))
+            ->andWhere('n.date > :period')
+            ->orderBy('n.date', 'DESC')
+            ->setMaxResults($limit)
+            ->setParameter('uuid', $user, \Ramsey\Uuid\Doctrine\UuidType::NAME)
+            ->setParameter('period',
+                date(
+                    \App\Domain\References\Date::DATETIME,
+                    time() - ($this->parameter('notification_period', \App\Domain\References\Date::HOUR) * 24)
+                ), \Doctrine\DBAL\Types\Type::STRING
+            );
+
+        $result = collect($query->getQuery()->getResult());
+
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:notification');
 
         return $result;
     }

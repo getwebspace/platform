@@ -30,7 +30,7 @@ class Task extends Model
     /**
      * @var string
      * @see \App\Domain\Types\TaskStatusType::LIST
-     * @ORM\Column(type="TaskStatusType", length=50)
+     * @ORM\Column(type="TaskStatusType")
      */
     public $status = \App\Domain\Types\TaskStatusType::STATUS_QUEUE;
 

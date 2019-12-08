@@ -3,6 +3,7 @@
 namespace App\Application\Actions\Common;
 
 use App\Application\Actions\Action;
+use DateTime;
 use Psr\Container\ContainerInterface;
 
 class GuestBookAction extends Action
@@ -33,20 +34,40 @@ class GuestBookAction extends Action
 
             $check = \App\Domain\Filters\GuestBook::check($data);
 
-            if ($check === true) {
-                $model = new \App\Domain\Entities\GuestBook($data);
-                $model->status = \App\Domain\Types\GuestBookStatusType::STATUS_MODERATE;
+            if ($this->isRecaptchaChecked()) {
+                if ($check === true) {
+                    $model = new \App\Domain\Entities\GuestBook($data);
+                    $model->status = \App\Domain\Types\GuestBookStatusType::STATUS_MODERATE;
+                    $this->entityManager->persist($model);
 
-                $this->entityManager->persist($model);
-                $this->entityManager->flush();
+                    // create notify
+                    $notify = new \App\Domain\Entities\Notification([
+                        'title' => 'Добавлен отзыв',
+                        'message' => 'Был добавлен отзыв в гостевой книге',
+                        'date' => new DateTime(),
+                    ]);
+                    $this->entityManager->persist($notify);
 
-                if (
-                    (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != 'xmlhttprequest') && !empty($_SERVER['HTTP_REFERER'])
-                ) {
-                    $this->response = $this->response->withHeader('Location', $_SERVER['HTTP_REFERER']);
+                    // send push stream
+                    $this->container->get('pushstream')->send([
+                        'group' => \App\Domain\Types\UserLevelType::LEVEL_ADMIN,
+                        'content' => $notify,
+                    ]);
+
+                    $this->entityManager->flush();
+
+                    if (
+                        (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != 'XMLHttpRequest') && !empty($_SERVER['HTTP_REFERER'])
+                    ) {
+                        $this->response = $this->response->withHeader('Location', $_SERVER['HTTP_REFERER'])->withStatus(301);
+                    }
+
+                    return $this->respondWithData(['description' => 'Message added']);
+                } else {
+                    $this->addErrorFromCheck($check);
                 }
-
-                return $this->respondWithData(['description' => 'Message added']);
+            } else {
+                $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
             }
         }
 
@@ -65,7 +86,7 @@ class GuestBookAction extends Action
                     $name = implode(array_slice($em, 0, count($em) - 1), '@');
                     $len = floor(strlen($name) / 2);
 
-                    $el->email = substr($name, 0, $len) . str_repeat('*', $len) . '@' . end($em);
+                    $el->email = mb_substr($name, 0, $len) . str_repeat('*', $len) . '@' . end($em);
                 }
 
                 return $el;

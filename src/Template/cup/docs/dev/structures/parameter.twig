@@ -1,40 +1,27 @@
 <div class="pt-2">
-    <h4>Модель параметров (настройки)</h4>
+    <h3>Модель параметров (настройки)</h3>
 
-    <h5>Поля</h5>
-    <table class="table">
-        <tr>
-            <th>Поле</th>
-            <th width="10%">Тип</th>
-            <th>Описание</th>
-            <th width="5%">Required</th>
-            <th width="5%">Unique</th>
-            <th width="5%">Null</th>
-        </tr>
-        <tr>
-            <td>key</td>
-            <td>string(50)</td>
-            <td>Ключ</td>
-            <td class="text-center">+</td>
-            <td class="text-center">+</td>
-            <td class="text-center">-</td>
-        </tr>
-        <tr>
-            <td>value</td>
-            <td>String(1024)</td>
-            <td>Значение</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-            <td class="text-center">-</td>
-        </tr>
-    </table>
+    <code class="block pt-3 pb-3">App\Domain\Entities\Parameter</code>
 
-    <h5>Методы</h5>
-    <table class="table">
-        <tr>
-            <th width="30%">Сигнатура</th>
-            <th>Описание</th>
-            <th width="10%">Результат</th>
-        </tr>
-    </table>
+    <ul class="mt-3 mb-3">
+        <li>Поля</li>
+    </ul>
+
+    <h4>Поля</h4>
+    {% include "cup/docs/dev/structures-table-fields.twig" with {
+        "list": collect([
+            {
+                "field": "key",
+                "type": "String(50)",
+                "description": "Уникальный ключ",
+                "requried": true,
+                "unique": true,
+            },
+            {
+                "field": "value",
+                "type": "String(1024)",
+                "description": "Значение",
+            },
+        ])
+    } %}
 </div>

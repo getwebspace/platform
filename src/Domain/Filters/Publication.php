@@ -28,6 +28,7 @@ class Publication extends Filter
             ->addGlobalRule($filter->leadTrim())
             ->attr('address')
                 ->addRule($filter->ValidAddress())
+                ->addRule($filter->InsertParentCategoryAddress())
                 ->addRule($filter->UniquePublicationAddress())
                 ->addRule($filter->checkStrlenBetween(0, 255))
             ->attr('title')

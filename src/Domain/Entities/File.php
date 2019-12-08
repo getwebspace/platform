@@ -106,7 +106,7 @@ class File extends Model
         switch (true) {
             case Str::start(['http://', 'https://'], $path):
                 $headers = get_headers($path);
-                $code = substr($headers[0], 9, 3);
+                $code = mb_substr($headers[0], 9, 3);
 
                 if ($code == 200) {
                     $file = @file_get_contents($path, false, stream_context_create(['http' => ['timeout' => 15]]));
@@ -137,23 +137,13 @@ class File extends Model
             $info = pathinfo($name_with_ext ?? $path);
             $name = static::prepareFileName($info['filename']);
             $ext = strtolower($info['extension']);
-
-            // change ext
-            switch (true) {
-                case Str::start('image/', $type):
-                    if (!in_array($ext, ['jpg', 'jpeg', 'png'])) {
-                        $ext = 'jpg';
-                    }
-                    break;
-            }
-
             $save = $dir . '/' . $name . '.' . $ext;
 
             if (rename($tmp, $save)) {
                 $model = new static([
                     'name' => $name,
                     'ext' => $ext,
-                    'type' => addslashes(@exec('file -bi ' . $path)),
+                    'type' => $type,
                     'size' => filesize($path),
                     'salt' => $salt,
                     'hash' => sha1_file($path),
@@ -233,7 +223,7 @@ class File extends Model
      */
     protected function isValidSizeAndFileExists(string $size): bool
     {
-        if (in_array($size, ['full', 'middle', 'small'])) {
+        if (in_array($size, ['middle', 'small'])) {
             return file_exists(UPLOAD_DIR . '/' . $this->salt . '/' . $size . '/' . $this->getName());
         }
 
@@ -285,12 +275,6 @@ class File extends Model
      */
     public function unlink()
     {
-        if (Str::start('image/', $this->type)) {
-            @unlink($this->getInternalPath('full'));
-            @unlink($this->getInternalPath('middle'));
-            @unlink($this->getInternalPath('small'));
-        }
-
-        @unlink($this->getInternalPath(''));
+        @exec('rm -rf ' . $this->getDir());
     }
 }

@@ -513,8 +513,11 @@ span.fr-img-caption.fr-view.fr-dii.fr-fir {
 }
 
 /* Custom theme */
-.fr-toolbar, .fr-popup {
+.fr-toolbar, .fr-popup, .fr-modal .fr-modal-wrapper {
     border-top-color: #1572e8 !important;
+}
+.fr-popup.fr-above {
+    border-bottom-color: #1572e8 !important;
 }
 .fr-toolbar .fr-command.fr-btn.fr-dropdown::after, .fr-popup .fr-command.fr-btn.fr-dropdown::after {
     border-top-color: rgb(73, 80, 87) !important;
@@ -522,7 +525,6 @@ span.fr-img-caption.fr-view.fr-dii.fr-fir {
 .fr-toolbar button i, .fr-toolbar button span {
     color: rgb(73, 80, 87) !important;
 }
-.fr-popup [data-cmd="imageManager"],
 .fr-popup [data-cmd="insertEmoticon"] + p {
     display: none !important;
 }

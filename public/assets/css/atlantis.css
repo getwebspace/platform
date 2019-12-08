@@ -6811,6 +6811,7 @@ label.error {
 .btn {
     padding: .65rem 1.4rem;
     font-size: 14px;
+    line-height: normal;
     opacity: 1;
     border-radius: 3px;
 }
@@ -6881,7 +6882,7 @@ label.error {
     line-height: normal;
     min-width: 2.5125rem;
     overflow: hidden;
-    padding: 0;
+    padding: .65rem 0;
     position: relative;
     width: 2.5125rem;
 }
@@ -6902,6 +6903,7 @@ label.error {
     height: 1.6875rem;
     min-width: 1.6875rem;
     width: 1.6875rem;
+    padding: 5px 0;
 }
 
 /*      Button States      */
@@ -20227,4 +20229,8 @@ body[data-background-color="dark"] .board {
 .table.table-stats,
 .table.table-properties {
     word-break: break-all;
+}
+
+.blocker {
+    z-index: 10;
 }

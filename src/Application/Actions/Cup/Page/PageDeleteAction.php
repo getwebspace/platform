@@ -10,7 +10,7 @@ class PageDeleteAction extends PageAction
             /** @var \App\Domain\Entities\Page $item */
             $item = $this->pageRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
 
-            if (!$item->isEmpty() && $this->request->isPost()) {
+            if (!$item->isEmpty()) {
                 $this->entityManager->remove($item);
                 $this->entityManager->flush();
             }

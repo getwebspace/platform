@@ -1,0 +1,60 @@
+<div class="pt-2">
+    <h3>Модель формы</h3>
+
+    <code class="block pt-3 pb-3">App\Domain\Entities\Form</code>
+
+    <ul class="mt-3 mb-3">
+        <li>Поля</li>
+    </ul>
+
+    <h4>Поля</h4>
+    {% include "cup/docs/dev/structures-table-fields.twig" with {
+        "list": collect([
+            {
+                "field": "uuid",
+                "type": "Uuid(36)",
+                "description": "Уникальный идентификатор",
+                "requried": true,
+                "unique": true,
+            },
+            {
+                "field": "title",
+                "type": "String(255)",
+                "description": "Название формы",
+                "requried": true,
+            },
+            {
+                "field": "address",
+                "type": "String(255)",
+                "description": "Адрес формы",
+                "requried": true,
+                "unique": true,
+            },
+            {
+                "field": "template",
+                "type": "String",
+                "description": "Шаблон",
+            },
+            {
+                "field": "origin",
+                "type": "String",
+                "description": "Адрес где используется форма.<br>Разделитель перенос строки",
+            },
+            {
+                "field": "mailto",
+                "type": "String",
+                "description": "Адрес получателя данных.<br>Разделитель перенос строки",
+            },
+            {
+                "field": "recaptcha",
+                "type": "Boolean",
+                "description": "Флаг отвечающий за проверку reCAPTCHA",
+            },
+            {
+                "field": "save_data",
+                "type": "Boolean",
+                "description": "Флаг отвечающий за сохраниение данных в базе",
+            },
+        ])
+    } %}
+</div>

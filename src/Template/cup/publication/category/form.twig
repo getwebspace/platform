@@ -57,6 +57,10 @@
                                     'name': 'description',
                                     'args': {
                                         'value': item.description
+                                    },
+                                    'options': {
+                                        'item': reference('/App/Domain/Types/FileItemType::ITEM_PUBLICATION'),
+                                        'item_uuid': item.uuid ? item.uuid.toString() : '',
                                     }
                                 } %}
                             </div>
@@ -106,7 +110,7 @@
                                     'type': 'select',
                                     'name': 'sort[by]',
                                     'args': {
-                                        'option': reference('/App/Domain/References/Publication/Category::ORDER_BY'),
+                                        'option': reference('/App/Domain/References/Publication::ORDER_BY'),
                                         'selected': item.sort['by']
                                     }
                                 } %}
@@ -117,7 +121,7 @@
                                     'type': 'select',
                                     'name': 'sort[direction]',
                                     'args': {
-                                        'option': reference('/App/Domain/References/Publication/Category::ORDER_DIRECTION'),
+                                        'option': reference('/App/Domain/References/Publication::ORDER_DIRECTION'),
                                         'selected': item.sort['direction']
                                     }
                                 } %}
@@ -202,8 +206,7 @@
                         </div>
                     </div>
                     <div class="card-action">
-                        <button type="submit" name="save" value="exit" class="btn btn-primary">Сохранить и выйти</button>
-                        <button type="submit" name="save" class="btn btn-info">Сохранить</button>
+                        {% include "cup/form-save.twig" %}
                     </div>
                 </form>
             </div>

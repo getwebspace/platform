@@ -53,7 +53,7 @@ abstract class Action
     /**
      * @var array
      */
-    protected $error = [];
+    private $error = [];
 
     /**
      * @param ContainerInterface $container
@@ -86,7 +86,15 @@ abstract class Action
      */
     protected function addError($field, $reason)
     {
-        $this->error[$field] = $reason;
+        $this->error[$field] = $reason ?? \App\Domain\References\Errors\Common::WRONG_COMMON;
+    }
+
+    /**
+     * @param array $check
+     */
+    protected function addErrorFromCheck(array $check)
+    {
+        $this->error = array_merge($this->error, $check);
     }
 
     /**
@@ -94,7 +102,7 @@ abstract class Action
      *
      * @param array $data
      *
-     * @return \PHPMailer\PHPMailer\PHPMailer
+     * @return bool|\PHPMailer\PHPMailer\PHPMailer
      * @throws \PHPMailer\PHPMailer\Exception
      */
     protected function send_mail(array $data = [])
@@ -112,7 +120,11 @@ abstract class Action
             $data
         );
 
-        return Mail::send($data);
+        if ($data['smtp_host'] && $data['smtp_login'] && $data['smtp_pass']) {
+            return Mail::send($data);
+        }
+
+        return false;
     }
 
     /**
@@ -238,10 +250,9 @@ abstract class Action
 
             $data = array_merge(
                 [
-                    //'parameter' => $this->getParameter(),
-                    'user' => $this->request->getAttribute('user', null),
+                    '_error' => \Alksily\Support\Form::$globalError = $this->error,
+                    'user' => $this->request->getAttribute('user', false),
                     'trademaster' => $this->getParameter('integration_trademaster_enable', 'off'),
-                    '_error' => array_merge($this->error, \Alksily\Support\Form::$globalError),
                 ],
                 $data
             );
@@ -254,6 +265,54 @@ abstract class Action
         } catch (\Twig\Error\LoaderError $exception) {
             throw new HttpBadRequestException($this->request, $exception->getMessage());
         }
+    }
+
+    /**
+     * Return recaptcha status if is enabled
+     *
+     * @return bool
+     */
+    protected function isRecaptchaChecked(): bool
+    {
+        if ($this->request->isPost() && $this->getParameter('integration_recaptcha', 'off') == 'on') {
+            \RunTracy\Helpers\Profiler\Profiler::start('recaptcha');
+
+            $query = http_build_query([
+                'secret' => $this->getParameter('integration_recaptcha_private'),
+                'response' => $this->request->getParam('recaptcha', ''),
+                'remoteip' => $this->request->getServerParam('REMOTE_ADDR'),
+            ]);
+            $verify = json_decode(file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, stream_context_create([
+                'http' => [
+                    'method' => 'POST',
+                    'header' => "Content-Type: application/x-www-form-urlencoded\r\n" .
+                                "Content-Length: " . strlen($query) . "\r\n",
+                    'content' => $query,
+                    'timeout' => 10,
+                ],
+            ])));
+
+            \RunTracy\Helpers\Profiler\Profiler::finish('recaptcha');
+
+            $this->logger->info('Check reCAPTCHA', ['status' => $verify->success]);
+
+            return $verify->success;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param array $payload
+     *
+     * @return Response
+     */
+    protected function respondWithJson(array $payload = null): Response
+    {
+        $json = json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $this->response->getBody()->write($json);
+
+        return $this->response->withHeader('Content-Type', 'application/json');
     }
 
     /**

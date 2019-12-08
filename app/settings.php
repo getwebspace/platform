@@ -1,9 +1,9 @@
 <?php
 
 return [
-    // secret salt
+    // Secret salt
     'secret' => [
-        'salt' => "Li8.1Ej2-<Cid3[bE",
+        'salt' => ($_ENV['SALT'] ?? "Li8.1Ej2-<Cid3[bE"),
     ],
 
     // Doctrine settings
@@ -19,19 +19,19 @@ return [
 
         'types' => [
             Ramsey\Uuid\Doctrine\UuidType::NAME => Ramsey\Uuid\Doctrine\UuidType::class,
-            App\Domain\Types\UserLevelType::NAME => \App\Domain\Types\UserLevelType::class,
-            App\Domain\Types\UserStatusType::NAME => \App\Domain\Types\UserStatusType::class,
-            App\Domain\Types\FileItemType::NAME => \App\Domain\Types\FileItemType::class,
-            App\Domain\Types\PageTypeType::NAME => \App\Domain\Types\PageTypeType::class,
-            App\Domain\Types\GuestBookStatusType::NAME => \App\Domain\Types\GuestBookStatusType::class,
             App\Domain\Types\Catalog\CategoryStatusType::NAME => \App\Domain\Types\Catalog\CategoryStatusType::class,
             App\Domain\Types\Catalog\ProductStatusType::NAME => \App\Domain\Types\Catalog\ProductStatusType::class,
             App\Domain\Types\Catalog\OrderStatusType::NAME => \App\Domain\Types\Catalog\OrderStatusType::class,
+            App\Domain\Types\FileItemType::NAME => \App\Domain\Types\FileItemType::class,
+            App\Domain\Types\GuestBookStatusType::NAME => \App\Domain\Types\GuestBookStatusType::class,
+            App\Domain\Types\PageTypeType::NAME => \App\Domain\Types\PageTypeType::class,
             App\Domain\Types\TaskStatusType::NAME => \App\Domain\Types\TaskStatusType::class,
+            App\Domain\Types\UserLevelType::NAME => \App\Domain\Types\UserLevelType::class,
+            App\Domain\Types\UserStatusType::NAME => \App\Domain\Types\UserStatusType::class,
         ],
 
         // Connection to DB settings
-        'connection' => [
+        'connection' => isset($_ENV['DATABASE']) ? $_ENV['DATABASE'] : [
             'driver' => 'pdo_sqlite',
             'path' => VAR_DIR . '/database.sqlite',
         ],
@@ -50,8 +50,10 @@ return [
     ],
 
     'settings' => [
-        'displayErrorDetails' => true, // set to false in production
+        'enableSentryAnalytics' => (bool)((int)$_ENV['ANALYTICS'] ?? true),
+        'displayErrorDetails' => ((bool)$_ENV['DEBUG'] ?? false), // set to false in production
         'addContentLengthHeader' => false, // allow the web server to send the content-length header
+        'determineRouteBeforeAppMiddleware' => true,
 
         'tracy' => [
             'showPhpInfoPanel' => 0,

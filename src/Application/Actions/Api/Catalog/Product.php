@@ -11,6 +11,8 @@ class Product extends CatalogAction
             'category' => $this->request->getParam('category'),
             'address' => $this->request->getParam('address'),
             'status' => $this->request->getParam('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK),
+            'vendorcode' => $this->request->getParam('vendorcode'),
+            'barcode' => $this->request->getParam('barcode'),
             'external_id' => $this->request->getParam('external_id'),
 
             'order' => $this->request->getParam('order', []),
@@ -31,6 +33,12 @@ class Product extends CatalogAction
         }
         if ($data['status']) {
             $criteria['status'] = $data['status'];
+        }
+        if ($data['vendorcode']) {
+            $criteria['vendorcode'] = $data['vendorcode'];
+        }
+        if ($data['barcode']) {
+            $criteria['barcode'] = $data['barcode'];
         }
         if ($data['external_id']) {
             $criteria['category'] = $this->array_criteria($data['external_id']);

@@ -1,0 +1,28 @@
+<div class="card">
+    <div class="card-header collapsed" id="requirementsCollapseHeading" data-toggle="collapse" data-target="#requirementsCollapse">
+        <div class="span-icon">
+            <div class="flaticon-box-1"></div>
+        </div>
+        <div class="span-title">
+            Требования к серверу
+        </div>
+        <div class="span-mode"></div>
+    </div>
+
+    <div id="requirementsCollapse" class="collapse" data-parent="#accordion">
+        <div class="card-body">
+            <ul>
+                <li>Web-server: Nginx + Push Stream Module</li>
+                <li>PHP: v7.3 + zip + opcache + imagick</li>
+                <li>Database: любая PDO-совместимая (по-умолчанию: SQLite)</li>
+                <li>Composer: +</li>
+                <li>Redis: +</li>
+            </ul>
+
+            <p>
+                Рекомендуется использовать готовый Docker
+                <a href="https://github.com/0x12f/docker-platform" target="_blank">контейнер</a>.
+            </p>
+        </div>
+    </div>
+</div>

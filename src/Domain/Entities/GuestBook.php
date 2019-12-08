@@ -45,7 +45,7 @@ class GuestBook extends Model
     /**
      * @var string
      * @see \App\Domain\Types\GuestBookStatusType::LIST
-     * @ORM\Column(type="GuestBookStatusType", length=50)
+     * @ORM\Column(type="GuestBookStatusType")
      */
     public $status = \App\Domain\Types\GuestBookStatusType::STATUS_WORK;
 

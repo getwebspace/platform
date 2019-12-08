@@ -3,7 +3,6 @@
 namespace App\Application\Actions\Common\Catalog;
 
 use Alksily\Entity\Collection;
-use Psr\Container\ContainerInterface;
 use Slim\Http\Response;
 
 class ListAction extends CatalogAction
@@ -55,33 +54,79 @@ class ListAction extends CatalogAction
      */
     protected function prepareMain(array &$params, &$categories, &$files)
     {
-        if ($params['address']['category'] == '' && $params['address']['product'] == '') {
+        if ($params['address'] == '') {
             $pagination = $this->getParameter('catalog_category_pagination', 10);
-            $products = collect(
-                $this->productRepository->findBy(
-                    [
-                        'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
-                    ],
-                    null,
-                    $pagination,
-                    $params['offset'] * $pagination
-                )
+
+            $qb = $this->entityManager->createQueryBuilder();
+            $query = $qb
+                ->from(\App\Domain\Entities\Catalog\Product::class, 'p')
+                ->where('p.status = :status')
+                ->orderBy('p.order', 'ASC')
+                ->setParameter('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK, \App\Domain\Types\Catalog\ProductStatusType::NAME);
+
+            $products = collect($query->select('p')->getQuery()->getResult());
+
+            for($i = 1; $i <= 5; $i++) {
+                if (($field = $this->request->getParam('field' . $i, false)) !== false) {
+                    $params['field'][$i] = $field;
+                    $query
+                        ->andWhere('p.field'.$i.' = :field'.$i.'')
+                        ->setParameter('field'.$i, str_escape($field), \Doctrine\DBAL\Types\Type::STRING);
+                }
+            }
+            if (($price = $this->request->getParam('price', false)) !== false) {
+                $price = array_merge(['min' => 0, 'max' => 0], (array)$price);
+
+                if ($price['min']) {
+                    $params['price']['min'] = $price['min'];
+                    $query
+                        ->andWhere('p.price >= :minPrice')
+                        ->setParameter('minPrice', (int)$price['min'], \Doctrine\DBAL\Types\Type::INTEGER);
+                }
+                if ($price['max']) {
+                    $params['price']['max'] = $price['max'];
+                    $query
+                        ->andWhere('p.price <= :maxPrice')
+                        ->setParameter('maxPrice', (int)$price['max'], \Doctrine\DBAL\Types\Type::INTEGER);
+                }
+            }
+            if (($order = $this->request->getParam('order', false)) !== false) {
+                $direction = $this->request->getParam('direction', 'asc');
+
+                if (in_array($order, ['title', 'price', 'field1', 'field2', 'field3', 'field4', 'field5'])) {
+                    $query->addOrderBy('p.' . $order, in_array(strtolower($direction), ['asc', 'desc']) ? $direction : 'ASC');
+                }
+            } else {
+                $query->addOrderBy('p.title', 'ASC');
+            }
+
+            $filtered = collect(
+                $query
+                    ->select('p')
+                    ->setMaxResults($pagination)
+                    ->setFirstResult($params['offset'] * $pagination)
+                    ->getQuery()
+                    ->getResult()
             );
-            $productsCount = $this->productRepository->count([
-                'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
-            ]);
+            $count = $query->select('count(p)')->setMaxResults(null)->setFirstResult(null)->getQuery()->getSingleScalarResult();
+
             $files = $files->merge(
                 $this->fileRepository->findBy([
                     'item' => \App\Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
-                    'item_uuid' => array_map('strval', $products->pluck('uuid')->all()),
+                    'item_uuid' => array_map('strval', $filtered->pluck('uuid')->all()),
                 ])
             );
 
             return $this->respondRender($this->getParameter('catalog_category_template', 'catalog.category.twig'), [
                 'categories' => $categories,
-                'products' => $products,
+                'products' => [
+                    'all' => $products,
+                    'filtered' => $filtered,
+                    'count' => $count,
+                    'params' => $params,
+                ],
                 'pagination' => [
-                    'count' => $productsCount,
+                    'count' => $count,
                     'page' => $pagination,
                 ],
                 'files' => $files,
@@ -104,40 +149,84 @@ class ListAction extends CatalogAction
         /**
          * @var \App\Domain\Entities\Catalog\Category $category
          */
-        $category = $categories->firstWhere('address', $params['address']['category']);
+        $category = $categories->firstWhere('address', $params['address']);
 
         if (is_null($category) === false) {
             $categoryUUIDs = $this->getCategoryChildrenUUID($categories, $category);
-            $products = collect(
-                $this
-                    ->productRepository
-                    ->findBy(
-                        [
-                            'category' => $categoryUUIDs,
-                            'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
-                        ],
-                        null,
-                        $category->pagination,
-                        $params['offset'] * $category->pagination
-                    )
+
+            $qb = $this->entityManager->createQueryBuilder();
+            $query = $qb
+                ->from(\App\Domain\Entities\Catalog\Product::class, 'p')
+                ->where('p.status = :status')
+                ->andWhere('p.category IN (:category)')
+                ->orderBy('p.order', 'ASC')
+                ->setParameter('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK, \App\Domain\Types\Catalog\ProductStatusType::NAME)
+                ->setParameter('category', $categoryUUIDs);
+
+            $products = collect($query->select('p')->getQuery()->getResult());
+
+            for($i = 1; $i <= 5; $i++) {
+                if (($field = $this->request->getParam('field' . $i, false)) !== false) {
+                    $params['field'][$i] = $field;
+                    $query
+                        ->andWhere('p.field'.$i.' = :field'.$i.'')
+                        ->setParameter('field'.$i, str_escape($field), \Doctrine\DBAL\Types\Type::STRING);
+                }
+            }
+            if (($price = $this->request->getParam('price', false)) !== false) {
+                $price = array_merge(['min' => 0, 'max' => 0], (array)$price);
+
+                if ($price['min']) {
+                    $params['price']['min'] = $price['min'];
+                    $query
+                        ->andWhere('p.price >= :minPrice')
+                        ->setParameter('minPrice', (int)$price['min'], \Doctrine\DBAL\Types\Type::INTEGER);
+                }
+                if ($price['max']) {
+                    $params['price']['max'] = $price['max'];
+                    $query
+                        ->andWhere('p.price <= :maxPrice')
+                        ->setParameter('maxPrice', (int)$price['max'], \Doctrine\DBAL\Types\Type::INTEGER);
+                }
+            }
+            if (($order = $this->request->getParam('order', false)) !== false) {
+                $direction = $this->request->getParam('direction', 'asc');
+
+                if (in_array($order, ['title', 'price', 'field1', 'field2', 'field3', 'field4', 'field5'])) {
+                    $query->addOrderBy('p.' . $order, in_array(strtolower($direction), ['asc', 'desc']) ? $direction : 'ASC');
+                }
+            } else {
+                $query->addOrderBy('p.title', 'ASC');
+            }
+
+            $filtered = collect(
+                $query
+                    ->select('p')
+                    ->setMaxResults($category->pagination)
+                    ->setFirstResult($params['offset'] * $category->pagination)
+                    ->getQuery()
+                    ->getResult()
             );
-            $productsCount = $this->productRepository->count([
-                'category' => $categoryUUIDs,
-                'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
-            ]);
+            $count = $query->select('count(p)')->setMaxResults(null)->setFirstResult(null)->getQuery()->getSingleScalarResult();
+
             $files = $files->merge(
                 $this->fileRepository->findBy([
                     'item' => \App\Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
-                    'item_uuid' => array_map('strval', $products->pluck('uuid')->all()),
+                    'item_uuid' => array_map('strval', $filtered->pluck('uuid')->all()),
                 ])
             );
 
             return $this->respondRender($category->template['category'], [
                 'categories' => $categories,
                 'category' => $category,
-                'products' => $products,
+                'products' => [
+                    'all' => $products,
+                    'filtered' => $filtered,
+                    'count' => $count,
+                    'params' => $params,
+                ],
                 'pagination' => [
-                    'count' => $productsCount,
+                    'count' => $count,
                     'page' => $category->pagination,
                 ],
                 'files' => $files,
@@ -159,7 +248,7 @@ class ListAction extends CatalogAction
     {
         /** @var \App\Domain\Entities\Catalog\Product $product */
         $product = $this->productRepository->findOneBy([
-            'address' => $params['address']['product'],
+            'address' => $params['address'],
             'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
         ]);
 
@@ -176,6 +265,7 @@ class ListAction extends CatalogAction
                 'categories' => $categories,
                 'category' => $category,
                 'product' => $product,
+                'params' => $params,
                 'files' => $files,
             ]);
         }
@@ -188,7 +278,8 @@ class ListAction extends CatalogAction
      */
     protected function parsePath()
     {
-        $parts = explode('/', ltrim(str_replace('/catalog', '', $this->request->getUri()->getPath()), '/'));
+        $pathCatalog = $this->getParameter('catalog_address', 'catalog');
+        $parts = explode('/', ltrim(str_replace("/{$pathCatalog}", '', $this->request->getUri()->getPath()), '/'));
         $offset = 0;
 
         if (($buf = $parts[count($parts) - 1]) && ctype_digit($buf)) {
@@ -196,10 +287,7 @@ class ListAction extends CatalogAction
             unset($parts[count($parts) - 1]);
         }
 
-        $product = count($parts) ? $parts[count($parts) - 1] : '';
-        $category = implode('/', $parts);
-
-        return ['address' => ['category' => $category, 'product' => $product], 'offset' => $offset];
+        return ['address' => implode('/', $parts), 'offset' => $offset];
     }
 
     /**

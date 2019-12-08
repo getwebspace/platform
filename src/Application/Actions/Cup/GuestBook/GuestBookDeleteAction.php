@@ -10,7 +10,7 @@ class GuestBookDeleteAction extends GuestBookAction
             /** @var \App\Domain\Entities\GuestBook $item */
             $item = $this->gbookRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
 
-            if (!$item->isEmpty() && $this->request->isPost()) {
+            if (!$item->isEmpty()) {
                 $this->entityManager->remove($item);
                 $this->entityManager->flush();
             }

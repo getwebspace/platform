@@ -13,27 +13,27 @@ class FormCreateAction extends FormAction
                 'title' => $this->request->getParam('title'),
                 'address' => $this->request->getParam('address'),
                 'template' => $this->request->getParam('template'),
-                'mailto' => $this->request->getParam('mailto'),
+                'save_data' => $this->request->getParam('save_data'),
+                'recaptcha' => $this->request->getParam('recaptcha'),
                 'origin' => $this->request->getParam('origin'),
+                'mailto' => $this->request->getParam('mailto'),
             ];
 
             $check = \App\Domain\Filters\Form::check($data);
 
             if ($check === true) {
-                try {
-                    $model = new \App\Domain\Entities\Form($data);
-                    $this->entityManager->persist($model);
-                    $this->entityManager->flush();
+                $model = new \App\Domain\Entities\Form($data);
+                $this->entityManager->persist($model);
+                $this->entityManager->flush();
 
-                    switch (true) {
-                        case $this->request->getParam('save', 'exit') === 'exit':
-                            return $this->response->withAddedHeader('Location', '/cup/form')->withStatus(301);
-                        default:
-                            return $this->response->withAddedHeader('Location', '/cup/form/' . $model->uuid . '/edit')->withStatus(301);
-                    }
-                } catch (Exception $e) {
-                    // todo nothing
+                switch (true) {
+                    case $this->request->getParam('save', 'exit') === 'exit':
+                        return $this->response->withAddedHeader('Location', '/cup/form')->withStatus(301);
+                    default:
+                        return $this->response->withAddedHeader('Location', '/cup/form/' . $model->uuid . '/edit')->withStatus(301);
                 }
+            } else {
+                $this->addErrorFromCheck($check);
             }
         }
 

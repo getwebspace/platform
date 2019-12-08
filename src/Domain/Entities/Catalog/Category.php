@@ -91,7 +91,7 @@ class Category extends Model
     /**
      * @var string
      * @see \App\Domain\Types\Catalog\CategoryStatusType::LIST
-     * @ORM\Column(type="CatalogCategoryStatusType", length=50)
+     * @ORM\Column(type="CatalogCategoryStatusType")
      */
     public $status = \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK;
 

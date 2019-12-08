@@ -37,6 +37,7 @@ class AuthorizationMiddleware extends Middleware
      * @param callable $next
      *
      * @return Response
+     * @throws \Exception
      */
     public function __invoke(Request $request, Response $response, $next): \Slim\Http\Response
     {
@@ -46,18 +47,21 @@ class AuthorizationMiddleware extends Middleware
         ];
 
         if ($data['uuid'] && Uuid::isValid($data['uuid']) && $data['session']) {
-            /** @var \App\Domain\Entities\User\Session $session */
-            $session = $this->userSessionRepository->findOneBy(['uuid' => $data['uuid']]);
+            try {
+                /** @var \App\Domain\Entities\User\Session $session */
+                $session = $this->userSessionRepository->findOneBy(['uuid' => $data['uuid']]);
 
-            if ($session && $data['session'] === $this->session($session)) {
-                $user = $this->userRepository->findOneBy([
-                    'uuid' => $session->uuid,
-                    'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
-                ]);
+                if ($session && $data['session'] === $this->session($session)) {
+                    $user = $this->userRepository->findOneBy([
+                        'uuid' => $session->uuid,
+                        'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
+                    ]);
 
-                if ($user) {
-                    $request = $request->withAttribute('user', $user);
+                    if ($user) {
+                        $request = $request->withAttribute('user', $user);
+                    }
                 }
+            } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
             }
         }
 
@@ -93,38 +97,5 @@ class AuthorizationMiddleware extends Middleware
         }
 
         return null;
-    }
-
-    /**
-     * Метод проверки reCAPTCHA
-     *
-     * @param array $data
-     *
-     * @return bool
-     */
-    public function checkReCAPTCHA(array $data = [])
-    {
-        $default = [
-            'secret' => Common::get('recaptcha_private'),
-            'response' => '',
-            'remoteip' => '',
-        ];
-        $data = array_merge($default, $data);
-
-        if (Common::get('security_recaptcha') === 'on') {
-            $query = http_build_query($data);
-            $verify = json_decode(file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, stream_context_create([
-                'http' => [
-                    'method' => 'POST',
-                    'header' => "Content-Type: application/x-www-form-urlencoded\r\n".
-                        "Content-Length: ".strlen($query)."\r\n",
-                    'content' => $query,
-                ],
-            ])));
-
-            return $verify->success;
-        }
-
-        return true;
     }
 }

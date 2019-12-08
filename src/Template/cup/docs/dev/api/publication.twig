@@ -1,112 +1,50 @@
 <div class="pt-2">
-    <h4>Публикации на сайте</h4>
+    <h3>Публикации</h3>
 
-    <h5>Список категорий публикаций</h5>
-    <code style="display:block; padding-bottom: 20px;">
+    <ul class="mt-3 mb-3">
+        <li>Список категорий публикаций</li>
+        <li>Список публикаций</li>
+    </ul>
+
+    <h4>Список категорий публикаций</h4>
+    <code class="block pt-3 pb-3">
         curl -X GET \<br/>
         -H "Accept: application/json" \<br/>
         "{{ base_url() }}/api/publication/category?limit=10"
     </code>
 
     <h5>Параметры запроса</h5>
-    <table class="table">
-        <tr>
-            <th>Параметр</th>
-            <th>Обязательный?</th>
-            <th>Описание</th>
-        </tr>
-        <tr>
-            <td>uuid[]</td>
-            <td></td>
-            <td>Уникальный идентификатор категории</td>
-        </tr>
-        <tr>
-            <td>parent[]</td>
-            <td></td>
-            <td>Идентификатор родительской категории</td>
-        </tr>
-        <tr>
-            <td>address</td>
-            <td></td>
-            <td>Адрес категории</td>
-        </tr>
+    {% include "cup/docs/dev/api-table-params.twig" with {
+        "list": collect([
+            {"key": "uuid[]", "description": "Уникальный идентификатор категории"},
+            {"key": "parent[]", "description": "Идентификатор родительской категории"},
+            {"key": "address", "description": "Адрес категории"},
 
-        <tr>
-            <td>order[]</td>
-            <td></td>
-            <td>Сортировка по указанным полям</td>
-        </tr>
-        <tr>
-            <td>limit</td>
-            <td></td>
-            <td>
-                Количество строк результатов
-                <span class="d-block text-muted">по-умолчанию: 10</span>
-            </td>
-        </tr>
-        <tr>
-            <td>offset</td>
-            <td></td>
-            <td>
-                Отступ строк от начала
-                <span class="d-block text-muted">по-умолчанию: 0</span>
-            </td>
-        </tr>
-    </table>
+            {"key": "order[]", "description": "Сортировка по указанным полям"},
+            {"key": "limit", "description": "Количество строк результатов", "default": "1000"},
+            {"key": "offset", "description": "Отступ строк от начала"},
+        ])
+    } %}
 
-    <hr>
+    <hr class="pb-2">
 
     <h5>Список публикаций</h5>
-    <code style="display:block; margin-bottom: 20px;">
+    <code class="block pt-3 pb-3">
         curl -X GET \<br/>
         -H "Accept: application/json" \<br/>
         "{{ base_url() }}/api/publication?order[date]=desc&limit=10"
     </code>
 
     <h5>Параметры запроса</h5>
-    <table class="table">
-        <tr>
-            <th>Параметр</th>
-            <th>Обязательный?</th>
-            <th>Описание</th>
-        </tr>
-        <tr>
-            <td>uuid[]</td>
-            <td></td>
-            <td>Уникальный идентификатор публикации</td>
-        </tr>
-        <tr>
-            <td>category[]</td>
-            <td></td>
-            <td>Идентификатор родительской категории</td>
-        </tr>
-        <tr>
-            <td>address</td>
-            <td></td>
-            <td>Адрес публикации</td>
-        </tr>
+    {% include "cup/docs/dev/api-table-params.twig" with {
+        "list": collect([
+            {"key": "uuid[]", "description": "Уникальный идентификатор публикации"},
+            {"key": "category[]", "description": "Идентификатор родительской категории"},
+            {"key": "address", "description": "Адрес публикации"},
 
-        <tr>
-            <td>order[]</td>
-            <td></td>
-            <td>Сортировка по указанным полям</td>
-        </tr>
-        <tr>
-            <td>limit</td>
-            <td></td>
-            <td>
-                Количество строк результатов
-                <span class="d-block text-muted">по-умолчанию: 10</span>
-            </td>
-        </tr>
-        <tr>
-            <td>offset</td>
-            <td></td>
-            <td>
-                Отступ строк от начала
-                <span class="d-block text-muted">по-умолчанию: 0</span>
-            </td>
-        </tr>
-    </table>
-
+            {"key": "order[]", "description": "Сортировка по указанным полям"},
+            {"key": "limit", "description": "Количество строк результатов", "default": "1000"},
+            {"key": "offset", "description": "Отступ строк от начала"},
+        ])
+    } %}
 </div>

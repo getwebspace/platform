@@ -2,22 +2,13 @@
 
 {% block title %}Заказ {{ order.serial }} {{ order.external_id ? '(' ~ order.external_id ~ ')' : '' }} | {{ parent() }}{% endblock %}
 
-{% block script %}
-    {{ parent() }}
-    <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', () => {
-            simpleCart.empty();
-        });
-    </script>
-{% endblock %}
-
 {% block page %}
     <div class="page-top-info">
         <div class="container">
             <h4>Заказ</h4>
             <div class="site-pagination">
                 <a href="/">Главная</a> /
-                <a href="/catalog">Каталог</a> /
+                <a href="/{{ parameter('catalog_address', 'catalog') }}">Каталог</a> /
                 <a href="/cart">Корзина</a> /
                 <a href="/cart/done/{{ order.uuid }}">Заказ</a>
             </div>

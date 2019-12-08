@@ -97,6 +97,44 @@ trait PublicationFilterRules
     }
 
     /**
+     * Вставляет адрес родительной категории
+     *
+     * @return \Closure
+     */
+    public function InsertParentCategoryAddress()
+    {
+        return function (&$data, $field) {
+            if (
+                (
+                    !empty($data['parent']) && $data['parent'] !== \Ramsey\Uuid\Uuid::NIL
+                ) || (
+                    !empty($data['category']) && $data['category'] !== \Ramsey\Uuid\Uuid::NIL
+                )
+            ) {
+                /** @var App $app */
+                $app = $GLOBALS['app'];
+
+                /** @var \Psr\Container\ContainerInterface $container */
+                $container = $app->getContainer();
+
+                if ($container->get('parameter')->get('common_auto_generate_address', 'no') === 'yes') {
+                    /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $categoryRepository */
+                    $categoryRepository = $container->get(\Doctrine\ORM\EntityManager::class)->getRepository(\App\Domain\Entities\Publication\Category::class);
+
+                    /** @var \App\Domain\Entities\Publication\Category $category */
+                    $category = $categoryRepository->findOneBy(['uuid' => str_escape($data['parent'] ?? $data['category'])]);
+
+                    if ($category && !str_starts_with($category->address, $data[$field])) {
+                        $data[$field] = $category->address . '/' . $data[$field];
+                    }
+                }
+            }
+
+            return true;
+        };
+    }
+
+    /**
      * Проверяет уникальность адреса категории
      *
      * @return \Closure
@@ -126,8 +164,8 @@ trait PublicationFilterRules
     {
         return function (&$data, $field) {
             $buf = [
-                'by' => \App\Domain\References\Publication\Category::ORDER_BY_DATE,
-                'direction' => \App\Domain\References\Publication\Category::ORDER_DIRECTION_ASC,
+                'by' => \App\Domain\References\Publication::ORDER_BY_DATE,
+                'direction' => \App\Domain\References\Publication::ORDER_DIRECTION_ASC,
             ];
             $value = &$data[$field];
 
@@ -137,10 +175,16 @@ trait PublicationFilterRules
                 return true;
             }
 
-            if (isset($value['by'])) {
+            if (
+                isset($value['by']) &&
+                in_array($value['by'], \App\Domain\References\Publication::ORDER_BY)
+            ) {
                 $buf['by'] = $value['by'];
             }
-            if (isset($value['direction'])) {
+            if (
+                isset($value['direction']) &&
+                in_array($value['direction'], \App\Domain\References\Publication::ORDER_DIRECTION)
+            ) {
                 $buf['direction'] = $value['direction'];
             }
 

@@ -26,7 +26,8 @@
                             <thead>
                                 <tr>
                                     <th width="15%">Имя</th>
-                                    <th>Сообщение</th>
+                                    <th width="5%">Статус</th>
+                                    <th width="55%">Сообщение</th>
                                     <th width="15%">Дата создания</th>
                                     <th width="10%" class="text-center no-sorting"></th>
                                 </tr>
@@ -35,10 +36,6 @@
                                 {% for item in list %}
                                     <tr>
                                         <td>
-                                            {% if item.status == 'moderate' %}
-                                                <span class="badge badge-secondary">New</span>
-                                            {% endif %}
-
                                             {{ item.name }}
 
                                             {% if item.email %}
@@ -47,9 +44,17 @@
                                                 </a>
                                             {% endif %}
                                         </td>
+                                        <td class="text-center">
+                                            {% if item.status == 'work' %}
+                                                <span class="badge badge-default">Активный</span>
+                                            {% endif %}
+                                            {% if item.status == 'moderate' %}
+                                                <span class="badge badge-secondary">Новый</span>
+                                            {% endif %}
+                                        </td>
                                         <td>
-                                            <pre class="mt-2">{{ item.message|truncate(250) }}</pre>
-                                            <pre class="mb-2 text-primary">{{ item.response|truncate(250) }}</pre>
+                                            <pre class="mt-2">{{ item.message|truncate(100) }}</pre>
+                                            <pre class="mb-2 text-primary">{{ item.response|truncate(100) }}</pre>
                                         </td>
                                         <td>{{ item.date|date('d.m.Y H:i:s') }}</td>
                                         <td class="text-center">

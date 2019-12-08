@@ -55,14 +55,14 @@ class User extends Model
     /**
      * @var string
      * @see \App\Domain\Types\UserStatusType::LIST
-     * @ORM\Column(type="UserStatusType", length=50)
+     * @ORM\Column(type="UserStatusType")
      */
     public $status = \App\Domain\Types\UserStatusType::STATUS_WORK;
 
     /**
      * @var string
      * @see \App\Domain\Types\UserLevelType::LIST
-     * @ORM\Column(type="UserLevelType", length=50)
+     * @ORM\Column(type="UserLevelType")
      */
     public $level = \App\Domain\Types\UserLevelType::LEVEL_USER;
 
@@ -91,15 +91,18 @@ class User extends Model
      */
     public function getName(string $type = 'full')
     {
-        switch ($type) {
-            case 'full':
-                return implode(' ', [$this->lastname, $this->firstname]);
-                break;
-            case 'short':
-                return implode(' ', [substr($this->lastname, 0, 1) . '.', $this->firstname]);
-                break;
+        if ($this->lastname || $this->firstname) {
+            switch ($type) {
+                case 'full':
+                    return implode(' ', [$this->lastname, $this->firstname]);
+                    break;
+                case 'short':
+                    return implode(' ', [mb_substr($this->lastname, 0, 1) . '.', $this->firstname]);
+                    break;
+            }
         }
 
+        return null;
     }
 
     /**

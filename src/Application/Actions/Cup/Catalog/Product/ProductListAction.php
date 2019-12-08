@@ -30,7 +30,6 @@ class ProductListAction extends CatalogAction
                     'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
                 ]));
                 break;
-            case false:
             default:
                 $products = collect($this->productRepository->findBy([
                     'category' => $this->getCategoryChildrenUUID($categories, $category),
@@ -44,25 +43,5 @@ class ProductListAction extends CatalogAction
             'category' => $category,
             'products' => $products
         ]);
-    }
-
-    /**
-     * @param \Alksily\Entity\Collection                 $categories
-     * @param \App\Domain\Entities\Catalog\Category|null $curCategory
-     *
-     * @return array
-     */
-    protected function getCategoryChildrenUUID(\Alksily\Entity\Collection $categories, \App\Domain\Entities\Catalog\Category $curCategory = null)
-    {
-        $result = [$curCategory->uuid->toString()];
-
-        if ($curCategory->children) {
-            /** @var \App\Domain\Entities\Catalog\Category $category */
-            foreach ($categories->where('parent', $curCategory->uuid) as $childCategory) {
-                $result = array_merge($result, $this->getCategoryChildrenUUID($categories, $childCategory));
-            }
-        }
-
-        return $result;
     }
 }

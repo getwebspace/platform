@@ -21,13 +21,9 @@ class ProductUpdateAction extends CatalogAction
                         $file = $this->fileRepository->findOneBy(['uuid' => $uuidFile]);
 
                         if ($file) {
-                            try {
-                                $file->unlink();
-                                $this->entityManager->remove($file);
-                                $this->entityManager->flush();
-                            } catch (Exception $e) {
-                                // todo nothing
-                            }
+                            $file->unlink();
+                            $this->entityManager->remove($file);
+                            $this->entityManager->flush();
                         }
                     } else {
                         $data = [
@@ -61,24 +57,23 @@ class ProductUpdateAction extends CatalogAction
                         $check = \App\Domain\Filters\Catalog\Product::check($data);
 
                         if ($check === true) {
-                            try {
-                                $product->replace($data);
-                                $this->entityManager->persist($product);
-                                $this->handlerFileUpload(\App\Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT, $product->uuid);
-                                $this->entityManager->flush();
+                            $product->replace($data);
+                            $this->entityManager->persist($product);
+                            $this->handlerFileUpload(\App\Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT, $product->uuid);
+                            $this->entityManager->flush();
 
-                                if ($this->request->getParam('save', 'exit') === 'exit') {
-                                    return $this->response->withAddedHeader('Location', '/cup/catalog/product/' . $product->category)->withStatus(301);
-                                }
-                            } catch (Exception $e) {
-                                // todo nothing
+                            if ($this->request->getParam('save', 'exit') === 'exit') {
+                                return $this->response->withAddedHeader('Location', '/cup/catalog/product/' . $product->category)->withStatus(301);
                             }
+                        } else {
+                            $this->addErrorFromCheck($check);
                         }
                     }
                 }
 
-                $categories = collect($this->categoryRepository->findAll());
-
+                $categories = collect($this->categoryRepository->findBy([
+                    'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+                ]));
                 $files = collect($this->fileRepository->findBy([
                     'item' => \App\Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
                     'item_uuid' => $product->uuid,

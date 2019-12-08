@@ -5,13 +5,14 @@
         'label': label,
         'type': 'textarea',
         'name': name,
-        'args': args|merge({'id': 'wysiwygeditor-' ~ editorId})
+        'args': args|merge({'id': 'wysiwygeditor-' ~ editorId, 'method': null})
     } %}
 
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', () => {
             let $editor = $('#wysiwygeditor-{{ editorId }}')
                 .froalaEditor({
+                    iframe: true,
                     width: '100%',
                     height: '300',
                     language: 'ru',
@@ -24,22 +25,24 @@
                     fileMaxSize: 1024 * 1024 * 3,
                     fileUploadMethod: 'POST',
                     fileUploadParam: 'file',
-                    fileUploadParams: {'path_only': true},
+                    fileUploadParams: {'path_only': true, 'item': '{{ options.item }}', 'item_uuid': '{{ options.item_uuid }}'},
                     fileUploadURL: '/file/upload',
 
                     imageMaxSize: 5 * 1024 * 1024,
                     imageAllowedTypes: ['jpeg', 'jpg', 'png'],
                     imageUploadMethod: 'POST',
                     imageUploadParam: 'image',
-                    imageUploadParams: {'path_only': true},
+                    imageUploadParams: {'path_only': true, 'item': '{{ options.item }}', 'item_uuid': '{{ options.item_uuid }}'},
                     imageUploadURL: '/file/upload',
+                    imageManagerLoadURL: '/cup/file/image?item={{ options.item }}&item_uuid={{ options.item_uuid }}',
+                    imageManagerDeleteURL: '/cup/file/image/delete',
 
                     videoAllowedProviders: ['youtube', 'vimeo'],
                     videoMaxSize: 1024 * 1024 * 15,
                     videoAllowedTypes: ['mp4', 'webm'],
                     videoUploadMethod: 'POST',
                     videoUploadParam: 'video',
-                    videoUploadParams: {'path_only': true},
+                    videoUploadParams: {'path_only': true, 'item': '{{ options.item }}', 'item_uuid': '{{ options.item_uuid }}'},
                     videoUploadURL: '/file/upload',
 
                     codeBeautifierOptions: {
@@ -56,6 +59,7 @@
                     htmlUntouched: true,
                     htmlExecuteScripts: false,
                     fullPage: false,
+                    entities: ''
                 });
 
             if ('{{ item.type }}' === 'text') {

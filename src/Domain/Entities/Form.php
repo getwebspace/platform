@@ -37,6 +37,16 @@ class Form extends Model
     public $template;
 
     /**
+     * @ORM\Column(type="boolean", options={"default": true})
+     */
+    public $save_data = true;
+
+    /**
+     * @ORM\Column(type="boolean", options={"default": true})
+     */
+    public $recaptcha = true;
+
+    /**
      * @ORM\Column(type="array")
      */
     public $origin = [];

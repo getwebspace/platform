@@ -5,10 +5,17 @@
  ------------------------------------
  ====================================*/
 
-
 'use strict';
 
-(function($) {
+(function ($) {
+	// default empty query list
+	location.query = {};
+
+	// build query params
+	window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (m, key, value) => {
+		location.query[key] = value;
+	});
+	
 	/*------------------
 		Preloder
 	--------------------*/
@@ -151,34 +158,44 @@
 		}
 		e.preventDefault();
 	});
-
-
+	
+	
 	/*-------------------
 		Range Slider
 	--------------------- */
 	var rangeSlider = $(".price-range"),
-		minamount = $("#minamount"),
-		maxamount = $("#maxamount"),
+		$minamount = $("#minamount"),
+		$maxamount = $("#maxamount"),
 		minPrice = rangeSlider.data('min'),
-		maxPrice = rangeSlider.data('max');
+		maxPrice = rangeSlider.data('max'),
+		interval = '';
+	
 	rangeSlider.slider({
 		range: true,
 		min: minPrice,
 		max: maxPrice,
-		values: [minPrice, maxPrice],
+		values: [
+			(location.query['price[min]'] ? +location.query['price[min]'] : minPrice),
+			(location.query['price[max]'] ? +location.query['price[max]'] : maxPrice),
+		],
 		slide: function (event, ui) {
-			minamount.val('$' + ui.values[0]);
-			maxamount.val('$' + ui.values[1]);
+			$minamount.val(location.query['price[min]'] = ui.values[0]);
+			$maxamount.val(location.query['price[max]'] = ui.values[1]);
+			
+			if (interval) clearTimeout(interval);
+			interval = setTimeout(() => {
+				location = location.pathname + '?' + Object.keys(location.query).map(k => k + '=' + location.query[k]).join('&');
+			}, 1500);
 		}
 	});
-	minamount.val('$' + rangeSlider.slider("values", 0));
-	maxamount.val('$' + rangeSlider.slider("values", 1));
-
-
+	
+	$minamount.val((location.query['price[min]'] ? +location.query['price[min]'] : minPrice));
+	$maxamount.val((location.query['price[max]'] ? +location.query['price[max]'] : maxPrice));
+	
 	/*-------------------
 		Quantity change
 	--------------------- */
-    var proQty = $('.pro-qty');
+	var proQty = $('.pro-qty');
 	proQty.prepend('<span class="dec qtybtn">-</span>');
 	proQty.append('<span class="inc qtybtn">+</span>');
 	proQty.on('click', '.qtybtn', function () {
@@ -196,8 +213,6 @@
 		}
 		$button.parent().find('input').val(newVal);
 	});
-
-
 
 	/*------------------
 		Single Product

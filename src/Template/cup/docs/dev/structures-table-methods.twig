@@ -1,0 +1,22 @@
+<table class="table">
+    <tr>
+        <th style="width: 30%;">Сигнатура</th>
+        <th>Описание</th>
+    </tr>
+    {% for item in list %}
+        <tr>
+            <td>{{ item.signature }}</td>
+            <td>
+                {{ item.description|raw }}
+                {% if item.args %}
+                    {% for key, args in item.args %}
+                        <span class="d-block text-muted">
+                            {{ key }}
+                            <ul class="d-block text-muted">{% for arg in args %}<li>{{ arg }}</li>{% endfor %}</ul>
+                        </span>
+                    {% endfor %}
+                {% endif %}
+            </td>
+        </tr>
+    {% endfor %}
+</table>

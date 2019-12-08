@@ -25,19 +25,15 @@ class CategoryCreateAction extends PublicationAction
             $check = \App\Domain\Filters\Publication\Category::check($data);
 
             if ($check === true) {
-                try {
-                    $model = new \App\Domain\Entities\Publication\Category($data);
-                    $this->entityManager->persist($model);
-                    $this->entityManager->flush();
+                $model = new \App\Domain\Entities\Publication\Category($data);
+                $this->entityManager->persist($model);
+                $this->entityManager->flush();
 
-                    switch (true) {
-                        case $this->request->getParam('save', 'exit') === 'exit':
-                            return $this->response->withAddedHeader('Location', '/cup/publication/category')->withStatus(301);
-                        default:
-                            return $this->response->withAddedHeader('Location', '/cup/publication/category/' . $model->uuid . '/edit')->withStatus(301);
-                    }
-                } catch (Exception $e) {
-                    // todo nothing
+                switch (true) {
+                    case $this->request->getParam('save', 'exit') === 'exit':
+                        return $this->response->withAddedHeader('Location', '/cup/publication/category')->withStatus(301);
+                    default:
+                        return $this->response->withAddedHeader('Location', '/cup/publication/category/' . $model->uuid . '/edit')->withStatus(301);
                 }
             }
         }

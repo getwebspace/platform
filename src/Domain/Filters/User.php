@@ -83,7 +83,7 @@ class User extends Filter
 
         $filter
             ->addGlobalRule($filter->leadTrim())
-            ->attr('username')
+            ->option('username')
                 ->addRule($filter->leadStr(), \App\Domain\References\Errors\User::WRONG_USERNAME)
                 ->addRule($filter->UniqueUserUsername(), \App\Domain\References\Errors\User::WRONG_USERNAME_UNIQUE)
             ->attr('email')
@@ -104,14 +104,20 @@ class User extends Filter
 
         // если длинна пароля не 140 символов - значит пароль
         // был изменен и его следует хешировать
-        if ($data['password'] && strlen($data['password']) !== 140) {
-            $filter
-                ->attr('password')
-                    ->addRule($filter->leadStr())
-                ->addRule($filter->checkStrlenBetween(3, 20), \App\Domain\References\Errors\User::WRONG_PASSWORD_LENGTH)
-                    ->addRule($filter->ValidPassword())
-                ->option('password_again')
-                    ->addRule($filter->checkEqualToField('password'));
+        if ($data['password']) {
+            if (strlen($data['password']) !== 140) {
+                $filter
+                    ->option('password_again')
+                        ->addRule($filter->checkEqualToField('password'))
+                        ->addRule($filter->leadRemove())
+                    ->attr('password')
+                        ->addRule($filter->leadStr())
+                        ->addRule($filter->checkStrlenBetween(3, 20), \App\Domain\References\Errors\User::WRONG_PASSWORD_LENGTH)
+                        ->addRule($filter->ValidPassword());
+            }
+        } else {
+            // пароль не был изменен убираем поле $data['password']
+            unset($data['password']);
         }
 
         return $filter->run();

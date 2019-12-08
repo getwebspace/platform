@@ -31,11 +31,7 @@
                                     <i class="fas fa-book"></i>
                                     Работа с админпанелью (ЦУП)
                                 </a>
-                                <a class="nav-link" id="v-pills-buy-tab-icons" data-toggle="pill" href="#docs-template">
-                                    <i class="fas fa-book"></i>
-                                    Шаблоны
-                                </a>
-                                <a class="nav-link" id="v-pills-buy-tab-icons" data-toggle="pill" href="#docs-developer">
+                                <a class="nav-link" id="v-pills-buy-tab-icons" data-toggle="pill" href="#docs-dev">
                                     <i class="fas fa-book"></i>
                                     Разработчикам
                                 </a>
@@ -50,45 +46,27 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="docs-engine">
-                                    Установка скрипта
-                                    Обновление скрипта
-                                    Начало работы и шаблоны
-                                    Вывод новостей на страницах
+                                    <div class="accordion accordion-secondary">
+                                        {% include 'cup/docs/engine/requirements.twig' %}
+                                        {% include 'cup/docs/engine/install.twig' %}
+                                        {% include 'cup/docs/engine/update.twig' %}
+                                    </div>
                                 </div>
                                 <div class="tab-pane fade" id="docs-panel">
-                                    Настройка системы
-                                    Добавление новостей
-                                    Редактирование новостей
-                                    Настройка категорий
-                                    Статические страницы
-                                    Система логов админпанели
-                                </div>
-                                <div class="tab-pane fade" id="docs-template">
-                                    Общая информация
-                                    Главная страница сайта
-                                    Статические страницы
-                                    Краткое содержание новости
-                                    Новость целиком
-                                    Опросы в новостях
-                                    Комментарии
-                                    Меню категорий
-                                    Регистрация на сайте
-                                    Авторизации на сайте
-                                    Профиль пользователя
-                                    Карточка профиля пользователя
-                                    Форма для отправки E-Mail
-                                    Восстановление пароля
-                                </div>
-                                <div class="tab-pane fade" id="docs-developer">
                                     <div class="accordion accordion-secondary">
-                                        {% include 'cup/docs/dev/structures.twig' %}
+                                        {% include 'cup/docs/panel/settings.twig' %}
+                                        {% include 'cup/docs/panel/publication.twig' %}
+                                        {% include 'cup/docs/panel/publication-category.twig' %}
+                                        {% include 'cup/docs/panel/page.twig' %}
                                     </div>
+                                </div>
+                                <div class="tab-pane fade" id="docs-dev">
                                     <div class="accordion accordion-secondary">
+                                        {% include 'cup/docs/dev/templates.twig' %}
+                                        {% include 'cup/docs/dev/twig.twig' %}
+                                        {% include 'cup/docs/dev/structures.twig' %}
                                         {% include 'cup/docs/dev/api.twig' %}
                                     </div>
-                                    Разработка и подключение модулей
-                                    Подключение модулей в адмипанели
-                                    API для разработки модулей
                                 </div>
                             </div>
                         </div>

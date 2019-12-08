@@ -10,7 +10,7 @@ class FileDeleteAction extends FileAction
             /** @var \App\Domain\Entities\File $file */
             $file = $this->fileRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
 
-            if (!$file->isEmpty() && $this->request->isPost()) {
+            if (!$file->isEmpty()) {
                 $file->unlink();
                 $this->entityManager->remove($file);
                 $this->entityManager->flush();

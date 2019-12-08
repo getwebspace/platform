@@ -12,7 +12,7 @@ class OrderDeleteAction extends CatalogAction
             /** @var \App\Domain\Entities\Catalog\Order $item */
             $item = $this->orderRepository->findOneBy(['uuid' => $this->resolveArg('order')]);
 
-            if (!$item->isEmpty() && $this->request->isPost()) {
+            if (!$item->isEmpty()) {
                 $this->entityManager->remove($item);
                 $this->entityManager->flush();
             }

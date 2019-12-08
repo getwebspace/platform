@@ -1,0 +1,62 @@
+<div class="pt-2">
+    <h3>Модель публикации</h3>
+
+    <code class="block pt-3 pb-3">App\Domain\Entities\Publication</code>
+
+    <ul class="mt-3 mb-3">
+        <li>Поля</li>
+    </ul>
+
+    <h4>Поля</h4>
+    {% include "cup/docs/dev/structures-table-fields.twig" with {
+        "list": collect([
+            {
+                "field": "uuid",
+                "type": "Uuid(36)",
+                "description": "Уникальный идентификатор",
+                "requried": true,
+                "unique": true,
+            },
+            {
+                "field": "address",
+                "type": "String(255)",
+                "description": "Уникальный адрес публикации",
+                "requried": true,
+                "unique": true,
+            },
+            {
+                "field": "title",
+                "type": "String(255)",
+                "description": "Заголовок публикации",
+                "requried": true,
+            },
+            {
+                "field": "category",
+                "type": "Uuid(36)",
+                "description": "Идентификатор категории публикаций",
+                "requried": true,
+            },
+            {
+                "field": "date",
+                "type": "DateTime",
+                "description": "Дата публикации",
+                "requried": true,
+            },
+            {
+                "field": "content",
+                "type": "array[short,full]",
+                "description": "Содержимое публикации",
+            },
+            {
+                "field": "poll",
+                "type": "array[question,answer]",
+                "description": "Опрос в публикации",
+            },
+            {
+                "field": "meta",
+                "type": "array[title,description,keywords]",
+                "description": "Мета теги",
+            }
+        ])
+    } %}
+</div>

@@ -20,6 +20,7 @@
         "alksily/entity": "^1.0",
         "alksily/validator": "^1.0",
         "alksily/support": "^1.0",
+        "twig/twig": "2.12.1",
         "twig/extensions": "^1.5",
         "phive/twig-extensions-deferred": "^2.0",
         "ramsey/uuid": "^3.8",
@@ -32,7 +33,8 @@
         "samdark/sitemap": "^2.2",
         "monolog/monolog": "^1.17",
         "runcmf/runtracy": "^0.2.10",
-        "twig/intl-extra": "3.x-dev"
+        "twig/intl-extra": "3.x-dev",
+        "sentry/sdk": "2.0.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.5"

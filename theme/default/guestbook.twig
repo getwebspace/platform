@@ -1,5 +1,7 @@
 {% extends 'main.twig' %}
 
+{% block title %}Гостевая книга | {{ parent() }}{% endblock %}
+
 {% block page %}
     <section class="contact-section">
         <div class="container">
@@ -10,7 +12,7 @@
             </p>
             <div class="row" style="margin-top: 50px;">
                 <div class="col-md-12">
-                    <form method="post" class="contact-form">
+                    <form method="post" class="contact-form" data-grecaptcha>
                         <div class="row">
                             <div class="col-md-6">
                                 <input type="text" name="name" placeholder="Ваше имя *" required>
@@ -35,17 +37,16 @@
                             <div class="panel-header" id="headingOne">
                                 <button class="panel-link {{ loop.index < 3 ? 'active' : '' }}" data-toggle="collapse" data-target="#comment{{ loop.index }}" aria-expanded="false" aria-controls="collapse">
                                     {{ item.name }} ({{ item.email }})
+                                    <span class="float-right" style="margin-right: 30px;">{{ item.date|df }}</span>
                                 </button>
                             </div>
                             <div id="comment{{ loop.index }}" class="collapse {{ loop.index < 3 ? 'show' : 'collapsed' }}" aria-labelledby="headingOne" data-parent="#accordion">
                                 <div class="panel-body">
-                                    <p>{{ item.message|nl2br|raw }}</p>
+                                    <p>{{ item.message|raw|nl2br }}</p>
 
                                     <div class="alert alert-light">
-
                                         <p style="margin: 0; padding: 0;">
-                                            <b>Ответ:</b>
-                                            {{ item.response }}
+                                            <b>Ответ:</b> {{ item.response|raw|nl2br }}
                                         </p>
                                     </div>
                                 </div>

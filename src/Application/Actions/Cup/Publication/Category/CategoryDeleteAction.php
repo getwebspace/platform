@@ -12,7 +12,7 @@ class CategoryDeleteAction extends PublicationAction
             /** @var \App\Domain\Entities\Publication\Category $item */
             $item = $this->categoryRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
 
-            if (!$item->isEmpty() && $this->request->isPost()) {
+            if (!$item->isEmpty()) {
                 $this->entityManager->remove($item);
                 $this->entityManager->flush();
             }

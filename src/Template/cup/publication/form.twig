@@ -93,6 +93,10 @@
                                             'name': 'content[short]',
                                             'args': {
                                                 'value': item.content.short
+                                            },
+                                            'options': {
+                                                'item': reference('/App/Domain/Types/FileItemType::ITEM_PUBLICATION'),
+                                                'item_uuid': item.uuid ? item.uuid.toString() : '',
                                             }
                                         } %}
                                     </div>
@@ -104,6 +108,10 @@
                                             'name': 'content[full]',
                                             'args': {
                                                 'value': item.content.full
+                                            },
+                                            'options': {
+                                                'item': reference('/App/Domain/Types/FileItemType::ITEM_PUBLICATION'),
+                                                'item_uuid': item.uuid ? item.uuid.toString() : '',
                                             }
                                         } %}
                                     </div>
@@ -153,11 +161,11 @@
                                             'label': 'Адрес',
                                             'type': 'text',
                                             'name': 'address',
-                                            'prefix': base_url() ~ '/ ... /',
+                                            'prefix': base_url() ~ '/',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Cсылка для просмотра статьи в браузере. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов"></i>',
                                             'args': {
                                                 'value': item.address,
-                                                'placeholder': 'my-awesome-publication',
+                                                'placeholder': 'my-publication',
                                             }
                                         } %}
                                     </div>
@@ -181,7 +189,7 @@
 
                                         {% for file in files %}
                                             <div class="p-2 d-inline-block m-2 bg-grey2 rounded">
-                                                <a href="{{ file.getPublicPath('full') }}" target="_blank">
+                                                <a href="{{ file.getPublicPath() }}" target="_blank">
                                                     <img class="rounded" height="100" src="{{ file.getPublicPath('small') }}" alt="preview" data-toggle="tooltip" data-placement="top" title="{{ file.getName() }}" />
                                                 </a>
                                                 <div class="pt-2">
@@ -232,12 +240,10 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                     <div class="card-action">
-                        <button type="submit" name="save" value="exit" class="btn btn-primary">Сохранить и выйти</button>
-                        <button type="submit" name="save" class="btn btn-info">Сохранить</button>
+                        {% include "cup/form-save.twig" %}
 
                         <button type="button" data-click="preview" class="btn btn-info float-right">Предварительный просмотр</button>
                     </div>

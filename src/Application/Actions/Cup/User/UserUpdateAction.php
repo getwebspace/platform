@@ -29,18 +29,16 @@ class UserUpdateAction extends UserAction
                     $check = \App\Domain\Filters\User::check($data);
 
                     if ($check === true) {
-                        try {
-                            $item->replace($data);
-                            $item->change = new \DateTime();
-                            $this->entityManager->persist($item);
-                            $this->entityManager->flush();
+                        $item->replace($data);
+                        $item->change = new \DateTime();
+                        $this->entityManager->persist($item);
+                        $this->entityManager->flush();
 
-                            if ($this->request->getParam('save', 'exit') === 'exit') {
-                                return $this->response->withAddedHeader('Location', '/cup/user')->withStatus(301);
-                            }
-                        } catch (Exception $e) {
-                            // todo nothing
+                        if ($this->request->getParam('save', 'exit') === 'exit') {
+                            return $this->response->withAddedHeader('Location', '/cup/user')->withStatus(301);
                         }
+                    } else {
+                        $this->addErrorFromCheck($check);
                     }
                 }
 

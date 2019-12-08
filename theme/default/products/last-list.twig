@@ -13,15 +13,15 @@
             {% for product in products %}
                 <div class="product-item">
                     <div class="pi-pic">
-                        <a href="/catalog/{{ categories.firstWhere('uuid', product.category).address }}/{{ product.address }}">
-                            <img src="{{ files.firstWhere('item_uuid', product.uuid).getPublicPath('middle') }}" alt="">
+                        <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ product.address }}" style="text-align: center;">
+                            <img src="{{ files.firstWhere('item_uuid', product.uuid).getPublicPath('middle') }}" style="max-height: 300px; width: 100%; object-fit: contain; object-position: center center;" alt="{{ product.title }}">
                         </a>
                         <div class="pi-links">
                             <a href="#" class="add-card"><i class="flaticon-bag"></i><span>В корзину</span></a>
                         </div>
                     </div>
                     <div class="pi-text">
-                        <a href="/catalog/{{ categories.firstWhere('uuid', product.category).address }}/{{ product.address }}">
+                        <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ product.address }}">
                             <h6>{{ product.price }}</h6>
                             <p>{{ product.title }}</p>
                         </a>

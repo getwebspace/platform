@@ -2,78 +2,63 @@
 
 {% block title %}Корзина | {{ parent() }}{% endblock %}
 
-{% block style %}
-    {{ parent() }}
+{% block page %}
+    <script>
+        window.catalog = {
+            events: {
+                'on:ready': (data, cart, obj) => {
+                    $('[data-cart-not-empty]').toggle(!!obj.cartCount());
+                    $('[data-cart-empty]').toggle(!obj.cartCount());
+                },
+                'on:cart:update': (data, cart, obj) => {
+                    $('[data-cart-not-empty]').toggle(!!obj.cartCount());
+                    $('[data-cart-empty]').toggle(!obj.cartCount());
+                },
+                'on:cart:add': (data) => {
+                    Swal.fire('Корзина обновлена', data.title + ' (x' + data.quantity + ') теперь в корзине.', 'success');
+                }
+            }
+        }
+    </script>
 
     <style>
-        .simpleCart_items table {
-            border-collapse: collapse;
-            width: 100%;
+        [data-catalog-cart] [data-attr="increment"] button,
+        [data-catalog-cart] [data-attr="decrement"] button {
+            display: inline-block;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 10px 15px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            background: #f51167;
+            color: #fff;
+            line-height: normal;
+            cursor: pointer;
+            text-align: center;
         }
 
-        .simpleCart_items table th,
-        .simpleCart_items table td {
-            padding-top: 16px;
-            padding-bottom: 16px;
+        [data-catalog-cart] td {
+            vertical-align: middle;
         }
-
-        .simpleCart_items table .itemRow {
-            border-top: 1px solid #e6e6e6;
-            border-bottom: 1px solid #e6e6e6;
-        }
-
-        .simpleCart_items table .item-thumb {
-            width: 150px;
-            padding-left: 15px;
-        }
-
-        .simpleCart_items table .item-thumb img {
-            max-width: 90px;
-            max-height: 90px;
-            width: 90px;
-            height: auto;
+        [data-catalog-cart] img {
+            width: 70px;
+            height: 70px;
             object-fit: contain;
+            object-position: center center;
         }
 
-        .simpleCart_items table .item-link {
-            width: 330px;
-            padding-right: 15px;
-            font-size: 15px;
-        }
-
-        .simpleCart_items table .item-price {
-            width: 133px;
-            padding-right: 15px;
-        }
-
-        .simpleCart_items table .item-cell {
-            text-align: center;
-        }
-
-        .simpleCart_items table .item-quantity {
-            text-align: center;
-            width: 80px;
-            padding-top: 0;
-            padding-bottom: 0;
-        }
-
-        .simpleCart_items table .item-attr {
-            padding-right: 30px;
-        }
-
-        .simpleCart_items table .item-total {
-            text-align: center;
+        [data-catalog-cart-data].check-error {
+            border: 1px solid #f51167;
         }
     </style>
-{% endblock %}
 
-{% block page %}
     <div class="page-top-info">
         <div class="container">
             <h4>Корзина</h4>
             <div class="site-pagination">
                 <a href="/">Главная</a> /
-                <a href="/catalog">Каталог</a> /
+                <a href="/{{ parameter('catalog_address', 'catalog') }}">Каталог</a> /
                 <a href="/cart">Корзина</a>
             </div>
         </div>
@@ -81,49 +66,47 @@
 
     <section class="">
         <div class="container pt-5">
-            <div class="row pt-5 pb-5"  style="display: none" data-cart-empty>
+            <div class="row pt-5 pb-5" style="display: none" data-cart-empty>
                 <div class="col-md-12 text-center">
                     <h3 class="pb-3">Ваша корзина еще пуста, почему?</h3>
-                    <p>Посомотрите наш <a href="/catalog">каталог</a>, может быть вам что-то понравится!</p>
+                    <p>Посомотрите наш <a href="/{{ parameter('catalog_address', 'catalog') }}">каталог</a>, может быть вам что-то понравится!</p>
                 </div>
             </div>
 
             <div style="display: none" data-cart-not-empty>
                 <div class="row pt-5 pb-5">
-                    <div class="col-md-12">
-                        <div class="simpleCart_items"></div>
-                    </div>
+                    <div class="col-md-12" data-catalog-cart></div>
                 </div>
 
                 <div class="contact-form">
                     <div class="row">
                         <div class="col-md-6">
                             <div>
-                                <input type="text" name="delivery[client]" placeholder="Ваше имя *" required>
+                                <input type="text" name="delivery[client]" placeholder="Ваше имя *" data-catalog-cart-data required>
                             </div>
                             <div>
-                                <input type="tel" name="phone" placeholder="Ваш телефон *" required>
+                                <input type="tel" name="phone" placeholder="Ваш телефон *" data-catalog-cart-data required>
                             </div>
                             <div>
-                                <input type="email" name="email" placeholder="Ваш E-Mail *" required>
+                                <input type="email" name="email" placeholder="Ваш E-Mail *" data-catalog-cart-data required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div>
-                                <input type="datetime" name="shipping" placeholder="Дата и время доставки ({{ 'now'|date_modify('+1 day')|date('d.m.Y H:00') }})">
+                                <input type="datetime" name="shipping" placeholder="Дата и время доставки" value="{{ 'now'|date_modify('+1 day')|date('d.m.Y H:00') }}" data-catalog-cart-data>
                             </div>
                             <div>
-                                <textarea name="delivery[address]" placeholder="Адрес доставки.. *" style="height: 105px; margin-bottom: 16px;" required></textarea>
+                                <textarea name="delivery[address]" placeholder="Адрес доставки.. *" style="height: 105px; margin-bottom: 16px;" data-catalog-cart-data required></textarea>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6 order-1 order-md-0">
-                            <button class="site-btn simpleCart_checkout" style="margin-bottom: 16px;">Отправить</button>
+                            <button class="site-btn" data-catalog-cart-checkout style="margin-bottom: 16px;">Отправить</button>
                         </div>
                         <div class="col-md-6 order-0 order-md-1">
                             <div>
-                                <textarea name="comment" placeholder="Комментарий" style="height: 70px; margin-bottom: 16px;"></textarea>
+                                <textarea name="comment" placeholder="Комментарий" style="height: 70px; margin-bottom: 16px;" data-catalog-cart-data></textarea>
                             </div>
                         </div>
                     </div>

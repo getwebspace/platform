@@ -13,3 +13,7 @@
 !/var/cache/.gitkeep
 /var/log/*
 !/var/log/.gitkeep
+/var/upload/*
+!/var/upload/.gitkeep
+/var/xml/*.xml
+!/var/xml/.gitkeep

@@ -29,18 +29,50 @@ class ConvertImageTask extends Task
             $original = $file->getInternalPath();
 
             $command = $this->getParameter('image_convert_bin', '/usr/bin/convert');
-            $sizeMiddle = '-resize x' . $this->getParameter('image_convert_size_middle', '450') . '\>';
-            $sizeSmall = '-resize x' . $this->getParameter('image_convert_size_small', '200') . '\>';
+            $params = [
+                '-sampling-factor 4:2:0',
+                '-strip',
+                '-quality 75%',
+                '-depth 8',
+                '-define jpeg:extent=300k',
+                '-interlace JPEG',
+                '-colorspace RGB',
+                '-background white',
+                '-alpha remove',
+                '-alpha off',
+                '-set comment "Converted in 0x12f CMS"',
+            ];
 
-            foreach (['full' => '', 'middle' => $sizeMiddle, 'small' => $sizeSmall] as $size => $options) {
-                $path = $folder . '/' . $size;
+            foreach (
+                [
+                    'middle' => $this->getParameter('image_convert_size_middle', 450),
+                    'small' => $this->getParameter('image_convert_size_small', 200),
+                ] as $size => $pixels
+            ) {
+                if ($pixels > 0) {
+                    $path = $folder . '/' . $size;
 
-                if (!file_exists($path)) {
-                    mkdir($path, 0777, true);
+                    if (!file_exists($path)) {
+                        mkdir($path, 0777, true);
+                    }
+
+                    $buf = array_merge($params, ['-resize x' . $pixels . '\>']);
+                    @exec($command . " '" . $original . "' " . implode(' ', $buf) . " '" . $path . "/" . $file->name . ".jpg'");
+                    $this->logger->info('Task: convert image', ['size' => $size, 'salt' => $file->salt, 'params' => $buf]);
                 }
-
-                @exec($command . " '" . $original . "'" . ($options ? ' ' . $options : '') . " -set comment 'Converted in 0x12f CMS' " . $path . '/' . $file->name . '.jpg');
             }
+
+            @exec($command . " '" . $original . "' " . implode(' ', $params) . " '" . $folder . "/" . $file->name . ".jpg'");
+            $this->logger->info('Task: convert image', ['size' => 'original', 'salt' => $file->salt, 'params' => $params]);
+
+            // установка расширения файла и типа
+            if ($file->ext !== 'jpg') {
+                $file->ext = 'jpg';
+                $file->type = 'image/jpeg; charset=binary';
+            }
+
+            // обновление размера файла
+            $file->size = filesize($folder . '/' . $file->name . '.jpg');
         }
 
         $this->status_done();

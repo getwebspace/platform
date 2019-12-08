@@ -1,0 +1,21 @@
+<div class="up-item">
+    <i class="flaticon-profile"></i>
+
+
+    {% if user is empty %}
+        <a href="/user/login">Вход</a> или <a href="/user/register">Регистрация</a>
+    {% else %}
+        <a href="/user/profile" style="text-decoration: underline;">
+            {{ user.getName('short')?? user.username }}
+        </a>
+
+        {% if user.level == 'admin' %}
+            или
+            <a href="/cup" target="_blank">
+                <i class="flaticon-settings"></i>
+            </a>
+        {% endif %}
+
+        или <a href="/user/logout">Выход</a>
+    {% endif %}
+</div>

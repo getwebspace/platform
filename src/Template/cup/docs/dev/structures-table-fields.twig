@@ -1,0 +1,21 @@
+<table class="table">
+    <tr>
+        <th>Поле</th>
+        <th width="10%">Тип</th>
+        <th>Описание</th>
+    </tr>
+    {% for item in list %}
+        <tr>
+            <td>{{ item.field }} {{ item.requried ? '<b>*</b>'|raw : '' }}</td>
+            <td>{{ item.type }}</td>
+            <td>
+                {{ item.description|raw }}
+                {{ item.unique ? '<b class="d-block">Unique</b>'|raw : '' }}
+                {{ item.null ? '<b class="d-block">Nullable</b>'|raw : '' }}
+            </td>
+        </tr>
+    {% endfor %}
+    <tr>
+        <td colspan="3"><span class="d-block text-muted">* - обязательное поле</span></td>
+    </tr>
+</table>

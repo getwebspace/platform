@@ -147,7 +147,7 @@ class Product extends Model
     /**
      * @var string
      * @see \App\Domain\Types\Catalog\ProductStatusType::LIST
-     * @ORM\Column(type="CatalogProductStatusType", length=50)
+     * @ORM\Column(type="CatalogProductStatusType")
      */
     public $status = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
 

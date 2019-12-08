@@ -22,21 +22,9 @@ class CategoryListAction extends CatalogAction
             }
         }
 
-        switch (is_null($category)) {
-            case true:
-                $categories = collect($this->categoryRepository->findBy([
-                    'parent' => \Ramsey\Uuid\Uuid::NIL,
-                    'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
-                ]));
-                break;
-            case false:
-            default:
-                $categories = collect($this->categoryRepository->findBy([
-                    'parent' => $category->uuid,
-                    'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
-                ]));
-                break;
-        }
+        $categories = collect($this->categoryRepository->findBy([
+            'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+        ]));
 
         return $this->respondRender('cup/catalog/category/index.twig', [
             'category' => $category,

@@ -10,7 +10,7 @@ class UserDeleteAction extends UserAction
             /** @var \App\Domain\Entities\User $item */
             $item = $this->userRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
 
-            if (!$item->isEmpty() && $this->request->isPost()) {
+            if (!$item->isEmpty()) {
                 $item->set('status', \App\Domain\Types\UserStatusType::STATUS_DELETE);
                 $this->entityManager->persist($item);
                 $this->entityManager->flush();

@@ -96,12 +96,40 @@
                                     }
                                 } %}
                             </div>
+                        </div>
 
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Включить проверку reCAPTCHA',
+                                    'message': 'Возможность отключить проверку reCAPTCHA индивидуально для текущей формы.<br/>По-умолчанию: включено',
+                                    'type': 'select',
+                                    'name': 'recaptcha',
+                                    'args': {
+                                        'option': {'yes':'Да', 'no':'Нет'},
+                                        'selected': item.recaptcha ? 'yes' : 'no'
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Сохранять копии заполненных анкет',
+                                    'message': 'По-умолчанию: включено',
+                                    'type': 'select',
+                                    'name': 'save_data',
+                                    'args': {
+                                        'option': {'yes':'Да', 'no':'Нет'},
+                                        'selected': item.save_data ? 'yes' : 'no'
+                                    }
+                                } %}
+                            </div>
                         </div>
                     </div>
+
                     <div class="card-action">
-                        <button type="submit" name="save" value="exit" class="btn btn-primary">Сохранить и выйти</button>
-                        <button type="submit" name="save" class="btn btn-info">Сохранить</button>
+                        {% include "cup/form-save.twig" %}
                     </div>
                 </form>
             </div>

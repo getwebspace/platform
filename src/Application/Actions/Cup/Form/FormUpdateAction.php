@@ -19,24 +19,24 @@ class FormUpdateAction extends FormAction
                         'title' => $this->request->getParam('title'),
                         'address' => $this->request->getParam('address'),
                         'template' => $this->request->getParam('template'),
-                        'mailto' => $this->request->getParam('mailto'),
+                        'save_data' => $this->request->getParam('save_data'),
+                        'recaptcha' => $this->request->getParam('recaptcha'),
                         'origin' => $this->request->getParam('origin'),
+                        'mailto' => $this->request->getParam('mailto'),
                     ];
 
                     $check = \App\Domain\Filters\Form::check($data);
 
                     if ($check === true) {
-                        try {
-                            $item->replace($data);
-                            $this->entityManager->persist($item);
-                            $this->entityManager->flush();
+                        $item->replace($data);
+                        $this->entityManager->persist($item);
+                        $this->entityManager->flush();
 
-                            if ($this->request->getParam('save', 'exit') === 'exit') {
-                                return $this->response->withAddedHeader('Location', '/cup/form')->withStatus(301);
-                            }
-                        } catch (Exception $e) {
-                            // todo nothing
+                        if ($this->request->getParam('save', 'exit') === 'exit') {
+                            return $this->response->withAddedHeader('Location', '/cup/form')->withStatus(301);
                         }
+                    } else {
+                        $this->addErrorFromCheck($check);
                     }
                 }
 

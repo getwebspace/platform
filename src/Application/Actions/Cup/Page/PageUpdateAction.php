@@ -20,13 +20,9 @@ class PageUpdateAction extends PageAction
                         $file = $this->fileRepository->findOneBy(['uuid' => $uuidFile]);
 
                         if ($file) {
-                            try {
-                                $file->unlink();
-                                $this->entityManager->remove($file);
-                                $this->entityManager->flush();
-                            } catch (Exception $e) {
-                                // todo nothing
-                            }
+                            $file->unlink();
+                            $this->entityManager->remove($file);
+                            $this->entityManager->flush();
                         }
                     } else {
                         $data = [
@@ -43,18 +39,16 @@ class PageUpdateAction extends PageAction
                         $check = \App\Domain\Filters\Page::check($data);
 
                         if ($check === true) {
-                            try {
-                                $item->replace($data);
-                                $this->entityManager->persist($item);
-                                $this->handlerFileUpload(\App\Domain\Types\FileItemType::ITEM_PAGE, $item->uuid);
-                                $this->entityManager->flush();
+                            $item->replace($data);
+                            $this->entityManager->persist($item);
+                            $this->handlerFileUpload(\App\Domain\Types\FileItemType::ITEM_PAGE, $item->uuid);
+                            $this->entityManager->flush();
 
-                                if ($this->request->getParam('save', 'exit') === 'exit') {
-                                    return $this->response->withAddedHeader('Location', '/cup/page')->withStatus(301);
-                                }
-                            } catch (Exception $e) {
-                                // todo nothing
+                            if ($this->request->getParam('save', 'exit') === 'exit') {
+                                return $this->response->withAddedHeader('Location', '/cup/page')->withStatus(301);
                             }
+                        } else {
+                            $this->addErrorFromCheck($check);
                         }
                     }
                 }

@@ -12,9 +12,7 @@ function app_create()
     // Get app settings
     $settings = require APP_DIR . '/settings.php';
 
-    $debug = !isset($settings['settings']['displayErrorDetails']) || $settings['settings']['displayErrorDetails'] === true;
-
-    switch ($debug) {
+    switch (!isset($settings['settings']['displayErrorDetails']) || $settings['settings']['displayErrorDetails'] === true) {
         case true:
             error_reporting(-1);
             ini_set('display_errors',   '1');
@@ -35,6 +33,12 @@ function app_create()
             // enable Tracy panel
             \Tracy\Debugger::enable(\Tracy\Debugger::PRODUCTION, LOG_DIR);
             break;
+    }
+
+    if (!isset($settings['settings']['enableSentryAnalytics']) || $settings['settings']['enableSentryAnalytics'] === true) {
+        \RunTracy\Helpers\Profiler\Profiler::start('sentry');
+        \Sentry\init(['dsn' => 'https://34b4961b67774560aa2d4a38f4b79110@sentry.io/1816121']);
+        \RunTracy\Helpers\Profiler\Profiler::finish('sentry');
     }
 
     // Instantiate and return the app instance

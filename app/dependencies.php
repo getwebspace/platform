@@ -33,9 +33,13 @@ $container['parameter'] = function (ContainerInterface $c) {
         /** @var \Doctrine\ORM\EntityManager $em */
         $em = $c->get(\Doctrine\ORM\EntityManager::class);
 
-        /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $parametersRepository */
-        $parametersRepository = $em->getRepository(\App\Domain\Entities\Parameter::class);
-        $parameters = collect($parametersRepository->findAll());
+        try {
+            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $parametersRepository */
+            $parametersRepository = $em->getRepository(\App\Domain\Entities\Parameter::class);
+            $parameters = collect($parametersRepository->findAll());
+        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
+            $parameters = collect();
+        }
     }
 
     \RunTracy\Helpers\Profiler\Profiler::finish('parameters');
@@ -91,8 +95,6 @@ $container['view'] = function (ContainerInterface $c) {
     ]);
 
     $view['_request'] = $_REQUEST;
-    $view['styles'] = new ArrayObject();
-    $view['scripts'] = new ArrayObject();
 
     $view->addExtension(new \App\Application\TwigExtension($c, \Slim\Http\Uri::createFromEnvironment(new \Slim\Http\Environment($_SERVER))));
     $view->addExtension(new \Twig\Extra\Intl\IntlExtension());
@@ -123,6 +125,11 @@ $container['twig_profile'] = function (ContainerInterface $c) {
 // trademaster api
 $container['trademaster'] = function (ContainerInterface $c) {
     return new \App\Application\TradeMaster($c);
+};
+
+// push stream
+$container['pushstream'] = function (ContainerInterface $c) {
+    return new \App\Application\PushStream($c);
 };
 
 // monolog

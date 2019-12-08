@@ -32,17 +32,15 @@ class OrderUpdateAction extends CatalogAction
                     $check = \App\Domain\Filters\Catalog\Order::check($data);
 
                     if ($check === true) {
-                        try {
-                            $order->replace($data);
-                            $this->entityManager->persist($order);
-                            $this->entityManager->flush();
+                        $order->replace($data);
+                        $this->entityManager->persist($order);
+                        $this->entityManager->flush();
 
-                            if ($this->request->getParam('save', 'exit') === 'exit') {
-                                return $this->response->withAddedHeader('Location', '/cup/catalog/order')->withStatus(301);
-                            }
-                        } catch (Exception $e) {
-                            // todo nothing
+                        if ($this->request->getParam('save', 'exit') === 'exit') {
+                            return $this->response->withAddedHeader('Location', '/cup/catalog/order')->withStatus(301);
                         }
+                    } else {
+                        $this->addErrorFromCheck($check);
                     }
                 }
 

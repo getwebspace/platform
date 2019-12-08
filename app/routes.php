@@ -6,6 +6,9 @@ use Slim\Http\Response;
 
 $app
     ->group('/api', function (App $app) {
+        // files
+        $app->get('/files', \App\Application\Actions\Api\File\File::class);
+
         // publications
         $app->group('/publication', function (App $app) {
             $app->get('', \App\Application\Actions\Api\Publication\Publication::class);
@@ -14,14 +17,24 @@ $app
 
         // catalog
         $app->group('/catalog', function (App $app) {
-            $app->get('/category', \App\Application\Actions\Api\Catalog\Category::class);
-            $app->get('/product', \App\Application\Actions\Api\Catalog\Product::class);
+            $app
+                ->get('/category', \App\Application\Actions\Api\Catalog\Category::class)
+                ->setName('catalog')
+                ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+
+            $app
+                ->get('/product', \App\Application\Actions\Api\Catalog\Product::class)
+                ->setName('catalog')
+                ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
         });
     });
 
 $app
     ->group('/cup', function (App $app) {
         $app->map(['get', 'post'], '/login', \App\Application\Actions\Cup\LoginPageAction::class);
+
+        // catalog scan
+        $app->get('/catalog/product/scan/{channel}', \App\Application\Actions\Cup\Catalog\CatalogScanAction::class);
 
         $app
             ->group('', function (App $app) {
@@ -95,6 +108,7 @@ $app
                         $app->map(['get', 'post'], '/{product}/edit', \App\Application\Actions\Cup\Catalog\Product\ProductUpdateAction::class);
                         $app->map(['get', 'post'], '/{product}/delete', \App\Application\Actions\Cup\Catalog\Product\ProductDeleteAction::class);
                         $app->get('[/{category}]', \App\Application\Actions\Cup\Catalog\Product\ProductListAction::class);
+                        $app->get('/{category}/export', \App\Application\Actions\Cup\Catalog\Product\ProductExportAction::class);
                     });
 
                     // order
@@ -115,6 +129,11 @@ $app
 
                 // files
                 $app->group('/file', function (App $app) {
+                    $app->group('/image', function (App $app) {
+                        $app->get('', \App\Application\Actions\Cup\File\Image\GetAction::class);
+                        $app->post('/delete', \App\Application\Actions\Cup\File\Image\DeleteAction::class);
+                    });
+
                     $app->get('', \App\Application\Actions\Cup\File\FileListAction::class);
                     $app->any('/{uuid}/delete', \App\Application\Actions\Cup\File\FileDeleteAction::class);
                 });
@@ -122,11 +141,8 @@ $app
                 // docs
                 $app->get('/docs', \App\Application\Actions\Cup\DocsPageAction::class);
 
-                // task
-                $app->group('/task', function (App $app) {
-                    $app->get('', \App\Application\Actions\Cup\Task\TaskListAction::class);
-                    $app->post('/run', \App\Application\Actions\Cup\Task\TaskRunAction::class);
-                });
+                // task add to queue
+                $app->post('/task/run', \App\Application\Actions\Cup\Task\TaskRunAction::class);
 
                 // dev console
                 $app->post('/console', '\RunTracy\Controllers\RunTracyConsole:index');
@@ -135,10 +151,10 @@ $app
                 $user = $request->getAttribute('user', false);
 
                 if ($user === false || !in_array($user->level, \App\Domain\Types\UserLevelType::CUP_ACCESS)) {
-                    return $response->withHeader('Location', '/cup/login?redirect=' . $request->getUri()->getPath());
+                    return $response->withHeader('Location', '/cup/login?redirect=' . $request->getUri()->getPath())->withStatus(301);
                 }
                 if ($request->isPost() && $user && $user->level === \App\Domain\Types\UserLevelType::LEVEL_DEMO) {
-                    return $response->withHeader('Location', $request->getUri()->getPath());
+                    return $response->withHeader('Location', $request->getUri()->getPath())->withStatus(301);
                 }
 
                 return $next($request, $response);
@@ -150,22 +166,86 @@ $app
     ->get('/', \App\Application\Actions\Common\MainPageAction::class)
     ->setName('main');
 
-// file worker
+// file
 $app->group('/file', function (App $app) {
     $app->get('/get/{salt}/{hash}', \App\Application\Actions\Common\File\FileGetAction::class);
-    $app->post('/upload', \App\Application\Actions\Common\File\FileUploadAction::class);
+    $app
+        ->post('/upload', \App\Application\Actions\Common\File\FileUploadAction::class)
+        ->setName('file')
+        ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
 });
 
-// form worker
-$app->post('/form/{unique}', \App\Application\Actions\Common\FormAction::class);
+// user
+$app->group('/user', function (App $app) {
+    $app
+        ->map(['get', 'post'], '/login', \App\Application\Actions\Common\User\UserLoginAction::class)
+        ->setName('user')
+        ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+
+    $app
+        ->map(['get', 'post'], '/register', \App\Application\Actions\Common\User\UserRegisterAction::class)
+        ->setName('user')
+        ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+
+    $app
+        ->map(['get', 'post'], '/logout', \App\Application\Actions\Common\User\UserLogoutAction::class)
+        ->setName('user')
+        ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+
+    $app
+        ->map(['get', 'post'], '/profile', \App\Application\Actions\Common\User\UserProfileAction::class)
+        ->setName('user')
+        ->add(\App\Application\Middlewares\IsEnabledMiddleware::class)
+        ->add(function (Request $request, Response $response, $next) {
+            $user = $request->getAttribute('user', false);
+
+            if ($user === false) {
+                return $response->withHeader('Location', '/user/login')->withStatus(301);
+            }
+
+            return $next($request, $response);
+        });
+});
+
+// form
+$app
+    ->post('/form/{unique}', \App\Application\Actions\Common\FormAction::class)
+    ->setName('form')
+    ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
 
 // catalog
-$app->get('/catalog[/{args:.*}]', \App\Application\Actions\Common\Catalog\ListAction::class);
-$app->map(['get', 'post'], '/cart', \App\Application\Actions\Common\Catalog\CartAction::class);
-$app->get('/cart/done/{order}', \App\Application\Actions\Common\Catalog\CartCompleteAction::class);
+$app
+    ->group('', function (App $app) use ($container) {
+        $pathCatalog = $container->get('parameter')->get('catalog_address', 'catalog');
 
-// guestbook worker
-$app->map(['get', 'post'], '/guestbook[/{page:[0-9]+}}]', \App\Application\Actions\Common\GuestBookAction::class);
+        // view categories and products
+        $app
+            ->get("/{$pathCatalog}[/{args:.*}]", \App\Application\Actions\Common\Catalog\ListAction::class)
+            ->setName('catalog')
+            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+
+        // view cart
+        $app
+            ->map(['get', 'post'], '/cart', \App\Application\Actions\Common\Catalog\CartAction::class)
+            ->setName('catalog')
+            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+
+        // view order confirm
+        $app
+            ->get('/cart/done/{order}', \App\Application\Actions\Common\Catalog\CartCompleteAction::class)
+            ->setName('catalog')
+            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+    });
+
+
+// guest book
+$app
+    ->map(['get', 'post'], '/guestbook[/{page:[0-9]+}}]', \App\Application\Actions\Common\GuestBookAction::class)
+    ->setName('guestbook')
+    ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+
+// xml files
+$app->get('/xml/{name}', \App\Application\Actions\Common\XMLFileAction::class);
 
 // dynamic path handler
 $app->get('/{args:.*}', \App\Application\Actions\Common\DynamicPageAction::class);

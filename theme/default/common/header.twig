@@ -12,14 +12,12 @@
                 <div class="col-xl-6 col-lg-5"></div>
                 <div class="col-xl-4 col-lg-5">
                     <div class="user-panel">
-                        {#<div class="up-item">
-                            <i class="flaticon-profile"></i>
-                            <a href="#">Вход</a> или <a href="#">Регистрация</a>
-                        </div>#}
+                        {% include 'common/user.switch.twig' %}
+
                         <div class="up-item float-right">
                             <div class="shopping-card">
                                 <i class="flaticon-bag"></i>
-                                <span class="simpleCart_quantity">0</span>
+                                <span data-catalog-cart-count>0</span>
                             </div>
                             <a href="/cart">Корзина</a>
                         </div>
@@ -29,11 +27,11 @@
         </div>
     </div>
     <nav class="main-navbar">
-        <div class="container">
+        <div class="container" style="padding-left: 0; padding-right: 0;">
             <!-- menu -->
             <ul class="main-menu">
                 <li><a href="/">Главная</a></li>
-                <li><a href="/catalog">Каталог <span class="new">New</span></a></li>
+                <li><a href="/{{ parameter('catalog_address', 'catalog') }}">Каталог <span class="new">New</span></a></li>
                 <li><a href="/blog">Блог</a></li>
                 <li><a href="/guestbook">Гостевая книга</a></li>
                 <li><a href="/delivery">Доставка</a></li>

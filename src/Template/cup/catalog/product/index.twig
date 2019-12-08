@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Каталог</h2>
+                <h2 class="text-white pb-2 fw-bold">Номенклатура</h2>
             </div>
         </div>
     </div>
@@ -16,17 +16,22 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
-                        <h4 class="card-title">Список товаров {{ category ? 'в категории ' ~ category.title : '' }} ({{ products.count() }})</h4>
-                        <a href="/cup/catalog/product/add{{ category ? '?category=' ~ category.uuid : '' }}" class="btn btn-primary btn-round ml-auto">
+                        {% if category %}
+                            <a href="/cup/catalog/product/{{ category.parent }}" class="btn btn-secondary btn-icon mr-1">
+                                <i class="fas fa-arrow-left"></i>
+                            </a>
+                        {% endif %}
+                        <h4 class="card-title">Номенклатура {{ category ? 'в категории ' ~ category.title : '' }} ({{ products.count() }})</h4>
+
+                        <a href="#btn-modal-scan" rel="modal:open" class="btn btn-icon btn-info ml-auto">
+                            <i class="fas fa-barcode"></i>
+                        </a>
+                        {% include "cup/catalog/barcode-modal.twig" %}
+
+                        <a href="/cup/catalog/product/add{{ category ? '?category=' ~ category.uuid : '' }}" class="btn btn-primary btn-round ml-1">
                             <i class="fa fa-plus"></i>
                             Добавить товар
                         </a>
-
-                        {% if category %}
-                            <a href="/cup/catalog/product/{{ category.parent }}" class="btn btn-secondary btn-round ml-1">
-                                <i class="fas fa-arrow-up"></i>
-                            </a>
-                        {% endif %}
                     </div>
                 </div>
                 <div class="card-body">
@@ -36,9 +41,9 @@
                                 <tr>
                                     {# поле для сортировки данных в таблице #}
                                     <th style="display: none"></th>
-                                    <th>Артикул</th>
                                     <th>Наименование</th>
-                                    <th>Категория</th>
+                                    <th width="10%">Категория</th>
+                                    <th>Артикул</th>
                                     <th>Цена</th>
                                     <th width="10%">{{ category.product.field_1 ?? 'Поле 1' }}</th>
                                     <th width="10%">{{ category.product.field_2 ?? 'Поле 2' }}</th>
@@ -54,9 +59,8 @@
                                     <tr>
                                         {# поле для сортировки данных в таблице #}
                                         <td style="display: none">{{ item.order }}</td>
-                                        <td>{{ item.vendorcode }}</td>
                                         <td>
-                                            <a href="/catalog/{{ buf.address }}/{{ item.address }}" target="_blank">
+                                            <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ item.address }}" target="_blank">
                                                 {{ item.title }}
                                                 <i class="fas fa-external-link-alt"></i>
                                             </a>
@@ -65,6 +69,14 @@
                                             <a href="/cup/catalog/product/{{ buf.uuid }}">
                                                 {{ buf.title }}
                                             </a>
+                                        </td>
+                                        <td>
+                                            {% if item.vendorcode %}
+                                                <div>{{ item.vendorcode }}</div>
+                                            {% endif %}
+                                            {% if item.barcode %}
+                                                <div><i class="fas fa-barcode d-inline pr-1"></i>{{ item.barcode }}</div>
+                                            {% endif %}
                                         </td>
                                         <td>{{ item.price|format_number({fraction_digit: 2}) }}</td>
                                         <td>{{ item.field1 }}</td>
@@ -98,17 +110,53 @@
                         </table>
                     </div>
                 </div>
-                {% if category.uuid %}
-                    <div class="card-footer">
-                        <div class="d-flex align-items-center">
-                            <a href="/cup/catalog/category/{{ category.uuid }}/edit" class="btn btn-info btn-round ml-auto">
+
+                <div class="card-footer">
+                    <div class="d-flex align-items-center">
+                        {#<a href="#" class="btn btn-secondary btn-icon ml-auto" data-toggle="tooltip" data-placement="top" title="Импорт списка товаров">
+                            <i class="fas fa-file-import"></i>
+                        </a>#}
+                        <a href="/cup/catalog/product/{{ category.uuid ?? '00000000-0000-0000-0000-000000000000' }}/export" class="btn btn-secondary btn-icon ml-auto" data-toggle="tooltip" data-placement="top" title="Экспорт списка товаров">
+                            <i class="fas fa-file-export"></i>
+                        </a>
+                        {% if category.uuid %}
+                            <a href="/cup/catalog/category/{{ category.uuid }}/edit" class="btn btn-info btn-round ml-1">
                                 <i class="fa fa-edit"></i>
                                 Изменить категорию
                             </a>
-                        </div>
+                        {% endif %}
                     </div>
-                {% endif %}
+                </div>
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block script %}
+    {{ parent() }}
+
+    <script>
+        $(() => {
+            let
+                $table = $('[data-table]'),
+                table = $table.DataTable();
+
+            $(window).on('event:barcode_scan:result', (e, data) => {
+                if (data.barcode) {
+                    table.search(data.barcode).draw();
+
+                    $.notify({
+                        title: 'Отсканирован код',
+                        message: data.barcode
+                    }, {
+                        type: 'info',
+                        animate: {
+                            enter: 'animated fadeInRight',
+                            exit: 'animated fadeOutRight'
+                        }
+                    });
+                }
+            });
+        })
+    </script>
 {% endblock %}

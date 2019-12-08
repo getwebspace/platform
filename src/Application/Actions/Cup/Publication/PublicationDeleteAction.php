@@ -10,7 +10,7 @@ class PublicationDeleteAction extends PublicationAction
             /** @var \App\Domain\Entities\Publication $item */
             $item = $this->publicationRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
 
-            if (!$item->isEmpty() && $this->request->isPost()) {
+            if (!$item->isEmpty()) {
                 $this->entityManager->remove($item);
                 $this->entityManager->flush();
             }

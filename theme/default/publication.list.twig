@@ -39,8 +39,14 @@
 
                 <div class="col-lg-9 order-1 order-lg-2 mb-5 mb-lg-0">
                     {% for item in publications %}
-                        {% include category.template.short with {'categories': categories, 'item': item, 'date_format': date_format} only %}
+                        {% include category.template.short with {'categories': categories, 'item': item} only %}
                     {% endfor %}
+
+                    <div class="row justify-content-center">
+                        <div class="col-6">
+                            {% include 'pagination.twig' with {'pagination':pagination} only %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

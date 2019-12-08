@@ -9,14 +9,27 @@
 {% endblock %}
 
 {% block page %}
+    <script>
+        window.catalog = {
+            events: {
+                'on:cart:add': (data) => {
+                    Swal.fire('Товар добавлен', data.title + ' (x' + data.quantity + ') теперь в корзине.', 'success');
+                },
+                'on:cart:update': (data) => {
+                    Swal.fire('Товар обновлен', data.title + ' (x' + data.quantity + ')', 'success');
+                }
+            }
+        }
+    </script>
+
     <div class="page-top-info">
         <div class="container">
             <h4>{{ category.meta.title ? category.meta.title : (category.title ?? 'Каталог') }}</h4>
             <div class="site-pagination">
                 <a href="/">Главная</a> /
-                <a href="/catalog">Каталог</a>
+                <a href="/{{ parameter('catalog_address', 'catalog') }}">Каталог</a>
                 {% for breadcrumb in catalog_breadcrumb(category) %}
-                    / <a href="/catalog/{{ breadcrumb.address }}">{{ breadcrumb.meta.title ? breadcrumb.meta.title : breadcrumb.title }}</a>
+                    / <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ breadcrumb.address }}">{{ breadcrumb.meta.title ? breadcrumb.meta.title : breadcrumb.title }}</a>
                 {% endfor %}
             </div>
         </div>
@@ -32,16 +45,14 @@
                             {% include 'catalog.category.menu.twig' with {'categories':categories} only %}
                         </ul>
                     </div>
-                    {#<div class="filter-widget mb-0">
-                        <h2 class="fw-title">refine by</h2>
+
+                    <div class="filter-widget mb-0">
+                        <h2 class="fw-title">Цена</h2>
                         <div class="price-range-wrap">
-                            <h4>Price</h4>
-                            <div class="price-range ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content" data-min="10" data-max="270">
+                            <div class="price-range ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content" data-min="{{ products.all.min('price') }}" data-max="{{ products.all.max('price') }}">
                                 <div class="ui-slider-range ui-corner-all ui-widget-header" style="left: 0%; width: 100%;"></div>
-                                <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default" style="left: 0%;">
-								</span>
-                                <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default" style="left: 100%;">
-								</span>
+                                <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default" style="left: 0%;"></span>
+                                <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default" style="left: 100%;"></span>
                                 <div class="ui-slider-range ui-corner-all ui-widget-header" style="left: 0%; width: 100%;"></div>
                             </div>
                             <div class="range-slider">
@@ -51,101 +62,32 @@
                                 </div>
                             </div>
                         </div>
-                    </div>#}
-                    {#<div class="filter-widget mb-0">
-                        <h2 class="fw-title">color by</h2>
-                        <div class="fw-color-choose">
-                            <div class="cs-item">
-                                <input type="radio" name="cs" id="gray-color">
-                                <label class="cs-gray" for="gray-color">
-                                    <span>(3)</span>
-                                </label>
-                            </div>
-                            <div class="cs-item">
-                                <input type="radio" name="cs" id="orange-color">
-                                <label class="cs-orange" for="orange-color">
-                                    <span>(25)</span>
-                                </label>
-                            </div>
-                            <div class="cs-item">
-                                <input type="radio" name="cs" id="yollow-color">
-                                <label class="cs-yollow" for="yollow-color">
-                                    <span>(112)</span>
-                                </label>
-                            </div>
-                            <div class="cs-item">
-                                <input type="radio" name="cs" id="green-color">
-                                <label class="cs-green" for="green-color">
-                                    <span>(75)</span>
-                                </label>
-                            </div>
-                            <div class="cs-item">
-                                <input type="radio" name="cs" id="purple-color">
-                                <label class="cs-purple" for="purple-color">
-                                    <span>(9)</span>
-                                </label>
-                            </div>
-                            <div class="cs-item">
-                                <input type="radio" name="cs" id="blue-color" checked="">
-                                <label class="cs-blue" for="blue-color">
-                                    <span>(29)</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>#}
-                    {#<div class="filter-widget mb-0">
-                        <h2 class="fw-title">Size</h2>
-                        <div class="fw-size-choose">
-                            <div class="sc-item">
-                                <input type="radio" name="sc" id="xs-size">
-                                <label for="xs-size">XS</label>
-                            </div>
-                            <div class="sc-item">
-                                <input type="radio" name="sc" id="s-size">
-                                <label for="s-size">S</label>
-                            </div>
-                            <div class="sc-item">
-                                <input type="radio" name="sc" id="m-size" checked="">
-                                <label for="m-size">M</label>
-                            </div>
-                            <div class="sc-item">
-                                <input type="radio" name="sc" id="l-size">
-                                <label for="l-size">L</label>
-                            </div>
-                            <div class="sc-item">
-                                <input type="radio" name="sc" id="xl-size">
-                                <label for="xl-size">XL</label>
-                            </div>
-                            <div class="sc-item">
-                                <input type="radio" name="sc" id="xxl-size">
-                                <label for="xxl-size">XXL</label>
-                            </div>
-                        </div>
-                    </div>#}
-                    {#<div class="filter-widget">
-                        <h2 class="fw-title">Brand</h2>
-                        <ul class="category-menu">
-                            <li><a href="#">Abercrombie &amp; Fitch <span>(2)</span></a></li>
-                            <li><a href="#">Asos<span>(56)</span></a></li>
-                            <li><a href="#">Bershka<span>(36)</span></a></li>
-                            <li><a href="#">Missguided<span>(27)</span></a></li>
-                            <li><a href="#">Zara<span>(19)</span></a></li>
-                        </ul>
-                    </div>#}
+                    </div>
                 </div>
 
                 <div class="col-lg-9 order-1 order-lg-2 mb-5 mb-lg-0">
                     <div class="row">
-                        {% for product in products %}
+                        {% for product in products.filtered %}
                             {% include 'catalog.category.product.twig' with {'categories':categories,'product':product,'files':files} only %}
                         {% endfor %}
                     </div>
-                </div>
-            </div>
+                    <div class="row justify-content-center">
+                        <div class="col-6">
+                            {% include 'pagination.twig' with {'pagination':pagination} only %}
+                        </div>
+                    </div>
 
-            <div class="row justify-content-center">
-                <div class="col-6">
-                    {% include 'pagination.twig' with {'pagination':pagination} only %}
+                    {% if category.description is not empty %}
+                        <hr class="mt-5 mb-5">
+
+                        <div class="row">
+                            <div class="col-12">
+                                {{ category.description|raw }}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% include 'catalog.category.filter.twig' with {'category': category, 'products': products} only %}
                 </div>
             </div>
         </div>

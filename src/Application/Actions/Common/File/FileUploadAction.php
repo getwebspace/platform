@@ -9,6 +9,9 @@ class FileUploadAction extends FileAction
     protected function action(): \Slim\Http\Response
     {
         $path_only = $this->request->getParam('path_only', false);
+        $item = $this->request->getParam('item', false);
+        $item_uuid = $this->request->getParam('item_uuid', false);
+
         $models = [];
 
         foreach ($this->request->getUploadedFiles() as $field => $files) {
@@ -20,10 +23,19 @@ class FileUploadAction extends FileAction
                     $file_model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename());
 
                     if ($file_model) {
-                        // file by user
+                        // файл загружен пользователем
                         if (($user = $this->request->getAttribute('user', false)) !== false) {
                             $file_model->item = \App\Domain\Types\FileItemType::ITEM_USER_UPLOAD;
                             $file_model->item_uuid = $user->uuid;
+                        }
+
+                        // файл принадлежит сущности
+                        if (
+                            $item && in_array($item, array_keys(\App\Domain\Types\FileItemType::LIST)) &&
+                            $item_uuid && \Ramsey\Uuid\Uuid::isValid($item_uuid)
+                        ) {
+                            $file_model->item = $item;
+                            $file_model->item_uuid = $item_uuid;
                         }
 
                         $this->entityManager->persist($file_model);
@@ -47,6 +59,15 @@ class FileUploadAction extends FileAction
 
         $this->entityManager->flush();
 
-        return $this->response->withJson($path_only && !empty($field) ? ['link' => $models[$field][0]->getPublicPath()] : $models);
+        if ($models && $path_only) {
+            $file = array_shift($models)[0] ?? false;
+
+            if ($file) {
+                /** @var \App\Domain\Entities\File $file */
+                return $this->respondWithJson(['link' => $file->getPublicPath()]);
+            }
+        }
+
+        return $this->respondWithJson($models);
     }
 }
