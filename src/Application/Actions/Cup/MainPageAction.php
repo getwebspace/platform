@@ -10,12 +10,12 @@ class MainPageAction extends Action
     {
         $version = 'dev';
 
-        if (file_exists(VAR_DIR . '/version_hash.txt')) {
-            if (file_exists(VAR_DIR . '/version_tag.txt')) {
-                $tag = file_get_contents(VAR_DIR . '/version_tag.txt');
+        if (file_exists(BASE_DIR . '/version_hash.txt')) {
+            if (file_exists(BASE_DIR . '/version_tag.txt')) {
+                $tag = file_get_contents(BASE_DIR . '/version_tag.txt');
             }
 
-            $hash = file_get_contents(VAR_DIR . '/version_hash.txt');
+            $hash = file_get_contents(BASE_DIR . '/version_hash.txt');
             $version = !empty($tag) ? $tag . ' (' . $hash . ')' : $hash;
         }
 
