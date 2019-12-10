@@ -62,7 +62,7 @@
                     entities: ''
                 });
 
-            if ('{{ item.type }}' === 'text') {
+            if ('{{ item.type }}' === 'text' || '{{ args.text_mode }}') {
                 $editor.froalaEditor('codeView.toggle');
             }
         });
