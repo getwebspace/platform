@@ -1,6 +1,5 @@
 .idea
 .git
-docker
 vendor
 .gitignore
 composer
