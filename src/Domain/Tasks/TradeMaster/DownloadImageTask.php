@@ -34,22 +34,24 @@ class DownloadImageTask extends Task
         $this->fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
 
         if ($args['photo']) {
-            foreach (explode(';', $args['photo']) as $name) {
-                $path = $this->trademaster->getFilePath($name);
-                $file_model = \App\Domain\Entities\File::getFromPath($path);
+            if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
+                foreach (explode(';', $args['photo']) as $name) {
+                    $path = $this->trademaster->getFilePath($name);
+                    $file_model = \App\Domain\Entities\File::getFromPath($path);
 
-                if ($file_model) {
-                    $file_model->replace([
-                        'item' => $args['item'],
-                        'item_uuid' => $args['item_uuid'],
-                    ]);
-                    $this->entityManager->persist($file_model);
+                    if ($file_model) {
+                        $file_model->replace([
+                            'item' => $args['item'],
+                            'item_uuid' => $args['item_uuid'],
+                        ]);
+                        $this->entityManager->persist($file_model);
 
-                    // add task convert
-                    $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
-                    $task->execute(['uuid' => $file_model->uuid]);
-                } else {
-                    $this->logger->info('TradeMaster: file not loaded (%s)', ['path' => $path]);
+                        // add task convert
+                        $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
+                        $task->execute(['uuid' => $file_model->uuid]);
+                    } else {
+                        $this->logger->info('TradeMaster: file not loaded (%s)', ['path' => $path]);
+                    }
                 }
             }
 

@@ -122,25 +122,27 @@ class FormAction extends Action
 
                 // prepare mail attachments
                 $attachments = [];
-                foreach ($this->request->getUploadedFiles() as $field => $files) {
-                    if (!is_array($files)) $files = [$files];
+                if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
+                    foreach ($this->request->getUploadedFiles() as $field => $files) {
+                        if (!is_array($files)) $files = [$files];
 
-                    /* @var UploadedFile $file */
-                    foreach ($files as $file) {
-                        if (!$file->getError()) {
-                            $file_model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename());
+                        /* @var UploadedFile $file */
+                        foreach ($files as $file) {
+                            if (!$file->getError()) {
+                                $file_model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename());
 
-                            if ($file_model) {
-                                if ($item->save_data === true) {
-                                    $file_model->replace([
-                                        'item' => \App\Domain\Types\FileItemType::ITEM_FORM_DATA,
-                                        'item_uuid' => $bid->uuid,
-                                    ]);
-                                    $this->entityManager->persist($file_model);
+                                if ($file_model) {
+                                    if ($item->save_data === true) {
+                                        $file_model->replace([
+                                            'item' => \App\Domain\Types\FileItemType::ITEM_FORM_DATA,
+                                            'item_uuid' => $bid->uuid,
+                                        ]);
+                                        $this->entityManager->persist($file_model);
+                                    }
+
+                                    // add to attachments
+                                    $attachments[$file_model->getName()] = $file_model->getInternalPath();
                                 }
-
-                                // add to attachments
-                                $attachments[$file_model->getName()] = $file_model->getInternalPath();
                             }
                         }
                     }

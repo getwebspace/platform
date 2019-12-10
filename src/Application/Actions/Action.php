@@ -208,25 +208,27 @@ abstract class Action
     {
         $result = [];
 
-        /** @var \Psr\Http\Message\UploadedFileInterface[] $files */
-        $files = $this->request->getUploadedFiles()[$field] ?? [];
+        if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
+            /** @var \Psr\Http\Message\UploadedFileInterface[] $files */
+            $files = $this->request->getUploadedFiles()[$field] ?? [];
 
-        foreach ($files as $file) {
-            if (!$file->getError()) {
-                $file_model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename());
+            foreach ($files as $file) {
+                if (!$file->getError()) {
+                    $file_model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename());
 
-                if ($file_model) {
-                    $result[] = $file_model->replace(['item' => $type, 'item_uuid' => $uuid]);
-                    $this->entityManager->persist($file_model);
+                    if ($file_model) {
+                        $result[] = $file_model->replace(['item' => $type, 'item_uuid' => $uuid]);
+                        $this->entityManager->persist($file_model);
 
-                    // is image
-                    if (\Alksily\Support\Str::start('image/', $file_model->type)) {
-                        // add task convert
-                        $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
-                        $task->execute(['uuid' => $file_model->uuid]);
+                        // is image
+                        if (\Alksily\Support\Str::start('image/', $file_model->type)) {
+                            // add task convert
+                            $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
+                            $task->execute(['uuid' => $file_model->uuid]);
 
-                        // run worker
-                        \App\Domain\Tasks\Task::worker();
+                            // run worker
+                            \App\Domain\Tasks\Task::worker();
+                        }
                     }
                 }
             }
