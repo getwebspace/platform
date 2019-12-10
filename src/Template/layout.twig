@@ -10,11 +10,15 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="generator" content="OpenSource CMS (Full free for all) Powered by 0x12f Team" />
-        <title>
-            {% block title deferred %}{{ title ? title ~ ' | ' : '' }}{{ parameter('common_title') }}{% endblock %}
-        </title>
+
+        <meta name="description" content="{{ parameter('common_description') }}">
+        <meta name="keywords" content="{{ parameter('common_keywords') }}">
+        <meta name="canonical" content="{{ parameter('common_homepage') }}">
+
         {% block head '' %}
         {% block style '' %}
+
+        <title>{% block title deferred %}{{ title ? title ~ ' | ' : '' }}{{ parameter('common_title') }}{% endblock %}</title>
     </head>
 
     {% block body %}
