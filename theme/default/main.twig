@@ -25,6 +25,19 @@
             {% include 'common/header.twig' %}
 
             {% block page %}
+                <script>
+                    window.catalog = {
+                        events: {
+                            'on:cart:add': (data) => {
+                                Swal.fire('Товар добавлен', data.title + ' (x' + data.quantity + ') теперь в корзине.', 'success');
+                            },
+                            'on:cart:update': (data) => {
+                                Swal.fire('Товар обновлен', data.title + ' (x' + data.quantity + ')', 'success');
+                            }
+                        }
+                    }
+                </script>
+
                 {% include 'parts/slider.twig' %}
                 {% include 'parts/features.twig' %}
                 {% include 'products/last-list.twig' %}
