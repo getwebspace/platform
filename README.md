@@ -10,7 +10,7 @@
 Воспользуйтесь готовым шаблоном: [0x12f/platform-template](https://github.com/0x12f/platform-template)
 
 #### Developer mode
-Воспользуйтесь `Docker` выполнив команду: `docker-compose -f docker-compose.dev.yml`
+Воспользуйтесь `Docker` выполнив команду: `docker-compose -f docker-compose.yml`
 
 #### Environment variables
 `DEBUG` - режим отладки;  
