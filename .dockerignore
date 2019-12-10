@@ -1,0 +1,9 @@
+.idea
+.git
+docker
+vendor
+.gitignore
+composer
+docker-compose.dev.yml
+LICENSE.md
+README.md

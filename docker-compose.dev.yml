@@ -1,0 +1,27 @@
+version: "2"
+
+networks:
+    lan:
+        external: false
+
+services:
+    php:
+        image: 0x12f/platform:dev
+        environment:
+            - DEBUG=0
+            - ANALYTICS=0
+          # - SALT=Please-Change-Me
+          # - DATABASE=mysql://user:secret@localhost/mydb
+        volumes:
+            - ./app:/var/container/app:ro
+            - ./config:/var/container/config:ro
+            - ./public:/var/container/public:ro
+            - ./src:/var/container/src:ro
+            - ./theme:/var/container/theme:ro
+            - ./var:/var/container/var:rw
+            - ./var/upload:/var/container/public/uploads:rw
+            - ./vendor:/var/container/vendor:ro
+        ports:
+            - 9000:80
+        networks:
+            - lan
