@@ -32,23 +32,30 @@ class PublicationRSS extends Action
     {
         $feed = new \Bhaktaraz\RSSGenerator\Feed();
 
-        /** @var \App\Domain\Entities\Publication\Category $category */
-        foreach ($this->publicationCategoryRepository->findAll() as $category) {
-            $channel = new \Bhaktaraz\RSSGenerator\Channel();
-            $channel
-                ->title($category->title)
-                ->description($category->description)
-                ->url($category->address)
-                ->appendTo($feed);
+        if (($url = $this->getParameter('common_homepage', false)) !== false) {
+            /** @var \App\Domain\Entities\Publication\Category $category */
+            foreach ($this->publicationCategoryRepository->findAll() as $category) {
+                $channel = new \Bhaktaraz\RSSGenerator\Channel();
+                $channel
+                    ->title($category->title)
+                    ->updatePeriod('daily')
+                    ->updateFrequency(2)
+                    ->description($category->description)
+                    ->url($url . $category->address)
+                    ->appendTo($feed);
 
-            /** @var \App\Domain\Entities\Publication $publication */
-            foreach ($this->publicationRepository->findBy(['category' => $category->uuid], [$category->sort['by'] => $category->sort['direction']]) as $publication) {
-                $item = new \Bhaktaraz\RSSGenerator\Item();
-                $item
-                    ->title($publication->title)
-                    ->description($publication->content['short'])
-                    ->url($publication->address)
-                    ->appendTo($channel);
+                /** @var \App\Domain\Entities\Publication $publication */
+                foreach ($this->publicationRepository->findBy(['category' => $category->uuid], [$category->sort['by'] => $category->sort['direction']]) as $publication) {
+                    $item = new \Bhaktaraz\RSSGenerator\Item();
+                    $item
+                        ->title($publication->title)
+                        ->category($category->title)
+                        ->description($publication->content['short'])
+                        ->content($publication->content['full'])
+                        ->pubDate($publication->date->getTimestamp())
+                        ->url($url . $publication->address)
+                        ->appendTo($channel);
+                }
             }
         }
 
