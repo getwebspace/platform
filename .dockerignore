@@ -3,6 +3,6 @@
 vendor
 .gitignore
 composer
-docker-compose.dev.yml
+docker-compose.yml
 LICENSE.md
 README.md

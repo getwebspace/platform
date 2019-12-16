@@ -3,18 +3,25 @@ MAINTAINER Aleksey Ilyin <alksily@outlook.com>
 
 ENV PLATFORM_HOME="/var/container"
 
-# Install common packages
+# Install build packages, build nginx and push-stream-module, install php modules
 RUN set -x \
+    && mkdir ${PLATFORM_HOME} \
     && apt-get update -y \
     && apt-get install --no-install-recommends -y \
         gnupg2 \
         wget \
         git \
         unzip \
-        supervisor
-
-# Build custom Nginx with module push stream
-RUN set -x \
+        supervisor \
+        libzip-dev \
+        zlib1g-dev \
+        jpegoptim \
+        optipng \
+        pngquant \
+        gifsicle \
+        libmagickwand-dev \
+        imagemagick \
+        redis-server \
     && echo "deb-src http://nginx.org/packages/debian buster nginx" | tee /etc/apt/sources.list.d/nginx.list \
     && wget http://nginx.org/keys/nginx_signing.key && apt-key add nginx_signing.key && rm nginx_signing.key \
     && cd /tmp \
@@ -33,20 +40,7 @@ RUN set -x \
     && chmod -R 777 /var/log/nginx /var/cache/nginx/ /run \
     && chmod 644 /etc/nginx/* \
     && ln -sf /dev/stdout /var/log/nginx/access.log \
-    && ln -sf /dev/stderr /var/log/nginx/error.log
-
-# Install ImageMagic and other modules
-RUN set -x \
-    && apt-get update -y \
-    && apt-get install --no-install-recommends -y \
-        libzip-dev \
-        zlib1g-dev \
-        jpegoptim \
-        optipng \
-        pngquant \
-        gifsicle \
-        libmagickwand-dev \
-        imagemagick \
+    && ln -sf /dev/stderr /var/log/nginx/error.log \
     && pecl install imagick \
     && docker-php-ext-install mbstring \
     && docker-php-ext-install zip \
@@ -55,24 +49,8 @@ RUN set -x \
     && docker-php-ext-enable imagick \
     && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php --quiet --install-dir=/usr/bin --filename=composer \
-    && rm composer-setup.php
-
-# Install Redis
-#RUN apt-get update \
-#    && apt-get install -y --no-install-recommends \
-#        redis-server
-
-# Copy configs
-COPY docker/nginx.conf /etc/nginx/nginx.conf
-COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini
-COPY docker/supervisor.conf /etc/supervisor/conf.d/supervisor.conf
-
-# Copy start script
-COPY docker/entrypoint.sh /entrypoint.sh
-RUN chmod 755 /entrypoint.sh
-
-# Prepare for platform
-RUN mkdir ${PLATFORM_HOME}
+    && rm composer-setup.php \
+    && composer global require hirak/prestissimo
 
 # Copy platform
 ADD app ${PLATFORM_HOME}/app
@@ -81,24 +59,28 @@ ADD public ${PLATFORM_HOME}/public
 ADD src ${PLATFORM_HOME}/src
 ADD theme ${PLATFORM_HOME}/theme
 ADD var ${PLATFORM_HOME}/var
-COPY composer.json ${PLATFORM_HOME}/composer.json
-COPY composer.lock ${PLATFORM_HOME}/composer.lock
+ADD composer.json ${PLATFORM_HOME}/composer.json
+ADD composer.lock ${PLATFORM_HOME}/composer.lock
+COPY docker/nginx.conf /etc/nginx/nginx.conf
+COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini
+COPY docker/supervisor.conf /etc/supervisor/conf.d/supervisor.conf
+COPY docker/entrypoint.sh /entrypoint.sh
 
-# Install dependency
-RUN cd ${PLATFORM_HOME} \
+# Final step
+RUN set -x \
+    && chmod 755 /entrypoint.sh \
+    && cd ${PLATFORM_HOME} \
     && chmod -R 0777 ${PLATFORM_HOME}/public/resource \
     && chmod -R 0777 ${PLATFORM_HOME}/public/uploads \
     && chmod -R 0777 ${PLATFORM_HOME}/theme \
     && chmod -R 0777 ${PLATFORM_HOME}/var \
-    && composer install --no-dev
-
-# Finally cleanup
-RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    rm /var/log/lastlog /var/log/faillog
+    && composer install --no-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && rm /var/log/lastlog /var/log/faillog
 
 # Expose web
-EXPOSE 80/tcp
+EXPOSE 80/tcp 443/tcp
 
 # Define data volumes
 VOLUME ["${PLATFORM_HOME}/public/resource", "${PLATFORM_HOME}/theme", "${PLATFORM_HOME}/var", "${PLATFORM_HOME}/public/uploads"]
