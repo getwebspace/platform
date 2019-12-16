@@ -237,7 +237,6 @@ $app
             ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
     });
 
-
 // guest book
 $app
     ->map(['get', 'post'], '/guestbook[/{page:[0-9]+}}]', \App\Application\Actions\Common\GuestBookAction::class)
@@ -246,6 +245,9 @@ $app
 
 // xml files
 $app->get('/xml/{name}', \App\Application\Actions\Common\XMLFileAction::class);
+
+// publication rss
+$app->get('/rss', \App\Application\Actions\Common\PublicationRSS::class);
 
 // dynamic path handler
 $app->get('/{args:.*}', \App\Application\Actions\Common\DynamicPageAction::class);
