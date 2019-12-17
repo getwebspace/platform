@@ -1,6 +1,10 @@
 {% extends 'layout.twig' %}
 
 {% block head %}
+    <meta name="description" content="{{ parameter('common_description') }}">
+    <meta name="keywords" content="{{ parameter('common_keywords') }}">
+    <meta name="canonical" content="{{ parameter('common_homepage') }}">
+
     <!-- Favicon -->
     <link href="img/favicon.ico" rel="shortcut icon" />
 
