@@ -406,18 +406,27 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         $criteria = [];
 
         if ($data) {
-            if (is_string($data)) throw new \ArgumentCountError('Wrong argument, must be array (["uuid"=>[], "address"=>[], "category"=>[]])');
             if (!is_array($data)) $data = [$data];
             $data = array_merge_recursive(['uuid' => [], 'address' => [], 'category' => []], $data);
 
             foreach ($data as $type => $values) {
                 foreach ($values as $value) {
-                    if (in_array($type, ['uuid', 'category'])) {
-                        if (\Ramsey\Uuid\Uuid::isValid(strval($value)) === true) {
+                    switch ($type){
+                        case 'uuid':
+                            if (\Ramsey\Uuid\Uuid::isValid(strval($value)) === true) {
+                                $criteria['uuid'][] = $value;
+                            }
+                            break;
+                        case 'category':
+                            if (\Ramsey\Uuid\Uuid::isValid(strval($value)) === true) {
+                                $criteria['category'][] = $value;
+                            }
+                            if (is_object($value) && is_a($value, \App\Domain\Entities\Publication\Category::class)) {
+                                $criteria['category'][] = $value->uuid;
+                            }
+                            break;
+                        default:
                             $criteria[$type][] = $value;
-                        }
-                    } else {
-                        $criteria[$type][] = $value;
                     }
                 }
             }
