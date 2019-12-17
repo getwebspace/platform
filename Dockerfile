@@ -57,9 +57,15 @@ RUN set -x \
     && rm composer-setup.php \
     && composer global require hirak/prestissimo
 
+# Copy configs
+COPY docker/nginx.conf /etc/nginx/nginx.conf
+COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini
+COPY docker/supervisor.conf /etc/supervisor/conf.d/supervisor.conf
+COPY docker/entrypoint.sh /entrypoint.sh
+
 # Install PHP libs
-ADD composer.json ${PLATFORM_HOME}/composer.json
-ADD composer.lock ${PLATFORM_HOME}/composer.lock
+COPY composer.json ${PLATFORM_HOME}/composer.json
+COPY composer.lock ${PLATFORM_HOME}/composer.lock
 RUN composer install --no-dev
 
 # Copy platform
@@ -69,10 +75,6 @@ ADD public ${PLATFORM_HOME}/public
 ADD src ${PLATFORM_HOME}/src
 ADD theme ${PLATFORM_HOME}/theme
 ADD var ${PLATFORM_HOME}/var
-COPY docker/nginx.conf /etc/nginx/nginx.conf
-COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini
-COPY docker/supervisor.conf /etc/supervisor/conf.d/supervisor.conf
-COPY docker/entrypoint.sh /entrypoint.sh
 
 # Final step
 RUN set -x \
