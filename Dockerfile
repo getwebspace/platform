@@ -11,7 +11,6 @@ CMD ["/entrypoint.sh"]
 
 # Install build packages, build nginx and push-stream-module, install php modules
 RUN set -x \
-    && mkdir ${PLATFORM_HOME} \
     && apt-get update -y \
     && apt-get install --no-install-recommends -y \
         gnupg2 \
