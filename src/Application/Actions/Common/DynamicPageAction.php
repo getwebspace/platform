@@ -79,7 +79,7 @@ class DynamicPageAction extends Action
             ));
             $files = collect($this->fileRepository->findBy([
                 'item' => \App\Domain\Types\FileItemType::ITEM_PUBLICATION,
-                'item_uuid' => array_merge($this->getCategoryChildrenUUID($categories, $category), $publications->pluck('uuid')),
+                'item_uuid' => array_merge($this->getCategoryChildrenUUID($categories, $category), $publications->pluck('uuid')->all()),
             ]));
 
             return $this->respondRender($category->template['list'], [
