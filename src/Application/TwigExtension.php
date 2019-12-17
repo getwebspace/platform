@@ -406,18 +406,14 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         $criteria = [];
 
         if ($unique) {
-            if (!is_array($unique)) $unique = [$unique];
+            switch (true) {
+                case \Ramsey\Uuid\Uuid::isValid($unique) === true:
+                    $criteria['uuid'] = $unique;
+                    break;
 
-            foreach ($unique as $value) {
-                switch (true) {
-                    case \Ramsey\Uuid\Uuid::isValid($value) === true:
-                        $criteria['uuid'][] = $value;
-                        break;
-
-                    default:
-                        $criteria['address'][] = $value;
-                        break;
-                }
+                default:
+                    $criteria['address'] = $unique;
+                    break;
             }
         }
 
