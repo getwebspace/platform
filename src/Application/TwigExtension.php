@@ -410,6 +410,9 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             $data = array_merge_recursive(['uuid' => [], 'address' => [], 'category' => []], $data);
 
             foreach ($data as $type => $values) {
+                if (is_a($values, \Alksily\Entity\Collection::class)) $values = $values->all();
+                if (!is_array($data)) $values = [$values];
+
                 foreach ($values as $value) {
                     switch ($type){
                         case 'uuid':
@@ -418,11 +421,12 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
                             }
                             break;
                         case 'category':
-                            if (\Ramsey\Uuid\Uuid::isValid(strval($value)) === true) {
-                                $criteria['category'][] = $value;
-                            }
                             if (is_object($value) && is_a($value, \App\Domain\Entities\Publication\Category::class)) {
                                 $criteria['category'][] = $value->uuid;
+                            } else {
+                                if (\Ramsey\Uuid\Uuid::isValid(strval($value)) === true) {
+                                    $criteria['category'][] = $value;
+                                }
                             }
                             break;
                         default:
