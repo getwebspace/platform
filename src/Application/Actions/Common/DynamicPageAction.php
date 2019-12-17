@@ -77,6 +77,9 @@ class DynamicPageAction extends Action
                 $category->pagination,
                 $category->pagination * $offset
             ));
+            $files = collect($this->fileRepository->findBy([
+                'item' => \App\Domain\Types\FileItemType::ITEM_PUBLICATION,
+            ]));
 
             return $this->respondRender($category->template['list'], [
                 'categories' => $categories,
@@ -86,10 +89,11 @@ class DynamicPageAction extends Action
                     'count' => $this->publicationRepository->count(['category' => $this->getCategoryChildrenUUID($categories, $category)]),
                     'page' => $category->pagination,
                 ],
+                'files' => $files,
             ]);
         }
 
-        // публикации
+        // публикация
         if ($this->publicationRepository->count(['address' => $path])) {
             $category = $categories->filter(function ($model) use ($path) {
                 return strpos($path, $model->address) !== false;
@@ -98,7 +102,7 @@ class DynamicPageAction extends Action
             if ($category) {
                 $publication = $this->publicationRepository->findOneBy(['address' => $path]);
                 $files = collect($this->fileRepository->findBy([
-                    'item' => \App\Domain\Types\FileItemType::ITEM_PAGE,
+                    'item' => \App\Domain\Types\FileItemType::ITEM_PUBLICATION,
                     'item_uuid' => $category->uuid,
                 ]));
 
