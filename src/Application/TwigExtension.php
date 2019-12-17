@@ -397,7 +397,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     }
 
     // получение списка публикаций
-    public function publication($unique = null, $order = [], $limit = 10, $offset = null)
+    public function publication($data = null, $order = [], $limit = 10, $offset = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:publication');
 
@@ -405,15 +405,21 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
         $criteria = [];
 
-        if ($unique) {
-            switch (true) {
-                case \Ramsey\Uuid\Uuid::isValid($unique) === true:
-                    $criteria['uuid'] = $unique;
-                    break;
+        if ($data) {
+            if (is_string($data)) throw new \ArgumentCountError('Wrong argument, must be array (["uuid"=>[], "address"=>[], "category"=>[]])');
+            if (!is_array($data)) $data = [$data];
+            $data = array_merge_recursive(['uuid' => [], 'address' => [], 'category' => []], $data);
 
-                default:
-                    $criteria['address'] = $unique;
-                    break;
+            foreach ($data as $type => $values) {
+                foreach ($values as $value) {
+                    if (in_array($type, ['uuid', 'category'])) {
+                        if (\Ramsey\Uuid\Uuid::isValid($value) === true) {
+                            $criteria[$type][] = $value;
+                        }
+                    } else {
+                        $criteria[$type][] = $value;
+                    }
+                }
             }
         }
 
