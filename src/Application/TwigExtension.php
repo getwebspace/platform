@@ -413,7 +413,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             foreach ($data as $type => $values) {
                 foreach ($values as $value) {
                     if (in_array($type, ['uuid', 'category'])) {
-                        if (\Ramsey\Uuid\Uuid::isValid($value) === true) {
+                        if (\Ramsey\Uuid\Uuid::isValid(strval($value)) === true) {
                             $criteria[$type][] = $value;
                         }
                     } else {
