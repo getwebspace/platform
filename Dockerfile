@@ -3,6 +3,12 @@ MAINTAINER Aleksey Ilyin <alksily@outlook.com>
 
 ENV PLATFORM_HOME="/var/container"
 
+EXPOSE 80/tcp 443/tcp
+VOLUME ["${PLATFORM_HOME}/public/resource", "${PLATFORM_HOME}/theme", "${PLATFORM_HOME}/var", "${PLATFORM_HOME}/public/uploads"]
+WORKDIR ${PLATFORM_HOME}
+STOPSIGNAL SIGTERM
+CMD ["/entrypoint.sh"]
+
 # Install build packages, build nginx and push-stream-module, install php modules
 RUN set -x \
     && mkdir ${PLATFORM_HOME} \
@@ -52,6 +58,11 @@ RUN set -x \
     && rm composer-setup.php \
     && composer global require hirak/prestissimo
 
+# Install PHP libs
+ADD composer.json ${PLATFORM_HOME}/composer.json
+ADD composer.lock ${PLATFORM_HOME}/composer.lock
+RUN composer install --no-dev
+
 # Copy platform
 ADD app ${PLATFORM_HOME}/app
 ADD config ${PLATFORM_HOME}/config
@@ -59,8 +70,6 @@ ADD public ${PLATFORM_HOME}/public
 ADD src ${PLATFORM_HOME}/src
 ADD theme ${PLATFORM_HOME}/theme
 ADD var ${PLATFORM_HOME}/var
-ADD composer.json ${PLATFORM_HOME}/composer.json
-ADD composer.lock ${PLATFORM_HOME}/composer.lock
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 COPY docker/supervisor.conf /etc/supervisor/conf.d/supervisor.conf
@@ -74,18 +83,7 @@ RUN set -x \
     && chmod -R 0777 ${PLATFORM_HOME}/public/uploads \
     && chmod -R 0777 ${PLATFORM_HOME}/theme \
     && chmod -R 0777 ${PLATFORM_HOME}/var \
-    && composer install --no-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && rm /var/log/lastlog /var/log/faillog
 
-# Expose web
-EXPOSE 80/tcp 443/tcp
-
-# Define data volumes
-VOLUME ["${PLATFORM_HOME}/public/resource", "${PLATFORM_HOME}/theme", "${PLATFORM_HOME}/var", "${PLATFORM_HOME}/public/uploads"]
-
-WORKDIR ${PLATFORM_HOME}
-STOPSIGNAL SIGTERM
-
-CMD ["/entrypoint.sh"]
