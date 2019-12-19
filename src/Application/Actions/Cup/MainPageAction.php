@@ -8,17 +8,6 @@ class MainPageAction extends Action
 {
     protected function action(): \Slim\Http\Response
     {
-        $version = 'dev';
-
-        if (file_exists(BASE_DIR . '/version_hash.txt')) {
-            if (file_exists(BASE_DIR . '/version_tag.txt')) {
-                $tag = file_get_contents(BASE_DIR . '/version_tag.txt');
-            }
-
-            $hash = file_get_contents(BASE_DIR . '/version_hash.txt');
-            $version = !empty($tag) ? $tag . ' (' . $hash . ')' : $hash;
-        }
-
         return $this->respondRender('cup/layout.twig', [
             'notepad' => $this->getParameter('notepad_' . $this->request->getAttribute('user')->username, ''),
             'stats' => [
@@ -34,7 +23,7 @@ class MainPageAction extends Action
                 'files' => $this->entityManager->getRepository(\App\Domain\Entities\File::class)->count([]),
             ],
             'properties' => [
-                'version' => $version,
+                'version' => ($_ENV['COMMIT_BRANCH'] ?? 'other') . ' (' . ($_ENV['COMMIT_SHA'] ?? 'specific') . ')',
                 'os' => @implode(' ', [php_uname('s'), php_uname('r'), php_uname('m')]),
                 'php' => PHP_VERSION,
                 'memory_limit' => ini_get('memory_limit'),
