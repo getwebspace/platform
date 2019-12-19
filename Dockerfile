@@ -88,4 +88,11 @@ RUN set -x \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && rm /var/log/lastlog /var/log/faillog
 
-RUN echo "$DOCKER_TAG" >> ${PLATFORM_HOME}/public/test.txt
+ARG BRANCH="master"
+ARG COMMIT=""
+LABEL branch=${BRANCH}
+LABEL commit=${COMMIT}
+ENV COMMIT_BRANCH=${BRANCH}
+ENV COMMIT_SHA=${COMMIT}
+
+RUN echo "$COMMIT_SHA" >> ${PLATFORM_HOME}/public/test.txt
