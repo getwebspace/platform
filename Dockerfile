@@ -88,4 +88,4 @@ RUN set -x \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && rm /var/log/lastlog /var/log/faillog
 
-RUN echo "$DOCKER_TAG"
+RUN echo "$DOCKER_TAG" >> ${PLATFORM_HOME}/public/test.txt
