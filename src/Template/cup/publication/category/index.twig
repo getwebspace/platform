@@ -30,6 +30,8 @@
                                 <tr>
                                     <th>Название</th>
                                     <th width="20%">Основная категория</th>
+                                    <th width="5%">Публичная</th>
+                                    <th width="5%">Показывать вложенные</th>
                                     <th width="10%" class="text-center no-sorting"></th>
                                 </tr>
                             </thead>
@@ -43,6 +45,8 @@
                                             </a>
                                         </td>
                                         <td>{{ list.where('uuid', item.parent).first().title ?? '&mdash;' }}</td>
+                                        <td class="text-center">{{ item.children ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>' }}</td>
+                                        <td class="text-center">{{ item.public ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>' }}</td>
                                         <td class="text-center">
                                             <div class="btn-group dropdown">
                                                 <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
@@ -59,7 +63,6 @@
                                                         </form>
                                                     </li>
                                                 </ul>
-
                                             </div>
                                         </td>
                                     </tr>
