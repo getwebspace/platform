@@ -35,9 +35,9 @@ function app_create()
             break;
     }
 
-    if (!isset($settings['settings']['enableSentryAnalytics']) || $settings['settings']['enableSentryAnalytics'] === true) {
+    if (!isset($settings['settings']['sentry']) || $settings['settings']['sentry'] !== null) {
         \RunTracy\Helpers\Profiler\Profiler::start('sentry');
-        \Sentry\init(['dsn' => 'https://34b4961b67774560aa2d4a38f4b79110@sentry.io/1816121']);
+        \Sentry\init(['dsn' => $settings['settings']['sentry']]);
         \RunTracy\Helpers\Profiler\Profiler::finish('sentry');
     }
 

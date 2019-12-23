@@ -14,9 +14,9 @@
 
 #### Environment variables
 `DEBUG` - режим отладки;  
-`ANALYTICS` - оповещать авторов об ошибках;  
 `SALT` - секретная комбинация для безопасности;  
 `DATABASE` - DSN для подключения к базе данных;
+`SENTRY` - DSN для [Sentry.io](https://sentry.io);  
 
 #### License
 Licensed under the MIT license. See [License File](LICENSE.md) for more information.
