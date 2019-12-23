@@ -1,5 +1,7 @@
 .idea
 .git
+.composer
+hooks
 vendor
 .gitignore
 composer
