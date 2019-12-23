@@ -45,8 +45,8 @@
                                             </a>
                                         </td>
                                         <td>{{ list.where('uuid', item.parent).first().title ?? '&mdash;' }}</td>
-                                        <td class="text-center">{{ item.children ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>' }}</td>
                                         <td class="text-center">{{ item.public ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>' }}</td>
+                                        <td class="text-center">{{ item.children ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>' }}</td>
                                         <td class="text-center">
                                             <div class="btn-group dropdown">
                                                 <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
