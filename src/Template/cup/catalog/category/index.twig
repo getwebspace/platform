@@ -33,8 +33,7 @@
                         <table data-table class="display table table-striped table-hover" >
                             <thead>
                                 <tr>
-                                    {# поле для сортировки данных в таблице #}
-                                    <th style="display: none"></th>
+                                    <th width="3%">#</th>
                                     <th width="20%">Наименование</th>
                                     <th width="15%">Основная категория</th>
                                     <th>{{ fields.catalog_category_field_1 ?? 'Поле 1' }}</th>
@@ -46,8 +45,7 @@
                             <tbody>
                                 {% for category in categories.where('parent', category ? category.uuid : '00000000-0000-0000-0000-000000000000') %}
                                     <tr>
-                                        {# поле для сортировки данных в таблице #}
-                                        <td style="display: none">{{ category.order }}</td>
+                                        <td class="text-center">{{ category.order }}</td>
                                         <td>
                                             <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ category.address }}" target="_blank">
                                                 {{ category.title }}
