@@ -52,6 +52,11 @@ class Category extends Model
     public $children = false;
 
     /**
+     * @ORM\Column(type="boolean", options={"default": false})
+     */
+    public $public = true;
+
+    /**
      * @var array
      * @ORM\Column(type="array", nullable=true)
      */

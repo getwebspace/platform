@@ -378,22 +378,52 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
      */
 
     // получение списка категорий публикаций
-    public function publication_category($limit = null)
+    public function publication_category($unique = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:publication_category');
 
-        static $buf;
+        static $categories;
 
-        if (!$buf) {
+        if (!$categories) {
             /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
             $repository = $this->entityManager->getRepository(\App\Domain\Entities\Publication\Category::class);
+            $categories = collect($repository->findAll());
+        }
 
-            $buf = collect($repository->findAll());
+        static $buf;
+
+        if (is_null($unique)) {
+            if (!isset($buf[$unique])) {
+                $buf[$unique] = collect($categories->where('public', true));
+            }
+        } else {
+            if (is_string($unique)) {
+                $unique = \Ramsey\Uuid\Uuid::fromString($unique);
+            }
+            if (!isset($buf[strval($unique)])) {
+                $uuids = $this->getPublicationCategoryChildrenUUID($categories, $categories->firstWhere('uuid', $unique));
+                $buf[strval($unique)] = $categories->whereIn('uuid', $uuids, false);
+            }
         }
 
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:publication_category');
 
-        return $buf;
+        return $buf[strval($unique)];
+    }
+
+    // подбор списка uuid для выборки
+    protected function getPublicationCategoryChildrenUUID(\Alksily\Entity\Collection $categories, \App\Domain\Entities\Publication\Category $curCategory)
+    {
+        $result = [$curCategory->uuid];
+
+        if ($curCategory->children) {
+            /** @var \App\Domain\Entities\Publication\Category $category */
+            foreach ($categories->where('parent', $curCategory->uuid) as $childCategory) {
+                $result = array_merge($result, $this->getPublicationCategoryChildrenUUID($categories, $childCategory));
+            }
+        }
+
+        return $result;
     }
 
     // получение списка публикаций

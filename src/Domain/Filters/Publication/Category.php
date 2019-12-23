@@ -40,6 +40,8 @@ class Category extends Filter
             ->attr('parent')
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 36))
+            ->attr('public')
+                ->addRule($filter->leadBoolean())
             ->attr('children')
                 ->addRule($filter->leadBoolean())
             ->attr('pagination')

@@ -3,7 +3,6 @@
 namespace App\Application\Actions\Cup\Publication\Category;
 
 use App\Application\Actions\Cup\Publication\PublicationAction;
-use Exception;
 
 class CategoryUpdateAction extends PublicationAction
 {
@@ -21,6 +20,7 @@ class CategoryUpdateAction extends PublicationAction
                         'address' => $this->request->getParam('address'),
                         'description' => $this->request->getParam('description'),
                         'parent' => $this->request->getParam('parent'),
+                        'public' => $this->request->getParam('public'),
                         'children' => $this->request->getParam('children'),
                         'pagination' => $this->request->getParam('pagination'),
                         'sort' => $this->request->getParam('sort'),

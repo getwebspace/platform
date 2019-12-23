@@ -89,13 +89,25 @@
                                     }
                                 } %}
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-3">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Количество записей на страницу',
                                     'type': 'text',
                                     'name': 'pagination',
                                     'args': {
                                         'value': item.pagination is not empty ? item.pagination : '10',
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-3">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Публичная категория',
+                                    'message': 'Отображать ли категорию в общем списке',
+                                    'type': 'select',
+                                    'name': 'public',
+                                    'args': {
+                                        'option': {'yes':'Да', 'no':'Нет'},
+                                        'selected': item.public ? 'yes' : 'no'
                                     }
                                 } %}
                             </div>

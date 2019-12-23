@@ -65,10 +65,10 @@ class DynamicPageAction extends Action
             ]);
         }
 
-        $categories = collect($this->publicationCategoryRepository->findAll());
+        $categories = collect($this->publicationCategoryRepository->findBy(['public' => true]));
 
         // категории публикаций
-        if ($this->publicationCategoryRepository->count(['address' => $path])) {
+        if ($categories->firstWhere('address', $path)) {
             $category = $categories->firstWhere('address', $path);
 
             $publications = collect($this->publicationRepository->findBy(

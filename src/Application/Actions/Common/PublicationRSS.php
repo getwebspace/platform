@@ -34,7 +34,7 @@ class PublicationRSS extends Action
 
         if (($url = $this->getParameter('common_homepage', false)) !== false) {
             /** @var \App\Domain\Entities\Publication\Category $category */
-            foreach ($this->publicationCategoryRepository->findAll() as $category) {
+            foreach ($this->publicationCategoryRepository->findBy(['public' => true]) as $category) {
                 $channel = new \Bhaktaraz\RSSGenerator\Channel();
                 $channel
                     ->title($category->title)
