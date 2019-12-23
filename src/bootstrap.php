@@ -35,7 +35,7 @@ function app_create()
             break;
     }
 
-    if (!isset($settings['settings']['sentry']) || $settings['settings']['sentry'] !== null) {
+    if (isset($settings['settings']['sentry']) && $settings['settings']['sentry'] !== null) {
         \RunTracy\Helpers\Profiler\Profiler::start('sentry');
         \Sentry\init(['dsn' => $settings['settings']['sentry']]);
         \RunTracy\Helpers\Profiler\Profiler::finish('sentry');
