@@ -40,7 +40,7 @@ class ConvertImageTask extends Task
                 '-background white',
                 '-alpha remove',
                 '-alpha off',
-                '-set comment "Converted in 0x12f CMS"',
+                '-set comment "Converted in WebSpace Engine CMS"',
             ];
 
             foreach (

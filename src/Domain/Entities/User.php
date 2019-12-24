@@ -53,6 +53,11 @@ class User extends Model
     public $lastname;
 
     /**
+     * @ORM\Column(type="boolean", options={"default": true})
+     */
+    public $allow_mail = true;
+
+    /**
      * @var string
      * @see \App\Domain\Types\UserStatusType::LIST
      * @ORM\Column(type="UserStatusType")

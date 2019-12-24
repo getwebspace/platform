@@ -1,0 +1,62 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">Рассылка сообщений</h2>
+                <h5 class="text-white op-7 mb-2">Массовая отправка сообщений зарегистрированным пользователям</h5>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <form method="post">
+                    <div class="card-header">
+                        <div class="card-head-row">
+                            <div class="card-title">Письмо</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Заголовок',
+                                    'type': 'text',
+                                    'name': 'subject',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Название письма"></i>',
+                                    'args': {
+                                        'required': true,
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include 'cup/editor.twig' with {
+                                    'label': 'Текст сообщения',
+                                    'name': 'body',
+                                    'options': {
+                                        'item': reference('/App/Domain/Types/FileItemType::ITEM_USER_UPLOAD'),
+                                        'item_uuid': user.uuid.toString(),
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-action">
+                        <button type="submit" name="save" value="exit" class="btn btn-primary">
+                            Сохранить
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

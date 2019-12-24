@@ -119,6 +119,12 @@
                                     ">
                                         <td>
                                             {{ item.username }}
+
+                                            {% if item.allow_mail %}
+                                                <div class="text-black-50 float-right" data-toggle="tooltip" data-placement="right" title="Подписан на рассылку">
+                                                    <i class="fa fa-envelope"></i>
+                                                </div>
+                                            {% endif %}
                                         </td>
                                         <td>
                                             {{ reference('/App/Domain/Types/UserLevelType::LIST', item.level) }}

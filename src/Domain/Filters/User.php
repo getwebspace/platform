@@ -55,14 +55,14 @@ class User extends Filter
         $filter
             ->addGlobalRule($filter->leadTrim())
             ->attr('username')
-                ->addRule($filter->leadStr(), \Reference\Errors\User::WRONG_USERNAME)
-                ->addRule($filter->UniqueUserUsername(), \Reference\Errors\User::WRONG_USERNAME_UNIQUE)
+                ->addRule($filter->leadStr(), \App\Domain\References\Errors\User::WRONG_USERNAME)
+                ->addRule($filter->UniqueUserUsername(), \App\Domain\References\Errors\User::WRONG_USERNAME_UNIQUE)
             ->attr('email')
-                ->addRule($filter->checkEmail(), \Reference\Errors\User::WRONG_EMAIL)
-                ->addRule($filter->UniqueUserEmail(), \Reference\Errors\User::WRONG_EMAIL_UNIQUE)
+                ->addRule($filter->checkEmail(), \App\Domain\References\Errors\User::WRONG_EMAIL)
+                ->addRule($filter->UniqueUserEmail(), \App\Domain\References\Errors\User::WRONG_EMAIL_UNIQUE)
             ->attr('password')
                 ->addRule($filter->leadStr())
-                ->addRule($filter->checkStrlenBetween(3, 20), \Reference\Errors\User::WRONG_PASSWORD_LENGTH)
+                ->addRule($filter->checkStrlenBetween(3, 20), \App\Domain\References\Errors\User::WRONG_PASSWORD_LENGTH)
                 ->addRule($filter->ValidPassword())
             ->option('password_again')
                 ->addRule($filter->checkEqualToField('password'));
@@ -89,6 +89,8 @@ class User extends Filter
             ->attr('email')
                 ->addRule($filter->checkEmail(), \App\Domain\References\Errors\User::WRONG_EMAIL)
                 ->addRule($filter->UniqueUserEmail(), \App\Domain\References\Errors\User::WRONG_EMAIL_UNIQUE)
+            ->option('allow_mail')
+                ->addRule($filter->leadBoolean())
             ->option('phone')
                 ->addRule($filter->checkPhone())
             ->option('firstname')
@@ -119,6 +121,27 @@ class User extends Filter
             // пароль не был изменен убираем поле $data['password']
             unset($data['password']);
         }
+
+        return $filter->run();
+    }
+
+    /**
+     * Проверка полей письма
+     *
+     * @param array $data
+     *
+     * @return array|bool
+     */
+    public static function newsletter(array &$data)
+    {
+        $filter = new self($data);
+
+        $filter
+            ->addGlobalRule($filter->leadTrim())
+            ->attr('subject')
+                ->addRule($filter->leadStr())
+            ->attr('body')
+                ->addRule($filter->leadStr());
 
         return $filter->run();
     }

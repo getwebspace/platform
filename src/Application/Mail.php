@@ -25,7 +25,7 @@ class Mail
             'smtp_host' => '',
             'smtp_port' => '',
 
-            'subject' => '0x12f | Default subject',
+            'subject' => 'WebSpaceEngine | Default subject',
             'to' => '', // string|array(address=>name)
             'cc' => '', // string|array(address=>name)
             'bcc' => '', // string|array(address=>name)

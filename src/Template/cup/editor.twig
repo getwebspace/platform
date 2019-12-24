@@ -1,6 +1,10 @@
 {% block editor %}
     {% set editorId = random() %}
 
+    {% if args is empty %}
+        {% set args = {} %}
+    {% endif %}
+
     {% include 'cup/form.twig' with {
         'label': label,
         'type': 'textarea',

@@ -36,7 +36,7 @@ class GMFTask extends Task
         $data['file'] = collect($fileRepository->findBy(['item' => 'catalog_product', 'item_uuid' => $data['product']->pluck('uuid')->all()]));
 
         $feed = new Feed(
-            $this->getParameter('integration_merchant_shop_title', 'Shop on CMS 0x12f'),
+            $this->getParameter('integration_merchant_shop_title', 'Shop on WebSpace Engine CMS'),
             $this->getParameter('common_homepage', 'http://site.0x12f.com'),
             $this->getParameter('integration_merchant_shop_description', 'http://site.0x12f.com')
         );

@@ -52,7 +52,7 @@ class Category extends Model
     public $children = false;
 
     /**
-     * @ORM\Column(type="boolean", options={"default": false})
+     * @ORM\Column(type="boolean", options={"default": true})
      */
     public $public = true;
 

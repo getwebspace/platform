@@ -149,9 +149,10 @@ class FormAction extends Action
                 }
 
                 // send mail
-                $mail = $this->send_mail([
-                    'subject' => $item->title,
+                $task = new \App\Domain\Tasks\SendMailTask($this->container);
+                $task->execute([
                     'to' => $mailto,
+                    'subject' => $item->title,
                     'body' => $body,
                     'isHtml' => $isHtml,
                     'attachments' => $attachments,
@@ -181,15 +182,8 @@ class FormAction extends Action
                     $this->response = $this->response->withHeader('Location', $_SERVER['HTTP_REFERER'])->withStatus(301);
                 }
 
-                if ($mail !== false) {
-                    if (!$mail->isError()) {
-                        $this->logger->info('Form sended: ' . $item->title, ['mailto' => $item->mailto]);
-                    } else {
-                        $this->logger->warn('Form will not sended: fail', ['mailto' => $item->mailto, 'error' => $mail->ErrorInfo]);
-                    }
-
-                    return $this->respondWithData(['status' => !$mail->isError() ? 'ok' : 'fail', 'error' => $mail->ErrorInfo]);
-                }
+                // run worker
+                \App\Domain\Tasks\Task::worker();
 
                 return $this->respondWithData(['status' => 'ok']);
             } else {

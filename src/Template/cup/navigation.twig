@@ -44,10 +44,25 @@
 
     {% if parameter('user_is_enabled', 'yes') != 'no' %}
         <li class="nav-item">
-            <a href="/cup/user">
+            <a data-toggle="collapse" href="#nav-user">
                 <i class="fas fa-users"></i>
                 <p>Пользователи</p>
+                <span class="caret"></span>
             </a>
+            <div class="collapse" id="nav-user">
+                <ul class="nav nav-collapse">
+                    <li>
+                        <a href="/cup/user">
+                            <span class="sub-item">Список</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/cup/user/newsletter">
+                            <span class="sub-item">Рассылка</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </li>
     {% endif %}
 

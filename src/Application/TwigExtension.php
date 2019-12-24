@@ -39,7 +39,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
     public function getName()
     {
-        return '0x12f';
+        return 'wse';
     }
 
     public function getFilters()
@@ -60,7 +60,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             new \Twig\TwigFunction('is_current_path', [$this, 'isCurrentPath']),
             new \Twig\TwigFunction('current_path', [$this, 'currentPath']),
 
-            // 0x12f functions
+            // wse functions
             new \Twig\TwigFunction('form', [$this, 'form'], ['is_safe' => ['html']]),
             new \Twig\TwigFunction('reference', [$this, 'reference']),
             new \Twig\TwigFunction('parameter', [$this, 'parameter']),
@@ -189,7 +189,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 //    }
 
     /*
-     * 0x12f functions
+     * wse functions
      */
 
     public function form($type, $name, $args = [])

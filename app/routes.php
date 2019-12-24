@@ -50,6 +50,11 @@ $app
                     $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\User\UserCreateAction::class);
                     $app->map(['get', 'post'], '/{uuid}/edit', \App\Application\Actions\Cup\User\UserUpdateAction::class);
                     $app->map(['get', 'post'], '/{uuid}/delete', \App\Application\Actions\Cup\User\UserDeleteAction::class);
+
+                    // users newsletter
+                    $app->group('/newsletter', function (App $app) {
+                        $app->map(['get', 'post'], '', \App\Application\Actions\Cup\User\UserNewsLetterAction::class);
+                    });
                 });
 
                 // static pages
