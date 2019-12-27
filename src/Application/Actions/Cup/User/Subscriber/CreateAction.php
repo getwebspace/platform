@@ -11,7 +11,6 @@ class CreateAction extends UserAction
         if ($this->request->isPost()) {
             $data = [
                 'email' => $this->request->getParam('email'),
-                'date'  => $this->request->getParam('date'),
             ];
 
             $check = \App\Domain\Filters\User::subscribeCreate($data);
