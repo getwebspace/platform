@@ -99,10 +99,14 @@ abstract class Task
     protected function status_done()
     {
         $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_DONE);
+
+        return true;
     }
 
     protected function status_fail()
     {
         $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_FAIL);
+
+        return false;
     }
 }
