@@ -1,11 +1,7 @@
-version: "2"
-
-networks:
-    lan:
-        external: false
+version: "3"
 
 services:
-    php:
+    platform:
         image: 0x12f/platform:dev
         environment:
             - DEBUG=1
@@ -23,5 +19,3 @@ services:
             - ./vendor:/var/container/vendor:ro
         ports:
             - 9000:80
-        networks:
-            - lan
