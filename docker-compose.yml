@@ -8,8 +8,8 @@ services:
     php:
         image: 0x12f/platform:dev
         environment:
-            - DEBUG=0
-            - ANALYTICS=0
+            - DEBUG=1
+          # - SENTRY=""
           # - SALT=Please-Change-Me
           # - DATABASE=mysql://user:secret@localhost/mydb
         volumes:
