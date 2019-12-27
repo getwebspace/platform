@@ -13,6 +13,11 @@ abstract class UserAction extends Action
     protected $userRepository;
 
     /**
+     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     */
+    protected $subscriberRepository;
+
+    /**
      * @inheritDoc
      */
     public function __construct(ContainerInterface $container)
@@ -20,5 +25,6 @@ abstract class UserAction extends Action
         parent::__construct($container);
 
         $this->userRepository = $this->entityManager->getRepository(\App\Domain\Entities\User::class);
+        $this->subscriberRepository = $this->entityManager->getRepository(\App\Domain\Entities\User\Subscriber::class);
     }
 }

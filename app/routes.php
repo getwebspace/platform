@@ -6,6 +6,15 @@ use Slim\Http\Response;
 
 $app
     ->group('/api', function (App $app) {
+        // users
+        $app->group('/user', function (App $app) {
+            // users subscribers
+            $app->group('/newsletter', function (App $app) {
+                $app->map(['get', 'post'], '/subscribe', \App\Application\Actions\Api\User\Subscriber\SubscribeAction::class);
+                $app->map(['get', 'post'], '/{uuid}/unsubscribe', \App\Application\Actions\Api\User\Subscriber\UnsubscribeAction::class);
+            });
+        });
+
         // files
         $app->get('/files', \App\Application\Actions\Api\File\File::class);
 
@@ -46,15 +55,18 @@ $app
 
                 // users
                 $app->group('/user', function (App $app) {
+                    // users subscribers
+                    $app->group('/subscriber', function (App $app) {
+                        $app->get('', \App\Application\Actions\Cup\User\Subscriber\ListAction::class);
+                        $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\User\Subscriber\CreateAction::class);
+                        $app->map(['get', 'post'], '/{uuid}/delete', \App\Application\Actions\Cup\User\Subscriber\DeleteAction::class);
+                    });
+                    $app->map(['get', 'post'], '/newsletter', \App\Application\Actions\Cup\User\NewsLetter\CreateAction::class);
+
                     $app->map(['get', 'post'], '', \App\Application\Actions\Cup\User\UserListAction::class);
                     $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\User\UserCreateAction::class);
                     $app->map(['get', 'post'], '/{uuid}/edit', \App\Application\Actions\Cup\User\UserUpdateAction::class);
                     $app->map(['get', 'post'], '/{uuid}/delete', \App\Application\Actions\Cup\User\UserDeleteAction::class);
-
-                    // users newsletter
-                    $app->group('/newsletter', function (App $app) {
-                        $app->map(['get', 'post'], '', \App\Application\Actions\Cup\User\UserNewsLetterAction::class);
-                    });
                 });
 
                 // static pages

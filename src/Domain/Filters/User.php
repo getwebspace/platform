@@ -126,6 +126,27 @@ class User extends Filter
     }
 
     /**
+     * Проверка полей подписчика
+     *
+     * @param array $data
+     *
+     * @return array|bool
+     */
+    public static function subscribeCreate(array &$data)
+    {
+        $filter = new self($data);
+
+        $filter
+            ->addGlobalRule($filter->leadTrim())
+            ->attr('email')
+                ->addRule($filter->leadStr())
+            ->attr('date')
+                ->addRule($filter->ValidDate());
+
+        return $filter->run();
+    }
+
+    /**
      * Проверка полей письма
      *
      * @param array $data

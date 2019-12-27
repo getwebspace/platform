@@ -1,0 +1,89 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">Подписчики рассылки</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <h4 class="card-title">Список подписчиков ({{ list.count() }})</h4>
+                        <a href="#btn-modal-newsletter" rel="modal:open" class="btn btn-primary btn-round ml-auto">
+                            <i class="fa fa-plus"></i>
+                            Добавить адрес
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table data-table class="display table table-striped table-hover">
+                            <thead>
+                            <tr>
+                                <th>E-Mail</th>
+                                <th width="20%">Дата добавления</th>
+                                <th width="10%" class="text-center no-sorting"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in list %}
+                                <tr>
+                                    <td>
+                                        {{ item.email }}
+                                    </td>
+                                    <td>{{ item.date|date('d.m.Y H:i:s') }}</td>
+                                    <td class="text-center">
+                                        <div class="btn-group dropdown">
+                                            <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                                                <i class="fas fa-bars"></i>
+                                            </button>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li>
+                                                    <form action="/cup/user/subscriber/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить подписку?');">
+                                                        <button type="submit" class="btn btn-link text-danger">
+                                                            <i class="fas fa-trash-alt"></i> Удалить
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="btn-modal-newsletter" class="modal">
+        <form action="/cup/user/subscriber/add" method="post">
+            <div class="row">
+                <div class="col-12">
+                    {% include 'cup/form.twig' with {
+                        'label': 'E-Mail',
+                        'type': 'email',
+                        'args': {
+                            'placeholder': 'user@example.com',
+                        }
+                    } %}
+                </div>
+                <div class="col-12">
+                    <div class="text-right" style="margin-top: 37px;">
+                        <button type="submit" class="btn btn-success">Добавить</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Application\Actions\Cup\User;
+namespace App\Application\Actions\Cup\User\NewsLetter;
 
-class UserNewsLetterAction extends UserAction
+use App\Application\Actions\Cup\User\UserAction;
+
+class CreateAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
@@ -15,17 +17,11 @@ class UserNewsLetterAction extends UserAction
             $check = \App\Domain\Filters\User::newsletter($data);
 
             if ($check === true) {
-                $list = $this->userRepository->findBy(['allow_mail' => true]);
-
-                /** @var \App\Domain\Entities\User $user */
-                foreach ($list as $user) {
-                    $task = new \App\Domain\Tasks\SendMailTask($this->container);
-                    $task->execute([
-                        'to' => $user->email,
-                        'subject' => $data['subject'],
-                        'body' => $data['body'],
-                    ]);
-                }
+                $task = new \App\Domain\Tasks\SendNewsLetterMailTask($this->container);
+                $task->execute([
+                    'subject' => $data['subject'],
+                    'body' => $data['body'],
+                ]);
 
                 $this->entityManager->flush();
 
