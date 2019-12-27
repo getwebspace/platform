@@ -141,7 +141,7 @@ class User extends Filter
             ->attr('email')
                 ->addRule($filter->leadStr())
             ->attr('date')
-                ->addRule($filter->ValidDate());
+                ->addRule($filter->ValidDate(true));
 
         return $filter->run();
     }
