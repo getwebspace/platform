@@ -43,10 +43,10 @@ class SendMailTask extends Task
 
             if ($mail !== false) {
                 if (!$mail->isError()) {
-                    $this->logger->info('Mail newsletter is sent', ['mailto' => $args['to']]);
+                    $this->logger->info('Mail is sent', ['mailto' => $args['to']]);
                     $this->status_done();
                 } else {
-                    $this->logger->warn('Mail newsletter will not sent', ['mailto' => $args['to'], 'error' => $mail->ErrorInfo]);
+                    $this->logger->warn('Mail will not sent', ['mailto' => $args['to'], 'error' => $mail->ErrorInfo]);
                     $this->status_fail();
                 }
 

@@ -12,6 +12,7 @@ class CreateAction extends UserAction
             $data = [
                 'subject' => $this->request->getParam('subject'),
                 'body' => $this->request->getParam('body'),
+                'type' => $this->request->getParam('type'),
             ];
 
             $check = \App\Domain\Filters\User::newsletter($data);
@@ -21,6 +22,7 @@ class CreateAction extends UserAction
                 $task->execute([
                     'subject' => $data['subject'],
                     'body' => $data['body'],
+                    'type' => $data['type'],
                 ]);
 
                 $this->entityManager->flush();

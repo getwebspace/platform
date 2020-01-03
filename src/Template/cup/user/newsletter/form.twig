@@ -33,6 +33,17 @@
                                     }
                                 } %}
                             </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Получатели',
+                                    'type': 'select',
+                                    'name': 'type',
+                                    'args': {
+                                        'option': reference('/App/Domain/References/User::NEWSLETTER_TYPE'),
+                                        'selected': reference('/App/Domain/References/User::NEWSLETTER_TYPE_ALL')
+                                    }
+                                } %}
+                            </div>
                         </div>
 
                         <div class="row">
@@ -51,7 +62,7 @@
 
                     <div class="card-action">
                         <button type="submit" name="save" value="exit" class="btn btn-primary">
-                            Сохранить
+                            Отправить
                         </button>
                     </div>
                 </form>

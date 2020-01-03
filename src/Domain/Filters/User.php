@@ -162,7 +162,9 @@ class User extends Filter
             ->attr('subject')
                 ->addRule($filter->leadStr())
             ->attr('body')
-                ->addRule($filter->leadStr());
+                ->addRule($filter->leadStr())
+            ->attr('type')
+                ->addRule($filter->checkInKeys(\App\Domain\References\User::NEWSLETTER_TYPE));
 
         return $filter->run();
     }

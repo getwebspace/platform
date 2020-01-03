@@ -13,6 +13,7 @@ class SendNewsLetterMailTask extends Task
             'body' => '',
             'isHtml' => true,
             'attachments' => [],
+            'type' => 'all', // all, subscribers, users
         ];
         $params = array_merge($default, $params);
 
@@ -39,26 +40,48 @@ class SendNewsLetterMailTask extends Task
             $userRepository = $this->entityManager->getRepository(\App\Domain\Entities\User::class);
             $subscriberRepository = $this->entityManager->getRepository(\App\Domain\Entities\User\Subscriber::class);
 
-            // список email адресов
-            $list = collect()
-                ->merge(collect($userRepository->findBy(['allow_mail' => true]))->pluck('email')->all())
-                ->merge(collect($subscriberRepository->findAll())->pluck('email')->all())
-                ->unique();
+            // список адресов
+            switch ($args['type']) {
+                case 'all':
+                    $list = collect()
+                        ->merge(collect($userRepository->findBy(['allow_mail' => true]))->pluck('email')->all())
+                        ->merge(collect($subscriberRepository->findAll())->pluck('email')->all())
+                        ->unique();
+                    break;
 
-            // todo добавить разбивку на партии для отправки по 10 писем за раз
-            foreach ($list as $email) {
-                $mail = Mail::send(array_merge($args, ['to' => $email]));
+                case 'subscribers':
+                    $list = collect()
+                        ->merge(collect($subscriberRepository->findAll())->pluck('email')->all());
+                    break;
 
-                if ($mail !== false) {
-                    if (!$mail->isError()) {
-                        $this->logger->info('Mail newsletter is sent', ['mailto' => $email]);
-                    } else {
-                        $this->logger->warn('Mail newsletter will not sent', ['mailto' => $email, 'error' => $mail->ErrorInfo]);
-                    }
-                }
+                case 'users':
+                    $list = collect()
+                        ->merge(collect($userRepository->findBy(['allow_mail' => true]))->pluck('email')->all());
+                    break;
             }
 
-            return $this->status_done();
+            if (isset($list)) {
+                $perPage = 10;
+                $count = ceil($list->count() / $perPage);
+
+                for($i = 0; $i < $count; $i++){
+                    foreach ($list->forPage($i, $perPage) as $email) {
+                        $mail = Mail::send(array_merge($args, ['to' => $email]));
+
+                        if ($mail !== false) {
+                            if (!$mail->isError()) {
+                                $this->logger->info('Mail newsletter is sent', ['mailto' => $email]);
+                            } else {
+                                $this->logger->warn('Mail newsletter will not sent', ['mailto' => $email, 'error' => $mail->ErrorInfo]);
+                            }
+                        }
+                    }
+
+                    sleep(10);
+                }
+
+                return $this->status_done();
+            }
         }
 
         $this->status_fail();
