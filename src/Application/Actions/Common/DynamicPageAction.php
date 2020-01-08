@@ -65,7 +65,7 @@ class DynamicPageAction extends Action
             ]);
         }
 
-        $categories = collect($this->publicationCategoryRepository->findBy(['public' => true]));
+        $categories = collect($this->publicationCategoryRepository->findAll());
 
         // категории публикаций
         if ($categories->firstWhere('address', $path)) {
@@ -86,7 +86,7 @@ class DynamicPageAction extends Action
             ]));
 
             return $this->respondRender($category->template['list'], [
-                'categories' => $categories,
+                'categories' => $categories->where('public', true),
                 'category' => $category,
                 'publications' => $publications,
                 'pagination' => [
@@ -114,7 +114,7 @@ class DynamicPageAction extends Action
 
                 return $this->respondRender($category->template['full'], [
                     'publication' => $publication,
-                    'categories' => $categories,
+                    'categories' => $categories->where('public', true),
                     'category' => $category,
                     'files' => $files,
                 ]);
