@@ -2,6 +2,7 @@
 
 namespace App\Domain\Entities\Catalog;
 
+use Alksily\Entity\Collection;
 use Alksily\Entity\Model;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
@@ -122,4 +123,24 @@ class Category extends Model
      * @ORM\Column(type="string", length=50, nullable=true)
      */
     public $export = 'manual';
+
+    /**
+     * @param Collection $categories
+     * @param Category   $parent
+     *
+     * @return \Alksily\Entity\Collection
+     */
+    public static function getChildren(Collection $categories, \App\Domain\Entities\Catalog\Category $parent)
+    {
+        $result = collect([$parent]);
+
+        if ($parent->children) {
+            /** @var \App\Domain\Entities\Catalog\Category $category */
+            foreach ($categories->where('parent', $parent->uuid) as $child) {
+                $result = $result->merge(static::getChildren($categories, $child));
+            }
+        }
+
+        return $result;
+    }
 }

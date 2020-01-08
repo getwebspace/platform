@@ -401,7 +401,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
                 $unique = \Ramsey\Uuid\Uuid::fromString($unique);
             }
             if (!isset($buf[strval($unique)])) {
-                $uuids = $this->getPublicationCategoryChildrenUUID($categories, $categories->firstWhere('uuid', $unique));
+                $uuids = \App\Domain\Entities\Publication\Category::getChildren($categories, $categories->firstWhere('uuid', $unique))->pluck('uuid')->all();
                 $buf[strval($unique)] = $categories->whereIn('uuid', $uuids, false);
             }
         }
@@ -409,21 +409,6 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:publication_category');
 
         return $buf[strval($unique)];
-    }
-
-    // подбор списка uuid для выборки
-    protected function getPublicationCategoryChildrenUUID(\Alksily\Entity\Collection $categories, \App\Domain\Entities\Publication\Category $curCategory)
-    {
-        $result = [$curCategory->uuid];
-
-        if ($curCategory->children) {
-            /** @var \App\Domain\Entities\Publication\Category $category */
-            foreach ($categories->where('parent', $curCategory->uuid) as $childCategory) {
-                $result = array_merge($result, $this->getPublicationCategoryChildrenUUID($categories, $childCategory));
-            }
-        }
-
-        return $result;
     }
 
     // получение списка публикаций

@@ -2,6 +2,7 @@
 
 namespace App\Domain\Entities\Publication;
 
+use Alksily\Entity\Collection;
 use Alksily\Entity\Model;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
@@ -84,4 +85,24 @@ class Category extends Model
         'short' => '',
         'full' => '',
     ];
+
+    /**
+     * @param Collection $categories
+     * @param Category   $parent
+     *
+     * @return Collection
+     */
+    public static function getChildren(Collection $categories, \App\Domain\Entities\Publication\Category $parent)
+    {
+        $result = collect([$parent]);
+
+        if ($parent->children) {
+            /** @var \App\Domain\Entities\Publication\Category $category */
+            foreach ($categories->where('parent', $parent->uuid) as $child) {
+                $result = $result->merge(static::getChildren($categories, $child));
+            }
+        }
+
+        return $result;
+    }
 }

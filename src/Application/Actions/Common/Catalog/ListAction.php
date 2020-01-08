@@ -152,7 +152,7 @@ class ListAction extends CatalogAction
         $category = $categories->firstWhere('address', $params['address']);
 
         if (is_null($category) === false) {
-            $categoryUUIDs = $this->getCategoryChildrenUUID($categories, $category);
+            $categoryUUIDs = \App\Domain\Entities\Catalog\Category::getChildren($categories, $category)->pluck('uuid')->all();
 
             $qb = $this->entityManager->createQueryBuilder();
             $query = $qb
@@ -288,25 +288,5 @@ class ListAction extends CatalogAction
         }
 
         return ['address' => implode('/', $parts), 'offset' => $offset];
-    }
-
-    /**
-     * @param \Alksily\Entity\Collection                 $categories
-     * @param \App\Domain\Entities\Catalog\Category|null $curCategory
-     *
-     * @return array
-     */
-    protected function getCategoryChildrenUUID(\Alksily\Entity\Collection $categories, \App\Domain\Entities\Catalog\Category $curCategory = null)
-    {
-        $result = [$curCategory->uuid->toString()];
-
-        if ($curCategory->children) {
-            /** @var \App\Domain\Entities\Catalog\Category $category */
-            foreach ($categories->where('parent', $curCategory->uuid) as $childCategory) {
-                $result = array_merge($result, $this->getCategoryChildrenUUID($categories, $childCategory));
-            }
-        }
-
-        return $result;
     }
 }

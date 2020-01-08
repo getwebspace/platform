@@ -32,7 +32,7 @@ class ProductExportAction extends CatalogAction
                 break;
             default:
                 $products = collect($this->productRepository->findBy([
-                    'category' => $this->getCategoryChildrenUUID($categories, $category),
+                    'category' => \App\Domain\Entities\Catalog\Category::getChildren($categories, $category)->pluck('uuid')->all(),
                     'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
                 ]));
                 break;

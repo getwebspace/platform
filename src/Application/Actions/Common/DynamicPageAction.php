@@ -72,14 +72,17 @@ class DynamicPageAction extends Action
             $category = $categories->firstWhere('address', $path);
 
             $publications = collect($this->publicationRepository->findBy(
-                ['category' => $this->getCategoryChildrenUUID($categories, $category)],
+                ['category' => \App\Domain\Entities\Publication\Category::getChildren($categories, $category)->pluck('uuid')->all()],
                 [$category->sort['by'] => $category->sort['direction']],
                 $category->pagination,
                 $category->pagination * $offset
             ));
             $files = collect($this->fileRepository->findBy([
                 'item' => \App\Domain\Types\FileItemType::ITEM_PUBLICATION,
-                'item_uuid' => array_merge($this->getCategoryChildrenUUID($categories, $category), $publications->pluck('uuid')->all()),
+                'item_uuid' => array_merge(
+                    \App\Domain\Entities\Publication\Category::getChildren($categories, $category)->pluck('uuid')->all(),
+                    $publications->pluck('uuid')->all()
+                ),
             ]));
 
             return $this->respondRender($category->template['list'], [
@@ -87,7 +90,9 @@ class DynamicPageAction extends Action
                 'category' => $category,
                 'publications' => $publications,
                 'pagination' => [
-                    'count' => $this->publicationRepository->count(['category' => $this->getCategoryChildrenUUID($categories, $category)]),
+                    'count' => $this->publicationRepository->count([
+                        'category' => \App\Domain\Entities\Publication\Category::getChildren($categories, $category)->pluck('uuid')->all()
+                    ]),
                     'page' => $category->pagination,
                 ],
                 'files' => $files,
@@ -117,25 +122,5 @@ class DynamicPageAction extends Action
         }
 
         return $this->respondRender('p404.twig')->withStatus(404);
-    }
-
-    /**
-     * @param \Alksily\Entity\Collection                 $categories
-     * @param \App\Domain\Entities\Catalog\Category|null $curCategory
-     *
-     * @return array
-     */
-    protected function getCategoryChildrenUUID(\Alksily\Entity\Collection $categories, \App\Domain\Entities\Publication\Category $curCategory)
-    {
-        $result = [$curCategory->uuid->toString()];
-
-        if ($curCategory->children) {
-            /** @var \App\Domain\Entities\Publication\Category $category */
-            foreach ($categories->where('parent', $curCategory->uuid) as $childCategory) {
-                $result = array_merge($result, $this->getCategoryChildrenUUID($categories, $childCategory));
-            }
-        }
-
-        return $result;
     }
 }
