@@ -22,6 +22,7 @@
         "alksily/support": "^1.0",
         "twig/twig": "2.12.1",
         "twig/extensions": "^1.5",
+        "twig/intl-extra": "3.x-dev",
         "phive/twig-extensions-deferred": "^2.0",
         "ramsey/uuid": "^3.8",
         "ramsey/uuid-doctrine": "^1.5",
@@ -34,7 +35,6 @@
         "samdark/sitemap": "^2.2",
         "monolog/monolog": "^1.17",
         "runcmf/runtracy": "^0.2.10",
-        "twig/intl-extra": "3.x-dev",
         "sentry/sdk": "2.0.3"
     },
     "require-dev": {
