@@ -155,6 +155,11 @@ $app
                     $app->any('/{uuid}/delete', \App\Application\Actions\Cup\File\FileDeleteAction::class);
                 });
 
+                // редактор шаблонов
+                $app->group('/editor', function (App $app) {
+                    $app->map(['get', 'post'], '[/{file:.*}]', \App\Application\Actions\Cup\EditorPageAction::class);
+                });
+
                 // docs
                 $app->get('/docs', \App\Application\Actions\Cup\DocsPageAction::class);
 

@@ -34,41 +34,41 @@
                             </tr>
                             </thead>
                             <tbody>
-                            {% for item in list %}
-                                <tr>
-                                    <td>
-                                        <a href="{{ item.getPublicPath() }}" target="_blank">
-                                            {{ item.getName() }}
-                                            <i class="fas fa-external-link-alt"></i>
-                                        </a>
-                                    </td>
-                                    <td>{{ item.type }}</td>
-                                    <td>{{ item.getSize() }}</td>
-                                    <td>
-                                        <span data-toggle="tooltip" data-placement="top" title="UUID: {{ item.item_uuid }}">
-                                            {{ reference('/App/Domain/Types/FileItemType::LIST', item.item) }}
-                                        </span>
-                                    </td>
-                                    <td>{{ item.date|date('d.m.Y H:i:s') }}</td>
-                                    <td class="text-center">
-                                        <div class="btn-group dropdown">
-                                            <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                                                <i class="fas fa-bars"></i>
-                                            </button>
-                                            <ul class="dropdown-menu" role="menu">
-                                                <li>
-                                                    <form action="/cup/file/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить файл?');">
-                                                        <button type="submit" class="btn btn-link text-danger">
-                                                            <i class="fas fa-trash-alt"></i> Удалить
-                                                        </button>
-                                                    </form>
-                                                </li>
-                                            </ul>
+                                {% for item in list %}
+                                    <tr>
+                                        <td>
+                                            <a href="{{ item.getPublicPath() }}" target="_blank">
+                                                {{ item.getName() }}
+                                                <i class="fas fa-external-link-alt"></i>
+                                            </a>
+                                        </td>
+                                        <td>{{ item.type }}</td>
+                                        <td>{{ item.getSize() }}</td>
+                                        <td>
+                                            <span data-toggle="tooltip" data-placement="top" title="UUID: {{ item.item_uuid }}">
+                                                {{ reference('/App/Domain/Types/FileItemType::LIST', item.item) }}
+                                            </span>
+                                        </td>
+                                        <td>{{ item.date|date('d.m.Y H:i:s') }}</td>
+                                        <td class="text-center">
+                                            <div class="btn-group dropdown">
+                                                <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                                                    <i class="fas fa-bars"></i>
+                                                </button>
+                                                <ul class="dropdown-menu" role="menu">
+                                                    <li>
+                                                        <form action="/cup/file/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить файл?');">
+                                                            <button type="submit" class="btn btn-link text-danger">
+                                                                <i class="fas fa-trash-alt"></i> Удалить
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                </ul>
 
-                                        </div>
-                                    </td>
-                                </tr>
-                            {% endfor %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>

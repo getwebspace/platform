@@ -1,0 +1,16 @@
+{% for item in list.sortBy('name') %}
+    <tr>
+        <td style="height: 25px;">
+            <div class="d-inline" style="padding-left: {{ padding }}px;">
+                {% if item.type == 'dir' %}
+                    <i class="fas fa-folder fa-fw"></i>
+                    <span class="pl-2">{{ item.name }}</span>
+                    {% include 'cup/editor/file.twig' with {'list': item.list, 'prefix': prefix ~ item.name ~ '/', 'padding': padding + 10} only %}
+                {% else %}
+                    <i class="fas fa-file fa-fw"></i>
+                    <a href="/cup/editor/{{ prefix }}{{ item.name }}" class="pl-2">{{ item.name }}</a>
+                {% endif %}
+            </div>
+        </td>
+    </tr>
+{% endfor %}

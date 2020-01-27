@@ -1,0 +1,110 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">Редактор шаблона [BETA]</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12 col-md-4 col-lg-3">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <h4 class="card-title">Список файлов</h4>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <style>
+                        .my-custom-scrollbar {
+                            position: relative;
+                            height: 50vh;
+                            min-height: 500px;
+                            max-height: 900px;
+                            overflow: auto;
+                        }
+                        .table-wrapper-scroll-y {
+                            display: block;
+                        }
+                    </style>
+
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                        <table class="table">
+                            {% include 'cup/editor/file.twig' with {'list': list} only %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-md-8 col-lg-9">
+            <div class="card">
+                <form method="post">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Редактор ({{ file ? (file.name ~ '.' ~ file.ext) : 'Файл не выбран' }})</h4>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include 'cup/form.twig' with {
+                                    'type': 'textarea',
+                                    'name': 'content',
+                                    'args': {
+                                        'id': 'code',
+                                        'value': content,
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <script type="text/javascript">
+                        document.addEventListener('DOMContentLoaded', () => {
+                            CodeMirror.defineMode('htmltwig', function(config) {
+                                return CodeMirror.overlayMode(CodeMirror.getMode(config, 'htmlmixed'), CodeMirror.getMode(config, 'twig'));
+                            });
+
+                            let
+                                mode = {
+                                    name: 'htmltwig',
+                                    scriptTypes: [
+                                        {matches: /\/x-handlebars-template|\/x-mustache/i, mode: null},
+                                        {matches: /(text|application)\/(x-)?vb(a|script)/i, mode: 'vbscript'}
+                                    ],
+                                    tags: {
+                                        style: [
+                                            ['type', /^text\/(x-)?scss$/, 'text/x-scss'],
+                                            [null, null, 'css']
+                                        ],
+                                        custom: [
+                                            [null, null, 'customMode']
+                                        ]
+                                    },
+                                },
+                                editor = CodeMirror.fromTextArea(document.getElementById('code'), {
+                                    mode,
+                                    lineNumbers: true,
+                                    indentWithTabs: false,
+                                    selectionPointer: true
+                                });
+                        });
+                    </script>
+
+                    <div class="card-action">
+                        <button type="submit" class="btn btn-primary">
+                            Сохранить
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
