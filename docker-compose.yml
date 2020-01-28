@@ -9,7 +9,6 @@ services:
           # - SALT=Please-Change-Me
           # - DATABASE=mysql://user:secret@localhost/mydb
         volumes:
-            - ./app:/var/container/app:ro
             - ./config:/var/container/config:ro
             - ./public:/var/container/public:ro
             - ./src:/var/container/src:ro

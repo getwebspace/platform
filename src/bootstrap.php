@@ -10,7 +10,7 @@ function app_create()
     session_start();
 
     // Get app settings
-    $settings = require APP_DIR . '/settings.php';
+    $settings = require SRC_DIR . '/settings.php';
 
     switch (!isset($settings['settings']['displayErrorDetails']) || $settings['settings']['displayErrorDetails'] === true) {
         case true:

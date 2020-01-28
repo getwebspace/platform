@@ -21,19 +21,19 @@ $c = $container = $app->getContainer();
     RunTracy\Helpers\Profiler\Profiler::start('dependencies');
 
 // Set up dependencies
-require APP_DIR . '/dependencies.php';
+require SRC_DIR . '/dependencies.php';
 
     RunTracy\Helpers\Profiler\Profiler::finish('dependencies');
     RunTracy\Helpers\Profiler\Profiler::start('middleware');
 
 // Register middleware
-require APP_DIR . '/middleware.php';
+require SRC_DIR . '/middleware.php';
 
     RunTracy\Helpers\Profiler\Profiler::finish('middleware');
     RunTracy\Helpers\Profiler\Profiler::start('routes');
 
 // Register routes
-require APP_DIR . '/routes.php';
+require SRC_DIR . '/routes.php';
 
     RunTracy\Helpers\Profiler\Profiler::finish('routes');
     RunTracy\Helpers\Profiler\Profiler::start('run');
