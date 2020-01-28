@@ -49,7 +49,7 @@
             </label>
         {% endif %}
 
-        {% if prefix is not empty or postfix is not empty %}
+        {% if prefix is not empty or postfix is not empty or postfix_btn is not empty %}
             <div class="input-group">
             {% if prefix is not empty %}
                 <span class="input-group-prepend">
@@ -75,11 +75,14 @@
             {{ form( type, name, { 'class': ['form-control'] } | merge(args) ) }}
         {% endif %}
 
-        {% if prefix is not empty or postfix is not empty %}
+        {% if prefix is not empty or postfix is not empty or postfix_btn is not empty %}
             {% if postfix is not empty %}
                 <span class="input-group-append">
                     <span class="input-group-text">{{ postfix|raw }}</span>
                 </span>
+            {% endif %}
+            {% if postfix_btn is not empty %}
+                <span class="input-group-append">{{ postfix_btn|raw }}</span>
             {% endif %}
             </div>
         {% endif %}

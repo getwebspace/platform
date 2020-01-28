@@ -1,17 +1,102 @@
 {% extends 'cup/layout.twig' %}
 
 {% block breadcrumb %}
-    <div class="page-inner py-5">
-        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
-            <div>
-                <h2 class="text-white pb-2 fw-bold">Редактор шаблона [BETA]</h2>
-            </div>
-        </div>
-    </div>
+    <div class="page-inner py-5"></div>
 {% endblock %}
 
 {% block content %}
     <div class="row">
+        <div class="col-12 col-md-8 col-lg-9">
+            <div class="card">
+                <form method="post">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">Редактор</h4>
+                            <a href="/cup/editor" class="btn btn-secondary btn-round ml-auto">
+                                <i class="fa fa-plus"></i>
+                                Создать файл
+                            </a>
+                        </div>
+                    </div>
+
+                    <div id="CodeMirror" class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <style>
+                                    #CodeMirror,
+                                    #CodeMirror div.row,
+                                    #CodeMirror div.row div.col-12,
+                                    #CodeMirror div.row div.col-12 .form-group {
+                                        padding: 0;
+                                        margin: 0;
+                                    }
+                                </style>
+
+                                {% include 'cup/form.twig' with {
+                                    'type': 'textarea',
+                                    'name': 'content',
+                                    'args': {
+                                        'id': 'code',
+                                        'value': content,
+                                        'style': 'height: 450px !important; opacity: 0'
+                                    }
+                                } %}
+
+                                <script type="text/javascript">
+                                        document.addEventListener('DOMContentLoaded', () => {
+                                            CodeMirror.defineMode('htmltwig', function(config) {
+                                                return CodeMirror.overlayMode(CodeMirror.getMode(config, 'htmlmixed'), CodeMirror.getMode(config, 'twig'));
+                                            });
+
+                                            let
+                                                mode = {
+                                                    name: 'htmltwig',
+                                                    scriptTypes: [
+                                                        {matches: /\/x-handlebars-template|\/x-mustache/i, mode: null},
+                                                        {matches: /(text|application)\/(x-)?vb(a|script)/i, mode: 'vbscript'}
+                                                    ],
+                                                    tags: {
+                                                        style: [
+                                                            ['type', /^text\/(x-)?scss$/, 'text/x-scss'],
+                                                            [null, null, 'css']
+                                                        ],
+                                                        custom: [
+                                                            [null, null, 'customMode']
+                                                        ]
+                                                    },
+                                                },
+                                                editor = CodeMirror.fromTextArea(document.getElementById('code'), {
+                                                    mode,
+                                                    lineNumbers: true,
+                                                    indentWithTabs: false,
+                                                    selectionPointer: true,
+                                                });
+
+                                            // You read this, why? :)
+                                        });
+                                    </script>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-action">
+                        {% include 'cup/form.twig' with {
+                            'type': 'text',
+                            'name': 'path',
+                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="left" title="Здесь указывается путь к файлу относительно каталога выбранной, в данный момент, темы"></i>',
+                            'postfix_btn': '<button type="submit" name="save" value="exit" class="btn btn-primary">Сохранить</button><button type="submit" name="save" value="delete" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt" data-toggle="tooltip" data-placement="right" title="Удалить файл"></i></button>',
+                            'args': {
+                                'value': file.path,
+                                'required': true,
+                                'placeholder': 'template.twig',
+                                'autocomplete':'off'
+                            }
+                        } %}
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <div class="col-12 col-md-4 col-lg-3">
             <div class="card">
                 <div class="card-header">
@@ -21,89 +106,20 @@
                 </div>
                 <div class="card-body">
                     <style>
-                        .my-custom-scrollbar {
+                        .file-scrollbar {
                             position: relative;
-                            height: 50vh;
-                            min-height: 500px;
-                            max-height: 900px;
+                            height: 540px;
                             overflow: auto;
-                        }
-                        .table-wrapper-scroll-y {
                             display: block;
                         }
                     </style>
 
-                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                    <div class="file-scrollbar">
                         <table class="table">
                             {% include 'cup/editor/file.twig' with {'list': list} only %}
                         </table>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-12 col-md-8 col-lg-9">
-            <div class="card">
-                <form method="post">
-                    <div class="card-header">
-                        <div class="d-flex align-items-center">
-                            <h4 class="card-title">Редактор ({{ file ? (file.name ~ '.' ~ file.ext) : 'Файл не выбран' }})</h4>
-                        </div>
-                    </div>
-
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                {% include 'cup/form.twig' with {
-                                    'type': 'textarea',
-                                    'name': 'content',
-                                    'args': {
-                                        'id': 'code',
-                                        'value': content,
-                                    }
-                                } %}
-                            </div>
-                        </div>
-                    </div>
-
-
-                    <script type="text/javascript">
-                        document.addEventListener('DOMContentLoaded', () => {
-                            CodeMirror.defineMode('htmltwig', function(config) {
-                                return CodeMirror.overlayMode(CodeMirror.getMode(config, 'htmlmixed'), CodeMirror.getMode(config, 'twig'));
-                            });
-
-                            let
-                                mode = {
-                                    name: 'htmltwig',
-                                    scriptTypes: [
-                                        {matches: /\/x-handlebars-template|\/x-mustache/i, mode: null},
-                                        {matches: /(text|application)\/(x-)?vb(a|script)/i, mode: 'vbscript'}
-                                    ],
-                                    tags: {
-                                        style: [
-                                            ['type', /^text\/(x-)?scss$/, 'text/x-scss'],
-                                            [null, null, 'css']
-                                        ],
-                                        custom: [
-                                            [null, null, 'customMode']
-                                        ]
-                                    },
-                                },
-                                editor = CodeMirror.fromTextArea(document.getElementById('code'), {
-                                    mode,
-                                    lineNumbers: true,
-                                    indentWithTabs: false,
-                                    selectionPointer: true
-                                });
-                        });
-                    </script>
-
-                    <div class="card-action">
-                        <button type="submit" class="btn btn-primary">
-                            Сохранить
-                        </button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>

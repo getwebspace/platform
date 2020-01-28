@@ -13,7 +13,7 @@ services:
             - ./config:/var/container/config:ro
             - ./public:/var/container/public:ro
             - ./src:/var/container/src:ro
-            - ./theme:/var/container/theme:ro
+            - ./theme:/var/container/theme:rw
             - ./var:/var/container/var:rw
             - ./var/upload:/var/container/public/uploads:rw
             - ./vendor:/var/container/vendor:ro
