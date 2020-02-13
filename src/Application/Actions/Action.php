@@ -212,6 +212,10 @@ abstract class Action
             /** @var \Psr\Http\Message\UploadedFileInterface[] $files */
             $files = $this->request->getUploadedFiles()[$field] ?? [];
 
+            if (!is_array($files)) {
+                $files = [$files]; // allow upload one file
+            }
+
             foreach ($files as $file) {
                 if (!$file->getError()) {
                     $file_model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename());
