@@ -1,8 +1,5 @@
 <?php
 
-// Include global const's
-use App\Domain\Tasks\TradeMaster\CatalogSyncTask;
-
 require __DIR__ . '/../src/bootstrap.php';
 
 // exit if another worker works
