@@ -25,7 +25,7 @@ abstract class EnumType extends Type
      */
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        return 'VARCHAR(' . max(array_map('strlen', static::LIST)) . ')';
+        return 'VARCHAR(' . max(array_map('strlen', array_keys(static::LIST))) . ')';
     }
 
     /**
