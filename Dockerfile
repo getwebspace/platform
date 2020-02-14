@@ -52,7 +52,7 @@ RUN set -x \
     && ln -sf /dev/stderr /var/log/nginx/error.log \
     && pecl install imagick \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install zip gd pdo_mysql pdo_pgsql pdo_sqlite mbstring \
+    && docker-php-ext-install zip gd pdo_mysql pdo_sqlite mbstring \
     && docker-php-ext-enable opcache.so imagick \
     && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php --quiet --install-dir=/usr/bin --filename=composer \
