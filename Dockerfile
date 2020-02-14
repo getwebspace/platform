@@ -71,7 +71,6 @@ COPY composer.lock ${PLATFORM_HOME}/composer.lock
 RUN composer install --no-dev
 
 # Copy platform
-ADD app ${PLATFORM_HOME}/app
 ADD config ${PLATFORM_HOME}/config
 ADD public ${PLATFORM_HOME}/public
 ADD src ${PLATFORM_HOME}/src
