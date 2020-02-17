@@ -90,8 +90,10 @@ abstract class Task
     {
         $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_WORK);
         $this->entityManager->flush();
+        $this->logger->info('Task: start', ['action' => static::class]);
         $this->action($this->entity->params);
         $this->entityManager->flush();
+        $this->logger->info('Task: done', ['action' => static::class]);
     }
 
     abstract protected function action(array $args = []);
