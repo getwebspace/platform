@@ -54,7 +54,7 @@
 
                 // инициализации
                 if (this.options.init.listeners) {
-                    this.$window.on('event:catalog:ready event:catalog:cart:add event:catalog:cart:update event:catalog:cart:remove', () => {
+                    this.$window.on('event:catalog:ready event:catalog:cart:add event:catalog:cart:update event:catalog:cart:remove event:catalog:cart:remove:all', () => {
                         $(this.getSelector('cart')).html(this.cartRender());
                         $(this.getSelector('count-items')).text(this.cartCount());
                         $(this.getSelector('count-total')).text(this.cartTotal());
