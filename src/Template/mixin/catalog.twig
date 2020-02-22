@@ -160,6 +160,16 @@
                                 case 'total':
                                     $column.text((product.price * product.quantity).toFixed(2));
                                     break;
+                                case 'remove':
+                                    $column.html(
+                                        $('<button>')
+                                            .addClass('btn btn-icon')
+                                            .text('×')
+                                            .on('click', () => {
+                                                this.cartRemoveProductByField(product.uuid, 'uuid');
+                                            })
+                                    );
+                                    break;
                                 default:
                                     $column.text(product[column.attr]);
                             }
