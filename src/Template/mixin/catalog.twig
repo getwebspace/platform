@@ -90,7 +90,7 @@
 
                 // head
                 for (let column of this.options.cart.columns) {
-                    let $column = $Tag('th').attr('data-attr', column.attr).text(column.label);
+                    let $column = $Tag('th').attr('data-attr', column.attr).html(column.label);
 
                     if (column.class) {
                         $column.addClass(column.class);
