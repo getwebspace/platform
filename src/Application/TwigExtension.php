@@ -88,6 +88,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             // catalog functions
             new \Twig\TwigFunction('catalog_category', [$this, 'catalog_category']),
             new \Twig\TwigFunction('catalog_breadcrumb', [$this, 'catalog_breadcrumb']),
+            new \Twig\TwigFunction('catalog_products', [$this, 'catalog_products']),
             new \Twig\TwigFunction('catalog_product', [$this, 'catalog_product']),
             new \Twig\TwigFunction('catalog_product_view', [$this, 'catalog_product_view']),
             new \Twig\TwigFunction('catalog_order', [$this, 'catalog_order']),
