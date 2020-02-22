@@ -15,7 +15,7 @@
 #### Environment variables
 `DEBUG` - режим отладки;  
 `SALT` - секретная комбинация для безопасности;  
-`DATABASE` - DSN для подключения к базе данных;
+`DATABASE` - DSN для подключения к базе данных;  
 `SENTRY` - DSN для [Sentry.io](https://sentry.io);  
 
 #### License
