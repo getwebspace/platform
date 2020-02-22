@@ -3,15 +3,7 @@ MAINTAINER Aleksey Ilyin <alksily@outlook.com>
 
 ARG BRANCH="master"
 ARG COMMIT="latest"
-ENV COMMIT_BRANCH=${BRANCH}
-ENV COMMIT_SHA=${COMMIT}
 ENV PLATFORM_HOME="/var/container"
-
-EXPOSE 80/tcp 443/tcp
-VOLUME ["${PLATFORM_HOME}/public/resource", "${PLATFORM_HOME}/theme", "${PLATFORM_HOME}/var", "${PLATFORM_HOME}/public/uploads"]
-WORKDIR ${PLATFORM_HOME}
-STOPSIGNAL SIGTERM
-CMD ["/entrypoint.sh"]
 
 # Install build packages, build nginx and push-stream-module, install php modules
 RUN set -x \
@@ -70,6 +62,10 @@ COPY composer.json ${PLATFORM_HOME}/composer.json
 COPY composer.lock ${PLATFORM_HOME}/composer.lock
 RUN composer install --no-dev
 
+# Set env vars
+ENV COMMIT_BRANCH=${BRANCH}
+ENV COMMIT_SHA=${COMMIT}
+
 # Copy platform
 ADD config ${PLATFORM_HOME}/config
 ADD public ${PLATFORM_HOME}/public
@@ -88,3 +84,9 @@ RUN set -x \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && rm /var/log/lastlog /var/log/faillog
+
+EXPOSE 80/tcp 443/tcp
+VOLUME ["${PLATFORM_HOME}/public/plugin", "${PLATFORM_HOME}/public/resource", "${PLATFORM_HOME}/theme", "${PLATFORM_HOME}/var", "${PLATFORM_HOME}/public/uploads"]
+WORKDIR ${PLATFORM_HOME}
+STOPSIGNAL SIGTERM
+CMD ["/entrypoint.sh"]
