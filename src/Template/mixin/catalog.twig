@@ -157,6 +157,9 @@
                                             })
                                     );
                                     break;
+                                case 'price':
+                                    $column.text((product.price).toFixed(2));
+                                    break;
                                 case 'total':
                                     $column.text((product.price * product.quantity).toFixed(2));
                                     break;
