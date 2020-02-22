@@ -300,7 +300,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             $query[$key] = $value;
         }
 
-        return '?' . http_build_query($query);
+        return $query ? '?' . http_build_query($query) : '';
     }
 
     public function is_current_page_number($number)
@@ -558,6 +558,41 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         return $result;
     }
 
+    // получение списка товаров по category_uuid
+    public function catalog_products($category_uuid, $order = [], $limit = 10, $offset = null)
+    {
+        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_products');
+
+        static $buf;
+
+        $criteria = [
+            'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+        ];
+
+        if (!is_array($category_uuid)) $category_uuid = [$category_uuid];
+
+        foreach ($category_uuid as $value) {
+            switch (true) {
+                case \Ramsey\Uuid\Uuid::isValid($value) === true:
+                    $criteria['category'][] = $value;
+                    break;
+            }
+        }
+
+        $key = json_encode($criteria, JSON_UNESCAPED_UNICODE).$limit.$offset;
+
+        if (!isset($buf[$key])) {
+            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
+            $repository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
+
+            $buf[$key] = $limit > 1 ? collect($repository->findBy($criteria, $order, $limit, $offset)) : $repository->findOneBy($criteria, $order);
+        }
+
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_products');
+
+        return $buf[$key];
+    }
+
     // получение списка товаров по uuid или address
     public function catalog_product($unique = null, $order = [], $limit = 10, $offset = null)
     {
@@ -595,41 +630,6 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         }
 
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_product');
-
-        return $buf[$key];
-    }
-
-    // получение списка товаров по category_uuid
-    public function catalog_products($category_uuid, $order = [], $limit = 10, $offset = null)
-    {
-        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_products');
-
-        static $buf;
-
-        $criteria = [
-            'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
-        ];
-
-        if (!is_array($category_uuid)) $category_uuid = [$category_uuid];
-
-        foreach ($category_uuid as $value) {
-            switch (true) {
-                case \Ramsey\Uuid\Uuid::isValid($value) === true:
-                    $criteria['category'][] = $value;
-                    break;
-            }
-        }
-
-        $key = json_encode($criteria, JSON_UNESCAPED_UNICODE).$limit.$offset;
-
-        if (!isset($buf[$key])) {
-            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
-            $repository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
-
-            $buf[$key] = $limit > 1 ? collect($repository->findBy($criteria, $order, $limit, $offset)) : $repository->findOneBy($criteria, $order);
-        }
-
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_products');
 
         return $buf[$key];
     }
