@@ -4,6 +4,11 @@ MAINTAINER Aleksey Ilyin <alksily@outlook.com>
 ARG BRANCH="master"
 ARG COMMIT="latest"
 ENV PLATFORM_HOME="/var/container"
+WORKDIR ${PLATFORM_HOME}
+EXPOSE 80/tcp 443/tcp
+VOLUME ["${PLATFORM_HOME}/public/plugin", "${PLATFORM_HOME}/public/resource", "${PLATFORM_HOME}/theme", "${PLATFORM_HOME}/var", "${PLATFORM_HOME}/public/uploads"]
+STOPSIGNAL SIGTERM
+CMD ["/entrypoint.sh"]
 
 # Install build packages, build nginx and push-stream-module, install php modules
 RUN set -x \
@@ -84,9 +89,3 @@ RUN set -x \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && rm /var/log/lastlog /var/log/faillog
-
-EXPOSE 80/tcp 443/tcp
-VOLUME ["${PLATFORM_HOME}/public/plugin", "${PLATFORM_HOME}/public/resource", "${PLATFORM_HOME}/theme", "${PLATFORM_HOME}/var", "${PLATFORM_HOME}/public/uploads"]
-WORKDIR ${PLATFORM_HOME}
-STOPSIGNAL SIGTERM
-CMD ["/entrypoint.sh"]
