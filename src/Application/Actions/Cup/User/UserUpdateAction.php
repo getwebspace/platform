@@ -38,6 +38,8 @@ class UserUpdateAction extends UserAction
                         if ($this->request->getParam('save', 'exit') === 'exit') {
                             return $this->response->withAddedHeader('Location', '/cup/user')->withStatus(301);
                         }
+
+                        return $this->response->withAddedHeader('Location', $this->request->getUri()->getPath())->withStatus(301);
                     } else {
                         $this->addErrorFromCheck($check);
                     }
