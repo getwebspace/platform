@@ -78,7 +78,7 @@ class CatalogSyncTask extends Task
         foreach ($list as $item) {
             $data = [
                 'external_id' => $item['idZvena'],
-                'parent' => $item['idParent'],
+                'parent' => $item['idParent'] ?? 0,
                 'title' => $item['nameZvena'],
                 'order' => $item['poryadok'],
                 'description' => strip_tags($item['opisanie']),
