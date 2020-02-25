@@ -30,6 +30,13 @@ class CartAction extends CatalogAction
                 $data['user'] = $user;
             }
 
+            // другие отправленные поля дописываются в комментарий
+            foreach ($this->request->getParams() as $key => $value) {
+                if (!in_array($key, array_keys($data))) {
+                    $data['comment'] .= ' ' . $value;
+                }
+            }
+
             $check = \App\Domain\Filters\Catalog\Order::check($data);
 
             if ($check === true) {
