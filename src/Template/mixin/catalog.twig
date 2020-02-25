@@ -121,6 +121,14 @@
                             // значение по атрибуту колонки
                             switch (column.attr) {
                                 case 'url':
+                                case 'title':
+                                    $column.html(
+                                        $('<a>')
+                                            .attr('href', product.url)
+                                            .attr('title', product.title)
+                                            .text(product.title)
+                                    );
+                                    break;
                                 case 'thumb':
                                     $column.html(
                                         $('<img>')
