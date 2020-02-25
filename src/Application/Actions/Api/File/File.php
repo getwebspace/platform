@@ -2,6 +2,8 @@
 
 namespace App\Application\Actions\Api\File;
 
+use Alksily\Support\Str;
+
 class File extends FileAction
 {
     protected function action(): \Slim\Http\Response
@@ -32,8 +34,26 @@ class File extends FileAction
             $criteria['ext'] = $this->array_criteria($data['ext']);
         }
 
-        return $this->respondWithData(
-            $this->fileRepository->findBy($criteria, $data['order'], $data['limit'], $data['offset'])
-        );
+        $files = $this->fileRepository->findBy($criteria, $data['order'], $data['limit'], $data['offset']);
+
+        /**
+         * @var \App\Domain\Entities\File $file
+         */
+        foreach ($files as &$file) {
+            $path = $file->getPublicPath();
+
+            if (Str::start('image/', $file->type)) {
+                $path = ['full' => $path];
+
+                foreach (['middle', 'small'] as $size) {
+                    $path[$size] = $file->getPublicPath($size);
+                }
+            }
+
+            $file = $file->toArray();
+            $file['path'] = $path;
+        }
+
+        return $this->respondWithData($files);
     }
 }
