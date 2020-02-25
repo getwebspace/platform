@@ -126,15 +126,14 @@ class File extends Model
         }
 
         if ($saved) {
-            $path = $tmp;
-            $salt = uniqid();
+            $salt = md5_file($tmp);
             $dir = UPLOAD_DIR . '/' . $salt;
 
             if (!is_dir($dir)) {
                 mkdir($dir, 0777, true);
             }
 
-            $type = addslashes(@exec('file -bi ' . $path));
+            $type = addslashes(@exec('file -bi ' . $tmp));
             $info = pathinfo($name_with_ext ?? $path);
             $name = static::prepareFileName($info['filename']);
             $ext = strtolower($info['extension']);
