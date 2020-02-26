@@ -87,6 +87,6 @@ class YMLTask extends Task
 
         (new Generator($settings))->generate($shopInfo, $currencies, $categories, $offers, $deliveries);
 
-        $this->status_done();
+        $this->setStatusDone();
     }
 }

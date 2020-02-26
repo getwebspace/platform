@@ -82,12 +82,12 @@ class SendOrderTask extends Task
                 $order->external_id = $result['nomerZakaza'];
 
                 $this->entityManager->persist($order);
-                $this->status_done();
+                $this->setStatusDone();
 
                 return;
             }
         }
 
-        $this->status_fail();
+        $this->setStatusFail();
     }
 }

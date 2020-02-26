@@ -75,6 +75,6 @@ class ConvertImageTask extends Task
             $file->size = filesize($folder . '/' . $file->name . '.jpg');
         }
 
-        $this->status_done();
+        $this->setStatusDone();
     }
 }

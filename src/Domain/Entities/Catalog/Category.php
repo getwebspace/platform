@@ -125,6 +125,11 @@ class Category extends Model
     public $export = 'manual';
 
     /**
+     * @var mixed буфурное поле для обработки интеграций
+     */
+    public $buf = null;
+
+    /**
      * @param Collection $categories
      * @param Category   $parent
      *

@@ -55,12 +55,12 @@ class CatalogSyncTask extends Task
             $this->product($catalog['categories'], $catalog['products']);
             \RunTracy\Helpers\Profiler\Profiler::finish('task:tm:product');
         } catch (\Exception $exception) {
-            $this->status_fail();
+            $this->setStatusFail();
 
             return;
         }
 
-        $this->status_done();
+        $this->setStatusDone();
     }
 
     protected function category(Collection &$categories)
@@ -78,7 +78,7 @@ class CatalogSyncTask extends Task
         foreach ($list as $item) {
             $data = [
                 'external_id' => $item['idZvena'],
-                'parent' => $item['idParent'] ?? 0,
+                'parent' => \Ramsey\Uuid\Uuid::NIL,
                 'title' => $item['nameZvena'],
                 'order' => $item['poryadok'],
                 'description' => strip_tags($item['opisanie']),
@@ -94,6 +94,7 @@ class CatalogSyncTask extends Task
                 ],
                 'pagination' => 10,
                 'export' => 'trademaster',
+                'buf' => $item['idParent'],
             ];
 
             $result = \App\Domain\Filters\Catalog\Category::check($data);
@@ -116,11 +117,19 @@ class CatalogSyncTask extends Task
         // обрабатываем связи
         foreach ($categories as $model) {
             /** @var \App\Domain\Entities\Catalog\Category $model */
-            if (+$model->parent) {
-                $model->set('parent', $categories->firstWhere('external_id', $model->parent)->get('uuid'));
+            if (+$model->buf) {
+                $model->set('parent', $categories->firstWhere('external_id', $model->buf)->get('uuid'));
             } else {
                 $model->set('parent', \Ramsey\Uuid\Uuid::fromString(\Ramsey\Uuid\Uuid::NIL));
             }
+        }
+
+        // удаление моделей которые не получили обновление в процессе синхронизации
+        foreach ($categories->where('buf', null) as $model) {
+            pre($model->uuid);
+
+            /** @var \App\Domain\Entities\Catalog\Category $model */
+            $this->entityManager->remove($model);
         }
     }
 
@@ -179,6 +188,7 @@ class CatalogSyncTask extends Task
                         ],
                         'stock' => $item['kolvo'],
                         'export' => 'trademaster',
+                        'buf' => 1,
                     ];
 
                     $result = \App\Domain\Filters\Catalog\Product::check($data);
@@ -202,6 +212,12 @@ class CatalogSyncTask extends Task
                 }
 
                 $go = $step * ++$i <= $count;
+            }
+
+            // удаление моделей которые не получили обновление в процессе синхронизации
+            foreach ($products->where('buf', null) as $model) {
+                /** @var \App\Domain\Entities\Catalog\Product $model */
+                $this->entityManager->remove($model);
             }
         };
     }

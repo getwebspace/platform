@@ -6,7 +6,7 @@ ARG COMMIT="latest"
 ENV PLATFORM_HOME="/var/container"
 WORKDIR ${PLATFORM_HOME}
 EXPOSE 80/tcp 443/tcp
-VOLUME ["${PLATFORM_HOME}/public/plugin", "${PLATFORM_HOME}/public/resource", "${PLATFORM_HOME}/theme", "${PLATFORM_HOME}/var", "${PLATFORM_HOME}/public/uploads"]
+VOLUME ["${PLATFORM_HOME}/plugin", "${PLATFORM_HOME}/public/resource", "${PLATFORM_HOME}/theme", "${PLATFORM_HOME}/var", "${PLATFORM_HOME}/public/uploads"]
 STOPSIGNAL SIGTERM
 CMD ["/entrypoint.sh"]
 
@@ -82,6 +82,7 @@ ADD var ${PLATFORM_HOME}/var
 RUN set -x \
     && chmod 755 /entrypoint.sh \
     && cd ${PLATFORM_HOME} \
+    && chmod -R 0777 ${PLATFORM_HOME}/plugin \
     && chmod -R 0777 ${PLATFORM_HOME}/public/resource \
     && chmod -R 0777 ${PLATFORM_HOME}/public/uploads \
     && chmod -R 0777 ${PLATFORM_HOME}/theme \

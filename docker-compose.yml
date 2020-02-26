@@ -10,6 +10,7 @@ services:
           # - DATABASE=mysql://user:secret@localhost/mydb
         volumes:
             - ./config:/var/container/config:ro
+            - ./plugin:/var/container/plugin:rw
             - ./public:/var/container/public:ro
             - ./src:/var/container/src:ro
             - ./theme:/var/container/theme:rw

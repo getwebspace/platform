@@ -98,16 +98,23 @@ abstract class Task
 
     abstract protected function action(array $args = []);
 
-    protected function status_done()
+    public function setStatusDone()
     {
         $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_DONE);
 
         return true;
     }
 
-    protected function status_fail()
+    public function setStatusFail()
     {
         $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_FAIL);
+
+        return false;
+    }
+
+    public function setStatusDelete()
+    {
+        $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_DELETE);
 
         return false;
     }

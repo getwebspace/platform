@@ -55,9 +55,9 @@ class DownloadImageTask extends Task
                 }
             }
 
-            $this->status_done();
+            $this->setStatusDone();
         } else {
-            $this->status_fail();
+            $this->setStatusFail();
         }
     }
 }

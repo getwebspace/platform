@@ -178,6 +178,11 @@ class Product extends Model
     public $export = 'manual';
 
     /**
+     * @var mixed буфурное поле для обработки интеграций
+     */
+    public $buf = null;
+
+    /**
      * Вернет габариты товара
      *
      * @return string

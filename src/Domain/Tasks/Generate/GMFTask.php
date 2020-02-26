@@ -88,6 +88,6 @@ class GMFTask extends Task
 
         file_put_contents(VAR_DIR . '/xml/gmf.xml', $feed->build());
 
-        $this->status_done();
+        $this->setStatusDone();
     }
 }

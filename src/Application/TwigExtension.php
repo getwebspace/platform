@@ -715,7 +715,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
      * other functions
      */
 
-    public function task($limit = 30)
+    public function task($limit = 5000)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:task');
 

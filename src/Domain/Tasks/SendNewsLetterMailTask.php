@@ -80,10 +80,10 @@ class SendNewsLetterMailTask extends Task
                     sleep(10);
                 }
 
-                return $this->status_done();
+                return $this->setStatusDone();
             }
         }
 
-        $this->status_fail();
+        $this->setStatusFail();
     }
 }

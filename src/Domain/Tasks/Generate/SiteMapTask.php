@@ -85,6 +85,6 @@ class SiteMapTask extends Task
 
         $sitemap->write();
 
-        $this->status_done();
+        $this->setStatusDone();
     }
 }
