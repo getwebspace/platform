@@ -242,19 +242,25 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
     /**
      * Date format function
+     *
      * @param \DateTime|string $obj
-     * @param string $default
+     * @param string           $format
+     * @param string           $timezone
+     *
      * @return string
+     * @throws \Exception
      */
-    public function df($obj = 'now', $default = 'j-m-Y, H:i')
+    public function df($obj = 'now', $format = 'j-m-Y, H:i', $timezone = 'UTC')
     {
-        $format = $this->parameter('common_date_format', $default);
-
         if (is_string($obj) || is_numeric($obj)) {
-            return date($format, strtotime($obj));
+            $obj = new \DateTime($obj);
+        } else {
+            $obj = clone $obj;
         }
 
-        return $obj->format($format);
+        return $obj
+            ->setTimezone($this->parameter('common_timezone', $timezone))
+            ->format($this->parameter('common_date_format', $format));
     }
 
     public function collect(array $array = [])

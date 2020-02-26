@@ -22,11 +22,3 @@ $app->add(function (Request $request, Response $response, $next) {
 
     return $next($request, $response);
 });
-
-// set timezone parameter
-$app->add(function (Request $request, Response $response, $next) {
-    // todo add df twig function
-    //date_default_timezone_set($this->get('parameter')->get('common_timezone', 'Europe/Kiev'));
-
-    return $next($request, $response);
-});
