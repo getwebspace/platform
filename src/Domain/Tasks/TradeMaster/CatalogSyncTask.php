@@ -126,10 +126,8 @@ class CatalogSyncTask extends Task
 
         // удаление моделей которые не получили обновление в процессе синхронизации
         foreach ($categories->where('buf', null) as $model) {
-            pre($model->uuid);
-
             /** @var \App\Domain\Entities\Catalog\Category $model */
-            $this->entityManager->remove($model);
+            $model->set('status', \App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE);
         }
     }
 
@@ -217,7 +215,7 @@ class CatalogSyncTask extends Task
             // удаление моделей которые не получили обновление в процессе синхронизации
             foreach ($products->where('buf', null) as $model) {
                 /** @var \App\Domain\Entities\Catalog\Product $model */
-                $this->entityManager->remove($model);
+                $model->set('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_DELETE);
             }
         };
     }
