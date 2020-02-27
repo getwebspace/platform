@@ -67,7 +67,7 @@ class CatalogSyncTask extends Task
     {
         $this->logger->info('Task: TradeMaster get catalog item');
 
-        // параметры отображения категорий и товаров
+        // параметры отображения категории и товаров
         $template = [
             'category' => $this->getParameter('catalog_category_template', 'catalog.category.twig'),
             'product' => $this->getParameter('catalog_product_template', 'catalog.product.twig'),
