@@ -5,48 +5,51 @@
         window.catalog = new class {
             constructor(options) {
                 // опции
-                let defaults = {
-                    init: {
-                        listeners: true,
-                        handlers: true,
+                let
+                    defaults = {
+                        storage: 'catalog-cart',
+                        init: {
+                            listeners: true,
+                            handlers: true,
+                        },
+                        cart: {
+                            columns: [
+                                {label: '', attr: 'thumb', view: null, text: null, class: null, style: 'width: 10%; text-align: center;'},
+                                {label: 'Наименование', attr: 'title', view: null, text: null, class: null, style: null},
+                                {label: 'Артикул', attr: 'vendorcode', view: null, text: null, class: null, style: null},
+                                {label: '-', attr: 'decrement', view: null, text: null, class: null, style: 'width: 10%; text-align: center;'},
+                                {label: 'Количество', attr: 'quantity', view: null, text: null, class: null, style: 'width: 15%;'},
+                                {label: '+', attr: 'increment', view: null, text: null, class: null, style: 'width: 10%; text-align: center;'},
+                                {label: 'Стоимость', attr: 'price', view: null, text: null, class: null, style: 'text-align: right;'},
+                                {label: 'Всего', attr: 'total', view: null, text: null, class: null, style: 'text-align: right;'},
+                                {label: 'Убрать', attr: 'remove', view: null, text: null, class: null, style: 'text-align: center;'},
+                            ],
+                            style: 'table', // div
+                            class: '', // table class
+                            url: '', // server handler url
+                        },
+                        selectors: {
+                            'product': 'data-catalog-product', // продукт
+                            'product-attr': 'data-catalog-product-attr', // атрибут продукта
+                            'product-add': 'data-catalog-product-add', // кнопка добавления продукта в корзину
+                            'cart': 'data-catalog-cart', // место для корзины
+                            'cart-data': 'data-catalog-cart-data', // поле корзины
+                            'cart-checkout': 'data-catalog-cart-checkout', // кнопка отправки корзины
+                            'count-items': 'data-catalog-cart-count', // счетчик количества наименований
+                            'count-total': 'data-catalog-cart-total', // счетчик общей стоимости товаров
+                        },
+                        events: {
+                            'on:ready': null,
+                            'on:cart': null,
+                            'on:cart:add': null,
+                            'on:cart:update': null,
+                            'on:cart:remove': null,
+                            'on:cart:remove:all': null,
+                            'on:cart:checkout:before': null,
+                            'on:cart:checkout:after': null,
+                        }
                     },
-                    cart: {
-                        columns: [
-                            {label: '', attr: 'thumb', view: null, text: null, class: null, style: 'width: 10%; text-align: center;'},
-                            {label: 'Наименование', attr: 'title', view: null, text: null, class: null, style: null},
-                            {label: 'Артикул', attr: 'vendorcode', view: null, text: null, class: null, style: null},
-                            {label: '-', attr: 'decrement', view: null, text: null, class: null, style: 'width: 10%; text-align: center;'},
-                            {label: 'Количество', attr: 'quantity', view: null, text: null, class: null, style: 'width: 15%;'},
-                            {label: '+', attr: 'increment', view: null, text: null, class: null, style: 'width: 10%; text-align: center;'},
-                            {label: 'Стоимость', attr: 'price', view: null, text: null, class: null, style: 'text-align: right;'},
-                            {label: 'Всего', attr: 'total', view: null, text: null, class: null, style: 'text-align: right;'},
-                            {label: 'Убрать', attr: 'remove', view: null, text: null, class: null, style: 'text-align: center;'},
-                        ],
-                        style: 'table', // div
-                        class: '', // table class
-                        url: '', // server handler url
-                    },
-                    selectors: {
-                        'product': 'data-catalog-product', // продукт
-                        'product-attr': 'data-catalog-product-attr', // атрибут продукта
-                        'product-add': 'data-catalog-product-add', // кнопка добавления продукта в корзину
-                        'cart': 'data-catalog-cart', // место для корзины
-                        'cart-data': 'data-catalog-cart-data', // поле корзины
-                        'cart-checkout': 'data-catalog-cart-checkout', // кнопка отправки корзины
-                        'count-items': 'data-catalog-cart-count', // счетчик количества наименований
-                        'count-total': 'data-catalog-cart-total', // счетчик общей стоимости товаров
-                    },
-                    events: {
-                        'on:ready': null,
-                        'on:cart': null,
-                        'on:cart:add': null,
-                        'on:cart:update': null,
-                        'on:cart:remove': null,
-                        'on:cart:remove:all': null,
-                        'on:cart:checkout:before': null,
-                        'on:cart:checkout:after': null,
-                    }
-                };
+                    focus = null;
 
                 // свойства
                 this.$window = $(window);
@@ -56,10 +59,22 @@
                 // инициализации
                 if (this.options.init.listeners) {
                     this.$window.on('event:catalog:ready event:catalog:cart:add event:catalog:cart:update event:catalog:cart:remove event:catalog:cart:remove:all', () => {
-                        $(this.getSelector('cart')).html(this.cartRender());
+                        let $cart = $(this.getSelector('cart')).html(this.cartRender());
                         $(this.getSelector('count-items')).text(this.cartCount());
                         $(this.getSelector('count-total')).text(this.cartTotal());
+
+                        if (focus) {
+                            $cart.find('[data-uuid="' + focus + '"] [data-attr="quantity"] input').focus();
+                        }
                     });
+
+                    $(this.getSelector('cart'))
+                        .on('focus', '[data-attr="quantity"] input', (e) => {
+                            focus = $(e.currentTarget).parents('[data-uuid]').attr('data-uuid');
+                        })
+                        .on('blur', '[data-attr="quantity"] input', (e) => {
+                            focus = null;
+                        });
                 }
 
                 // обработчики
@@ -160,8 +175,9 @@
                                     $column.html(
                                         $('<input>')
                                             .attr('type', 'number')
+                                            .attr('step', product.quantity_step || 1)
                                             .val(product.quantity)
-                                            .on('change keyup', (e) => {
+                                            .on('change', (e) => {
                                                 this.cartProductChangeCount($(e.currentTarget).val(), product.uuid, 'uuid');
                                             })
                                     );
@@ -209,8 +225,7 @@
                             .append($thead)
                             .append($tbody)
                     )
-                    .append($items)
-                ;
+                    .append($items);
             }
 
             // возращает jQuery элемент для генерации структуры таблицы в зависимости от стиля корзины
@@ -277,9 +292,10 @@
                         'url': '',
                         'thumb': '',
                         'title': '',
-                        'price': '',
+                        'price': 0,
                         'vendorcode': '',
                         'quantity': 1,
+                        'quantity_step': 1,
                     };
 
                 for (let key in properties) {
@@ -289,8 +305,9 @@
                 }
 
                 // это числа
-                properties['price'] = +properties['price'];
-                properties['quantity'] = +properties['quantity'];
+                properties['price'] = properties['price'] ? +properties['price'] : 0;
+                properties['quantity'] = properties['quantity'] ? +properties['quantity'] : 1;
+                properties['quantity_step'] = properties['quantity_step'] ? +properties['quantity_step'] : 1;
 
                 if ((index = this.cartFindProductByField(properties['uuid'], 'uuid')) >= 0) {
                     this.cart[index].quantity += (+properties['quantity']);
@@ -313,7 +330,7 @@
             cartProductIncrement(value, field = 'uuid') {
                 let index = this.cartFindProductByField(value, field);
 
-                this.cart[index].quantity += 1;
+                this.cart[index].quantity += this.cart[index].quantity_step || 1;
                 this.triggerEvent('cart:update', this.cart[index]);
                 this.saveCartData();
             }
@@ -322,7 +339,7 @@
             cartProductDecrement(value, field = 'uuid') {
                 let index = this.cartFindProductByField(value, field);
 
-                this.cart[index].quantity -= 1;
+                this.cart[index].quantity -= this.cart[index].quantity_step || 1;
 
                 if (this.cart[index].quantity === 0) {
                     this.cartRemoveProductById(index);
@@ -381,7 +398,7 @@
                         .map(f => this.cart[f].quantity * this.cart[f].price)
                         .reduce((a, b) => a + b)
                         .toFixed(2)
-                    ;
+                        ;
                 }
 
                 return 0;
@@ -438,12 +455,12 @@
 
             // читает данные корзины из localstorage
             readCartData() {
-                return JSON.parse(localStorage.getItem('catalog-cart') || '[]');
+                return JSON.parse(localStorage.getItem(this.options.storage) || '[]');
             }
 
             // сохраняет данные корзины в localstorage
             saveCartData() {
-                localStorage.setItem('catalog-cart', JSON.stringify(this.cart));
+                localStorage.setItem(this.options.storage, JSON.stringify(this.cart));
                 this.triggerEvent('cart', this.cart);
             }
 
