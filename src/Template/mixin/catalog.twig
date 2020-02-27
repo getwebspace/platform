@@ -105,7 +105,7 @@
 
                 // body
                 for (let product of this.cart) {
-                    let $row = $Tag('tr').data('uuid', product.uuid);
+                    let $row = $Tag('tr').attr('data-uuid', product.uuid);
 
                     for (let column of this.options.cart.columns) {
                         let $column = $Tag('td').attr('data-attr', column.attr);
