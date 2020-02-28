@@ -565,7 +565,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     }
 
     // получение списка товаров по category_uuid
-    public function catalog_products($category_uuid, $order = [], $limit = 10, $offset = null)
+    public function catalog_products($unique, $order = [], $limit = 10, $offset = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_products');
 
@@ -575,12 +575,16 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
         ];
 
-        if (!is_array($category_uuid)) $category_uuid = [$category_uuid];
+        if (!is_array($unique)) $unique = [$unique];
 
-        foreach ($category_uuid as $value) {
+        foreach ($unique as $value) {
             switch (true) {
                 case \Ramsey\Uuid\Uuid::isValid($value) === true:
                     $criteria['category'][] = $value;
+                    break;
+
+                case is_numeric($value) === true:
+                    $criteria['external_id'][] = $value;
                     break;
             }
         }
@@ -594,12 +598,12 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             $buf[$key] = $limit > 1 ? collect($repository->findBy($criteria, $order, $limit, $offset)) : $repository->findOneBy($criteria, $order);
         }
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_products');
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_products', ['key' => $key]);
 
         return $buf[$key];
     }
 
-    // получение списка товаров по uuid или address
+    // получение списка товаров по uuid, external_id или address
     public function catalog_product($unique = null, $order = [], $limit = 10, $offset = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_product');
@@ -619,6 +623,10 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
                         $criteria['uuid'][] = $value;
                         break;
 
+                    case is_numeric($value) === true:
+                        $criteria['external_id'][] = $value;
+                        break;
+
                     default:
                         $criteria['address'][] = $value;
                         break;
@@ -635,7 +643,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             $buf[$key] = $limit > 1 ? collect($repository->findBy($criteria, $order, $limit, $offset)) : $repository->findOneBy($criteria, $order);
         }
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_product');
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_product', ['key' => $key]);
 
         return $buf[$key];
     }
@@ -676,6 +684,10 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
                 $criteria['uuid'] = $unique;
                 break;
 
+            case is_numeric($unique) === true:
+                $criteria['external_id'] = $unique;
+                break;
+
             default:
                 $criteria['serial'] = $unique;
                 break;
@@ -690,7 +702,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             $buf[$key] = collect($repository->findOneBy($criteria));
         }
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_order');
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_order', ['key' => $key]);
 
         return $buf[$key];
     }
@@ -712,7 +724,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             'method' => $method,
         ]);
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:tm_api');
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:tm_api', ['endpoint' => $endpoint, 'params' => $params, 'method' => $method]);
 
         return $result;
     }
