@@ -126,7 +126,7 @@ class File extends Model
         }
 
         if ($saved) {
-            $salt = md5_file($tmp);
+            $salt = uniqid();
             $dir = UPLOAD_DIR . '/' . $salt;
 
             if (!is_dir($dir)) {
