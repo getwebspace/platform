@@ -72,6 +72,7 @@ class CatalogSyncTask extends Task
             'category' => $this->getParameter('catalog_category_template', 'catalog.category.twig'),
             'product' => $this->getParameter('catalog_product_template', 'catalog.product.twig'),
         ];
+        $pagination = $this->getParameter('catalog_category_pagination', 10);
 
         $list = $this->trademaster->api(['endpoint' => 'catalog/list']);
 
@@ -92,7 +93,7 @@ class CatalogSyncTask extends Task
                     'title' => $item['nameZvena'],
                     'description' => strip_tags(urldecode($item['opisanie'])),
                 ],
-                'pagination' => 10,
+                'pagination' => $pagination,
                 'export' => 'trademaster',
                 'buf' => $item['idParent'],
             ];
