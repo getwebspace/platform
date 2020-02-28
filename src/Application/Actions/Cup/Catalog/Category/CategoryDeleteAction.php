@@ -18,19 +18,19 @@ class CategoryDeleteAction extends CatalogAction
                 ]));
                 $childCategoriesUuid = \App\Domain\Entities\Catalog\Category::getChildren($categories, $item)->pluck('uuid')->all();
 
-                // remove children category
+                // удаление вложенных категорий
                 foreach ($this->categoryRepository->findBy(['uuid' => $childCategoriesUuid, 'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]) as $child) {
                     $child->set('status', \App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE);
                     $this->entityManager->persist($child);
                 }
 
-                // remove children category
+                // удаление продуктов
                 foreach ($this->productRepository->findBy(['category' => $childCategoriesUuid, 'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK]) as $child) {
                     $child->set('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_DELETE);
                     $this->entityManager->persist($child);
                 }
 
-                // remove category
+                // удаление категории
                 $item->set('status', \App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE);
                 $this->entityManager->persist($item);
 

@@ -54,6 +54,10 @@ class CatalogSyncTask extends Task
             \RunTracy\Helpers\Profiler\Profiler::start('task:tm:product');
             $this->product($catalog['categories'], $catalog['products']);
             \RunTracy\Helpers\Profiler\Profiler::finish('task:tm:product');
+
+            \RunTracy\Helpers\Profiler\Profiler::start('task:tm:remove');
+            $this->remove($catalog['categories'], $catalog['products']);
+            \RunTracy\Helpers\Profiler\Profiler::finish('task:tm:remove');
         } catch (\Exception $exception) {
             $this->setStatusFail();
 
@@ -123,12 +127,13 @@ class CatalogSyncTask extends Task
             } else {
                 $model->set('parent', \Ramsey\Uuid\Uuid::fromString(\Ramsey\Uuid\Uuid::NIL));
             }
-        }
 
-        // удаление моделей которые не получили обновление в процессе синхронизации
-        foreach ($categories->where('buf', null) as $model) {
-            /** @var \App\Domain\Entities\Catalog\Category $model */
-            $model->set('status', \App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE);
+            $data = $model->toArray();
+            $result = \App\Domain\Filters\Catalog\Category::check($data);
+
+            if ($result === true) {
+                $model->replace($data);
+            }
         }
     }
 
@@ -200,11 +205,16 @@ class CatalogSyncTask extends Task
                         $category = $categories->firstWhere('external_id', $item['vStrukture']);
                         $data['category'] = $category ? $category->get('uuid') : \Ramsey\Uuid\Uuid::fromString(\Ramsey\Uuid\Uuid::NIL);
 
-                        $model->replace($data);
-                        $this->entityManager->persist($model);
+                        $data = $model->toArray();
+                        $result = \App\Domain\Filters\Catalog\Product::check($data);
 
-                        $task = new \App\Domain\Tasks\TradeMaster\DownloadImageTask($this->container);
-                        $task->execute(['photo' => $item['foto'], 'item' => 'catalog_product', 'item_uuid' => $model->uuid]);
+                        if ($result === true) {
+                            $model->replace($data);
+                            $this->entityManager->persist($model);
+
+                            $task = new \App\Domain\Tasks\TradeMaster\DownloadImageTask($this->container);
+                            $task->execute(['photo' => $item['foto'], 'item' => 'catalog_product', 'item_uuid' => $model->uuid]);
+                        }
                     } else {
                         $this->logger->info('TradeMaster: invalid product data', $result);
                     }
@@ -212,12 +222,40 @@ class CatalogSyncTask extends Task
 
                 $go = $step * ++$i <= $count;
             }
-
-            // удаление моделей которые не получили обновление в процессе синхронизации
-            foreach ($products->where('buf', null) as $model) {
-                /** @var \App\Domain\Entities\Catalog\Product $model */
-                $model->set('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_DELETE);
-            }
         };
+    }
+
+    protected function remove(Collection &$categories, Collection &$products)
+    {
+        // удаление моделей категорий которые не получили обновление в процессе синхронизации
+        foreach ($categories->where('buf', null) as $model) {
+            /**
+             * @var \App\Domain\Entities\Catalog\Category $model
+             * @var \App\Domain\Entities\Catalog\Category $category
+             * @var \App\Domain\Entities\Catalog\Product  $product
+             */
+            $childCategoriesUuid = \App\Domain\Entities\Catalog\Category::getChildren($categories, $model)->pluck('uuid')->all();
+
+            // удаление вложенных категорий
+            foreach ($categories->whereIn('uuid', $childCategoriesUuid) as $category) {
+                $category->set('status', \App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE);
+                $this->entityManager->persist($category);
+            }
+
+            // удаление продуктов
+            foreach ($products->whereIn('uuid', $childCategoriesUuid) as $product) {
+                $product->set('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_DELETE);
+                $this->entityManager->persist($product);
+            }
+
+            $model->set('status', \App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE);
+        }
+
+        // удаление моделей продуктов которые не получили обновление в процессе синхронизации
+        foreach ($products->where('buf', null) as $model) {
+            /** @var \App\Domain\Entities\Catalog\Product $model */
+            $model->set('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_DELETE);
+            $this->entityManager->persist($product);
+        }
     }
 }
