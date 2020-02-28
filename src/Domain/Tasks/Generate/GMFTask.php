@@ -28,12 +28,10 @@ class GMFTask extends Task
          */
         $categoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class);
         $productRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
-        $fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
         $data = [
             'category' => collect($categoryRepository->findBy(['status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK])),
             'product' => collect($productRepository->findBy(['status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK])),
         ];
-        $data['file'] = collect($fileRepository->findBy(['item' => 'catalog_product', 'item_uuid' => $data['product']->pluck('uuid')->all()]));
 
         $feed = new Feed(
             $this->getParameter('integration_merchant_shop_title', 'Shop on WebSpace Engine CMS'),
@@ -62,8 +60,8 @@ class GMFTask extends Task
                 $item->setDescription($model->description);
             }
             $item->setLink($url);
-            if (($imageUrl = $data['file']->firstWhere('item_uuid', $model->uuid)) !== null) {
-                $item->setImage($imageUrl);
+            if ($model->hasFiles()) {
+                $item->setImage($model->getFiles()->first()->getPublicPath());
             }
             if ($model->stock > 0) {
                 $item->setAvailability(Availability::IN_STOCK);

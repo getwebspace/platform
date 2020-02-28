@@ -18,11 +18,6 @@ abstract class FormAction extends Action
     protected $dataRepository;
 
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
-     */
-    protected $fileRepository;
-
-    /**
      * @inheritDoc
      */
     public function __construct(ContainerInterface $container)
@@ -31,6 +26,5 @@ abstract class FormAction extends Action
 
         $this->formRepository = $this->entityManager->getRepository(\App\Domain\Entities\Form::class);
         $this->dataRepository = $this->entityManager->getRepository(\App\Domain\Entities\Form\Data::class);
-        $this->fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
     }
 }

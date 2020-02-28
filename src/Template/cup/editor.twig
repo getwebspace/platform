@@ -29,16 +29,16 @@
                     fileMaxSize: 1024 * 1024 * 3,
                     fileUploadMethod: 'POST',
                     fileUploadParam: 'file',
-                    fileUploadParams: {'path_only': true, 'item': '{{ options.item }}', 'item_uuid': '{{ options.item_uuid }}'},
+                    fileUploadParams: {'path_only': true},
                     fileUploadURL: '/file/upload',
 
                     imageMaxSize: 5 * 1024 * 1024,
                     imageAllowedTypes: ['jpeg', 'jpg', 'png'],
                     imageUploadMethod: 'POST',
                     imageUploadParam: 'image',
-                    imageUploadParams: {'path_only': true, 'item': '{{ options.item }}', 'item_uuid': '{{ options.item_uuid }}'},
+                    imageUploadParams: {'path_only': true},
                     imageUploadURL: '/file/upload',
-                    imageManagerLoadURL: '/cup/file/image?item={{ options.item }}&item_uuid={{ options.item_uuid }}',
+                    imageManagerLoadURL: '/cup/file/image',
                     imageManagerDeleteURL: '/cup/file/image/delete',
 
                     videoAllowedProviders: ['youtube', 'vimeo'],
@@ -46,7 +46,7 @@
                     videoAllowedTypes: ['mp4', 'webm'],
                     videoUploadMethod: 'POST',
                     videoUploadParam: 'video',
-                    videoUploadParams: {'path_only': true, 'item': '{{ options.item }}', 'item_uuid': '{{ options.item_uuid }}'},
+                    videoUploadParams: {'path_only': true},
                     videoUploadURL: '/file/upload',
 
                     codeBeautifierOptions: {

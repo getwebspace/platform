@@ -19,14 +19,8 @@ class DataViewAction extends FormAction
             ]);
 
             if (!$item->isEmpty()) {
-                $files = $this->fileRepository->findBy([
-                    'item' => \App\Domain\Types\FileItemType::ITEM_FORM_DATA,
-                    'item_uuid' => $this->resolveArg('data'),
-                ]);
-
                 return $this->respondRender('cup/form/view/detail.twig', [
                     'item' => $item,
-                    'files' => $files,
                 ]);
             }
         }

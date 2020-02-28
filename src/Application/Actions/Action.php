@@ -2,6 +2,7 @@
 
 namespace App\Application\Actions;
 
+use Alksily\Entity\Model;
 use App\Application\Mail;
 use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Exceptions\HttpException;
@@ -194,17 +195,15 @@ abstract class Action
     }
 
     /**
-     * Upload image files and claim to model
+     * Upload image files
      *
-     * @param string            $type
-     * @param \Ramsey\Uuid\Uuid $uuid
-     * @param string            $field
+     * @param string $field
      *
      * @return array
      * @throws \Doctrine\ORM\ORMException
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
-    protected function handlerFileUpload(string $type, \Ramsey\Uuid\Uuid $uuid, string $field = 'files')
+    protected function handlerFileUpload(string $field = 'files')
     {
         $result = [];
 
@@ -218,22 +217,53 @@ abstract class Action
 
             foreach ($files as $file) {
                 if (!$file->getError()) {
-                    $file_model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename());
-
-                    if ($file_model) {
-                        $result[] = $file_model->replace(['item' => $type, 'item_uuid' => $uuid]);
-                        $this->entityManager->persist($file_model);
+                    if (($model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename())) !== null) {
+                        $result[] = $model;
+                        $this->entityManager->persist($model);
 
                         // is image
-                        if (\Alksily\Support\Str::start('image/', $file_model->type)) {
+                        if (\Alksily\Support\Str::start('image/', $model->type)) {
                             // add task convert
                             $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
-                            $task->execute(['uuid' => $file_model->uuid]);
+                            $task->execute(['uuid' => $model->uuid]);
 
                             // run worker
                             \App\Domain\Tasks\Task::worker();
                         }
                     }
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Upload image files
+     *
+     * @param string $field
+     *
+     * @return array
+     */
+    protected function handlerFileRemove(string $field = 'delete-file')
+    {
+        $result = [];
+
+        if (($files = $this->request->getParam($field)) !== null) {
+            $fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
+
+            if (!is_array($files)) {
+                $files = [$files];
+            }
+
+            foreach ($files as $uuid) {
+                /** @var \App\Domain\Entities\File $file */
+
+                if (
+                    \Ramsey\Uuid\Uuid::isValid($uuid) &&
+                    ($file = $fileRepository->findOneBy(['uuid' => $uuid])) !== null
+                ) {
+                    $result[] = $file;
                 }
             }
         }

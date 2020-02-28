@@ -18,25 +18,19 @@ class ListAction extends CatalogAction
         $categories = collect($this->categoryRepository->findBy([
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
         ]));
-        $files = collect(
-            $this->fileRepository->findBy([
-                'item' => \App\Domain\Types\FileItemType::ITEM_CATALOG_CATEGORY,
-                'item_uuid' => array_map('strval', $categories->pluck('uuid')->all()),
-            ])
-        );
 
         // Catalog main
-        if ($buf = $this->prepareMain($params, $categories, $files)) {
+        if ($buf = $this->prepareMain($params, $categories)) {
             return $buf;
         }
 
         // Category
-        if ($buf = $this->prepareCategory($params, $categories, $files)) {
+        if ($buf = $this->prepareCategory($params, $categories)) {
             return $buf;
         }
 
         // Product
-        if ($buf = $this->prepareProduct($params, $categories, $files)) {
+        if ($buf = $this->prepareProduct($params, $categories)) {
             return $buf;
         }
 
@@ -47,12 +41,11 @@ class ListAction extends CatalogAction
     /**
      * @param array      $params
      * @param Collection $categories
-     * @param Collection $files
      *
      * @return Response
      * @throws \App\Domain\Exceptions\HttpBadRequestException
      */
-    protected function prepareMain(array &$params, &$categories, &$files)
+    protected function prepareMain(array &$params, &$categories)
     {
         if ($params['address'] == '') {
             $pagination = $this->getParameter('catalog_category_pagination', 10);
@@ -110,13 +103,6 @@ class ListAction extends CatalogAction
             );
             $count = $query->select('count(p)')->setMaxResults(null)->setFirstResult(null)->getQuery()->getSingleScalarResult();
 
-            $files = $files->merge(
-                $this->fileRepository->findBy([
-                    'item' => \App\Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
-                    'item_uuid' => array_map('strval', $filtered->pluck('uuid')->all()),
-                ])
-            );
-
             return $this->respondRender($this->getParameter('catalog_category_template', 'catalog.category.twig'), [
                 'categories' => $categories,
                 'products' => [
@@ -128,8 +114,7 @@ class ListAction extends CatalogAction
                 'pagination' => [
                     'count' => $count,
                     'page' => $pagination,
-                ],
-                'files' => $files,
+                ]
             ]);
         }
 
@@ -139,12 +124,11 @@ class ListAction extends CatalogAction
     /**
      * @param array      $params
      * @param Collection $categories
-     * @param Collection $files
      *
      * @return Response
      * @throws \App\Domain\Exceptions\HttpBadRequestException
      */
-    protected function prepareCategory(array &$params, &$categories, &$files)
+    protected function prepareCategory(array &$params, &$categories)
     {
         /**
          * @var \App\Domain\Entities\Catalog\Category $category
@@ -209,13 +193,6 @@ class ListAction extends CatalogAction
             );
             $count = $query->select('count(p)')->setMaxResults(null)->setFirstResult(null)->getQuery()->getSingleScalarResult();
 
-            $files = $files->merge(
-                $this->fileRepository->findBy([
-                    'item' => \App\Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
-                    'item_uuid' => array_map('strval', $filtered->pluck('uuid')->all()),
-                ])
-            );
-
             return $this->respondRender($category->template['category'], [
                 'categories' => $categories,
                 'category' => $category,
@@ -228,8 +205,7 @@ class ListAction extends CatalogAction
                 'pagination' => [
                     'count' => $count,
                     'page' => $category->pagination,
-                ],
-                'files' => $files,
+                ]
             ]);
         }
 
@@ -239,12 +215,11 @@ class ListAction extends CatalogAction
     /**
      * @param array      $params
      * @param Collection $categories
-     * @param Collection $files
      *
      * @return Response
      * @throws \App\Domain\Exceptions\HttpBadRequestException
      */
-    protected function prepareProduct(array &$params, &$categories, &$files)
+    protected function prepareProduct(array &$params, &$categories)
     {
         /** @var \App\Domain\Entities\Catalog\Product $product */
         $product = $this->productRepository->findOneBy([
@@ -254,19 +229,12 @@ class ListAction extends CatalogAction
 
         if (is_null($product) === false) {
             $category = $categories->firstWhere('uuid', $product->category);
-            $files = $files->merge(
-                $this->fileRepository->findBy([
-                    'item' => \App\Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT,
-                    'item_uuid' => $product->uuid,
-                ])
-            );
 
             return $this->respondRender($category->template['product'], [
                 'categories' => $categories,
                 'category' => $category,
                 'product' => $product,
                 'params' => $params,
-                'files' => $files,
             ]);
         }
 

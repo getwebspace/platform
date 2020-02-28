@@ -118,8 +118,10 @@ class CatalogSyncTask extends Task
                 $model->replace($data);
                 $this->entityManager->persist($model);
 
-                $task = new \App\Domain\Tasks\TradeMaster\DownloadImageTask($this->container);
-                $task->execute(['photo' => $item['foto'], 'item' => 'catalog_category', 'item_uuid' => $model->uuid]);
+                if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
+                    $task = new \App\Domain\Tasks\TradeMaster\DownloadImageTask($this->container);
+                    $task->execute(['photo' => $item['foto'], 'type' => 'category', 'uuid' => $model->uuid->toString()]);
+                }
             } else {
                 $this->logger->warning('TradeMaster: invalid category data', $result);
             }
@@ -218,8 +220,10 @@ class CatalogSyncTask extends Task
                             $model->replace($data);
                             $this->entityManager->persist($model);
 
-                            $task = new \App\Domain\Tasks\TradeMaster\DownloadImageTask($this->container);
-                            $task->execute(['photo' => $item['foto'], 'item' => 'catalog_product', 'item_uuid' => $model->uuid]);
+                            if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
+                                $task = new \App\Domain\Tasks\TradeMaster\DownloadImageTask($this->container);
+                                $task->execute(['photo' => $item['foto'], 'type' => 'product', 'uuid' => $model->uuid->toString()]);
+                            }
                         }
                     } else {
                         $this->logger->warning('TradeMaster: invalid product data', $result);

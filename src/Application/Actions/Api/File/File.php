@@ -10,8 +10,6 @@ class File extends FileAction
     {
         $data = [
             'uuid' => $this->request->getParam('uuid'),
-            'item' => $this->request->getParam('item'),
-            'item_uuid' => $this->request->getParam('item_uuid'),
             'ext' => $this->request->getParam('ext'),
 
             'order' => $this->request->getParam('order', []),
@@ -23,12 +21,6 @@ class File extends FileAction
 
         if ($data['uuid']) {
             $criteria['uuid'] = $this->array_criteria_uuid($data['uuid']);
-        }
-        if ($data['item']) {
-            $criteria['item'] = $this->array_criteria($data['item']);
-        }
-        if ($data['item']) {
-            $criteria['item_uuid'] = $this->array_criteria_uuid($data['item_uuid']);
         }
         if ($data['ext']) {
             $criteria['ext'] = $this->array_criteria($data['ext']);

@@ -50,11 +50,7 @@
                             <div class="col-md-12">
                                 {% include 'cup/editor.twig' with {
                                     'label': 'Текст сообщения',
-                                    'name': 'body',
-                                    'options': {
-                                        'item': reference('/App/Domain/Types/FileItemType::ITEM_USER_UPLOAD'),
-                                        'item_uuid': user.uuid.toString(),
-                                    }
+                                    'name': 'body'
                                 } %}
                             </div>
                         </div>

@@ -70,4 +70,58 @@ class Publication extends Model
         'description' => '',
         'keywords' => '',
     ];
+
+    /**
+     * @var array
+     * @ORM\ManyToMany(targetEntity="App\Domain\Entities\File", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\JoinTable(name="publication_files",
+     *  joinColumns={@ORM\JoinColumn(name="publication_uuid", referencedColumnName="uuid")},
+     *  inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")}
+     * )
+     */
+    protected $files = [];
+
+    public function addFile(\App\Domain\Entities\File $file)
+    {
+        $this->files[] = $file;
+    }
+
+    public function addFiles(array $files)
+    {
+        foreach ($files as $file) {
+            $this->addFile($file);
+        }
+    }
+
+    public function removeFile(\App\Domain\Entities\File $file)
+    {
+        foreach ($this->files as $key => $value) {
+            if ($file === $value) {
+                unset($this->files[$key]);
+                $file->unlink();
+            }
+        }
+    }
+
+    public function removeFiles(array $files)
+    {
+        foreach ($files as $file) {
+            $this->removeFile($file);
+        }
+    }
+
+    public function removeFilesAll()
+    {
+        $this->files = [];
+    }
+
+    public function getFiles()
+    {
+        return collect($this->files);
+    }
+
+    public function hasFiles()
+    {
+        return count($this->files);
+    }
 }

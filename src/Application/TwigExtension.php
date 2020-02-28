@@ -341,32 +341,16 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
         $default = [
             'uuid' => '',
-            'item' => '',
-            'item_uuid' => '',
         ];
         $data = array_merge($default, $data);
         $criteria = [];
 
         if ($data['uuid']) {
-            if (!is_a($data['item_uuid'], \Alksily\Entity\Collection::class) && !is_array($data['uuid'])) $data['uuid'] = [$data['uuid']];
+            if (!is_a($data['uuid'], \Alksily\Entity\Collection::class) && !is_array($data['uuid'])) $data['uuid'] = [$data['uuid']];
 
             foreach ($data['uuid'] as $value) {
                 if (\Ramsey\Uuid\Uuid::isValid($value) === true) {
                     $criteria['uuid'][] = $value;
-                }
-            }
-        }
-
-        if ($data['item']) {
-            $criteria['item'] = $data['item'];
-        }
-
-        if ($data['item_uuid']) {
-            if (!is_a($data['item_uuid'], Collection::class) && !is_array($data['item_uuid'])) $data['item_uuid'] = [$data['item_uuid']];
-
-            foreach ($data['item_uuid'] as $value) {
-                if (\Ramsey\Uuid\Uuid::isValid($value) === true) {
-                    $criteria['item_uuid'][] = $value;
                 }
             }
         }

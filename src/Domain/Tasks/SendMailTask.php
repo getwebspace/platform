@@ -46,7 +46,7 @@ class SendMailTask extends Task
                     $this->logger->info('Mail is sent', ['mailto' => $args['to']]);
                     $this->setStatusDone();
                 } else {
-                    $this->logger->warn('Mail will not sent', ['mailto' => $args['to'], 'error' => $mail->ErrorInfo]);
+                    $this->logger->warning('Mail will not sent', ['mailto' => $args['to'], 'error' => $mail->ErrorInfo]);
                     $this->setStatusFail();
                 }
 

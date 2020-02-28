@@ -9,8 +9,6 @@ class FileUploadAction extends FileAction
     protected function action(): \Slim\Http\Response
     {
         $path_only = $this->request->getParam('path_only', false);
-        $item = $this->request->getParam('item', false);
-        $item_uuid = $this->request->getParam('item_uuid', false);
 
         $models = [];
 
@@ -21,38 +19,21 @@ class FileUploadAction extends FileAction
                 /* @var UploadedFile $file */
                 foreach ($files as $file) {
                     if (!$file->getError()) {
-                        $file_model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename());
-
-                        if ($file_model) {
-                            // файл загружен пользователем
-                            if (($user = $this->request->getAttribute('user', false)) !== false) {
-                                $file_model->item = \App\Domain\Types\FileItemType::ITEM_USER_UPLOAD;
-                                $file_model->item_uuid = $user->uuid;
-                            }
-
-                            // файл принадлежит сущности
-                            if (
-                                $item && in_array($item, array_keys(\App\Domain\Types\FileItemType::LIST)) &&
-                                $item_uuid && \Ramsey\Uuid\Uuid::isValid($item_uuid)
-                            ) {
-                                $file_model->item = $item;
-                                $file_model->item_uuid = $item_uuid;
-                            }
-
-                            $this->entityManager->persist($file_model);
+                        if (($model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename())) !== null) {
+                            $this->entityManager->persist($model);
 
                             // is image
-                            if (\Alksily\Support\Str::start('image/', $file_model->type)) {
+                            if (\Alksily\Support\Str::start('image/', $model->type)) {
                                 // add task convert
                                 $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
-                                $task->execute(['uuid' => $file_model->uuid]);
+                                $task->execute(['uuid' => $model->uuid]);
 
                                 // run worker
                                 \App\Domain\Tasks\Task::worker();
                             }
 
                             // save model
-                            $models[$field][] = $file_model;
+                            $models[$field][] = $model;
                         }
                     }
                 }

@@ -37,7 +37,6 @@ class DynamicPageAction extends Action
         $this->pageRepository = $this->entityManager->getRepository(\App\Domain\Entities\Page::class);
         $this->publicationCategoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Publication\Category::class);
         $this->publicationRepository = $this->entityManager->getRepository(\App\Domain\Entities\Publication::class);
-        $this->fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
     }
 
     protected function action(): \Slim\Http\Response
@@ -54,14 +53,9 @@ class DynamicPageAction extends Action
         // страницы
         if ($this->pageRepository->count(['address' => $path])) {
             $page = $this->pageRepository->findOneBy(['address' => $path]);
-            $files = collect($this->fileRepository->findBy([
-                'item' => \App\Domain\Types\FileItemType::ITEM_PAGE,
-                'item_uuid' => $page->uuid,
-            ]));
 
             return $this->respondRender($page->template, [
                 'page' => $page,
-                'files' => $files,
             ]);
         }
 
@@ -77,13 +71,6 @@ class DynamicPageAction extends Action
                 $category->pagination,
                 $category->pagination * $offset
             ));
-            $files = collect($this->fileRepository->findBy([
-                'item' => \App\Domain\Types\FileItemType::ITEM_PUBLICATION,
-                'item_uuid' => array_merge(
-                    \App\Domain\Entities\Publication\Category::getChildren($categories, $category)->pluck('uuid')->all(),
-                    $publications->pluck('uuid')->all()
-                ),
-            ]));
 
             return $this->respondRender($category->template['list'], [
                 'categories' => $categories->where('public', true),
@@ -95,7 +82,6 @@ class DynamicPageAction extends Action
                     ]),
                     'page' => $category->pagination,
                 ],
-                'files' => $files,
             ]);
         }
 
@@ -107,16 +93,11 @@ class DynamicPageAction extends Action
 
             if ($category) {
                 $publication = $this->publicationRepository->findOneBy(['address' => $path]);
-                $files = collect($this->fileRepository->findBy([
-                    'item' => \App\Domain\Types\FileItemType::ITEM_PUBLICATION,
-                    'item_uuid' => [$category->uuid, $publication->uuid],
-                ]));
 
                 return $this->respondRender($category->template['full'], [
                     'publication' => $publication,
                     'categories' => $categories->where('public', true),
                     'category' => $category,
-                    'files' => $files,
                 ]);
             }
         }

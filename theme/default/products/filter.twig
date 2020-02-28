@@ -7,10 +7,9 @@
         <div class="row">
             {% set categories = catalog_category() %}
             {% set products = catalog_product({}, null, 9) %}
-            {% set files = files({'item': 'catalog_product', 'item_uuid': products.pluck('uuid')}) %}
 
             {% for product in products %}
-                {% include 'catalog.category.product.twig' with {'categories':categories,'product':product,'files':files} only %}
+                {% include 'catalog.category.product.twig' with {'categories':categories,'product':product} only %}
             {% endfor %}
         </div>
     </div>

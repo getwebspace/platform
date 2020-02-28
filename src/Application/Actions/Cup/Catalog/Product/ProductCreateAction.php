@@ -43,8 +43,10 @@ class ProductCreateAction extends CatalogAction
 
             if ($check === true) {
                 $model = new \App\Domain\Entities\Catalog\Product($data);
+                $model->removeFiles($this->handlerFileRemove());
+                $model->addFiles($this->handlerFileUpload());
+
                 $this->entityManager->persist($model);
-                $this->handlerFileUpload(\App\Domain\Types\FileItemType::ITEM_CATALOG_PRODUCT, $model->uuid);
                 $this->entityManager->flush();
 
                 switch (true) {

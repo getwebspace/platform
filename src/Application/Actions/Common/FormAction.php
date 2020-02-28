@@ -22,11 +22,6 @@ class FormAction extends Action
     protected $formDataRepository;
 
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
-     */
-    protected $fileRepository;
-
-    /**
      * @inheritDoc
      */
     public function __construct(ContainerInterface $container)
@@ -35,7 +30,6 @@ class FormAction extends Action
 
         $this->formRepository = $this->entityManager->getRepository(\App\Domain\Entities\Form::class);
         $this->formDataRepository = $this->entityManager->getRepository(\App\Domain\Entities\Form\Data::class);
-        $this->fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
     }
 
     protected function action(): \Slim\Http\Response
@@ -107,6 +101,29 @@ class FormAction extends Action
                     }
                 }
 
+                // подготовка вложений
+                $attachments = [];
+                if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
+                    foreach ($this->request->getUploadedFiles() as $field => $files) {
+                        if (!is_array($files)) $files = [$files];
+
+                        /* @var UploadedFile $file */
+                        foreach ($files as $file) {
+                            if (
+                                !$file->getError() &&
+                                ($model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename())) !== null
+                            ) {
+                                if ($item->save_data === true) {
+                                    $this->entityManager->persist($model);
+                                }
+
+                                // добавляем вложение
+                                $attachments[$model->getName()] = $model->getInternalPath();
+                            }
+                        }
+                    }
+                }
+
                 if ($item->save_data === true) {
                     /**
                      * save request
@@ -117,38 +134,11 @@ class FormAction extends Action
                         'message' => $body,
                         'date' => new DateTime(),
                     ]);
+                    $bid->addFiles(array_values($attachments));
                     $this->entityManager->persist($bid);
                 }
 
-                // prepare mail attachments
-                $attachments = [];
-                if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
-                    foreach ($this->request->getUploadedFiles() as $field => $files) {
-                        if (!is_array($files)) $files = [$files];
-
-                        /* @var UploadedFile $file */
-                        foreach ($files as $file) {
-                            if (!$file->getError()) {
-                                $file_model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename());
-
-                                if ($file_model) {
-                                    if ($item->save_data === true) {
-                                        $file_model->replace([
-                                            'item' => \App\Domain\Types\FileItemType::ITEM_FORM_DATA,
-                                            'item_uuid' => $bid->uuid,
-                                        ]);
-                                        $this->entityManager->persist($file_model);
-                                    }
-
-                                    // add to attachments
-                                    $attachments[$file_model->getName()] = $file_model->getInternalPath();
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // send mail
+                // отправляем письмо
                 $task = new \App\Domain\Tasks\SendMailTask($this->container);
                 $task->execute([
                     'to' => $mailto,
@@ -158,7 +148,7 @@ class FormAction extends Action
                     'attachments' => $attachments,
                 ]);
 
-                // create notify
+                // создаем уведомление
                 $notify = new \App\Domain\Entities\Notification([
                     'title' => 'Ответ на форму: ' . $item->title,
                     'message' => 'Была заполнена форма, проверьте список ответов и/или почту',
@@ -166,7 +156,7 @@ class FormAction extends Action
                 ]);
                 $this->entityManager->persist($notify);
 
-                // send push stream
+                // шлем пуш
                 $this->container->get('pushstream')->send([
                     'group' => \App\Domain\Types\UserLevelType::LEVEL_ADMIN,
                     'content' => $notify,

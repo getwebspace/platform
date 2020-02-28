@@ -18,11 +18,6 @@ abstract class PublicationAction extends Action
     protected $categoryRepository;
 
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
-     */
-    protected $fileRepository;
-
-    /**
      * @inheritDoc
      */
     public function __construct(ContainerInterface $container)
@@ -31,6 +26,5 @@ abstract class PublicationAction extends Action
 
         $this->publicationRepository = $this->entityManager->getRepository(\App\Domain\Entities\Publication::class);
         $this->categoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Publication\Category::class);
-        $this->fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
     }
 }

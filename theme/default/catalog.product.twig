@@ -43,11 +43,11 @@
             <div class="row">
                 <div class="col-lg-6">
                     <div class="product-pic-zoom">
-                        <img class="product-big-img" src="{{ files.firstWhere('item_uuid', product.uuid).getPublicPath() }}" style="max-height: 300px; width: 100%; object-fit: contain; object-position: center center;" alt="{{ product.title }}">
+                        <img class="product-big-img" src="{{ product.getFiles().first().getPublicPath() }}" style="max-height: 300px; width: 100%; object-fit: contain; object-position: center center;" alt="{{ product.title }}">
                     </div>
                     <div class="product-thumbs" tabindex="1" style="overflow: hidden; outline: none;">
                         <div class="product-thumbs-track">
-                            {% for index, file in files.where('item_uuid', product.uuid) %}
+                            {% for index, file in product.getFiles() %}
                                 <div class="pt {{ index == 0 ? 'active' : '' }}" data-imgbigurl="{{ file.getPublicPath() }}">
                                     <img src="{{ file.getPublicPath('small') }}" alt="{{ product.title }} {{ index }}" />
                                 </div>
@@ -114,7 +114,7 @@
             </div>
 
             {# include product options #}
-            {% include 'catalog.product.options.twig' with {'categories': categories, 'product': product, 'files': files} only %}
+            {% include 'catalog.product.options.twig' with {'categories': categories, 'product': product} only %}
         </div>
     </section>
 

@@ -55,11 +55,13 @@ class File extends Model
 
     /**
      * @ORM\Column(type="FileItemType", nullable=true)
+     * @deprecated
      */
-    public $item;
+    public $item = \App\Domain\Types\FileItemType::ITEM_USER_UPLOAD;
 
     /**
-     * @ORM\Column(type="uuid", options={"default": NULL})
+     * @ORM\Column(type="uuid", nullable=true, options={"default": NULL})
+     * @deprecated
      */
     public $item_uuid;
 

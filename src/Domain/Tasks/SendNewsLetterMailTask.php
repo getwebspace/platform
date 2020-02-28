@@ -72,7 +72,7 @@ class SendNewsLetterMailTask extends Task
                             if (!$mail->isError()) {
                                 $this->logger->info('Mail newsletter is sent', ['mailto' => $email]);
                             } else {
-                                $this->logger->warn('Mail newsletter will not sent', ['mailto' => $email, 'error' => $mail->ErrorInfo]);
+                                $this->logger->warning('Mail newsletter will not sent', ['mailto' => $email, 'error' => $mail->ErrorInfo]);
                             }
                         }
                     }

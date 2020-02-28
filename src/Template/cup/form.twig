@@ -64,7 +64,7 @@
                 {{ form( type, name, { 'id': type~'-'~name~'-'~args.value,'class': ['custom-control-input'] } | merge(args) ) }}
 
                 <label class="custom-control-label" for="{{ type }}-{{ name }}-{{ args.value }}">
-                    {{ label }}
+                    {{ label|raw }}
                 </label>
 
                 {% if args.required is not empty %}

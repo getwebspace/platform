@@ -5115,10 +5115,6 @@ label {
     display: inline-flex;
 }
 
-.form-check-label, .form-radio-label {
-    margin-right: 15px;
-}
-
 /*     CheckBox Input    */
 .select-all-checkbox + .form-check-sign:before {
     background: #cccccc !important;

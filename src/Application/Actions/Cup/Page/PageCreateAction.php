@@ -23,8 +23,10 @@ class PageCreateAction extends PageAction
 
             if ($check === true) {
                 $model = new \App\Domain\Entities\Page($data);
+                $model->removeFiles($this->handlerFileRemove());
+                $model->addFiles($this->handlerFileUpload());
+
                 $this->entityManager->persist($model);
-                $this->handlerFileUpload(\App\Domain\Types\FileItemType::ITEM_PAGE, $model->uuid);
                 $this->entityManager->flush();
 
                 switch (true) {

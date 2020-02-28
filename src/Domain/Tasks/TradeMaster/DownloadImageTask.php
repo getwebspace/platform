@@ -10,8 +10,8 @@ class DownloadImageTask extends Task
     {
         $default = [
             'photo' => '',
-            'item' => '',
-            'item_uuid' => \Ramsey\Uuid\Uuid::NIL,
+            'type' => '',
+            'uuid' => '',
         ];
         $params = array_merge($default, $params);
 
@@ -26,38 +26,77 @@ class DownloadImageTask extends Task
     /**
      * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
      */
+    private $catalogCategoryRepository;
+
+    /**
+     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     */
+    private $catalogProductRepository;
+
+    /**
+     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     */
     protected $fileRepository;
 
     protected function action(array $args = [])
     {
         $this->trademaster = $this->container->get('trademaster');
+        $this->catalogCategoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class);
+        $this->catalogProductRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
         $this->fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
 
-        if ($args['photo']) {
-            if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
+
+        if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
+            if ($args['photo']) {
                 foreach (explode(';', $args['photo']) as $name) {
-                    $path = $this->trademaster->getFilePath($name);
-                    $file_model = \App\Domain\Entities\File::getFromPath($path);
+                    /**
+                     * @var \App\Domain\Entities\Catalog\Category|\App\Domain\Entities\Catalog\Product $model
+                     */
+                    $entity = null;
 
-                    if ($file_model) {
-                        $file_model->replace([
-                            'item' => $args['item'],
-                            'item_uuid' => $args['item_uuid'],
-                        ]);
-                        $this->entityManager->persist($file_model);
+                    switch ($args['type']) {
+                        case 'category':
+                            $entity = $this->catalogCategoryRepository->findOneBy(['uuid' => $args['uuid']]);
+                            break;
+                        case 'product':
+                            $entity = $this->catalogProductRepository->findOneBy(['uuid' => $args['uuid']]);
+                            break;
+                    }
 
-                        // add task convert
-                        $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
-                        $task->execute(['uuid' => $file_model->uuid]);
+                    if ($entity) {
+                        $path = $this->trademaster->getFilePath($name);
+
+                        if (($model = \App\Domain\Entities\File::getFromPath($path)) !== null) {
+                            $entity->addFile($model);
+
+                            $this->entityManager->persist($model);
+                            $this->entityManager->persist($entity);
+
+                            // is image
+                            if (\Alksily\Support\Str::start('image/', $model->type)) {
+                                // add task convert
+                                $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
+                                $task->execute(['uuid' => $model->uuid]);
+                            }
+
+                            $this->setStatusDone();
+                        } else {
+                            $this->logger->warning('TradeMaster: file not loaded (%s)', ['path' => $path]);
+                            $this->setStatusFail();
+                        }
                     } else {
-                        $this->logger->info('TradeMaster: file not loaded (%s)', ['path' => $path]);
+                        $this->logger->warning('TradeMaster: entity not found and file not loaded', [
+                            'type' => $args['type'],
+                            'uuid' => $args['uuid'],
+                        ]);
+                        $this->setStatusFail();
                     }
                 }
+            } else {
+                $this->setStatusFail();
             }
-
-            $this->setStatusDone();
         } else {
-            $this->setStatusFail();
+            $this->setStatusDone();
         }
     }
 }

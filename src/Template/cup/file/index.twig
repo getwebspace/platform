@@ -28,7 +28,6 @@
                                 <th width="20%">Имя</th>
                                 <th>Тип</th>
                                 <th>Размер</th>
-                                <th width="15%">Привязка</th>
                                 <th width="15%">Дата создания</th>
                                 <th width="10%" class="text-center no-sorting"></th>
                             </tr>
@@ -44,11 +43,6 @@
                                         </td>
                                         <td>{{ item.type }}</td>
                                         <td>{{ item.getSize() }}</td>
-                                        <td>
-                                            <span data-toggle="tooltip" data-placement="top" title="UUID: {{ item.item_uuid }}">
-                                                {{ reference('/App/Domain/Types/FileItemType::LIST', item.item) }}
-                                            </span>
-                                        </td>
                                         <td>{{ item.date|date('d.m.Y H:i:s') }}</td>
                                         <td class="text-center">
                                             <div class="btn-group dropdown">

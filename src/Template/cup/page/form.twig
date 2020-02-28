@@ -72,10 +72,6 @@
                                     'name': 'content',
                                     'args': {
                                         'value': item.content
-                                    },
-                                    'options': {
-                                        'item': reference('/App/Domain/Types/FileItemType::ITEM_PAGE'),
-                                        'item_uuid': item.uuid ? item.uuid.toString() : '',
                                     }
                                 } %}
                             </div>
@@ -126,16 +122,27 @@
                                     }
                                 } %}
 
-                                {% for file in files %}
-                                    <div class="p-2 d-inline-block m-2 bg-grey2 rounded">
+                                {% for file in item.getFiles() %}
+                                    <div class="p-2 d-inline-block m-2 bg-grey2 text-center rounded">
                                         <a href="{{ file.getPublicPath() }}" target="_blank">
                                             <img class="rounded" height="100" src="{{ file.getPublicPath('small') }}" alt="preview" data-toggle="tooltip" data-placement="top" title="{{ file.getName() }}" />
                                         </a>
                                         <div class="pt-2">
-                                            <span class="d-inline-block text-small">{{ file.getSize() }}</span>
-                                            <button type="submit" name="delete-image" value="{{ file.uuid }}" class="float-right btn btn-danger btn-icon btn-xs">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </button>
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <span class="text-small">{{ file.getSize() }}</span>
+                                                </div>
+                                                <div class="col-6 text-right float-right">
+                                                    {% include 'cup/form.twig' with {
+                                                        'label': '<i class="fa fa-trash"></i>',
+                                                        'type': 'checkbox',
+                                                        'name': 'delete-file[]',
+                                                        'args': {
+                                                            'value': file.uuid.toString()
+                                                        }
+                                                    } %}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 {% endfor %}

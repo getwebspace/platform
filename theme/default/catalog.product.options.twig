@@ -9,10 +9,7 @@
         <span data-catalog-product-attr="uuid">{{ product.uuid }}</span>
         <span data-catalog-product-attr="price">{{ product.price }}</span>
         <span data-catalog-product-attr="vendorcode">{{ product.vendorcode }}</span>
-
-        {% if files is not empty %}
-            <span data-catalog-product-attr="thumb">{{ files.firstWhere('item_uuid', product.uuid).getPublicPath('small') }}</span>
-        {% endif %}
+        <span data-catalog-product-attr="thumb">{{ product.getFiles().first().getPublicPath('small') }}</span>
     </div>
     <!-- auto generated product options: end -->
 {% endif %}
