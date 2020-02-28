@@ -42,8 +42,14 @@ class CatalogSyncTask extends Task
         $this->productRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
 
         $catalog = [
-            'categories' => collect($this->categoryRepository->findBy(['export' => 'trademaster'])),
-            'products' => collect($this->productRepository->findBy(['export' => 'trademaster'])),
+            'categories' => collect($this->categoryRepository->findBy([
+                'export' => 'trademaster',
+                'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+            ])),
+            'products' => collect($this->productRepository->findBy([
+                'export' => 'trademaster',
+                'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK
+            ])),
         ];
 
         try {
@@ -115,7 +121,7 @@ class CatalogSyncTask extends Task
                 $task = new \App\Domain\Tasks\TradeMaster\DownloadImageTask($this->container);
                 $task->execute(['photo' => $item['foto'], 'item' => 'catalog_category', 'item_uuid' => $model->uuid]);
             } else {
-                $this->logger->info('TradeMaster: invalid category data', $result);
+                $this->logger->warning('TradeMaster: invalid category data', $result);
             }
         }
 
@@ -216,7 +222,7 @@ class CatalogSyncTask extends Task
                             $task->execute(['photo' => $item['foto'], 'item' => 'catalog_product', 'item_uuid' => $model->uuid]);
                         }
                     } else {
-                        $this->logger->info('TradeMaster: invalid product data', $result);
+                        $this->logger->warning('TradeMaster: invalid product data', $result);
                     }
                 }
 
@@ -255,7 +261,7 @@ class CatalogSyncTask extends Task
         foreach ($products->where('buf', null) as $model) {
             /** @var \App\Domain\Entities\Catalog\Product $model */
             $model->set('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_DELETE);
-            $this->entityManager->persist($product);
+            $this->entityManager->persist($model);
         }
     }
 }
