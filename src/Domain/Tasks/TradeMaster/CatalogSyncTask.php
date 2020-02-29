@@ -203,27 +203,22 @@ class CatalogSyncTask extends Task
                         'buf' => 1,
                     ];
 
+                    $model = $products->firstWhere('external_id', $item['idTovar']);
+                    if (!$model) {
+                        $products[] = $model = new \App\Domain\Entities\Catalog\Product();
+                    }
+                    $category = $categories->firstWhere('external_id', $item['vStrukture']);
+                    $data['category'] = $category ? $category->get('uuid') : \Ramsey\Uuid\Uuid::fromString(\Ramsey\Uuid\Uuid::NIL);
+
                     $result = \App\Domain\Filters\Catalog\Product::check($data);
 
                     if ($result === true) {
-                        $model = $products->firstWhere('external_id', $item['idTovar']);
-                        if (!$model) {
-                            $products[] = $model = new \App\Domain\Entities\Catalog\Product();
-                        }
-                        $category = $categories->firstWhere('external_id', $item['vStrukture']);
-                        $data['category'] = $category ? $category->get('uuid') : \Ramsey\Uuid\Uuid::fromString(\Ramsey\Uuid\Uuid::NIL);
+                        $model->replace($data);
+                        $this->entityManager->persist($model);
 
-                        $data = $model->toArray();
-                        $result = \App\Domain\Filters\Catalog\Product::check($data);
-
-                        if ($result === true) {
-                            $model->replace($data);
-                            $this->entityManager->persist($model);
-
-                            if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
-                                $task = new \App\Domain\Tasks\TradeMaster\DownloadImageTask($this->container);
-                                $task->execute(['photo' => $item['foto'], 'type' => 'product', 'uuid' => $model->uuid->toString()]);
-                            }
+                        if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
+                            $task = new \App\Domain\Tasks\TradeMaster\DownloadImageTask($this->container);
+                            $task->execute(['photo' => $item['foto'], 'type' => 'product', 'uuid' => $model->uuid->toString()]);
                         }
                     } else {
                         $this->logger->warning('TradeMaster: invalid product data', $result);
