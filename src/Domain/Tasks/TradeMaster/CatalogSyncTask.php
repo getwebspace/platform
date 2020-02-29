@@ -201,25 +201,21 @@ class CatalogSyncTask extends Task
                         'buf' => 1,
                     ];
 
+                    $model = $products->firstWhere('external_id', $item['idTovar']);
+                    if (!$model) {
+                        $products[] = $model = new \App\Domain\Entities\Catalog\Product();
+                    }
+                    $category = $categories->firstWhere('external_id', $item['vStrukture']);
+                    $data['category'] = $category ? $category->get('uuid') : \Ramsey\Uuid\Uuid::fromString(\Ramsey\Uuid\Uuid::NIL);
+
                     $result = \App\Domain\Filters\Catalog\Product::check($data);
 
                     if ($result === true) {
-                        $model = $products->firstWhere('external_id', $item['idTovar']);
-                        if (!$model) {
-                            $products[] = $model = new \App\Domain\Entities\Catalog\Product();
-                        }
-                        $category = $categories->firstWhere('external_id', $item['vStrukture']);
-                        $data['category'] = $category ? $category->get('uuid') : \Ramsey\Uuid\Uuid::fromString(\Ramsey\Uuid\Uuid::NIL);
+                        $model->replace($data);
+                        $this->entityManager->persist($model);
 
-                        $result = \App\Domain\Filters\Catalog\Product::check($data);
-
-                        if ($result === true) {
-                            $model->replace($data);
-                            $this->entityManager->persist($model);
-
-                            $task = new \App\Domain\Tasks\TradeMaster\DownloadImageTask($this->container);
-                            $task->execute(['photo' => $item['foto'], 'item' => 'catalog_product', 'item_uuid' => $model->uuid]);
-                        }
+                        $task = new \App\Domain\Tasks\TradeMaster\DownloadImageTask($this->container);
+                        $task->execute(['photo' => $item['foto'], 'item' => 'catalog_product', 'item_uuid' => $model->uuid]);
                     } else {
                         $this->logger->warning('TradeMaster: invalid product data', $result);
                     }
