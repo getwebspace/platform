@@ -2,7 +2,6 @@
 
 namespace App\Application\Actions;
 
-use Alksily\Entity\Model;
 use App\Application\Mail;
 use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Exceptions\HttpException;
