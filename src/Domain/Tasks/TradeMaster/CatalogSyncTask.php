@@ -211,7 +211,6 @@ class CatalogSyncTask extends Task
                         $category = $categories->firstWhere('external_id', $item['vStrukture']);
                         $data['category'] = $category ? $category->get('uuid') : \Ramsey\Uuid\Uuid::fromString(\Ramsey\Uuid\Uuid::NIL);
 
-                        $data = $model->toArray();
                         $result = \App\Domain\Filters\Catalog\Product::check($data);
 
                         if ($result === true) {
