@@ -45,25 +45,26 @@ class DownloadImageTask extends Task
         $this->catalogProductRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
         $this->fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
 
-
         if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
             if ($args['photo']) {
-                foreach (explode(';', $args['photo']) as $name) {
-                    /**
-                     * @var \App\Domain\Entities\Catalog\Category|\App\Domain\Entities\Catalog\Product $model
-                     */
-                    $entity = null;
+                /**
+                 * @var \App\Domain\Entities\Catalog\Category|\App\Domain\Entities\Catalog\Product $model
+                 */
+                switch ($args['type']) {
+                    case 'category':
+                        $entity = $this->catalogCategoryRepository->findOneBy(['uuid' => $args['uuid']]);
+                        break;
+                    case 'product':
+                        $entity = $this->catalogProductRepository->findOneBy(['uuid' => $args['uuid']]);
+                        break;
+                }
 
-                    switch ($args['type']) {
-                        case 'category':
-                            $entity = $this->catalogCategoryRepository->findOneBy(['uuid' => $args['uuid']]);
-                            break;
-                        case 'product':
-                            $entity = $this->catalogProductRepository->findOneBy(['uuid' => $args['uuid']]);
-                            break;
+                if (!empty($entity)) {
+                    if ($entity->hasFiles()) {
+                        $entity->clearFiles();
                     }
 
-                    if ($entity) {
+                    foreach (explode(';', $args['photo']) as $name) {
                         $path = $this->trademaster->getFilePath($name);
 
                         if (($model = \App\Domain\Entities\File::getFromPath($path)) !== null) {
@@ -84,13 +85,13 @@ class DownloadImageTask extends Task
                             $this->logger->warning('TradeMaster: file not loaded (%s)', ['path' => $path]);
                             $this->setStatusFail();
                         }
-                    } else {
-                        $this->logger->warning('TradeMaster: entity not found and file not loaded', [
-                            'type' => $args['type'],
-                            'uuid' => $args['uuid'],
-                        ]);
-                        $this->setStatusFail();
                     }
+                } else {
+                    $this->logger->warning('TradeMaster: entity not found and file not loaded', [
+                        'type' => $args['type'],
+                        'uuid' => $args['uuid'],
+                    ]);
+                    $this->setStatusFail();
                 }
             } else {
                 $this->setStatusFail();

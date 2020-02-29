@@ -22,7 +22,6 @@ class MigrateFileClaimTask extends Task
 
         // catalog_category_files
         $this->entityManager->createNativeQuery("
-            delete from catalog_category_files;
             insert into catalog_category_files(category_uuid, file_uuid)
             select item_uuid, uuid
             from file
@@ -31,7 +30,6 @@ class MigrateFileClaimTask extends Task
 
         // catalog_product_files
         $this->entityManager->createNativeQuery("
-            delete from catalog_product_files;
             insert into catalog_product_files(product_uuid, file_uuid)
             select item_uuid, uuid
             from file
@@ -40,7 +38,6 @@ class MigrateFileClaimTask extends Task
 
         // form_data_files
         $this->entityManager->createNativeQuery("
-            delete from form_data_files;
             insert into form_data_files(data_uuid, file_uuid)
             select item_uuid, uuid
             from file
@@ -49,7 +46,6 @@ class MigrateFileClaimTask extends Task
 
         // page_files
         $this->entityManager->createNativeQuery("
-            delete from page_files;
             insert into page_files(page_uuid, file_uuid)
             select item_uuid, uuid
             from file
@@ -58,7 +54,6 @@ class MigrateFileClaimTask extends Task
 
         // publication_files
         $this->entityManager->createNativeQuery("
-            delete from publication_files;
             insert into publication_files(publication_uuid, file_uuid)
             select item_uuid, uuid
             from file
@@ -67,7 +62,6 @@ class MigrateFileClaimTask extends Task
 
         // user_files
         $this->entityManager->createNativeQuery("
-            delete from user_files;
             insert into user_files(user_uuid, file_uuid)
             select item_uuid, uuid
             from file

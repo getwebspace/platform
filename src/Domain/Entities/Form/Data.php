@@ -65,7 +65,7 @@ class Data extends Model
         foreach ($this->files as $key => $value) {
             if ($file === $value) {
                 unset($this->files[$key]);
-                $file->unlink();
+                $value->unlink();
             }
         }
     }
@@ -77,14 +77,17 @@ class Data extends Model
         }
     }
 
-    public function removeFilesAll()
+    public function clearFiles()
     {
-        $this->files = [];
+        foreach ($this->files as $key => $file) {
+            unset($this->files[$key]);
+            $file->unlink();
+        }
     }
 
-    public function getFiles()
+    public function getFiles($raw = false)
     {
-        return collect($this->files);
+        return $raw ? $this->files : collect($this->files);
     }
 
     public function hasFiles()
