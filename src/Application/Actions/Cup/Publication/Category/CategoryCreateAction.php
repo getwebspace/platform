@@ -27,6 +27,9 @@ class CategoryCreateAction extends PublicationAction
 
             if ($check === true) {
                 $model = new \App\Domain\Entities\Publication\Category($data);
+                $model->removeFiles($this->handlerFileRemove());
+                $model->addFiles($this->handlerFileUpload());
+
                 $this->entityManager->persist($model);
                 $this->entityManager->flush();
 

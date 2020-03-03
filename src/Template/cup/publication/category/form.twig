@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     <div class="card-header">
                         <div class="card-head-row">
                             <div class="card-title">{{ item.uuid ? 'Редактирование категории ' ~ item.title : 'Добавление новой категории' }}</div>
@@ -106,6 +106,49 @@
                                         'selected': item.public ? 'yes' : 'no'
                                     }
                                 } %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Изображения',
+                                    'type': 'file',
+                                    'name': 'files[]',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Здесь можно выбрать несколько изображений"></i>',
+                                    'args': {
+                                        'class': ['d-block', 'btn', 'btn-sm', 'bg-grey2'],
+                                        'multiple': true,
+                                        'accept': 'image/*'
+                                    }
+                                } %}
+
+                                {% for file in item.getFiles() %}
+                                    <div class="p-2 d-inline-block m-2 bg-grey2 text-center rounded">
+                                        <a href="{{ file.getPublicPath() }}" target="_blank">
+                                            <img class="rounded" height="100" src="{{ file.getPublicPath('small') }}" alt="preview" data-toggle="tooltip" data-placement="top" title="{{ file.getName() }}" />
+                                        </a>
+                                        <div class="pt-2">
+                                            <div class="row">
+                                                <div class="col-6">
+                                                    <span class="text-small">{{ file.getSize() }}</span>
+                                                </div>
+                                                <div class="col-6 text-right float-right">
+                                                    {% include 'cup/form.twig' with {
+                                                        'label': '<i class="fa fa-trash"></i>',
+                                                        'type': 'checkbox',
+                                                        'name': 'delete-file[]',
+                                                        'args': {
+                                                            'value': file.uuid.toString()
+                                                        }
+                                                    } %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
                             </div>
                         </div>
 

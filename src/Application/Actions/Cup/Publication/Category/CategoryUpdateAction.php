@@ -32,6 +32,9 @@ class CategoryUpdateAction extends PublicationAction
 
                     if ($check === true) {
                         $item->replace($data);
+                        $item->removeFiles($this->handlerFileRemove());
+                        $item->addFiles($this->handlerFileUpload());
+
                         $this->entityManager->persist($item);
                         $this->entityManager->flush();
 
