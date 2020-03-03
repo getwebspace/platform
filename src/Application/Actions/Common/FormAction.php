@@ -101,6 +101,16 @@ class FormAction extends Action
                     }
                 }
 
+                /**
+                 * подготовка запроса
+                 * @var \App\Domain\Entities\Form\Data $bufData
+                 */
+                $bufData = new \App\Domain\Entities\Form\Data([
+                    'form_uuid' => $item->uuid,
+                    'message' => $body,
+                    'date' => new DateTime(),
+                ]);
+
                 // подготовка вложений
                 $attachments = [];
                 if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
@@ -114,6 +124,7 @@ class FormAction extends Action
                                 ($model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename())) !== null
                             ) {
                                 if ($item->save_data === true) {
+                                    $bufData->addFile($model);
                                     $this->entityManager->persist($model);
                                 }
 
@@ -125,17 +136,7 @@ class FormAction extends Action
                 }
 
                 if ($item->save_data === true) {
-                    /**
-                     * save request
-                     * @var \App\Domain\Entities\Form\Data $bid
-                     */
-                    $bid = new \App\Domain\Entities\Form\Data([
-                        'form_uuid' => $item->uuid,
-                        'message' => $body,
-                        'date' => new DateTime(),
-                    ]);
-                    $bid->addFiles(array_values($attachments));
-                    $this->entityManager->persist($bid);
+                    $this->entityManager->persist($bufData);
                 }
 
                 // отправляем письмо

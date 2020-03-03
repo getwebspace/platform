@@ -39,7 +39,7 @@
                                             </div>
                                             <div class="col col-8 col-stats ml-3 ml-sm-0">
                                                 <div class="numbers">
-                                                    <p class="card-category">{{ file.getName() }}</p>
+                                                    <p class="card-category">{{ file.getName()|truncate(20) }}</p>
                                                     <p class="card-category">{{ file.type }}</p>
                                                     <p class="card-category">{{ file.getSize() }}</p>
                                                 </div>
