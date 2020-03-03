@@ -226,17 +226,11 @@ class File extends Model
      */
     protected function isValidSizeAndFileExists(string $size): bool
     {
-        \RunTracy\Helpers\Profiler\Profiler::start('file:isValidSizeAndFileExists (%s)', $size);
-
-        $result = false;
-
         if (in_array($size, ['middle', 'small'])) {
-            $result = file_exists(UPLOAD_DIR . '/' . $this->salt . '/' . $size . '/' . $this->getName());
+            return file_exists(UPLOAD_DIR . '/' . $this->salt . '/' . $size . '/' . $this->getName());
         }
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('file:isValidSizeAndFileExists (%s)', $size);
-
-        return $result;
+        return false;
     }
 
     /**
@@ -275,11 +269,23 @@ class File extends Model
      */
     public function getPublicPath(string $size = '')
     {
-        if ($this->private) {
-            return '/file/get/' . $this->salt . '/' . $this->hash . ($size && $this->isValidSizeAndFileExists($size) ? '/' . $size : '');
+        static $buf;
+
+        $uuid = $this->uuid->toString();
+
+        if (!isset($buf[$uuid][$size])) {
+            \RunTracy\Helpers\Profiler\Profiler::start('file:getPublicPath (%s)', $size);
+
+            if ($this->private) {
+                $buf[$uuid][$size] = '/file/get/' . $this->salt . '/' . $this->hash . ($size && $this->isValidSizeAndFileExists($size) ? '/' . $size : '');
+            } else {
+                $buf[$uuid][$size] = '/uploads/' . $this->salt . ($size && $this->isValidSizeAndFileExists($size) ? '/' . $size : '') . '/' . $this->getName();
+            }
+
+            \RunTracy\Helpers\Profiler\Profiler::finish('file:getPublicPath (%s)', $size, ['uuid' => $uuid]);
         }
 
-        return '/uploads/' . $this->salt . ($size && $this->isValidSizeAndFileExists($size) ? '/' . $size : '') . '/' . $this->getName();
+        return $buf[$uuid][$size];
     }
 
     /**
