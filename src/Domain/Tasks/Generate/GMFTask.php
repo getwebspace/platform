@@ -54,7 +54,7 @@ class GMFTask extends Task
             $item = new Product();
 
             // Set common product properties
-            $item->setId($model->uuid->toString());
+            $item->setId(array_first(unpack('S', $model->uuid->getBytes())));
             $item->setTitle($model->title);
             if ($model->description) {
                 $item->setDescription($model->description);

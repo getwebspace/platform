@@ -54,8 +54,8 @@ class YMLTask extends Task
         foreach ($data['category'] as $model) {
             /** @var \App\Domain\Entities\Catalog\Category $model */
             $categories[] = (new Category())
-                ->setId($model->uuid->toString())
-                ->setParentId($model->parent->toString())
+                ->setId(array_first(unpack('S', $model->uuid->getBytes())))
+                ->setParentId(array_first(unpack('S', $model->parent->getBytes())))
                 ->setName($model->title);
         }
 
@@ -71,12 +71,12 @@ class YMLTask extends Task
             $url .= '/' . $model->address;
 
             $offers[] = (new OfferSimple())
-                ->setId($model->uuid->toString())
+                ->setId(array_first(unpack('S', $model->uuid->getBytes())))
                 ->setAvailable(!!$model->stock)
                 ->setUrl($url)
                 ->setPrice($model->price)
                 ->setCurrencyId($this->getParameter('integration_merchant_currency', 'RUB'))
-                ->setCategoryId($model->category->toString())
+                ->setCategoryId(array_first(unpack('S', $model->category->getBytes())))
                 ->setName($model->title);
         }
 
