@@ -44,8 +44,27 @@ class Product extends CatalogAction
             $criteria['category'] = $this->array_criteria($data['external_id']);
         }
 
-        return $this->respondWithData(
-            $this->productRepository->findBy($criteria, $data['order'], $data['limit'], $data['offset'])
-        );
+        $products = $this->productRepository->findBy($criteria, $data['order'], $data['limit'], $data['offset']);
+
+        /** @var \App\Domain\Entities\Catalog\Product $product */
+        foreach ($products as &$product) {
+            $files = [];
+
+            /** @var \App\Domain\Entities\File $file */
+            foreach ($product->getFiles() as $file) {
+                $files[] = [
+                    'full' => $file->getPublicPath('full'),
+                    'middle' => $file->getPublicPath('middle'),
+                    'small' => $file->getPublicPath('small'),
+                ];
+            }
+
+            $product = $product->toArray();
+            $product['files'] = $files;
+
+            unset($product['buf']);
+        }
+
+        return $this->respondWithData($products);
     }
 }

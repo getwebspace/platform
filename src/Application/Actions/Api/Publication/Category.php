@@ -28,8 +28,25 @@ class Category extends PublicationAction
             $criteria['address'] = $data['address'];
         }
 
-        return $this->respondWithData(
-            $this->categoryRepository->findBy($criteria, $data['order'], $data['limit'], $data['offset'])
-        );
+        $categories = $this->categoryRepository->findBy($criteria, $data['order'], $data['limit'], $data['offset']);
+
+        /** @var \App\Domain\Entities\Publication\Category $category */
+        foreach ($categories as &$category) {
+            $files = [];
+
+            /** @var \App\Domain\Entities\File $file */
+            foreach ($category->getFiles() as $file) {
+                $files[] = [
+                    'full' => $file->getPublicPath('full'),
+                    'middle' => $file->getPublicPath('middle'),
+                    'small' => $file->getPublicPath('small'),
+                ];
+            }
+
+            $category = $category->toArray();
+            $category['files'] = $files;
+        }
+
+        return $this->respondWithData($categories);
     }
 }

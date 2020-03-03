@@ -28,8 +28,27 @@ class Publication extends PublicationAction
             $criteria['address'] = $data['address'];
         }
 
-        return $this->respondWithData(
-            $this->publicationRepository->findBy($criteria, $data['order'], $data['limit'], $data['offset'])
-        );
+        $publications = $this->publicationRepository->findBy($criteria, $data['order'], $data['limit'], $data['offset']);
+
+        /** @var \App\Domain\Entities\Publication $publication */
+        foreach ($publications as &$publication) {
+            $files = [];
+
+            /** @var \App\Domain\Entities\File $file */
+            foreach ($publication->getFiles() as $file) {
+                $files[] = [
+                    'full' => $file->getPublicPath('full'),
+                    'middle' => $file->getPublicPath('middle'),
+                    'small' => $file->getPublicPath('small'),
+                ];
+            }
+
+            $publication = $publication->toArray();
+            $publication['files'] = $files;
+
+            unset($publication['poll']);
+        }
+
+        return $this->respondWithData($publications);
     }
 }

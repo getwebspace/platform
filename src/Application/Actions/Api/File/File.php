@@ -28,9 +28,7 @@ class File extends FileAction
 
         $files = $this->fileRepository->findBy($criteria, $data['order'], $data['limit'], $data['offset']);
 
-        /**
-         * @var \App\Domain\Entities\File $file
-         */
+        /** @var \App\Domain\Entities\File $file */
         foreach ($files as &$file) {
             $path = $file->getPublicPath();
 
@@ -44,6 +42,9 @@ class File extends FileAction
 
             $file = $file->toArray();
             $file['path'] = $path;
+
+            unset($file['item']);
+            unset($file['item_uuid']);
         }
 
         return $this->respondWithData($files);

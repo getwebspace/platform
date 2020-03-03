@@ -36,8 +36,27 @@ class Category extends CatalogAction
             $criteria['external_id'] = $this->array_criteria($data['external_id']);
         }
 
-        return $this->respondWithData(
-            $this->categoryRepository->findBy($criteria, $data['order'], $data['limit'], $data['offset'])
-        );
+        $categories = $this->categoryRepository->findBy($criteria, $data['order'], $data['limit'], $data['offset']);
+
+        /** @var \App\Domain\Entities\Catalog\Category $category */
+        foreach ($categories as &$category) {
+            $files = [];
+
+            /** @var \App\Domain\Entities\File $file */
+            foreach ($category->getFiles() as $file) {
+                $files[] = [
+                    'full' => $file->getPublicPath('full'),
+                    'middle' => $file->getPublicPath('middle'),
+                    'small' => $file->getPublicPath('small'),
+                ];
+            }
+
+            $category = $category->toArray();
+            $category['files'] = $files;
+
+            unset($category['buf']);
+        }
+
+        return $this->respondWithData($categories);
     }
 }
