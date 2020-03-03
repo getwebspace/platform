@@ -146,9 +146,9 @@ class File extends Model
                     'name' => $name,
                     'ext' => $ext,
                     'type' => $type,
-                    'size' => filesize($path),
+                    'size' => filesize($save),
                     'salt' => $salt,
-                    'hash' => sha1_file($path),
+                    'hash' => sha1_file($save),
                     'date' => new \DateTime(),
                 ]);
             }
