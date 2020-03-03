@@ -82,7 +82,7 @@ class DownloadImageTask extends Task
 
                             $this->setStatusDone();
                         } else {
-                            $this->logger->warning('TradeMaster: file not loaded (%s)', ['path' => $path]);
+                            $this->logger->warning('TradeMaster: file not loaded', ['path' => $path]);
                             $this->setStatusFail();
                         }
                     }

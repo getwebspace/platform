@@ -543,7 +543,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
         $result = collect($breadcrumb)->reverse();
 
-        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_breadcrumb');
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_breadcrumb');
 
         return $result;
     }
@@ -582,7 +582,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             $buf[$key] = $limit > 1 ? collect($repository->findBy($criteria, $order, $limit, $offset)) : $repository->findOneBy($criteria, $order);
         }
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_products', ['key' => $key]);
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_products (%s)', $key);
 
         return $buf[$key];
     }
@@ -627,7 +627,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             $buf[$key] = $limit > 1 ? collect($repository->findBy($criteria, $order, $limit, $offset)) : $repository->findOneBy($criteria, $order);
         }
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_product', ['key' => $key]);
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_product (%s)', $key);
 
         return $buf[$key];
     }
@@ -686,7 +686,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             $buf[$key] = collect($repository->findOneBy($criteria));
         }
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_order', ['key' => $key]);
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_order (%s)', $key);
 
         return $buf[$key];
     }
@@ -708,7 +708,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             'method' => $method,
         ]);
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:tm_api', ['endpoint' => $endpoint, 'params' => $params, 'method' => $method]);
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:tm_api (%s)', $endpoint, ['endpoint' => $endpoint, 'params' => $params, 'method' => $method]);
 
         return $result;
     }

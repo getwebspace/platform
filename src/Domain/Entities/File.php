@@ -222,14 +222,21 @@ class File extends Model
      * @param string $size
      *
      * @return bool
+     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
     protected function isValidSizeAndFileExists(string $size): bool
     {
+        \RunTracy\Helpers\Profiler\Profiler::start('file:isValidSizeAndFileExists (%s)', $size);
+
+        $result = false;
+
         if (in_array($size, ['middle', 'small'])) {
-            return file_exists(UPLOAD_DIR . '/' . $this->salt . '/' . $size . '/' . $this->getName());
+            $result = file_exists(UPLOAD_DIR . '/' . $this->salt . '/' . $size . '/' . $this->getName());
         }
 
-        return false;
+        \RunTracy\Helpers\Profiler\Profiler::finish('file:isValidSizeAndFileExists (%s)', $size);
+
+        return $result;
     }
 
     /**
@@ -238,6 +245,7 @@ class File extends Model
      * @param string|null $size
      *
      * @return string
+     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
     public function getDir(string $size = '')
     {
@@ -250,6 +258,7 @@ class File extends Model
      * @param string|null $size
      *
      * @return string
+     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
     public function getInternalPath(string $size = '')
     {
@@ -262,6 +271,7 @@ class File extends Model
      * @param string $size
      *
      * @return string
+     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
     public function getPublicPath(string $size = '')
     {
@@ -274,6 +284,7 @@ class File extends Model
 
     /**
      * Remove local files
+     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
     public function unlink()
     {
