@@ -67,7 +67,8 @@ class YMLTask extends Task
              */
             $category = $data['category']->firstWhere('uuid', $model->category);
 
-            $url = $this->getParameter('common_homepage', 'http://site.0x12f.com/') .
+            $homepage = $this->getParameter('common_homepage', 'http://site.0x12f.com/');
+            $url = $homepage .
                    $this->getParameter('catalog_address', 'catalog') . '/' .
                    ($category->address ? $category->address . '/' : '') .
                    $model->address;
@@ -84,7 +85,7 @@ class YMLTask extends Task
                     ) as $file
             ) {
                 /** @var \App\Domain\Entities\File $file */
-                $pictures[] = $file->getPublicPath();
+                $pictures[] = $homepage . $file->getPublicPath();
             }
 
             $offers[$this->get64BitNumber($model->uuid)] = (new OfferSimple())
