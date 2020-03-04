@@ -54,7 +54,7 @@ class GMFTask extends Task
             $item = new Product();
 
             // Set common product properties
-            $item->setId(array_first(unpack('S', $model->uuid->getBytes())));
+            $item->setId($this->get64BitNumber($model->uuid));
             $item->setTitle($model->title);
             if ($model->description) {
                 $item->setDescription($model->description);
@@ -87,5 +87,13 @@ class GMFTask extends Task
         file_put_contents(VAR_DIR . '/xml/gmf.xml', $feed->build());
 
         $this->setStatusDone();
+    }
+
+    protected function get64BitNumber(\Ramsey\Uuid\Uuid $uuid) {
+        if ($uuid->toString() !== \Ramsey\Uuid\Uuid::NIL) {
+            return crc32($uuid->getHex());
+        }
+
+        return null;
     }
 }
