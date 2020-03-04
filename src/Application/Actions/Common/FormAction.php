@@ -69,7 +69,7 @@ class FormAction extends Action
                     $this->response = $this->response->withHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
                 }
 
-                // mailto field prepare
+                // подготовка получателей
                 $mailto = [];
                 foreach (array_map('trim', $item->mailto) as $key => $value) {
                     $buf = array_map('trim', explode(':', $value));
@@ -83,7 +83,7 @@ class FormAction extends Action
 
                 $isHtml = true;
 
-                // mail body prepare
+                // подготовка тела письма
                 if ($item->template && $item->template != '<p><br></p>') {
                     $filter = new class($data) extends \Alksily\Validator\Filter
                     {
@@ -100,7 +100,7 @@ class FormAction extends Action
                     }
                 } else {
                     // no template, check post data for mail body
-                    if ($buf = $this->request->getParam('body', false)) {
+                    if (($buf = $this->request->getParam('body', false)) !== false) {
                         $body = $buf;
                     } else {
                         // json in mail
@@ -109,10 +109,7 @@ class FormAction extends Action
                     }
                 }
 
-                /**
-                 * подготовка запроса
-                 * @var \App\Domain\Entities\Form\Data $bufData
-                 */
+                // подготовка запроса
                 $bufData = new \App\Domain\Entities\Form\Data([
                     'form_uuid' => $item->uuid,
                     'message' => $body,
@@ -131,8 +128,9 @@ class FormAction extends Action
                                 !$file->getError() &&
                                 ($model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename())) !== null
                             ) {
+                                $bufData->addFile($model);
+
                                 if ($item->save_data === true) {
-                                    $bufData->addFile($model);
                                     $this->entityManager->persist($model);
                                 }
 
@@ -165,7 +163,7 @@ class FormAction extends Action
                 ]);
                 $this->entityManager->persist($notify);
 
-                // шлем пуш
+                // отправляем пуш
                 $this->container->get('pushstream')->send([
                     'group' => \App\Domain\Types\UserLevelType::LEVEL_ADMIN,
                     'content' => $notify,
