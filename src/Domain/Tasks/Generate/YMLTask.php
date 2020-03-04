@@ -53,31 +53,54 @@ class YMLTask extends Task
         $categories = [];
         foreach ($data['category'] as $model) {
             /** @var \App\Domain\Entities\Catalog\Category $model */
-            $categories[] = (new Category())
-                ->setId(array_first(unpack('S', $model->uuid->getBytes())))
-                ->setParentId(array_first(unpack('S', $model->parent->getBytes())))
+            $categories[$this->get64BitNumber($model->uuid)] = (new Category())
+                ->setId($this->get64BitNumber($model->uuid))
+                ->setParentId($this->get64BitNumber($model->parent))
                 ->setName($model->title);
         }
 
         $offers = [];
         foreach ($data['product'] as $model) {
-            /** @var \App\Domain\Entities\Catalog\Product $model */
+            /**
+             * @var \App\Domain\Entities\Catalog\Category $category
+             * @var \App\Domain\Entities\Catalog\Product $model
+             */
             $category = $data['category']->firstWhere('uuid', $model->category);
 
-            $url = $this->getParameter('common_homepage', 'http://site.0x12f.com/') . 'catalog/';
-            if ($category) {
-                $url .= $category->address;
-            }
-            $url .= '/' . $model->address;
+            $url = $this->getParameter('common_homepage', 'http://site.0x12f.com/') .
+                   $this->getParameter('catalog_address', 'catalog') . '/' .
+                   ($category->address ? $category->address . '/' : '') .
+                   $model->address;
 
-            $offers[] = (new OfferSimple())
-                ->setId(array_first(unpack('S', $model->uuid->getBytes())))
+            $pictures = [];
+
+            foreach (
+                $model->hasFiles() ?
+                    $model->getFiles() :
+                    (
+                        $category->hasFiles() ?
+                            $category->getFiles() :
+                            []
+                    ) as $file
+            ) {
+                /** @var \App\Domain\Entities\File $file */
+                $pictures[] = $file->getPublicPath();
+            }
+
+            $offers[$this->get64BitNumber($model->uuid)] = (new OfferSimple())
+                ->setId($this->get64BitNumber($model->uuid))
+                ->setVendor($model->manufacturer)
+                ->setVendorCode($model->vendorcode)
                 ->setAvailable(!!$model->stock)
                 ->setUrl($url)
                 ->setPrice($model->price)
                 ->setCurrencyId($this->getParameter('integration_merchant_currency', 'RUB'))
-                ->setCategoryId(array_first(unpack('S', $model->category->getBytes())))
-                ->setName($model->title);
+                ->setCategoryId($this->get64BitNumber($model->category))
+                ->setName($model->title)
+                ->setDescription(
+                    trim(strip_tags($model->description ? $model->description : ($model->extra ? $model->extra : '')))
+                )
+                ->setPictures($pictures);
         }
 
         $deliveries = [];
@@ -88,5 +111,13 @@ class YMLTask extends Task
         (new Generator($settings))->generate($shopInfo, $currencies, $categories, $offers, $deliveries);
 
         $this->setStatusDone();
+    }
+
+    protected function get64BitNumber(\Ramsey\Uuid\Uuid $uuid) {
+        if ($uuid->toString() !== \Ramsey\Uuid\Uuid::NIL) {
+            return crc32($uuid->getHex());
+        }
+
+        return null;
     }
 }
