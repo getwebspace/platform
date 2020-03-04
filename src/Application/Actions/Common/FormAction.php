@@ -39,6 +39,14 @@ class FormAction extends Action
             'address' => $this->resolveArg('unique'),
         ]);
 
+        if (
+            (
+                empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != 'XMLHttpRequest'
+            ) && !empty($_SERVER['HTTP_REFERER'])
+        ) {
+            $this->response = $this->response->withHeader('Location', $_SERVER['HTTP_REFERER'])->withStatus(301);
+        }
+
         if ($item) {
             if ($item->recaptcha === false || $this->isRecaptchaChecked()) {
                 $remote = $_SERVER['HTTP_ORIGIN'] ?? $_SERVER['HTTP_REFERER'] ?? false;
@@ -165,14 +173,6 @@ class FormAction extends Action
 
                 $this->entityManager->flush();
 
-                if (
-                    (
-                        empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != 'XMLHttpRequest'
-                    ) && !empty($_SERVER['HTTP_REFERER'])
-                ) {
-                    $this->response = $this->response->withHeader('Location', $_SERVER['HTTP_REFERER'])->withStatus(301);
-                }
-
                 // run worker
                 \App\Domain\Tasks\Task::worker();
 
@@ -180,8 +180,10 @@ class FormAction extends Action
             } else {
                 $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
             }
+        } else {
+            throw new HttpNotFoundException($this->request);
         }
 
-        throw new HttpNotFoundException($this->request);
+        return $this->response->withStatus(500);
     }
 }
