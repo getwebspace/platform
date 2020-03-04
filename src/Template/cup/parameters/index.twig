@@ -71,7 +71,7 @@
 
                                         {% include 'cup/field.twig' with {
                                             'label': 'Домашняя страница сайта',
-                                            'description': 'Укажите имя основного домена на котором располагается ваш сайт. Например: http://yoursite.com/',
+                                            'description': 'Укажите адрес главной страницы вашего сайта, включая слеш в конце. Например: http://yoursite.com/',
                                             'type': 'text',
                                             'name': 'common[homepage]',
                                         } %}
@@ -135,7 +135,7 @@
 
                                         {% include 'cup/field.twig' with {
                                             'label': 'Автоматически генерировать адреса',
-                                            'description': 'Адреса некоторых сущностей будут сгенерированы автоматически при создании',
+                                            'description': 'Адреса некоторых сущностей будут автоматически включать адрес категории',
                                             'type': 'select',
                                             'name': 'common[auto_generate_address]',
                                             'args': {
