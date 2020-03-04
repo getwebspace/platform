@@ -67,7 +67,7 @@ class YMLTask extends Task
              */
             $category = $data['category']->firstWhere('uuid', $model->category);
 
-            $homepage = rtrim($this->getParameter('common_homepage', 'http://site.0x12f.com/'));
+            $homepage = rtrim($this->getParameter('common_homepage', 'http://site.0x12f.com/'), '/');
             $url = $homepage . '/' .
                    $this->getParameter('catalog_address', 'catalog') . '/' .
                    ($category->address ? $category->address . '/' : '') .
