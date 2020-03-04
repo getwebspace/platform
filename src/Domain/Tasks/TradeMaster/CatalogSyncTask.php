@@ -135,12 +135,20 @@ class CatalogSyncTask extends Task
             } else {
                 $model->set('parent', \Ramsey\Uuid\Uuid::fromString(\Ramsey\Uuid\Uuid::NIL));
             }
+        }
 
-            $data = $model->toArray();
-            $result = \App\Domain\Filters\Catalog\Category::check($data);
+        // обрабатываем адреса
+        if ($this->getParameter('common_auto_generate_address', 'no') === 'yes') {
+            foreach ($categories as $model) {
+                /**
+                 * @var \App\Domain\Entities\Catalog\Category $category
+                 * @var \App\Domain\Entities\Catalog\Category $model
+                 */
+                $category = $categories->firstWhere('uuid', $model->parent);
 
-            if ($result === true) {
-                $model->replace($data);
+                if ($category && !str_starts_with($category->address, $model->address)) {
+                    $model->address = $category->address . '/' . $model->address;
+                }
             }
         }
     }
