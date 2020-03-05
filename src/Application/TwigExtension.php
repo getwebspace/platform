@@ -250,7 +250,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
      * @return string
      * @throws \Exception
      */
-    public function df($obj = 'now', $format = 'j-m-Y, H:i', $timezone = 'UTC')
+    public function df($obj = 'now', $format = null, $timezone = 'UTC')
     {
         if (is_string($obj) || is_numeric($obj)) {
             $obj = new \DateTime($obj);
@@ -259,8 +259,8 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         }
 
         return $obj
-            ->setTimezone($this->parameter('common_timezone', $timezone))
-            ->format($this->parameter('common_date_format', $format));
+            ->setTimezone(new \DateTimeZone($this->parameter('common_timezone', $timezone)))
+            ->format($format ? $format : $this->parameter('common_date_format', 'j-m-Y, H:i'));
     }
 
     public function collect(array $array = [])
