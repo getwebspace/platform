@@ -44,7 +44,7 @@ class CartAction extends CatalogAction
                     $model = new \App\Domain\Entities\Catalog\Order($data);
                     $this->entityManager->persist($model);
 
-                    // create notify
+                    // создаем уведомление
                     $notify = new \App\Domain\Entities\Notification([
                         'title' => 'Добавлен заказ: ' . $model->serial,
                         'message' => 'Поступил новый заказ, проверьте список заказов',
@@ -52,7 +52,7 @@ class CartAction extends CatalogAction
                     ]);
                     $this->entityManager->persist($notify);
 
-                    // send push stream
+                    // отправляем пуш
                     $this->container->get('pushstream')->send([
                         'group' => \App\Domain\Types\UserLevelType::LEVEL_ADMIN,
                         'content' => $notify,
@@ -60,13 +60,50 @@ class CartAction extends CatalogAction
 
                     $this->entityManager->flush();
 
-                    // if TM is enabled
+                    $isNeedRunWorker = false;
+
+                    // письмо администратору
+                    if (
+                        ($email = $this->getParameter('common_email', '')) !== '' &&
+                        ($tpl = $this->getParameter('catalog_mail_admin_template', '')) !== ''
+                    ) {
+                        // add task send admin mail
+                        $task = new \App\Domain\Tasks\SendMailTask($this->container);
+                        $task->execute([
+                            'to' => $email,
+                            'body' => $this->renderer->fetch($tpl, ['order' => $model]),
+                            'isHtml' => true,
+                        ]);
+                        $this->entityManager->flush();
+                        $isNeedRunWorker = true;
+                    }
+
+                    // письмо клиенту
+                    if (
+                        $model->email &&
+                        ($tpl = $this->getParameter('catalog_mail_client_template', '')) !== ''
+                    ) {
+                        // add task send client mail
+                        $task = new \App\Domain\Tasks\SendMailTask($this->container);
+                        $task->execute([
+                            'to' => $model->email,
+                            'body' => $this->renderer->fetch($tpl, ['order' => $model]),
+                            'isHtml' => true,
+                        ]);
+                        $this->entityManager->flush();
+                        $isNeedRunWorker = true;
+                    }
+
+                    // если включена TM отправляем заказ
                     if ($this->getParameter('integration_trademaster_enable', 'off') === 'on') {
                         // add task send to TradeMaster
                         $task = new \App\Domain\Tasks\TradeMaster\SendOrderTask($this->container);
                         $task->execute(['uuid' => $model->uuid]);
                         $this->entityManager->flush();
+                        $isNeedRunWorker = true;
+                    }
 
+                    if ($isNeedRunWorker) {
                         // run worker
                         \App\Domain\Tasks\Task::worker();
                     }

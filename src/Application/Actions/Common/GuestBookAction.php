@@ -40,7 +40,7 @@ class GuestBookAction extends Action
                     $model->status = \App\Domain\Types\GuestBookStatusType::STATUS_MODERATE;
                     $this->entityManager->persist($model);
 
-                    // create notify
+                    // создаем уведомление
                     $notify = new \App\Domain\Entities\Notification([
                         'title' => 'Добавлен отзыв',
                         'message' => 'Был добавлен отзыв в гостевой книге',
@@ -48,7 +48,7 @@ class GuestBookAction extends Action
                     ]);
                     $this->entityManager->persist($notify);
 
-                    // send push stream
+                    // отправляем пуш
                     $this->container->get('pushstream')->send([
                         'group' => \App\Domain\Types\UserLevelType::LEVEL_ADMIN,
                         'content' => $notify,

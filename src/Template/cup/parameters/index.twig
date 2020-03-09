@@ -112,6 +112,16 @@
                                         } %}
 
                                         {% include 'cup/field.twig' with {
+                                            'label': 'E-Mail администратора',
+                                            'description': 'Для получения писем от сайта',
+                                            'type': 'email',
+                                            'name': 'common[email]',
+                                            'args': {
+                                                'placeholder': 'admin@yoursite.com'
+                                            }
+                                        } %}
+
+                                        {% include 'cup/field.twig' with {
                                             'label': 'Часовой пояс',
                                             'description': 'Список поддерживаемых временных зон можно посмотреть <a href="https://www.php.net/manual/ru/timezones.php" target="_blank">тут</a>',
                                             'type': 'text',
@@ -383,117 +393,157 @@
 
                             {# TAB: Catalog #}
                             <div class="tab-pane fade" id="catalog" role="tabpanel">
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Адрес раздела',
-                                    'type': 'text',
-                                    'name': 'catalog[address]',
-                                    'prefix': base_url() ~ '/',
-                                    'args': {
-                                        'placeholder': 'catalog',
-                                        'value': 'catalog'
-                                    }
-                                } %}
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6">
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Адрес раздела',
+                                            'type': 'text',
+                                            'name': 'catalog[address]',
+                                            'prefix': base_url() ~ '/',
+                                            'args': {
+                                                'placeholder': 'catalog',
+                                                'value': 'catalog'
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6">
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Количество товаров на страницу',
+                                            'description': 'Значение по-умолчанию, так же это значение будет использовано для ограничения количества товаров на главной странице',
+                                            'type': 'number',
+                                            'name': 'catalog[category_pagination]',
+                                            'args': {
+                                                'placeholder': '10',
+                                                'value': '10'
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
 
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Шаблон раздела',
-                                    'description': 'Значение по-умолчанию, так же это значение будет использовано для главной страницы каталога',
-                                    'type': 'text',
-                                    'name': 'catalog[category_template]',
-                                    'args': {
-                                        'placeholder': 'catalog.category.twig',
-                                        'value': 'catalog.category.twig'
-                                    }
-                                } %}
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6">
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Шаблон раздела',
+                                            'description': 'Значение по-умолчанию, так же это значение будет использовано для главной страницы каталога',
+                                            'type': 'text',
+                                            'name': 'catalog[category_template]',
+                                            'args': {
+                                                'placeholder': 'catalog.category.twig',
+                                                'value': 'catalog.category.twig'
+                                            }
+                                        } %}
 
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Шаблон товара',
-                                    'description': 'Значение по-умолчанию',
-                                    'type': 'text',
-                                    'name': 'catalog[product_template]',
-                                    'args': {
-                                        'placeholder': 'catalog.product.twig',
-                                        'value': 'catalog.product.twig'
-                                    }
-                                } %}
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Шаблон товара',
+                                            'description': 'Значение по-умолчанию',
+                                            'type': 'text',
+                                            'name': 'catalog[product_template]',
+                                            'args': {
+                                                'placeholder': 'catalog.product.twig',
+                                                'value': 'catalog.product.twig'
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6">
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Шаблон корзины',
+                                            'description': 'Значение по-умолчанию',
+                                            'type': 'text',
+                                            'name': 'catalog[cart_template]',
+                                            'args': {
+                                                'placeholder': 'catalog.cart.twig',
+                                                'value': 'catalog.cart.twig'
+                                            }
+                                        } %}
 
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Шаблон корзины',
-                                    'description': 'Значение по-умолчанию',
-                                    'type': 'text',
-                                    'name': 'catalog[cart_template]',
-                                    'args': {
-                                        'placeholder': 'catalog.cart.twig',
-                                        'value': 'catalog.cart.twig'
-                                    }
-                                } %}
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Шаблон заказа',
+                                            'description': 'Значение по-умолчанию',
+                                            'type': 'text',
+                                            'name': 'catalog[cart_complete_template]',
+                                            'args': {
+                                                'placeholder': 'catalog.cart.complete.twig',
+                                                'value': 'catalog.cart.complete.twig'
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
 
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Шаблон заказа',
-                                    'description': 'Значение по-умолчанию',
-                                    'type': 'text',
-                                    'name': 'catalog[cart_complete_template]',
-                                    'args': {
-                                        'placeholder': 'catalog.cart.complete.twig',
-                                        'value': 'catalog.cart.complete.twig'
-                                    }
-                                } %}
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6">
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Шаблон письма клиенту',
+                                            'type': 'text',
+                                            'name': 'catalog[mail_client_template]',
+                                            'args': {
+                                                'placeholder': 'catalog.mail.client.twig',
+                                                'value': 'catalog.mail.client.twig'
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6">
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Шаблон письма администратору',
+                                            'type': 'text',
+                                            'name': 'catalog[mail_admin_template]',
+                                            'args': {
+                                                'placeholder': 'catalog.mail.admin.twig',
+                                                'value': 'catalog.mail.admin.twig'
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
 
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Количество товаров на страницу',
-                                    'description': 'Значение по-умолчанию, так же это значение будет использовано для ограничения количества товаров на главной странице',
-                                    'type': 'number',
-                                    'name': 'catalog[category_pagination]',
-                                    'args': {
-                                        'placeholder': '10',
-                                        'value': '10'
-                                    }
-                                } %}
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6">
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Дополнительное поле',
+                                            'description': 'Поле 1',
+                                            'type': 'text',
+                                            'name': 'catalog[category_field_1]',
+                                            'args': {
+                                                'placeholder': 'Поле 1',
+                                                'value': 'Поле 1'
+                                            }
+                                        } %}
 
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Список единиц измерения',
-                                    'description': 'Каждая единица измерения на новой строке',
-                                    'type': 'textarea',
-                                    'name': 'catalog[measure]',
-                                    'message': 'Формат записи: [сокращение]: [за 1]; [за 2]; [за 5] ',
-                                    'args': {
-                                        'placeholder': 'кг: килограмм; килограмма; килограмм',
-                                        'value': 'кг: килограмм; килограмма; килограмм',
-                                        'style': 'min-height: 150px;'
-                                    }
-                                } %}
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Дополнительное поле',
+                                            'description': 'Поле 2',
+                                            'type': 'text',
+                                            'name': 'catalog[category_field_2]',
+                                            'args': {
+                                                'placeholder': 'Поле 2',
+                                                'value': 'Поле 2'
+                                            }
+                                        } %}
 
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Название дополнительного поля 1',
-                                    'description': 'Индивидуальное поле',
-                                    'type': 'text',
-                                    'name': 'catalog[category_field_1]',
-                                    'args': {
-                                        'placeholder': 'Поле 1',
-                                        'value': 'Поле 1'
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Название дополнительного поля 2',
-                                    'description': 'Индивидуальное поле',
-                                    'type': 'text',
-                                    'name': 'catalog[category_field_2]',
-                                    'args': {
-                                        'placeholder': 'Поле 2',
-                                        'value': 'Поле 2'
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Название дополнительного поля 3',
-                                    'description': 'Индивидуальное поле',
-                                    'type': 'text',
-                                    'name': 'catalog[category_field_3]',
-                                    'args': {
-                                        'placeholder': 'Поле 3',
-                                        'value': 'Поле 3'
-                                    }
-                                } %}
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Дополнительное поле',
+                                            'description': 'Поле 3',
+                                            'type': 'text',
+                                            'name': 'catalog[category_field_3]',
+                                            'args': {
+                                                'placeholder': 'Поле 3',
+                                                'value': 'Поле 3'
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6">
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Список единиц измерения',
+                                            'description': 'Каждая единица измерения на новой строке',
+                                            'type': 'textarea',
+                                            'name': 'catalog[measure]',
+                                            'message': 'Формат записи: [сокращение]: [за 1]; [за 2]; [за 5] ',
+                                            'args': {
+                                                'placeholder': 'кг: килограмм; килограмма; килограмм',
+                                                'value': 'кг: килограмм; килограмма; килограмм',
+                                                'style': 'min-height: 150px;'
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
                             </div>
 
                             {# TAB: Guestbook #}
