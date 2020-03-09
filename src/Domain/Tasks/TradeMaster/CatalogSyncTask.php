@@ -64,13 +64,13 @@ class CatalogSyncTask extends Task
             \RunTracy\Helpers\Profiler\Profiler::start('task:tm:remove');
             $this->remove($catalog['categories'], $catalog['products']);
             \RunTracy\Helpers\Profiler\Profiler::finish('task:tm:remove');
+
+            $this->setStatusDone();
         } catch (\Exception $exception) {
             $this->setStatusFail();
 
             return;
         }
-
-        $this->setStatusDone();
     }
 
     protected function category(Collection &$categories)
@@ -211,12 +211,22 @@ class CatalogSyncTask extends Task
                         'buf' => 1,
                     ];
 
+                    /**
+                     * @var \App\Domain\Entities\Catalog\Category $category
+                     * @var \App\Domain\Entities\Catalog\Product $model
+                     */
                     $model = $products->firstWhere('external_id', $item['idTovar']);
                     if (!$model) {
                         $products[] = $model = new \App\Domain\Entities\Catalog\Product();
                     }
-                    $category = $categories->firstWhere('external_id', $item['vStrukture']);
-                    $data['category'] = $category ? $category->get('uuid') : \Ramsey\Uuid\Uuid::fromString(\Ramsey\Uuid\Uuid::NIL);
+
+                    if (($category = $categories->firstWhere('external_id', $item['vStrukture'])) !== null) {
+                        $data['category'] = $category->uuid;
+
+                        if ($this->getParameter('common_auto_generate_address', 'no') === 'yes') {
+                            $data['address'] = $category->address . '/' . $data['address'];
+                        }
+                    }
 
                     $result = \App\Domain\Filters\Catalog\Product::check($data);
 
