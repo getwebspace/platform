@@ -220,17 +220,17 @@ class CatalogSyncTask extends Task
                         $products[] = $model = new \App\Domain\Entities\Catalog\Product();
                     }
 
-                    if (($category = $categories->firstWhere('external_id', $item['vStrukture'])) !== null) {
-                        $data['category'] = $category->uuid;
-
-                        if ($this->getParameter('common_auto_generate_address', 'no') === 'yes') {
-                            $data['address'] = $category->address . '/' . $data['address'];
-                        }
-                    }
-
                     $result = \App\Domain\Filters\Catalog\Product::check($data);
 
                     if ($result === true) {
+                        if (($category = $categories->firstWhere('external_id', $item['vStrukture'])) !== null) {
+                            $data['category'] = $category->uuid;
+
+                            if ($this->getParameter('common_auto_generate_address', 'no') === 'yes') {
+                                $data['address'] = $category->address . '/' . $data['address'];
+                            }
+                        }
+
                         $model->replace($data);
                         $this->entityManager->persist($model);
 
