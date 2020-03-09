@@ -185,7 +185,7 @@ class CatalogSyncTask extends Task
                         'order' => $item['poryadok'],
                         'description' => urldecode($item['opisanie']),
                         'extra' => urldecode($item['opisanieDop']),
-                        'address' => $item['link'],
+                        'address' => '',
                         'field1' => $item['ind1'],
                         'field2' => $item['ind2'],
                         'field3' => $item['ind3'],
