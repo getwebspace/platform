@@ -45,7 +45,9 @@ class YMLTask extends Task
         $shopInfo
             ->setName($this->getParameter('integration_merchant_shop_title', 'Shop on WebSpace Engine CMS'))
             ->setCompany($this->getParameter('integration_merchant_company_title', 'My own company'))
-            ->setUrl($this->getParameter('common_homepage', 'http://site.0x12f.com'));
+            ->setUrl($this->getParameter('common_homepage', 'http://site.0x12f.com'))
+            ->setEmail($this->getParameter('common_email', null))
+            ->setPlatform('WebSpace Engine CMS');
 
         $currencies = [];
         $currencies[] = (new Currency())->setId($this->getParameter('integration_merchant_currency', 'RUB'))->setRate(1);
