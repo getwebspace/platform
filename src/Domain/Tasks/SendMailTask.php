@@ -9,7 +9,7 @@ class SendMailTask extends Task
     public function execute(array $params = []): \App\Domain\Entities\Task
     {
         $default = [
-            'subject' => 'WebSpaceEngine | Default subject',
+            'subject' => '',
             'to' => '', // string|array(address=>name)
             'cc' => '', // string|array(address=>name)
             'bcc' => '', // string|array(address=>name)
@@ -31,11 +31,18 @@ class SendMailTask extends Task
                     'smtp_login', 'smtp_pass',
                     'smtp_host', 'smtp_port',
                     'smtp_secure',
-                    'subject',
                 ]
             ),
-            $args,
-            ['auto_send' => true]
+            [
+                'subject' => $args['subject'] ? $args['subject'] : $this->getParameter('subject', 'WebSpaceEngine | Default subject'),
+                'to' => $args['to'],
+                'cc' => $args['cc'],
+                'bcc' => $args['bcc'],
+                'body' => $args['body'],
+                'isHtml' => (bool)$args['isHtml'],
+                'attachments' => (array)$args['attachments'],
+                'auto_send' => true,
+            ]
         );
 
         if ($args['smtp_host'] && $args['smtp_login'] && $args['smtp_pass']) {
