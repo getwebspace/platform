@@ -140,34 +140,48 @@
                                                     {# Tab: Статистика #}
                                                     <div class="tab-pane fade show active" id="stats" role="tabpanel">
                                                         <table class="table table-stats">
-                                                            <tr>
-                                                                <th width="50%">Количество страниц:</th>
-                                                                <td width="50%">{{ stats.pages }}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th width="50%">Количество публикаций:</th>
-                                                                <td width="50%">{{ stats.publications }}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th width="50%">Количество отзвывов:</th>
-                                                                <td width="50%">{{ stats.guestbook }}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th width="50%">Количество пользователей:</th>
-                                                                <td width="50%">{{ stats.users }}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th width="50%">Количество категорий и товаров:</th>
-                                                                <td width="50%">{{ stats.catalog.category }} | {{ stats.catalog.product }}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th width="50%">Количество заказов:</th>
-                                                                <td width="50%">{{ stats.catalog.order }}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th width="50%">Количество файлов:</th>
-                                                                <td width="50%">{{ stats.files }}</td>
-                                                            </tr>
+                                                            {% if stats.pages %}
+                                                                <tr>
+                                                                    <th width="50%">Количество страниц:</th>
+                                                                    <td width="50%">{{ stats.pages }}</td>
+                                                                </tr>
+                                                            {% endif %}
+                                                            {% if stats.publications %}
+                                                                <tr>
+                                                                    <th width="50%">Количество публикаций:</th>
+                                                                    <td width="50%">{{ stats.publications }}</td>
+                                                                </tr>
+                                                            {% endif %}
+                                                            {% if stats.guestbook %}
+                                                                <tr>
+                                                                    <th width="50%">Количество отзвывов:</th>
+                                                                    <td width="50%">{{ stats.guestbook }}</td>
+                                                                </tr>
+                                                            {% endif %}
+                                                            {% if stats.users %}
+                                                                <tr>
+                                                                    <th width="50%">Количество пользователей:</th>
+                                                                    <td width="50%">{{ stats.users }}</td>
+                                                                </tr>
+                                                            {% endif %}
+                                                            {% if stats.catalog.category or stats.catalog.product %}
+                                                                <tr>
+                                                                    <th width="50%">Количество категорий и товаров:</th>
+                                                                    <td width="50%">{{ stats.catalog.category }} | {{ stats.catalog.product }}</td>
+                                                                </tr>
+                                                            {% endif %}
+                                                            {% if stats.catalog.order %}
+                                                                <tr>
+                                                                    <th width="50%">Количество заказов:</th>
+                                                                    <td width="50%">{{ stats.catalog.order }}</td>
+                                                                </tr>
+                                                            {% endif %}
+                                                            {% if stats.files %}
+                                                                <tr>
+                                                                    <th width="50%">Количество файлов:</th>
+                                                                    <td width="50%">{{ stats.files }}</td>
+                                                                </tr>
+                                                            {% endif %}
                                                         </table>
                                                     </div>
 
@@ -211,14 +225,18 @@
                                                                 <th width="50%">Выделено ОЗУ:</th>
                                                                 <td width="50%">{{ properties.memory_limit }}</td>
                                                             </tr>
-                                                            <tr>
-                                                                <th width="50%">Отключенные функции:</th>
-                                                                <td width="50%">{{ properties.disable_functions }}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th width="50%">Отключенные классы:</th>
-                                                                <td width="50%">{{ properties.disable_classes }}</td>
-                                                            </tr>
+                                                            {% if properties.disable_functions %}
+                                                                <tr>
+                                                                    <th width="50%">Отключенные функции:</th>
+                                                                    <td width="50%">{{ properties.disable_functions }}</td>
+                                                                </tr>
+                                                            {% endif %}
+                                                            {% if properties.disable_classes %}
+                                                                <tr>
+                                                                    <th width="50%">Отключенные классы:</th>
+                                                                    <td width="50%">{{ properties.disable_classes }}</td>
+                                                                </tr>
+                                                            {% endif %}
                                                             <tr>
                                                                 <th width="50%">Максимальный размер загружаемого файла:</th>
                                                                 <td width="50%">{{ properties.upload_max_filesize }}</td>
