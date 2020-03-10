@@ -209,10 +209,7 @@ $app->group('/user', function (App $app) {
         ->setName('user')
         ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
 
-    $app
-        ->map(['get', 'post'], '/logout', \App\Application\Actions\Common\User\UserLogoutAction::class)
-        ->setName('user')
-        ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+    $app->map(['get', 'post'], '/logout', \App\Application\Actions\Common\User\UserLogoutAction::class);
 
     $app
         ->map(['get', 'post'], '/profile', \App\Application\Actions\Common\User\UserProfileAction::class)
