@@ -3,6 +3,16 @@
 {% block title %}Заказ {{ order.serial }} {{ order.external_id ? '(' ~ order.external_id ~ ')' : '' }} | {{ parent() }}{% endblock %}
 
 {% block page %}
+    <script>
+        window.catalog = {
+            events: {
+                'on:ready': (data, cart, obj) => {
+                    obj.cartRemoveAllProducts();
+                }
+            }
+        }
+    </script>
+
     <div class="page-top-info">
         <div class="container">
             <h4>Заказ</h4>
