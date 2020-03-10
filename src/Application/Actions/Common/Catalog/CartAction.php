@@ -67,11 +67,13 @@ class CartAction extends CatalogAction
                         ($email = $this->getParameter('common_email', '')) !== '' &&
                         ($tpl = $this->getParameter('catalog_mail_admin_template', '')) !== ''
                     ) {
+                        $products = collect($this->productRepository->findBy(['uuid' => array_keys($model->list)]));
+
                         // add task send admin mail
                         $task = new \App\Domain\Tasks\SendMailTask($this->container);
                         $task->execute([
                             'to' => $email,
-                            'body' => $this->render($tpl, ['order' => $model]),
+                            'body' => $this->render($tpl, ['order' => $model, 'products' => $products]),
                             'isHtml' => true,
                         ]);
                         $this->entityManager->flush();
@@ -83,11 +85,13 @@ class CartAction extends CatalogAction
                         $model->email &&
                         ($tpl = $this->getParameter('catalog_mail_client_template', '')) !== ''
                     ) {
+                        $products = collect($this->productRepository->findBy(['uuid' => array_keys($model->list)]));
+
                         // add task send client mail
                         $task = new \App\Domain\Tasks\SendMailTask($this->container);
                         $task->execute([
                             'to' => $model->email,
-                            'body' => $this->render($tpl, ['order' => $model]),
+                            'body' => $this->render($tpl, ['order' => $model, 'products' => $products]),
                             'isHtml' => true,
                         ]);
                         $this->entityManager->flush();
