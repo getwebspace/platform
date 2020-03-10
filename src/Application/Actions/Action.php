@@ -275,8 +275,8 @@ abstract class Action
      * @param array  $data
      *
      * @return string
-     * @throws \Twig\Error\LoaderError
      * @throws HttpBadRequestException
+     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
     protected function render($template, array $data = [])
     {
