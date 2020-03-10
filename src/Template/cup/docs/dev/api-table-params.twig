@@ -1,20 +1,26 @@
-<table class="table">
-    <tr>
-        <th>Параметр</th>
-        <th>Описание</th>
-    </tr>
-    {% for item in list %}
-        <tr>
-            <td>{{ item.key }} {{ item.requried ? '<b>*</b>'|raw : '' }}</td>
-            <td>
-                {{ item.description|raw }}
-                {% if item.default %}
-                    <span class="d-block text-muted">по-умолчанию: {{ item.default }}</span>
-                {% endif %}
-            </td>
-        </tr>
-    {% endfor %}
-    <tr>
-        <td class="text-center" colspan="2"><span class="d-block text-muted">* - обязательный параметр запроса</span></td>
-    </tr>
-</table>
+<div class="row">
+    <div class="col-12" style="overflow-x: scroll;">
+        <table class="table">
+            <tr>
+                <th>Параметр</th>
+                <th>Описание</th>
+            </tr>
+            {% for item in list %}
+                <tr>
+                    <td>{{ item.key }} {{ item.requried ? '<b>*</b>'|raw : '' }}</td>
+                    <td>
+                        {{ item.description|raw }}
+                        {% if item.default %}
+                            <span class="d-block text-muted">по-умолчанию: {{ item.default }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr>
+                <td class="text-center" colspan="2">
+                    <span class="d-block text-muted">* - обязательный параметр запроса</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

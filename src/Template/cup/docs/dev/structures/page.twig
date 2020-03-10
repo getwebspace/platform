@@ -5,6 +5,7 @@
 
     <ul class="mt-3 mb-3">
         <li>Поля</li>
+        <li>Методы</li>
     </ul>
 
     <h4>Поля</h4>
@@ -58,6 +59,41 @@
                 "type": "String(50)",
                 "description": "Шаблон",
                 "null": true,
+            },
+        ])
+    } %}
+
+    <h4>Методы</h4>
+    {% include "cup/docs/dev/structures-table-methods.twig" with {
+        "list": collect([
+            {
+                "signature": "addFile(App\\Domain\\Entities\\File $file)",
+                "description": "Добавление файла",
+            },
+            {
+                "signature": "addFiles(array $files)",
+                "description": "Добавление нескольких файлов",
+            },
+            {
+                "signature": "removeFile(App\\Domain\\Entities\\File $file)",
+                "description": "Удаление файла",
+            },
+            {
+                "signature": "removeFiles(array $files)",
+                "description": "Удаление нескольких файлов",
+            },
+            {
+                "signature": "clearFiles()",
+                "description": "Удаление всех файлов",
+            },
+            {
+                "signature": "getFiles($raw = false)",
+                "description": "Получение списка файлов",
+                "args": {"raw": ['true - вернет array', 'false - вернет Collection']},
+            },
+            {
+                "signature": "hasFiles()",
+                "description": "Вернет true если есть файлы",
             },
         ])
     } %}

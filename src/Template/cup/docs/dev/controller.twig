@@ -1,0 +1,77 @@
+<div class="card">
+    <div class="card-header collapsed" id="controllerCollapseHeading" data-toggle="collapse" data-target="#controllerCollapse">
+        <div class="span-icon">
+            <div class="flaticon-box-1"></div>
+        </div>
+        <div class="span-title">
+            Контроллеры и переменные
+        </div>
+        <div class="span-mode"></div>
+    </div>
+
+    <div id="controllerCollapse" class="collapse" data-parent="#accordion">
+        <div class="card-body">
+            <p>
+                Здесь содержится описание работы с контроллерами.<br>
+                1. параметры которые возможно передать в контроллер;<br>
+                2. переменные которые передаются в шаблоны в процессе работы контроллера;
+            </p>
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-5 col-md-4">
+                    <div class="nav flex-column nav-pills nav-secondary" id="pills-tab" role="tablist">
+                        <a class="nav-link" id="v-controller-tab-" data-toggle="pill" href="#v-controller-mainpage">Главная страница</a>
+                        <a class="nav-link" id="v-controller-tab-" data-toggle="pill" href="#v-controller-dynamicpage">Динамическая страница</a>
+                        <a class="nav-link" id="v-controller-tab-" data-toggle="pill" href="#v-controller-guestbook">Гостевая книга</a>
+                        <a class="nav-link" id="v-controller-tab-" data-toggle="pill" href="#v-controller-catalog-list">Каталог</a>
+                        <a class="nav-link" id="v-controller-tab-" data-toggle="pill" href="#v-controller-catalog-cart">Каталог: Корзина</a>
+                        <a class="nav-link" id="v-controller-tab-" data-toggle="pill" href="#v-controller-catalog-cart-done">Каталог: Заказ</a>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-7 col-md-8 mt-5 mt-sm-0">
+                    <div class="tab-content">
+                        <div class="tab-pane fade" id="v-controller-mainpage">
+                            {% include 'cup/docs/dev/controller/mainpage.twig' %}
+                        </div>
+                        <div class="tab-pane fade" id="v-controller-dynamicpage">
+                            {% include 'cup/docs/dev/controller/dynamicpage.twig' %}
+                        </div>
+                        <div class="tab-pane fade" id="v-controller-guestbook">
+                            {% include 'cup/docs/dev/controller/guestbook.twig' %}
+                        </div>
+                        <div class="tab-pane fade" id="v-controller-catalog-list">
+                            {% include 'cup/docs/dev/controller/catalog.list.twig' %}
+                        </div>
+                        <div class="tab-pane fade" id="v-controller-catalog-cart">
+                            {% include 'cup/docs/dev/controller/catalog.cart.twig' %}
+                        </div>
+                        <div class="tab-pane fade" id="v-controller-catalog-cart-done">
+                            {% include 'cup/docs/dev/controller/catalog.cart.done.twig' %}
+                        </div>
+                    </div>
+
+                    <h4>Переменные доступные во всех контроллерах</h4>
+                    {% include "cup/docs/dev/controller-table-vars.twig" with {
+                        "list": collect([
+                            {
+                                "field": "_request",
+                                "type": "array",
+                                "description": "$_REQUEST",
+                            },
+                            {
+                                "field": "_error",
+                                "type": "array",
+                                "description": "Массив полей с ошибками",
+                            },
+                            {
+                                "field": "user",
+                                "type": "App\\Domain\\Entities\\User | false",
+                                "description": "Текущий пользователь или false",
+                            },
+                        ])
+                    } %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

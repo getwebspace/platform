@@ -2,20 +2,23 @@
     <div class="col-12" style="overflow-x: scroll;">
         <table class="table">
             <tr>
-                <th style="width: 30%;">Сигнатура</th>
+                <th>Параметр</th>
+                <th>Тип</th>
                 <th>Описание</th>
             </tr>
             {% for item in list %}
                 <tr>
-                    <td>{{ item.signature }}</td>
+                    <td>{{ item.field }}</td>
+                    <td>{{ item.type }}</td>
                     <td>
                         {{ item.description|raw }}
                         {% if item.args %}
-                            {% for key, args in item.args %}
-                                <span class="d-block text-muted">
-                                    {{ key }}
-                                    <ul class="d-block text-muted">{% for arg in args %}<li>{{ arg }}</li>{% endfor %}</ul>
-                                </span>
+                            {% for key, desc in item.args %}
+                                {% if key is same as(loop.index0) %}
+                                    <br><b>{{ desc }}</b>
+                                {% else %}
+                                    <br><b>{{ key }}</b> - {{ desc }}
+                                {% endif %}
                             {% endfor %}
                         {% endif %}
                     </td>

@@ -95,9 +95,9 @@ class DynamicPageAction extends Action
                 $publication = $this->publicationRepository->findOneBy(['address' => $path]);
 
                 return $this->respondRender($category->template['full'], [
-                    'publication' => $publication,
                     'categories' => $categories->where('public', true),
                     'category' => $category,
+                    'publication' => $publication,
                 ]);
             }
         }

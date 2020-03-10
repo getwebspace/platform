@@ -473,22 +473,22 @@
                                     <div class="col-xs-12 col-sm-6">
                                         {% include 'cup/field.twig' with {
                                             'label': 'Шаблон письма клиенту',
+                                            'description': 'Если значения нет, письмо не будет отправляться',
                                             'type': 'text',
                                             'name': 'catalog[mail_client_template]',
                                             'args': {
-                                                'placeholder': 'catalog.mail.client.twig',
-                                                'value': 'catalog.mail.client.twig'
+                                                'placeholder': 'catalog.mail.client.twig'
                                             }
                                         } %}
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
                                         {% include 'cup/field.twig' with {
                                             'label': 'Шаблон письма администратору',
+                                            'description': 'Если значения нет, письмо не будет отправляться',
                                             'type': 'text',
                                             'name': 'catalog[mail_admin_template]',
                                             'args': {
-                                                'placeholder': 'catalog.mail.admin.twig',
-                                                'value': 'catalog.mail.admin.twig'
+                                                'placeholder': 'catalog.mail.admin.twig'
                                             }
                                         } %}
                                     </div>

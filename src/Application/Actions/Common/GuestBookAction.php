@@ -71,13 +71,13 @@ class GuestBookAction extends Action
             }
         }
 
-        // get list of comments and obfuscate email address
+        $pagination = $this->getParameter('guestbook_pagination', 10);
+
+        // получение списка и обфускация адресов
         $list = collect(
             $this->gbookRepository->findBy(
                 ['status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK],
-                [],
-                $this->getParameter('guestbook_pagination', 10),
-                (int)($this->args['page'] ?? 0)
+                [], $pagination, (int)($this->args['page'] ?? 0)
             )
         )->map(
             function ($el) {
@@ -93,6 +93,12 @@ class GuestBookAction extends Action
             }
         );
 
-        return $this->respondRender($this->getParameter('guestbook_template', 'guestbook.twig'), ['messages' => $list]);
+        return $this->respondRender($this->getParameter('guestbook_template', 'guestbook.twig'), [
+            'messages' => $list,
+            'pagination' => [
+                'count' => $this->gbookRepository->count(['status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK]),
+                'page' => $pagination,
+            ],
+        ]);
     }
 }
