@@ -83,6 +83,16 @@ class ListAction extends CatalogAction
                         ->setParameter('maxPrice', (int)$price['max'], \Doctrine\DBAL\Types\Type::INTEGER);
                 }
             }
+            if (($country = $this->request->getParam('country', false)) !== false) {
+                $query
+                    ->andWhere('p.country = :country')
+                    ->setParameter('country', str_escape($country), \Doctrine\DBAL\Types\Type::STRING);
+            }
+            if (($manufacturer = $this->request->getParam('manufacturer', false)) !== false) {
+                $query
+                    ->andWhere('p.manufacturer = :manufacturer')
+                    ->setParameter('manufacturer', str_escape($manufacturer), \Doctrine\DBAL\Types\Type::STRING);
+            }
             if (($order = $this->request->getParam('order', false)) !== false) {
                 $direction = $this->request->getParam('direction', 'asc');
 
@@ -172,6 +182,16 @@ class ListAction extends CatalogAction
                         ->andWhere('p.price <= :maxPrice')
                         ->setParameter('maxPrice', (int)$price['max'], \Doctrine\DBAL\Types\Type::INTEGER);
                 }
+            }
+            if (($country = $this->request->getParam('country', false)) !== false) {
+                $query
+                    ->andWhere('p.country = :country')
+                    ->setParameter('country', str_escape($country), \Doctrine\DBAL\Types\Type::STRING);
+            }
+            if (($manufacturer = $this->request->getParam('manufacturer', false)) !== false) {
+                $query
+                    ->andWhere('p.manufacturer = :manufacturer')
+                    ->setParameter('manufacturer', str_escape($manufacturer), \Doctrine\DBAL\Types\Type::STRING);
             }
             if (($order = $this->request->getParam('order', false)) !== false) {
                 $direction = $this->request->getParam('direction', 'asc');
