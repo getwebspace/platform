@@ -54,7 +54,7 @@ class GMFTask extends Task
             $item = new Product();
 
             // Set common product properties
-            $item->setId($this->get64BitNumber($model->uuid));
+            $item->setId($this->getCrc32($model->uuid));
             $item->setTitle($model->title);
             if ($model->description) {
                 $item->setDescription($model->description);
@@ -89,7 +89,7 @@ class GMFTask extends Task
         $this->setStatusDone();
     }
 
-    protected function get64BitNumber(\Ramsey\Uuid\Uuid $uuid) {
+    protected function getCrc32(\Ramsey\Uuid\Uuid $uuid) {
         if ($uuid->toString() !== \Ramsey\Uuid\Uuid::NIL) {
             return crc32($uuid->getHex());
         }

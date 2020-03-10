@@ -53,9 +53,9 @@ class YMLTask extends Task
         $categories = [];
         foreach ($data['category'] as $model) {
             /** @var \App\Domain\Entities\Catalog\Category $model */
-            $categories[$this->get64BitNumber($model->uuid)] = (new Category())
-                ->setId($this->get64BitNumber($model->uuid))
-                ->setParentId($this->get64BitNumber($model->parent))
+            $categories[$this->getCrc32($model->uuid)] = (new Category())
+                ->setId($this->getCrc32($model->uuid))
+                ->setParentId($this->getCrc32($model->parent))
                 ->setName($model->title);
         }
 
@@ -84,18 +84,18 @@ class YMLTask extends Task
                 $pictures[] = $homepage . $file->getPublicPath();
             }
 
-            $offers[$this->get64BitNumber($model->uuid)] = (new OfferSimple())
-                ->setId($this->get64BitNumber($model->uuid))
-                ->setVendor($model->manufacturer)
-                ->setVendorCode($model->vendorcode)
+            $offers[$this->getCrc32($model->uuid)] = (new OfferSimple())
+                ->setId($this->getCrc32($model->uuid))
+                ->setVendor($model->manufacturer ? $model->manufacturer : null)
+                ->setVendorCode($model->vendorcode ? $model->vendorcode : null)
                 ->setAvailable(!!$model->stock)
                 ->setUrl($url)
                 ->setPrice($model->price)
                 ->setCurrencyId($this->getParameter('integration_merchant_currency', 'RUB'))
-                ->setCategoryId($this->get64BitNumber($model->category))
+                ->setCategoryId($this->getCrc32($model->category))
                 ->setName($model->title)
                 ->setDescription(
-                    trim(strip_tags($model->description ? $model->description : ($model->extra ? $model->extra : '')))
+                    trim(strip_tags($model->description ? $model->description : ($model->extra ? $model->extra : $model->title)))
                 )
                 ->setPictures($pictures);
         }
@@ -110,7 +110,7 @@ class YMLTask extends Task
         $this->setStatusDone();
     }
 
-    protected function get64BitNumber(\Ramsey\Uuid\Uuid $uuid) {
+    protected function getCrc32(\Ramsey\Uuid\Uuid $uuid) {
         if ($uuid->toString() !== \Ramsey\Uuid\Uuid::NIL) {
             return crc32($uuid->getHex());
         }
