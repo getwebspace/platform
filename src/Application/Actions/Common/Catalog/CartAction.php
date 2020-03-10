@@ -71,7 +71,7 @@ class CartAction extends CatalogAction
                         $task = new \App\Domain\Tasks\SendMailTask($this->container);
                         $task->execute([
                             'to' => $email,
-                            'body' => $this->renderer->fetch($tpl, ['order' => $model]),
+                            'body' => $this->render($tpl, ['order' => $model]),
                             'isHtml' => true,
                         ]);
                         $this->entityManager->flush();
@@ -87,7 +87,7 @@ class CartAction extends CatalogAction
                         $task = new \App\Domain\Tasks\SendMailTask($this->container);
                         $task->execute([
                             'to' => $model->email,
-                            'body' => $this->renderer->fetch($tpl, ['order' => $model]),
+                            'body' => $this->render($tpl, ['order' => $model]),
                             'isHtml' => true,
                         ]);
                         $this->entityManager->flush();

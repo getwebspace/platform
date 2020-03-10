@@ -274,6 +274,32 @@ abstract class Action
      * @param string $template
      * @param array  $data
      *
+     * @return string
+     * @throws \Twig\Error\LoaderError
+     * @throws HttpBadRequestException
+     */
+    protected function render($template, array $data = [])
+    {
+        try {
+            \RunTracy\Helpers\Profiler\Profiler::start('render (%s)', $template);
+
+            $rendered = $this->renderer->fetch(
+                THEME_DIR . '/' . $this->getParameter('common_theme', 'default') . '/' . $template,
+                $data
+            );
+
+            \RunTracy\Helpers\Profiler\Profiler::finish('render (%s)', $template);
+
+            return $rendered;
+        } catch (\Twig\Error\LoaderError $exception) {
+            throw new HttpBadRequestException($this->request, $exception->getMessage());
+        }
+    }
+
+    /**
+     * @param string $template
+     * @param array  $data
+     *
      * @return Response
      * @throws HttpBadRequestException
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
