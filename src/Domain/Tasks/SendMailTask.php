@@ -34,7 +34,7 @@ class SendMailTask extends Task
                 ]
             ),
             [
-                'subject' => $args['subject'] ? $args['subject'] : $this->getParameter('subject', 'WebSpaceEngine | Default subject'),
+                'subject' => $args['subject'] ? $args['subject'] : $this->getParameter('smtp_subject', 'WebSpaceEngine | Default subject'),
                 'to' => $args['to'],
                 'cc' => $args['cc'],
                 'bcc' => $args['bcc'],
