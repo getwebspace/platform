@@ -139,6 +139,8 @@
 
                                                     {# Tab: Статистика #}
                                                     <div class="tab-pane fade show active" id="stats" role="tabpanel">
+                                                        <p class="text-muted text-center">Здесь отображается статистика использования движка по разделам</p>
+
                                                         <table class="table table-stats">
                                                             {% if stats.pages %}
                                                                 <tr>
@@ -190,7 +192,7 @@
                                                         <form action="/cup/parameters?return=/cup" method="post">
                                                             <div class="row">
                                                                 <div class="col-md-12">
-                                                                    <p class="text-muted text-center">Здесь вы можете сохранять собственные заметки и памятки.</p>
+                                                                    <p class="text-muted text-center">Здесь вы можете сохранять собственные заметки и памятки</p>
 
                                                                     {% include 'cup/editor.twig' with {
                                                                         'name': 'notepad[' ~ user.username ~ ']',
