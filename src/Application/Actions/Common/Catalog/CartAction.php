@@ -58,8 +58,6 @@ class CartAction extends CatalogAction
                         'content' => $notify,
                     ]);
 
-                    $this->entityManager->flush();
-
                     $isNeedRunWorker = false;
 
                     // письмо администратору
@@ -76,7 +74,6 @@ class CartAction extends CatalogAction
                             'body' => $this->render($tpl, ['order' => $model, 'products' => $products]),
                             'isHtml' => true,
                         ]);
-                        $this->entityManager->flush();
                         $isNeedRunWorker = true;
                     }
 
@@ -94,7 +91,6 @@ class CartAction extends CatalogAction
                             'body' => $this->render($tpl, ['order' => $model, 'products' => $products]),
                             'isHtml' => true,
                         ]);
-                        $this->entityManager->flush();
                         $isNeedRunWorker = true;
                     }
 
@@ -103,9 +99,10 @@ class CartAction extends CatalogAction
                         // add task send to TradeMaster
                         $task = new \App\Domain\Tasks\TradeMaster\SendOrderTask($this->container);
                         $task->execute(['uuid' => $model->uuid]);
-                        $this->entityManager->flush();
                         $isNeedRunWorker = true;
                     }
+
+                    $this->entityManager->flush();
 
                     if ($isNeedRunWorker) {
                         // run worker
