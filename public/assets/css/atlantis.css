@@ -4868,6 +4868,7 @@ label {
     color: #575962 !important;
     border: 0;
     box-shadow: none;
+    margin-bottom: 15px;
 }
 
 .accordion .card .span-icon {
