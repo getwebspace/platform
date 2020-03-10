@@ -283,10 +283,8 @@ abstract class Action
         try {
             \RunTracy\Helpers\Profiler\Profiler::start('render (%s)', $template);
 
-            $rendered = $this->renderer->fetch(
-                THEME_DIR . '/' . $this->getParameter('common_theme', 'default') . '/' . $template,
-                $data
-            );
+            $this->renderer->getLoader()->addPath(THEME_DIR . '/' . $this->getParameter('common_theme', 'default'));
+            $rendered = $this->renderer->fetch($template, $data);
 
             \RunTracy\Helpers\Profiler\Profiler::finish('render (%s)', $template);
 
