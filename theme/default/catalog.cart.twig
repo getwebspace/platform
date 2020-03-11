@@ -83,21 +83,69 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div>
-                                <input type="text" name="delivery[client]" placeholder="Ваше имя *" data-catalog-cart-data required>
+                                {% include 'mixin/form.twig' with {
+                                    'type': 'text',
+                                    'name': 'delivery[client]',
+                                    'args': {
+                                        'required': true,
+                                        'placeholder': 'Ваше имя *',
+                                        'class': ['form-control'],
+                                        'data': {'catalog-cart-data': ''}
+                                    }
+                                } %}
                             </div>
                             <div>
-                                <input type="tel" name="phone" placeholder="Ваш телефон *" data-catalog-cart-data required>
+                                {% include 'mixin/form.twig' with {
+                                    'type': 'tel',
+                                    'name': 'phone',
+                                    'args': {
+                                        'required': true,
+                                        'placeholder': 'Ваш телефон *',
+                                        'class': ['form-control'],
+                                        'data': {'catalog-cart-data': ''}
+                                    }
+                                } %}
                             </div>
                             <div>
-                                <input type="email" name="email" placeholder="Ваш E-Mail *" data-catalog-cart-data required>
+                                {% include 'mixin/form.twig' with {
+                                    'type': 'email',
+                                    'name': 'email',
+                                    'args': {
+                                        'required': true,
+                                        'placeholder': 'Ваш E-Mail *',
+                                        'class': ['form-control'],
+                                        'data': {'catalog-cart-data': ''}
+                                    }
+                                } %}
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div>
-                                <input type="datetime" name="shipping" placeholder="Дата и время доставки" value="{{ 'now'|date_modify('+1 day')|date('d.m.Y H:00') }}" data-catalog-cart-data>
+                                {% include 'mixin/form.twig' with {
+                                    'type': 'datetime',
+                                    'name': 'shipping',
+                                    'args': {
+                                        'required': true,
+                                        'value': 'now'|date_modify('+1 day')|date('d.m.Y H:00'),
+                                        'min': 'now'|date('d.m.Y H:00'),
+                                        'placeholder': 'Дата и время доставки',
+                                        'class': ['form-control'],
+                                        'data': {'catalog-cart-data': ''}
+                                    }
+                                } %}
                             </div>
                             <div>
-                                <textarea name="delivery[address]" placeholder="Адрес доставки.. *" style="height: 105px; margin-bottom: 16px;" data-catalog-cart-data required></textarea>
+                                {% include 'mixin/form.twig' with {
+                                    'type': 'textarea',
+                                    'name': 'delivery[address]',
+                                    'args': {
+                                        'required': true,
+                                        'placeholder': 'Адрес доставки.. *',
+                                        'style': 'height: 105px; margin-bottom: 16px;',
+                                        'class': ['form-control'],
+                                        'data': {'catalog-cart-data': ''}
+                                    }
+                                } %}
                             </div>
                         </div>
                     </div>
@@ -107,7 +155,16 @@
                         </div>
                         <div class="col-md-6 order-0 order-md-1">
                             <div>
-                                <textarea name="comment" placeholder="Комментарий" style="height: 70px; margin-bottom: 16px;" data-catalog-cart-data></textarea>
+                                {% include 'mixin/form.twig' with {
+                                    'type': 'textarea',
+                                    'name': 'comment',
+                                    'args': {
+                                        'placeholder': 'Комментарий',
+                                        'style': 'height: 70px; margin-bottom: 16px;',
+                                        'class': ['form-control'],
+                                        'data': {'catalog-cart-data': ''}
+                                    }
+                                } %}
                             </div>
                         </div>
                     </div>
