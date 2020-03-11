@@ -69,7 +69,7 @@ class CartAction extends CatalogAction
                     } else {
                         // письмо администратору
                         if (
-                            ($email = $this->getParameter('common_email', '')) !== '' &&
+                            ($email = $this->getParameter('smtp_from', '')) !== '' &&
                             ($tpl = $this->getParameter('catalog_mail_admin_template', '')) !== ''
                         ) {
                             $products = collect($this->productRepository->findBy(['uuid' => array_keys($model->list)]));

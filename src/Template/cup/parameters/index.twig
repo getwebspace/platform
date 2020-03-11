@@ -112,16 +112,6 @@
                                         } %}
 
                                         {% include 'cup/field.twig' with {
-                                            'label': 'E-Mail администратора',
-                                            'description': 'Для получения писем от сайта',
-                                            'type': 'email',
-                                            'name': 'common[email]',
-                                            'args': {
-                                                'placeholder': 'admin@yoursite.com'
-                                            }
-                                        } %}
-
-                                        {% include 'cup/field.twig' with {
                                             'label': 'Часовой пояс',
                                             'description': 'Список поддерживаемых временных зон можно посмотреть <a href="https://www.php.net/manual/ru/timezones.php" target="_blank">тут</a>',
                                             'type': 'text',

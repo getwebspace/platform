@@ -86,7 +86,7 @@ class SendOrderTask extends Task
 
                 // письмо администратору
                 if (
-                    ($email = $this->getParameter('common_email', '')) !== '' &&
+                    ($email = $this->getParameter('smtp_from', '')) !== '' &&
                     ($tpl = $this->getParameter('catalog_mail_admin_template', '')) !== ''
                 ) {
                     // add task send admin mail
