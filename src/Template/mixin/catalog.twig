@@ -430,7 +430,7 @@
 
                 if (!error) {
                     // Google reCAPTCHA работает если подключен mixin/recaptcha.twig
-                    if (grecaptcha && grecaptcha.getToken) {
+                    if (typeof(grecaptcha) !== 'undefined' && grecaptcha.getToken) {
                         data.append('recaptcha', await grecaptcha.getToken());
                     }
 
