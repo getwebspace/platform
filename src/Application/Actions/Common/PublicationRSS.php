@@ -42,7 +42,7 @@ class PublicationRSS extends Action
             $channel = new \Bhaktaraz\RSSGenerator\Channel();
             $channel
                 ->title($category->title)
-                ->description($category->description ? $category->description : null)
+                ->description(strip_tags($category->description))
                 ->url($url . $category->address)
                 ->atomLinkSelf($url . 'rss/' . $category->address)
                 ->appendTo($feed);
@@ -54,7 +54,7 @@ class PublicationRSS extends Action
                     ->guid($publication->uuid->toString())
                     ->title($publication->title)
                     ->category($category->title)
-                    ->description($publication->content['short'])
+                    ->description(strip_tags($publication->content['short']))
                     ->content($publication->content['full'])
                     ->pubDate($publication->date->getTimestamp())
                     ->url($url . $publication->address)
