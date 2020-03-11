@@ -94,8 +94,6 @@ $container['view'] = function (ContainerInterface $c) {
         'debug' => $settings['displayErrorDetails'],
     ]);
 
-    $view['_request'] = $_REQUEST;
-
     $view->addExtension(new \App\Application\TwigExtension($c, \Slim\Http\Uri::createFromEnvironment(new \Slim\Http\Environment($_SERVER))));
     $view->addExtension(new \Twig\Extra\Intl\IntlExtension());
     $view->addExtension(new \Twig_Extensions_Extension_Text());

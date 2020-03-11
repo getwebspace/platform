@@ -140,14 +140,10 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         return $host . $path;
     }
 
+    // базовый адрес без слеша в конце
     public function baseUrl()
     {
-        if (is_string($this->uri)) {
-            return $this->uri;
-        }
-        if (method_exists($this->uri, 'getBaseUrl')) {
-            return $this->uri->getBaseUrl();
-        }
+        return rtrim($this->parameter('common_homepage', ''), '/');
     }
 
     public function isCurrentPath($name, $data = [])
@@ -176,18 +172,6 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
         return $path;
     }
-
-    /**
-     * Set the base url
-     *
-     * @param string|\Slim\Http\Uri $baseUrl
-     *
-     * @return void
-     */
-//    public function setBaseUrl($baseUrl)
-//    {
-//        $this->uri = $baseUrl;
-//    }
 
     /*
      * wse functions
