@@ -111,7 +111,7 @@ class CartAction extends CatalogAction
 
                     // если включена TM отправляем заказ
                     if ($this->getParameter('integration_trademaster_enable', 'off') === 'on') {
-                        sleep(7); // костыль
+                        sleep(5); // костыль
                     }
 
                     if (
