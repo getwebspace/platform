@@ -6,6 +6,7 @@ use App\Domain\Exceptions\HttpBadRequestException;
 use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+use Slim\Views\Twig;
 
 abstract class Task
 {
@@ -23,6 +24,11 @@ abstract class Task
      * @var EntityManager
      */
     protected $entityManager;
+
+    /**
+     * @var Twig
+     */
+    protected $renderer;
 
     /**
      * @var \App\Domain\Entities\Task
@@ -46,6 +52,7 @@ abstract class Task
         $this->container = $container;
         $this->logger = $container->get('monolog');
         $this->entityManager = $container->get(\Doctrine\ORM\EntityManager::class);
+        $this->renderer = $container->get('view');
 
         if (!$entity) {
             $entity = new \App\Domain\Entities\Task();
