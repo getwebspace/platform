@@ -80,14 +80,42 @@ class SendOrderTask extends Task
 
             if ($result && !empty($result['nomerZakaza'])) {
                 $order->external_id = $result['nomerZakaza'];
-
                 $this->entityManager->persist($order);
-                $this->setStatusDone();
 
-                return;
+                $products = collect($this->productRepository->findBy(['uuid' => array_keys($order->list)]));
+
+                // письмо администратору
+                if (
+                    ($email = $this->getParameter('common_email', '')) !== '' &&
+                    ($tpl = $this->getParameter('catalog_mail_admin_template', '')) !== ''
+                ) {
+                    // add task send admin mail
+                    $task = new \App\Domain\Tasks\SendMailTask($this->container);
+                    $task->execute([
+                        'to' => $email,
+                        'body' => $this->render($tpl, ['order' => $order, 'products' => $products]),
+                        'isHtml' => true,
+                    ]);
+                }
+
+                // письмо клиенту
+                if (
+                    $model->email &&
+                    ($tpl = $this->getParameter('catalog_mail_client_template', '')) !== ''
+                ) {
+                    // add task send client mail
+                    $task = new \App\Domain\Tasks\SendMailTask($this->container);
+                    $task->execute([
+                        'to' => $model->email,
+                        'body' => $this->render($tpl, ['order' => $order, 'products' => $products]),
+                        'isHtml' => true,
+                    ]);
+                }
+
+                return $this->setStatusDone();
             }
         }
 
-        $this->setStatusFail();
+        return $this->setStatusFail();
     }
 }

@@ -60,46 +60,46 @@ class CartAction extends CatalogAction
 
                     $isNeedRunWorker = false;
 
-                    // письмо администратору
-                    if (
-                        ($email = $this->getParameter('common_email', '')) !== '' &&
-                        ($tpl = $this->getParameter('catalog_mail_admin_template', '')) !== ''
-                    ) {
-                        $products = collect($this->productRepository->findBy(['uuid' => array_keys($model->list)]));
-
-                        // add task send admin mail
-                        $task = new \App\Domain\Tasks\SendMailTask($this->container);
-                        $task->execute([
-                            'to' => $email,
-                            'body' => $this->render($tpl, ['order' => $model, 'products' => $products]),
-                            'isHtml' => true,
-                        ]);
-                        $isNeedRunWorker = true;
-                    }
-
-                    // письмо клиенту
-                    if (
-                        $model->email &&
-                        ($tpl = $this->getParameter('catalog_mail_client_template', '')) !== ''
-                    ) {
-                        $products = collect($this->productRepository->findBy(['uuid' => array_keys($model->list)]));
-
-                        // add task send client mail
-                        $task = new \App\Domain\Tasks\SendMailTask($this->container);
-                        $task->execute([
-                            'to' => $model->email,
-                            'body' => $this->render($tpl, ['order' => $model, 'products' => $products]),
-                            'isHtml' => true,
-                        ]);
-                        $isNeedRunWorker = true;
-                    }
-
                     // если включена TM отправляем заказ
                     if ($this->getParameter('integration_trademaster_enable', 'off') === 'on') {
                         // add task send to TradeMaster
                         $task = new \App\Domain\Tasks\TradeMaster\SendOrderTask($this->container);
                         $task->execute(['uuid' => $model->uuid]);
                         $isNeedRunWorker = true;
+                    } else {
+                        // письмо администратору
+                        if (
+                            ($email = $this->getParameter('common_email', '')) !== '' &&
+                            ($tpl = $this->getParameter('catalog_mail_admin_template', '')) !== ''
+                        ) {
+                            $products = collect($this->productRepository->findBy(['uuid' => array_keys($model->list)]));
+
+                            // add task send admin mail
+                            $task = new \App\Domain\Tasks\SendMailTask($this->container);
+                            $task->execute([
+                                'to' => $email,
+                                'body' => $this->render($tpl, ['order' => $model, 'products' => $products]),
+                                'isHtml' => true,
+                            ]);
+                            $isNeedRunWorker = true;
+                        }
+
+                        // письмо клиенту
+                        if (
+                            $model->email &&
+                            ($tpl = $this->getParameter('catalog_mail_client_template', '')) !== ''
+                        ) {
+                            $products = collect($this->productRepository->findBy(['uuid' => array_keys($model->list)]));
+
+                            // add task send client mail
+                            $task = new \App\Domain\Tasks\SendMailTask($this->container);
+                            $task->execute([
+                                'to' => $model->email,
+                                'body' => $this->render($tpl, ['order' => $model, 'products' => $products]),
+                                'isHtml' => true,
+                            ]);
+                            $isNeedRunWorker = true;
+                        }
                     }
 
                     $this->entityManager->flush();
@@ -107,6 +107,11 @@ class CartAction extends CatalogAction
                     if ($isNeedRunWorker) {
                         // run worker
                         \App\Domain\Tasks\Task::worker();
+                    }
+
+                    // если включена TM отправляем заказ
+                    if ($this->getParameter('integration_trademaster_enable', 'off') === 'on') {
+                        sleep(10); // test
                     }
 
                     if (
