@@ -100,13 +100,13 @@ class SendOrderTask extends Task
 
                 // письмо клиенту
                 if (
-                    $model->email &&
+                    $order->email &&
                     ($tpl = $this->getParameter('catalog_mail_client_template', '')) !== ''
                 ) {
                     // add task send client mail
                     $task = new \App\Domain\Tasks\SendMailTask($this->container);
                     $task->execute([
-                        'to' => $model->email,
+                        'to' => $order->email,
                         'body' => $this->render($tpl, ['order' => $order, 'products' => $products]),
                         'isHtml' => true,
                     ]);
