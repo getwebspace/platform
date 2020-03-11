@@ -266,7 +266,7 @@ $app
 $app->get('/xml/{name}', \App\Application\Actions\Common\XMLFileAction::class);
 
 // publication rss
-$app->get('/rss', \App\Application\Actions\Common\PublicationRSS::class);
+$app->get('/rss/{channel:.*}', \App\Application\Actions\Common\PublicationRSS::class);
 
 // dynamic path handler
 $app->get('/{args:.*}', \App\Application\Actions\Common\DynamicPageAction::class);

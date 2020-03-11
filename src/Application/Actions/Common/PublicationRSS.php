@@ -32,30 +32,33 @@ class PublicationRSS extends Action
     {
         $feed = new \Bhaktaraz\RSSGenerator\Feed();
 
-        if (($url = $this->getParameter('common_homepage', false)) !== false) {
+        if (
+            ($url = $this->getParameter('common_homepage', false)) !== false &&
+            ($channel = $this->resolveArg('channel'))
+        ) {
             /** @var \App\Domain\Entities\Publication\Category $category */
-            foreach ($this->publicationCategoryRepository->findBy(['public' => true]) as $category) {
-                $channel = new \Bhaktaraz\RSSGenerator\Channel();
-                $channel
-                    ->title($category->title)
-                    ->updatePeriod('daily')
-                    ->updateFrequency(2)
-                    ->description($category->description)
-                    ->url($url . $category->address)
-                    ->appendTo($feed);
+            $category = $this->publicationCategoryRepository->findOneBy(['address' => str_escape($channel)]);
 
-                /** @var \App\Domain\Entities\Publication $publication */
-                foreach ($this->publicationRepository->findBy(['category' => $category->uuid], [$category->sort['by'] => $category->sort['direction']]) as $publication) {
-                    $item = new \Bhaktaraz\RSSGenerator\Item();
-                    $item
-                        ->title($publication->title)
-                        ->category($category->title)
-                        ->description($publication->content['short'])
-                        ->content($publication->content['full'])
-                        ->pubDate($publication->date->getTimestamp())
-                        ->url($url . $publication->address)
-                        ->appendTo($channel);
-                }
+            $channel = new \Bhaktaraz\RSSGenerator\Channel();
+            $channel
+                ->title($category->title)
+                ->description($category->description ? $category->description : null)
+                ->url($url . $category->address)
+                ->atomLinkSelf($url . 'rss/' . $category->address)
+                ->appendTo($feed);
+
+            /** @var \App\Domain\Entities\Publication $publication */
+            foreach ($this->publicationRepository->findBy(['category' => $category->uuid], [$category->sort['by'] => $category->sort['direction']]) as $publication) {
+                $item = new \Bhaktaraz\RSSGenerator\Item();
+                $item
+                    ->guid($publication->uuid->toString())
+                    ->title($publication->title)
+                    ->category($category->title)
+                    ->description($publication->content['short'])
+                    ->content($publication->content['full'])
+                    ->pubDate($publication->date->getTimestamp())
+                    ->url($url . $publication->address)
+                    ->appendTo($channel);
             }
         }
 
