@@ -125,9 +125,7 @@
                                     'type': 'datetime',
                                     'name': 'shipping',
                                     'args': {
-                                        'required': true,
-                                        'value': 'now'|date_modify('+1 day')|date('d.m.Y H:00'),
-                                        'min': 'now'|date('d.m.Y H:00'),
+                                        'value': 'now'|date_modify('+1 day')|date('d.m.Y, H:00'),
                                         'placeholder': 'Дата и время доставки',
                                         'class': ['form-control'],
                                         'data': {'catalog-cart-data': ''}
