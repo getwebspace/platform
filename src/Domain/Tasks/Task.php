@@ -2,6 +2,7 @@
 
 namespace App\Domain\Tasks;
 
+use App\Domain\Exceptions\HttpBadRequestException;
 use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -65,6 +66,30 @@ abstract class Task
     protected function getParameter($key = null, $default = null)
     {
         return $this->container->get('parameter')->get($key, $default);
+    }
+
+    /**
+     * @param string $template
+     * @param array  $data
+     *
+     * @return string
+     * @throws HttpBadRequestException
+     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
+     */
+    protected function render($template, array $data = [])
+    {
+        try {
+            \RunTracy\Helpers\Profiler\Profiler::start('render (%s)', $template);
+
+            $this->renderer->getLoader()->addPath(THEME_DIR . '/' . $this->getParameter('common_theme', 'default'));
+            $rendered = $this->renderer->fetch($template, $data);
+
+            \RunTracy\Helpers\Profiler\Profiler::finish('render (%s)', $template);
+
+            return $rendered;
+        } catch (\Twig\Error\LoaderError $exception) {
+            throw new HttpBadRequestException($this->request, $exception->getMessage());
+        }
     }
 
     /**
