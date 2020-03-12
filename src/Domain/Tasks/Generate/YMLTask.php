@@ -2,6 +2,7 @@
 
 namespace App\Domain\Tasks\Generate;
 
+use Alksily\Entity\Collection;
 use App\Domain\Tasks\Task;
 use Bukashk0zzz\YmlGenerator\Generator;
 use Bukashk0zzz\YmlGenerator\Model\Category;
@@ -53,19 +54,19 @@ class YMLTask extends Task
         $currencies[] = (new Currency())->setId($this->getParameter('integration_merchant_currency', 'RUB'))->setRate(1);
 
         $categories = [];
-        foreach ($data['category'] as $model) {
-            /** @var \App\Domain\Entities\Catalog\Category $model */
-            $categories[$this->getCrc32($model->uuid)] = (new Category())
-                ->setId($this->getCrc32($model->uuid))
-                ->setParentId($this->getCrc32($model->parent))
-                ->setName($model->title);
+        foreach ($this->prepareCategory($data['category']->sortBy('title')) as $item) {
+            $categories[$item['id']] = (new Category())
+                ->setId($item['id'])
+                ->setParentId($item['parent'])
+                ->setName($item['title'])
+            ;
         }
 
         $offers = [];
-        foreach ($data['product'] as $model) {
+        foreach ($this->prepareProduct($data['product']) as $model) {
             /**
              * @var \App\Domain\Entities\Catalog\Category $category
-             * @var \App\Domain\Entities\Catalog\Product $model
+             * @var \App\Domain\Entities\Catalog\Product  $model
              */
             $category = $data['category']->firstWhere('uuid', $model->category);
 
@@ -86,15 +87,15 @@ class YMLTask extends Task
                 $pictures[] = $homepage . $file->getPublicPath();
             }
 
-            $offers[$this->getCrc32($model->uuid)] = (new OfferSimple())
-                ->setId($this->getCrc32($model->uuid))
+            $offers[$model->buf] = (new OfferSimple())
+                ->setId($model->buf)
                 ->setVendor($model->manufacturer ? $model->manufacturer : null)
                 ->setVendorCode($model->vendorcode ? $model->vendorcode : null)
                 ->setAvailable(!!$model->stock)
                 ->setUrl($url)
                 ->setPrice($model->price)
                 ->setCurrencyId($this->getParameter('integration_merchant_currency', 'RUB'))
-                ->setCategoryId($this->getCrc32($model->category))
+                ->setCategoryId($category->buf)
                 ->setName($model->title)
                 ->setDescription(
                     trim(strip_tags($model->description ? $model->description : ($model->extra ? $model->extra : $model->title)))
@@ -112,11 +113,33 @@ class YMLTask extends Task
         $this->setStatusDone();
     }
 
-    protected function getCrc32(\Ramsey\Uuid\Uuid $uuid) {
-        if ($uuid->toString() !== \Ramsey\Uuid\Uuid::NIL) {
-            return crc32($uuid->getHex());
+    protected $indexCategory = 0;
+    protected function prepareCategory(Collection &$categories, $parent = \Ramsey\Uuid\Uuid::NIL)
+    {
+        $result = [];
+
+        foreach ($categories->where('parent', $parent) as $model) {
+            /** @var \App\Domain\Entities\Catalog\Category $model */
+            $result[] = [
+                'id' => $model->buf = ++$this->indexCategory,
+                'parent' => $categories->firstWhere('uuid', $model->parent)->buf ?? null,
+                'title' => $model->title,
+            ];
+
+            $result = array_merge($result, $this->prepareCategory($categories, $model->uuid));
         }
 
-        return null;
+        return $result;
+    }
+
+    protected $indexProduct = 0;
+    protected function prepareProduct(Collection $products)
+    {
+        foreach ($products as $model) {
+            /** @var \App\Domain\Entities\Catalog\Product $model */
+            $model->buf = ++$this->indexProduct;
+        }
+
+        return $products;
     }
 }
