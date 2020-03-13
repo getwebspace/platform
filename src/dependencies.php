@@ -22,6 +22,42 @@ $container[\Doctrine\ORM\EntityManager::class] = function (ContainerInterface $c
     return \Doctrine\ORM\EntityManager::create($settings['connection'], $config);
 };
 
+// plugin control class
+$container['plugin'] = function (ContainerInterface $c) {
+    return new class {
+        /** @var \Alksily\Entity\Collection */
+        private $plugins;
+
+        public final function __construct()
+        {
+            $this->plugins = collect();
+        }
+
+        /**
+         * Register plugin
+         * @param \App\Application\Plugin $plugin
+         * @return array|string|mixed
+         */
+        public final function register(\App\Application\Plugin $plugin)
+        {
+            $class_name = get_class($plugin);
+
+            if (!$this->plugins->has($class_name)) {
+                $this->plugins->set($class_name, $plugin);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public final function get()
+        {
+            return $this->plugins;
+        }
+    };
+};
+
 // wrapper around collection with params
 $container['parameter'] = function (ContainerInterface $c) {
     \RunTracy\Helpers\Profiler\Profiler::start('parameters');
@@ -57,10 +93,8 @@ $container['parameter'] = function (ContainerInterface $c) {
         /**
          * Return value by key
          * if key is array return array founded keys with values
-         *
          * @param string|string[] $key
          * @param mixed           $default
-         *
          * @return array|string|mixed
          */
         public final function get($key = null, $default = null)
@@ -68,7 +102,7 @@ $container['parameter'] = function (ContainerInterface $c) {
             //
             if ($key === null) {
                 return static::$parameters->mapWithKeys(function ($item) {
-                    list($group, $key) = explode('_', $item->key, 2);
+                    [$group, $key] = explode('_', $item->key, 2);
 
                     return [$group . '[' . $key . ']' => $item];
                 });

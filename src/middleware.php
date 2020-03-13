@@ -12,6 +12,9 @@ $app->add(new \Slim\HttpCache\Cache('public', 86400));
 // check user auth
 $app->add(\App\Application\Middlewares\AuthorizationMiddleware::class);
 
+// plugin functions
+$app->add(\App\Application\Middlewares\PluginMiddleware::class);
+
 // redirect to address without slash in end
 $app->add(function (Request $request, Response $response, $next) {
     $path = $request->getUri()->getPath();

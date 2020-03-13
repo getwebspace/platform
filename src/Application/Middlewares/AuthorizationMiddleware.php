@@ -41,6 +41,8 @@ class AuthorizationMiddleware extends Middleware
      */
     public function __invoke(Request $request, Response $response, $next): \Slim\Http\Response
     {
+        \RunTracy\Helpers\Profiler\Profiler::start('middleware:authorization');
+
         $data = [
             'uuid' => $request->getCookieParam('uuid', null),
             'session' => $request->getCookieParam('session', null),
@@ -64,6 +66,8 @@ class AuthorizationMiddleware extends Middleware
             } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
             }
         }
+
+        \RunTracy\Helpers\Profiler\Profiler::finish('middleware:authorization');
 
         return $next($request, $response);
     }
