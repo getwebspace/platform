@@ -35,8 +35,11 @@ class Order extends Filter
             ->attr('list')
                 ->addRule($filter->ValidOrderList())
             ->attr('phone')
-                ->addRule($filter->leadStrReplace([' ', '+',  '-', '(', ')'], ''))
-                //->addRule($filter->checkPhone(), 'Телефон должен быть в международном формате')
+                ->addRule(
+                    ((bool)$_ENV['SIMPLE_PHONE_CHECK'] ?? false) === false
+                    ? $filter->checkPhone()
+                    : $filter->leadStrReplace([' ', '+',  '-', '(', ')'], '')
+                )
             ->attr('email')
                 ->addRule($filter->checkEmail(), 'E-Mail указан с ошибкой')
             ->option('comment')

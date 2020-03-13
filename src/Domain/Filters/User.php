@@ -92,8 +92,11 @@ class User extends Filter
             ->option('allow_mail')
                 ->addRule($filter->leadBoolean())
             ->option('phone')
-                ->addRule($filter->leadStrReplace([' ', '+',  '-', '(', ')'], ''))
-                //->addRule($filter->checkPhone())
+            ->addRule(
+                ((bool)$_ENV['SIMPLE_PHONE_CHECK'] ?? false) === false
+                    ? $filter->checkPhone()
+                    : $filter->leadStrReplace([' ', '+',  '-', '(', ')'], '')
+                )
             ->option('firstname')
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 20))

@@ -5,9 +5,10 @@ services:
         image: 0x12f/platform:dev
         environment:
             - DEBUG=1
-          # - SENTRY=""
           # - SALT=Please-Change-Me
+          # - SIMPLE_PHONE_CHECK=true
           # - DATABASE=mysql://user:secret@localhost/mydb
+          # - SENTRY=""
         volumes:
             - ./config:/var/container/config:ro
             - ./plugin:/var/container/plugin:rw
