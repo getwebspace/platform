@@ -6,7 +6,7 @@ services:
         environment:
             - DEBUG=1
           # - SALT=Please-Change-Me
-          # - SIMPLE_PHONE_CHECK=true
+          # - SIMPLE_PHONE_CHECK=1
           # - DATABASE=mysql://user:secret@localhost/mydb
           # - SENTRY=""
         volumes:
