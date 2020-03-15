@@ -124,6 +124,7 @@ class ListAction extends CatalogAction
                 'pagination' => [
                     'count' => $count,
                     'page' => $pagination,
+                    'offset' => $params['offset'],
                 ]
             ]);
         }
@@ -225,6 +226,7 @@ class ListAction extends CatalogAction
                 'pagination' => [
                     'count' => $count,
                     'page' => $category->pagination,
+                    'offset' => $params['offset'],
                 ]
             ]);
         }

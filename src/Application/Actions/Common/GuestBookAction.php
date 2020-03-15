@@ -72,12 +72,13 @@ class GuestBookAction extends Action
         }
 
         $pagination = $this->getParameter('guestbook_pagination', 10);
+        $offset = (int)($this->args['page'] ?? 0);
 
         // получение списка и обфускация адресов
         $list = collect(
             $this->gbookRepository->findBy(
                 ['status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK],
-                [], $pagination, (int)($this->args['page'] ?? 0)
+                [], $pagination, $pagination * $offset
             )
         )->map(
             function ($el) {
@@ -98,6 +99,7 @@ class GuestBookAction extends Action
             'pagination' => [
                 'count' => $this->gbookRepository->count(['status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK]),
                 'page' => $pagination,
+                'offset' => $offset,
             ],
         ]);
     }
