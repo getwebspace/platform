@@ -81,6 +81,7 @@ class DynamicPageAction extends Action
                         'category' => \App\Domain\Entities\Publication\Category::getChildren($categories, $category)->pluck('uuid')->all()
                     ]),
                     'page' => $category->pagination,
+                    'offset' => $offset,
                 ],
             ]);
         }
