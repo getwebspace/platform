@@ -53,7 +53,7 @@ $(() => {
             theme: 'bootstrap',
             width: '100%',
             placeholder: $el.data('placeholder') ? $el.data('placeholder') : null,
-            minimumResultsForSearch: $el.data('data-search') ? $el.data('search') : -1,
+            minimumResultsForSearch: $el.data('search') ? $el.data('search') : -1,
             allowClear: $el.data('allow-clear') ? $el.data('allow-clear') : false,
         });
     });
