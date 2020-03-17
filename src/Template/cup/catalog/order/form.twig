@@ -295,6 +295,7 @@
                 $category = $modal.find('[type="select"][name="category"]'),
                 $product = $modal.find('[type="select"][name="product"]'),
                 $option = $('<option>'),
+                $optionGroup = $('<optgroup label="">'),
                 $quantity = $modal.find('[type="number"]'),
                 $btnSuccess = $modal.find('button')
             ;
@@ -338,15 +339,28 @@
 
                 $.get('/api/catalog/category', (res) => {
                     if (res.data.length) {
-                        for (let item of res.data) {
-                            $category.append(
-                                $option
-                                    .clone()
-                                    .text(item.title)
-                                    .val(item.uuid)
-                                    .data('price', item.price)
-                            );
-                        }
+                        (function renderTree(list, parent = '00000000-0000-0000-0000-000000000000', title = '') {
+                            let buf = 0;
+
+                            for (let item of list) {
+                                if (item.parent === parent) {
+                                    let $el = $option.clone()
+                                                .text((title + ' ' + item.title).trim())
+                                                .val(item.uuid)
+                                    ;
+
+                                    $category.append($el);
+
+                                    if (renderTree(list, item.uuid, (title + ' ' + item.title).trim()) !== 0) {
+                                        $el.remove();
+                                    }
+
+                                    buf++;
+                                }
+                            }
+
+                            return buf;
+                        })(res.data);
 
                         $category.trigger('change').trigger('change.select2');
                         $modal.modal();
