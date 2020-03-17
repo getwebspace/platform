@@ -57,8 +57,8 @@
                                             <pre class="mt-2 mb-2">{{ item.comment|truncate(250) }}</pre>
                                         </td>
                                         <td>{{ item.list|length }}</td>
-                                        <td data-order="{{ item.date.getTimestamp() }}">{{ item.date|date('d.m.Y H:i') }}</td>
-                                        <td data-order="{{ item.shipping.getTimestamp() }}">{{ item.shipping|date('d.m.Y H:i') }}</td>
+                                        <td data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i') }}</td>
+                                        <td data-order="{{ item.shipping.getTimestamp() }}">{{ item.shipping|df('d.m.Y H:i') }}</td>
                                         <td class="text-center">
                                             <div class="btn-group">
                                                 <div class="btn-group dropdown">
@@ -73,7 +73,7 @@
                                                             <div class="dropdown-divider"></div>
                                                         </li>
                                                         <li>
-                                                            <form action="/cup/catalog/order/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить публикацию?');">
+                                                            <form action="/cup/catalog/order/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить заказ?');">
                                                                 <button type="submit" class="btn btn-link text-danger">
                                                                     <i class="fas fa-trash-alt"></i> Удалить
                                                                 </button>

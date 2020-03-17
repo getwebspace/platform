@@ -236,7 +236,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
      */
     public function df($obj = 'now', $format = null, $timezone = 'UTC')
     {
-        if (is_string($obj) || is_numeric($obj)) {
+        if (is_string($obj) || is_numeric($obj) || is_null($obj)) {
             $obj = new \DateTime($obj);
         } else {
             $obj = clone $obj;

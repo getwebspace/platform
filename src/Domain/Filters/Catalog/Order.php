@@ -36,7 +36,7 @@ class Order extends Filter
                 ->addRule($filter->ValidOrderList())
             ->attr('phone')
                 ->addRule(
-                    ((bool)$_ENV['SIMPLE_PHONE_CHECK'] ?? false) === false
+                    isset($_ENV['SIMPLE_PHONE_CHECK']) && $_ENV['SIMPLE_PHONE_CHECK']
                     ? $filter->checkPhone()
                     : $filter->leadStrReplace([' ', '+',  '-', '(', ')'], '')
                 )

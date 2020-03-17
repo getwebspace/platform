@@ -73,10 +73,10 @@
                                     <div class="col-md-12">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Дата создания',
-                                            'type': 'date',
+                                            'type': 'datetime',
                                             'args': {
-                                                'value': order.date|date('d.m.Y H:i:s'),
-                                                'placeholder': '20.01.2019 12:34',
+                                                'value': order.date|df('Y-m-d\\TH:i'),
+                                                'placeholder': '20-01-2019',
                                                 'readonly': true
                                             }
                                         } %}
@@ -101,7 +101,7 @@
                                     <div class="col-md-12">
                                         {% include 'cup/form.twig' with {
                                             'label': 'E-Mail',
-                                            'type': 'date',
+                                            'type': 'email',
                                             'name': 'email',
                                             'args': {
                                                 'value': order.user and order.user.email ? order.user.email : order.email,
@@ -129,10 +129,10 @@
                                     <div class="col-md-12">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Доставка',
-                                            'type': 'date',
+                                            'type': 'datetime',
                                             'name': 'shipping',
                                             'args': {
-                                                'value': order.shipping|date('d.m.Y H:i:s'),
+                                                'value': order.shipping|df('Y-m-d\\TH:i'),
                                                 'placeholder': '20.01.2019 12:34',
                                             }
                                         } %}
@@ -231,7 +231,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="card-action">
                         {% include "cup/form-save.twig" %}
                     </div>

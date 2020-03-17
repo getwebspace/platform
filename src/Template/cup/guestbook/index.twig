@@ -56,7 +56,7 @@
                                             <pre class="mt-2">{{ item.message|truncate(100) }}</pre>
                                             <pre class="mb-2 text-primary">{{ item.response|truncate(100) }}</pre>
                                         </td>
-                                        <td data-order="{{ item.date.getTimestamp() }}">{{ item.date|date('d.m.Y H:i:s') }}</td>
+                                        <td data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i:s') }}</td>
                                         <td class="text-center">
                                             <div class="btn-group dropdown">
                                                 <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
