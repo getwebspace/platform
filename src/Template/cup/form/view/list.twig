@@ -36,7 +36,7 @@
                             <tbody>
                                 {% for item in list %}
                                     <tr>
-                                        <td>
+                                        <td data-order="{{ item.date.getTimestamp() }}">
                                             <a href="/cup/form/{{ form.uuid }}/view/{{ item.uuid }}" class="d-block">
                                                 {{ item.date|date('d.m.Y H:i:s') }}
                                             </a>
