@@ -497,7 +497,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
             $repository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class);
 
-            $buf = collect($repository->findAll());
+            $buf = collect($repository->findBy(['status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]));
         }
 
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_category');
