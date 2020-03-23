@@ -45,6 +45,16 @@
                                 {% include 'cup/quickaction.twig' %}
                                 {% include 'cup/trademaster.twig' %}
 
+                                {% for plugin in plugins %}
+                                    {% for param in plugin.getToolbarItem() %}
+                                        {% if param.twig %}
+                                            {% include param.twig %}
+                                        {% elseif param.html %}
+                                            {% include param.html %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+
                                 <li class="nav-item">
                                     <a class="nav-link" href="/" target="_blank">
                                         <i class="fas fa-globe"></i>

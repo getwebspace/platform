@@ -49,8 +49,8 @@
                                 </a>
                             </li>
                             <li class="nav-item submenu">
-                                <a class="nav-link" data-toggle="pill" href="#integration" role="tab">
-                                    Интеграции
+                                <a class="nav-link" data-toggle="pill" href="#plugins" role="tab">
+                                    Плагины
                                 </a>
                             </li>
                         </ul>
@@ -559,21 +559,27 @@
                                 } %}
                             </div>
 
-                            {# TAB: Integration #}
-                            <div class="tab-pane fade" id="integration" role="tabpanel">
+                            {# TAB: Plugins #}
+                            <div class="tab-pane fade" id="plugins" role="tabpanel">
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-5 col-md-4">
                                         <div class="nav flex-column nav-pills nav-secondary">
-                                            <a class="nav-link active" data-toggle="pill" href="#integration-recaptcha">reCAPTCHA</a>
-                                            <a class="nav-link" data-toggle="pill" href="#integration-trademaster">TradeMaster</a>
-                                            <a class="nav-link" data-toggle="pill" href="#integration-merchant">Merchant</a>
+                                            <a class="nav-link active"  data-toggle="pill" href="#plugins-recaptcha">reCAPTCHA</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#plugins-trademaster">TradeMaster</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#plugins-merchant">Merchant</a>
+
+                                            {% for plugin in plugins %}
+                                                <a class="nav-link"     data-toggle="pill" href="#plugins-{{ plugin.getCredentials('name') }}">
+                                                    {{ plugin.getCredentials('title') }}
+                                                </a>
+                                            {% endfor %}
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-7 col-md-8 mt-5 mt-sm-0">
                                         <div class="tab-content">
 
-                                            {# TAB: Integration recaptcha #}
-                                            <div class="tab-pane fade show active" id="integration-recaptcha">
+                                            {# TAB: Plugin recaptcha #}
+                                            <div class="tab-pane fade show active" id="plugins-recaptcha">
                                                 {% include 'cup/field.twig' with {
                                                     'label': 'Включение и выключение reCAPTCHA',
                                                     'description': 'Защита от роботов',
@@ -605,8 +611,8 @@
                                                 } %}
                                             </div>
 
-                                            {# TAB: Integration trademaster #}
-                                            <div class="tab-pane fade" id="integration-trademaster">
+                                            {# TAB: Plugin trademaster #}
+                                            <div class="tab-pane fade" id="plugins-trademaster">
                                                 <p>Управленческий учет</p>
 
                                                 {% include 'cup/field.twig' with {
@@ -741,8 +747,8 @@
                                                 } %}
                                             </div>
 
-                                            {# TAB: Integration merchant #}
-                                            <div class="tab-pane fade" id="integration-merchant">
+                                            {# TAB: Plugin merchant #}
+                                            <div class="tab-pane fade" id="plugins-merchant">
                                                 <p>Параметры интеграции с Google Merchant Feed и/или Yandex Market</p>
 
                                                 {% include 'cup/field.twig' with {
@@ -784,6 +790,47 @@
                                                 } %}
                                             </div>
 
+                                            {% for plugin in plugins %}
+                                                {% set credentials = plugin.getCredentials() %}
+
+                                                <div class="tab-pane fade" id="plugins-{{ plugin.getCredentials('name') }}">
+                                                    <d1>
+                                                        <dt>Автор</dt>
+                                                        <dd>
+                                                            {% if credentials.author_email %}
+                                                                <a href="mailto:{{ credentials.author_email }}">{{ credentials.author }}</a>
+                                                            {% else %}
+                                                                {{ credentials.author }}
+                                                            {% endif %}
+                                                        </dd>
+                                                    </d1>
+                                                    {% if credentials.author_site %}
+                                                        <d1>
+                                                            <dt>Сайт</dt>
+                                                            <dd><a href="{{ credentials.author_site }}" target="_blank">{{ credentials.author_site }}</a></dd>
+                                                        </d1>
+                                                    {% endif %}
+                                                    <d1>
+                                                        <dt>Описание</dt>
+                                                        <dd>{{ credentials.description }}</dd>
+                                                    </d1>
+                                                    <d1>
+                                                        <dt>Версия</dt>
+                                                        <dd>{{ credentials.version }}</dd>
+                                                    </d1>
+
+                                                    <hr>
+
+                                                    {% set parameters = plugin.getParameters() %}
+                                                    {% if parameters is not empty %}
+                                                        {% for params in parameters %}
+                                                            {% include 'cup/field.twig' with params %}
+                                                        {% endfor %}
+                                                    {% else %}
+                                                        <p>Плагин не имеет полей настроек</p>
+                                                    {% endif %}
+                                                </div>
+                                            {% endfor %}
                                         </div>
                                     </div>
                                 </div>

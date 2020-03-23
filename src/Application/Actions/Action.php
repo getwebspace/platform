@@ -307,16 +307,24 @@ abstract class Action
         try {
             \RunTracy\Helpers\Profiler\Profiler::start('render (%s)', $template);
 
+            $plugins = $this->container->get('plugin')->get();
             $data = array_merge(
                 [
                     '_request' => &$_REQUEST,
                     '_error' => \Alksily\Support\Form::$globalError = $this->error,
                     'user' => $this->request->getAttribute('user', false),
+                    'plugins' => $plugins,
                     'trademaster' => $this->getParameter('integration_trademaster_enable', 'off'),
                 ],
                 $data
             );
             $this->renderer->getLoader()->addPath(THEME_DIR . '/' . $this->getParameter('common_theme', 'default'));
+
+            /** @var \App\Application\Plugin $plugin */
+            foreach ($plugins as $plugin) {
+                $this->renderer->getLoader()->addPath(PLUGIN_DIR . '/' . $plugin->getCredentials('name') . '/template');
+            }
+
             $this->response->getBody()->write($this->renderer->fetch($template, $data));
 
             \RunTracy\Helpers\Profiler\Profiler::finish('render (%s)', $template);

@@ -9,22 +9,30 @@ use Slim\Http\Response;
 
 class TestPlugin extends Plugin
 {
-    const TITLE       = "Test Plugin";
-    const DESCRIPTION = "Some test functions";
-    const AUTHOR      = "Aleksey Ilyin";
+    const NAME          = "TestPlugin";
+    const TITLE         = "Тестовый плагин";
+    const DESCRIPTION   = "Тут какой-то тестовый функционал";
+    const AUTHOR        = "Aleksey Ilyin";
+    const AUTHOR_EMAIL  = "alksily@outlook.com";
+    const AUTHOR_SITE  = "https://site.0x12f.com";
 
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
 
-        $this->setRoute('user');
-        $this->addParameter([
-            'label' => 'Test field',
-            'description' => 'Test plugin fields',
-            'type' => 'text',
-            'name' => 'test',
-            'placeholder' => 'Test test test',
-        ]);
+        $this->setRoute('user', 'main');
+
+        for ($i = 1; $i < 5; $i++) {
+            $this->addParameter([
+                'label' => 'Тестовое поле ' . $i,
+                'description' => 'Какое-то описание ' . $i,
+                'type' => 'text',
+                'name' => 'test' . $i,
+                'args' => [
+                    'placeholder' => 'Ла-ла-ла!',
+                ],
+            ]);
+        }
     }
 
     /**
