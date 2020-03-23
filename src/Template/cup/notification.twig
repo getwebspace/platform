@@ -23,7 +23,7 @@
                             <a href="#">
                                 <div class="notif-content pl-3 pr-3">
                                     <span class="block">{{ notify.title }}</span>
-                                    <span class="time">{{ notify.date|date('d.m.Y H:i:s') }}</span>
+                                    <span class="time">{{ notify.date|df('d.m.Y H:i:s') }}</span>
                                 </div>
                             </a>
                         {% endfor %}

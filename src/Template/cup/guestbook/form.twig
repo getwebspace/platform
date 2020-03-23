@@ -79,7 +79,7 @@
                                     'name': 'date',
                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Нельзя изменять значение поля"></i>',
                                     'args': {
-                                        'value': item.date|date('d.m.Y H:i:s'),
+                                        'value': item.date|df('Y-m-d\\TH:i'),
                                         'readonly': true
                                     }
                                 } %}

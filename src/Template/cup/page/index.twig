@@ -52,7 +52,7 @@
                                                 }
                                             } %}
                                         </td>
-                                        <td>{{ item.date|date('d.m.Y H:i') }}</td>
+                                        <td data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i') }}</td>
                                         <td class="text-center">
                                             <div class="btn-group dropdown">
                                                 <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">

@@ -29,7 +29,7 @@ class Product extends CatalogAction
             $criteria['category'] = $this->array_criteria_uuid($data['category']);
         }
         if ($data['address']) {
-            $criteria['address'] = $data['address'];
+            $criteria['address'] = urldecode($data['address']);
         }
         if ($data['status']) {
             $criteria['status'] = $data['status'];

@@ -25,7 +25,7 @@ class Category extends PublicationAction
             $criteria['parent'] = $this->array_criteria_uuid($data['parent']);
         }
         if ($data['address']) {
-            $criteria['address'] = $data['address'];
+            $criteria['address'] = urldecode($data['address']);
         }
 
         $categories = $this->categoryRepository->findBy($criteria, $data['order'], $data['limit'], $data['offset']);

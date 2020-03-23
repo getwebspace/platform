@@ -53,6 +53,7 @@
 
                 // свойства
                 this.$window = $(window);
+                this.$document = $(window.document);
                 this.options = Object.assign({}, defaults, options);
                 this.cart = this.readCartData();
 
@@ -68,6 +69,7 @@
                         }
                     });
 
+                    // отслеживание фокуса в корзине
                     $(this.getSelector('cart'))
                         .on('focus', '[data-attr="quantity"] input', (e) => {
                             focus = $(e.currentTarget).parents('[data-uuid]').attr('data-uuid');
@@ -79,10 +81,10 @@
 
                 // обработчики
                 if (this.options.init.handlers) {
-                    $(this.getSelector('product-add')).on('click', (e) => {
+                    this.$document.on('click', this.getSelector('product-add'), (e) => {
                         this.cartAddProduct($(e.currentTarget).parents(this.getSelector('product')));
                     });
-                    $(this.getSelector('cart-checkout')).on('click', (e) => {
+                    this.$document.on('click', this.getSelector('cart-checkout'), (e) => {
                         e.preventDefault();
                         e.stopPropagation();
 

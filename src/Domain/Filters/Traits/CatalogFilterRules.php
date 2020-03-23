@@ -218,7 +218,20 @@ trait CatalogFilterRules
             $value = &$data[$field];
 
             if (!$value) {
-                $value = strtoupper(substr(bin2hex(random_bytes(10 + $length)), 0, $length));
+                if (isset($_ENV['SIMPLE_ORDER_SERIAL']) && $_ENV['SIMPLE_ORDER_SERIAL']) {
+                    /** @var App $app */
+                    $app = $GLOBALS['app'];
+
+                    /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $categoryRepository */
+                    $categoryRepository = $app->getContainer()->get(\Doctrine\ORM\EntityManager::class)->getRepository(\App\Domain\Entities\Catalog\Order::class);
+
+                    /** @var \App\Domain\Entities\Catalog\Order $order */
+                    $order = $categoryRepository->findOneBy([], ['date' => 'desc']) ?? null;
+
+                    $value = $order ? (+$order->serial) + 1 : 1;
+                } else {
+                    $value = strtoupper(substr(bin2hex(random_bytes(10 + $length)), 0, $length));
+                }
             }
 
             return true;

@@ -25,7 +25,7 @@ class Publication extends PublicationAction
             $criteria['category'] = $this->array_criteria_uuid($data['category']);
         }
         if ($data['address']) {
-            $criteria['address'] = $data['address'];
+            $criteria['address'] = urldecode($data['address']);
         }
 
         $publications = $this->publicationRepository->findBy($criteria, $data['order'], $data['limit'], $data['offset']);

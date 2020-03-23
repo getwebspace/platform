@@ -92,8 +92,8 @@ class User extends Filter
             ->option('allow_mail')
                 ->addRule($filter->leadBoolean())
             ->option('phone')
-            ->addRule(
-                ((bool)$_ENV['SIMPLE_PHONE_CHECK'] ?? false) === false
+                ->addRule(
+                    isset($_ENV['SIMPLE_PHONE_CHECK']) && $_ENV['SIMPLE_PHONE_CHECK']
                     ? $filter->checkPhone()
                     : $filter->leadStrReplace([' ', '+',  '-', '(', ')'], '')
                 )

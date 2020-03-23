@@ -60,10 +60,10 @@
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Дата',
-                                            'type': 'date',
+                                            'type': 'datetime',
                                             'name': 'date',
                                             'args': {
-                                                'value': item.date|date('d.m.Y H:i'),
+                                                'value': item.date|df('Y-m-d\\TH:i'),
                                                 'placeholder': '20.01.2019 12:34',
                                             }
                                         } %}

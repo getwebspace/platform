@@ -236,7 +236,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
      */
     public function df($obj = 'now', $format = null, $timezone = 'UTC')
     {
-        if (is_string($obj) || is_numeric($obj)) {
+        if (is_string($obj) || is_numeric($obj) || is_null($obj)) {
             $obj = new \DateTime($obj);
         } else {
             $obj = clone $obj;
@@ -497,7 +497,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
             $repository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class);
 
-            $buf = collect($repository->findAll());
+            $buf = collect($repository->findBy(['status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]));
         }
 
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_category');

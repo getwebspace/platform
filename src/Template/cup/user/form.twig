@@ -163,10 +163,10 @@
                                 <li class="list-group-item">Полное имя: {{ item.getName('full') }}</li>
                             {% endif %}
                             <li class="list-group-item">E-Mail: {{ item.email }}</li>
-                            <li class="list-group-item">Зарегистрирован: {{ item.register|date('d.m.Y H:i:s') }}</li>
-                            <li class="list-group-item">Последнее редактирование: {{ item.change|date('d.m.Y H:i:s') }}</li>
+                            <li class="list-group-item">Зарегистрирован: {{ item.register|df('d.m.Y H:i:s') }}</li>
+                            <li class="list-group-item">Последнее редактирование: {{ item.change|df('d.m.Y H:i:s') }}</li>
                             {% if item.session.date.getTimestamp() %}
-                                <li class="list-group-item">Последняя активность: {{ item.session.date|date('d.m.Y H:i:s') }}</li>
+                                <li class="list-group-item">Последняя активность: {{ item.session.date|df('d.m.Y H:i:s') }}</li>
                             {% endif %}
                             {% if item.session.ip %}
                                 <li class="list-group-item">IP: {{ item.session.ip }}</li>
