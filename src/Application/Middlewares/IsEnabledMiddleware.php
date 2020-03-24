@@ -19,12 +19,13 @@ class IsEnabledMiddleware extends Middleware
     public function __invoke(Request $request, Response $response, $next): \Slim\Http\Response
     {
         /** @var \Slim\Interfaces\RouteInterface $route */
-        $route = array_first(explode(':', $request->getAttribute('route')));
+        $route = $request->getAttribute('route');
+        $routeName = array_first(explode(':', $route->getName()));
 
-        if ($this->getParameter($route->getName() . '_is_enabled', 'no') === 'yes') {
+        if ($this->getParameter($routeName . '_is_enabled', 'yes') !== 'no') {
             return $next($request, $response);
         }
 
-        throw new HttpBadRequestException($request, 'Module is not enabled');
+        return $this->response->withAddedHeader('Location', '/')->withStatus(301);
     }
 }

@@ -89,7 +89,7 @@ abstract class Plugin
         return $this->templateFolder;
     }
 
-    protected function setRoute(...$name)
+    protected function setHandledRoute(...$name)
     {
         $this->routes = array_merge($this->routes, $name);
     }

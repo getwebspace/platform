@@ -21,16 +21,17 @@ class PluginMiddleware extends Middleware
 
         /** @var \Slim\Interfaces\RouteInterface $route */
         $route = $request->getAttribute('route');
+        $routeName = array_first(explode(':', $route->getName()));
 
         /** @var \Alksily\Entity\Collection $plugins */
         $plugins = $this->container->get('plugin')->get();
 
         /** @var \App\Application\Plugin $plugin */
         foreach ($plugins as $plugin) {
-            if (in_array($route->getName(), $plugin->getRoute())) {
-                \RunTracy\Helpers\Profiler\Profiler::start('plugin (%s)', get_class($plugin));
+            if (in_array($routeName, $plugin->getRoute()) || in_array($route->getName(), $plugin->getRoute())) {
+                \RunTracy\Helpers\Profiler\Profiler::start('plugin (%s)', $plugin->getCredentials('name'));
                 $response = $plugin->execute($request, $response);
-                \RunTracy\Helpers\Profiler\Profiler::finish('plugin (%s)', get_class($plugin));
+                \RunTracy\Helpers\Profiler\Profiler::finish('plugin (%s)', $plugin->getCredentials('name'));
             }
         }
 

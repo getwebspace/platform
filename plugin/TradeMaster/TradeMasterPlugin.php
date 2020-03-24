@@ -18,7 +18,7 @@ class TradeMasterPlugin extends Plugin
         parent::__construct($container);
 
         $this->setTemplateFolder(__DIR__ . '/templates');
-        $this->setRoute('catalog');
+        $this->setHandledRoute('catalog');
         $this->addTwigExtension(\Plugin\TradeMaster\TradeMasterPluginTwigExt::class);
         $this->addToolbarItem([
             'twig' => 'trademaster.twig',
