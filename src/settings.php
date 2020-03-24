@@ -14,6 +14,7 @@ return [
         'meta' => [
             'entity_path' => [
                 SRC_DIR . '/Domain/Entities',
+                PLUGIN_DIR,
             ],
             'auto_generate_proxies' => true,
             'proxy_dir' => CACHE_DIR . '/proxies',

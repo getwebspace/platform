@@ -13,8 +13,6 @@ if (PHP_SAPI == 'cli-server') {
 // Include global const's
 require __DIR__ . '/../src/bootstrap.php';
 
-    RunTracy\Helpers\Profiler\Profiler::start('app');
-
 // App container
 $c = $container = $app->getContainer();
 
@@ -47,6 +45,5 @@ require PLUGIN_DIR . '/index.php';
 $app->run();
 
     RunTracy\Helpers\Profiler\Profiler::finish('run');
-    RunTracy\Helpers\Profiler\Profiler::finish('app');
 
 // And nothing more :)
