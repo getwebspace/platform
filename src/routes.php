@@ -16,7 +16,8 @@ $app
         });
 
         // files
-        $app->get('/files', \App\Application\Actions\Api\File\File::class);
+        $app->get('/files', \App\Application\Actions\Api\File\File::class)
+            ->setName('file:api');
 
         // publications
         $app->group('/publication', function (App $app) {
@@ -28,12 +29,12 @@ $app
         $app->group('/catalog', function (App $app) {
             $app
                 ->get('/category', \App\Application\Actions\Api\Catalog\Category::class)
-                ->setName('catalog')
+                ->setName('catalog:category:api')
                 ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
 
             $app
                 ->get('/product', \App\Application\Actions\Api\Catalog\Product::class)
-                ->setName('catalog')
+                ->setName('catalog:product:api')
                 ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
         });
     });
@@ -190,10 +191,11 @@ $app
 
 // file
 $app->group('/file', function (App $app) {
-    $app->get('/get/{salt}/{hash}', \App\Application\Actions\Common\File\FileGetAction::class);
+    $app->get('/get/{salt}/{hash}', \App\Application\Actions\Common\File\FileGetAction::class)
+        ->setName('file:get');
     $app
         ->post('/upload', \App\Application\Actions\Common\File\FileUploadAction::class)
-        ->setName('file')
+        ->setName('file:upload')
         ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
 });
 
@@ -201,19 +203,20 @@ $app->group('/file', function (App $app) {
 $app->group('/user', function (App $app) {
     $app
         ->map(['get', 'post'], '/login', \App\Application\Actions\Common\User\UserLoginAction::class)
-        ->setName('user')
+        ->setName('user:login')
         ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
 
     $app
         ->map(['get', 'post'], '/register', \App\Application\Actions\Common\User\UserRegisterAction::class)
-        ->setName('user')
+        ->setName('user:register')
         ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
 
-    $app->map(['get', 'post'], '/logout', \App\Application\Actions\Common\User\UserLogoutAction::class);
+    $app->map(['get', 'post'], '/logout', \App\Application\Actions\Common\User\UserLogoutAction::class)
+        ->setName('user:logout');
 
     $app
         ->map(['get', 'post'], '/profile', \App\Application\Actions\Common\User\UserProfileAction::class)
-        ->setName('user')
+        ->setName('user:profile')
         ->add(\App\Application\Middlewares\IsEnabledMiddleware::class)
         ->add(function (Request $request, Response $response, $next) {
             $user = $request->getAttribute('user', false);
@@ -246,13 +249,13 @@ $app
         // view cart
         $app
             ->map(['get', 'post'], '/cart', \App\Application\Actions\Common\Catalog\CartAction::class)
-            ->setName('catalog')
+            ->setName('catalog:cart')
             ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
 
         // view order confirm
         $app
             ->get('/cart/done/{order}', \App\Application\Actions\Common\Catalog\CartCompleteAction::class)
-            ->setName('catalog')
+            ->setName('catalog:cart:done')
             ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
     });
 
@@ -263,10 +266,13 @@ $app
     ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
 
 // xml files
-$app->get('/xml/{name}', \App\Application\Actions\Common\XMLFileAction::class);
+$app->get('/xml/{name}', \App\Application\Actions\Common\XMLFileAction::class)
+    ->setName('xml');
 
 // publication rss
-$app->get('/rss/{channel:.*}', \App\Application\Actions\Common\PublicationRSS::class);
+$app->get('/rss/{channel:.*}', \App\Application\Actions\Common\PublicationRSS::class)
+    ->setName('rss');
 
 // dynamic path handler
-$app->get('/{args:.*}', \App\Application\Actions\Common\DynamicPageAction::class);
+$app->get('/{args:.*}', \App\Application\Actions\Common\DynamicPageAction::class)
+    ->setName('dynamic');
