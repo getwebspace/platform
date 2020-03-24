@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Tasks\TradeMaster;
+namespace Plugin\TradeMaster\Tasks;
 
 use Alksily\Entity\Collection;
 use App\Domain\Tasks\Task;
@@ -18,7 +18,7 @@ class CatalogSyncTask extends Task
     }
 
     /**
-     * @var \App\Application\TradeMaster
+     * @var \Plugin\TradeMaster\TradeMasterPlugin
      */
     protected $trademaster;
 
@@ -37,7 +37,7 @@ class CatalogSyncTask extends Task
      */
     protected function action(array $args = [])
     {
-        $this->trademaster = $this->container->get('trademaster');
+        $this->trademaster = $this->container->get('TradeMasterPlugin');
         $this->categoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class);
         $this->productRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
 
@@ -170,7 +170,7 @@ class CatalogSyncTask extends Task
                 $list = $this->trademaster->api([
                     'endpoint' => 'item/list',
                     'params' => [
-                        'sklad' => $this->getParameter('integration_trademaster_storage', 0),
+                        'sklad' => $this->getParameter('TradeMasterPlugin_storage', 0),
                         'offset' => $i * $step,
                         'limit' => $step,
                     ],

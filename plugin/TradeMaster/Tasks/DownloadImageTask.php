@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Tasks\TradeMaster;
+namespace Plugin\TradeMaster\Tasks;
 
 use App\Domain\Tasks\Task;
 
@@ -19,7 +19,7 @@ class DownloadImageTask extends Task
     }
 
     /**
-     * @var \App\Application\TradeMaster
+     * @var \Plugin\TradeMaster\TradeMasterPlugin
      */
     protected $trademaster;
 
@@ -40,7 +40,7 @@ class DownloadImageTask extends Task
 
     protected function action(array $args = [])
     {
-        $this->trademaster = $this->container->get('trademaster');
+        $this->trademaster = $this->container->get('TradeMasterPlugin');
         $this->catalogCategoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class);
         $this->catalogProductRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
         $this->fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);

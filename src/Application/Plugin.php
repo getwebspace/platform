@@ -30,6 +30,11 @@ abstract class Plugin
     protected $renderer;
 
     /**
+     * @var string
+     */
+    protected $templateFolder = null;
+
+    /**
      * @var array
      */
     protected $routes = [];
@@ -37,7 +42,7 @@ abstract class Plugin
     /**
      * @var array
      */
-    protected $parameters = [];
+    protected $settingsField = [];
 
     /**
      * @var array
@@ -46,12 +51,13 @@ abstract class Plugin
 
     public function __construct(ContainerInterface $container)
     {
-        $this->container = $container;
-        $this->renderer = $container->get('view');
-
-        if (empty(static::NAME) || empty(static::TITLE) || empty(static::DESCRIPTION) || empty(static::AUTHOR)) {
+        if (empty(static::NAME) || empty(static::TITLE) || empty(static::AUTHOR)) {
             throw new RuntimeException('Plugin credentials have empty fields');
         }
+
+        $this->container = $container;
+        $this->container[static::NAME] = $this;
+        $this->renderer = $container->get('view');
     }
 
     public function getCredentials($field = null)
@@ -73,6 +79,16 @@ abstract class Plugin
         return $credentials;
     }
 
+    protected function setTemplateFolder($path)
+    {
+        $this->renderer->getLoader()->addPath($path);
+    }
+
+    public function getTemplateFolder()
+    {
+        return $this->templateFolder;
+    }
+
     protected function setRoute(...$name)
     {
         $this->routes = array_merge($this->routes, $name);
@@ -83,7 +99,12 @@ abstract class Plugin
         return $this->routes;
     }
 
-    protected function addParameter($params = [])
+    protected function addTwigExtension($extension)
+    {
+        $this->renderer->addExtension(new $extension($this->container, $this));
+    }
+
+    protected function addSettingsField($params = [])
     {
         $default = [
             'label' => '',
@@ -91,6 +112,8 @@ abstract class Plugin
             'type' => 'text',
             'name' => '',
             'args' => [
+                'disabled' => false,
+                'readonly' => false,
                 'value' => null,
                 'placeholder' => '',
                 'options' => [],
@@ -104,12 +127,12 @@ abstract class Plugin
         $params = array_merge($default, $params);
         $params['name'] = static::NAME . '[' . $params['name'] . ']';
 
-        $this->parameters[$params['name']] = $params;
+        $this->settingsField[$params['name']] = $params;
     }
 
-    public function getParameters()
+    public function getSettingsFields()
     {
-        return $this->parameters;
+        return $this->settingsField;
     }
 
     protected function addToolbarItem($params = [])
@@ -136,7 +159,10 @@ abstract class Plugin
      *
      * @return Response
      */
-    abstract public function execute(Request $request, Response $response): Response;
+    public function execute(Request $request, Response $response): Response
+    {
+        return $response;
+    }
 
     /**
      * Возвращает значение параметра по переданному ключу
@@ -162,17 +188,18 @@ abstract class Plugin
      */
     protected function render($template, array $data = [])
     {
-        try {
-            \RunTracy\Helpers\Profiler\Profiler::start('render (%s)', $template);
 
-            $this->renderer->getLoader()->addPath(THEME_DIR . '/' . $this->getParameter('common_theme', 'default'));
+        try {
+            \RunTracy\Helpers\Profiler\Profiler::start('plugin render (%s)', $template);
+
+
             $rendered = $this->renderer->fetch($template, $data);
 
-            \RunTracy\Helpers\Profiler\Profiler::finish('render (%s)', $template);
+            \RunTracy\Helpers\Profiler\Profiler::finish('plugin render (%s)', $template);
 
             return $rendered;
         } catch (\Twig\Error\LoaderError $exception) {
-            throw new HttpBadRequestException($this->request, $exception->getMessage());
+            throw new RuntimeException($exception->getMessage());
         }
     }
 }

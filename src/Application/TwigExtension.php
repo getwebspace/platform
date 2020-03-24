@@ -676,36 +676,12 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     }
 
     /*
-     * trademaster functions
-     */
-
-    // tm api
-    public function tm_api($endpoint, array $params = [], $method = 'GET')
-    {
-        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:tm_api');
-
-        /** @var \App\Application\TradeMaster $trademaster */
-        $trademaster = $this->container->get('trademaster');
-        $result = $trademaster->api([
-            'endpoint' => $endpoint,
-            'params' => $params,
-            'method' => $method,
-        ]);
-
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:tm_api (%s)', $endpoint, ['endpoint' => $endpoint, 'params' => $params, 'method' => $method]);
-
-        return $result;
-    }
-
-    /*
      * other functions
      */
 
     public function task($limit = 5000)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:task');
-
-        /** @var \App\Application\TradeMaster $trademaster */
 
         $qb = $this->entityManager->createQueryBuilder();
         $query = $qb->select('t')

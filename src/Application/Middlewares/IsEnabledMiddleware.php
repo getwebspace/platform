@@ -19,7 +19,7 @@ class IsEnabledMiddleware extends Middleware
     public function __invoke(Request $request, Response $response, $next): \Slim\Http\Response
     {
         /** @var \Slim\Interfaces\RouteInterface $route */
-        $route = $request->getAttribute('route');
+        $route = array_first(explode(':', $request->getAttribute('route')));
 
         if ($this->getParameter($route->getName() . '_is_enabled', 'no') === 'yes') {
             return $next($request, $response);

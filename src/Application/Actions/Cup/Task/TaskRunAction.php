@@ -12,7 +12,7 @@ class TaskRunAction extends Action
         if ($this->request->isPost()) {
             if (
                 ($name = $this->request->getParam('task', null)) !== null &&
-                Str::start('App\Domain\Tasks', $name) && class_exists($name)
+                class_exists($name)
             ) {
                 /** @var \App\Domain\Tasks\Task $task */
                 $task = new $name($this->container);

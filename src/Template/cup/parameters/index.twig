@@ -111,6 +111,8 @@
                                             }
                                         } %}
 
+                                        <hr>
+
                                         {% include 'cup/field.twig' with {
                                             'label': 'Часовой пояс',
                                             'description': 'Список поддерживаемых временных зон можно посмотреть <a href="https://www.php.net/manual/ru/timezones.php" target="_blank">тут</a>',
@@ -132,6 +134,64 @@
                                                 'value': 'j-m-Y, H:i'
                                             }
                                         } %}
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6">
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Включить пользователей',
+                                            'description': 'Позволяет пользователям регистрироваться на сайте',
+                                            'type': 'select',
+                                            'name': 'user[is_enabled]',
+                                            'args': {
+                                                'option': {'yes':'Да', 'no':'Нет'},
+                                                'selected': 'yes'
+                                            }
+                                        } %}
+
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Включить каталог',
+                                            'description': 'Возможность управлять категориями, товарами и заказами',
+                                            'type': 'select',
+                                            'name': 'catalog[is_enabled]',
+                                            'args': {
+                                                'option': {'yes':'Да', 'no':'Нет'},
+                                                'selected': 'yes'
+                                            }
+                                        } %}
+
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Включить формы',
+                                            'description': 'Возможность делать формы для получения заполненных анкет от клиентов',
+                                            'type': 'select',
+                                            'name': 'form[is_enabled]',
+                                            'args': {
+                                                'option': {'yes':'Да', 'no':'Нет'},
+                                                'selected': 'yes'
+                                            }
+                                        } %}
+
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Включить гостевую книгу',
+                                            'description': 'Позволяет пользователям оставлять отзывы о сайте',
+                                            'type': 'select',
+                                            'name': 'guestbook[is_enabled]',
+                                            'args': {
+                                                'option': {'yes':'Да', 'no':'Нет'},
+                                                'selected': 'yes'
+                                            }
+                                        } %}
+
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Включить загрузку файлов',
+                                            'description': 'Позволяет пользователям загружать файлы на сайт',
+                                            'type': 'select',
+                                            'name': 'file[is_enabled]',
+                                            'args': {
+                                                'option': {'yes':'Да', 'no':'Нет'},
+                                                'selected': 'yes'
+                                            }
+                                        } %}
+
+                                        <hr>
 
                                         {% include 'cup/field.twig' with {
                                             'label': 'Автоматически генерировать адреса',
@@ -142,59 +202,6 @@
                                                 'option': {'yes':'Да', 'no':'Нет'}
                                             }
                                         } %}
-                                    </div>
-                                    <div class="col-xs-12 col-sm-6">
-                                        {% include 'cup/field.twig' with {
-                                            'label': 'Включить пользователей',
-                                            'description': 'Позволяет пользователям регистрироваться на сайте',
-                                            'type': 'select',
-                                            'name': 'user[is_enabled]',
-                                            'args': {
-                                                'option': {'yes':'Да', 'no':'Нет'}
-                                            }
-                                        } %}
-
-                                        {% include 'cup/field.twig' with {
-                                            'label': 'Включить каталог',
-                                            'description': 'Возможность управлять категориями, товарами и заказами',
-                                            'type': 'select',
-                                            'name': 'catalog[is_enabled]',
-                                            'args': {
-                                                'option': {'yes':'Да', 'no':'Нет'}
-                                            }
-                                        } %}
-
-                                        {% include 'cup/field.twig' with {
-                                            'label': 'Включить формы',
-                                            'description': 'Возможность делать формы для получения заполненных анкет от клиентов',
-                                            'type': 'select',
-                                            'name': 'form[is_enabled]',
-                                            'args': {
-                                                'option': {'yes':'Да', 'no':'Нет'}
-                                            }
-                                        } %}
-
-                                        {% include 'cup/field.twig' with {
-                                            'label': 'Включить гостевую книгу',
-                                            'description': 'Позволяет пользователям оставлять отзывы о сайте',
-                                            'type': 'select',
-                                            'name': 'guestbook[is_enabled]',
-                                            'args': {
-                                                'option': {'yes':'Да', 'no':'Нет'}
-                                            }
-                                        } %}
-
-                                        {% include 'cup/field.twig' with {
-                                            'label': 'Включить загрузку файлов',
-                                            'description': 'Позволяет пользователям загружать файлы на сайт',
-                                            'type': 'select',
-                                            'name': 'file[is_enabled]',
-                                            'args': {
-                                                'option': {'yes':'Да', 'no':'Нет'}
-                                            }
-                                        } %}
-
-                                        <hr>
 
                                         {% include 'cup/field.twig' with {
                                             'label': 'Период отображение уведомлений',
@@ -565,7 +572,6 @@
                                     <div class="col-xs-12 col-sm-5 col-md-4">
                                         <div class="nav flex-column nav-pills nav-secondary">
                                             <a class="nav-link active"  data-toggle="pill" href="#plugins-recaptcha">reCAPTCHA</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#plugins-trademaster">TradeMaster</a>
                                             <a class="nav-link"         data-toggle="pill" href="#plugins-merchant">Merchant</a>
 
                                             {% for plugin in plugins %}
@@ -607,142 +613,6 @@
                                                     'name': 'integration[recaptcha_private]',
                                                     'args': {
                                                         'placeholder': '6Le_gY8UAAAAAAx1_Lv3aKo-L1QnxE2QWhOHCgxS'
-                                                    }
-                                                } %}
-                                            </div>
-
-                                            {# TAB: Plugin trademaster #}
-                                            <div class="tab-pane fade" id="plugins-trademaster">
-                                                <p>Управленческий учет</p>
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'Включение и выключение TradeMaster',
-                                                    'type': 'select',
-                                                    'name': 'integration[trademaster_enable]',
-                                                    'args': {
-                                                        'option': {'off':'Выключена', 'on':'Включена'}
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'API Host',
-                                                    'description': 'Хост API сервера',
-                                                    'type': 'text',
-                                                    'name': 'integration[trademaster_host]',
-                                                    'args': {
-                                                        'value': 'https://api.trademaster.pro',
-                                                        'readonly': true,
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'API Version',
-                                                    'description': 'Версия API сервера',
-                                                    'type': 'text',
-                                                    'name': 'integration[trademaster_version]',
-                                                    'args': {
-                                                        'value': '2',
-                                                        'readonly': true,
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'API Key',
-                                                    'description': 'Введите полученный вами ключ',
-                                                    'type': 'text',
-                                                    'name': 'integration[trademaster_key]'
-                                                } %}
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'Cache host',
-                                                    'description': 'Хост кеш файлов',
-                                                    'type': 'text',
-                                                    'name': 'integration[trademaster_cache_host]',
-                                                    'args': {
-                                                        'value': 'https://trademaster.pro',
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'Cache folder',
-                                                    'description': 'Папка кеш файлов',
-                                                    'type': 'text',
-                                                    'name': 'integration[trademaster_cache_folder]',
-                                                    'args': {
-                                                        'value': '',
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'Struct',
-                                                    'type': 'number',
-                                                    'name': 'integration[trademaster_struct]',
-                                                    'args': {
-                                                        'value': '0',
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'Storage',
-                                                    'type': 'number',
-                                                    'name': 'integration[trademaster_storage]',
-                                                    'args': {
-                                                        'value': '0',
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'Legal',
-                                                    'type': 'number',
-                                                    'name': 'integration[trademaster_legal]',
-                                                    'args': {
-                                                        'value': '0',
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'Checkout',
-                                                    'type': 'number',
-                                                    'name': 'integration[trademaster_checkout]',
-                                                    'args': {
-                                                        'value': '0',
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'Contractor',
-                                                    'type': 'number',
-                                                    'name': 'integration[trademaster_contractor]',
-                                                    'args': {
-                                                        'value': '0',
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'Scheme',
-                                                    'type': 'number',
-                                                    'name': 'integration[trademaster_scheme]',
-                                                    'args': {
-                                                        'value': '0',
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'User ID',
-                                                    'type': 'number',
-                                                    'name': 'integration[trademaster_user]',
-                                                    'args': {
-                                                        'value': '0',
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'API Currency',
-                                                    'description': 'Валюта отправляемая по API',
-                                                    'type': 'text',
-                                                    'name': 'integration[trademaster_currency]',
-                                                    'args': {
-                                                        'value': 'RUB',
                                                     }
                                                 } %}
                                             </div>
@@ -810,21 +680,25 @@
                                                             <dd><a href="{{ credentials.author_site }}" target="_blank">{{ credentials.author_site }}</a></dd>
                                                         </d1>
                                                     {% endif %}
-                                                    <d1>
-                                                        <dt>Описание</dt>
-                                                        <dd>{{ credentials.description }}</dd>
-                                                    </d1>
-                                                    <d1>
-                                                        <dt>Версия</dt>
-                                                        <dd>{{ credentials.version }}</dd>
-                                                    </d1>
+                                                    {% if credentials.description %}
+                                                        <d1>
+                                                            <dt>Описание</dt>
+                                                            <dd>{{ credentials.description }}</dd>
+                                                        </d1>
+                                                    {% endif %}
+                                                    {% if credentials.version %}
+                                                        <d1>
+                                                            <dt>Версия</dt>
+                                                            <dd>{{ credentials.version }}</dd>
+                                                        </d1>
+                                                    {% endif %}
 
                                                     <hr>
 
-                                                    {% set parameters = plugin.getParameters() %}
-                                                    {% if parameters is not empty %}
-                                                        {% for params in parameters %}
-                                                            {% include 'cup/field.twig' with params %}
+                                                    {% set settings = plugin.getSettingsFields() %}
+                                                    {% if settings is not empty %}
+                                                        {% for args in settings %}
+                                                            {% include 'cup/field.twig' with args %}
                                                         {% endfor %}
                                                     {% else %}
                                                         <p>Плагин не имеет полей настроек</p>

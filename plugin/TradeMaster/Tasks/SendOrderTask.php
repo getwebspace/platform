@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\Tasks\TradeMaster;
+namespace Plugin\TradeMaster\Tasks;
 
 use App\Domain\Tasks\Task;
 
@@ -17,7 +17,7 @@ class SendOrderTask extends Task
     }
 
     /**
-     * @var \App\Application\TradeMaster
+     * @var \Plugin\TradeMaster\TradeMasterPlugin
      */
     protected $trademaster;
 
@@ -33,7 +33,7 @@ class SendOrderTask extends Task
 
     protected function action(array $args = [])
     {
-        $this->trademaster = $this->container->get('trademaster');
+        $this->trademaster = $this->container->get('TradeMasterPlugin');
         $this->productRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
         $this->orderRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Order::class);
 
@@ -61,13 +61,13 @@ class SendOrderTask extends Task
                 'method' => 'POST',
                 'endpoint' => 'order/cart/anonym',
                 'params' => [
-                    'sklad' => $this->getParameter('integration_trademaster_storage'),
-                    'urlico' => $this->getParameter('integration_trademaster_legal'),
-                    'ds' => $this->getParameter('integration_trademaster_checkout'),
-                    'kontragent' => $this->getParameter('integration_trademaster_contractor'),
-                    'shema' => $this->getParameter('integration_trademaster_scheme'),
-                    'valuta' => $this->getParameter('integration_trademaster_currency'),
-                    'userID' => $this->getParameter('integration_trademaster_user'),
+                    'sklad' => $this->getParameter('TradeMasterPlugin_storage'),
+                    'urlico' => $this->getParameter('TradeMasterPlugin_legal'),
+                    'ds' => $this->getParameter('TradeMasterPlugin_checkout'),
+                    'kontragent' => $this->getParameter('TradeMasterPlugin_contractor'),
+                    'shema' => $this->getParameter('TradeMasterPlugin_scheme'),
+                    'valuta' => $this->getParameter('TradeMasterPlugin_currency'),
+                    'userID' => $this->getParameter('TradeMasterPlugin_user'),
                     'nameKontakt' => $order->delivery['client'] ?? '',
                     'adresKontakt' => $order->delivery['address'] ?? '',
                     'telefonKontakt' => $order->phone,

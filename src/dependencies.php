@@ -154,11 +154,6 @@ $container['twig_profile'] = function (ContainerInterface $c) {
     return new \Twig\Profiler\Profile();
 };
 
-// trademaster api
-$container['trademaster'] = function (ContainerInterface $c) {
-    return new \App\Application\TradeMaster($c);
-};
-
 // push stream
 $container['pushstream'] = function (ContainerInterface $c) {
     return new \App\Application\PushStream($c);
