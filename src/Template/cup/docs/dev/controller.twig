@@ -4,7 +4,7 @@
             <div class="flaticon-box-1"></div>
         </div>
         <div class="span-title">
-            Контроллеры и переменные
+            Контроллеры, параметры, переменные, HTTP(S) API
         </div>
         <div class="span-mode"></div>
     </div>
@@ -16,6 +16,8 @@
                 1. параметры которые возможно передать в контроллер;<br>
                 2. переменные которые передаются в шаблоны в процессе работы контроллера;
             </p>
+
+            <h4>Контроллеры основной группы</h4>
 
             <div class="row">
                 <div class="col-xs-12 col-sm-5 col-md-4">
@@ -50,7 +52,7 @@
                         </div>
                     </div>
 
-                    <h4>Переменные доступные во всех контроллерах</h4>
+                    <h4>Дополнительные переменные (доступные в шаблонах)</h4>
                     {% include "cup/docs/dev/controller-table-vars.twig" with {
                         "list": collect([
                             {
@@ -70,6 +72,49 @@
                             },
                         ])
                     } %}
+                </div>
+            </div>
+
+            <hr>
+
+            <h4>Контроллеры встроенного HTTP(S) API</h4>
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-5 col-md-4">
+                    <div class="nav flex-column nav-pills nav-secondary" id="pills-tab" role="tablist">
+                        <a class="nav-link" id="v-controller-tab-" data-toggle="pill" href="#v-controller-api-catalog-category">Каталог: категории</a>
+                        <a class="nav-link" id="v-controller-tab-" data-toggle="pill" href="#v-controller-api-catalog-product">Каталог: продукты</a>
+                        <a class="nav-link" id="v-controller-tab-" data-toggle="pill" href="#v-controller-api-file">Файлы</a>
+                        <a class="nav-link" id="v-controller-tab-" data-toggle="pill" href="#v-controller-api-publication-category">Публикации (категории)</a>
+                        <a class="nav-link" id="v-controller-tab-" data-toggle="pill" href="#v-controller-api-publication">Публикации</a>
+                        <a class="nav-link" id="v-controller-tab-" data-toggle="pill" href="#v-controller-api-user-newsletter-subscribe">Пользователи (подписка на рассылку)</a>
+                        <a class="nav-link" id="v-controller-tab-" data-toggle="pill" href="#v-controller-api-user-newsletter-unsubscribe">Пользователи (отписка от рассылки)</a>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-7 col-md-8 mt-5 mt-sm-0">
+                    <div class="tab-content">
+                        <div class="tab-pane fade" id="v-controller-api-catalog-category">
+                            {% include 'cup/docs/dev/controller/api/catalog.category.twig' %}
+                        </div>
+                        <div class="tab-pane fade" id="v-controller-api-catalog-product">
+                            {% include 'cup/docs/dev/controller/api/catalog.product.twig' %}
+                        </div>
+                        <div class="tab-pane fade" id="v-controller-api-file">
+                            {% include 'cup/docs/dev/controller/api/file.twig' %}
+                        </div>
+                        <div class="tab-pane fade" id="v-controller-api-publication-category">
+                            {% include 'cup/docs/dev/controller/api/publication.category.twig' %}
+                        </div>
+                        <div class="tab-pane fade" id="v-controller-api-publication">
+                            {% include 'cup/docs/dev/controller/api/publication.twig' %}
+                        </div>
+                        <div class="tab-pane fade" id="v-controller-api-user-newsletter-subscribe">
+                            {% include 'cup/docs/dev/controller/api/user.newsletter.subscribe.twig' %}
+                        </div>
+                        <div class="tab-pane fade" id="v-controller-api-user-newsletter-unsubscribe">
+                            {% include 'cup/docs/dev/controller/api/user.newsletter.unsubscribe.twig' %}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,0 +1,28 @@
+<div class="pt-2">
+    <h3>Пользователи (подписка на рассылку)</h3>
+
+    <code class="block pt-3 pb-3">App\Application\Actions\Api\User\Subscriber\SubscribeAction</code>
+    <div>Route: <code class="block pt-3 pb-3">/api/user/newsletter/subscribe</code></div>
+    <div>Name: <code class="block pt-3 pb-3">user:newsletter:subscribe:api</code></div>
+
+    <p>
+        Контроллер: для подписки пользователя на рассылку.
+    </p>
+
+    <code class="d-block my-3">
+        curl -X GET \<br/>
+        -H "Accept: application/json" \<br/>
+        "{{ base_url() }}/api/user/newsletter/subscribe"
+    </code>
+
+    <h4>Параметры для запроса</h4>
+    {% include "cup/docs/dev/controller-table-data.twig" with {
+        "list": collect([
+            {
+                "field": "email",
+                "type": "string",
+                "description": "Адрес получателя",
+            },
+        ])
+    } %}
+</div>

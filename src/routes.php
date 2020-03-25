@@ -10,19 +10,23 @@ $app
         $app->group('/user', function (App $app) {
             // users subscribers
             $app->group('/newsletter', function (App $app) {
-                $app->map(['get', 'post'], '/subscribe', \App\Application\Actions\Api\User\Subscriber\SubscribeAction::class);
-                $app->map(['get', 'post'], '/{uuid}/unsubscribe', \App\Application\Actions\Api\User\Subscriber\UnsubscribeAction::class);
+                $app->map(['get', 'post'], '/subscribe', \App\Application\Actions\Api\User\Subscriber\SubscribeAction::class)
+                    ->setName('user:newsletter:subscribe:api');
+                $app->map(['get', 'post'], '/{uuid}/unsubscribe', \App\Application\Actions\Api\User\Subscriber\UnsubscribeAction::class)
+                    ->setName('user:newsletter:unsubscribe:api');
             });
         });
 
         // files
-        $app->get('/files', \App\Application\Actions\Api\File\File::class)
+        $app->get('/file', \App\Application\Actions\Api\File\File::class)
             ->setName('file:api');
 
         // publications
         $app->group('/publication', function (App $app) {
-            $app->get('', \App\Application\Actions\Api\Publication\Publication::class);
-            $app->get('/category', \App\Application\Actions\Api\Publication\Category::class);
+            $app->get('', \App\Application\Actions\Api\Publication\Publication::class)
+                ->setName('publication:api');
+            $app->get('/category', \App\Application\Actions\Api\Publication\Category::class)
+                ->setName('publication:category:api');
         });
 
         // catalog

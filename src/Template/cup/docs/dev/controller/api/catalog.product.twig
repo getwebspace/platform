@@ -1,0 +1,60 @@
+<div class="pt-2">
+    <h3>Каталог продукты</h3>
+
+    <code class="block pt-3 pb-3">App\Application\Actions\Api\Catalog\Product</code>
+    <div>Route: <code class="block pt-3 pb-3">/api/catalog/product</code></div>
+    <div>Name: <code class="block pt-3 pb-3">catalog:product:api</code></div>
+
+    <p>
+        Контроллер: для получени продуктов каталога.
+    </p>
+
+    <code class="d-block my-3">
+        curl -X GET \<br/>
+        -H "Accept: application/json" \<br/>
+        "{{ base_url() }}/api/catalog/product?order[field1]=desc&limit=10"
+    </code>
+
+    <h4>Параметры для запроса</h4>
+    {% include "cup/docs/dev/controller-table-data.twig" with {
+        "list": collect([
+            {
+                "field": "uuid",
+                "type": "UUID[]",
+                "description": "Идентификатор публикации",
+            },
+            {
+                "field": "category",
+                "type": "UUID[]",
+                "description": "Идентификатор категории",
+            },
+            {
+                "field": "status",
+                "type": "string",
+                "description": "Статус категории",
+                "args": reference('/App/Domain/Types/Catalog/ProductStatusType::LIST'),
+            },
+            {
+                "field": "address",
+                "type": "string",
+                "description": "Адрес публикации",
+            },
+
+            {
+                "field": "order[]",
+                "type": "mixed",
+                "description": "Сортировка по указанным полям",
+            },
+            {
+                "field": "limit",
+                "type": "integer",
+                "description": "Количество строк результатов",
+            },
+            {
+                "field": "offset",
+                "type": "integer",
+                "description": "Отступ строк от начала",
+            },
+        ])
+    } %}
+</div>

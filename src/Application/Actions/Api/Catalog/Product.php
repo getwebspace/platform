@@ -41,7 +41,7 @@ class Product extends CatalogAction
             $criteria['barcode'] = $data['barcode'];
         }
         if ($data['external_id']) {
-            $criteria['category'] = $this->array_criteria($data['external_id']);
+            $criteria['external_id'] = $this->array_criteria($data['external_id']);
         }
 
         $products = $this->productRepository->findBy($criteria, $data['order'], $data['limit'], $data['offset']);

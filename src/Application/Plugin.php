@@ -156,10 +156,11 @@ abstract class Plugin
      *
      * @param Request  $request
      * @param Response $response
+     * @param string   $routeName
      *
      * @return Response
      */
-    public function execute(Request $request, Response $response): Response
+    public function execute(Request $request, Response $response, string $routeName): Response
     {
         return $response;
     }
