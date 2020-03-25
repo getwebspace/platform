@@ -11,9 +11,6 @@ file_put_contents(\App\Domain\Tasks\Task::$pid_file, getmypid());
 // App container
 $c = $container = $app->getContainer();
 
-// Set up dependencies
-require __DIR__ . '/../src/dependencies.php';
-
 /** @var \Doctrine\ORM\EntityManager $entityManager */
 $entityManager = $container->get(\Doctrine\ORM\EntityManager::class);
 

@@ -15,10 +15,3 @@ define('LOG_DIR',       realpath(__DIR__ . '/../var/log'));
 define('VENDOR_DIR',    realpath(__DIR__ . '/../vendor'));
 
 require VENDOR_DIR  . '/autoload.php';
-
-/**
- * Hack for get instance from vendor
- *
- * @var \Slim\App $app
- */
-$app = app_create();

@@ -44,3 +44,38 @@ function app_create()
     // Instantiate and return the app instance
     return new \Slim\App($settings);
 }
+
+/**
+ * Hack for get instance from vendor
+ *
+ * @var \Slim\App $app
+ */
+$app = app_create();
+
+// App container
+$c = $container = $app->getContainer();
+
+RunTracy\Helpers\Profiler\Profiler::start('init dependencies');
+
+// Set up dependencies
+require SRC_DIR . '/dependencies.php';
+
+RunTracy\Helpers\Profiler\Profiler::finish('init dependencies');
+RunTracy\Helpers\Profiler\Profiler::start('init middleware');
+
+// Register middleware
+require SRC_DIR . '/middleware.php';
+
+RunTracy\Helpers\Profiler\Profiler::finish('init middleware');
+RunTracy\Helpers\Profiler\Profiler::start('init routes');
+
+// Register routes
+require SRC_DIR . '/routes.php';
+
+RunTracy\Helpers\Profiler\Profiler::finish('init routes');
+RunTracy\Helpers\Profiler\Profiler::start('init plugins');
+
+// Include plugins
+require PLUGIN_DIR . '/index.php';
+
+RunTracy\Helpers\Profiler\Profiler::finish('init plugins');

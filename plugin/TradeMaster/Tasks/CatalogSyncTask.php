@@ -119,7 +119,7 @@ class CatalogSyncTask extends Task
                 $this->entityManager->persist($model);
 
                 if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
-                    $task = new \App\Domain\Tasks\TradeMaster\DownloadImageTask($this->container);
+                    $task = new \Plugin\TradeMaster\Tasks\DownloadImageTask($this->container);
                     $task->execute(['photo' => $item['foto'], 'type' => 'category', 'uuid' => $model->uuid->toString()]);
                 }
             } else {
@@ -235,7 +235,7 @@ class CatalogSyncTask extends Task
                         $this->entityManager->persist($model);
 
                         if ($item['foto'] && $this->getParameter('file_is_enabled', 'no') === 'yes') {
-                            $task = new \App\Domain\Tasks\TradeMaster\DownloadImageTask($this->container);
+                            $task = new \Plugin\TradeMaster\Tasks\DownloadImageTask($this->container);
                             $task->execute(['photo' => $item['foto'], 'type' => 'product', 'uuid' => $model->uuid->toString()]);
                         }
                     } else {

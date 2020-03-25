@@ -62,7 +62,7 @@ class TradeMasterPlugin extends Plugin
         $this->addSettingsField([
             'label' => 'API Currency',
             'description' => 'Валюта отправляемая по API',
-            'type' => 'number',
+            'type' => 'text',
             'name' => 'currency',
             'args' => [
                 'value' => 'RUB',

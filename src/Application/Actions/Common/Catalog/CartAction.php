@@ -63,7 +63,7 @@ class CartAction extends CatalogAction
                     // если включена TM отправляем заказ
                     if ($this->getParameter('integration_trademaster_enable', 'off') === 'on') {
                         // add task send to TradeMaster
-                        $task = new \App\Domain\Tasks\TradeMaster\SendOrderTask($this->container);
+                        $task = new \Plugin\TradeMaster\Tasks\SendOrderTask($this->container);
                         $task->execute(['uuid' => $model->uuid]);
                         $isNeedRunWorker = true;
                     } else {
