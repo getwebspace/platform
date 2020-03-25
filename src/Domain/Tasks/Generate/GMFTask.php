@@ -21,6 +21,9 @@ class GMFTask extends Task
 
     protected function action(array $args = [])
     {
+        $homepage = rtrim($this->getParameter('common_homepage', 'http://site.0x12f.com/'), '/');
+        $catalog = $homepage . '/' . $this->getParameter('catalog_address', 'catalog') . '/';
+
         /**
          * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $categoryRepository
          * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $productRepository
@@ -45,12 +48,6 @@ class GMFTask extends Task
             /** @var \App\Domain\Entities\Catalog\Product $model */
             $category = $data['category']->firstWhere('uuid', $model->category);
 
-            $url = $this->getParameter('common_homepage', 'http://site.0x12f.com/') . 'catalog/';
-            if ($category) {
-                $url .= $category->address;
-            }
-            $url .= '/' . $model->address;
-
             $item = new Product();
 
             // Set common product properties
@@ -59,9 +56,9 @@ class GMFTask extends Task
             if ($model->description) {
                 $item->setDescription($model->description);
             }
-            $item->setLink($url);
+            $item->setLink($catalog . $model->address);
             if ($model->hasFiles()) {
-                $item->setImage($model->getFiles()->first()->getPublicPath());
+                $item->setImage($homepage . $model->getFiles()->first()->getPublicPath());
             }
             if ($model->stock > 0) {
                 $item->setAvailability(Availability::IN_STOCK);
