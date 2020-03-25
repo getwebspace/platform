@@ -33,12 +33,14 @@ class SiteMapTask extends Task
          * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $productRepository
          */
         $pageRepository = $this->entityManager->getRepository(\App\Domain\Entities\Page::class);
-        $publicationRepository = $this->entityManager->getRepository(\App\Domain\Entities\Page::class);
+        $publicationRepository = $this->entityManager->getRepository(\App\Domain\Entities\Publication::class);
+        $publicationCategoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Publication\Category::class);
         $categoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class);
         $productRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
         $data = [
             'page' => collect($pageRepository->findAll()),
             'publication' => collect($publicationRepository->findAll()),
+            'publicationCategory' => collect($publicationCategoryRepository->findAll()),
             'category' => collect($categoryRepository->findBy(['status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK])),
             'product' => collect($productRepository->findBy(['status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK])),
         ];
@@ -57,30 +59,31 @@ class SiteMapTask extends Task
             $sitemap->addItem($url . $model->address, time(), Sitemap::WEEKLY, 0.3);
         }
 
+        // publications category
+        foreach ($data['publicationCategory'] as $model) {
+            /** @var \App\Domain\Entities\Publication\Category $model */
+            $sitemap->addItem($url . $model->address, time(), Sitemap::WEEKLY, 0.3);
+        }
+
         // publications
         foreach ($data['publication'] as $model) {
             /** @var \App\Domain\Entities\Publication $model */
-            $sitemap->addItem($url . $model->address, time(), Sitemap::WEEKLY, 0.3);
+            $sitemap->addItem($url . $model->address, $model->date->getTimestamp(), Sitemap::WEEKLY, 0.3);
         }
+
+        // main catalog
+        $catalogPath = $url . $this->getParameter('catalog_address', 'catalog');
+        $sitemap->addItem($catalogPath, time(), Sitemap::WEEKLY, 0.4);
 
         // catalog category
         foreach ($data['category'] as $model) {
             /** @var \App\Domain\Entities\Catalog\Category $model */
-            $sitemap->addItem($url . 'catalog/' . $model->address, time(), Sitemap::WEEKLY, 0.5);
+            $sitemap->addItem($catalogPath . '/' . $model->address, time(), Sitemap::WEEKLY, 0.5);
         }
 
         // catalog products
         foreach ($data['product'] as $model) {
-            /** @var \App\Domain\Entities\Catalog\Product $model */
-            $category = $data['category']->firstWhere('uuid', $model->category);
-
-            $urlCategory = $url . 'catalog/';
-            if ($category) {
-                $urlCategory .= $category->address;
-            }
-            $urlCategory .= '/' . $model->address;
-
-            $sitemap->addItem($urlCategory, time(), Sitemap::WEEKLY, 0.7);
+            $sitemap->addItem($catalogPath . '/' . $model->address, $model->date->getTimestamp(), Sitemap::WEEKLY, 0.7);
         }
 
         $sitemap->write();
