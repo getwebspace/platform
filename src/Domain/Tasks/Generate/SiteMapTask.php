@@ -83,16 +83,7 @@ class SiteMapTask extends Task
 
         // catalog products
         foreach ($data['product'] as $model) {
-            /** @var \App\Domain\Entities\Catalog\Product $model */
-            $category = $data['category']->firstWhere('uuid', $model->category);
-
-            $urlCategory = $catalogPath . '/';
-            if ($category) {
-                $urlCategory .= $category->address;
-            }
-            $urlCategory .= '/' . $model->address;
-
-            $sitemap->addItem($urlCategory, $model->date->getTimestamp(), Sitemap::WEEKLY, 0.7);
+            $sitemap->addItem($catalogPath . '/' . $model->address, $model->date->getTimestamp(), Sitemap::WEEKLY, 0.7);
         }
 
         $sitemap->write();
