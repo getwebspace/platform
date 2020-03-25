@@ -21,7 +21,7 @@ class GMFTask extends Task
 
     protected function action(array $args = [])
     {
-        $homepage = rtrim($this->getParameter('common_homepage', 'http://site.0x12f.com/'), '/');
+        $homepage = rtrim($this->getParameter('common_homepage', ''), '/');
         $catalog = $homepage . '/' . $this->getParameter('catalog_address', 'catalog') . '/';
 
         /**
