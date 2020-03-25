@@ -48,7 +48,7 @@ return [
 
     // Monolog settings
     'logger' => [
-        'name' => 'wse',
+        'name' => 'WSE',
         'path' => isset($_ENV['docker']) ? 'php://stdout' : LOG_DIR . '/app.log',
         'level' => \Monolog\Logger::DEBUG,
     ],
