@@ -176,17 +176,21 @@ abstract class Plugin
         return $this->toolbars;
     }
 
-    protected function enableNavigationItem($handler = null)
+    protected function enableNavigationItem($params = [])
     {
+        $default = [
+            'handler' => function (Request $req, Response $res) {
+                return $res->withHeader('Content-Type', 'text/plain')->write(
+                    'This is empty route for plugin: ' . static::NAME . PHP_EOL .
+                    'Change "handler" parameter in function enableNavigationItem(["handler" => ""]).'
+                );
+            },
+        ];
+        $params = array_merge($default, $params);
+
         $this->navigation = true;
 
-        if (!$handler) {
-            $handler = function ($req, $res) {
-                return $res->write('This is empty route for plugin: ' . static::NAME . '. Change $handler arg in function enableNavigationItem().');
-            };
-        }
-
-        return $this->router->map(['get', 'post'], '/cup/plugin/' . static::NAME, $handler);
+        return $this->router->map(['get', 'post'], '/cup/plugin/' . static::NAME, $params['handler']);
     }
 
     public function isNavigationItemEnabled()
