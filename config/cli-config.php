@@ -6,10 +6,6 @@ require __DIR__ . '/../src/bootstrap.php';
 
 $settings = $app->getContainer()->get('doctrine');
 
-foreach ($settings['types'] as $type => $class) {
-    \Doctrine\DBAL\Types\Type::addType($type, $class);
-}
-
 $config = \Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration(
     $settings['meta']['entity_path'],
     $settings['meta']['auto_generate_proxies'],
