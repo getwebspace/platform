@@ -61,41 +61,39 @@ class CartAction extends CatalogAction
                     $isNeedRunWorker = false;
 
                     // письмо администратору
-                    if ($this->getParameter('catalog_mail_admin', 'off') === 'on') {
-                        if (
-                            ($email = $this->getParameter('smtp_from', '')) !== '' &&
-                            ($tpl = $this->getParameter('catalog_mail_admin_template', '')) !== ''
-                        ) {
-                            $products = collect($this->productRepository->findBy(['uuid' => array_keys($model->list)]));
+                    if (
+                        ($this->getParameter('catalog_mail_admin', 'off') === 'on') &&
+                        ($email = $this->getParameter('smtp_from', '')) !== '' &&
+                        ($tpl = $this->getParameter('catalog_mail_admin_template', '')) !== ''
+                    ) {
+                        $products = collect($this->productRepository->findBy(['uuid' => array_keys($model->list)]));
 
-                            // add task send admin mail
-                            $task = new \App\Domain\Tasks\SendMailTask($this->container);
-                            $task->execute([
-                                'to' => $email,
-                                'body' => $this->render($tpl, ['order' => $model, 'products' => $products]),
-                                'isHtml' => true,
-                            ]);
-                            $isNeedRunWorker = true;
-                        }
+                        // add task send admin mail
+                        $task = new \App\Domain\Tasks\SendMailTask($this->container);
+                        $task->execute([
+                            'to' => $email,
+                            'body' => $this->render($tpl, ['order' => $model, 'products' => $products]),
+                            'isHtml' => true,
+                        ]);
+                        $isNeedRunWorker = true;
                     }
 
                     // письмо клиенту
-                    if ($this->getParameter('catalog_mail_client', 'off') === 'on') {
-                        if (
-                            $model->email &&
-                            ($tpl = $this->getParameter('catalog_mail_client_template', '')) !== ''
-                        ) {
-                            $products = collect($this->productRepository->findBy(['uuid' => array_keys($model->list)]));
+                    if (
+                        ($this->getParameter('catalog_mail_client', 'off') === 'on') &&
+                        $model->email &&
+                        ($tpl = $this->getParameter('catalog_mail_client_template', '')) !== ''
+                    ) {
+                        $products = collect($this->productRepository->findBy(['uuid' => array_keys($model->list)]));
 
-                            // add task send client mail
-                            $task = new \App\Domain\Tasks\SendMailTask($this->container);
-                            $task->execute([
-                                'to' => $model->email,
-                                'body' => $this->render($tpl, ['order' => $model, 'products' => $products]),
-                                'isHtml' => true,
-                            ]);
-                            $isNeedRunWorker = true;
-                        }
+                        // add task send client mail
+                        $task = new \App\Domain\Tasks\SendMailTask($this->container);
+                        $task->execute([
+                            'to' => $model->email,
+                            'body' => $this->render($tpl, ['order' => $model, 'products' => $products]),
+                            'isHtml' => true,
+                        ]);
+                        $isNeedRunWorker = true;
                     }
 
                     $this->entityManager->flush();
