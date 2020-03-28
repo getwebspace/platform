@@ -67,15 +67,15 @@ RunTracy\Helpers\Profiler\Profiler::start('init middleware');
 require SRC_DIR . '/middleware.php';
 
 RunTracy\Helpers\Profiler\Profiler::finish('init middleware');
-RunTracy\Helpers\Profiler\Profiler::start('init routes');
-
-// Register routes
-require SRC_DIR . '/routes.php';
-
-RunTracy\Helpers\Profiler\Profiler::finish('init routes');
 RunTracy\Helpers\Profiler\Profiler::start('init plugins');
 
 // Include plugins
 require PLUGIN_DIR . '/index.php';
 
 RunTracy\Helpers\Profiler\Profiler::finish('init plugins');
+RunTracy\Helpers\Profiler\Profiler::start('init routes');
+
+// Register routes
+require SRC_DIR . '/routes.php';
+
+RunTracy\Helpers\Profiler\Profiler::finish('init routes');

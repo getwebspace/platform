@@ -30,13 +30,24 @@ class PluginMiddleware extends Middleware
         foreach ($plugins as $plugin) {
             if (in_array($routeName, $plugin->getRoute()) || in_array($route->getName(), $plugin->getRoute())) {
                 \RunTracy\Helpers\Profiler\Profiler::start('plugin (%s)', $plugin->getCredentials('name'));
-                $response = $plugin->execute($request, $response, $route->getName());
+                $response = $plugin->before($request, $response, $route->getName());
+                \RunTracy\Helpers\Profiler\Profiler::finish('plugin (%s)', $plugin->getCredentials('name'));
+            }
+        }
+
+        $response = $next($request, $response);
+
+        /** @var \App\Application\Plugin $plugin */
+        foreach ($plugins as $plugin) {
+            if (in_array($routeName, $plugin->getRoute()) || in_array($route->getName(), $plugin->getRoute())) {
+                \RunTracy\Helpers\Profiler\Profiler::start('plugin (%s)', $plugin->getCredentials('name'));
+                $response = $plugin->after($request, $response, $route->getName());
                 \RunTracy\Helpers\Profiler\Profiler::finish('plugin (%s)', $plugin->getCredentials('name'));
             }
         }
 
         \RunTracy\Helpers\Profiler\Profiler::finish('middleware:plugin');
 
-        return  $next($request, $response);
+        return $response;
     }
 }

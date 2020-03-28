@@ -132,6 +132,26 @@
         </a>
     </li>
 
+    {% if plugins.count() %}
+        <li class="nav-section">
+            <span class="sidebar-mini-icon">
+                <i class="fa fa-ellipsis-h"></i>
+            </span>
+            <h4 class="text-section">Плагины</h4>
+        </li>
+
+        {% for plugin in plugins %}
+            {% if (plugin.isNavigationItemEnabled()) %}
+                <li class="nav-item">
+                    <a href="/cup/plugin/{{ plugin.getCredentials('name') }}">
+                        <i class="fas fa-puzzle-piece"></i>
+                        <p>{{ plugin.getCredentials('title') }}</p>
+                    </a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
     <li class="nav-section">
         <span class="sidebar-mini-icon">
             <i class="fa fa-ellipsis-h"></i>

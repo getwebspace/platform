@@ -144,6 +144,13 @@ abstract class Task
         return false;
     }
 
+    public function setStatusCancel()
+    {
+        $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_CANCEL);
+
+        return false;
+    }
+
     public function setStatusDelete()
     {
         $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_DELETE);

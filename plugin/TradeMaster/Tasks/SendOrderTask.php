@@ -37,11 +37,13 @@ class SendOrderTask extends Task
         $this->productRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
         $this->orderRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Order::class);
 
-        /**
-         * @var \App\Domain\Entities\Catalog\Order $order
-         */
+        /** @var \App\Domain\Entities\Catalog\Order $order */
         $order = $this->orderRepository->findOneBy(['uuid' => $args['uuid']]);
         if ($order) {
+            if ($order->external_id) {
+                return $this->setStatusCancel();
+            }
+
             $products = [];
 
             /** @var \App\Domain\Entities\Catalog\Product $model */
@@ -84,24 +86,10 @@ class SendOrderTask extends Task
 
                 $products = collect($this->productRepository->findBy(['uuid' => array_keys($order->list)]));
 
-                // письмо администратору
-                if (
-                    ($email = $this->getParameter('smtp_from', '')) !== '' &&
-                    ($tpl = $this->getParameter('catalog_mail_admin_template', '')) !== ''
-                ) {
-                    // add task send admin mail
-                    $task = new \App\Domain\Tasks\SendMailTask($this->container);
-                    $task->execute([
-                        'to' => $email,
-                        'body' => $this->render($tpl, ['order' => $order, 'products' => $products]),
-                        'isHtml' => true,
-                    ]);
-                }
-
                 // письмо клиенту
                 if (
                     $order->email &&
-                    ($tpl = $this->getParameter('catalog_mail_client_template', '')) !== ''
+                    ($tpl = $this->getParameter('TradeMasterPlugin_mail_client_template', '')) !== ''
                 ) {
                     // add task send client mail
                     $task = new \App\Domain\Tasks\SendMailTask($this->container);

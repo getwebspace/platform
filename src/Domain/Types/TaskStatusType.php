@@ -12,6 +12,7 @@ class TaskStatusType extends EnumType
           STATUS_WORK = 'work',
           STATUS_DONE = 'done',
           STATUS_FAIL = 'fail',
+          STATUS_CANCEL = 'cancel',
           STATUS_DELETE = 'delete';
 
     const LIST          = [
@@ -19,6 +20,7 @@ class TaskStatusType extends EnumType
         self::STATUS_WORK => 'В работе',
         self::STATUS_DONE => 'Завершена',
         self::STATUS_FAIL => 'Провалена',
+        self::STATUS_CANCEL => 'Отменена',
         self::STATUS_DELETE => 'Удалена',
     ];
 }

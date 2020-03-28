@@ -3,7 +3,9 @@
 namespace App\Application;
 
 use App\Domain\Exceptions\HttpBadRequestException;
+use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -23,6 +25,21 @@ abstract class Plugin
      * @var ContainerInterface
      */
     protected $container;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * @var \Slim\Router
+     */
+    protected $router;
+
+    /**
+     * @var EntityManager
+     */
+    protected $entityManager;
 
     /**
      * @var Twig
@@ -49,6 +66,11 @@ abstract class Plugin
      */
     protected $toolbars = [];
 
+    /**
+     * @var bool
+     */
+    protected $navigation = false;
+
     public function __construct(ContainerInterface $container)
     {
         if (empty(static::NAME) || empty(static::TITLE) || empty(static::AUTHOR)) {
@@ -57,6 +79,9 @@ abstract class Plugin
 
         $this->container = $container;
         $this->container[static::NAME] = $this;
+        $this->logger = $container->get('monolog');
+        $this->router = $this->container->get('router');
+        $this->entityManager = $container->get(\Doctrine\ORM\EntityManager::class);
         $this->renderer = $container->get('view');
     }
 
@@ -151,6 +176,24 @@ abstract class Plugin
         return $this->toolbars;
     }
 
+    protected function enableNavigationItem($handler = null)
+    {
+        $this->navigation = true;
+
+        if (!$handler) {
+            $handler = function ($req, $res) {
+                return $res->write('This is empty route for plugin: ' . static::NAME . '. Change $handler arg in function enableNavigationItem().');
+            };
+        }
+
+        return $this->router->map(['get', 'post'], '/cup/plugin/' . static::NAME, $handler);
+    }
+
+    public function isNavigationItemEnabled()
+    {
+        return $this->navigation;
+    }
+
     /**
      * Функция выполнится ДО обработки выбранной группы роутов
      *
@@ -160,10 +203,18 @@ abstract class Plugin
      *
      * @return Response
      */
-    public function execute(Request $request, Response $response, string $routeName): Response
-    {
-        return $response;
-    }
+    abstract public function before(Request $request, Response $response, string $routeName): Response;
+
+    /**
+     * Функция выполнится ПОСЛЕ обработки выбранной группы роутов
+     *
+     * @param Request  $request
+     * @param Response $response
+     * @param string   $routeName
+     *
+     * @return Response
+     */
+    abstract public function after(Request $request, Response $response, string $routeName): Response;
 
     /**
      * Возвращает значение параметра по переданному ключу

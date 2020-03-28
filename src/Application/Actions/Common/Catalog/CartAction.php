@@ -32,8 +32,8 @@ class CartAction extends CatalogAction
 
             // другие отправленные поля дописываются в комментарий
             foreach ($this->request->getParams() as $key => $value) {
-                if (!in_array($key, array_keys($data))) {
-                    $data['comment'] .= ' ' . $value;
+                if (!in_array($key, array_merge(array_keys($data), ['recaptcha']))) {
+                    $data['comment'] .= $key . ' ' . $value . PHP_EOL;
                 }
             }
 
@@ -60,14 +60,8 @@ class CartAction extends CatalogAction
 
                     $isNeedRunWorker = false;
 
-                    // если включена TM отправляем заказ
-                    if ($this->getParameter('integration_trademaster_enable', 'off') === 'on') {
-                        // add task send to TradeMaster
-                        $task = new \Plugin\TradeMaster\Tasks\SendOrderTask($this->container);
-                        $task->execute(['uuid' => $model->uuid]);
-                        $isNeedRunWorker = true;
-                    } else {
-                        // письмо администратору
+                    // письмо администратору
+                    if ($this->getParameter('catalog_mail_admin', 'off') === 'on') {
                         if (
                             ($email = $this->getParameter('smtp_from', '')) !== '' &&
                             ($tpl = $this->getParameter('catalog_mail_admin_template', '')) !== ''
@@ -83,8 +77,10 @@ class CartAction extends CatalogAction
                             ]);
                             $isNeedRunWorker = true;
                         }
+                    }
 
-                        // письмо клиенту
+                    // письмо клиенту
+                    if ($this->getParameter('catalog_mail_client', 'off') === 'on') {
                         if (
                             $model->email &&
                             ($tpl = $this->getParameter('catalog_mail_client_template', '')) !== ''
@@ -107,11 +103,6 @@ class CartAction extends CatalogAction
                     if ($isNeedRunWorker) {
                         // run worker
                         \App\Domain\Tasks\Task::worker();
-                    }
-
-                    // если включена TM отправляем заказ
-                    if ($this->getParameter('integration_trademaster_enable', 'off') === 'on') {
-                        sleep(5); // костыль
                     }
 
                     if (

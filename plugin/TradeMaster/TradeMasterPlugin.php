@@ -4,22 +4,26 @@ namespace Plugin\TradeMaster;
 
 use App\Application\Plugin;
 use Psr\Container\ContainerInterface;
+use Slim\Http\Request;
+use Slim\Http\Response;
 
 class TradeMasterPlugin extends Plugin
 {
-    const NAME         = "TradeMasterPlugin";
-    const TITLE        = "TradeMaster";
-    const DESCRIPTION  = "Плагин реализует функционал интеграции с системой торгово-складского учета.";
-    const AUTHOR       = "Aleksey Ilyin";
-    const AUTHOR_SITE  = "https://u4et.ru/trademaster";
+    const NAME        = "TradeMasterPlugin";
+    const TITLE       = "TradeMaster";
+    const DESCRIPTION = "Плагин реализует функционал интеграции с системой торгово-складского учета.";
+    const AUTHOR      = "Aleksey Ilyin";
+    const AUTHOR_SITE = "https://u4et.ru/trademaster";
 
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
 
         $this->setTemplateFolder(__DIR__ . '/templates');
-        $this->setHandledRoute('catalog');
+        $this->setHandledRoute('catalog:cart');
         $this->addTwigExtension(\Plugin\TradeMaster\TradeMasterPluginTwigExt::class);
+        $this->enableNavigationItem();
+
         $this->addToolbarItem([
             'twig' => 'trademaster.twig',
         ]);
@@ -139,6 +143,49 @@ class TradeMasterPlugin extends Plugin
                 'value' => '0',
             ],
         ]);
+        $this->addSettingsField([
+            'label' => 'Шаблон письма клиенту',
+            'description' => 'Если значения нет, письмо не будет отправляться',
+            'type' => 'text',
+            'name' => 'mail_client_template',
+            'args' => [
+                'placeholder' => 'catalog.mail.client.twig',
+            ],
+        ]);
+    }
+
+    public function before(Request $request, Response $response, string $routeName): Response
+    {
+        return $response;
+    }
+
+    public function after(Request $request, Response $response, string $routeName): Response
+    {
+        switch ($routeName) {
+            case 'catalog:cart':
+            {
+                if ($request->isPost()) {
+                    $orderRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Order::class);
+
+                    /** @var \App\Domain\Entities\Catalog\Order $model */
+                    foreach ($orderRepository->findBy(['external_id' => null], ['date' => 'desc'], 5) as $model) {
+                        // add task send to TradeMaster
+                        $task = new \Plugin\TradeMaster\Tasks\SendOrderTask($this->container);
+                        $task->execute(['uuid' => $model->uuid]);
+                    }
+
+                    $this->entityManager->flush();
+
+                    // run worker
+                    \App\Domain\Tasks\Task::worker();
+
+                    sleep(5); // костыль
+                }
+                break;
+            }
+        }
+
+        return $response;
     }
 
     /**

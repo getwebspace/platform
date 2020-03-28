@@ -469,6 +469,15 @@
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-6">
                                         {% include 'cup/field.twig' with {
+                                            'label': 'Включение и выключение отправки письма клиенту',
+                                            'type': 'select',
+                                            'name': 'catalog[mail_client]',
+                                            'args': {
+                                                'option': {'off':'Выключена', 'on':'Включена'},
+                                                'selected': 'off'
+                                            }
+                                        } %}
+                                        {% include 'cup/field.twig' with {
                                             'label': 'Шаблон письма клиенту',
                                             'description': 'Если значения нет, письмо не будет отправляться',
                                             'type': 'text',
@@ -479,6 +488,15 @@
                                         } %}
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Включение и выключение отправки письма администратору',
+                                            'type': 'select',
+                                            'name': 'catalog[mail_admin]',
+                                            'args': {
+                                                'option': {'off':'Выключена', 'on':'Включена'},
+                                                'selected': 'off'
+                                            }
+                                        } %}
                                         {% include 'cup/field.twig' with {
                                             'label': 'Шаблон письма администратору',
                                             'description': 'Если значения нет, письмо не будет отправляться',
