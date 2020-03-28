@@ -18,7 +18,7 @@ WebSpace Engine
 
 #### Права на папки и файлы
 ```shell script
-chmod -R 0777 resource
+chmod -R 0777 plugin
 chmod -R 0777 theme
 chmod -R 0777 var
 chmod 0777 var/database.sqlite

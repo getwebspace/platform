@@ -1,5 +1,7 @@
 <?php
 
+/** @var \Slim\Container $container */
+
 // файл для подключения плагинов
 // использя ссылку на plugins необходимо зарегистрировать каждый плагин
 $plugins = $container->get('plugin');
