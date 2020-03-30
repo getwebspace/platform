@@ -48,7 +48,7 @@
                                         {% if param.twig %}
                                             {% include param.twig %}
                                         {% elseif param.html %}
-                                            {% include param.html %}
+                                            {{ param.html|raw }}
                                         {% endif %}
                                     {% endfor %}
                                 {% endfor %}
@@ -190,6 +190,14 @@
                                                                 <tr>
                                                                     <th width="50%">Количество файлов:</th>
                                                                     <td width="50%">{{ stats.files }}</td>
+                                                                </tr>
+                                                            {% endif %}
+                                                            {% if plugins.count() %}
+                                                                <tr>
+                                                                    <th width="50%">Количество плагинов:</th>
+                                                                    <td width="50%">
+                                                                        {{ plugins.count() }}
+                                                                    </td>
                                                                 </tr>
                                                             {% endif %}
                                                         </table>

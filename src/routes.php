@@ -174,18 +174,7 @@ $app
                 // dev console
                 $app->post('/console', '\RunTracy\Controllers\RunTracyConsole:index');
             })
-            ->add(function (Request $request, Response $response, $next) {
-                $user = $request->getAttribute('user', false);
-
-                if ($user === false || !in_array($user->level, \App\Domain\Types\UserLevelType::CUP_ACCESS)) {
-                    return $response->withHeader('Location', '/cup/login?redirect=' . $request->getUri()->getPath())->withStatus(301);
-                }
-                if ($request->isPost() && $user && $user->level === \App\Domain\Types\UserLevelType::LEVEL_DEMO) {
-                    return $response->withHeader('Location', $request->getUri()->getPath())->withStatus(301);
-                }
-
-                return $next($request, $response);
-            });
+            ->add(new \App\Application\Middlewares\CupMiddleware($app->getContainer()));
     });
 
 // main path

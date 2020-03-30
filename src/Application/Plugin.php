@@ -32,44 +32,44 @@ abstract class Plugin
     protected $logger;
 
     /**
-     * @var \Slim\Router
-     */
-    protected $router;
-
-    /**
      * @var EntityManager
      */
     protected $entityManager;
 
     /**
+     * @var \Slim\Router
+     */
+    private $router;
+
+    /**
      * @var Twig
      */
-    protected $renderer;
+    private $renderer;
 
     /**
      * @var string
      */
-    protected $templateFolder = null;
+    private $templateFolder = null;
 
     /**
      * @var array
      */
-    protected $routes = [];
+    private $routes = [];
 
     /**
      * @var array
      */
-    protected $settingsField = [];
+    private $settingsField = [];
 
     /**
      * @var array
      */
-    protected $toolbars = [];
+    private $toolbars = [];
 
     /**
      * @var bool
      */
-    protected $navigation = false;
+    public $navigation = false;
 
     public function __construct(ContainerInterface $container)
     {
@@ -80,8 +80,8 @@ abstract class Plugin
         $this->container = $container;
         $this->container[static::NAME] = $this;
         $this->logger = $container->get('monolog');
-        $this->router = $this->container->get('router');
         $this->entityManager = $container->get(\Doctrine\ORM\EntityManager::class);
+        $this->router = $this->container->get('router');
         $this->renderer = $container->get('view');
     }
 
@@ -182,7 +182,7 @@ abstract class Plugin
             'handler' => function (Request $req, Response $res) {
                 return $res->withHeader('Content-Type', 'text/plain')->write(
                     'This is empty route for plugin: ' . static::NAME . PHP_EOL .
-                    'Change "handler" parameter in function enableNavigationItem(["handler" => ""]).'
+                    'Change "handler" key in function arguments enableNavigationItem(["handler" => ??]).'
                 );
             },
         ];
@@ -190,12 +190,39 @@ abstract class Plugin
 
         $this->navigation = true;
 
-        return $this->router->map(['get', 'post'], '/cup/plugin/' . static::NAME, $params['handler']);
+        return $this->router
+            ->map(['get', 'post'], '/cup/plugin/' . static::NAME, $params['handler'])
+            ->add(new \App\Application\Middlewares\CupMiddleware($this->container));
     }
 
     public function isNavigationItemEnabled()
     {
         return $this->navigation;
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return \Slim\Interfaces\RouteInterface|\Slim\Route
+     */
+    protected function map($params) {
+        $default = [
+            'methods' => ['get', 'post'],
+            'pattern' => '',
+            'handler' => function (Request $req, Response $res) {
+                return $res->withHeader('Content-Type', 'text/plain')->write(
+                    'This is empty route for plugin: ' . static::NAME . PHP_EOL .
+                    'Change "handler" key in function arguments map(["methods" => "..", "pattern" => "..", "handler" => ??]).'
+                );
+            },
+        ];
+        $params = array_merge($default, $params);
+
+        if (!is_array($params['methods'])) {
+            $params['methods'] = [$params['methods']];
+        }
+
+        return $this->router->map($params['methods'], $params['pattern'], $params['handler']);
     }
 
     /**
@@ -207,7 +234,10 @@ abstract class Plugin
      *
      * @return Response
      */
-    abstract public function before(Request $request, Response $response, string $routeName): Response;
+    public function before(Request $request, Response $response, string $routeName): Response
+    {
+        return $response;
+    }
 
     /**
      * Функция выполнится ПОСЛЕ обработки выбранной группы роутов
@@ -218,7 +248,10 @@ abstract class Plugin
      *
      * @return Response
      */
-    abstract public function after(Request $request, Response $response, string $routeName): Response;
+    public function after(Request $request, Response $response, string $routeName): Response
+    {
+        return $response;
+    }
 
     /**
      * Возвращает значение параметра по переданному ключу
@@ -244,13 +277,9 @@ abstract class Plugin
      */
     protected function render($template, array $data = [])
     {
-
         try {
             \RunTracy\Helpers\Profiler\Profiler::start('plugin render (%s)', $template);
-
-
             $rendered = $this->renderer->fetch($template, $data);
-
             \RunTracy\Helpers\Profiler\Profiler::finish('plugin render (%s)', $template);
 
             return $rendered;
