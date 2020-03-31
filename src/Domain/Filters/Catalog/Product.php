@@ -45,6 +45,7 @@ class Product extends Filter
                 ->addRule($filter->checkStrlenBetween(0, 255))
             ->attr('vendorcode')
                 ->addRule($filter->leadStr())
+                ->addRule($filter->leadTrim())
             ->attr('barcode')
                 ->addRule($filter->leadInteger())
             ->attr('priceFirst')
@@ -94,7 +95,8 @@ class Product extends Filter
             ->attr('date')
                 ->addRule($filter->ValidDate())
             ->attr('external_id')
-                ->addRule($filter->leadStr());
+                ->addRule($filter->leadStr())
+                ->addRule($filter->leadTrim());
 
         return $filter->run();
     }
