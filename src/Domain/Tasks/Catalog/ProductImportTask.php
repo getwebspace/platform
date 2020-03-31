@@ -72,17 +72,20 @@ class ProductImportTask extends Task
                     $this->logger->info('Update product data', $item);
 
                     foreach ($item as $key => $value) {
-                        if (in_array($key, [
-                            'uuid', 'category', 'external_id',
-                            'title', 'description', 'extra',
-                            'address',
-                            'barcode', 'vendorcode',
-                            'priceFirst', 'price', 'priceWholesale',
-                            'volume', 'unit', 'stock',
-                            'field1', 'field2', 'field3', 'field4', 'field5',
-                            'country', 'manufacturer',
-                            'order',
-                        ])) {
+                        if (
+                            $key !== 'empty' &&
+                            in_array($key, [
+                                'uuid', 'category', 'external_id',
+                                'title', 'description', 'extra',
+                                'address',
+                                'barcode', 'vendorcode',
+                                'priceFirst', 'price', 'priceWholesale',
+                                'volume', 'unit', 'stock',
+                                'field1', 'field2', 'field3', 'field4', 'field5',
+                                'country', 'manufacturer',
+                                'order',
+                            ])
+                        ) {
                             $product->set($key, $value);
                         }
                     }
