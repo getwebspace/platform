@@ -1,5 +1,7 @@
 <?php
 
+ini_set('memory_limit', '-1'); // fix memory usage
+
 require __DIR__ . '/../src/bootstrap.php';
 
 // exit if another worker works

@@ -1,0 +1,28 @@
+<div id="btn-modal-import" class="modal">
+    <form action="/cup/catalog/data/import" method="post"  enctype="multipart/form-data" class="row m-0">
+        <div class="row">
+            <div class="col-12 text-center">
+                {% include 'cup/form.twig' with {
+                    'label': 'Файл в формате Excel',
+                    'type': 'file',
+                    'name': 'excel',
+                    'args': {
+                        'required': true,
+                        'class': ['d-block', 'btn', 'btn-sm', 'bg-grey2', 'm-auto'],
+                        'accept': 'application/vnd.ms-excel'
+                    }
+                } %}
+            </div>
+            <div class="col-12 text-center">
+                <p>
+                    Excel файл должен соответствовать настройкам импорта.<br>
+                    (<a href="/cup/parameters">Настройки</a> <i class="fas fa-caret-right"></i> Каталог <i class="fas fa-caret-right"></i> Импорт)
+                </p>
+
+                <button type="submit" name="save" class="btn btn-info">
+                    <span class="text">Загрузить</span>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

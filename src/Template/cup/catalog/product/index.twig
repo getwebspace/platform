@@ -23,10 +23,18 @@
                         {% endif %}
                         <h4 class="card-title">Номенклатура {{ category ? 'в категории ' ~ category.title : '' }} ({{ products.count() }})</h4>
 
-                        <a href="#btn-modal-scan" rel="modal:open" class="btn btn-icon btn-info ml-auto">
+                        <a href="#btn-modal-scan" rel="modal:open" class="btn btn-icon btn-info ml-auto" data-toggle="tooltip" data-placement="top" title="Сканер штрих и QR кодов">
                             <i class="fas fa-barcode"></i>
                         </a>
                         {% include "cup/catalog/barcode-modal.twig" %}
+
+                        <a href="#btn-modal-import" rel="modal:open" class="btn btn-secondary btn-icon ml-1 text-white" data-toggle="tooltip" data-placement="top" title="Импорт продуктов">
+                            <i class="fas fa-file-import"></i>
+                        </a>
+                        {% include "cup/catalog/import-modal.twig" %}
+                        <a href="/cup/catalog/data/export{{ category.uuid ? '?category=' ~ category.uuid : '' }}" class="btn btn-secondary btn-icon ml-1 text-white" data-toggle="tooltip" data-placement="top" title="Экспорт текущего списка продуктов">
+                            <i class="fas fa-file-export"></i>
+                        </a>
 
                         <a href="/cup/catalog/product/add{{ category ? '?category=' ~ category.uuid : '' }}" class="btn btn-primary btn-round ml-1">
                             <i class="fa fa-plus"></i>
@@ -39,16 +47,16 @@
                         <table data-table class="display table table-striped table-hover" >
                             <thead>
                                 <tr>
-                                    <th width="3%">#</th>
-                                    <th>Наименование</th>
-                                    <th width="10%">Категория</th>
+                                    <th class="d-none">#</th>
+                                    <th width="20%">Наименование</th>
+                                    <th width="15%">Категория</th>
                                     <th>Артикул</th>
                                     <th>Цена</th>
                                     <th width="10%">{{ category.product.field_1 ?? 'Поле 1' }}</th>
                                     <th width="10%">{{ category.product.field_2 ?? 'Поле 2' }}</th>
                                     <th width="10%">{{ category.product.field_3 ?? 'Поле 3' }}</th>
-                                    <th width="8%" class="text-center"><i class="fas fa-boxes" data-toggle="tooltip" data-placement="top" title="Объем упаковки"></i></th>
-                                    <th width="8%" class="text-center"><i class="fas fa-warehouse" data-toggle="tooltip" data-placement="top" title="Количество на складе"></i></th>
+                                    {#<th width="8%" class="text-center"><i class="fas fa-boxes" data-toggle="tooltip" data-placement="top" title="Объем упаковки"></i></th>
+                                    <th width="8%" class="text-center"><i class="fas fa-warehouse" data-toggle="tooltip" data-placement="top" title="Количество на складе"></i></th>#}
                                     <th width="10%" class="text-center no-sorting"></th>
                                 </tr>
                             </thead>
@@ -56,7 +64,7 @@
                                 {% for item in products %}
                                     {% set buf = categories.firstWhere('uuid', item.category) %}
                                     <tr>
-                                        <td class="text-center">{{ item.order }}</td>
+                                        <td class="text-center d-none">{{ item.order }}</td>
                                         <td>
                                             <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ item.address }}" target="_blank">
                                                 {{ item.title }}
@@ -80,8 +88,8 @@
                                         <td>{{ item.field1 }}</td>
                                         <td>{{ item.field2 }}</td>
                                         <td>{{ item.field3 }}</td>
-                                        <td class="text-center">{{ item.getVolume() }}</td>
-                                        <td class="text-center">{{ item.stock|format_number({fraction_digit: 2}) }}</td>
+                                        {#<td class="text-center">{{ item.getVolume() }}</td>
+                                        <td class="text-center">{{ item.stock|format_number({fraction_digit: 2}) }}</td>#}
                                         <td class="text-center">
                                             <div class="btn-group dropdown">
                                                 <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
@@ -109,22 +117,16 @@
                     </div>
                 </div>
 
-                <div class="card-footer">
-                    <div class="d-flex align-items-center">
-                        {#<a href="#" class="btn btn-secondary btn-icon ml-auto" data-toggle="tooltip" data-placement="top" title="Импорт списка товаров">
-                            <i class="fas fa-file-import"></i>
-                        </a>#}
-                        <a href="/cup/catalog/product/{{ category.uuid ?? '00000000-0000-0000-0000-000000000000' }}/export" class="btn btn-secondary btn-icon ml-auto" data-toggle="tooltip" data-placement="top" title="Экспорт списка товаров">
-                            <i class="fas fa-file-export"></i>
-                        </a>
-                        {% if category.uuid %}
+                {% if category.uuid %}
+                    <div class="card-footer">
+                        <div class="d-flex align-items-center">
                             <a href="/cup/catalog/category/{{ category.uuid }}/edit" class="btn btn-info btn-round ml-1">
                                 <i class="fa fa-edit"></i>
                                 Изменить категорию
                             </a>
-                        {% endif %}
+                        </div>
                     </div>
-                </div>
+                {% endif %}
             </div>
         </div>
     </div>

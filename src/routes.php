@@ -130,7 +130,6 @@ $app
                         $app->map(['get', 'post'], '/{product}/edit', \App\Application\Actions\Cup\Catalog\Product\ProductUpdateAction::class);
                         $app->map(['get', 'post'], '/{product}/delete', \App\Application\Actions\Cup\Catalog\Product\ProductDeleteAction::class);
                         $app->get('[/{category}]', \App\Application\Actions\Cup\Catalog\Product\ProductListAction::class);
-                        $app->get('/{category}/export', \App\Application\Actions\Cup\Catalog\Product\ProductExportAction::class);
                     });
 
                     // order
@@ -139,6 +138,12 @@ $app
                         $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\Catalog\Order\OrderCreateAction::class);
                         $app->map(['get', 'post'], '/{order}/edit', \App\Application\Actions\Cup\Catalog\Order\OrderUpdateAction::class);
                         $app->map(['get', 'post'], '/{order}/delete', \App\Application\Actions\Cup\Catalog\Order\OrderDeleteAction::class);
+                    });
+
+                    // import export
+                    $app->group('/data', function (App $app) {
+                        $app->get('/export', \App\Application\Actions\Cup\Catalog\CatalogExportAction::class);
+                        $app->post('/import', \App\Application\Actions\Cup\Catalog\CatalogImportAction::class);
                     });
                 });
 

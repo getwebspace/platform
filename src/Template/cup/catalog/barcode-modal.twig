@@ -4,8 +4,8 @@
             {% set url = base_url() ~ '/cup/catalog/product/scan/' ~ pushstream_channel(user.uuid) %}
             {{ qr_code(url, 250, 250) }}
             <p>
-                Отсканируйте QR код на вашем мобильном,<br>
-                будет открыта вкладка со сканером QR/Bar кодов.
+                Отсканируйте этот QR вашим устройством,<br>
+                будет открыта вкладка со сканером штрих и QR кодов.
             </p>
             <a href="#" class="d-block" target="popup" onclick="window.open('{{ url }}','name','width=500,height=600');return false;">
                 или откройте сканер в новом окне

@@ -56,6 +56,11 @@
                     {% include "cup/docs/dev/controller-table-vars.twig" with {
                         "list": collect([
                             {
+                                "field": "NIL",
+                                "type": "array",
+                                "description": "Значение Nil UUID: '00000000-0000-0000-0000-000000000000'",
+                            },
+                            {
                                 "field": "_request",
                                 "type": "array",
                                 "description": "$_REQUEST",
@@ -69,6 +74,11 @@
                                 "field": "user",
                                 "type": "App\\Domain\\Entities\\User | false",
                                 "description": "Текущий пользователь или false",
+                            },
+                            {
+                                "field": "plugins",
+                                "type": "Collection",
+                                "description": "Коллекция плагинов",
                             },
                         ])
                     } %}

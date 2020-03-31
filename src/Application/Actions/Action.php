@@ -309,11 +309,11 @@ abstract class Action
 
             $data = array_merge(
                 [
+                    'NIL' => \Ramsey\Uuid\Uuid::NIL,
                     '_request' => &$_REQUEST,
                     '_error' => \Alksily\Support\Form::$globalError = $this->error,
                     'user' => $this->request->getAttribute('user', false),
                     'plugins' => $this->container->get('plugin')->get(),
-                    'trademaster' => $this->getParameter('TradeMasterPlugin_enable', 'off'),
                 ],
                 $data
             );
