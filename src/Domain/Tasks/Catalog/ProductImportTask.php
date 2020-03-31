@@ -32,12 +32,14 @@ class ProductImportTask extends Task
             $key_field = $this->getParameter('catalog_import_key', null);
             $productRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
             foreach ($data['products'] as $item) {
+                $this->logger->info('Search product', [$key_field => $item[$key_field]]);
+
                 /** @var \App\Domain\Entities\Catalog\Product $product */
                 $product = $productRepository->findOneBy([$key_field => [$item[$key_field], +$item[$key_field]]]);
 
                 if ($action === 'insert_update') {
                     if (!$product) {
-                        $this->logger->info('Import new product', [$key_field => $item[$key_field]]);
+                        $this->logger->info('Create new product', [$key_field => $item[$key_field]]);
 
                         $default = [
                             'category' => \Ramsey\Uuid\Uuid::NIL,
@@ -81,7 +83,6 @@ class ProductImportTask extends Task
                             'country', 'manufacturer',
                             'order',
                         ])) {
-                            $this->logger->info('Update product data', $item);
                             $product->set($key, $value);
                         }
                     }
