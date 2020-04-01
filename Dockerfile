@@ -12,7 +12,7 @@ ENV COMMIT_SHA=${COMMIT}
 # Install PHP libs
 COPY composer.json ${PLATFORM_HOME}/composer.json
 COPY composer.lock ${PLATFORM_HOME}/composer.lock
-RUN composer --ignore-platform-reqs install --no-dev
+RUN composer install --no-dev
 
 # Copy platform
 ADD config ${PLATFORM_HOME}/config
