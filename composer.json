@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": ">=7.1",
+        "php": ">=7.4",
         "ext-json": "*",
         "slim/slim": "^3.1",
         "slim/php-view": "^2.0",
@@ -31,9 +31,6 @@
         "pragmarx/google2fa": "^3.0",
         "phpoffice/phpspreadsheet": "^1.11",
         "bacon/bacon-qr-code": "^1.0",
-        "vitalybaev/google-merchant-feed": "^1.0",
-        "bukashk0zzz/yml-generator": "^1.6",
-        "samdark/sitemap": "^2.2",
         "monolog/monolog": "^1.17",
         "runcmf/runtracy": "^0.2.10",
         "sentry/sdk": "2.0.3"

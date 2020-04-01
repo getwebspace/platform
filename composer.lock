@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e8d7e92e132186c92fa4320d1943f06b",
+    "content-hash": "4b62415154d4dc74f9c7db9b569f1bce",
     "packages": [
         {
             "name": "alksily/entity",
@@ -239,61 +239,6 @@
                 "writer"
             ],
             "time": "2020-03-23T13:27:48+00:00"
-        },
-        {
-            "name": "bukashk0zzz/yml-generator",
-            "version": "1.11.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Bukashk0zzz/YmlGenerator.git",
-                "reference": "517bde47b989aef3edd5640aeb90bf012eef1e81"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Bukashk0zzz/YmlGenerator/zipball/517bde47b989aef3edd5640aeb90bf012eef1e81",
-                "reference": "517bde47b989aef3edd5640aeb90bf012eef1e81",
-                "shasum": ""
-            },
-            "require": {
-                "ext-simplexml": "*",
-                "ext-xmlwriter": "*",
-                "php": ">=5.6.1"
-            },
-            "require-dev": {
-                "dealerdirect/phpcodesniffer-composer-installer": "^0.5",
-                "escapestudios/symfony2-coding-standard": "^3.0",
-                "ext-dom": "*",
-                "friendsofphp/php-cs-fixer": "^2.3",
-                "fzaninotto/faker": "^1.6",
-                "phpcompatibility/php-compatibility": "^9.0",
-                "phpunit/phpunit": "^5.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Bukashk0zzz\\YmlGenerator\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Denis Golubovskiy",
-                    "email": "bukashk0zzz@gmail.com",
-                    "role": "Creator"
-                }
-            ],
-            "description": "YML (Yandex Market Language) file generator",
-            "homepage": "https://github.com/Bukashk0zzz/YmlGenerator",
-            "keywords": [
-                "market",
-                "yandex",
-                "yml",
-                "yml-generator"
-            ],
-            "time": "2019-12-04T09:01:19+00:00"
         },
         {
             "name": "clue/stream-filter",
@@ -3189,165 +3134,6 @@
             "time": "2017-05-24T11:36:38+00:00"
         },
         {
-            "name": "sabre/uri",
-            "version": "2.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/sabre-io/uri.git",
-                "reference": "059d11012603be2e32ddb7543602965563ddbb09"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sabre-io/uri/zipball/059d11012603be2e32ddb7543602965563ddbb09",
-                "reference": "059d11012603be2e32ddb7543602965563ddbb09",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.1"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "~2.16.1",
-                "phpunit/phpunit": "^7 || ^8"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "lib/functions.php"
-                ],
-                "psr-4": {
-                    "Sabre\\Uri\\": "lib/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Evert Pot",
-                    "email": "me@evertpot.com",
-                    "homepage": "http://evertpot.com/",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Functions for making sense out of URIs.",
-            "homepage": "http://sabre.io/uri/",
-            "keywords": [
-                "rfc3986",
-                "uri",
-                "url"
-            ],
-            "time": "2020-01-31T18:53:43+00:00"
-        },
-        {
-            "name": "sabre/xml",
-            "version": "2.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/sabre-io/xml.git",
-                "reference": "705f5cbf7f4fb1e3dd47173e3f026892818c8d46"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/sabre-io/xml/zipball/705f5cbf7f4fb1e3dd47173e3f026892818c8d46",
-                "reference": "705f5cbf7f4fb1e3dd47173e3f026892818c8d46",
-                "shasum": ""
-            },
-            "require": {
-                "ext-dom": "*",
-                "ext-xmlreader": "*",
-                "ext-xmlwriter": "*",
-                "lib-libxml": ">=2.6.20",
-                "php": "^7.1",
-                "sabre/uri": ">=1.0,<3.0.0"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "~2.16.1",
-                "phpunit/phpunit": "^7 || ^8"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Sabre\\Xml\\": "lib/"
-                },
-                "files": [
-                    "lib/Deserializer/functions.php",
-                    "lib/Serializer/functions.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Evert Pot",
-                    "email": "me@evertpot.com",
-                    "homepage": "http://evertpot.com/",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Markus Staab",
-                    "email": "markus.staab@redaxo.de",
-                    "role": "Developer"
-                }
-            ],
-            "description": "sabre/xml is an XML library that you may not hate.",
-            "homepage": "https://sabre.io/xml/",
-            "keywords": [
-                "XMLReader",
-                "XMLWriter",
-                "dom",
-                "xml"
-            ],
-            "time": "2020-01-31T18:52:58+00:00"
-        },
-        {
-            "name": "samdark/sitemap",
-            "version": "2.2.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/samdark/sitemap.git",
-                "reference": "dcfef471e79abca9d3c4d83dd6a7861cec1a596a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/samdark/sitemap/zipball/dcfef471e79abca9d3c4d83dd6a7861cec1a596a",
-                "reference": "dcfef471e79abca9d3c4d83dd6a7861cec1a596a",
-                "shasum": ""
-            },
-            "require": {
-                "ext-xmlwriter": "*",
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~4.4"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "samdark\\sitemap\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Alexander Makarov",
-                    "email": "sam@rmcreative.ru",
-                    "homepage": "http://rmcreative.ru/"
-                }
-            ],
-            "description": "Sitemap and sitemap index builder",
-            "homepage": "https://github.com/samdark/sitemap",
-            "keywords": [
-                "Sitemap"
-            ],
-            "time": "2019-03-27T09:31:20+00:00"
-        },
-        {
             "name": "sentry/sdk",
             "version": "2.0.3",
             "source": {
@@ -3689,16 +3475,16 @@
         },
         {
             "name": "symfony/console",
-            "version": "v5.0.6",
+            "version": "v5.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "0085aec018950e1161bdf6bcb19fcb0828308cfc"
+                "reference": "5fa1caadc8cdaa17bcfb25219f3b53fe294a9935"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/0085aec018950e1161bdf6bcb19fcb0828308cfc",
-                "reference": "0085aec018950e1161bdf6bcb19fcb0828308cfc",
+                "url": "https://api.github.com/repos/symfony/console/zipball/5fa1caadc8cdaa17bcfb25219f3b53fe294a9935",
+                "reference": "5fa1caadc8cdaa17bcfb25219f3b53fe294a9935",
                 "shasum": ""
             },
             "require": {
@@ -3761,20 +3547,20 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2020-03-16T13:02:39+00:00"
+            "time": "2020-03-30T11:42:42+00:00"
         },
         {
             "name": "symfony/intl",
-            "version": "v5.0.6",
+            "version": "v5.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/intl.git",
-                "reference": "b82a2ec263267b4a7e958f1d9cb0d47f989a8453"
+                "reference": "a02d65b026413150223c010db3000028bf9770eb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/intl/zipball/b82a2ec263267b4a7e958f1d9cb0d47f989a8453",
-                "reference": "b82a2ec263267b4a7e958f1d9cb0d47f989a8453",
+                "url": "https://api.github.com/repos/symfony/intl/zipball/a02d65b026413150223c010db3000028bf9770eb",
+                "reference": "a02d65b026413150223c010db3000028bf9770eb",
                 "shasum": ""
             },
             "require": {
@@ -3836,20 +3622,20 @@
                 "l10n",
                 "localization"
             ],
-            "time": "2020-03-16T16:38:48+00:00"
+            "time": "2020-03-27T16:56:45+00:00"
         },
         {
             "name": "symfony/options-resolver",
-            "version": "v5.0.6",
+            "version": "v5.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/options-resolver.git",
-                "reference": "b1ab86ce52b0c0abe031367a173005a025e30e04"
+                "reference": "09dccfffd24b311df7f184aa80ee7b61ad61ed8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/options-resolver/zipball/b1ab86ce52b0c0abe031367a173005a025e30e04",
-                "reference": "b1ab86ce52b0c0abe031367a173005a025e30e04",
+                "url": "https://api.github.com/repos/symfony/options-resolver/zipball/09dccfffd24b311df7f184aa80ee7b61ad61ed8d",
+                "reference": "09dccfffd24b311df7f184aa80ee7b61ad61ed8d",
                 "shasum": ""
             },
             "require": {
@@ -3890,7 +3676,7 @@
                 "configuration",
                 "options"
             ],
-            "time": "2020-01-04T14:08:26+00:00"
+            "time": "2020-03-27T16:56:45+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -4597,48 +4383,6 @@
                 "templating"
             ],
             "time": "2019-10-17T07:34:53+00:00"
-        },
-        {
-            "name": "vitalybaev/google-merchant-feed",
-            "version": "v1.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/vitalybaev/php-google-merchant-feed.git",
-                "reference": "eeb135532afc6cd98cb532e0b60bec8e62250d15"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/vitalybaev/php-google-merchant-feed/zipball/eeb135532afc6cd98cb532e0b60bec8e62250d15",
-                "reference": "eeb135532afc6cd98cb532e0b60bec8e62250d15",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.5",
-                "sabre/xml": "^1.5 || ^2.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Vitalybaev\\GoogleMerchant\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Vitaly Baev",
-                    "email": "dj@vitalybaev.ru"
-                }
-            ],
-            "description": "PHP package for creating Google Merchant products feed",
-            "keywords": [
-                "feed",
-                "google",
-                "merchant"
-            ],
-            "time": "2019-05-13T03:18:17+00:00"
         }
     ],
     "packages-dev": [
@@ -6006,7 +5750,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.1",
+        "php": ">=7.4",
         "ext-json": "*"
     },
     "platform-dev": []
