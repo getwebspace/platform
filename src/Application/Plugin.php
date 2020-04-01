@@ -54,7 +54,7 @@ abstract class Plugin
     /**
      * @var array
      */
-    private $routes = [];
+    private $handledRoutes = [];
 
     /**
      * @var array
@@ -65,6 +65,11 @@ abstract class Plugin
      * @var array
      */
     private $toolbars = [];
+
+    /**
+     * @var bool
+     */
+    public $routes = false;
 
     /**
      * @var bool
@@ -116,12 +121,13 @@ abstract class Plugin
 
     protected function setHandledRoute(...$name)
     {
-        $this->routes = array_merge($this->routes, $name);
+        $this->routes = true;
+        $this->handledRoutes = array_merge($this->handledRoutes, $name);
     }
 
     public function getRoute()
     {
-        return $this->routes;
+        return $this->handledRoutes;
     }
 
     protected function addTwigExtension($extension)

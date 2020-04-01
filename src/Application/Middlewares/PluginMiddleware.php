@@ -21,14 +21,14 @@ class PluginMiddleware extends Middleware
 
         /** @var \Slim\Interfaces\RouteInterface $route */
         $route = $request->getAttribute('route');
-        $routeName = array_first(explode(':', $route->getName()));
+        $routeName = $route->getName();
 
         /** @var \Alksily\Entity\Collection $plugins */
-        $plugins = $this->container->get('plugin')->get();
+        $plugins = $this->container->get('plugin')->get()->where('routes', true);
 
         /** @var \App\Application\Plugin $plugin */
         foreach ($plugins as $plugin) {
-            if (in_array($routeName, $plugin->getRoute()) || in_array($route->getName(), $plugin->getRoute())) {
+            if (str_starts_with($plugin->getRoute(), $routeName)) {
                 \RunTracy\Helpers\Profiler\Profiler::start('plugin (%s)', $plugin->getCredentials('name'));
                 $response = $plugin->before($request, $response, $route->getName());
                 \RunTracy\Helpers\Profiler\Profiler::finish('plugin (%s)', $plugin->getCredentials('name'));
@@ -39,7 +39,7 @@ class PluginMiddleware extends Middleware
 
         /** @var \App\Application\Plugin $plugin */
         foreach ($plugins as $plugin) {
-            if (in_array($routeName, $plugin->getRoute()) || in_array($route->getName(), $plugin->getRoute())) {
+            if (str_starts_with($plugin->getRoute(), $routeName)) {
                 \RunTracy\Helpers\Profiler\Profiler::start('plugin (%s)', $plugin->getCredentials('name'));
                 $response = $plugin->after($request, $response, $route->getName());
                 \RunTracy\Helpers\Profiler\Profiler::finish('plugin (%s)', $plugin->getCredentials('name'));

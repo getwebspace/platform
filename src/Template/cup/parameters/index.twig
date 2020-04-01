@@ -764,49 +764,6 @@
                                                 } %}
                                             </div>
 
-                                            {# TAB: Plugin merchant #}
-                                            <div class="tab-pane fade" id="plugins-merchant">
-                                                <p>Параметры интеграции с Google Merchant Feed и/или Yandex Market</p>
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'Название компании',
-                                                    'type': 'text',
-                                                    'name': 'integration[merchant_company_title]'
-                                                } %}
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'Название магазина',
-                                                    'type': 'text',
-                                                    'name': 'integration[merchant_shop_title]'
-                                                } %}
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'Описание магазина',
-                                                    'type': 'text',
-                                                    'name': 'integration[merchant_shop_description]'
-                                                } %}
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'Валюта',
-                                                    'type': 'text',
-                                                    'name': 'integration[merchant_currency]'
-                                                } %}
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'Стоимость доставки',
-                                                    'description': 'Указывается в валюте указанной полем выше',
-                                                    'type': 'number',
-                                                    'name': 'integration[merchant_delivery_cost]'
-                                                } %}
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'Срок доставки',
-                                                    'description': 'Указывается в днях',
-                                                    'type': 'number',
-                                                    'name': 'integration[merchant_delivery_days]'
-                                                } %}
-                                            </div>
-
                                             {% for plugin in plugins %}
                                                 {% set credentials = plugin.getCredentials() %}
 
