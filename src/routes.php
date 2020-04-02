@@ -220,10 +220,6 @@ $app
                         ->setName('cup:editor');
                 });
 
-                // docs
-                $app->get('/docs', \App\Application\Actions\Cup\DocsPageAction::class)
-                    ->setName('cup:docs');
-
                 // task add to queue
                 $app->post('/task/run', \App\Application\Actions\Cup\Task\TaskRunAction::class);
 
