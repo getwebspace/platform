@@ -319,22 +319,18 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
      */
 
     // получает файлы по параметрам
-    public function files($data = [])
+    public function files($files = [])
     {
-        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:files', $data);
+        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:files', $files);
 
-        $default = [
-            'uuid' => '',
-        ];
-        $data = array_merge($default, $data);
         $criteria = [];
 
-        if ($data['uuid']) {
-            if (!is_a($data['uuid'], \Alksily\Entity\Collection::class) && !is_array($data['uuid'])) $data['uuid'] = [$data['uuid']];
+        if ($files) {
+            if (!is_a($files, \Alksily\Entity\Collection::class) && !is_array($files)) $files = [$files];
 
-            foreach ($data['uuid'] as $value) {
-                if (\Ramsey\Uuid\Uuid::isValid($value) === true) {
-                    $criteria['uuid'][] = $value;
+            foreach ($files as $uuid) {
+                if (\Ramsey\Uuid\Uuid::isValid($uuid) === true) {
+                    $criteria['uuid'][] = $uuid;
                 }
             }
         }
@@ -343,7 +339,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         $repository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
         $result = collect($repository->findBy($criteria));
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:files', $data);
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:files', $files);
 
         return $result;
     }
@@ -704,18 +700,18 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         return $result;
     }
 
-    public function notification($user = null, $limit = 30)
+    public function notification($user_uuid = null, $limit = 30)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:notification');
 
         $qb = $this->entityManager->createQueryBuilder();
         $query = $qb->select('n')
             ->from(\App\Domain\Entities\Notification::class, 'n')
-            ->where('n.user_uuid IS NULL' . ($user ? ' OR n.user_uuid = :uuid' : ''))
+            ->where('n.user_uuid IS NULL' . ($user_uuid ? ' OR n.user_uuid = :uuid' : ''))
             ->andWhere('n.date > :period')
             ->orderBy('n.date', 'DESC')
             ->setMaxResults($limit)
-            ->setParameter('uuid', $user, \Ramsey\Uuid\Doctrine\UuidType::NAME)
+            ->setParameter('uuid', $user_uuid, \Ramsey\Uuid\Doctrine\UuidType::NAME)
             ->setParameter('period',
                 date(
                     \App\Domain\References\Date::DATETIME,
