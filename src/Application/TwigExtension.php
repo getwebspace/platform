@@ -415,8 +415,8 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
                                 }
                             }
                             break;
-                        default:
-                            $criteria[$type][] = $value;
+                        case 'address':
+                            $criteria['address'][] = $value;
                     }
                 }
             }
