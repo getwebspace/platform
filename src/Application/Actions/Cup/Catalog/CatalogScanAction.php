@@ -1,8 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Catalog;
-
-use App\Application\Actions\Cup\Catalog\CatalogAction;
 
 class CatalogScanAction extends CatalogAction
 {

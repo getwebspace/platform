@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application;
 
@@ -35,7 +35,7 @@ class PushStream
 
         if (is_a($data['content'], \Alksily\Entity\Interfaces\ModelInterface::class)) {
             $name = explode('\\', get_class($data['content']));
-            $data['content'] = array_merge($data['content']->toArray(), ['type' => strtolower(array_pop($name))]);
+            $data['content'] = array_merge($data['content']->toArray(), ['type' => mb_strtolower(array_pop($name))]);
         }
         if (is_array($data['content'])) {
             $data['content'] = json_encode($data['content'], JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK);
@@ -87,6 +87,7 @@ class PushStream
      * Check if user online
      *
      * @param $user_uuid
+     * @param mixed $channel
      *
      * @return bool
      */
@@ -130,13 +131,12 @@ class PushStream
         ) {
             if ($host) {
                 $result = file_get_contents($host . $data['url'], false, stream_context_create([
-                    'http' =>
-                        [
-                            'method' => $data['params'] ? 'POST' : 'GET',
-                            'header' => 'Content-type: application/' . ($data['params'] ? 'x-www-form-urlencoded' : 'json'),
-                            'content' => $data['params'] ? $data['params'] : '',
-                            'timeout' => 3,
-                        ],
+                    'http' => [
+                        'method' => $data['params'] ? 'POST' : 'GET',
+                        'header' => 'Content-type: application/' . ($data['params'] ? 'x-www-form-urlencoded' : 'json'),
+                        'content' => $data['params'] ? $data['params'] : '',
+                        'timeout' => 3,
+                    ],
                 ]));
 
                 if ($http_response_header !== null) {

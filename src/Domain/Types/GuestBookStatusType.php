@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Types;
 
@@ -6,12 +6,12 @@ use App\Application\Types\EnumType;
 
 class GuestBookStatusType extends EnumType
 {
-    const NAME = 'GuestBookStatusType';
+    public const NAME = 'GuestBookStatusType';
 
-    const STATUS_WORK = 'work',
-          STATUS_MODERATE = 'moderate';
+    public const STATUS_WORK = 'work';
+    public const STATUS_MODERATE = 'moderate';
 
-    const LIST          = [
+    public const LIST          = [
         self::STATUS_WORK => 'Активный',
         self::STATUS_MODERATE => 'Модерируется',
     ];

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Page;
 
@@ -38,9 +38,8 @@ class PageUpdateAction extends PageAction
                         }
 
                         return $this->response->withAddedHeader('Location', $this->request->getUri()->getPath())->withStatus(301);
-                    } else {
-                        $this->addErrorFromCheck($check);
                     }
+                    $this->addErrorFromCheck($check);
                 }
 
                 return $this->respondRender('cup/page/form.twig', [

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Tasks;
 
@@ -40,7 +40,7 @@ abstract class Task
     /**
      * Запускает исполнение воркера задач
      */
-    public static function worker()
+    public static function worker(): void
     {
         if (!file_exists(static::$pid_file)) {
             @exec('php ' . CONFIG_DIR . '/cli-task.php > /dev/null 2>&1 &');
@@ -68,7 +68,7 @@ abstract class Task
      * @param string|string[] $key
      * @param mixed           $default
      *
-     * @return array|string|mixed
+     * @return array|mixed|string
      */
     protected function getParameter($key = null, $default = null)
     {
@@ -79,9 +79,10 @@ abstract class Task
      * @param string $template
      * @param array  $data
      *
-     * @return string
      * @throws HttpBadRequestException
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
+     *
+     * @return string
      */
     protected function render($template, array $data = [])
     {
@@ -102,9 +103,10 @@ abstract class Task
     /**
      * @param array $params
      *
-     * @return \App\Domain\Entities\Task
      * @throws \Doctrine\ORM\ORMException
      * @throws \Exception
+     *
+     * @return \App\Domain\Entities\Task
      */
     public function execute(array $params = []): \App\Domain\Entities\Task
     {
@@ -118,7 +120,7 @@ abstract class Task
         return $this->entity;
     }
 
-    public function run()
+    public function run(): void
     {
         $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_WORK);
         $this->entityManager->flush();

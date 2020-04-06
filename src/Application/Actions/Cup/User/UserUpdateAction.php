@@ -1,8 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\User;
-
-use Exception;
 
 class UserUpdateAction extends UserAction
 {
@@ -40,9 +38,8 @@ class UserUpdateAction extends UserAction
                         }
 
                         return $this->response->withAddedHeader('Location', $this->request->getUri()->getPath())->withStatus(301);
-                    } else {
-                        $this->addErrorFromCheck($check);
                     }
+                    $this->addErrorFromCheck($check);
                 }
 
                 return $this->respondRender('cup/user/form.twig', ['item' => $item]);

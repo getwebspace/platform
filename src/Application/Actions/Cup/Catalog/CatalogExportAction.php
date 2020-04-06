@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Catalog;
 
@@ -42,13 +42,16 @@ class CatalogExportAction extends CatalogAction
             // Products
             switch (($category = $this->request->getParam('category', false))) {
                 default:
-                    if (!\Ramsey\Uuid\Uuid::isValid($category)) goto false;
+                    if (!\Ramsey\Uuid\Uuid::isValid($category)) {
+                        goto false;
+                    }
 
                     $category = $categories->firstWhere('uuid', $category);
                     $products = collect($this->productRepository->findBy([
                         'category' => \App\Domain\Entities\Catalog\Category::getChildren($categories, $category)->pluck('uuid')->all(),
                         'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
                     ]));
+
                     break;
 
                     false:
@@ -56,6 +59,7 @@ class CatalogExportAction extends CatalogAction
                     $products = collect($this->productRepository->findBy([
                         'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
                     ]));
+
                     break;
             }
 
@@ -75,7 +79,7 @@ class CatalogExportAction extends CatalogAction
 
             // Write table data row by row
             foreach ($products as $row => $model) {
-                /** @var \App\Domain\Entities\Catalog\Product $model */
+                // @var \App\Domain\Entities\Catalog\Product $model
 
                 foreach ($fields as $index => $field) {
                     $cell = $sheet->getCell($this->getCellCoordinate($index, $row + 1));
@@ -89,12 +93,14 @@ class CatalogExportAction extends CatalogAction
                     switch ($field) {
                         case 'category':
                             $cell->setValue($categories->firstWhere('uuid', $model->category)->title ?? 'unknown');
+
                             break;
 
                         case 'description':
                         case 'extra':
                             $cell
                                 ->setValue(trim($wizard->toRichTextObject($model->get($field))->getPlainText()));
+
                             break;
 
                         case 'priceFirst':
@@ -105,6 +111,7 @@ class CatalogExportAction extends CatalogAction
                                 ->getStyle()
                                 ->getNumberFormat()
                                 ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED2);
+
                             break;
 
                         case 'vendorcode':
@@ -114,6 +121,7 @@ class CatalogExportAction extends CatalogAction
                                 ->getStyle()
                                 ->getAlignment()
                                 ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+
                             break;
 
                         case 'volume':
@@ -124,6 +132,7 @@ class CatalogExportAction extends CatalogAction
                                 ->getStyle()
                                 ->getNumberFormat()
                                 ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_00);
+
                             break;
 
                         case 'date':
@@ -132,10 +141,12 @@ class CatalogExportAction extends CatalogAction
                                 ->getStyle()
                                 ->getNumberFormat()
                                 ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_DATETIME);
+
                             break;
 
                         default:
                             $cell->setValue($model->get($field));
+
                             break;
                     }
                 }

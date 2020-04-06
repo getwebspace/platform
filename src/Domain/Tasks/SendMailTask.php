@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Tasks;
 
@@ -22,7 +22,7 @@ class SendMailTask extends Task
         return parent::execute($params);
     }
 
-    protected function action(array $args = [])
+    protected function action(array $args = []): void
     {
         $args = array_merge(
             $this->getParameter(
@@ -39,8 +39,8 @@ class SendMailTask extends Task
                 'cc' => $args['cc'],
                 'bcc' => $args['bcc'],
                 'body' => $args['body'],
-                'isHtml' => (bool)$args['isHtml'],
-                'attachments' => (array)$args['attachments'],
+                'isHtml' => (bool) $args['isHtml'],
+                'attachments' => (array) $args['attachments'],
                 'auto_send' => true,
             ]
         );

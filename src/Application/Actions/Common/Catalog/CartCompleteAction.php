@@ -1,16 +1,16 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Common\Catalog;
 
-use Exception;
 use Slim\Http\Response;
 
 class CartCompleteAction extends CatalogAction
 {
     /**
-     * @return Response
      * @throws \Doctrine\DBAL\DBALException
      * @throws \App\Domain\Exceptions\HttpBadRequestException
+     *
+     * @return Response
      */
     protected function action(): \Slim\Http\Response
     {

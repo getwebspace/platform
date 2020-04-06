@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Entities\Catalog;
 
@@ -85,6 +85,7 @@ class Order extends Model
 
     /**
      * @var string
+     *
      * @see \App\Domain\Types\Catalog\OrderStatusType::LIST
      * @ORM\Column(type="CatalogOrderStatusType")
      */

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Common\Catalog;
 
@@ -8,16 +8,17 @@ use Slim\Http\Response;
 class CartAction extends CatalogAction
 {
     /**
-     * @return Response
      * @throws \Doctrine\DBAL\DBALException
      * @throws \App\Domain\Exceptions\HttpBadRequestException
+     *
+     * @return Response
      */
     protected function action(): \Slim\Http\Response
     {
         if ($this->request->isPost()) {
             $data = [
                 'delivery' => $this->request->getParam('delivery'),
-                'list' => (array)$this->request->getParam('list', []),
+                'list' => (array) $this->request->getParam('list', []),
                 'phone' => $this->request->getParam('phone'),
                 'email' => $this->request->getParam('email'),
                 'comment' => $this->request->getParam('comment'),
@@ -32,7 +33,7 @@ class CartAction extends CatalogAction
 
             // другие отправленные поля дописываются в комментарий
             foreach ($this->request->getParams() as $key => $value) {
-                if (!in_array($key, array_merge(array_keys($data), ['recaptcha']))) {
+                if (!in_array($key, array_merge(array_keys($data), ['recaptcha']), true)) {
                     $data['comment'] .= $key . ' ' . $value . PHP_EOL;
                 }
             }
@@ -104,15 +105,14 @@ class CartAction extends CatalogAction
                     }
 
                     if (
-                        (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != 'XMLHttpRequest') && !empty($_SERVER['HTTP_REFERER'])
+                        (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') && !empty($_SERVER['HTTP_REFERER'])
                     ) {
                         $this->response = $this->response->withHeader('Location', '/cart/done/' . $model->uuid)->withStatus(301);
                     }
 
                     return $this->respondWithData(['redirect' => '/cart/done/' . $model->uuid]);
-                } else {
-                    $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
                 }
+                $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
             } else {
                 $this->addErrorFromCheck($check);
             }

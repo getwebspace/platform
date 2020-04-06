@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\GuestBook;
 
@@ -13,7 +13,7 @@ abstract class GuestBookAction extends Action
     protected $gbookRepository;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function __construct(ContainerInterface $container)
     {

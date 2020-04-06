@@ -1,8 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Middlewares;
 
-use App\Domain\Exceptions\HttpBadRequestException;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
@@ -13,8 +12,9 @@ class IsEnabledMiddleware extends Middleware
      * @param Response $response
      * @param callable $next
      *
-     * @return Response
      * @throws \Exception
+     *
+     * @return Response
      */
     public function __invoke(Request $request, Response $response, $next): \Slim\Http\Response
     {

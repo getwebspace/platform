@@ -1,8 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Common\User;
-
-use Exception;
 
 class UserProfileAction extends UserAction
 {
@@ -29,9 +27,8 @@ class UserProfileAction extends UserAction
                 $this->entityManager->flush();
 
                 return $this->response->withAddedHeader('Location', '/user/profile')->withStatus(301);
-            } else {
-                $this->addErrorFromCheck($check);
             }
+            $this->addErrorFromCheck($check);
         }
 
         return $this->respondRender($this->getParameter('user_profile_template', 'user.profile.twig'));

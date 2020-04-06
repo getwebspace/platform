@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Middlewares;
 
@@ -12,8 +12,9 @@ class PluginMiddleware extends Middleware
      * @param Response $response
      * @param callable $next
      *
-     * @return Response
      * @throws \Exception
+     *
+     * @return Response
      */
     public function __invoke(Request $request, Response $response, $next): \Slim\Http\Response
     {

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 require __DIR__ . '/../config/vars.php';
 
@@ -24,6 +24,7 @@ function app_create()
 
             // enably Profiler
             RunTracy\Helpers\Profiler\Profiler::enable();
+
             break;
 
         case false:
@@ -32,6 +33,7 @@ function app_create()
 
             // enable Tracy panel
             \Tracy\Debugger::enable(\Tracy\Debugger::PRODUCTION, LOG_DIR);
+
             break;
     }
 
@@ -48,7 +50,7 @@ function app_create()
 /**
  * Hack for get instance from vendor
  *
- * @var \Slim\App $app
+ * @var \Slim\App
  */
 $app = app_create();
 

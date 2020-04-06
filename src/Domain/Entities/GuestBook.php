@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Entities;
 
@@ -44,6 +44,7 @@ class GuestBook extends Model
 
     /**
      * @var string
+     *
      * @see \App\Domain\Types\GuestBookStatusType::LIST
      * @ORM\Column(type="GuestBookStatusType")
      */

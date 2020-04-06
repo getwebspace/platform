@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions;
 
@@ -12,19 +12,19 @@ class ActionPayload implements JsonSerializable
     private $statusCode;
 
     /**
-     * @var array|object|null
+     * @var null|array|object
      */
     private $data;
 
     /**
-     * @var ActionError|null
+     * @var null|ActionError
      */
     private $error;
 
     /**
      * @param int               $statusCode
-     * @param array|object|null $data
-     * @param ActionError|null  $error
+     * @param null|array|object $data
+     * @param null|ActionError  $error
      */
     public function __construct(int $statusCode = 200, $data = null, ?ActionError $error = null)
     {
@@ -42,7 +42,7 @@ class ActionPayload implements JsonSerializable
     }
 
     /**
-     * @return array|null|object
+     * @return null|array|object
      */
     public function getData()
     {
@@ -50,7 +50,7 @@ class ActionPayload implements JsonSerializable
     }
 
     /**
-     * @return ActionError|null
+     * @return null|ActionError
      */
     public function getError(): ?ActionError
     {
@@ -67,7 +67,7 @@ class ActionPayload implements JsonSerializable
         ];
         if ($this->data !== null) {
             $payload['data'] = $this->data;
-        } else if ($this->error !== null) {
+        } elseif ($this->error !== null) {
             $payload['error'] = $this->error;
         }
 

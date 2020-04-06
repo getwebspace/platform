@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\User;
 
@@ -25,7 +25,7 @@ class UserListAction extends UserAction
 
                 if (!$data['username_strong']) {
                     $criteria['username'] = '%' . $criteria['username'] . '%';
-                };
+                }
             }
 
             if ($data['email']) {
@@ -46,7 +46,7 @@ class UserListAction extends UserAction
         foreach ($criteria as $criterion => $value) {
             if (is_array($value)) {
                 $query->andWhere("u.{$criterion} IN ('" . implode("', '", $value) . "')");
-            } else if (strpos($value, '%') === false) {
+            } elseif (mb_strpos($value, '%') === false) {
                 $query->andWhere("u.{$criterion} = '{$value}'");
             } else {
                 $query->andWhere("u.{$criterion} LIKE '{$value}'");

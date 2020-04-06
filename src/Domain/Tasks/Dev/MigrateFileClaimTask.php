@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Tasks\Dev;
 
@@ -16,7 +16,7 @@ class MigrateFileClaimTask extends Task
         return parent::execute($params);
     }
 
-    protected function action(array $args = [])
+    protected function action(array $args = []): void
     {
         $rsm = new \Doctrine\ORM\Query\ResultSetMapping();
 

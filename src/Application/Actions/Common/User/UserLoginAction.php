@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Common\User;
 
@@ -71,8 +71,9 @@ class UserLoginAction extends UserAction
      *
      * @param \App\Domain\Entities\User\Session $model
      *
-     * @return string
      * @throws \Exception
+     *
+     * @return string
      */
     protected function session(\App\Domain\Entities\User\Session $model)
     {

@@ -1,9 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Catalog\Product;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
-use Exception;
 
 class ProductCreateAction extends CatalogAction
 {
@@ -67,7 +66,7 @@ class ProductCreateAction extends CatalogAction
         return $this->respondRender('cup/catalog/product/form.twig', [
             'category' => $categories->firstWhere('uuid', $category),
             'categories' => $categories,
-            'measure' => $this->getMeasure()
+            'measure' => $this->getMeasure(),
         ]);
     }
 }

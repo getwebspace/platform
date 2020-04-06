@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Types;
 
@@ -13,15 +13,15 @@ abstract class EnumType extends Type
     /**
      * Unique name of type
      */
-    const NAME = null;
+    public const NAME = null;
 
     /**
      * List of values
      */
-    const LIST = [];
+    public const LIST = [];
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
@@ -29,7 +29,7 @@ abstract class EnumType extends Type
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
@@ -37,11 +37,11 @@ abstract class EnumType extends Type
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
-        if (!in_array($value, array_keys(static::LIST))) {
+        if (!in_array($value, array_keys(static::LIST), true)) {
             throw new \InvalidArgumentException("Invalid '" . static::NAME . "' value.");
         }
 
@@ -49,7 +49,7 @@ abstract class EnumType extends Type
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -57,7 +57,7 @@ abstract class EnumType extends Type
     }
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function requiresSQLCommentHint(AbstractPlatform $platform)
     {

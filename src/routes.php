@@ -1,15 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 
 use Slim\App;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
 $app
-    ->group('/api', function (App $app) {
+    ->group('/api', function (App $app): void {
         // users
-        $app->group('/user', function (App $app) {
+        $app->group('/user', function (App $app): void {
             // users subscribers
-            $app->group('/newsletter', function (App $app) {
+            $app->group('/newsletter', function (App $app): void {
                 $app->map(['get', 'post'], '/subscribe', \App\Application\Actions\Api\User\Subscriber\SubscribeAction::class)
                     ->setName('user:newsletter:subscribe:api');
                 $app->map(['get', 'post'], '/{uuid}/unsubscribe', \App\Application\Actions\Api\User\Subscriber\UnsubscribeAction::class)
@@ -22,7 +22,7 @@ $app
             ->setName('file:api');
 
         // publications
-        $app->group('/publication', function (App $app) {
+        $app->group('/publication', function (App $app): void {
             $app->get('', \App\Application\Actions\Api\Publication\Publication::class)
                 ->setName('publication:api');
             $app->get('/category', \App\Application\Actions\Api\Publication\Category::class)
@@ -30,7 +30,7 @@ $app
         });
 
         // catalog
-        $app->group('/catalog', function (App $app) {
+        $app->group('/catalog', function (App $app): void {
             $app
                 ->get('/category', \App\Application\Actions\Api\Catalog\Category::class)
                 ->setName('catalog:category:api')
@@ -44,14 +44,14 @@ $app
     });
 
 $app
-    ->group('/cup', function (App $app) {
+    ->group('/cup', function (App $app): void {
         $app->map(['get', 'post'], '/login', \App\Application\Actions\Cup\LoginPageAction::class);
 
         // catalog scan
         $app->get('/catalog/product/scan/{channel}', \App\Application\Actions\Cup\Catalog\CatalogScanAction::class);
 
         $app
-            ->group('', function (App $app) {
+            ->group('', function (App $app): void {
                 // main page
                 $app->get('', \App\Application\Actions\Cup\MainPageAction::class)
                     ->setName('cup:main');
@@ -61,9 +61,9 @@ $app
                     ->setName('cup:parameters');
 
                 // users
-                $app->group('/user', function (App $app) {
+                $app->group('/user', function (App $app): void {
                     // users subscribers
-                    $app->group('/subscriber', function (App $app) {
+                    $app->group('/subscriber', function (App $app): void {
                         $app->get('', \App\Application\Actions\Cup\User\Subscriber\ListAction::class);
                         $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\User\Subscriber\CreateAction::class);
                         $app->map(['get', 'post'], '/{uuid}/delete', \App\Application\Actions\Cup\User\Subscriber\DeleteAction::class);
@@ -81,7 +81,7 @@ $app
                 });
 
                 // static pages
-                $app->group('/page', function (App $app) {
+                $app->group('/page', function (App $app): void {
                     $app->map(['get', 'post'], '', \App\Application\Actions\Cup\Page\PageListAction::class)
                         ->setName('cup:page:list');
                     $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\Page\PageCreateAction::class)
@@ -93,7 +93,7 @@ $app
                 });
 
                 // publications
-                $app->group('/publication', function (App $app) {
+                $app->group('/publication', function (App $app): void {
                     $app->map(['get', 'post'], '', \App\Application\Actions\Cup\Publication\PublicationListAction::class)
                         ->setName('cup:publication:list');
                     $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\Publication\PublicationCreateAction::class)
@@ -106,7 +106,7 @@ $app
                         ->setName('cup:publication:preview');
 
                     // category
-                    $app->group('/category', function (App $app) {
+                    $app->group('/category', function (App $app): void {
                         $app->map(['get', 'post'], '', \App\Application\Actions\Cup\Publication\Category\CategoryListAction::class)
                             ->setName('cup:publication:category:list');
                         $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\Publication\Category\CategoryCreateAction::class)
@@ -119,7 +119,7 @@ $app
                 });
 
                 // forms
-                $app->group('/form', function (App $app) {
+                $app->group('/form', function (App $app): void {
                     $app->get('', \App\Application\Actions\Cup\Form\FormListAction::class)
                         ->setName('cup:form:list');
                     $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\Form\FormCreateAction::class)
@@ -130,7 +130,7 @@ $app
                         ->setName('cup:form:delete');
 
                     // forms data
-                    $app->group('/{uuid}/view', function (App $app) {
+                    $app->group('/{uuid}/view', function (App $app): void {
                         $app->map(['get', 'post'], '', \App\Application\Actions\Cup\Form\Data\DataListAction::class)
                             ->setName('cup:form:view:list');
                         $app->map(['get', 'post'], '/{data}', \App\Application\Actions\Cup\Form\Data\DataViewAction::class)
@@ -141,9 +141,9 @@ $app
                 });
 
                 // catalog
-                $app->group('/catalog', function (App $app) {
+                $app->group('/catalog', function (App $app): void {
                     // categories
-                    $app->group('/category', function (App $app) {
+                    $app->group('/category', function (App $app): void {
                         $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\Catalog\Category\CategoryCreateAction::class)
                             ->setName('cup:catalog:category:add');
                         $app->map(['get', 'post'], '/{category}/edit', \App\Application\Actions\Cup\Catalog\Category\CategoryUpdateAction::class)
@@ -155,7 +155,7 @@ $app
                     });
 
                     // products
-                    $app->group('/product', function (App $app) {
+                    $app->group('/product', function (App $app): void {
                         $app
                             ->map(['get', 'post'], '/add', \App\Application\Actions\Cup\Catalog\Product\ProductCreateAction::class)
                             ->setName('cup:catalog:product:add');
@@ -168,7 +168,7 @@ $app
                     });
 
                     // order
-                    $app->group('/order', function (App $app) {
+                    $app->group('/order', function (App $app): void {
                         $app->get('', \App\Application\Actions\Cup\Catalog\Order\OrderListAction::class)
                             ->setName('cup:catalog:order:list');
                         $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\Catalog\Order\OrderCreateAction::class)
@@ -180,7 +180,7 @@ $app
                     });
 
                     // import export
-                    $app->group('/data', function (App $app) {
+                    $app->group('/data', function (App $app): void {
                         $app
                             ->get('/export', \App\Application\Actions\Cup\Catalog\CatalogExportAction::class)
                             ->setName('cup:catalog:data:export');
@@ -191,7 +191,7 @@ $app
                 });
 
                 // guestbook
-                $app->group('/guestbook', function (App $app) {
+                $app->group('/guestbook', function (App $app): void {
                     $app->map(['get', 'post'], '', \App\Application\Actions\Cup\GuestBook\GuestBookListAction::class)
                         ->setName('cup:guestbook:list');
                     $app->map(['get', 'post'], '/{uuid}/edit', \App\Application\Actions\Cup\GuestBook\GuestBookUpdateAction::class)
@@ -201,9 +201,9 @@ $app
                 });
 
                 // files
-                $app->group('/file', function (App $app) {
+                $app->group('/file', function (App $app): void {
                     // small text-editor api
-                    $app->group('/image', function (App $app) {
+                    $app->group('/image', function (App $app): void {
                         $app->get('', \App\Application\Actions\Cup\File\Image\GetAction::class);
                         $app->post('/delete', \App\Application\Actions\Cup\File\Image\DeleteAction::class);
                     });
@@ -215,7 +215,7 @@ $app
                 });
 
                 // редактор шаблонов
-                $app->group('/editor', function (App $app) {
+                $app->group('/editor', function (App $app): void {
                     $app->map(['get', 'post'], '[/{file:.*}]', \App\Application\Actions\Cup\EditorPageAction::class)
                         ->setName('cup:editor');
                 });
@@ -235,7 +235,7 @@ $app
     ->setName('main');
 
 // file
-$app->group('/file', function (App $app) {
+$app->group('/file', function (App $app): void {
     $app->get('/get/{salt}/{hash}', \App\Application\Actions\Common\File\FileGetAction::class)
         ->setName('file:get');
     $app
@@ -245,7 +245,7 @@ $app->group('/file', function (App $app) {
 });
 
 // user
-$app->group('/user', function (App $app) {
+$app->group('/user', function (App $app): void {
     $app
         ->map(['get', 'post'], '/login', \App\Application\Actions\Common\User\UserLoginAction::class)
         ->setName('user:login')
@@ -282,7 +282,7 @@ $app
 
 // catalog
 $app
-    ->group('', function (App $app) use ($container) {
+    ->group('', function (App $app) use ($container): void {
         $pathCatalog = $container->get('parameter')->get('catalog_address', 'catalog');
 
         // view categories and products

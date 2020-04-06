@@ -1,9 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Catalog\Order;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
-use Exception;
 
 class OrderUpdateAction extends CatalogAction
 {
@@ -20,7 +19,7 @@ class OrderUpdateAction extends CatalogAction
                         'serial' => $order->serial,
                         'delivery' => $this->request->getParam('delivery'),
                         'user_uuid' => $this->request->getParam('user_uuid'),
-                        'list' => (array)$this->request->getParam('list', []),
+                        'list' => (array) $this->request->getParam('list', []),
                         'phone' => $this->request->getParam('phone'),
                         'email' => $this->request->getParam('email'),
                         'status' => $this->request->getParam('status'),
@@ -41,9 +40,8 @@ class OrderUpdateAction extends CatalogAction
                         }
 
                         return $this->response->withAddedHeader('Location', $this->request->getUri()->getPath())->withStatus(301);
-                    } else {
-                        $this->addErrorFromCheck($check);
                     }
+                    $this->addErrorFromCheck($check);
                 }
 
                 $products = collect($this->productRepository->findBy(['uuid' => array_keys($order->list)]));

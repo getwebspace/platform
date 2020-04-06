@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application;
 
@@ -25,7 +25,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     protected $router;
 
     /**
-     * @var string|\Slim\Http\Uri
+     * @var \Slim\Http\Uri|string
      */
     protected $uri;
 
@@ -102,9 +102,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         ];
     }
 
-    /*
-     * slim functions
-     */
+    // slim functions
 
     public function pathFor($name, $data = [], $queryParams = [])
     {
@@ -124,7 +122,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     {
         $path = $this->pathFor($name, $data, $queryParams);
 
-        /** @var Uri $uri */
+        // @var Uri $uri
         if (is_string($this->uri)) {
             $uri = Uri::createFromString($this->uri);
         } else {
@@ -173,9 +171,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         return $path;
     }
 
-    /*
-     * wse functions
-     */
+    // wse functions
 
     public function form($type, $name, $args = [])
     {
@@ -191,14 +187,14 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             switch ($value) {
                 case null:
                     return $reference;
+
                     break;
 
                 default:
                     return $reference[$value];
             }
-
         } catch (\Exception $e) {
-            /* todo nothing */
+            // todo nothing
         }
 
         return $value;
@@ -212,9 +208,10 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
     /**
      * Debug function
+     *
      * @param mixed ...$args
      */
-    public function pre(...$args)
+    public function pre(...$args): void
     {
         call_user_func_array('pre', $args);
     }
@@ -231,8 +228,9 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
      * @param string           $format
      * @param string           $timezone
      *
-     * @return string
      * @throws \Exception
+     *
+     * @return string
      */
     public function df($obj = 'now', $format = null, $timezone = 'UTC')
     {
@@ -295,7 +293,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
     public function is_current_page_number($number)
     {
-        return $this->current_page_number() == $number;
+        return $this->current_page_number() === $number;
     }
 
     public function pushstream_channel($user_uuid)
@@ -311,12 +309,10 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
         $writer = new \BaconQrCode\Writer($renderer);
 
-        return '<img src="data:image/png;base64,' . base64_encode($writer->writeString($value)) . '" height="'.$height.'" width="'.$width.'">';
+        return '<img src="data:image/png;base64,' . base64_encode($writer->writeString($value)) . '" height="' . $height . '" width="' . $width . '">';
     }
 
-    /*
-     * files functions
-     */
+    // files functions
 
     // получает файлы по параметрам
     public function files($files = [])
@@ -326,7 +322,9 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         $criteria = [];
 
         if ($files) {
-            if (!is_a($files, \Alksily\Entity\Collection::class) && !is_array($files)) $files = [$files];
+            if (!is_a($files, \Alksily\Entity\Collection::class) && !is_array($files)) {
+                $files = [$files];
+            }
 
             foreach ($files as $uuid) {
                 if (\Ramsey\Uuid\Uuid::isValid($uuid) === true) {
@@ -344,9 +342,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         return $result;
     }
 
-    /*
-     * publication functions
-     */
+    // publication functions
 
     // получение списка категорий публикаций
     public function publication_category($unique = null)
@@ -392,19 +388,26 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         $criteria = [];
 
         if ($data) {
-            if (!is_array($data)) $data = [$data];
+            if (!is_array($data)) {
+                $data = [$data];
+            }
             $data = array_merge_recursive(['uuid' => [], 'address' => [], 'category' => []], $data);
 
             foreach ($data as $type => $values) {
-                if (is_a($values, \Alksily\Entity\Collection::class)) $values = $values->all();
-                if (!is_array($data)) $values = [$values];
+                if (is_a($values, \Alksily\Entity\Collection::class)) {
+                    $values = $values->all();
+                }
+                if (!is_array($data)) {
+                    $values = [$values];
+                }
 
                 foreach ($values as $value) {
-                    switch ($type){
+                    switch ($type) {
                         case 'uuid':
                             if (\Ramsey\Uuid\Uuid::isValid(strval($value)) === true) {
                                 $criteria['uuid'][] = $value;
                             }
+
                             break;
                         case 'category':
                             if (is_object($value) && is_a($value, \App\Domain\Entities\Publication\Category::class)) {
@@ -414,6 +417,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
                                     $criteria['category'][] = $value;
                                 }
                             }
+
                             break;
                         case 'address':
                             $criteria['address'][] = $value;
@@ -422,7 +426,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             }
         }
 
-        $key = json_encode($criteria, JSON_UNESCAPED_UNICODE).$limit.$offset;
+        $key = json_encode($criteria, JSON_UNESCAPED_UNICODE) . $limit . $offset;
 
         if (!isset($buf[$key])) {
             /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
@@ -436,9 +440,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         return $buf[$key];
     }
 
-    /*
-     * guestbook functions
-     */
+    // guestbook functions
 
     // получение списка записей в гостевой книге
     public function guestbook($order = [], $limit = 10, $offset = null)
@@ -447,7 +449,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
         static $buf;
 
-        $key = json_encode($order, JSON_UNESCAPED_UNICODE).$limit.$offset;
+        $key = json_encode($order, JSON_UNESCAPED_UNICODE) . $limit . $offset;
 
         if (!$buf) {
             /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
@@ -463,7 +465,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
                     if ($el->email) {
                         $em = explode('@', $el->email);
                         $name = implode(array_slice($em, 0, count($em) - 1), '@');
-                        $len = floor(strlen($name) / 2);
+                        $len = floor(mb_strlen($name) / 2);
 
                         $el->email = mb_substr($name, 0, $len) . str_repeat('*', $len) . '@' . end($em);
                     }
@@ -478,9 +480,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         return $buf[$key];
     }
 
-    /*
-     * catalog functions
-     */
+    // catalog functions
 
     // получение списка категорий товаров
     public function catalog_category()
@@ -512,9 +512,9 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         if (!is_null($category)) {
             $breadcrumb[] = $category;
 
-            while($category->parent->toString() != Uuid::NIL) {
+            while ($category->parent->toString() !== Uuid::NIL) {
                 /**
-                 * @var \App\Domain\Entities\Catalog\Category $category;
+                 * @var \App\Domain\Entities\Catalog\Category;
                  */
                 $category = $categories->firstWhere('uuid', $category->parent);
                 $breadcrumb[] = $category;
@@ -539,21 +539,25 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
         ];
 
-        if (!is_array($unique)) $unique = [$unique];
+        if (!is_array($unique)) {
+            $unique = [$unique];
+        }
 
         foreach ($unique as $value) {
             switch (true) {
                 case \Ramsey\Uuid\Uuid::isValid($value) === true:
                     $criteria['category'][] = $value;
+
                     break;
 
                 case is_numeric($value) === true:
                     $criteria['external_id'][] = $value;
+
                     break;
             }
         }
 
-        $key = json_encode($criteria, JSON_UNESCAPED_UNICODE).$limit.$offset;
+        $key = json_encode($criteria, JSON_UNESCAPED_UNICODE) . $limit . $offset;
 
         if (!isset($buf[$key])) {
             /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
@@ -579,26 +583,31 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         ];
 
         if ($unique) {
-            if (!is_array($unique)) $unique = [$unique];
+            if (!is_array($unique)) {
+                $unique = [$unique];
+            }
 
             foreach ($unique as $value) {
                 switch (true) {
                     case \Ramsey\Uuid\Uuid::isValid($value) === true:
                         $criteria['uuid'][] = $value;
+
                         break;
 
                     case is_numeric($value) === true:
                         $criteria['external_id'][] = $value;
+
                         break;
 
                     default:
                         $criteria['address'][] = $value;
+
                         break;
                 }
             }
         }
 
-        $key = json_encode($criteria, JSON_UNESCAPED_UNICODE).$limit.$offset;
+        $key = json_encode($criteria, JSON_UNESCAPED_UNICODE) . $limit . $offset;
 
         if (!isset($buf[$key])) {
             /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
@@ -646,14 +655,17 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         switch (true) {
             case \Ramsey\Uuid\Uuid::isValid($unique) === true:
                 $criteria['uuid'] = $unique;
+
                 break;
 
             case is_numeric($unique) === true:
                 $criteria['external_id'] = $unique;
+
                 break;
 
             default:
                 $criteria['serial'] = $unique;
+
                 break;
         }
 
@@ -671,9 +683,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         return $buf[$key];
     }
 
-    /*
-     * other functions
-     */
+    // other functions
 
     public function task($limit = 5000)
     {
@@ -691,7 +701,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             ]);
 
         $result = collect($query->getQuery()->getResult());
-        $result->map(function ($obj) {
+        $result->map(function ($obj): void {
             $obj->action = str_replace('App\Domain\Tasks\\', '', $obj->action);
         });
 

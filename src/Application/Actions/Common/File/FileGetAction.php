@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Common\File;
 
@@ -6,7 +6,7 @@ class FileGetAction extends FileAction
 {
     protected function action(): \Slim\Http\Response
     {
-        /* @var \App\Domain\Entities\File $file */
+        // @var \App\Domain\Entities\File $file
         $file = $this->fileRepository->findOneBy([
             'salt' => $this->resolveArg('salt'),
             'hash' => $this->resolveArg('hash'),

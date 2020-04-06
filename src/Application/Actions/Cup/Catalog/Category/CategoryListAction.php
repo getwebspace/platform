@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Catalog\Category;
 
@@ -29,7 +29,7 @@ class CategoryListAction extends CatalogAction
         return $this->respondRender('cup/catalog/category/index.twig', [
             'category' => $category,
             'categories' => $categories,
-            'fields' => $this->getParameter(['catalog_category_field_1', 'catalog_category_field_2', 'catalog_category_field_3'])
+            'fields' => $this->getParameter(['catalog_category_field_1', 'catalog_category_field_2', 'catalog_category_field_3']),
         ]);
     }
 }

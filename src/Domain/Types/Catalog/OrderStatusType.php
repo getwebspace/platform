@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Types\Catalog;
 
@@ -6,16 +6,16 @@ use App\Application\Types\EnumType;
 
 class OrderStatusType extends EnumType
 {
-    const NAME = 'CatalogOrderStatusType';
+    public const NAME = 'CatalogOrderStatusType';
 
-    const STATUS_NEW = 'new',
-          STATUS_PROCESS = 'process',
-          STATUS_PAYMENT = 'payment',
-          STATUS_READY = 'ready',
-          STATUS_COMPLETE = 'complete',
-          STATUS_CANCEL = 'cancel';
+    public const STATUS_NEW = 'new';
+    public const STATUS_PROCESS = 'process';
+    public const STATUS_PAYMENT = 'payment';
+    public const STATUS_READY = 'ready';
+    public const STATUS_COMPLETE = 'complete';
+    public const STATUS_CANCEL = 'cancel';
 
-    const LIST          = [
+    public const LIST          = [
         self::STATUS_NEW => 'Новый',
         self::STATUS_PROCESS => 'В работе',
         self::STATUS_PAYMENT => 'Ждет оплаты',

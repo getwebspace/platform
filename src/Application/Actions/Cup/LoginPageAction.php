@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup;
 
@@ -15,7 +15,7 @@ class LoginPageAction extends Action
     protected $userRepository;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function __construct(ContainerInterface $container)
     {
@@ -90,8 +90,9 @@ class LoginPageAction extends Action
      *
      * @param \App\Domain\Entities\User\Session $model
      *
-     * @return string
      * @throws \Exception
+     *
+     * @return string
      */
     protected function session(\App\Domain\Entities\User\Session $model)
     {

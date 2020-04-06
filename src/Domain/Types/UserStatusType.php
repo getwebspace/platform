@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Types;
 
@@ -6,13 +6,13 @@ use App\Application\Types\EnumType;
 
 class UserStatusType extends EnumType
 {
-    const NAME = 'UserStatusType';
+    public const NAME = 'UserStatusType';
 
-    const STATUS_WORK   = 'work',
-          STATUS_DELETE = 'delete',
-          STATUS_BLOCK  = 'block';
+    public const STATUS_WORK   = 'work';
+    public const STATUS_DELETE = 'delete';
+    public const STATUS_BLOCK  = 'block';
 
-    const LIST = [
+    public const LIST = [
         self::STATUS_WORK   => 'Активный',
         self::STATUS_BLOCK  => 'Заблокирован',
         self::STATUS_DELETE => 'Удаленный',

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Common;
 
@@ -22,7 +22,7 @@ class FormAction extends Action
     protected $formDataRepository;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function __construct(ContainerInterface $container)
     {
@@ -41,7 +41,7 @@ class FormAction extends Action
 
         if (
             (
-                empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != 'XMLHttpRequest'
+                empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest'
             ) && !empty($_SERVER['HTTP_REFERER'])
         ) {
             $this->response = $this->response->withHeader('Location', $_SERVER['HTTP_REFERER'])->withStatus(301);
@@ -54,14 +54,15 @@ class FormAction extends Action
 
                 // CORS header sets
                 foreach ($item->origin as $origin) {
-                    if ($remote && strpos($origin, $remote) >= 0) {
+                    if ($remote && mb_strpos($origin, $remote) >= 0) {
                         $this->response = $this->response->withHeader('Access-Control-Allow-Origin', $remote);
+
                         break;
-                    } else {
-                        if ($origin === '*') {
-                            $this->response = $this->response->withHeader('Access-Control-Allow-Origin', '*');
-                            break;
-                        }
+                    }
+                    if ($origin === '*') {
+                        $this->response = $this->response->withHeader('Access-Control-Allow-Origin', '*');
+
+                        break;
                     }
                 }
 
@@ -74,7 +75,7 @@ class FormAction extends Action
                 foreach (array_map('trim', $item->mailto) as $key => $value) {
                     $buf = array_map('trim', explode(':', $value));
 
-                    if (count($buf) == 2) {
+                    if (count($buf) === 2) {
                         $mailto[$buf[0]] = $buf[1];
                     } else {
                         $mailto[] = $buf[0];
@@ -84,9 +85,8 @@ class FormAction extends Action
                 $isHtml = true;
 
                 // подготовка тела письма
-                if ($item->template && $item->template != '<p><br></p>') {
-                    $filter = new class($data) extends \Alksily\Validator\Filter
-                    {
+                if ($item->template && $item->template !== '<p><br></p>') {
+                    $filter = new class($data) extends \Alksily\Validator\Filter {
                         use \Alksily\Validator\Traits\FilterRules;
                     };
                     $filter->addGlobalRule($filter->leadEscape());
@@ -120,9 +120,11 @@ class FormAction extends Action
                 $attachments = [];
                 if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
                     foreach ($this->request->getUploadedFiles() as $field => $files) {
-                        if (!is_array($files)) $files = [$files];
+                        if (!is_array($files)) {
+                            $files = [$files];
+                        }
 
-                        /* @var UploadedFile $file */
+                        // @var UploadedFile $file
                         foreach ($files as $file) {
                             if (
                                 !$file->getError() &&
@@ -175,9 +177,8 @@ class FormAction extends Action
                 \App\Domain\Tasks\Task::worker();
 
                 return $this->respondWithData(['status' => 'ok']);
-            } else {
-                $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
             }
+            $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
         } else {
             throw new HttpNotFoundException($this->request);
         }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Types;
 
@@ -6,17 +6,17 @@ use App\Application\Types\EnumType;
 
 class FileItemType extends EnumType
 {
-    const NAME = 'FileItemType';
+    public const NAME = 'FileItemType';
 
-    const ITEM_USER_UPLOAD = 'user_upload',
-          ITEM_PAGE = 'page',
-          ITEM_PUBLICATION = 'publication',
-          ITEM_CATALOG_CATEGORY = 'catalog_category',
-          ITEM_CATALOG_PRODUCT = 'catalog_product',
-          ITEM_FORM_DATA = 'form_data',
-          ITEM_THEME = 'theme';
+    public const ITEM_USER_UPLOAD = 'user_upload';
+    public const ITEM_PAGE = 'page';
+    public const ITEM_PUBLICATION = 'publication';
+    public const ITEM_CATALOG_CATEGORY = 'catalog_category';
+    public const ITEM_CATALOG_PRODUCT = 'catalog_product';
+    public const ITEM_FORM_DATA = 'form_data';
+    public const ITEM_THEME = 'theme';
 
-    const LIST                  = [
+    public const LIST                  = [
         self::ITEM_USER_UPLOAD => 'Файл пользователя',
         self::ITEM_PAGE => 'Файл страницы',
         self::ITEM_PUBLICATION => 'Файл публикации',

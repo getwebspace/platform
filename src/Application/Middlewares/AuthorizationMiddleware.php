@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Middlewares;
 
@@ -21,7 +21,7 @@ class AuthorizationMiddleware extends Middleware
     protected $userSessionRepository;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function __construct(ContainerInterface $container)
     {
@@ -36,8 +36,9 @@ class AuthorizationMiddleware extends Middleware
      * @param Response $response
      * @param callable $next
      *
-     * @return Response
      * @throws \Exception
+     *
+     * @return Response
      */
     public function __invoke(Request $request, Response $response, $next): \Slim\Http\Response
     {
@@ -77,8 +78,9 @@ class AuthorizationMiddleware extends Middleware
      *
      * @param \App\Domain\Entities\User\Session $model
      *
-     * @return string
      * @throws \Exception
+     *
+     * @return string
      */
     protected function session(\App\Domain\Entities\User\Session $model)
     {

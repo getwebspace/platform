@@ -45,6 +45,13 @@ return PhpCsFixer\Config::create()
         'concat_space'                 => ['spacing' => 'one'],
         'method_argument_space' => false,
 
+        'braces' => true,
+        'cast_spaces' => true,
+        'class_attributes_separation' => ['elements' => ['method', 'property']], // const are often grouped with other related const
+        'class_definition' => true,
+        'compact_nullable_typehint' => true,
+        'declare_equal_normalize' => true,
+
         // fix no
         'no_alias_functions' => true,
         'no_blank_lines_after_class_opening' => true,
@@ -103,6 +110,31 @@ return PhpCsFixer\Config::create()
         'single_line_after_imports' => true,
         'single_line_comment_style' => true,
         'single_quote' => true,
+        'short_scalar_cast' => true,
+        'simplified_null_return' => false, // Even if technically correct we prefer to be explicit
+        'single_blank_line_at_eof' => true,
+        'single_blank_line_before_namespace' => true,
+        'single_class_element_per_statement' => true,
+        'single_import_per_statement' => true,
+        'single_line_after_imports' => true,
+        'single_line_comment_style' => true,
+        'single_quote' => true,
+        'space_after_semicolon' => true,
+        'standardize_not_equals' => true,
+        'static_lambda' => false, // Risky if we can't guarantee nobody use `bindTo()`
+        'strict_comparison' => true,
+        'strict_param' => true,
+        'switch_case_semicolon_to_colon' => true,
+        'switch_case_space' => true,
+        'ternary_operator_spaces' => true,
+        'ternary_to_null_coalescing' => true,
+        'trailing_comma_in_multiline_array' => true,
+        'trim_array_spaces' => true,
+        'unary_operator_spaces' => true,
+        'visibility_required' => true,
+        'void_return' => true,
+        'whitespace_after_comma_in_array' => true,
+        'yoda_style' => false,
 
         // php doc
         'phpdoc_add_missing_param_annotation' => true,

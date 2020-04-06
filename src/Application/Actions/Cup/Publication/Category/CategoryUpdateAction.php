@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Publication\Category;
 
@@ -43,9 +43,8 @@ class CategoryUpdateAction extends PublicationAction
                         }
 
                         return $this->response->withAddedHeader('Location', $this->request->getUri()->getPath())->withStatus(301);
-                    } else {
-                        $this->addErrorFromCheck($check);
                     }
+                    $this->addErrorFromCheck($check);
                 }
 
                 $list = collect($this->categoryRepository->findAll());

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Tasks\Catalog;
 
@@ -84,7 +84,7 @@ class ProductImportTask extends Task
                                 'field1', 'field2', 'field3', 'field4', 'field5',
                                 'country', 'manufacturer',
                                 'order',
-                            ])
+                            ], true)
                         ) {
                             $product->set($key, $value);
                         }
@@ -110,15 +110,16 @@ class ProductImportTask extends Task
             $alphabet = range('A', 'Z');
         }
 
-        return array_search($index, $alphabet);
+        return array_search($index, $alphabet, true);
     }
 
     /**
      * @param string $path
      *
-     * @return array
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     *
+     * @return array
      */
     protected function getParsedExcelData($path = '')
     {
@@ -134,14 +135,20 @@ class ProductImportTask extends Task
             'products' => [],
         ];
         foreach ($spreadsheet->getActiveSheet()->getRowIterator() as $row) {
-            if ($row->getRowIndex() < $offset['rows']) continue;
+            if ($row->getRowIndex() < $offset['rows']) {
+                continue;
+            }
 
             $buf = [];
             foreach ($row->getCellIterator() as $column => $cell) {
                 $column = $this->getCellIndex($column) - $offset['cols'];
 
-                if ($column < 0) continue;
-                if ($column >= count($fields)) break;
+                if ($column < 0) {
+                    continue;
+                }
+                if ($column >= count($fields)) {
+                    break;
+                }
 
                 $value = trim($cell->getValue());
 
@@ -157,6 +164,7 @@ class ProductImportTask extends Task
 
                 case count($fields):
                     $output['products'][] = $buf;
+
                     break;
             }
         }

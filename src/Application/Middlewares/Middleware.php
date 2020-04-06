@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Middlewares;
 
@@ -51,7 +51,7 @@ abstract class Middleware
      * @param string|string[] $key
      * @param mixed           $default
      *
-     * @return array|string|mixed
+     * @return array|mixed|string
      */
     protected function getParameter($key = null, $default = null)
     {

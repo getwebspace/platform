@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 // timezone default
 date_default_timezone_set('UTC');
@@ -6,7 +6,7 @@ date_default_timezone_set('UTC');
 return [
     // Secret salt
     'secret' => [
-        'salt' => ($_ENV['SALT'] ?? "Li8.1Ej2-<Cid3[bE"),
+        'salt' => ($_ENV['SALT'] ?? 'Li8.1Ej2-<Cid3[bE'),
     ],
 
     // Doctrine settings
@@ -35,7 +35,7 @@ return [
         ],
 
         // Connection to DB settings
-        'connection' => isset($_ENV['DATABASE']) ? $_ENV['DATABASE'] : [
+        'connection' => $_ENV['DATABASE'] ?? [
             'driver' => 'pdo_sqlite',
             'path' => VAR_DIR . '/database.sqlite',
         ],
@@ -55,7 +55,7 @@ return [
 
     'settings' => [
         'sentry' => ($_ENV['SENTRY'] ?? null),
-        'displayErrorDetails' => ((bool)$_ENV['DEBUG'] ?? false), // set to false in production
+        'displayErrorDetails' => ((bool) $_ENV['DEBUG'] ?? false), // set to false in production
         'addContentLengthHeader' => false, // allow the web server to send the content-length header
         'determineRouteBeforeAppMiddleware' => true,
 

@@ -1,9 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Catalog\Product;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
-use Exception;
 
 class ProductUpdateAction extends CatalogAction
 {
@@ -58,9 +57,8 @@ class ProductUpdateAction extends CatalogAction
                         }
 
                         return $this->response->withAddedHeader('Location', $this->request->getUri()->getPath())->withStatus(301);
-                    } else {
-                        $this->addErrorFromCheck($check);
                     }
+                    $this->addErrorFromCheck($check);
                 }
 
                 $categories = collect($this->categoryRepository->findBy([

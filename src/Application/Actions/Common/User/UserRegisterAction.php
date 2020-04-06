@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Common\User;
 
@@ -13,7 +13,7 @@ class UserRegisterAction extends UserAction
                 'email' => $this->request->getParam('email'),
                 'username' => $this->request->getParam('username'),
                 'password' => $this->request->getParam('password'),
-                'password_again' => $this->request->getParam('password_again')
+                'password_again' => $this->request->getParam('password_again'),
             ];
 
             $check = \App\Domain\Filters\User::check($data);
@@ -34,9 +34,8 @@ class UserRegisterAction extends UserAction
                     $this->entityManager->flush();
 
                     return $this->response->withAddedHeader('Location', '/user/login')->withStatus(301);
-                } else {
-                    $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
                 }
+                $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
             } else {
                 $this->addErrorFromCheck($check);
             }

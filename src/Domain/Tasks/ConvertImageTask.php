@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Tasks;
 
@@ -16,7 +16,7 @@ class ConvertImageTask extends Task
         return parent::execute($params);
     }
 
-    protected function action(array $args = [])
+    protected function action(array $args = []): void
     {
         /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $fileRepository */
         $fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
@@ -57,12 +57,12 @@ class ConvertImageTask extends Task
                     }
 
                     $buf = array_merge($params, ['-resize x' . $pixels . '\>']);
-                    @exec($command . " '" . $original . "' " . implode(' ', $buf) . " '" . $path . "/" . $file->name . ".jpg'");
+                    @exec($command . " '" . $original . "' " . implode(' ', $buf) . " '" . $path . '/' . $file->name . ".jpg'");
                     $this->logger->info('Task: convert image', ['size' => $size, 'salt' => $file->salt, 'params' => $buf]);
                 }
             }
 
-            @exec($command . " '" . $original . "' " . implode(' ', $params) . " '" . $folder . "/" . $file->name . ".jpg'");
+            @exec($command . " '" . $original . "' " . implode(' ', $params) . " '" . $folder . '/' . $file->name . ".jpg'");
             $this->logger->info('Task: convert image', ['size' => 'original', 'salt' => $file->salt, 'params' => $params]);
 
             // установка расширения файла и типа

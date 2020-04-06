@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Entities\Catalog;
 
@@ -91,6 +91,7 @@ class Category extends Model
 
     /**
      * @var string
+     *
      * @see \App\Domain\Types\Catalog\CategoryStatusType::LIST
      * @ORM\Column(type="CatalogCategoryStatusType")
      */
@@ -127,31 +128,31 @@ class Category extends Model
     /**
      * @var mixed буфурное поле для обработки интеграций
      */
-    public $buf = null;
+    public $buf;
 
     /**
      * @var array
      * @ORM\ManyToMany(targetEntity="App\Domain\Entities\File", cascade={"persist", "remove"}, orphanRemoval=true)
      * @ORM\JoinTable(name="catalog_category_files",
-     *  joinColumns={@ORM\JoinColumn(name="category_uuid", referencedColumnName="uuid")},
-     *  inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")}
+     *     joinColumns={@ORM\JoinColumn(name="category_uuid", referencedColumnName="uuid")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")}
      * )
      */
     protected $files = [];
 
-    public function addFile(\App\Domain\Entities\File $file)
+    public function addFile(\App\Domain\Entities\File $file): void
     {
         $this->files[] = $file;
     }
 
-    public function addFiles(array $files)
+    public function addFiles(array $files): void
     {
         foreach ($files as $file) {
             $this->addFile($file);
         }
     }
 
-    public function removeFile(\App\Domain\Entities\File $file)
+    public function removeFile(\App\Domain\Entities\File $file): void
     {
         foreach ($this->files as $key => $value) {
             if ($file === $value) {
@@ -161,14 +162,14 @@ class Category extends Model
         }
     }
 
-    public function removeFiles(array $files)
+    public function removeFiles(array $files): void
     {
         foreach ($files as $file) {
             $this->removeFile($file);
         }
     }
 
-    public function clearFiles()
+    public function clearFiles(): void
     {
         foreach ($this->files as $key => $file) {
             unset($this->files[$key]);
@@ -192,12 +193,12 @@ class Category extends Model
      *
      * @return \Alksily\Entity\Collection
      */
-    public static function getChildren(Collection $categories, \App\Domain\Entities\Catalog\Category $parent)
+    public static function getChildren(Collection $categories, self $parent)
     {
         $result = collect([$parent]);
 
         if ($parent->children) {
-            /** @var \App\Domain\Entities\Catalog\Category $category */
+            // @var \App\Domain\Entities\Catalog\Category $category
             foreach ($categories->where('parent', $parent->uuid) as $child) {
                 $result = $result->merge(static::getChildren($categories, $child));
             }

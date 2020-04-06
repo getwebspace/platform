@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Exceptions;
 
@@ -26,7 +26,7 @@ abstract class HttpException extends Exception
     /**
      * @param ServerRequestInterface $request
      * @param string                 $message
-     * @param Throwable|null         $previous
+     * @param null|Throwable         $previous
      */
     public function __construct(ServerRequestInterface $request, ?string $message = null, ?Throwable $previous = null)
     {

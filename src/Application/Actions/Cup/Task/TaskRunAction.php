@@ -1,8 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Task;
 
-use Alksily\Support\Str;
 use App\Application\Actions\Action;
 
 class TaskRunAction extends Action

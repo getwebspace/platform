@@ -1,9 +1,9 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\References\Errors;
 
 class Parameter
 {
-    const WRONG_KEY = 'Ключ содержит ошибку';
-    const WRONG_VALUE = 'Значение содержит ошибку';
+    public const WRONG_KEY = 'Ключ содержит ошибку';
+    public const WRONG_VALUE = 'Значение содержит ошибку';
 }

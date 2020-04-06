@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Common;
 
@@ -28,7 +28,7 @@ class DynamicPageAction extends Action
     protected $fileRepository;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function __construct(ContainerInterface $container)
     {
@@ -78,7 +78,7 @@ class DynamicPageAction extends Action
                 'publications' => $publications,
                 'pagination' => [
                     'count' => $this->publicationRepository->count([
-                        'category' => \App\Domain\Entities\Publication\Category::getChildren($categories, $category)->pluck('uuid')->all()
+                        'category' => \App\Domain\Entities\Publication\Category::getChildren($categories, $category)->pluck('uuid')->all(),
                     ]),
                     'page' => $category->pagination,
                     'offset' => $offset,
@@ -89,7 +89,7 @@ class DynamicPageAction extends Action
         // публикация
         if ($this->publicationRepository->count(['address' => $path])) {
             $category = $categories->filter(function ($model) use ($path) {
-                return strpos($path, $model->address) !== false;
+                return mb_strpos($path, $model->address) !== false;
             })->first();
 
             if ($category) {

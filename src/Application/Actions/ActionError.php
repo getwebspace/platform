@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions;
 
@@ -15,23 +15,27 @@ class ActionError implements JsonSerializable
     public const UNAUTHENTICATED = 'UNAUTHENTICATED';
     public const VALIDATION_ERROR = 'VALIDATION_ERROR';
     public const VERIFICATION_ERROR = 'VERIFICATION_ERROR';
+
     /**
      * @var string
      */
     private $type;
+
     /**
      * @var string
      */
     private $description;
+
     /**
      * @param string        $type
-     * @param string|null   $description
+     * @param null|string   $description
      */
     public function __construct(string $type, ?string $description)
     {
         $this->type = $type;
         $this->description = $description;
     }
+
     /**
      * @return string
      */
@@ -39,15 +43,19 @@ class ActionError implements JsonSerializable
     {
         return $this->type;
     }
+
     /**
      * @param string $type
+     *
      * @return self
      */
     public function setType(string $type): self
     {
         $this->type = $type;
+
         return $this;
     }
+
     /**
      * @return string
      */
@@ -55,15 +63,19 @@ class ActionError implements JsonSerializable
     {
         return $this->description;
     }
+
     /**
-     * @param string|null $description
+     * @param null|string $description
+     *
      * @return self
      */
     public function setDescription(?string $description = null): self
     {
         $this->description = $description;
+
         return $this;
     }
+
     /**
      * @return array
      */
@@ -73,6 +85,7 @@ class ActionError implements JsonSerializable
             'type' => $this->type,
             'description' => $this->description,
         ];
+
         return $payload;
     }
 }

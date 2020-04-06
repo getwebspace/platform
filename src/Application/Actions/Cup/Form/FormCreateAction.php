@@ -1,8 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Form;
-
-use Exception;
 
 class FormCreateAction extends FormAction
 {

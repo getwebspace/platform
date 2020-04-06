@@ -1,8 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\User;
 
-use Exception;
 use Ramsey\Uuid\Uuid;
 
 class UserCreateAction extends UserAction

@@ -1,9 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Catalog\Order;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
-use Exception;
 
 class OrderCreateAction extends CatalogAction
 {
@@ -13,7 +12,7 @@ class OrderCreateAction extends CatalogAction
             $data = [
                 'delivery' => $this->request->getParam('delivery'),
                 'user_uuid' => $this->request->getParam('user_uuid'),
-                'list' => (array)$this->request->getParam('list', []),
+                'list' => (array) $this->request->getParam('list', []),
                 'phone' => $this->request->getParam('phone'),
                 'email' => $this->request->getParam('email'),
                 'status' => $this->request->getParam('status'),

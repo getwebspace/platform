@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Api\Catalog;
 
@@ -18,7 +18,7 @@ abstract class CatalogAction extends ActionApi
     protected $productRepository;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function __construct(ContainerInterface $container)
     {

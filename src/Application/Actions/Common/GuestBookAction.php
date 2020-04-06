@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Common;
 
@@ -14,7 +14,7 @@ class GuestBookAction extends Action
     protected $gbookRepository;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function __construct(ContainerInterface $container)
     {
@@ -57,22 +57,21 @@ class GuestBookAction extends Action
                     $this->entityManager->flush();
 
                     if (
-                        (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != 'XMLHttpRequest') && !empty($_SERVER['HTTP_REFERER'])
+                        (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') && !empty($_SERVER['HTTP_REFERER'])
                     ) {
                         $this->response = $this->response->withHeader('Location', $_SERVER['HTTP_REFERER'])->withStatus(301);
                     }
 
                     return $this->respondWithData(['description' => 'Message added']);
-                } else {
-                    $this->addErrorFromCheck($check);
                 }
+                $this->addErrorFromCheck($check);
             } else {
                 $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
             }
         }
 
         $pagination = $this->getParameter('guestbook_pagination', 10);
-        $offset = (int)($this->args['page'] ?? 0);
+        $offset = (int) ($this->args['page'] ?? 0);
 
         // получение списка и обфускация адресов
         $list = collect(
@@ -85,7 +84,7 @@ class GuestBookAction extends Action
                 if ($el->email) {
                     $em = explode('@', $el->email);
                     $name = implode(array_slice($em, 0, count($em) - 1), '@');
-                    $len = floor(strlen($name) / 2);
+                    $len = floor(mb_strlen($name) / 2);
 
                     $el->email = mb_substr($name, 0, $len) . str_repeat('*', $len) . '@' . end($em);
                 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\User\NewsLetter;
 
@@ -31,9 +31,8 @@ class CreateAction extends UserAction
                 \App\Domain\Tasks\Task::worker();
 
                 return $this->response->withAddedHeader('Location', '/cup/user/newsletter')->withStatus(301);
-            } else {
-                $this->addErrorFromCheck($check);
             }
+            $this->addErrorFromCheck($check);
         }
 
         return $this->respondRender('cup/user/newsletter/form.twig');

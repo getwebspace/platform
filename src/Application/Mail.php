@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application;
 
@@ -11,8 +11,9 @@ class Mail
      *
      * @param array $data
      *
-     * @return PHPMailer
      * @throws \PHPMailer\PHPMailer\Exception
+     *
+     * @return PHPMailer
      */
     public static function send(array $data = [])
     {
@@ -56,7 +57,7 @@ class Mail
 
         // Кому
         if ($data['to']) {
-            foreach ((array)$data['to'] as $address => $name) {
+            foreach ((array) $data['to'] as $address => $name) {
                 if (is_numeric($address)) {
                     $address = $name;
                     $name = '';
@@ -68,7 +69,7 @@ class Mail
 
         // Копия
         if ($data['cc']) {
-            foreach ((array)$data['cc'] as $address => $name) {
+            foreach ((array) $data['cc'] as $address => $name) {
                 if (is_numeric($address)) {
                     $address = $name;
                     $name = '';
@@ -80,7 +81,7 @@ class Mail
 
         // Скрытая копия
         if ($data['bcc']) {
-            foreach ((array)$data['bcc'] as $address => $name) {
+            foreach ((array) $data['bcc'] as $address => $name) {
                 if (is_numeric($address)) {
                     $address = $name;
                     $name = '';
@@ -94,11 +95,13 @@ class Mail
         $mail->set('Body', $data['body']);
         $mail->isHTML($data['isHtml']);
 
-        foreach ((array)$data['attachments'] as $name => $file) {
+        foreach ((array) $data['attachments'] as $name => $file) {
             $mail->addAttachment($file, $name);
         }
 
-        if ($data['auto_send']) { $mail->send(); }
+        if ($data['auto_send']) {
+            $mail->send();
+        }
 
         return $mail;
     }

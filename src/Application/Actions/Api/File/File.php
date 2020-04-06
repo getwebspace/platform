@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Api\File;
 
@@ -43,8 +43,7 @@ class File extends FileAction
             $file = $file->toArray();
             $file['path'] = $path;
 
-            unset($file['item']);
-            unset($file['item_uuid']);
+            unset($file['item'], $file['item_uuid']);
         }
 
         return $this->respondWithData($files);

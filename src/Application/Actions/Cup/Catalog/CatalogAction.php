@@ -1,8 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Catalog;
 
-use Alksily\Support\Str;
 use App\Application\Actions\Action;
 use Psr\Container\ContainerInterface;
 
@@ -24,7 +23,7 @@ abstract class CatalogAction extends Action
     protected $orderRepository;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function __construct(ContainerInterface $container)
     {
@@ -42,7 +41,8 @@ abstract class CatalogAction extends Action
      *
      * @return array|false
      */
-    protected function getMeasure($list = false) {
+    protected function getMeasure($list = false)
+    {
         $measure = $this->getParameter('catalog_measure');
         $result = [];
 

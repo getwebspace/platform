@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application;
 
@@ -13,13 +13,13 @@ use Slim\Views\Twig;
 
 abstract class Plugin
 {
-    const NAME          = "";
-    const TITLE         = "";
-    const DESCRIPTION   = "";
-    const AUTHOR        = "";
-    const AUTHOR_EMAIL  = "";
-    const AUTHOR_SITE   = "";
-    const VERSION       = "1.0";
+    public const NAME          = '';
+    public const TITLE         = '';
+    public const DESCRIPTION   = '';
+    public const AUTHOR        = '';
+    public const AUTHOR_EMAIL  = '';
+    public const AUTHOR_SITE   = '';
+    public const VERSION       = '1.0';
 
     /**
      * @var ContainerInterface
@@ -49,7 +49,7 @@ abstract class Plugin
     /**
      * @var string
      */
-    private $templateFolder = null;
+    private $templateFolder;
 
     /**
      * @var array
@@ -102,14 +102,14 @@ abstract class Plugin
             'version' => static::VERSION,
         ];
 
-        if (in_array($field, array_keys($credentials))) {
+        if (in_array($field, array_keys($credentials), true)) {
             return $credentials[$field];
         }
 
         return $credentials;
     }
 
-    protected function setTemplateFolder($path)
+    protected function setTemplateFolder($path): void
     {
         $this->renderer->getLoader()->addPath($path);
     }
@@ -119,7 +119,7 @@ abstract class Plugin
         return $this->templateFolder;
     }
 
-    protected function setHandledRoute(...$name)
+    protected function setHandledRoute(...$name): void
     {
         $this->routes = true;
         $this->handledRoutes = array_merge($this->handledRoutes, $name);
@@ -130,12 +130,12 @@ abstract class Plugin
         return $this->handledRoutes;
     }
 
-    protected function addTwigExtension($extension)
+    protected function addTwigExtension($extension): void
     {
         $this->renderer->addExtension(new $extension($this->container, $this));
     }
 
-    protected function addSettingsField($params = [])
+    protected function addSettingsField($params = []): void
     {
         $default = [
             'label' => '',
@@ -166,7 +166,7 @@ abstract class Plugin
         return $this->settingsField;
     }
 
-    protected function addToolbarItem($params = [])
+    protected function addToolbarItem($params = []): void
     {
         $default = [
             'twig' => '',
@@ -211,7 +211,8 @@ abstract class Plugin
      *
      * @return \Slim\Interfaces\RouteInterface|\Slim\Route
      */
-    protected function map($params) {
+    protected function map($params)
+    {
         $default = [
             'methods' => ['get', 'post'],
             'pattern' => '',
@@ -266,7 +267,7 @@ abstract class Plugin
      * @param string|string[] $key
      * @param mixed           $default
      *
-     * @return array|string|mixed
+     * @return array|mixed|string
      */
     protected function getParameter($key = null, $default = null)
     {
@@ -277,9 +278,10 @@ abstract class Plugin
      * @param string $template
      * @param array  $data
      *
-     * @return string
      * @throws HttpBadRequestException
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
+     *
+     * @return string
      */
     protected function render($template, array $data = [])
     {

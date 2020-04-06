@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Catalog\Product;
 
@@ -29,19 +29,21 @@ class ProductListAction extends CatalogAction
                 $products = collect($this->productRepository->findBy([
                     'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
                 ]));
+
                 break;
             default:
                 $products = collect($this->productRepository->findBy([
                     'category' => \App\Domain\Entities\Catalog\Category::getChildren($categories, $category)->pluck('uuid')->all(),
                     'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
                 ]));
+
                 break;
         }
 
         return $this->respondRender('cup/catalog/product/index.twig', [
             'categories' => $categories,
             'category' => $category,
-            'products' => $products
+            'products' => $products,
         ]);
     }
 }

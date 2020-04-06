@@ -1,11 +1,13 @@
-<?php
+<?php declare(strict_types=1);
 
 ini_set('memory_limit', '-1'); // fix memory usage
 
 require __DIR__ . '/../src/bootstrap.php';
 
 // exit if another worker works
-if (file_exists(\App\Domain\Tasks\Task::$pid_file)) exit;
+if (file_exists(\App\Domain\Tasks\Task::$pid_file)) {
+    exit;
+}
 
 // before work write self PID to file
 file_put_contents(\App\Domain\Tasks\Task::$pid_file, getmypid());
@@ -23,7 +25,7 @@ $taskRepository = $entityManager->getRepository(\App\Domain\Entities\Task::class
 $queue = $taskRepository->findOneBy(['status' => [\App\Domain\Types\TaskStatusType::STATUS_QUEUE, \App\Domain\Types\TaskStatusType::STATUS_WORK]], ['date' => 'asc']);
 
 // rerun worker
-register_shutdown_function(function () use ($queue) {
+register_shutdown_function(function () use ($queue): void {
     @unlink(\App\Domain\Tasks\Task::$pid_file);
 
     if ($queue) {

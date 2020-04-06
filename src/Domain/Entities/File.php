@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Entities;
 
@@ -55,12 +55,14 @@ class File extends Model
 
     /**
      * @ORM\Column(type="FileItemType", nullable=true)
+     *
      * @deprecated
      */
     public $item = \App\Domain\Types\FileItemType::ITEM_USER_UPLOAD;
 
     /**
      * @ORM\Column(type="uuid", nullable=true, options={"default": NULL})
+     *
      * @deprecated
      */
     public $item_uuid;
@@ -79,21 +81,22 @@ class File extends Model
     protected static function prepareFileName($name)
     {
         $entities = ['%20', '%21', '%2A', '%27', '%28', '%29', '%3B', '%3A', '%40', '%26', '%3D', '%2B', '%24', '%2C', '%2F', '%3F', '%25', '%23', '%5B', '%5D'];
-        $replacements = [' ', '!', '*', "'", "(", ")", ";", ":", "@", "&", "=", "+", "$", ",", "/", "?", "%", "#", "[", "]"];
+        $replacements = [' ', '!', '*', "'", '(', ')', ';', ':', '@', '&', '=', '+', '$', ',', '/', '?', '%', '#', '[', ']'];
 
-        $name = strtolower($name);
+        $name = mb_strtolower($name);
         $name = str_replace(array_merge($entities, $replacements), '', urlencode($name));
-        $name = \Alksily\Support\Str::translate(strtolower($name));
+        $name = \Alksily\Support\Str::translate(mb_strtolower($name));
 
         return $name;
     }
 
     /**
      * @param string      $path
-     * @param string|null $name_with_ext
+     * @param null|string $name_with_ext
      *
-     * @return static|null
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
+     *
+     * @return null|static
      */
     public static function getFromPath(string $path, string $name_with_ext = null)
     {
@@ -110,13 +113,14 @@ class File extends Model
                 $headers = get_headers($path);
                 $code = mb_substr($headers[0], 9, 3);
 
-                if ($code == 200) {
+                if ($code === 200) {
                     $file = @file_get_contents($path, false, stream_context_create(['http' => ['timeout' => 15]]));
 
                     if ($file) {
                         $saved = file_put_contents($tmp, $file);
                     }
                 }
+
                 break;
             default:
                 $file = @file_get_contents($path);
@@ -124,6 +128,7 @@ class File extends Model
                 if ($file) {
                     $saved = file_put_contents($tmp, $file);
                 }
+
                 break;
         }
 
@@ -138,7 +143,7 @@ class File extends Model
             $type = addslashes(@exec('file -bi ' . $tmp));
             $info = pathinfo($name_with_ext ?? $path);
             $name = static::prepareFileName($info['filename']);
-            $ext = strtolower($info['extension']);
+            $ext = mb_strtolower($info['extension']);
             $save = $dir . '/' . $name . '.' . $ext;
 
             if (rename($tmp, $save)) {
@@ -164,8 +169,9 @@ class File extends Model
      *
      * @param $path
      *
-     * @return array
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
+     *
+     * @return array
      */
     public static function info($path): array
     {
@@ -189,7 +195,8 @@ class File extends Model
     /**
      * @return bool|resource
      */
-    public function getResource() {
+    public function getResource()
+    {
         return fopen(
             $this->getInternalPath(),
             'rb'
@@ -221,12 +228,13 @@ class File extends Model
      *
      * @param string $size
      *
-     * @return bool
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
+     *
+     * @return bool
      */
     protected function isValidSizeAndFileExists(string $size): bool
     {
-        if (in_array($size, ['middle', 'small'])) {
+        if (in_array($size, ['middle', 'small'], true)) {
             return file_exists(UPLOAD_DIR . '/' . $this->salt . '/' . $size . '/' . $this->getName());
         }
 
@@ -236,10 +244,11 @@ class File extends Model
     /**
      * Return file path
      *
-     * @param string|null $size
+     * @param null|string $size
+     *
+     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      *
      * @return string
-     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
     public function getDir(string $size = '')
     {
@@ -249,10 +258,11 @@ class File extends Model
     /**
      * Return file path
      *
-     * @param string|null $size
+     * @param null|string $size
+     *
+     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      *
      * @return string
-     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
     public function getInternalPath(string $size = '')
     {
@@ -264,8 +274,9 @@ class File extends Model
      *
      * @param string $size
      *
-     * @return string
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
+     *
+     * @return string
      */
     public function getPublicPath(string $size = '')
     {
@@ -290,9 +301,10 @@ class File extends Model
 
     /**
      * Remove local files
+     *
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
-    public function unlink()
+    public function unlink(): void
     {
         @exec('rm -rf ' . $this->getDir());
     }

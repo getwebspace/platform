@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Task;
 
@@ -13,7 +13,7 @@ class TaskListAction extends Action
     protected $taskRepository;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function __construct(ContainerInterface $container)
     {
@@ -27,7 +27,7 @@ class TaskListAction extends Action
         $tasks = collect(
             $this->taskRepository->findBy(['status' => [\App\Domain\Types\TaskStatusType::STATUS_QUEUE, \App\Domain\Types\TaskStatusType::STATUS_WORK]], ['status' => 'desc', 'date' => 'desc'])
         );
-        $tasks->map(function ($obj) {
+        $tasks->map(function ($obj): void {
             $obj->action = str_replace('App\Domain\Tasks\\', '', $obj->action);
         });
 

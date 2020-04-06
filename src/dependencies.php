@@ -1,10 +1,10 @@
-<?php
+<?php declare(strict_types=1);
 
 use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
 
 // doctrine
-$container[\Doctrine\ORM\EntityManager::class] = function (ContainerInterface $c) : EntityManager {
+$container[\Doctrine\ORM\EntityManager::class] = function (ContainerInterface $c): EntityManager {
     $settings = $c->get('doctrine');
 
     foreach ($settings['types'] as $type => $class) {
@@ -28,17 +28,19 @@ $container['plugin'] = function (ContainerInterface $c) {
         /** @var \Alksily\Entity\Collection */
         private $plugins;
 
-        public final function __construct()
+        final public function __construct()
         {
             $this->plugins = collect();
         }
 
         /**
          * Register plugin
+         *
          * @param \App\Application\Plugin $plugin
-         * @return array|string|mixed
+         *
+         * @return array|mixed|string
          */
-        public final function register(\App\Application\Plugin $plugin)
+        final public function register(\App\Application\Plugin $plugin)
         {
             $class_name = get_class($plugin);
 
@@ -51,7 +53,7 @@ $container['plugin'] = function (ContainerInterface $c) {
             return false;
         }
 
-        public final function get()
+        final public function get()
         {
             return $this->plugins;
         }
@@ -80,12 +82,11 @@ $container['parameter'] = function (ContainerInterface $c) {
 
     \RunTracy\Helpers\Profiler\Profiler::finish('parameters');
 
-    return new class($parameters)
-    {
+    return new class($parameters) {
         /** @var \Alksily\Entity\Collection */
         private static $parameters;
 
-        public final function __construct(\Alksily\Entity\Collection &$parameters)
+        final public function __construct(\Alksily\Entity\Collection &$parameters)
         {
             static::$parameters = &$parameters;
         }
@@ -93,13 +94,14 @@ $container['parameter'] = function (ContainerInterface $c) {
         /**
          * Return value by key
          * if key is array return array founded keys with values
+         *
          * @param string|string[] $key
          * @param mixed           $default
-         * @return array|string|mixed
+         *
+         * @return array|mixed|string
          */
-        public final function get($key = null, $default = null)
+        final public function get($key = null, $default = null)
         {
-            //
             if ($key === null) {
                 return static::$parameters->mapWithKeys(function ($item) {
                     [$group, $key] = explode('_', $item->key, 2);

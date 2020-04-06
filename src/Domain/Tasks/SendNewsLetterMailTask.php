@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Tasks;
 
@@ -47,16 +47,19 @@ class SendNewsLetterMailTask extends Task
                         ->merge(collect($userRepository->findBy(['allow_mail' => true]))->pluck('email')->all())
                         ->merge(collect($subscriberRepository->findAll())->pluck('email')->all())
                         ->unique();
+
                     break;
 
                 case 'subscribers':
                     $list = collect()
                         ->merge(collect($subscriberRepository->findAll())->pluck('email')->all());
+
                     break;
 
                 case 'users':
                     $list = collect()
                         ->merge(collect($userRepository->findBy(['allow_mail' => true]))->pluck('email')->all());
+
                     break;
             }
 
@@ -64,7 +67,7 @@ class SendNewsLetterMailTask extends Task
                 $perPage = 10;
                 $count = ceil($list->count() / $perPage);
 
-                for($i = 0; $i < $count; $i++){
+                for ($i = 0; $i < $count; $i++) {
                     foreach ($list->forPage($i, $perPage) as $email) {
                         $mail = Mail::send(array_merge($args, ['to' => $email]));
 

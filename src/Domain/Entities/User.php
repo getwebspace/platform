@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Entities;
 
@@ -59,6 +59,7 @@ class User extends Model
 
     /**
      * @var string
+     *
      * @see \App\Domain\Types\UserStatusType::LIST
      * @ORM\Column(type="UserStatusType")
      */
@@ -66,6 +67,7 @@ class User extends Model
 
     /**
      * @var string
+     *
      * @see \App\Domain\Types\UserLevelType::LIST
      * @ORM\Column(type="UserLevelType")
      */
@@ -94,25 +96,25 @@ class User extends Model
      * @var array
      * @ORM\ManyToMany(targetEntity="App\Domain\Entities\File", cascade={"persist", "remove"}, orphanRemoval=true)
      * @ORM\JoinTable(name="user_files",
-     *  joinColumns={@ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid")},
-     *  inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")}
+     *     joinColumns={@ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")}
      * )
      */
     protected $files = [];
 
-    public function addFile(\App\Domain\Entities\File $file)
+    public function addFile(\App\Domain\Entities\File $file): void
     {
         $this->files[] = $file;
     }
 
-    public function addFiles(array $files)
+    public function addFiles(array $files): void
     {
         foreach ($files as $file) {
             $this->addFile($file);
         }
     }
 
-    public function removeFile(\App\Domain\Entities\File $file)
+    public function removeFile(\App\Domain\Entities\File $file): void
     {
         foreach ($this->files as $key => $value) {
             if ($file === $value) {
@@ -122,14 +124,14 @@ class User extends Model
         }
     }
 
-    public function removeFiles(array $files)
+    public function removeFiles(array $files): void
     {
         foreach ($files as $file) {
             $this->removeFile($file);
         }
     }
 
-    public function clearFiles()
+    public function clearFiles(): void
     {
         foreach ($this->files as $key => $file) {
             unset($this->files[$key]);
@@ -148,7 +150,8 @@ class User extends Model
     }
 
     /**
-     * @param String $type
+     * @param string $type
+     *
      * @return string
      */
     public function getName(string $type = 'full')
@@ -157,9 +160,11 @@ class User extends Model
             switch ($type) {
                 case 'full':
                     return implode(' ', [$this->lastname, $this->firstname]);
+
                     break;
                 case 'short':
                     return implode(' ', [mb_substr($this->lastname, 0, 1) . '.', $this->firstname]);
+
                     break;
             }
         }
@@ -174,7 +179,8 @@ class User extends Model
      *
      * @return string
      */
-    public function avatar(int $size = 40) {
-        return 'https://www.gravatar.com/avatar/' . md5(strtolower(trim($this->email))) . '?s=' . $size;
+    public function avatar(int $size = 40)
+    {
+        return 'https://www.gravatar.com/avatar/' . md5(mb_strtolower(trim($this->email))) . '?s=' . $size;
     }
 }

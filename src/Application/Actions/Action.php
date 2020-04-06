@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions;
 
@@ -73,7 +73,7 @@ abstract class Action
      * @param string|string[] $key
      * @param mixed           $default
      *
-     * @return array|string|mixed
+     * @return array|mixed|string
      */
     protected function getParameter($key = null, $default = null)
     {
@@ -84,7 +84,7 @@ abstract class Action
      * @param string $field
      * @param string $reason
      */
-    protected function addError($field, $reason)
+    protected function addError($field, $reason): void
     {
         $this->error[$field] = $reason ?? \App\Domain\References\Errors\Common::WRONG_COMMON;
     }
@@ -92,7 +92,7 @@ abstract class Action
     /**
      * @param array $check
      */
-    protected function addErrorFromCheck(array $check)
+    protected function addErrorFromCheck(array $check): void
     {
         $this->error = array_merge($this->error, $check);
     }
@@ -102,8 +102,9 @@ abstract class Action
      *
      * @param array $data
      *
-     * @return bool|\PHPMailer\PHPMailer\PHPMailer
      * @throws \PHPMailer\PHPMailer\Exception
+     *
+     * @return bool|\PHPMailer\PHPMailer\PHPMailer
      */
     protected function send_mail(array $data = [])
     {
@@ -155,7 +156,7 @@ abstract class Action
             // todo add handles
             if ($exception instanceof HttpNotFoundException) {
                 $error->setType(ActionError::RESOURCE_NOT_FOUND);
-            } else if ($exception instanceof HttpBadRequestException) {
+            } elseif ($exception instanceof HttpBadRequestException) {
                 $error->setType(ActionError::BAD_REQUEST);
             }
 
@@ -181,8 +182,9 @@ abstract class Action
     /**
      * @param string $name
      *
-     * @return mixed
      * @throws HttpBadRequestException
+     *
+     * @return mixed
      */
     protected function resolveArg(string $name)
     {
@@ -198,9 +200,10 @@ abstract class Action
      *
      * @param string $field
      *
-     * @return array
      * @throws \Doctrine\ORM\ORMException
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
+     *
+     * @return array
      */
     protected function handlerFileUpload(string $field = 'files')
     {
@@ -257,7 +260,6 @@ abstract class Action
 
             foreach ($files as $uuid) {
                 /** @var \App\Domain\Entities\File $file */
-
                 if (
                     \Ramsey\Uuid\Uuid::isValid($uuid) &&
                     ($file = $fileRepository->findOneBy(['uuid' => $uuid])) !== null
@@ -274,9 +276,10 @@ abstract class Action
      * @param string $template
      * @param array  $data
      *
-     * @return string
      * @throws HttpBadRequestException
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
+     *
+     * @return string
      */
     protected function render($template, array $data = [])
     {
@@ -298,9 +301,10 @@ abstract class Action
      * @param string $template
      * @param array  $data
      *
-     * @return Response
      * @throws HttpBadRequestException
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
+     *
+     * @return Response
      */
     protected function respondRender($template, array $data = [])
     {
@@ -335,7 +339,7 @@ abstract class Action
      */
     protected function isRecaptchaChecked(): bool
     {
-        if ($this->request->isPost() && $this->getParameter('integration_recaptcha', 'off') == 'on') {
+        if ($this->request->isPost() && $this->getParameter('integration_recaptcha', 'off') === 'on') {
             \RunTracy\Helpers\Profiler\Profiler::start('recaptcha');
 
             $query = http_build_query([
@@ -347,7 +351,7 @@ abstract class Action
                 'http' => [
                     'method' => 'POST',
                     'header' => "Content-Type: application/x-www-form-urlencoded\r\n" .
-                                "Content-Length: " . strlen($query) . "\r\n",
+                                'Content-Length: ' . mb_strlen($query) . "\r\n",
                     'content' => $query,
                     'timeout' => 10,
                 ],
@@ -377,7 +381,7 @@ abstract class Action
     }
 
     /**
-     * @param array|object|null $data
+     * @param null|array|object $data
      *
      * @return Response
      */

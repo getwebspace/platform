@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Entities;
 
@@ -29,6 +29,7 @@ class Task extends Model
 
     /**
      * @var string
+     *
      * @see \App\Domain\Types\TaskStatusType::LIST
      * @ORM\Column(type="TaskStatusType")
      */

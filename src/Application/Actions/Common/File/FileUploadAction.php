@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Common\File;
 
@@ -14,9 +14,11 @@ class FileUploadAction extends FileAction
 
         if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
             foreach ($this->request->getUploadedFiles() as $field => $files) {
-                if (!is_array($files)) $files = [$files];
+                if (!is_array($files)) {
+                    $files = [$files];
+                }
 
-                /* @var UploadedFile $file */
+                // @var UploadedFile $file
                 foreach ($files as $file) {
                     if (!$file->getError()) {
                         if (($model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename())) !== null) {
@@ -46,7 +48,7 @@ class FileUploadAction extends FileAction
             $file = array_shift($models)[0] ?? false;
 
             if ($file) {
-                /** @var \App\Domain\Entities\File $file */
+                // @var \App\Domain\Entities\File $file
                 return $this->respondWithJson(['link' => $file->getPublicPath()]);
             }
         }

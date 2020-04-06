@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Common;
 
@@ -10,7 +10,7 @@ class XMLFileAction extends Action
     {
         $name = $this->resolveArg('name');
 
-        if ($name && in_array($name, ['yml', 'gmf', 'sitemap'])) {
+        if ($name && in_array($name, ['yml', 'gmf', 'sitemap'], true)) {
             $path = VAR_DIR . '/xml/' . $name . '.xml';
 
             if (file_exists($path)) {
