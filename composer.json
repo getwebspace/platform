@@ -18,7 +18,7 @@
         "slim/http-cache": "^0.4.0",
         "doctrine/orm": "^2",
         "alksily/entity": "^1.0",
-        "alksily/validator": "^1.0",
+        "alksily/validator": "^1.2",
         "alksily/support": "^1.0",
         "twig/twig": "2.12.1",
         "twig/extensions": "^1.5",
@@ -36,7 +36,7 @@
         "sentry/sdk": "2.0.3"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.5"
+        "friendsofphp/php-cs-fixer": "@stable"
     },
     "autoload": {
         "psr-4": {

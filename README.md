@@ -1,6 +1,8 @@
 WebSpace Engine
 ====
-######(Content Management System)
+_(Content Management System)_
+
+[![Build Status](https://travis-ci.com/0x12f/platform.svg?branch=master)](https://travis-ci.com/0x12f/platform)
 
 Многофункциональная система управления сайтом,
 в первую очередь предназначена для:
@@ -29,6 +31,16 @@ chmod 0777 var/database.sqlite
 
 #### Developer mode
 Воспользуйтесь `Docker` выполнив команду: `docker-compose -f docker-compose.yml`
+
+*Установка зависимостей*
+```shell script
+./composer
+```
+
+*Проверка кода*
+```shell script
+./phpcs
+```
 
 #### Инициализация схемы базы данных
 ```shell script

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+docker-compose exec platform php php-cs-fixer.phar fix --config=.php_cs -v "$@"
