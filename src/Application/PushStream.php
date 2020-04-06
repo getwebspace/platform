@@ -80,7 +80,7 @@ class PushStream
      */
     public function getChannel($user_uuid)
     {
-        return md5(($this->container->get('secret')['salt'] ?? '') . is_string($user_uuid) ? $user_uuid : $user_uuid->toString());
+        return md5(($this->container->get('secret')['salt'] ?? '') . ((string) $user_uuid));
     }
 
     /**
