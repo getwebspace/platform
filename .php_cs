@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 $finder = PhpCsFixer\Finder::create()
-    ->exclude('vendor')
+    ->exclude('vendor', 'var')
     ->in(__DIR__);
 
 return PhpCsFixer\Config::create()
