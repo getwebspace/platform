@@ -61,7 +61,7 @@ class LoginPageAction extends Action
 
                                 $hash = $this->session($session);
 
-                                setcookie('uuid', $user->uuid, time() + \App\Domain\References\Date::YEAR, '/');
+                                setcookie('uuid', $user->uuid->toString(), time() + \App\Domain\References\Date::YEAR, '/');
                                 setcookie('session', $hash, time() + \App\Domain\References\Date::YEAR, '/');
 
                                 return $this->response->withAddedHeader('Location', $data['redirect'] ? $data['redirect'] : '/cup')->withStatus(301);
