@@ -12,8 +12,8 @@ services:
           # - SENTRY=""
         volumes:
             - ./.php_cs:/var/container/.php_cs:ro
-            - ./.composer.json:/var/container/.composer.json:rw
-            - ./.composer.lock:/var/container/.composer.lock:rw
+            - ./composer.json:/var/container/composer.json:rw
+            - ./composer.lock:/var/container/composer.lock:rw
             - ./config:/var/container/config:rw
             - ./plugin:/var/container/plugin:rw
             - ./public:/var/container/public:rw
