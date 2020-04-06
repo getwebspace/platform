@@ -64,7 +64,8 @@ trait CatalogFilterRules
      *
      * @return \Closure
      */
-    public function ValidTemplate() {
+    public function ValidTemplate()
+    {
         return function (&$data, $field) {
             $buf = [
                 'category' => '',
@@ -198,7 +199,7 @@ trait CatalogFilterRules
             $value = &$data[$field];
 
             if ($value && !is_array($value)) {
-                $value = explode(';', (string)$value);
+                $value = explode(';', (string) $value);
             }
 
             return true;
@@ -230,7 +231,7 @@ trait CatalogFilterRules
 
                     $value = $order ? (+$order->serial) + 1 : 1;
                 } else {
-                    $value = strtoupper(substr(bin2hex(random_bytes(10 + $length)), 0, $length));
+                    $value = mb_strtoupper(mb_substr(bin2hex(random_bytes(10 + $length)), 0, $length));
                 }
             }
 
@@ -246,7 +247,7 @@ trait CatalogFilterRules
     public function CheckClient()
     {
         return function (&$data, $field) {
-            if(empty($data['delivery']['client']) && empty($data['user_uuid'])) {
+            if (empty($data['delivery']['client']) && empty($data['user_uuid'])) {
                 return false;
             }
 
@@ -304,7 +305,7 @@ trait CatalogFilterRules
             }
 
             foreach ($value as $uuid => $count) {
-                if (!\Ramsey\Uuid\Uuid::isValid($uuid) || gettype((int)$count) !== 'integer' || !$count || $count <= 0) {
+                if (!\Ramsey\Uuid\Uuid::isValid($uuid) || gettype((int) $count) !== 'integer' || !$count || $count <= 0) {
                     unset($value[$uuid]);
                 }
             }

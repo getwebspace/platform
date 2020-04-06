@@ -99,6 +99,7 @@ trait CommonFilterRules
                         $value = preg_replace('/\s/', '-', trim($value));
 
                         break;
+
                     default:
                         $value = Uuid::uuid4();
 
@@ -152,17 +153,21 @@ trait CommonFilterRules
      *
      * @return \Closure
      */
-    public function ValidDate(bool $force = false) {
+    public function ValidDate(bool $force = false)
+    {
         return function (&$data, $field) use ($force) {
             $value = &$data[$field];
 
             switch (true) {
                 case $value && is_string($value):
                     $value = new \DateTime($value);
+
                     break;
+
                 case $force === true:
                 default:
                     $value = new \DateTime('now');
+
                     break;
             }
 

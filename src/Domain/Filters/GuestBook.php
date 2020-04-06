@@ -24,21 +24,26 @@ class GuestBook extends Filter
 
         $filter
             ->addGlobalRule($filter->leadTrim())
-            ->attr('name')
+            ->attr('name', fn () => $filter
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 50))
-            ->attr('email')
+            )
+            ->attr('email', fn () => $filter
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkEmail())
                 ->addRule($filter->checkStrlenBetween(0, 50))
-            ->attr('message')
+            )
+            ->attr('message', fn () => $filter
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 10000))
-            ->option('response')
+            )
+            ->option('response', fn () => $filter
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 10000))
-            ->attr('date')
-                ->addRule($filter->ValidDate());
+            )
+            ->attr('date', fn () => $filter
+                ->addRule($filter->ValidDate())
+            );
 
         return $filter->run();
     }

@@ -177,13 +177,13 @@ trait PublicationFilterRules
 
             if (
                 isset($value['by']) &&
-                in_array($value['by'], array_keys(\App\Domain\References\Publication::ORDER_BY))
+                in_array($value['by'], array_keys(\App\Domain\References\Publication::ORDER_BY), true)
             ) {
                 $buf['by'] = $value['by'];
             }
             if (
                 isset($value['direction']) &&
-                in_array($value['direction'], array_keys(\App\Domain\References\Publication::ORDER_DIRECTION))
+                in_array($value['direction'], array_keys(\App\Domain\References\Publication::ORDER_DIRECTION), true)
             ) {
                 $buf['direction'] = $value['direction'];
             }

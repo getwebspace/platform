@@ -26,25 +26,32 @@ class Publication extends Filter
 
         $filter
             ->addGlobalRule($filter->leadTrim())
-            ->attr('address')
+            ->attr('address', fn () => $filter
                 ->addRule($filter->ValidAddress())
                 ->addRule($filter->InsertParentCategoryAddress())
                 ->addRule($filter->UniquePublicationAddress())
                 ->addRule($filter->checkStrlenBetween(0, 255))
-            ->attr('title')
+            )
+            ->attr('title', fn () => $filter
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 255))
-            ->attr('category')
+            )
+            ->attr('category', fn () => $filter
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 36))
-            ->attr('date')
+            )
+            ->attr('date', fn () => $filter
                 ->addRule($filter->ValidDate())
-            ->attr('content')
+            )
+            ->attr('content', fn () => $filter
                 ->addRule($filter->ValidPublicationContent())
-            ->attr('poll')
+            )
+            ->attr('poll', fn () => $filter
                 ->addRule($filter->ValidPublicationPoll())
-            ->attr('meta')
-                ->addRule($filter->ValidMeta());
+            )
+            ->attr('meta', fn () => $filter
+                ->addRule($filter->ValidMeta())
+            );
 
         return $filter->run();
     }

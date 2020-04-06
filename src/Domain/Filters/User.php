@@ -26,17 +26,22 @@ class User extends Filter
 
         $filter
             ->addGlobalRule($filter->leadTrim())
-            ->option('username')
+            ->option('username', fn () => $filter
                 ->addRule($filter->leadStr(), \App\Domain\References\Errors\User::WRONG_USERNAME)
-            ->option('email')
+            )
+            ->option('email', fn () => $filter
                 ->addRule($filter->checkEmail(), \App\Domain\References\Errors\User::WRONG_EMAIL)
-            ->attr('password')
+            )
+            ->attr('password', fn () => $filter
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(3, 20), \App\Domain\References\Errors\User::WRONG_PASSWORD_LENGTH)
-            ->attr('agent')
+            )
+            ->attr('agent', fn () => $filter
                 ->addRule($filter->leadStr())
-            ->attr('ip')
-                ->addRule($filter->checkIp());
+            )
+            ->attr('ip', fn () => $filter
+                ->addRule($filter->checkIp())
+            );
 
         return $filter->run();
     }
@@ -54,18 +59,22 @@ class User extends Filter
 
         $filter
             ->addGlobalRule($filter->leadTrim())
-            ->attr('username')
+            ->attr('username', fn () => $filter
                 ->addRule($filter->leadStr(), \App\Domain\References\Errors\User::WRONG_USERNAME)
                 ->addRule($filter->UniqueUserUsername(), \App\Domain\References\Errors\User::WRONG_USERNAME_UNIQUE)
-            ->attr('email')
+            )
+            ->attr('email', fn () => $filter
                 ->addRule($filter->checkEmail(), \App\Domain\References\Errors\User::WRONG_EMAIL)
                 ->addRule($filter->UniqueUserEmail(), \App\Domain\References\Errors\User::WRONG_EMAIL_UNIQUE)
-            ->attr('password')
+            )
+            ->attr('password', fn () => $filter
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(3, 20), \App\Domain\References\Errors\User::WRONG_PASSWORD_LENGTH)
                 ->addRule($filter->ValidPassword())
-            ->option('password_again')
-                ->addRule($filter->checkEqualToField('password'));
+            )
+            ->option('password_again', fn () => $filter
+                ->addRule($filter->checkEqualToField('password'))
+            );
 
         return $filter->run();
     }
@@ -83,43 +92,52 @@ class User extends Filter
 
         $filter
             ->addGlobalRule($filter->leadTrim())
-            ->option('username')
+            ->option('username', fn () => $filter
                 ->addRule($filter->leadStr(), \App\Domain\References\Errors\User::WRONG_USERNAME)
                 ->addRule($filter->UniqueUserUsername(), \App\Domain\References\Errors\User::WRONG_USERNAME_UNIQUE)
-            ->attr('email')
+            )
+            ->attr('email', fn () => $filter
                 ->addRule($filter->checkEmail(), \App\Domain\References\Errors\User::WRONG_EMAIL)
                 ->addRule($filter->UniqueUserEmail(), \App\Domain\References\Errors\User::WRONG_EMAIL_UNIQUE)
-            ->option('allow_mail')
+            )
+            ->option('allow_mail', fn () => $filter
                 ->addRule($filter->leadBoolean())
-            ->option('phone')
+            )
+            ->option('phone', fn () => $filter
                 ->addRule(
                     isset($_ENV['SIMPLE_PHONE_CHECK']) && $_ENV['SIMPLE_PHONE_CHECK']
-                    ? $filter->checkPhone()
-                    : $filter->leadStrReplace([' ', '+',  '-', '(', ')'], '')
-                )
-            ->option('firstname')
+                        ? $filter->checkPhone()
+                        : $filter->leadStrReplace([' ', '+', '-', '(', ')'], '')
+                ))
+            ->option('firstname', fn () => $filter
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 20))
-            ->option('lastname')
+            )
+            ->option('lastname', fn () => $filter
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 20))
-            ->option('status')
+            )
+            ->option('status', fn () => $filter
                 ->addRule($filter->checkInKeys(\App\Domain\Types\UserStatusType::LIST))
-            ->option('level')
-                ->addRule($filter->checkInKeys(\App\Domain\Types\UserLevelType::LIST));
+            )
+            ->option('level', fn () => $filter
+                ->addRule($filter->checkInKeys(\App\Domain\Types\UserLevelType::LIST))
+            );
 
         // если длинна пароля не 140 символов - значит пароль
         // был изменен и его следует хешировать
         if ($data['password']) {
-            if (strlen($data['password']) !== 140) {
+            if (mb_strlen($data['password']) !== 140) {
                 $filter
-                    ->option('password_again')
+                    ->option('password_again', fn () => $filter
                         ->addRule($filter->checkEqualToField('password'))
                         ->addRule($filter->leadRemove())
-                    ->attr('password')
+                    )
+                    ->attr('password', fn () => $filter
                         ->addRule($filter->leadStr())
                         ->addRule($filter->checkStrlenBetween(3, 20), \App\Domain\References\Errors\User::WRONG_PASSWORD_LENGTH)
-                        ->addRule($filter->ValidPassword());
+                        ->addRule($filter->ValidPassword())
+                    );
             }
         } else {
             // пароль не был изменен убираем поле $data['password']
@@ -142,10 +160,12 @@ class User extends Filter
 
         $filter
             ->addGlobalRule($filter->leadTrim())
-            ->attr('email')
+            ->attr('email', fn () => $filter
                 ->addRule($filter->leadStr())
-            ->attr('date')
-                ->addRule($filter->ValidDate(true));
+            )
+            ->attr('date', fn () => $filter
+                ->addRule($filter->ValidDate(true))
+            );
 
         return $filter->run();
     }
@@ -163,12 +183,15 @@ class User extends Filter
 
         $filter
             ->addGlobalRule($filter->leadTrim())
-            ->attr('subject')
+            ->attr('subject', fn () => $filter
                 ->addRule($filter->leadStr())
-            ->attr('body')
+            )
+            ->attr('body', fn () => $filter
                 ->addRule($filter->leadStr())
-            ->attr('type')
-                ->addRule($filter->checkInKeys(\App\Domain\References\User::NEWSLETTER_TYPE));
+            )
+            ->attr('type', fn () => $filter
+                ->addRule($filter->checkInKeys(\App\Domain\References\User::NEWSLETTER_TYPE))
+            );
 
         return $filter->run();
     }

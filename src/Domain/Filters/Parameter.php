@@ -24,12 +24,14 @@ class Parameter extends Filter
 
         $filter
             ->addGlobalRule($filter->leadTrim())
-            ->attr('key')
+            ->attr('key', fn () => $filter
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(3, 50), \App\Domain\References\Errors\Parameter::WRONG_KEY)
-            ->attr('value')
+            )
+            ->attr('value', fn () => $filter
                 ->addRule($filter->leadStr())
-                ->addRule($filter->checkStrlenBetween(0, 1024), \App\Domain\References\Errors\Parameter::WRONG_VALUE);
+                ->addRule($filter->checkStrlenBetween(0, 1024), \App\Domain\References\Errors\Parameter::WRONG_VALUE)
+            );
 
         return $filter->run();
     }

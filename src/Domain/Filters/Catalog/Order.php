@@ -25,32 +25,32 @@ class Order extends Filter
         $filter = new self($data);
 
         $filter
-            ->attr('serial')
-                ->addRule($filter->UniqueSerialID(6))
-            ->attr('delivery')
+            ->attr('serial', fn () => $filter
+                ->addRule($filter->UniqueSerialID(6)))
+            ->attr('delivery', fn () => $filter
                 ->addRule($filter->ValidOrderDelivery())
-                ->addRule($filter->CheckClient())
-            ->attr('user_uuid')
-                ->addRule($filter->CheckUUID(true))
-            ->attr('list')
-                ->addRule($filter->ValidOrderList())
-            ->attr('phone')
+                ->addRule($filter->CheckClient()))
+            ->attr('user_uuid', fn () => $filter
+                ->addRule($filter->CheckUUID(true)))
+            ->attr('list', fn () => $filter
+                ->addRule($filter->ValidOrderList()))
+            ->attr('phone', fn () => $filter
                 ->addRule(
                     isset($_ENV['SIMPLE_PHONE_CHECK']) && $_ENV['SIMPLE_PHONE_CHECK']
-                    ? $filter->checkPhone()
-                    : $filter->leadStrReplace([' ', '+',  '-', '(', ')'], '')
-                )
-            ->attr('email')
-                ->addRule($filter->checkEmail(), 'E-Mail указан с ошибкой')
-            ->option('comment')
+                        ? $filter->checkPhone()
+                        : $filter->leadStrReplace([' ', '+', '-', '(', ')'], '')
+                ))
+            ->attr('email', fn () => $filter
+                ->addRule($filter->checkEmail(), 'E-Mail указан с ошибкой'))
+            ->option('comment', fn () => $filter
                 ->addRule($filter->leadStr())
-                ->addRule($filter->checkStrlenBetween(0, 500))
-            ->attr('shipping')
-                ->addRule($filter->ValidDate())
-            ->attr('date')
-                ->addRule($filter->ValidDate())
-            ->option('external_id')
-                ->addRule($filter->leadStr());
+                ->addRule($filter->checkStrlenBetween(0, 500)))
+            ->attr('shipping', fn () => $filter
+                ->addRule($filter->ValidDate()))
+            ->attr('date', fn () => $filter
+                ->addRule($filter->ValidDate()))
+            ->option('external_id', fn () => $filter
+                ->addRule($filter->leadStr()));
 
         return $filter->run();
     }

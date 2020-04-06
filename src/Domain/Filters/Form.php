@@ -26,27 +26,33 @@ class Form extends Filter
 
         $filter
             ->addGlobalRule($filter->leadTrim())
-            ->attr('address')
+            ->attr('address', fn () => $filter
                 ->addRule($filter->ValidAddress())
                 ->addRule($filter->UniqueFormAddress())
                 ->addRule($filter->checkStrlenBetween(0, 255))
-            ->attr('title')
+            )
+            ->attr('title', fn () => $filter
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 255))
-            ->attr('template')
+            )
+            ->attr('template', fn () => $filter
                 ->addRule($filter->leadStr())
-            ->attr('save_data')
+            )
+            ->attr('save_data', fn () => $filter
                 ->addRule($filter->leadBoolean())
-            ->attr('recaptcha')
+            )
+            ->attr('recaptcha', fn () => $filter
                 ->addRule($filter->leadBoolean())
-            ->attr('origin')
+            )
+            ->attr('origin', fn () => $filter
                 ->addRule($filter->leadStr())
                 ->addRule($filter->StrSplit('/\r\n/'))
                 ->addRule($filter->ValidFormOrigin())
-            ->attr('mailto')
+            )
+            ->attr('mailto', fn () => $filter
                 ->addRule($filter->leadStr())
                 ->addRule($filter->StrSplit('/\r\n/'))
-        ;
+            );
 
         return $filter->run();
     }

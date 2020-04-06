@@ -26,32 +26,42 @@ class Category extends Filter
 
         $filter
             ->addGlobalRule($filter->leadTrim())
-            ->attr('address')
+            ->attr('address', fn () => $filter
                 ->addRule($filter->ValidAddress())
                 ->addRule($filter->InsertParentCategoryAddress())
                 ->addRule($filter->UniqueCategoryAddress())
                 ->addRule($filter->checkStrlenBetween(0, 255))
-            ->attr('title')
+            )
+            ->attr('title', fn () => $filter
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(3, 255))
-            ->attr('description')
+            )
+            ->attr('description', fn () => $filter
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 255))
-            ->attr('parent')
+            )
+            ->attr('parent', fn () => $filter
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 36))
-            ->attr('public')
+            )
+            ->attr('public', fn () => $filter
                 ->addRule($filter->leadBoolean())
-            ->attr('children')
+            )
+            ->attr('children', fn () => $filter
                 ->addRule($filter->leadBoolean())
-            ->attr('pagination')
+            )
+            ->attr('pagination', fn () => $filter
                 ->addRule($filter->leadInteger())
-            ->attr('sort')
+            )
+            ->attr('sort', fn () => $filter
                 ->addRule($filter->ValidCategorySort())
-            ->attr('meta')
+            )
+            ->attr('meta', fn () => $filter
                 ->addRule($filter->ValidMeta())
-            ->attr('template')
-                ->addRule($filter->ValidCategoryTemplate());
+            )
+            ->attr('template', fn () => $filter
+                ->addRule($filter->ValidCategoryTemplate())
+            );
 
         return $filter->run();
     }

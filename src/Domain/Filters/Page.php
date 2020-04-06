@@ -26,24 +26,31 @@ class Page extends Filter
 
         $filter
             ->addGlobalRule($filter->leadTrim())
-            ->attr('address')
+            ->attr('address', fn () => $filter
                 ->addRule($filter->ValidAddress())
                 ->addRule($filter->UniquePageAddress())
                 ->addRule($filter->checkStrlenBetween(0, 255))
-            ->attr('title')
+            )
+            ->attr('title', fn () => $filter
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 50))
-            ->attr('date')
+            )
+            ->attr('date', fn () => $filter
                 ->addRule($filter->ValidDate())
-            ->attr('content')
+            )
+            ->attr('content', fn () => $filter
                 ->addRule($filter->leadStr())
-            ->attr('type')
+            )
+            ->attr('type', fn () => $filter
                 ->addRule($filter->checkInKeys(\App\Domain\Types\PageTypeType::LIST))
-            ->attr('meta')
+            )
+            ->attr('meta', fn () => $filter
                 ->addRule($filter->ValidMeta())
-            ->attr('template')
+            )
+            ->attr('template', fn () => $filter
                 ->addRule($filter->leadStr())
-                ->addRule($filter->checkStrlenBetween(0, 50));
+                ->addRule($filter->checkStrlenBetween(0, 50))
+            );
 
         return $filter->run();
     }

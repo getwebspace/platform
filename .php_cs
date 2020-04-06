@@ -21,6 +21,7 @@ return PhpCsFixer\Config::create()
         '@DoctrineAnnotation'          => true,
 
         // other
+        'encoding' => true,
         'strict_param'                 => true,
         'strict_comparison'            => true,
         'declare_strict_types'         => true,

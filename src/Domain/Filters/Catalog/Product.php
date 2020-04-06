@@ -25,78 +25,78 @@ class Product extends Filter
         $filter = new self($data);
 
         $filter
-            ->attr('category')
+            ->attr('category', fn () => $filter
                 ->addRule($filter->leadStr())
                 ->addRule($filter->checkStrlenBetween(0, 36))
-                ->addRule($filter->CheckUUID())
-            ->attr('title')
+                ->addRule($filter->CheckUUID()))
+            ->attr('title', fn () => $filter
                 ->addRule($filter->leadStr())
-                ->addRule($filter->checkStrlenBetween(0, 255))
-            ->attr('description')
+                ->addRule($filter->checkStrlenBetween(0, 255)))
+            ->attr('description', fn () => $filter
                 ->addRule($filter->leadStr())
-                ->addRule($filter->checkStrlenBetween(0, 10000))
-            ->attr('extra')
+                ->addRule($filter->checkStrlenBetween(0, 10000)))
+            ->attr('extra', fn () => $filter
                 ->addRule($filter->leadStr())
-                ->addRule($filter->checkStrlenBetween(0, 10000))
-            ->attr('address')
+                ->addRule($filter->checkStrlenBetween(0, 10000)))
+            ->attr('address', fn () => $filter
                 ->addRule($filter->ValidAddress())
                 ->addRule($filter->InsertParentProductAddress())
                 ->addRule($filter->UniqueProductAddress())
-                ->addRule($filter->checkStrlenBetween(0, 255))
-            ->attr('vendorcode')
+                ->addRule($filter->checkStrlenBetween(0, 255)))
+            ->attr('vendorcode', fn () => $filter
                 ->addRule($filter->leadStr())
-                ->addRule($filter->leadTrim())
-            ->attr('barcode')
-                ->addRule($filter->leadInteger())
-            ->attr('priceFirst')
+                ->addRule($filter->leadTrim()))
+            ->attr('barcode', fn () => $filter
+                ->addRule($filter->leadInteger()))
+            ->attr('priceFirst', fn () => $filter
                 ->addRule($filter->leadDouble(2))
-                ->addRule($filter->leadMin(0))
-            ->attr('price')
+                ->addRule($filter->leadMin(0)))
+            ->attr('price', fn () => $filter
                 ->addRule($filter->leadDouble(2))
-                ->addRule($filter->leadMin(0))
-            ->attr('priceWholesale')
+                ->addRule($filter->leadMin(0)))
+            ->attr('priceWholesale', fn () => $filter
                 ->addRule($filter->leadDouble(2))
-                ->addRule($filter->leadMin(0))
-            ->attr('volume')
+                ->addRule($filter->leadMin(0)))
+            ->attr('volume', fn () => $filter
                 ->addRule($filter->leadDouble(2))
-                ->addRule($filter->leadMin(1))
-            ->attr('unit')
-                ->addRule($filter->leadStr())
-            ->attr('stock')
+                ->addRule($filter->leadMin(1)))
+            ->attr('unit', fn () => $filter
+                ->addRule($filter->leadStr()))
+            ->attr('stock', fn () => $filter
                 ->addRule($filter->leadDouble(2))
-                ->addRule($filter->leadMin(0))
-            ->attr('field1')
+                ->addRule($filter->leadMin(0)))
+            ->attr('field1', fn () => $filter
                 ->addRule($filter->leadStr())
-                ->addRule($filter->leadTrim())
-            ->attr('field2')
+                ->addRule($filter->leadTrim()))
+            ->attr('field2', fn () => $filter
                 ->addRule($filter->leadStr())
-                ->addRule($filter->leadTrim())
-            ->attr('field3')
+                ->addRule($filter->leadTrim()))
+            ->attr('field3', fn () => $filter
                 ->addRule($filter->leadStr())
-                ->addRule($filter->leadTrim())
-            ->attr('field4')
+                ->addRule($filter->leadTrim()))
+            ->attr('field4', fn () => $filter
                 ->addRule($filter->leadStr())
-                ->addRule($filter->leadTrim())
-            ->attr('field5')
+                ->addRule($filter->leadTrim()))
+            ->attr('field5', fn () => $filter
                 ->addRule($filter->leadStr())
-                ->addRule($filter->leadTrim())
-            ->attr('country')
-                ->addRule($filter->leadStr())
-            ->attr('manufacturer')
-                ->addRule($filter->leadStr())
-            ->attr('tags')
+                ->addRule($filter->leadTrim()))
+            ->attr('country', fn () => $filter
+                ->addRule($filter->leadStr()))
+            ->attr('manufacturer', fn () => $filter
+                ->addRule($filter->leadStr()))
+            ->attr('tags', fn () => $filter
                 ->addRule($filter->ValidTags())
-            ->addRule($filter->leadTrim())
-            ->attr('order')
+                ->addRule($filter->leadTrim()))
+            ->attr('order', fn () => $filter
                 ->addRule($filter->leadInteger())
-                ->addRule($filter->leadMin(1))
-            ->attr('meta')
-                ->addRule($filter->ValidMeta())
-            ->attr('date')
-                ->addRule($filter->ValidDate())
-            ->attr('external_id')
+                ->addRule($filter->leadMin(1)))
+            ->attr('meta', fn () => $filter
+                ->addRule($filter->ValidMeta()))
+            ->attr('date', fn () => $filter
+                ->addRule($filter->ValidDate()))
+            ->attr('external_id', fn () => $filter
                 ->addRule($filter->leadStr())
-                ->addRule($filter->leadTrim());
+                ->addRule($filter->leadTrim()));
 
         return $filter->run();
     }
