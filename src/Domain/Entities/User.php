@@ -23,34 +23,34 @@ class User extends Model
     public $uuid;
 
     /**
-     * @ORM\Column(type="string", length=50, unique=true)
+     * @ORM\Column(type="string", length=50, unique=true, options={"default": ""})
      */
-    public $username;
+    public $username = '';
 
     /**
-     * @ORM\Column(type="string", length=120, unique=true)
+     * @ORM\Column(type="string", length=120, unique=true, options={"default": ""})
      */
-    public $email;
+    public $email = '';
 
     /**
-     * @ORM\Column(type="string", length=25, nullable=true)
+     * @ORM\Column(type="string", length=25, options={"default": ""})
      */
-    public $phone;
+    public $phone = '';
 
     /**
-     * @ORM\Column(type="string", length=140)
+     * @ORM\Column(type="string", length=140, options={"default": ""})
      */
-    public $password;
+    public $password = '';
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=50, options={"default": ""})
      */
-    public $firstname;
+    public $firstname = '';
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=50, options={"default": ""})
      */
-    public $lastname;
+    public $lastname = '';
 
     /**
      * @ORM\Column(type="boolean", options={"default": true})
@@ -61,7 +61,7 @@ class User extends Model
      * @var string
      *
      * @see \App\Domain\Types\UserStatusType::LIST
-     * @ORM\Column(type="UserStatusType")
+     * @ORM\Column(type="UserStatusType", options={"default": \App\Domain\Types\UserStatusType::STATUS_WORK})
      */
     public $status = \App\Domain\Types\UserStatusType::STATUS_WORK;
 
@@ -69,7 +69,7 @@ class User extends Model
      * @var string
      *
      * @see \App\Domain\Types\UserLevelType::LIST
-     * @ORM\Column(type="UserLevelType")
+     * @ORM\Column(type="UserLevelType", options={"default": \App\Domain\Types\UserLevelType::LEVEL_USER})
      */
     public $level = \App\Domain\Types\UserLevelType::LEVEL_USER;
 
@@ -77,13 +77,13 @@ class User extends Model
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $register;
+    public $register = '';
 
     /**
      * @var DateTime
      * @ORM\Column(name="`change`", type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $change;
+    public $change = '';
 
     /**
      * @var \App\Domain\Entities\User\Session

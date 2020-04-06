@@ -23,24 +23,24 @@ class GuestBook extends Model
     public $uuid;
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=50, options={"default": ""})
      */
-    public $name;
+    public $name = '';
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=50, options={"default": ""})
      */
-    public $email;
+    public $email = '';
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", options={"default": ""})
      */
-    public $message;
+    public $message = '';
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text", options={"default": ""})
      */
-    public $response;
+    public $response = '';
 
     /**
      * @var string
@@ -54,5 +54,5 @@ class GuestBook extends Model
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $date;
+    public $date = '';
 }

@@ -22,19 +22,19 @@ class Form extends Model
     public $uuid;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", options={"default": ""})
      */
-    public $title;
+    public $title = '';
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", options={"default": ""})
      */
-    public $address;
+    public $address = '';
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", options={"default": ""})
      */
-    public $template;
+    public $template = '';
 
     /**
      * @ORM\Column(type="boolean", options={"default": true})

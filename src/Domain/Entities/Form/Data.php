@@ -23,20 +23,20 @@ class Data extends Model
     public $uuid;
 
     /**
-     * @ORM\Column(type="uuid", options={"default": NULL})
+     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
-    public $form_uuid;
+    public $form_uuid = \Ramsey\Uuid\Uuid::NIL;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", options={"default": ""})
      */
-    public $message;
+    public $message = '';
 
     /**
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $date;
+    public $date = '';
 
     /**
      * @var array

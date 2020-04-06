@@ -24,48 +24,34 @@ class File extends Model
     public $uuid;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", options={"default": ""})
      */
-    public $name;
+    public $name = '';
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string", options={"default": ""})
      */
-    public $ext;
+    public $ext = '';
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", options={"default": ""})
      */
-    public $type;
+    public $type = '';
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", options={"default": 0})
      */
-    public $size;
+    public $size = 0;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", options={"default": ""})
      */
-    public $salt;
+    public $salt = '';
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", options={"default": ""})
      */
-    public $hash;
-
-    /**
-     * @ORM\Column(type="FileItemType", nullable=true)
-     *
-     * @deprecated
-     */
-    public $item = \App\Domain\Types\FileItemType::ITEM_USER_UPLOAD;
-
-    /**
-     * @ORM\Column(type="uuid", nullable=true, options={"default": NULL})
-     *
-     * @deprecated
-     */
-    public $item_uuid;
+    public $hash = '';
 
     /**
      * @ORM\Column(type="boolean")
@@ -76,7 +62,7 @@ class File extends Model
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $date;
+    public $date = '';
 
     protected static function prepareFileName($name)
     {

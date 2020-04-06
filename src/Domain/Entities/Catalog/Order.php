@@ -26,15 +26,15 @@ class Order extends Model
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=7)
+     * @ORM\Column(type="string", length=7, options={"default": ""})
      */
-    public $serial;
+    public $serial = '';
 
     /**
      * @var Uuid
-     * @ORM\Column(type="uuid", options={"default": NULL}, nullable=true)
+     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
-    public $user_uuid;
+    public $user_uuid = \Ramsey\Uuid\Uuid::NIL;
 
     /**
      * @ORM\ManyToOne(targetEntity="\App\Domain\Entities\User")
@@ -44,7 +44,7 @@ class Order extends Model
 
     /**
      * @var array
-     * @ORM\Column(type="array", nullable=true)
+     * @ORM\Column(type="array")
      */
     public $delivery = [
         'client' => '',
@@ -53,27 +53,27 @@ class Order extends Model
 
     /**
      * @var DateTime
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"}, nullable=true)
+     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $shipping;
+    public $shipping = '';
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=500, nullable=true)
+     * @ORM\Column(type="string", length=500, options={"default": ""})
      */
-    public $comment;
+    public $comment = '';
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=50, options={"default": ""})
      */
-    public $phone;
+    public $phone = '';
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=50, options={"default": ""})
      */
-    public $email;
+    public $email = '';
 
     /**
      * @var array
@@ -87,7 +87,7 @@ class Order extends Model
      * @var string
      *
      * @see \App\Domain\Types\Catalog\OrderStatusType::LIST
-     * @ORM\Column(type="CatalogOrderStatusType")
+     * @ORM\Column(type="CatalogOrderStatusType", options={"default": \App\Domain\Types\Catalog\OrderStatusType::STATUS_NEW})
      */
     public $status = \App\Domain\Types\Catalog\OrderStatusType::STATUS_NEW;
 
@@ -95,15 +95,15 @@ class Order extends Model
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $date;
+    public $date = '';
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=50, options={"default": ""})
      */
-    public $external_id;
+    public $external_id = '';
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=50, options={"default": ""})
      */
     public $export = 'manual';
 }

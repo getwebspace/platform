@@ -23,15 +23,15 @@ class Task extends Model
     public $uuid;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string", options={"default": ""})
      */
-    public $action;
+    public $action = '';
 
     /**
      * @var string
      *
      * @see \App\Domain\Types\TaskStatusType::LIST
-     * @ORM\Column(type="TaskStatusType")
+     * @ORM\Column(type="TaskStatusType", options={"default": \App\Domain\Types\TaskStatusType::STATUS_QUEUE})
      */
     public $status = \App\Domain\Types\TaskStatusType::STATUS_QUEUE;
 
@@ -44,5 +44,5 @@ class Task extends Model
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $date;
+    public $date = '';
 }

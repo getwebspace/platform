@@ -28,39 +28,39 @@ class Category extends Model
 
     /**
      * @var Uuid
-     * @ORM\Column(type="uuid", options={"default": NULL})
+     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
-    public $parent;
+    public $parent = \Ramsey\Uuid\Uuid::NIL;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", options={"default": ""})
      */
-    public $title;
+    public $title = '';
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text", options={"default": ""})
      */
-    public $description;
+    public $description = '';
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", options={"default": ""})
      */
-    public $address;
+    public $address = '';
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text", options={"default": ""})
      */
-    public $field1;
+    public $field1 = '';
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text", options={"default": ""})
      */
-    public $field2;
+    public $field2 = '';
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text", options={"default": ""})
      */
-    public $field3;
+    public $field3 = '';
 
     /**
      * @var array
@@ -75,7 +75,7 @@ class Category extends Model
     ];
 
     /**
-     * @ORM\Column(type="integer", options={"default": "10"})
+     * @ORM\Column(type="integer", options={"default": 10})
      */
     public $pagination = 10;
 
@@ -85,9 +85,9 @@ class Category extends Model
     public $children = false;
 
     /**
-     * @ORM\Column(name="`order`", type="integer")
+     * @ORM\Column(name="`order`", type="integer", options={"default": 1})
      */
-    public $order;
+    public $order = 1;
 
     /**
      * @var string
@@ -116,12 +116,12 @@ class Category extends Model
     ];
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=50, options={"default": ""})
      */
-    public $external_id;
+    public $external_id = '';
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=50, options={"default": "manual"})
      */
     public $export = 'manual';
 

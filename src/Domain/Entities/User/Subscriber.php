@@ -24,13 +24,13 @@ class Subscriber extends Model
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=120, unique=true)
+     * @ORM\Column(type="string", length=120, unique=true, options={"default": ""})
      */
-    public $email;
+    public $email = '';
 
     /**
      * @var DateTime
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"}, nullable=true)
+     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $date;
+    public $date = '';
 }

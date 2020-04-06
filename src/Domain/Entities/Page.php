@@ -23,25 +23,25 @@ class Page extends Model
     public $uuid;
 
     /**
-     * @ORM\Column(type="string", unique=true)
+     * @ORM\Column(type="string", unique=true, options={"default": ""})
      */
-    public $address;
+    public $address = '';
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", options={"default": ""})
      */
-    public $title;
+    public $title = '';
 
     /**
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $date;
+    public $date = '';
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", options={"default": ""})
      */
-    public $content;
+    public $content = '';
 
     /**
      * @var string
@@ -62,9 +62,9 @@ class Page extends Model
     ];
 
     /**
-     * @ORM\Column(type="string", length=50)
+     * @ORM\Column(type="string", length=50, options={"default": ""})
      */
-    public $template;
+    public $template = '';
 
     /**
      * @var array

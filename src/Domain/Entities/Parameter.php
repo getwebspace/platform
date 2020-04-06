@@ -13,12 +13,12 @@ class Parameter extends Model
 {
     /**
      * @ORM\Id
-     * @ORM\Column(name="name", type="string", length=50, unique=true)
+     * @ORM\Column(name="name", type="string", length=50, unique=true, options={"default": ""})
      */
-    public $key;
+    public $key = '';
 
     /**
-     * @ORM\Column(type="string", length=1024)
+     * @ORM\Column(type="string", length=1024, options={"default": ""})
      */
-    public $value;
+    public $value = '';
 }

@@ -21,18 +21,18 @@ class Session extends Model
     public $uuid;
 
     /**
-     * @ORM\Column(type="string", length=16, nullable=true)
+     * @ORM\Column(type="string", length=16, options={"default": ""})
      */
-    public $ip;
+    public $ip = '';
 
     /**
-     * @ORM\Column(type="string", length=256, nullable=true)
+     * @ORM\Column(type="string", length=256, options={"default": ""})
      */
-    public $agent;
+    public $agent = '';
 
     /**
      * @var DateTime
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"}, nullable=true)
+     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $date;
+    public $date = '';
 }

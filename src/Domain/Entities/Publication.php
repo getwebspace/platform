@@ -23,19 +23,19 @@ class Publication extends Model
     public $uuid;
 
     /**
-     * @ORM\Column(type="string", unique=true)
+     * @ORM\Column(type="string", unique=true, options={"default": ""})
      */
     public $address;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", options={"default": ""})
      */
     public $title;
 
     /**
-     * @ORM\Column(type="uuid", options={"default": NULL})
+     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
-    public $category;
+    public $category = \Ramsey\Uuid\Uuid::NIL;
 
     /**
      * @var DateTime

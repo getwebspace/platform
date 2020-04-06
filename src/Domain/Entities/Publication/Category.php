@@ -23,27 +23,27 @@ class Category extends Model
     public $uuid;
 
     /**
-     * @ORM\Column(type="string", unique=true)
+     * @ORM\Column(type="string", unique=true, options={"default": ""})
      */
     public $address;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", options={"default": ""})
      */
     public $title;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", options={"default": ""})
      */
     public $description;
 
     /**
-     * @ORM\Column(type="uuid", options={"default": NULL})
+     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
-    public $parent;
+    public $parent = \Ramsey\Uuid\Uuid::NIL;
 
     /**
-     * @ORM\Column(type="integer", options={"default": "10"})
+     * @ORM\Column(type="integer", options={"default": 10})
      */
     public $pagination;
 
@@ -59,7 +59,7 @@ class Category extends Model
 
     /**
      * @var array
-     * @ORM\Column(type="array", nullable=true)
+     * @ORM\Column(type="array")
      */
     public $sort = [
         'by' => \App\Domain\References\Publication::ORDER_BY_DATE,

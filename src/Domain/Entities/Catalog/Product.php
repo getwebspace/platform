@@ -33,108 +33,108 @@ class Product extends Model
 
     /**
      * @var Uuid
-     * @ORM\Column(type="uuid", options={"default": NULL})
+     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
-    public $category;
+    public $category = \Ramsey\Uuid\Uuid::NIL;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $title;
+    public $title = '';
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $description;
+    public $description = '';
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $extra;
+    public $extra = '';
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $address;
+    public $address = '';
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", options={"default": "CURRENT_TIMESTAMP"})
      */
     public $vendorcode = '';
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", options={"default": "CURRENT_TIMESTAMP"})
      */
     public $barcode = '';
 
     /**
      * // себестоимость
      *
-     * @ORM\Column(type="decimal", scale=2, precision=10)
+     * @ORM\Column(type="decimal", scale=2, precision=10, options={"default": 0})
      */
     public $priceFirst = .0;
 
     /**
-     * @ORM\Column(type="decimal", scale=2, precision=10)
+     * @ORM\Column(type="decimal", scale=2, precision=10, options={"default": 0})
      */
     public $price = .0;
 
     /**
      * // оптовая цена
      *
-     * @ORM\Column(type="decimal", scale=2, precision=10)
+     * @ORM\Column(type="decimal", scale=2, precision=10, options={"default": 0})
      */
     public $priceWholesale = .0;
 
     /**
-     * @ORM\Column(type="decimal", scale=2, precision=10)
+     * @ORM\Column(type="decimal", scale=2, precision=10, options={"default": 1})
      */
     public $volume = 1.0;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string", options={"default": "kg"})
      */
     public $unit = 'kg';
 
     /**
-     * @ORM\Column(type="float", scale=2, precision=10)
+     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
      */
     public $stock = 0;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text", options={"default": ""})
      */
-    public $field1;
+    public $field1 = '';
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text", options={"default": ""})
      */
-    public $field2;
+    public $field2 = '';
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text", options={"default": ""})
      */
-    public $field3;
+    public $field3 = '';
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text", options={"default": ""})
      */
-    public $field4;
+    public $field4 = '';
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text", options={"default": ""})
      */
-    public $field5;
+    public $field5 = '';
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string", options={"default": ""})
      */
-    public $country;
+    public $country = '';
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string", options={"default": ""})
      */
-    public $manufacturer;
+    public $manufacturer = '';
 
     /**
      * @ORM\Column(type="array")
@@ -142,7 +142,7 @@ class Product extends Model
     public $tags = [];
 
     /**
-     * @ORM\Column(name="`order`", type="integer")
+     * @ORM\Column(name="`order`", type="integer", options={"default": 1})
      */
     public $order = 1;
 
@@ -150,7 +150,7 @@ class Product extends Model
      * @var string
      *
      * @see \App\Domain\Types\Catalog\ProductStatusType::LIST
-     * @ORM\Column(type="CatalogProductStatusType")
+     * @ORM\Column(type="CatalogProductStatusType", options={"default": \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK})
      */
     public $status = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
 
@@ -158,7 +158,7 @@ class Product extends Model
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $date;
+    public $date = '';
 
     /**
      * @var array
@@ -171,12 +171,12 @@ class Product extends Model
     ];
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=50, options={"default": ""})
      */
-    public $external_id;
+    public $external_id = '';
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=50, options={"default": "manual"})
      */
     public $export = 'manual';
 

@@ -24,21 +24,21 @@ class Notification extends Model
 
     /**
      * @var Uuid
-     * @ORM\Column(type="uuid", options={"default": NULL}, nullable=true)
+     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
-    public $user_uuid;
+    public $user_uuid = \Ramsey\Uuid\Uuid::NIL;
 
     /**
      * @var string
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string", options={"default": ""})
      */
-    public $title;
+    public $title = '';
 
     /**
      * @var string
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="text", options={"default": ""})
      */
-    public $message;
+    public $message = '';
 
     /**
      * @ORM\Column(type="array")
@@ -49,5 +49,5 @@ class Notification extends Model
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $date;
+    public $date = '';
 }
