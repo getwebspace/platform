@@ -42,10 +42,7 @@ return PhpCsFixer\Config::create()
         ],
         'array_syntax'                 => ['syntax' => 'short'],
         'concat_space'                 => ['spacing' => 'one'],
-        'method_argument_space' => [
-            'ensure_fully_multiline' => false,
-            'keep_multiple_spaces_after_comma' => false,
-        ],
+        'method_argument_space' => false,
 
         // fix no
         'no_alias_functions' => true,
