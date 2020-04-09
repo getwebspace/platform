@@ -97,7 +97,7 @@ class File extends Model
         switch (true) {
             case Str::start(['http://', 'https://'], $path):
                 $headers = get_headers($path);
-                $code = mb_substr($headers[0], 9, 3);
+                $code = (int) mb_substr($headers[0], 9, 3);
 
                 if ($code === 200) {
                     $file = @file_get_contents($path, false, stream_context_create(['http' => ['timeout' => 15]]));
