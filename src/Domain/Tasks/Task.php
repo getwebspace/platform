@@ -134,14 +134,15 @@ abstract class Task
 
     public function setProgress($value, $count = 0): void
     {
-        if ($count === 0) {
-            $this->entity->progress = $value;
-        } else {
-            $this->entity->progress = min($value, $count) / $count * 100;
+        if ($count !== 0) {
+            $value = round(min($value, $count) / $count * 100);
         }
+        if ($value !== $this->entity->progress) {
+            $this->entity->progress = $value;
 
-        if ($this->entity->progress !== 100) {
-            $this->saveStateLogPush();
+            if ($this->entity->progress !== 100) {
+                $this->saveStateLogPush();
+            }
         }
     }
 
