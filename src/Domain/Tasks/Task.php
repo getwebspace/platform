@@ -195,12 +195,13 @@ abstract class Task
             'content' => [
                 'type' => 'task',
                 'uuid' => $this->entity->uuid->toString(),
+                'title' => $this->entity->getTitle(),
                 'status' => $this->entity->status,
                 'progress' => $this->entity->progress,
             ],
         ]);
 
-        $this->logger->info('Task: change status', [
+        $this->logger->info('Task: change state', [
             'action' => static::class,
             'status' => $this->entity->status,
             'progress' => $this->entity->progress,

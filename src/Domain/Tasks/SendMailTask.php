@@ -6,6 +6,8 @@ use App\Application\Mail;
 
 class SendMailTask extends Task
 {
+    public const TITLE = 'Отправка почты';
+
     public function execute(array $params = []): \App\Domain\Entities\Task
     {
         $default = [

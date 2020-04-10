@@ -217,6 +217,8 @@ abstract class Action
                 $files = [$files]; // allow upload one file
             }
 
+            $uuids = [];
+
             foreach ($files as $file) {
                 if (!$file->getError()) {
                     if (($model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename())) !== null) {
@@ -225,15 +227,19 @@ abstract class Action
 
                         // is image
                         if (\Alksily\Support\Str::start('image/', $model->type)) {
-                            // add task convert
-                            $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
-                            $task->execute(['uuid' => $model->uuid]);
-
-                            // run worker
-                            \App\Domain\Tasks\Task::worker();
+                            $uuids[] = $model->uuid;
                         }
                     }
                 }
+            }
+
+            if ($uuids) {
+                // add task convert
+                $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
+                $task->execute(['uuid' => $uuids]);
+
+                // run worker
+                \App\Domain\Tasks\Task::worker();
             }
         }
 
