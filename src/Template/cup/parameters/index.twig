@@ -576,7 +576,32 @@
                                                 } %}
 
                                                 {% include 'cup/field.twig' with {
-                                                    'label': 'Порядок колонок',
+                                                    'label': 'Порядок колонок <b>Импорта</b>',
+                                                    'description': 'Возможные колонки: <i>' ~
+                                                                    ([
+                                                                        'uuid', 'category', 'external_id',
+                                                                        'title', 'description', 'extra',
+                                                                        'address',
+                                                                        'barcode', 'vendorcode',
+                                                                        'priceFirst', 'price', 'priceWholesale',
+                                                                        'volume', 'unit', 'stock',
+                                                                        'field1', 'field2', 'field3', 'field4', 'field5',
+                                                                        'country', 'manufacturer',
+                                                                        'order',
+                                                                    ]|join(', ')) ~
+                                                                    '</i><br>' ~
+                                                                    'Пропустить колонку: <i>empty</i>',
+                                                    'message': 'Алиас каждой колонки с новой строки',
+                                                    'type': 'textarea',
+                                                    'name': 'catalog[import_columns]',
+                                                    'args': {
+                                                        'style': 'height: 200px!important;',
+                                                        'placeholder': ['title', 'description', 'vendorcode', 'price', 'manufacturer', 'external_id']|join("\n"),
+                                                    },
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Порядок колонок <b>Экспорта</b>',
                                                     'description': 'Возможные колонки: <i>' ~
                                                                     ([
                                                                         'uuid', 'category', 'external_id',
@@ -589,11 +614,10 @@
                                                                         'country', 'manufacturer',
                                                                         'order', 'date',
                                                                     ]|join(', ')) ~
-                                                                    '</i><br>' ~
-                                                                    'Пропустить колонку: <i>empty</i>',
+                                                                    '</i>',
                                                     'message': 'Алиас каждой колонки с новой строки',
                                                     'type': 'textarea',
-                                                    'name': 'catalog[import_export_columns]',
+                                                    'name': 'catalog[export_columns]',
                                                     'args': {
                                                         'style': 'height: 200px!important;',
                                                         'placeholder': ['title', 'description', 'vendorcode', 'price', 'manufacturer', 'external_id']|join("\n"),

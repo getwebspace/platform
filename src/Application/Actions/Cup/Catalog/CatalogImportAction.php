@@ -8,7 +8,7 @@ class CatalogImportAction extends CatalogAction
     {
         if ($this->request->isPost()) {
             // Fields
-            $fields = array_map('trim', explode(PHP_EOL, $this->getParameter('catalog_import_export_columns', '')));
+            $fields = array_map('trim', explode(PHP_EOL, $this->getParameter('catalog_import_columns', '')));
 
             if ($fields) {
                 /** @var \App\Domain\Entities\File $file */

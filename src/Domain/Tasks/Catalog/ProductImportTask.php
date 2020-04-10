@@ -93,10 +93,10 @@ class ProductImportTask extends Task
     protected function getParsedExcelData($path = '')
     {
         // Fields
-        $fields = trim($this->getParameter('catalog_import_export_columns', ''));
+        $fields = trim($this->getParameter('catalog_import_columns', ''));
 
         if ($fields) {
-            $fields = array_map('trim', explode(PHP_EOL, $this->getParameter('catalog_import_export_columns', '')));
+            $fields = array_map('trim', explode(PHP_EOL, $fields));
             $offset = [
                 'rows' => max(1, +$this->getParameter('catalog_import_export_offset_rows', 1)),
                 'cols' => max(0, +$this->getParameter('catalog_import_export_offset_cols', 0)),
@@ -121,7 +121,7 @@ class ProductImportTask extends Task
                         break;
                     }
 
-                    $buf[$fields[$column]] = $cell->getValue();
+                    $buf[$fields[$column]] = trim((string) $cell->getValue());
                 }
 
                 switch (count($buf)) {
