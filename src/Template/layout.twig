@@ -16,8 +16,10 @@
 
     {% block body %}
         <body>
-            {% block bodyinner '' %}
-            {% block script '' %}
+            {% htmlcompress %}
+                {% block bodyinner '' %}
+                {% block script '' %}
+            {% endhtmlcompress %}
         </body>
     {% endblock %}
 </html>
