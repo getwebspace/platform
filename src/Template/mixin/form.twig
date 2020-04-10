@@ -7,7 +7,7 @@
     prefix - префикс перед полем
     postfix - постфикс после поля
 #}
-{% block input %}
+{% htmlcompress %}
     {% if name is empty %}
         {% set name = '' %}
     {% endif %}
@@ -65,4 +65,4 @@
             <small class="form-text text-muted">{{ message }}</small>
         {% endif %}
     </div>
-{% endblock %}
+{% endhtmlcompress %}
