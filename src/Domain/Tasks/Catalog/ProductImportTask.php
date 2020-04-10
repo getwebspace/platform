@@ -25,48 +25,18 @@ class ProductImportTask extends Task
         $data = $this->getParsedExcelData($file->getInternalPath());
 
         if ($data) {
-            $action = $this->getParameter('catalog_import_action', 'update');
+            //$action = $this->getParameter('catalog_import_action', 'update');
 
             // todo здесь еще должна быть генерация категорий из прайслиста
 
             $key_field = $this->getParameter('catalog_import_key', null);
             $productRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
+
             foreach ($data['products'] as $item) {
                 $this->logger->info('Search product', [$key_field => $item[$key_field]]);
 
                 /** @var \App\Domain\Entities\Catalog\Product $product */
                 $product = $productRepository->findOneBy([$key_field => [$item[$key_field], +$item[$key_field]]]);
-
-                if ($action === 'insert_update') {
-                    if (!$product) {
-                        $this->logger->info('Create new product', [$key_field => $item[$key_field]]);
-
-                        $default = [
-                            'category' => \Ramsey\Uuid\Uuid::NIL,
-                            'title' => '', 'description' => '', 'extra' => '',
-                            'address' => '',
-                            'vendorcode' => '', 'barcode' => '',
-                            'priceFirst' => '', 'price' => '', 'priceWholesale' => '',
-                            'volume' => '', 'unit' => '', 'stock' => '',
-                            'field1' => '', 'field2' => '', 'field3' => '', 'field4' => '', 'field5' => '',
-                            'country' => '', 'manufacturer' => '',
-                            'tags' => '', 'order' => '', 'date' => '',
-                            'external_id' => '',
-                        ];
-                        $item = array_merge($default, $item);
-
-                        $check = \App\Domain\Filters\Catalog\Product::check($item);
-
-                        if ($check === true) {
-                            $product = new \App\Domain\Entities\Catalog\Product();
-                            $this->entityManager->persist($product);
-                        } else {
-                            $this->logger->warning('Import invalid product', ['ch' => $check, 'i' => $item]);
-
-                            return $this->setStatusFail();
-                        }
-                    }
-                }
 
                 if ($product) {
                     $this->logger->info('Update product data', $item);
@@ -84,7 +54,8 @@ class ProductImportTask extends Task
                                 'field1', 'field2', 'field3', 'field4', 'field5',
                                 'country', 'manufacturer',
                                 'order',
-                            ], true)
+                            ], true) &&
+                            ($value === null) === false
                         ) {
                             $product->set($key, $value);
                         }
@@ -94,7 +65,7 @@ class ProductImportTask extends Task
             }
         }
 
-        // rm file
+        // rm excel file
         $file->unlink();
         $this->entityManager->remove($file);
         $this->entityManager->flush();
@@ -125,8 +96,8 @@ class ProductImportTask extends Task
     {
         $fields = array_map('trim', explode(PHP_EOL, $this->getParameter('catalog_import_columns', '')));
         $offset = [
-            'rows' => +$this->getParameter('catalog_import_offset_rows', 0),
-            'cols' => +$this->getParameter('catalog_import_offset_cols', 0),
+            'rows' => max(1, +$this->getParameter('catalog_import_offset_rows', 1)),
+            'cols' => max(0, +$this->getParameter('catalog_import_offset_cols', 0)),
         ];
 
         $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($path);
@@ -135,7 +106,7 @@ class ProductImportTask extends Task
             'products' => [],
         ];
         foreach ($spreadsheet->getActiveSheet()->getRowIterator() as $row) {
-            if ($row->getRowIndex() < $offset['rows']) {
+            if ($row->getRowIndex() < $offset['rows'] + 1) {
                 continue;
             }
 
@@ -150,11 +121,7 @@ class ProductImportTask extends Task
                     break;
                 }
 
-                $value = trim($cell->getValue());
-
-                if ($value) {
-                    $buf[$fields[$column]] = $value;
-                }
+                $buf[$fields[$column]] = $cell->getValue();
             }
 
             switch (count($buf)) {
