@@ -185,7 +185,7 @@ abstract class Task
         return false;
     }
 
-    private function saveStateLogPush()
+    private function saveStateLogPush(): void
     {
         $this->entityManager->flush();
 
