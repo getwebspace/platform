@@ -25,7 +25,17 @@ class Task extends Model
     /**
      * @ORM\Column(type="string", options={"default": ""})
      */
+    public $title = '';
+
+    /**
+     * @ORM\Column(type="string", options={"default": ""})
+     */
     public $action = '';
+
+    /**
+     * @ORM\Column(type="integer", options={"default": 0})
+     */
+    public $progress = 0;
 
     /**
      * @var string
@@ -45,4 +55,15 @@ class Task extends Model
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     public $date = '';
+
+    public function getTitle()
+    {
+        if ($this->title) {
+            return $this->title;
+        }
+
+        $action = explode('\\', $this->action);
+
+        return end($action);
+    }
 }

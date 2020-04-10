@@ -1,29 +1,117 @@
 {% set tasks = task() %}
 
-<li data-task-list class="nav-item dropdown hidden-caret" {{ tasks.count() ? '' : 'style="display: none"' }}>
-    <a class="nav-link dropdown-toggle" href="#" id="notifDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<li data-task-list class="nav-item dropdown hidden-caret" {{ tasks.list.count() ? '' : 'style="display: none"' }}>
+    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
         <i class="fas fa-tasks"></i>
-        <span class="notification">{{ tasks.count() }}</span>
+        <span class="notification"></span>
     </a>
-    <ul class="dropdown-menu notif-box animated fadeIn" aria-labelledby="notifDropdown">
-        <li>
-            <div class="dropdown-title">
-                Фоновые задачи
-            </div>
-        </li>
-        <li>
-            <div class="notif-scroll scrollbar-outer" style="overflow-y: scroll">
-                <div class="notif-center">
-                    {% for task in tasks %}
-                        <a href="#">
-                            <div class="notif-content pl-4 pr-3">
-                                <span class="block">{{ task.action }} ({{ task.status }})</span>
-                                <span class="time">{{ task.date|df('d.m.Y H:i:s') }}</span>
-                            </div>
-                        </a>
-                    {% endfor %}
+    <div class="dropdown-menu quick-actions quick-actions-info animated fadeIn">
+        <div class="quick-actions-header">
+            <span class="title mb-1">Фоновые задачи</span>
+        </div>
+        <div class="quick-actions-scroll scrollbar-outer" style="min-height: 250px;max-height: 40vh;overflow-y: scroll;">
+            {#<div class="row border-bottom py-3 px-2">
+                <div class="col-3 px-1 text-center">
+                    <span class="d-block" style="font-size: 15px;">{{ tasks.count.get('queue') ?? 0 }}</span>
+                    <span class="d-block" style="font-size: 13px;">Очередь</span>
                 </div>
+                <div class="col-3 px-1 text-center">
+                    <span class="d-block" style="font-size: 15px;">{{ tasks.count.get('done') ?? 0 }}</span>
+                    <span class="d-block" style="font-size: 13px;">Выполнено</span>
+                </div>
+                <div class="col-3 px-1 text-center">
+                    <span class="d-block" style="font-size: 15px;">{{ tasks.count.get('fail') ?? 0 }}</span>
+                    <span class="d-block" style="font-size: 13px;">Ошибка</span>
+                </div>
+                <div class="col-3 px-1 text-center">
+                    <span class="d-block" style="font-size: 15px;">{{ tasks.count.get('cancel') ?? 0 }}</span>
+                    <span class="d-block" style="font-size: 13px;">Отменено</span>
+                </div>
+            </div>#}
+
+            <div class="list-group list-group-file-item list-group-reflow list-group-flush list-group-divider">
+                {% set date = '' %}
+                {% set color = '' %}
+                {% set text = '' %}
+
+                {% for task in tasks.list %}
+                    {% if date != task.date|df('d.m.Y') %}
+                        {% set date = task.date|df('d.m.Y') %}
+                        <div class="list-group-header"> {{ date == df('now', 'd.m.Y') ? 'Сегодня' : date }} </div>
+                    {% endif %}
+                    {% if task.status == 'queue' %}
+                        {% set color = 'text-muted' %}
+                        {% set text = 'Очередь' %}
+                    {% endif %}
+                    {% if task.status == 'work' %}
+                        {% set color = 'text-info' %}
+                        {% set text = 'Работает' %}
+                    {% endif %}
+                    {% if task.status == 'done' %}
+                        {% set color = 'text-success' %}
+                        {% set text = 'Выполнено' %}
+                    {% endif %}
+                    {% if task.status == 'fail' %}
+                        {% set color = 'text-danger' %}
+                        {% set text = 'Ошибка' %}
+                    {% endif %}
+                    {% if task.status == 'cancel' %}
+                        {% set color = 'text-warning' %}
+                        {% set text = 'Отменено' %}
+                    {% endif %}
+
+                    <div class="list-group-item align-items-start" data-task-uuid="{{ task.uuid }}">
+                        <div class="list-group-item-body ml-3">
+                            <h5 class="list-group-item-title text-truncate m-0">{{ task.getTitle() }}</h5>
+
+                            <div class="progress mt-2" style="{{ task.progress > 0 and task.status == 'work' ? '' : 'display: none;' }} height: 10px">
+                                <div class="progress-bar" role="progressbar" style="width: {{ task.progress }}%"></div>
+                            </div>
+                        </div>
+                        <div class="list-group-item-figure">
+                            <p class="list-group-item-text small {{ color }}"> {{ text }} </p>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-        </li>
-    </ul>
+        </div>
+    </div>
 </li>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        let $taskList = $('[data-task-list]'),
+            $counter = $taskList.find('span.notification').hide();
+
+        $(window).on('event:task', (e, data) => {
+            let $el = $('[data-task-uuid="' + data.uuid + '"]'),
+                $status = $el.find('.list-group-item-text.small').removeClass('text-muted text-info text-success text-danger text-warning'),
+                $progress = $el.find('.progress');
+
+            switch (data.status) {
+                case 'work': {
+                    $status.text('Работает').addClass('text-info');
+                    if (+data.progress > 0) {
+                        $progress.show().find('.progress-bar').css('width', data.progress + '%');
+                    }
+                    break;
+                }
+                case 'done': {
+                    $status.text('Выполнено').addClass('text-success');
+                    $progress.hide();
+                    break;
+                }
+                case 'fail': {
+                    $status.text('Отменено').addClass('text-danger');
+                    $progress.hide();
+                    break;
+                }
+                case 'cancel': {
+                    $status.text('Отменено').addClass('text-warning');
+                    $progress.hide();
+                    break;
+                }
+            }
+        });
+    });
+</script>

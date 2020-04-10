@@ -125,8 +125,13 @@ class PushStream
 
         foreach (
             [
-                $this->container->get('parameter')->get('common_homepage', false),
+                rtrim('/', $this->container->get('parameter')->get('common_homepage', false)),
+                'http://127.0.0.1',
+                'https://127.0.0.1',
+                'http://' . $_SERVER['HOSTNAME'],
+                'https://' . $_SERVER['HOSTNAME'],
                 'http://' . $_ENV['SERVER_ADDR'] . ':' . $_ENV['SERVER_PORT'],
+                'https://' . $_ENV['SERVER_ADDR'] . ':' . $_ENV['SERVER_PORT'],
             ] as $host
         ) {
             if ($host) {
@@ -139,7 +144,7 @@ class PushStream
                     ],
                 ]));
 
-                if ($http_response_header !== null) {
+                if ($http_response_header) {
                     break;
                 }
             }

@@ -10,6 +10,8 @@ use Slim\Views\Twig;
 
 abstract class Task
 {
+    public const TITLE = '';
+
     /**
      * @var ContainerInterface
      */
@@ -111,6 +113,7 @@ abstract class Task
     public function execute(array $params = []): \App\Domain\Entities\Task
     {
         $this->entity->replace([
+            'title' => static::TITLE,
             'action' => static::class,
             'params' => $params,
             'status' => \App\Domain\Types\TaskStatusType::STATUS_QUEUE,
@@ -122,19 +125,38 @@ abstract class Task
 
     public function run(): void
     {
-        $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_WORK);
-        $this->entityManager->flush();
-        $this->logger->info('Task: start', ['action' => static::class]);
+        $this->setStatusWork();
         $this->action($this->entity->params);
-        $this->entityManager->flush();
         $this->logger->info('Task: done', ['action' => static::class]);
     }
 
     abstract protected function action(array $args = []);
 
+    public function setProgress($value, $count = 0): void
+    {
+        if ($count === 0) {
+            $this->entity->progress = $value;
+        } else {
+            $this->entity->progress = min($value, $count) / $count * 100;
+        }
+
+        if ($this->entity->progress !== 100) {
+            $this->saveStateLogPush();
+        }
+    }
+
+    public function setStatusWork()
+    {
+        $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_WORK);
+        $this->saveStateLogPush();
+
+        return true;
+    }
+
     public function setStatusDone()
     {
         $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_DONE);
+        $this->saveStateLogPush();
 
         return true;
     }
@@ -142,6 +164,7 @@ abstract class Task
     public function setStatusFail()
     {
         $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_FAIL);
+        $this->saveStateLogPush();
 
         return false;
     }
@@ -149,6 +172,7 @@ abstract class Task
     public function setStatusCancel()
     {
         $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_CANCEL);
+        $this->saveStateLogPush();
 
         return false;
     }
@@ -156,7 +180,30 @@ abstract class Task
     public function setStatusDelete()
     {
         $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_DELETE);
+        $this->saveStateLogPush();
 
         return false;
+    }
+
+    private function saveStateLogPush()
+    {
+        $this->entityManager->flush();
+
+        // отправляем пуш
+        $this->container->get('pushstream')->send([
+            'group' => \App\Domain\Types\UserLevelType::LEVEL_ADMIN,
+            'content' => [
+                'type' => 'task',
+                'uuid' => $this->entity->uuid->toString(),
+                'status' => $this->entity->status,
+                'progress' => $this->entity->progress,
+            ],
+        ]);
+
+        $this->logger->info('Task: change status', [
+            'action' => static::class,
+            'status' => $this->entity->status,
+            'progress' => $this->entity->progress,
+        ]);
     }
 }

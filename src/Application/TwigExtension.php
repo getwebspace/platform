@@ -687,29 +687,33 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
     // other functions
 
-    public function task($limit = 5000)
+    public function task($limit = 50)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:task');
 
         $qb = $this->entityManager->createQueryBuilder();
-        $query = $qb->select('t')
+        $counts = $qb
+            ->select('COUNT(t) AS count, t.status')
             ->from(\App\Domain\Entities\Task::class, 't')
-            ->where('t.status IN (:status)')
+            ->groupBy('t.status')
+            ->getQuery()
+            ->getScalarResult();
+
+        $qb = $this->entityManager->createQueryBuilder();
+        $list = $qb
+            ->select('t')
+            ->from(\App\Domain\Entities\Task::class, 't')
             ->orderBy('t.date', 'DESC')
             ->setMaxResults($limit)
-            ->setParameter('status', [
-                \App\Domain\Types\TaskStatusType::STATUS_QUEUE,
-                \App\Domain\Types\TaskStatusType::STATUS_WORK,
-            ]);
-
-        $result = collect($query->getQuery()->getResult());
-        $result->map(function ($obj): void {
-            $obj->action = str_replace('App\Domain\Tasks\\', '', $obj->action);
-        });
+            ->getQuery()
+            ->getResult();
 
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:task');
 
-        return $result;
+        return [
+            'count' => collect($counts)->pluck('count', 'status'),
+            'list' => collect($list),
+        ];
     }
 
     public function notification($user_uuid = null, $limit = 30)
