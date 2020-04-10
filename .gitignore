@@ -5,6 +5,8 @@
 /theme/*
 !/theme/default
 
+/plugin/*
+!/plugin/index.php
 /vendor/*
 !/vendor/.gitkeep
 /var/db.sqlite
