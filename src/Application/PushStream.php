@@ -125,7 +125,7 @@ class PushStream
 
         foreach (
             [
-                rtrim('/', $this->container->get('parameter')->get('common_homepage', false)),
+                rtrim($this->container->get('parameter')->get('common_homepage', false), '/'),
                 'http://127.0.0.1',
                 'https://127.0.0.1',
                 'http://' . $_SERVER['HOSTNAME'],

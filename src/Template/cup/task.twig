@@ -113,10 +113,12 @@
 
             switch (data.status) {
                 case 'queue': {
+                    $counter.show();
                     $status.text('В очереди').addClass('text-muted');
                     break;
                 }
                 case 'work': {
+                    $counter.show();
                     $status.text('Работает').addClass('text-info');
 
                     if (+data.progress > 0) {
@@ -125,16 +127,19 @@
                     break;
                 }
                 case 'done': {
+                    $counter.hide();
                     $status.text('Выполнено').addClass('text-success');
                     $progress.hide();
                     break;
                 }
                 case 'fail': {
+                    $counter.hide();
                     $status.text('Отменено').addClass('text-danger');
                     $progress.hide();
                     break;
                 }
                 case 'cancel': {
+                    $counter.hide();
                     $status.text('Отменено').addClass('text-warning');
                     $progress.hide();
                     break;
