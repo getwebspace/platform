@@ -587,7 +587,7 @@
                                                                         'volume', 'unit', 'stock',
                                                                         'field1', 'field2', 'field3', 'field4', 'field5',
                                                                         'country', 'manufacturer',
-                                                                        'order',
+                                                                        'order', 'date',
                                                                     ]|join(', ')) ~
                                                                     '</i><br>' ~
                                                                     'Пропустить колонку: <i>empty</i>',
@@ -757,7 +757,7 @@
                                                     {% if credentials.description %}
                                                         <d1>
                                                             <dt>Описание</dt>
-                                                            <dd>{{ credentials.description }}</dd>
+                                                            <dd>{{ credentials.description|raw }}</dd>
                                                         </d1>
                                                     {% endif %}
                                                     {% if credentials.version %}
