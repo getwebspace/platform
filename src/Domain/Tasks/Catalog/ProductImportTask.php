@@ -6,6 +6,8 @@ use App\Domain\Tasks\Task;
 
 class ProductImportTask extends Task
 {
+    public const TITLE = 'Импорт продуктов из Excel файла';
+
     public function execute(array $params = []): \App\Domain\Entities\Task
     {
         $default = [
@@ -25,14 +27,10 @@ class ProductImportTask extends Task
         $data = $this->getParsedExcelData($file->getInternalPath());
 
         if ($data) {
-            //$action = $this->getParameter('catalog_import_action', 'update');
-
-            // todo здесь еще должна быть генерация категорий из прайслиста
-
-            $key_field = $this->getParameter('catalog_import_key', null);
+            $key_field = $this->getParameter('catalog_import_export_key', null);
             $productRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
 
-            foreach ($data['products'] as $item) {
+            foreach ($data as $item) {
                 $this->logger->info('Search product', [$key_field => $item[$key_field]]);
 
                 /** @var \App\Domain\Entities\Catalog\Product $product */
@@ -94,48 +92,53 @@ class ProductImportTask extends Task
      */
     protected function getParsedExcelData($path = '')
     {
-        $fields = array_map('trim', explode(PHP_EOL, $this->getParameter('catalog_import_columns', '')));
-        $offset = [
-            'rows' => max(1, +$this->getParameter('catalog_import_offset_rows', 1)),
-            'cols' => max(0, +$this->getParameter('catalog_import_offset_cols', 0)),
-        ];
+        // Fields
+        $fields = trim($this->getParameter('catalog_import_export_columns', ''));
 
-        $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($path);
+        if ($fields) {
+            $fields = array_map('trim', explode(PHP_EOL, $this->getParameter('catalog_import_export_columns', '')));
+            $offset = [
+                'rows' => max(1, +$this->getParameter('catalog_import_export_offset_rows', 1)),
+                'cols' => max(0, +$this->getParameter('catalog_import_export_offset_cols', 0)),
+            ];
 
-        $output = [
-            'products' => [],
-        ];
-        foreach ($spreadsheet->getActiveSheet()->getRowIterator() as $row) {
-            if ($row->getRowIndex() < $offset['rows'] + 1) {
-                continue;
-            }
+            $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($path);
 
-            $buf = [];
-            foreach ($row->getCellIterator() as $column => $cell) {
-                $column = $this->getCellIndex($column) - $offset['cols'];
-
-                if ($column < 0) {
+            $output = [];
+            foreach ($spreadsheet->getActiveSheet()->getRowIterator() as $row) {
+                if ($row->getRowIndex() < $offset['rows'] + 1) {
                     continue;
                 }
-                if ($column >= count($fields)) {
-                    break;
+
+                $buf = [];
+                foreach ($row->getCellIterator() as $column => $cell) {
+                    $column = $this->getCellIndex($column) - $offset['cols'];
+
+                    if ($column < 0) {
+                        continue;
+                    }
+                    if ($column >= count($fields)) {
+                        break;
+                    }
+
+                    $buf[$fields[$column]] = $cell->getValue();
                 }
 
-                $buf[$fields[$column]] = $cell->getValue();
+                switch (count($buf)) {
+                    case 1:
+                        // todo добавить генерацию категорий из прайс листа
+                        break;
+
+                    case count($fields):
+                        $output[] = $buf;
+
+                        break;
+                }
             }
 
-            switch (count($buf)) {
-                case 1:
-                    // todo добавить генерацию категорий из прайс листа
-                    break;
-
-                case count($fields):
-                    $output['products'][] = $buf;
-
-                    break;
-            }
+            return $output;
         }
 
-        return $output;
+        return [];
     }
 }

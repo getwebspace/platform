@@ -395,8 +395,7 @@
                                         <div class="nav flex-column nav-pills nav-secondary">
                                             <a class="nav-link active"  data-toggle="pill" href="#catalog-general">Основное</a>
                                             <a class="nav-link"         data-toggle="pill" href="#catalog-notify">Уведомления</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#catalog-import">Импорт</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#catalog-export">Экспорт</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#catalog-import-export">Импорт и Экспорт</a>
                                             <a class="nav-link"         data-toggle="pill" href="#catalog-additional">Дополнительно</a>
                                         </div>
                                     </div>
@@ -515,25 +514,25 @@
                                             </div>
 
                                             {# TAB: Catalog Import #}
-                                            <div class="tab-pane fade" id="catalog-import">
-                                                {% include 'cup/field.twig' with {
+                                            <div class="tab-pane fade" id="catalog-import-export">
+                                                {#{% include 'cup/field.twig' with {
                                                     'label': 'Действие',
                                                     'description': 'Необходимое действие с данными при импорте<br><i>Вставка данных - скоро!</i>',
                                                     'type': 'select',
-                                                    'name': 'catalog[import_action]',
+                                                    'name': 'catalog[import_export_action]',
                                                     'args': {
                                                         'selected': 'update',
                                                         'option': {
                                                             'update': 'Только обновление',
                                                         },
                                                     },
-                                                } %}
+                                                } %}#}
 
                                                 {% include 'cup/field.twig' with {
                                                     'label': 'Отступ в строках',
                                                     'description': 'Количество строк, которые необходимо отступить сверху',
                                                     'type': 'number',
-                                                    'name': 'catalog[import_offset_rows]',
+                                                    'name': 'catalog[import_export_offset_rows]',
                                                     'args': {
                                                         'min': 0,
                                                         'value': 0,
@@ -545,7 +544,7 @@
                                                     'label': 'Отступ в колонках',
                                                     'description': 'Количество колонок, которые необходимо отступить слева',
                                                     'type': 'number',
-                                                    'name': 'catalog[import_offset_cols]',
+                                                    'name': 'catalog[import_export_offset_cols]',
                                                     'args': {
                                                         'min': 0,
                                                         'value': 0,
@@ -558,7 +557,7 @@
                                                     'description': 'Данное поле будет использовано для поиска товара<br>' ~
                                                                    '<b>Важно</b>: значение поля должно быть уникально!',
                                                     'type': 'select',
-                                                    'name': 'catalog[import_key]',
+                                                    'name': 'catalog[import_export_key]',
                                                     'args': {
                                                         'option': {
                                                             'uuid': 'uuid',
@@ -594,38 +593,10 @@
                                                                     'Пропустить колонку: <i>empty</i>',
                                                     'message': 'Алиас каждой колонки с новой строки',
                                                     'type': 'textarea',
-                                                    'name': 'catalog[import_columns]',
+                                                    'name': 'catalog[import_export_columns]',
                                                     'args': {
                                                         'style': 'height: 200px!important;',
                                                         'placeholder': ['title', 'description', 'vendorcode', 'price', 'manufacturer', 'external_id']|join("\n"),
-                                                    },
-                                                } %}
-                                            </div>
-
-                                            {# TAB: Catalog Export #}
-                                            <div class="tab-pane fade" id="catalog-export">
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'Порядок колонок',
-                                                    'description': 'Возможные колонки: <i>' ~
-                                                                    ([
-                                                                        'uuid', 'category', 'external_id',
-                                                                        'title', 'description', 'extra',
-                                                                        'address',
-                                                                        'barcode', 'vendorcode',
-                                                                        'priceFirst', 'price', 'priceWholesale',
-                                                                        'volume', 'unit', 'stock',
-                                                                        'field1', 'field2', 'field3', 'field4', 'field5',
-                                                                        'country', 'manufacturer',
-                                                                        'order', 'date',
-                                                                    ]|join(', ')) ~
-                                                                    '</i>',
-                                                    'message': 'Алиас каждой колонки с новой строки',
-                                                    'type': 'textarea',
-                                                    'name': 'catalog[export_columns]',
-                                                    'args': {
-                                                        'style': 'height: 200px!important;',
-                                                        'placeholder': ['title', 'description', 'vendorcode', 'price', 'country', 'manufacturer', 'date', 'external_id']|join("\n"),
-                                                        'value': ['title', 'description', 'vendorcode', 'price', 'country', 'manufacturer', 'date', 'external_id']|join("\n"),
                                                     },
                                                 } %}
                                             </div>

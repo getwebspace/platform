@@ -32,9 +32,15 @@ class CatalogExportAction extends CatalogAction
     protected function action(): \Slim\Http\Response
     {
         // Fields
-        $fields = array_map('trim', explode(PHP_EOL, $this->getParameter('catalog_export_columns', '')));
+        $fields = trim($this->getParameter('catalog_import_export_columns', ''));
 
         if ($fields) {
+            $fields = array_map('trim', explode(PHP_EOL, $this->getParameter('catalog_import_export_columns', '')));
+            $offset = [
+                'rows' => max(0, +$this->getParameter('catalog_import_export_offset_rows', 0)),
+                'cols' => max(0, +$this->getParameter('catalog_import_export_offset_cols', 0)),
+            ];
+
             $categories = collect($this->categoryRepository->findBy([
                 'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
             ]));
@@ -70,7 +76,7 @@ class CatalogExportAction extends CatalogAction
             // Write header row
             foreach ($fields as $index => $field) {
                 $sheet
-                    ->getCell($this->getCellCoordinate($index, 0))
+                    ->getCell($this->getCellCoordinate($index + $offset['cols'], 0 + $offset['rows']))
                     ->setValue($field)
                     ->getStyle()
                     ->getFont()
@@ -82,72 +88,74 @@ class CatalogExportAction extends CatalogAction
                 // @var \App\Domain\Entities\Catalog\Product $model
 
                 foreach ($fields as $index => $field) {
-                    $cell = $sheet->getCell($this->getCellCoordinate($index, $row + 1));
+                    if (trim($field)) {
+                        $cell = $sheet->getCell($this->getCellCoordinate($index + $offset['cols'], $row + 1 + $offset['rows']));
 
-                    // set default vertical aligment
-                    $cell
-                        ->getStyle()
-                        ->getAlignment()
-                        ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+                        // set default vertical aligment
+                        $cell
+                            ->getStyle()
+                            ->getAlignment()
+                            ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
 
-                    switch ($field) {
-                        case 'category':
-                            $cell->setValue($categories->firstWhere('uuid', $model->category)->title ?? 'unknown');
+                        switch ($field) {
+                            case 'category':
+                                $cell->setValue($categories->firstWhere('uuid', $model->category)->title ?? 'unknown');
 
-                            break;
+                                break;
 
-                        case 'description':
-                        case 'extra':
-                            $cell
-                                ->setValue(trim($wizard->toRichTextObject($model->get($field))->getPlainText()));
+                            case 'description':
+                            case 'extra':
+                                $cell
+                                    ->setValue(trim($wizard->toRichTextObject($model->get($field))->getPlainText()));
 
-                            break;
+                                break;
 
-                        case 'priceFirst':
-                        case 'price':
-                        case 'priceWholesale':
-                            $cell
-                                ->setValue($model->get($field))
-                                ->getStyle()
-                                ->getNumberFormat()
-                                ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED2);
+                            case 'priceFirst':
+                            case 'price':
+                            case 'priceWholesale':
+                                $cell
+                                    ->setValue($model->get($field))
+                                    ->getStyle()
+                                    ->getNumberFormat()
+                                    ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED2);
 
-                            break;
+                                break;
 
-                        case 'vendorcode':
-                        case 'barcode':
-                            $cell
-                                ->setValue($model->get($field))
-                                ->getStyle()
-                                ->getAlignment()
-                                ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                            case 'vendorcode':
+                            case 'barcode':
+                                $cell
+                                    ->setValue($model->get($field))
+                                    ->getStyle()
+                                    ->getAlignment()
+                                    ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
 
-                            break;
+                                break;
 
-                        case 'volume':
-                        case 'stock':
-                        case 'order':
-                            $cell
-                                ->setValue($model->get($field))
-                                ->getStyle()
-                                ->getNumberFormat()
-                                ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_00);
+                            case 'volume':
+                            case 'stock':
+                            case 'order':
+                                $cell
+                                    ->setValue($model->get($field))
+                                    ->getStyle()
+                                    ->getNumberFormat()
+                                    ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_00);
 
-                            break;
+                                break;
 
-                        case 'date':
-                            $cell
-                                ->setValue(\PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($model->date))
-                                ->getStyle()
-                                ->getNumberFormat()
-                                ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_DATETIME);
+                            case 'date':
+                                $cell
+                                    ->setValue(\PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($model->date))
+                                    ->getStyle()
+                                    ->getNumberFormat()
+                                    ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_DATETIME);
 
-                            break;
+                                break;
 
-                        default:
-                            $cell->setValue($model->get($field));
+                            default:
+                                $cell->setValue($model->get($field));
 
-                            break;
+                                break;
+                        }
                     }
                 }
             }
