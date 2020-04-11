@@ -62,7 +62,7 @@ class File extends Model
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $date = null;
+    public $date;
 
     protected static function prepareFileName($name)
     {

@@ -54,7 +54,7 @@ class Task extends Model
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $date = null;
+    public $date;
 
     public function getTitle()
     {

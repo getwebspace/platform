@@ -95,7 +95,7 @@ class Order extends Model
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $date = null;
+    public $date;
 
     /**
      * @ORM\Column(type="string", length=50, options={"default": ""})
