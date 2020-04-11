@@ -71,6 +71,10 @@
                         {% set color = 'text-warning' %}
                         {% set text = 'Отменено' %}
                     {% endif %}
+                    {% if task.status == 'delete' %}
+                        {% set color = 'text-warning' %}
+                        {% set text = 'Удалено' %}
+                    {% endif %}
 
                     <div class="list-group-item align-items-start" data-task-uuid="{{ task.uuid }}">
                         <div class="list-group-item-body ml-3">
@@ -141,6 +145,12 @@
                 case 'cancel': {
                     $counter.hide();
                     $status.text('Отменено').addClass('text-warning');
+                    $progress.hide();
+                    break;
+                }
+                case 'delete': {
+                    $counter.hide();
+                    $status.text('Удалено').addClass('text-warning');
                     $progress.hide();
                     break;
                 }

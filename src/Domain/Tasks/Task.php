@@ -140,8 +140,9 @@ abstract class Task
         if ($value !== $this->entity->progress) {
             $this->entity->progress = $value;
 
-            if ($this->entity->progress !== 100) {
-                $this->saveStateLogPush();
+            switch ($this->entity->progress) {
+                case 100: sleep(1); break;
+                default: $this->saveStateLogPush(); break;
             }
         }
     }
