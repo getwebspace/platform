@@ -15,6 +15,9 @@ file_put_contents(\App\Domain\Tasks\Task::$pid_file, getmypid());
 // App container
 $c = $container = $app->getContainer();
 
+/** @var \Monolog\Logger $logger */
+$logger = $container->get('monolog');
+
 /** @var \Doctrine\ORM\EntityManager $entityManager */
 $entityManager = $container->get(\Doctrine\ORM\EntityManager::class);
 
@@ -28,24 +31,34 @@ $queue = $taskRepository->findOneBy(['status' => [\App\Domain\Types\TaskStatusTy
 register_shutdown_function(function () use ($queue): void {
     @unlink(\App\Domain\Tasks\Task::$pid_file);
 
+    sleep(3); // timeout
+
     if ($queue) {
         \App\Domain\Tasks\Task::worker();
     }
 });
 
 if ($queue) {
-    /** @var \App\Domain\Tasks\Task $task */
-    $task = new $queue->action($c, $queue);
+    try {
+        /** @var \App\Domain\Tasks\Task $task */
+        $task = new $queue->action($c, $queue);
 
-    if ($queue->status === \App\Domain\Types\TaskStatusType::STATUS_QUEUE) {
-        $task->run();
-    } else {
-        // удаление задачи по времени
-        if ((new DateTime())->diff($queue->date)->i >= 30) {
-            $task->setStatusDelete();
-            $entityManager->flush();
+        if ($queue->status === \App\Domain\Types\TaskStatusType::STATUS_QUEUE) {
+            $task->run();
         } else {
-            sleep(30);
+            // удаление задачи по времени
+            if ((new DateTime())->diff($queue->date)->i >= 30) {
+                $task->setStatusDelete();
+                $entityManager->flush();
+            } else {
+                sleep(30);
+            }
         }
+    } catch (Exception $e) {
+        $logger->error('Task catch exception', [
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'code' => $e->getCode()
+        ]);
     }
 }
