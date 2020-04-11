@@ -141,8 +141,13 @@ abstract class Task
             $this->entity->progress = $value;
 
             switch ($this->entity->progress) {
-                case 100: sleep(1); break;
-                default: $this->saveStateLogPush(); break;
+                case 100:
+                    sleep(1);
+                    break;
+
+                default:
+                    $this->saveStateLogPush();
+                    break;
             }
         }
     }

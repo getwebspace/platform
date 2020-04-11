@@ -58,7 +58,7 @@ if ($queue) {
         $logger->error('Task catch exception', [
             'message' => $e->getMessage(),
             'file' => $e->getFile(),
-            'code' => $e->getCode()
+            'code' => $e->getCode(),
         ]);
     }
 }
