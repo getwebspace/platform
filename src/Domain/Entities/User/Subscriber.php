@@ -32,5 +32,5 @@ class Subscriber extends Model
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $date = '';
+    public $date = null;
 }

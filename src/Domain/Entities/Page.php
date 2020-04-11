@@ -36,7 +36,7 @@ class Page extends Model
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $date = '';
+    public $date = null;
 
     /**
      * @ORM\Column(type="text", options={"default": ""})
