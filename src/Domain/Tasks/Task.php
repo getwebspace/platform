@@ -143,10 +143,12 @@ abstract class Task
             switch ($this->entity->progress) {
                 case 100:
                     sleep(1);
+
                     break;
 
                 default:
                     $this->saveStateLogPush();
+
                     break;
             }
         }
