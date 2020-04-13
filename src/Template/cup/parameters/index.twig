@@ -515,18 +515,19 @@
 
                                             {# TAB: Catalog Import #}
                                             <div class="tab-pane fade" id="catalog-import-export">
-                                                {#{% include 'cup/field.twig' with {
+                                                {% include 'cup/field.twig' with {
                                                     'label': 'Действие',
-                                                    'description': 'Необходимое действие с данными при импорте<br><i>Вставка данных - скоро!</i>',
+                                                    'description': 'Необходимое действие с данными при импорте',
                                                     'type': 'select',
-                                                    'name': 'catalog[import_export_action]',
+                                                    'name': 'catalog[import_action]',
                                                     'args': {
                                                         'selected': 'update',
                                                         'option': {
+                                                            'insert': 'Вставка и обновление',
                                                             'update': 'Только обновление',
                                                         },
                                                     },
-                                                } %}#}
+                                                } %}
 
                                                 {% include 'cup/field.twig' with {
                                                     'label': 'Отступ в строках',
@@ -557,7 +558,7 @@
                                                     'description': 'Данное поле будет использовано для поиска товара<br>' ~
                                                                    '<b>Важно</b>: значение поля должно быть уникально!',
                                                     'type': 'select',
-                                                    'name': 'catalog[import_export_key]',
+                                                    'name': 'catalog[import_key]',
                                                     'args': {
                                                         'option': {
                                                             'uuid': 'uuid',
@@ -577,20 +578,8 @@
 
                                                 {% include 'cup/field.twig' with {
                                                     'label': 'Порядок колонок <b>Импорта</b>',
-                                                    'description': 'Возможные колонки: <i>' ~
-                                                                    ([
-                                                                        'uuid', 'category', 'external_id',
-                                                                        'title', 'description', 'extra',
-                                                                        'address',
-                                                                        'barcode', 'vendorcode',
-                                                                        'priceFirst', 'price', 'priceWholesale',
-                                                                        'volume', 'unit', 'stock',
-                                                                        'field1', 'field2', 'field3', 'field4', 'field5',
-                                                                        'country', 'manufacturer',
-                                                                        'order',
-                                                                    ]|join(', ')) ~
-                                                                    '</i><br>' ~
-                                                                    'Пропустить колонку: <i>empty</i>',
+                                                    'description': 'Возможные колонки: <i>' ~ reference('/App/Domain/References/Catalog::IMPORT_FIELDS')|join(', ') ~ '</i><br>' ~
+                                                                   'Пропустить колонку: <i>empty</i>',
                                                     'message': 'Алиас каждой колонки с новой строки',
                                                     'type': 'textarea',
                                                     'name': 'catalog[import_columns]',
@@ -602,19 +591,7 @@
 
                                                 {% include 'cup/field.twig' with {
                                                     'label': 'Порядок колонок <b>Экспорта</b>',
-                                                    'description': 'Возможные колонки: <i>' ~
-                                                                    ([
-                                                                        'uuid', 'category', 'external_id',
-                                                                        'title', 'description', 'extra',
-                                                                        'address',
-                                                                        'barcode', 'vendorcode',
-                                                                        'priceFirst', 'price', 'priceWholesale',
-                                                                        'volume', 'unit', 'stock',
-                                                                        'field1', 'field2', 'field3', 'field4', 'field5',
-                                                                        'country', 'manufacturer',
-                                                                        'order', 'date',
-                                                                    ]|join(', ')) ~
-                                                                    '</i>',
+                                                    'description': 'Возможные колонки: <i>' ~ reference('/App/Domain/References/Catalog::EXPORT_FIELDS')|join(', ') ~ '</i><br>',
                                                     'message': 'Алиас каждой колонки с новой строки',
                                                     'type': 'textarea',
                                                     'name': 'catalog[export_columns]',

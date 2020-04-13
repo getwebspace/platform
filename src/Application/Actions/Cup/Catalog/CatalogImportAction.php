@@ -16,7 +16,7 @@ class CatalogImportAction extends CatalogAction
 
                 if ($file) {
                     // add import task
-                    $task = new \App\Domain\Tasks\Catalog\ProductImportTask($this->container);
+                    $task = new \App\Domain\Tasks\Catalog\ImportTask($this->container);
                     $task->execute(['file' => $file->uuid->toString()]);
 
                     $this->entityManager->flush();

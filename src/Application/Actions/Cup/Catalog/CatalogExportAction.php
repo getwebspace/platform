@@ -83,9 +83,39 @@ class CatalogExportAction extends CatalogAction
                     ->setBold(true);
             }
 
+            $row = 0;
+            $lastCategory = null;
+
             // Write table data row by row
-            foreach ($products as $row => $model) {
-                // @var \App\Domain\Entities\Catalog\Product $model
+            foreach ($products->sortBy('category') as $model) {
+                /** @var \App\Domain\Entities\Catalog\Product $model */
+                if ($lastCategory !== $model->category->toString()) {
+                    // merge cells
+                    $sheet->mergeCells($this->getCellCoordinate(0 + $offset['cols'], $row + 1 + $offset['rows']) . ':' . $this->getCellCoordinate(count($fields) - 1 + $offset['cols'], $row + 1 + $offset['rows']));
+
+                    // get header cell
+                    $cell = $sheet->getCell($this->getCellCoordinate(0 + $offset['cols'], $row + 1 + $offset['rows']));
+
+                    // set default vertical aligment
+                    $cell
+                        ->getStyle()
+                        ->getAlignment()
+                        ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+
+                    // set back color
+                    $cell
+                        ->getStyle()
+                        ->getFill()
+                        ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                        ->getStartColor()->setRGB('D9DDDC');
+
+                    // set value
+                    $cell
+                        ->setValue($categories->firstWhere('uuid', $model->category)->title ?? 'unknown');
+
+                    $lastCategory = $model->category->toString();
+                    $row++;
+                }
 
                 foreach ($fields as $index => $field) {
                     if (trim($field)) {
@@ -158,6 +188,8 @@ class CatalogExportAction extends CatalogAction
                         }
                     }
                 }
+
+                $row++;
             }
 
             return $this->response

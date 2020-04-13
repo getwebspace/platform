@@ -214,8 +214,6 @@ class File extends Model
      *
      * @param string $size
      *
-     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
-     *
      * @return bool
      */
     protected function isValidSizeAndFileExists(string $size): bool
@@ -232,8 +230,6 @@ class File extends Model
      *
      * @param null|string $size
      *
-     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
-     *
      * @return string
      */
     public function getDir(string $size = '')
@@ -245,8 +241,6 @@ class File extends Model
      * Return file path
      *
      * @param null|string $size
-     *
-     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      *
      * @return string
      */
@@ -287,8 +281,6 @@ class File extends Model
 
     /**
      * Remove local files
-     *
-     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
     public function unlink(): void
     {
