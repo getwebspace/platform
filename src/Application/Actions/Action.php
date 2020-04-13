@@ -292,6 +292,16 @@ abstract class Action
         try {
             \RunTracy\Helpers\Profiler\Profiler::start('render (%s)', $template);
 
+            $data = array_merge(
+                [
+                    'NIL' => \Ramsey\Uuid\Uuid::NIL,
+                    '_request' => &$_REQUEST,
+                    '_error' => \Alksily\Support\Form::$globalError = $this->error,
+                    'user' => $this->request->getAttribute('user', false),
+                    'plugins' => $this->container->get('plugin')->get(),
+                ],
+                $data
+            );
             $this->renderer->getLoader()->addPath(THEME_DIR . '/' . $this->getParameter('common_theme', 'default'));
             $rendered = $this->renderer->fetch($template, $data);
 
@@ -317,18 +327,8 @@ abstract class Action
         try {
             \RunTracy\Helpers\Profiler\Profiler::start('render (%s)', $template);
 
-            $data = array_merge(
-                [
-                    'NIL' => \Ramsey\Uuid\Uuid::NIL,
-                    '_request' => &$_REQUEST,
-                    '_error' => \Alksily\Support\Form::$globalError = $this->error,
-                    'user' => $this->request->getAttribute('user', false),
-                    'plugins' => $this->container->get('plugin')->get(),
-                ],
-                $data
-            );
             $this->renderer->getLoader()->addPath(THEME_DIR . '/' . $this->getParameter('common_theme', 'default'));
-            $this->response->getBody()->write($this->renderer->fetch($template, $data));
+            $this->response->getBody()->write($this->render($template, $data));
 
             \RunTracy\Helpers\Profiler\Profiler::finish('render (%s)', $template);
 
