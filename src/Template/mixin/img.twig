@@ -1,0 +1,78 @@
+{#
+    src - ссылка на картинку
+    id - attr id
+    class - attr class
+    alt - attr alt
+    title - attr title
+    style - attr style
+#}
+{% htmlcompress %}
+    {% set id = random() %}
+
+    <img
+        data-image="{{ id }}"
+        data-src="{{ src }}"
+        {{ id ? 'id="'~ id ~'"' : '' }}
+        {{ class ? 'class="'~ class ~'"' : '' }}
+        {{ alt ? 'alt="'~ alt ~'"' : '' }}
+        {{ title ? 'title="'~ title ~'"' : '' }}
+        {{ style ? 'style="'~ style ~'"' : '' }}
+    />
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            switch ('IntersectionObserver' in window) {
+                // IntersectionObserver
+                case true: {
+                    window.images = window.images || new IntersectionObserver(function (entries, observer) {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                let image = entry.target;
+                                    image.src = image.dataset.src;
+
+                                window.images.unobserve(image);
+                            }
+                        });
+                    });
+                    window.images.observe(document.querySelector('[data-image="{{ id }}"]'));
+
+                    break;
+                }
+
+                // fallback
+                default: {
+                    let lazyLoadImages = document.querySelectorAll(".lazy"),
+                        lazyLoadThrottleTimeout;
+
+                    function lazyLoad() {
+                        if (lazyLoadThrottleTimeout) {
+                            clearTimeout(lazyLoadThrottleTimeout);
+                        }
+
+                        lazyLoadThrottleTimeout = setTimeout(() => {
+                            let scrollTop = window.pageYOffset;
+
+                            lazyLoadImages.forEach(function (img) {
+                                if (img.offsetTop < (window.innerHeight + scrollTop)) {
+                                    img.src = img.dataset.src;
+                                }
+                            });
+
+                            if (lazyLoadImages.length === 0) {
+                                document.removeEventListener('scroll', lazyLoad);
+                                window.removeEventListener('resize', lazyLoad);
+                                window.removeEventListener('orientationChange', lazyLoad);
+                            }
+                        }, 20);
+                    }
+
+                    document.addEventListener('scroll', lazyLoad);
+                    window.addEventListener('resize', lazyLoad);
+                    window.addEventListener('orientationChange', lazyLoad);
+
+                    break;
+                }
+            }
+        })
+    </script>
+{% endhtmlcompress %}
