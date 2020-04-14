@@ -191,6 +191,7 @@ class ImportTask extends Task
                     continue;
                 }
 
+                $count = 0;
                 $buf = [];
                 foreach ($row->getCellIterator() as $column => $cell) {
                     $column = $this->getCellIndex($column) - $offset['cols'];
@@ -205,11 +206,14 @@ class ImportTask extends Task
                     $value = trim((string) $cell->getValue());
 
                     if ($value) {
-                        $buf[$fields[$column]] = $value;
+                        if ($column !== 'empty') {
+                            $buf[$fields[$column]] = $value;
+                        }
+                        $count++;
                     }
                 }
 
-                switch (count($buf)) {
+                switch ($count) {
                     case 1:
                         $output[] = ['type' => 'category', 'title' => array_first($buf)];
 
