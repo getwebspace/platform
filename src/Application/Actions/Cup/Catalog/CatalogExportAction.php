@@ -90,28 +90,10 @@ class CatalogExportAction extends CatalogAction
             foreach ($products->sortBy('category') as $model) {
                 /** @var \App\Domain\Entities\Catalog\Product $model */
                 if ($lastCategory !== $model->category->toString()) {
-                    // merge cells
-                    $sheet->mergeCells($this->getCellCoordinate(0 + $offset['cols'], $row + 1 + $offset['rows']) . ':' . $this->getCellCoordinate(count($fields) - 1 + $offset['cols'], $row + 1 + $offset['rows']));
-
                     // get header cell
-                    $cell = $sheet->getCell($this->getCellCoordinate(0 + $offset['cols'], $row + 1 + $offset['rows']));
-
-                    // set default vertical aligment
-                    $cell
-                        ->getStyle()
-                        ->getAlignment()
-                        ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-
-                    // set back color
-                    $cell
-                        ->getStyle()
-                        ->getFill()
-                        ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-                        ->getStartColor()->setRGB('D9DDDC');
-
-                    // set value
-                    $cell
-                        ->setValue($categories->firstWhere('uuid', $model->category)->title ?? 'unknown');
+                    $sheet
+                        ->getCell($this->getCellCoordinate(0 + $offset['cols'], $row + 1 + $offset['rows']))
+                        ->setValue($categories->firstWhere('uuid', $model->category)->title ?? 'Без категории');
 
                     $lastCategory = $model->category->toString();
                     $row++;
@@ -129,7 +111,7 @@ class CatalogExportAction extends CatalogAction
 
                         switch ($field) {
                             case 'category':
-                                $cell->setValue($categories->firstWhere('uuid', $model->category)->title ?? 'unknown');
+                                $cell->setValue($categories->firstWhere('uuid', $model->category)->title ?? 'Без категории');
 
                                 break;
 
