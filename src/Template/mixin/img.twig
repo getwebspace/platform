@@ -7,17 +7,9 @@
     style - attr style
 #}
 {% htmlcompress %}
-    {% set id = random() %}
+    {% set imgid = random() %}
 
-    <img
-        data-image="{{ id }}"
-        data-src="{{ src }}"
-        {{ id ? 'id="'~ id ~'"' : '' }}
-        {{ class ? 'class="'~ class ~'"' : '' }}
-        {{ alt ? 'alt="'~ alt ~'"' : '' }}
-        {{ title ? 'title="'~ title ~'"' : '' }}
-        {{ style ? 'style="'~ style ~'"' : '' }}
-    />
+    <img data-lazyload-image="{{ imgid }}" data-src="{{ src }}" {{ id ? ('id="'~ id|trim ~ '"')|raw : '' }} {{ class ? ('class="'~ class|trim ~'"')|raw : '' }} {{ alt ? ('alt="'~ alt|trim ~'"')|raw : '' }} {{ title ? ('title="'~ title|trim ~'"')|raw : '' }} {{ style ? ('style="'~ style|trim ~'"')|raw : '' }} />
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -34,14 +26,14 @@
                             }
                         });
                     });
-                    window.images.observe(document.querySelector('[data-image="{{ id }}"]'));
+                    window.images.observe(document.querySelector('[data-lazyload-image="{{ imgid }}"]'));
 
                     break;
                 }
 
                 // fallback
                 default: {
-                    let lazyLoadImages = document.querySelectorAll(".lazy"),
+                    let lazyLoadImages = document.querySelectorAll('[data-lazyload-image]'),
                         lazyLoadThrottleTimeout;
 
                     function lazyLoad() {
