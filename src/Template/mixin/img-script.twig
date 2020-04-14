@@ -1,0 +1,60 @@
+{% htmlcompress %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let lazyLoadImages = document.querySelectorAll('[data-lazyload-image]');
+
+            switch ('IntersectionObserver' in window) {
+                // IntersectionObserver
+                case true: {
+                    let observer = new IntersectionObserver(function (entries, observer) {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                let image = entry.target;
+                                    image.src = image.dataset.src;
+
+                                observer.unobserve(image);
+                            }
+                        });
+                    });
+
+                    lazyLoadImages.forEach(image => observer.observe(image));
+
+                    break;
+                }
+
+                // Fallback
+                default: {
+                    let lazyLoadThrottleTimeout;
+
+                    function lazyLoad() {
+                        if (lazyLoadThrottleTimeout) {
+                            clearTimeout(lazyLoadThrottleTimeout);
+                        }
+
+                        lazyLoadThrottleTimeout = setTimeout(() => {
+                            let scrollTop = window.pageYOffset;
+
+                            lazyLoadImages.forEach(function (img) {
+                                if (img.offsetTop < (window.innerHeight + scrollTop)) {
+                                    img.src = img.dataset.src;
+                                }
+                            });
+
+                            if (lazyLoadImages.length === 0) {
+                                document.removeEventListener('scroll', lazyLoad);
+                                window.removeEventListener('resize', lazyLoad);
+                                window.removeEventListener('orientationChange', lazyLoad);
+                            }
+                        }, 20);
+                    }
+
+                    document.addEventListener('scroll', lazyLoad);
+                    window.addEventListener('resize', lazyLoad);
+                    window.addEventListener('orientationChange', lazyLoad);
+
+                    break;
+                }
+            }
+        })
+    </script>
+{% endhtmlcompress %}
