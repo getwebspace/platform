@@ -9,7 +9,7 @@ class CatalogScanAction extends CatalogAction
         $channel = $this->resolveArg('channel');
 
         if ($this->container->get('pushstream')->isOnline($channel)) {
-            return $this->respondRender('cup/catalog/barcode-scan.twig', ['channel' => $channel]);
+            return $this->respondWithTemplate('cup/catalog/barcode-scan.twig', ['channel' => $channel]);
         }
 
         return $this->response->withAddedHeader('Location', '/cup/catalog/product')->withStatus(301);

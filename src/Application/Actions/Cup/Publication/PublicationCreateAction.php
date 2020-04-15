@@ -40,6 +40,6 @@ class PublicationCreateAction extends PublicationAction
 
         $list = collect($this->categoryRepository->findAll());
 
-        return $this->respondRender('cup/publication/form.twig', ['list' => $list]);
+        return $this->respondWithTemplate('cup/publication/form.twig', ['list' => $list]);
     }
 }

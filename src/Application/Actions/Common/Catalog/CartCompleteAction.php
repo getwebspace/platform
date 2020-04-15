@@ -21,7 +21,7 @@ class CartCompleteAction extends CatalogAction
             if (!$order->isEmpty()) {
                 $products = collect($this->productRepository->findBy(['uuid' => array_keys($order->list)]));
 
-                return $this->respondRender($this->getParameter('catalog_cart_complete_template', 'catalog.cart.complete.twig'), [
+                return $this->respondWithTemplate($this->getParameter('catalog_cart_complete_template', 'catalog.cart.complete.twig'), [
                     'order' => $order,
                     'products' => $products,
                 ]);

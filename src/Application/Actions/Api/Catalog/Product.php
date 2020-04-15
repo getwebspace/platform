@@ -65,6 +65,6 @@ class Product extends CatalogAction
             unset($product['buf']);
         }
 
-        return $this->respondWithData($products);
+        return $this->respondWithJson($products);
     }
 }

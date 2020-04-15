@@ -24,6 +24,6 @@ class TaskRunAction extends Action
             \App\Domain\Tasks\Task::worker();
         }
 
-        return $this->respondWithData(['run' => time()]);
+        return $this->respondWithJson(['run' => time()]);
     }
 }

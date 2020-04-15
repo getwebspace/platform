@@ -15,6 +15,16 @@ use Slim\Views\Twig;
 
 abstract class Action
 {
+    protected const BAD_REQUEST = 'BAD_REQUEST';
+    protected const INSUFFICIENT_PRIVILEGES = 'INSUFFICIENT_PRIVILEGES';
+    protected const NOT_ALLOWED = 'NOT_ALLOWED';
+    protected const NOT_IMPLEMENTED = 'NOT_IMPLEMENTED';
+    protected const RESOURCE_NOT_FOUND = 'RESOURCE_NOT_FOUND';
+    protected const SERVER_ERROR = 'SERVER_ERROR';
+    protected const UNAUTHENTICATED = 'UNAUTHENTICATED';
+    protected const VALIDATION_ERROR = 'VALIDATION_ERROR';
+    protected const VERIFICATION_ERROR = 'VERIFICATION_ERROR';
+
     /**
      * @var ContainerInterface
      */
@@ -137,41 +147,39 @@ abstract class Action
      */
     public function __invoke(Request $request, Response $response, $args): Response
     {
+        \RunTracy\Helpers\Profiler\Profiler::start('route');
+
         $this->request = $request;
         $this->response = $response;
         $this->args = $args;
 
-        \RunTracy\Helpers\Profiler\Profiler::start('route');
+        $result = null;
 
         try {
             $result = $this->action();
-
-            \RunTracy\Helpers\Profiler\Profiler::finish('route');
-
-            return $result;
         } catch (HttpException $exception) {
-            $error = new ActionError(ActionError::SERVER_ERROR, 'An internal error has occurred while processing your request.');
-            $error->setDescription($exception->getMessage());
+            $error = [
+                'code' => $exception->getCode(),
+                'type' => self::SERVER_ERROR,
+                'error' => 'An internal error has occurred while processing your request.',
+                'message' => $exception->getMessage(),
+            ];
 
             // todo add handles
             if ($exception instanceof HttpNotFoundException) {
-                $error->setType(ActionError::RESOURCE_NOT_FOUND);
+                $error['type'] = self::RESOURCE_NOT_FOUND;
             } elseif ($exception instanceof HttpBadRequestException) {
-                $error->setType(ActionError::BAD_REQUEST);
+                $error['type'] = self::BAD_REQUEST;
             }
 
-            $payload = new ActionPayload($exception->getCode(), null, $error);
-            $encodedPayload = json_encode($payload, JSON_PRETTY_PRINT);
-
-            $response = new Response($exception->getCode());
-            $response->getBody()->write($encodedPayload);
-
-            $response = $response->withHeader('Content-Type', 'application/json');
-
-            \RunTracy\Helpers\Profiler\Profiler::finish('route');
-
-            return $response;
+            $result = new Response($error['code']);
+            $result->getBody()->write(json_encode($error, JSON_PRETTY_PRINT));
+            $result = $result->withHeader('Content-Type', 'application/json');
         }
+
+        \RunTracy\Helpers\Profiler\Profiler::finish('route');
+
+        return $result;
     }
 
     /**
@@ -279,66 +287,6 @@ abstract class Action
     }
 
     /**
-     * @param string $template
-     * @param array  $data
-     *
-     * @throws HttpBadRequestException
-     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
-     *
-     * @return string
-     */
-    protected function render($template, array $data = [])
-    {
-        try {
-            \RunTracy\Helpers\Profiler\Profiler::start('render (%s)', $template);
-
-            $data = array_merge(
-                [
-                    'NIL' => \Ramsey\Uuid\Uuid::NIL,
-                    '_request' => &$_REQUEST,
-                    '_error' => \Alksily\Support\Form::$globalError = $this->error,
-                    'user' => $this->request->getAttribute('user', false),
-                    'plugins' => $this->container->get('plugin')->get(),
-                ],
-                $data
-            );
-            $this->renderer->getLoader()->addPath(THEME_DIR . '/' . $this->getParameter('common_theme', 'default'));
-            $rendered = $this->renderer->fetch($template, $data);
-
-            \RunTracy\Helpers\Profiler\Profiler::finish('render (%s)', $template);
-
-            return $rendered;
-        } catch (\Twig\Error\LoaderError $exception) {
-            throw new HttpBadRequestException($this->request, $exception->getMessage());
-        }
-    }
-
-    /**
-     * @param string $template
-     * @param array  $data
-     *
-     * @throws HttpBadRequestException
-     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
-     *
-     * @return Response
-     */
-    protected function respondRender($template, array $data = [])
-    {
-        try {
-            \RunTracy\Helpers\Profiler\Profiler::start('render (%s)', $template);
-
-            $this->renderer->getLoader()->addPath(THEME_DIR . '/' . $this->getParameter('common_theme', 'default'));
-            $this->response->getBody()->write($this->render($template, $data));
-
-            \RunTracy\Helpers\Profiler\Profiler::finish('render (%s)', $template);
-
-            return $this->response;
-        } catch (\Twig\Error\LoaderError $exception) {
-            throw new HttpBadRequestException($this->request, $exception->getMessage());
-        }
-    }
-
-    /**
      * Return recaptcha status if is enabled
      *
      * @return bool
@@ -363,9 +311,9 @@ abstract class Action
                 ],
             ])));
 
-            \RunTracy\Helpers\Profiler\Profiler::finish('recaptcha');
-
             $this->logger->info('Check reCAPTCHA', ['status' => $verify->success]);
+
+            \RunTracy\Helpers\Profiler\Profiler::finish('recaptcha');
 
             return $verify->success;
         }
@@ -374,38 +322,68 @@ abstract class Action
     }
 
     /**
-     * @param array $payload
+     * @param string $template
+     * @param array  $data
      *
-     * @return Response
+     * @throws HttpBadRequestException
+     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
+     *
+     * @return string
      */
-    protected function respondWithJson(array $payload = null): Response
+    protected function render($template, array $data = [])
     {
-        $json = json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        $this->response->getBody()->write($json);
+        try {
+            \RunTracy\Helpers\Profiler\Profiler::start('render (%s)', $template);
 
-        return $this->response->withHeader('Content-Type', 'application/json');
+            $data = array_merge(
+                [
+                    'NIL' => \Ramsey\Uuid\Uuid::NIL,
+                    '_request' => &$_REQUEST,
+                    '_error' => \Alksily\Support\Form::$globalError = $this->error,
+                    'user' => $this->request->getAttribute('user', false),
+                    'plugins' => $this->container->get('plugin')->get(),
+                ],
+                $data
+            );
+            if (($path = realpath(THEME_DIR . '/' . $this->getParameter('common_theme', 'default'))) !== false) {
+                $this->renderer->getLoader()->addPath($path);
+            }
+            $rendered = $this->renderer->fetch($template, $data);
+
+            \RunTracy\Helpers\Profiler\Profiler::finish('render (%s)', $template);
+
+            return $rendered;
+        } catch (\Twig\Error\LoaderError $exception) {
+            throw new HttpBadRequestException($this->request, $exception->getMessage());
+        }
     }
 
     /**
-     * @param null|array|object $data
+     * @param string $template
+     * @param array  $data
+     *
+     * @throws HttpBadRequestException
+     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      *
      * @return Response
      */
-    protected function respondWithData($data = null): Response
+    protected function respondWithTemplate($template, array $data = [])
     {
-        $payload = new ActionPayload(200, $data);
+        $this->response->getBody()->write(
+            $this->render($template, $data)
+        );
 
-        return $this->respond($payload);
+        return $this->response;
     }
 
     /**
-     * @param ActionPayload $payload
+     * @param array $array
      *
      * @return Response
      */
-    protected function respond(ActionPayload $payload): Response
+    protected function respondWithJson(array $array = []): Response
     {
-        $json = json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $json = json_encode($array, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         $this->response->getBody()->write($json);
 
         return $this->response->withHeader('Content-Type', 'application/json');

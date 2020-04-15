@@ -39,6 +39,6 @@ class OrderCreateAction extends CatalogAction
             }
         }
 
-        return $this->respondRender('cup/catalog/order/form.twig');
+        return $this->respondWithTemplate('cup/catalog/order/form.twig');
     }
 }

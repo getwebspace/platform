@@ -12,7 +12,7 @@ class EditorPageAction extends Action
         $list = collect();
         $file = null;
         $content = null;
-        $theme_dir = THEME_DIR . '/' . $this->getParameter('common_theme');
+        $theme_dir = THEME_DIR . '/' . $this->getParameter('common_theme', 'default');
 
         if (($path = realpath($theme_dir)) !== false) {
             $list = $this->getCatalog($path)->sortBy('type');
@@ -45,7 +45,7 @@ class EditorPageAction extends Action
             return $this->response->withAddedHeader('Location', '/cup/editor/' . $path)->withStatus(301);
         }
 
-        return $this->respondRender('cup/editor/index.twig', ['list' => $list, 'file' => $file, 'content' => $content]);
+        return $this->respondWithTemplate('cup/editor/index.twig', ['list' => $list, 'file' => $file, 'content' => $content]);
     }
 
     private function getCatalog($path)

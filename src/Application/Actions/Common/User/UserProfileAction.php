@@ -31,6 +31,6 @@ class UserProfileAction extends UserAction
             $this->addErrorFromCheck($check);
         }
 
-        return $this->respondRender($this->getParameter('user_profile_template', 'user.profile.twig'));
+        return $this->respondWithTemplate($this->getParameter('user_profile_template', 'user.profile.twig'));
     }
 }

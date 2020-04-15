@@ -47,6 +47,6 @@ class Category extends PublicationAction
             $category['files'] = $files;
         }
 
-        return $this->respondWithData($categories);
+        return $this->respondWithJson($categories);
     }
 }

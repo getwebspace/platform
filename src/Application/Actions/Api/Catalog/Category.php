@@ -57,6 +57,6 @@ class Category extends CatalogAction
             unset($category['buf']);
         }
 
-        return $this->respondWithData($categories);
+        return $this->respondWithJson($categories);
     }
 }

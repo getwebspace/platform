@@ -39,7 +39,7 @@ class FormUpdateAction extends FormAction
                     $this->addErrorFromCheck($check);
                 }
 
-                return $this->respondRender('cup/form/form.twig', ['item' => $item]);
+                return $this->respondWithTemplate('cup/form/form.twig', ['item' => $item]);
             }
         }
 

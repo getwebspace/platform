@@ -176,7 +176,7 @@ class FormAction extends Action
                 // run worker
                 \App\Domain\Tasks\Task::worker();
 
-                return $this->respondWithData(['status' => 'ok']);
+                return $this->respondWithJson(['status' => 'ok']);
             }
             $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
         } else {

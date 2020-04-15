@@ -38,6 +38,6 @@ class PageCreateAction extends PageAction
             }
         }
 
-        return $this->respondRender('cup/page/form.twig');
+        return $this->respondWithTemplate('cup/page/form.twig');
     }
 }

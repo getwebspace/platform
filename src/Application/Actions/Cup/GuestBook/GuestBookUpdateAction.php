@@ -38,7 +38,7 @@ class GuestBookUpdateAction extends GuestBookAction
                     $this->addErrorFromCheck($check);
                 }
 
-                return $this->respondRender('cup/guestbook/form.twig', ['item' => $item]);
+                return $this->respondWithTemplate('cup/guestbook/form.twig', ['item' => $item]);
             }
         }
 

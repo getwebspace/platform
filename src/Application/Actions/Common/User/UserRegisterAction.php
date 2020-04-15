@@ -41,6 +41,6 @@ class UserRegisterAction extends UserAction
             }
         }
 
-        return $this->respondRender($this->getParameter('user_register_template', 'user.register.twig'));
+        return $this->respondWithTemplate($this->getParameter('user_register_template', 'user.register.twig'));
     }
 }

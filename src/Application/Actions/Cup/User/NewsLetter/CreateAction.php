@@ -35,6 +35,6 @@ class CreateAction extends UserAction
             $this->addErrorFromCheck($check);
         }
 
-        return $this->respondRender('cup/user/newsletter/form.twig');
+        return $this->respondWithTemplate('cup/user/newsletter/form.twig');
     }
 }

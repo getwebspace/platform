@@ -20,6 +20,6 @@ class XMLFileAction extends Action
             }
         }
 
-        return $this->respondRender('p404.twig')->withStatus(404);
+        return $this->respondWithTemplate('p404.twig')->withStatus(404);
     }
 }

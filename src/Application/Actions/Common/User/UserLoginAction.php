@@ -63,7 +63,7 @@ class UserLoginAction extends UserAction
             }
         }
 
-        return $this->respondRender($this->getParameter('user_login_template', 'user.login.twig'), ['identifier' => $identifier]);
+        return $this->respondWithTemplate($this->getParameter('user_login_template', 'user.login.twig'), ['identifier' => $identifier]);
     }
 
     /**

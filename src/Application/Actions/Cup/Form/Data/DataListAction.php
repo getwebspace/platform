@@ -15,7 +15,7 @@ class DataListAction extends FormAction
             if (!$item->isEmpty()) {
                 $list = collect($this->dataRepository->findBy(['form_uuid' => $item->uuid]));
 
-                return $this->respondRender('cup/form/view/list.twig', [
+                return $this->respondWithTemplate('cup/form/view/list.twig', [
                     'form' => $item,
                     'list' => $list,
                 ]);

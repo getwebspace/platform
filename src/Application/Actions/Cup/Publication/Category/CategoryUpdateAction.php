@@ -49,7 +49,7 @@ class CategoryUpdateAction extends PublicationAction
 
                 $list = collect($this->categoryRepository->findAll());
 
-                return $this->respondRender('cup/publication/category/form.twig', ['list' => $list, 'item' => $item]);
+                return $this->respondWithTemplate('cup/publication/category/form.twig', ['list' => $list, 'item' => $item]);
             }
         }
 

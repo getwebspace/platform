@@ -31,6 +31,6 @@ class TaskListAction extends Action
             $obj->action = str_replace('App\Domain\Tasks\\', '', $obj->action);
         });
 
-        return $this->respondWithData($tasks);
+        return $this->respondWithJson($tasks);
     }
 }

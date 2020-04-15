@@ -6,6 +6,6 @@ class PublicationPreviewAction extends PublicationAction
 {
     protected function action(): \Slim\Http\Response
     {
-        return $this->respondRender('cup/publication/preview.twig');
+        return $this->respondWithTemplate('cup/publication/preview.twig');
     }
 }

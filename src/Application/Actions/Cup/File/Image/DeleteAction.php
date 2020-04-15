@@ -26,6 +26,6 @@ class DeleteAction extends FileAction
             }
         }
 
-        return $this->respondWithData(['status' => 'ok']);
+        return $this->respondWithJson(['status' => 'ok']);
     }
 }

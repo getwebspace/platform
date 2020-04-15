@@ -8,6 +8,6 @@ class FormListAction extends FormAction
     {
         $list = collect($this->formRepository->findAll());
 
-        return $this->respondRender('cup/form/index.twig', ['list' => $list]);
+        return $this->respondWithTemplate('cup/form/index.twig', ['list' => $list]);
     }
 }

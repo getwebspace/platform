@@ -63,7 +63,7 @@ class ProductCreateAction extends CatalogAction
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
         ]));
 
-        return $this->respondRender('cup/catalog/product/form.twig', [
+        return $this->respondWithTemplate('cup/catalog/product/form.twig', [
             'category' => $categories->firstWhere('uuid', $category),
             'categories' => $categories,
             'measure' => $this->getMeasure(),

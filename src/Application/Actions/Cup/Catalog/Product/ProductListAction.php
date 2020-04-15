@@ -40,7 +40,7 @@ class ProductListAction extends CatalogAction
                 break;
         }
 
-        return $this->respondRender('cup/catalog/product/index.twig', [
+        return $this->respondWithTemplate('cup/catalog/product/index.twig', [
             'categories' => $categories,
             'category' => $category,
             'products' => $products,

@@ -8,6 +8,6 @@ class PageListAction extends PageAction
     {
         $list = collect($this->pageRepository->findAll());
 
-        return $this->respondRender('cup/page/index.twig', ['list' => $list]);
+        return $this->respondWithTemplate('cup/page/index.twig', ['list' => $list]);
     }
 }

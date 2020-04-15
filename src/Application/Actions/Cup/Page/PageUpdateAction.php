@@ -42,7 +42,7 @@ class PageUpdateAction extends PageAction
                     $this->addErrorFromCheck($check);
                 }
 
-                return $this->respondRender('cup/page/form.twig', [
+                return $this->respondWithTemplate('cup/page/form.twig', [
                     'item' => $item,
                 ]);
             }

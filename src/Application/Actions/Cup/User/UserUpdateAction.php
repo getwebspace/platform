@@ -42,7 +42,7 @@ class UserUpdateAction extends UserAction
                     $this->addErrorFromCheck($check);
                 }
 
-                return $this->respondRender('cup/user/form.twig', ['item' => $item]);
+                return $this->respondWithTemplate('cup/user/form.twig', ['item' => $item]);
             }
         }
 

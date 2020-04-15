@@ -10,6 +10,6 @@ class ListAction extends UserAction
     {
         $list = collect($this->subscriberRepository->findAll());
 
-        return $this->respondRender('cup/user/subscriber/index.twig', ['list' => $list]);
+        return $this->respondWithTemplate('cup/user/subscriber/index.twig', ['list' => $list]);
     }
 }

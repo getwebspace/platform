@@ -10,6 +10,6 @@ class CategoryListAction extends PublicationAction
     {
         $list = collect($this->categoryRepository->findAll());
 
-        return $this->respondRender('cup/publication/category/index.twig', ['list' => $list]);
+        return $this->respondWithTemplate('cup/publication/category/index.twig', ['list' => $list]);
     }
 }

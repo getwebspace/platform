@@ -8,6 +8,6 @@ class FileListAction extends FileAction
     {
         $list = collect($this->fileRepository->findAll());
 
-        return $this->respondRender('cup/file/index.twig', ['list' => $list]);
+        return $this->respondWithTemplate('cup/file/index.twig', ['list' => $list]);
     }
 }

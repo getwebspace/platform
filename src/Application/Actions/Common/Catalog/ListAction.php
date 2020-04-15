@@ -36,7 +36,7 @@ class ListAction extends CatalogAction
         }
 
         // 404
-        return $this->respondRender('p404.twig')->withStatus(404);
+        return $this->respondWithTemplate('p404.twig')->withStatus(404);
     }
 
     /**
@@ -115,7 +115,7 @@ class ListAction extends CatalogAction
             );
             $count = $query->select('count(p)')->setMaxResults(null)->setFirstResult(null)->getQuery()->getSingleScalarResult();
 
-            return $this->respondRender($this->getParameter('catalog_category_template', 'catalog.category.twig'), [
+            return $this->respondWithTemplate($this->getParameter('catalog_category_template', 'catalog.category.twig'), [
                 'categories' => $categories,
                 'products' => [
                     'all' => $products,
@@ -217,7 +217,7 @@ class ListAction extends CatalogAction
             );
             $count = $query->select('count(p)')->setMaxResults(null)->setFirstResult(null)->getQuery()->getSingleScalarResult();
 
-            return $this->respondRender($category->template['category'], [
+            return $this->respondWithTemplate($category->template['category'], [
                 'categories' => $categories,
                 'category' => $category,
                 'products' => [
@@ -256,7 +256,7 @@ class ListAction extends CatalogAction
         if (is_null($product) === false) {
             $category = $categories->firstWhere('uuid', $product->category);
 
-            return $this->respondRender($category->template['product'], [
+            return $this->respondWithTemplate($category->template['product'], [
                 'categories' => $categories,
                 'category' => $category,
                 'product' => $product,

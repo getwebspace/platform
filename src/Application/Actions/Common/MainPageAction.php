@@ -8,6 +8,6 @@ class MainPageAction extends Action
 {
     protected function action(): \Slim\Http\Response
     {
-        return $this->respondRender($this->getParameter('common_template', 'main.twig'));
+        return $this->respondWithTemplate($this->getParameter('common_template', 'main.twig'));
     }
 }

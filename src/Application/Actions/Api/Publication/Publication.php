@@ -49,6 +49,6 @@ class Publication extends PublicationAction
             unset($publication['poll']);
         }
 
-        return $this->respondWithData($publications);
+        return $this->respondWithJson($publications);
     }
 }

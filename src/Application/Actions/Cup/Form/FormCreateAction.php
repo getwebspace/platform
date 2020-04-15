@@ -35,6 +35,6 @@ class FormCreateAction extends FormAction
             }
         }
 
-        return $this->respondRender('cup/form/form.twig');
+        return $this->respondWithTemplate('cup/form/form.twig');
     }
 }

@@ -111,7 +111,9 @@ abstract class Plugin
 
     protected function setTemplateFolder($path): void
     {
-        $this->renderer->getLoader()->addPath($path);
+        if (realpath($path) !== false) {
+            $this->renderer->getLoader()->addPath($path);
+        }
     }
 
     public function getTemplateFolder()

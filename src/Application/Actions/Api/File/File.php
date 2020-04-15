@@ -46,6 +46,6 @@ class File extends FileAction
             unset($file['item'], $file['item_uuid']);
         }
 
-        return $this->respondWithData($files);
+        return $this->respondWithJson($files);
     }
 }

@@ -82,7 +82,7 @@ class LoginPageAction extends Action
             }
         }
 
-        return $this->respondRender('cup/auth/login.twig', ['identifier' => $identifier]);
+        return $this->respondWithTemplate('cup/auth/login.twig', ['identifier' => $identifier]);
     }
 
     /**

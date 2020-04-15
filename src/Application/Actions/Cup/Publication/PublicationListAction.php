@@ -9,7 +9,7 @@ class PublicationListAction extends PublicationAction
         $categories = collect($this->categoryRepository->findAll());
         $publications = collect($this->publicationRepository->findAll());
 
-        return $this->respondRender('cup/publication/index.twig', [
+        return $this->respondWithTemplate('cup/publication/index.twig', [
             'categories' => $categories,
             'publications' => $publications,
         ]);

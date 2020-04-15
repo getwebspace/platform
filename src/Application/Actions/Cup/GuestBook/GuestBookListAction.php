@@ -8,6 +8,6 @@ class GuestBookListAction extends GuestBookAction
     {
         $list = collect($this->gbookRepository->findAll());
 
-        return $this->respondRender('cup/guestbook/index.twig', ['list' => $list]);
+        return $this->respondWithTemplate('cup/guestbook/index.twig', ['list' => $list]);
     }
 }

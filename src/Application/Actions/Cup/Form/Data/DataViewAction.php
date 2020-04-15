@@ -19,7 +19,7 @@ class DataViewAction extends FormAction
             ]);
 
             if (!$item->isEmpty()) {
-                return $this->respondRender('cup/form/view/detail.twig', [
+                return $this->respondWithTemplate('cup/form/view/detail.twig', [
                     'item' => $item,
                 ]);
             }

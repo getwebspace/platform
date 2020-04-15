@@ -46,7 +46,7 @@ class OrderUpdateAction extends CatalogAction
 
                 $products = collect($this->productRepository->findBy(['uuid' => array_keys($order->list)]));
 
-                return $this->respondRender('cup/catalog/order/form.twig', [
+                return $this->respondWithTemplate('cup/catalog/order/form.twig', [
                     'order' => $order,
                     'products' => $products,
                 ]);

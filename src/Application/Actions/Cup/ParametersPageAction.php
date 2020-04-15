@@ -35,6 +35,6 @@ class ParametersPageAction extends Action
             return $this->response->withAddedHeader('Location', $this->request->getQueryParam('return', '/cup/parameters'))->withStatus(301);
         }
 
-        return $this->respondRender('cup/parameters/index.twig', ['parameter' => $this->getParameter()]);
+        return $this->respondWithTemplate('cup/parameters/index.twig', ['parameter' => $this->getParameter()]);
     }
 }

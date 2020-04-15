@@ -62,7 +62,7 @@ class GuestBookAction extends Action
                         $this->response = $this->response->withHeader('Location', $_SERVER['HTTP_REFERER'])->withStatus(301);
                     }
 
-                    return $this->respondWithData(['description' => 'Message added']);
+                    return $this->respondWithJson(['description' => 'Message added']);
                 }
                 $this->addErrorFromCheck($check);
             } else {
@@ -93,7 +93,7 @@ class GuestBookAction extends Action
             }
         );
 
-        return $this->respondRender($this->getParameter('guestbook_template', 'guestbook.twig'), [
+        return $this->respondWithTemplate($this->getParameter('guestbook_template', 'guestbook.twig'), [
             'messages' => $list,
             'pagination' => [
                 'count' => $this->gbookRepository->count(['status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK]),

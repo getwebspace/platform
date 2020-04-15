@@ -91,14 +91,16 @@ abstract class Task
         try {
             \RunTracy\Helpers\Profiler\Profiler::start('render (%s)', $template);
 
-            $this->renderer->getLoader()->addPath(THEME_DIR . '/' . $this->getParameter('common_theme', 'default'));
+            if (($path = realpath(THEME_DIR . '/' . $this->getParameter('common_theme', 'default'))) !== false) {
+                $this->renderer->getLoader()->addPath($path);
+            }
             $rendered = $this->renderer->fetch($template, $data);
 
             \RunTracy\Helpers\Profiler\Profiler::finish('render (%s)', $template);
 
             return $rendered;
         } catch (\Twig\Error\LoaderError $exception) {
-            throw new HttpBadRequestException($this->request, $exception->getMessage());
+            throw new \RuntimeException($exception->getMessage());
         }
     }
 

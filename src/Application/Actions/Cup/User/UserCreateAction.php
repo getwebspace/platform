@@ -47,6 +47,6 @@ class UserCreateAction extends UserAction
             }
         }
 
-        return $this->respondRender('cup/user/form.twig');
+        return $this->respondWithTemplate('cup/user/form.twig');
     }
 }

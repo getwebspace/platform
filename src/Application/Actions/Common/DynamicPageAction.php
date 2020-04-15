@@ -54,7 +54,7 @@ class DynamicPageAction extends Action
         if ($this->pageRepository->count(['address' => $path])) {
             $page = $this->pageRepository->findOneBy(['address' => $path]);
 
-            return $this->respondRender($page->template, [
+            return $this->respondWithTemplate($page->template, [
                 'page' => $page,
             ]);
         }
@@ -72,7 +72,7 @@ class DynamicPageAction extends Action
                 $category->pagination * $offset
             ));
 
-            return $this->respondRender($category->template['list'], [
+            return $this->respondWithTemplate($category->template['list'], [
                 'categories' => $categories->where('public', true),
                 'category' => $category,
                 'publications' => $publications,
@@ -95,7 +95,7 @@ class DynamicPageAction extends Action
             if ($category) {
                 $publication = $this->publicationRepository->findOneBy(['address' => $path]);
 
-                return $this->respondRender($category->template['full'], [
+                return $this->respondWithTemplate($category->template['full'], [
                     'categories' => $categories->where('public', true),
                     'category' => $category,
                     'publication' => $publication,
@@ -103,6 +103,6 @@ class DynamicPageAction extends Action
             }
         }
 
-        return $this->respondRender('p404.twig')->withStatus(404);
+        return $this->respondWithTemplate('p404.twig')->withStatus(404);
     }
 }

@@ -110,7 +110,7 @@ class CartAction extends CatalogAction
                         $this->response = $this->response->withHeader('Location', '/cart/done/' . $model->uuid)->withStatus(301);
                     }
 
-                    return $this->respondWithData(['redirect' => '/cart/done/' . $model->uuid]);
+                    return $this->respondWithJson(['redirect' => '/cart/done/' . $model->uuid]);
                 }
                 $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
             } else {
@@ -118,6 +118,6 @@ class CartAction extends CatalogAction
             }
         }
 
-        return $this->respondRender($this->getParameter('catalog_cart_template', 'catalog.cart.twig'));
+        return $this->respondWithTemplate($this->getParameter('catalog_cart_template', 'catalog.cart.twig'));
     }
 }

@@ -8,7 +8,7 @@ class MainPageAction extends Action
 {
     protected function action(): \Slim\Http\Response
     {
-        return $this->respondRender('cup/layout.twig', [
+        return $this->respondWithTemplate('cup/layout.twig', [
             'notepad' => $this->getParameter('notepad_' . $this->request->getAttribute('user')->username, ''),
             'stats' => [
                 'pages' => $this->entityManager->getRepository(\App\Domain\Entities\Page::class)->count([]),

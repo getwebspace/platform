@@ -59,6 +59,6 @@ class UserListAction extends UserAction
 
         $list = collect($query->getQuery()->getResult());
 
-        return $this->respondRender('cup/user/index.twig', ['list' => $list]);
+        return $this->respondWithTemplate('cup/user/index.twig', ['list' => $list]);
     }
 }

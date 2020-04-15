@@ -10,6 +10,6 @@ class OrderListAction extends CatalogAction
     {
         $list = collect($this->orderRepository->findAll());
 
-        return $this->respondRender('cup/catalog/order/index.twig', ['orders' => $list]);
+        return $this->respondWithTemplate('cup/catalog/order/index.twig', ['orders' => $list]);
     }
 }

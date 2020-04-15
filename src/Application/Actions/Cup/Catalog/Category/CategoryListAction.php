@@ -26,7 +26,7 @@ class CategoryListAction extends CatalogAction
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
         ]));
 
-        return $this->respondRender('cup/catalog/category/index.twig', [
+        return $this->respondWithTemplate('cup/catalog/category/index.twig', [
             'category' => $category,
             'categories' => $categories,
             'fields' => $this->getParameter(['catalog_category_field_1', 'catalog_category_field_2', 'catalog_category_field_3']),

@@ -44,7 +44,7 @@ class PublicationUpdateAction extends PublicationAction
 
                 $list = collect($this->categoryRepository->findAll());
 
-                return $this->respondRender('cup/publication/form.twig', [
+                return $this->respondWithTemplate('cup/publication/form.twig', [
                     'list' => $list,
                     'item' => $item,
                 ]);
