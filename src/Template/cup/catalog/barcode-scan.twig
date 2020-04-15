@@ -48,8 +48,6 @@
             codeReader.getVideoInputDevices().then((videoInputDevices) => {
                 let selectedDeviceId;
 
-                console.log(videoInputDevices);
-
                 if (videoInputDevices.length > 0) {
                     videoInputDevices.forEach((element) => {
                         $sourceSelect.append(
