@@ -59,6 +59,7 @@ $(() => {
     });
     
     $('[data-table]').DataTable({
+        'deferRender': true,
         'stateSave': true,
         'language': {
             'search': 'Поиск:',
@@ -68,10 +69,10 @@ $(() => {
             'infoEmpty': 'Нет записей',
             'infoFiltered': '(проверено в _MAX_ результатах)',
             'paginate': {
-                'first':      'В начало',
-                'previous':   'Сюда',
-                'next':       'Туда',
-                'last':       'В конец'
+                'first': 'В начало',
+                'previous': 'Сюда',
+                'next': 'Туда',
+                'last': 'В конец'
             },
         }
     });
