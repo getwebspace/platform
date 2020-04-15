@@ -173,13 +173,11 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% set sum = 0 %}
                                 {% for product in products %}
                                     {% set count = order.list[product.uuid.toString()] %}
-                                    {% set sum = sum + (product.price * count) %}
                                     <tr>
                                         <td>{{ product.title }}</td>
-                                        <td>{{ product.price|format_number({fraction_digit: 2}) }}</td>
+                                        <td>{{ product.price|number_format(2, '.', ' ') }}</td>
                                         <td>
                                             {% include 'cup/form.twig' with {
                                                 'type': 'number',
@@ -318,8 +316,8 @@
                         .prop('disabled', true);
 
                     $.get('/api/catalog/product', {category: $(e.currentTarget).val()}, (res) => {
-                        if (res.data.length) {
-                            for (let item of res.data) {
+                        if (res.length) {
+                            for (let item of res) {
                                 $product.append(
                                     $option
                                         .clone()
@@ -338,16 +336,13 @@
                 $category.off('change', handler).on('change', handler);
 
                 $.get('/api/catalog/category', (res) => {
-                    if (res.data.length) {
+                    if (res.length) {
                         (function renderTree(list, parent = '{{ NIL }}', title = '') {
                             let buf = 0;
 
                             for (let item of list) {
                                 if (item.parent === parent) {
-                                    let $el = $option.clone()
-                                                .text((title + ' ' + item.title).trim())
-                                                .val(item.uuid)
-                                    ;
+                                    let $el = $option.clone().text((title + ' ' + item.title).trim()).val(item.uuid);
 
                                     $category.append($el);
 
@@ -360,7 +355,7 @@
                             }
 
                             return buf;
-                        })(res.data);
+                        })(res);
 
                         $category.trigger('change').trigger('change.select2');
                         $modal.modal();
@@ -389,40 +384,38 @@
             $(window).on('event:barcode_scan:result', (e, data) => {
                 if (data.barcode) {
                     $.get('/api/catalog/product', {'barcode': data.barcode}, (res) => {
-                        if (res && res.statusCode === 200) {
-                            if (res.data.length) {
-                                let product = res.data[0],
-                                    $input = $('<input class="form-control" type="number" placeholder="1" min="0" step="any">')
+                        if (res.length) {
+                            let product = res[0],
+                                $input = $('<input class="form-control" type="number" placeholder="1" min="0" step="any">')
                                         .attr('name', 'list[' + product.uuid + ']').val(1)
-                                ;
+                            ;
 
-                                table.row.add([product.title, product.price, 1])
-                                    .draw(true)
-                                    .nodes().to$()
-                                    .find('td:last-child').html($('<div class="form-group">').append($input));
+                            table.row.add([product.title, product.price, 1])
+                                .draw(true)
+                                .nodes().to$()
+                                .find('td:last-child').html($('<div class="form-group">').append($input));
 
-                                $.notify({
-                                    title: 'Отсканирован код',
-                                    message: 'В перечень товаров был добавлен товар: ' + product.title
-                                }, {
-                                    type: 'info',
-                                    animate: {
-                                        enter: 'animated fadeInRight',
-                                        exit: 'animated fadeOutRight'
-                                    }
-                                });
-                            } else {
-                                $.notify({
-                                    title: 'Отсканирован код',
-                                    message: 'Товар с кодом: ' + data.barcode + ' не найден'
-                                }, {
-                                    type: 'warning',
-                                    animate: {
-                                        enter: 'animated fadeInRight',
-                                        exit: 'animated fadeOutRight'
-                                    }
-                                });
-                            }
+                            $.notify({
+                                title: 'Отсканирован код',
+                                message: 'В перечень товаров был добавлен товар: ' + product.title
+                            }, {
+                                type: 'info',
+                                animate: {
+                                    enter: 'animated fadeInRight',
+                                    exit: 'animated fadeOutRight'
+                                }
+                            });
+                        } else {
+                            $.notify({
+                                title: 'Отсканирован код',
+                                message: 'Товар с кодом: ' + data.barcode + ' не найден'
+                            }, {
+                                type: 'warning',
+                                animate: {
+                                    enter: 'animated fadeInRight',
+                                    exit: 'animated fadeOutRight'
+                                }
+                            });
                         }
                     });
                 }

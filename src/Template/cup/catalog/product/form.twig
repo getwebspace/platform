@@ -141,7 +141,7 @@
                                             'type': 'number',
                                             'name': 'priceFirst',
                                             'args': {
-                                                'value': item.priceFirst,
+                                                'value': item.priceFirst|number_format(2, '.', ''),
                                                 'placeholder': '1.0',
                                                 'step': 'any',
                                                 'min': '0',
@@ -155,7 +155,7 @@
                                             'type': 'number',
                                             'name': 'price',
                                             'args': {
-                                                'value': item.price,
+                                                'value': item.price|number_format(2, '.', ''),
                                                 'placeholder': '1.0',
                                                 'step': 'any',
                                                 'min': '0',
@@ -169,7 +169,7 @@
                                             'type': 'number',
                                             'name': 'priceWholesale',
                                             'args': {
-                                                'value': item.priceWholesale,
+                                                'value': item.priceWholesale|number_format(2, '.', ''),
                                                 'placeholder': '1.0',
                                                 'step': 'any',
                                                 'min': '0',

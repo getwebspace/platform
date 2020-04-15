@@ -84,7 +84,7 @@
                                                 <div><i class="fas fa-barcode d-inline pr-1"></i>{{ item.barcode }}</div>
                                             {% endif %}
                                         </td>
-                                        <td>{{ item.price|format_number({fraction_digit: 2}) }}</td>
+                                        <td>{{ item.price|number_format(2, '.', ' ') }}</td>
                                         <td>{{ item.field1 }}</td>
                                         <td>{{ item.field2 }}</td>
                                         <td>{{ item.field3 }}</td>
