@@ -1,4 +1,4 @@
-{% for node in categories.where('parent', '=', parent ?? '00000000-0000-0000-0000-000000000000').sortBy('order') %}
+{% for node in categories.where('parent', '=', parent ?? NIL).sortBy('order') %}
     <li class="">
         <a href="/{{ node.address }}">{{ node.title }}</a>
         {% set subNodes = categories.where('parent', '=', node.uuid).sortBy('order') %}

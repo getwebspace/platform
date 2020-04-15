@@ -339,7 +339,7 @@
 
                 $.get('/api/catalog/category', (res) => {
                     if (res.data.length) {
-                        (function renderTree(list, parent = '00000000-0000-0000-0000-000000000000', title = '') {
+                        (function renderTree(list, parent = '{{ NIL }}', title = '') {
                             let buf = 0;
 
                             for (let item of list) {
