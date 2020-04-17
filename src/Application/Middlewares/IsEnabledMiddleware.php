@@ -26,6 +26,6 @@ class IsEnabledMiddleware extends Middleware
             return $next($request, $response);
         }
 
-        return $this->response->withAddedHeader('Location', '/')->withStatus(301);
+        return $response->withAddedHeader('Location', '/')->withStatus(301);
     }
 }

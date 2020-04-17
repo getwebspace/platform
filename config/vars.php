@@ -14,5 +14,3 @@ define('XML_DIR',       realpath(__DIR__ . '/../var/xml'));
 define('CACHE_DIR',     realpath(__DIR__ . '/../var/cache'));
 define('LOG_DIR',       realpath(__DIR__ . '/../var/log'));
 define('VENDOR_DIR',    realpath(__DIR__ . '/../vendor'));
-
-require VENDOR_DIR . '/autoload.php';

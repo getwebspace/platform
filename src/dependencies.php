@@ -19,7 +19,10 @@ $container[\Doctrine\ORM\EntityManager::class] = function (ContainerInterface $c
         false
     );
 
-    return \Doctrine\ORM\EntityManager::create($settings['connection'], $config);
+    $em = \Doctrine\ORM\EntityManager::create($settings['connection'], $config);
+    $em->getConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+
+    return $em;
 };
 
 // plugin control class

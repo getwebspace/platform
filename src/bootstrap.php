@@ -1,7 +1,5 @@
 <?php declare(strict_types=1);
 
-require __DIR__ . '/../config/vars.php';
-
 /**
  * @return \Slim\App
  */
@@ -46,6 +44,9 @@ function app_create()
     // Instantiate and return the app instance
     return new \Slim\App($settings);
 }
+
+require __DIR__ . '/../vendor/autoload.php';
+require __DIR__ . '/../config/vars.php';
 
 /**
  * Hack for get instance from vendor
