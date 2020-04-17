@@ -181,8 +181,8 @@ $container['notFoundHandler'] = function (ContainerInterface $c) {
     return function (\Slim\Http\Request $request, \Slim\Http\Response $response) use ($c) {
         /** @var \Slim\Views\Twig $renderer */
         $renderer = $c->get('view');
-        if (($path = realpath(THEME_DIR . '/' . $this->getParameter('common_theme', 'default'))) !== false) {
-            $this->renderer->getLoader()->addPath($path);
+        if (($path = realpath(THEME_DIR . '/' . $c->get('parameter')->get('common_theme', 'default'))) !== false) {
+            $renderer->getLoader()->addPath($path);
             $response->getBody()->write($renderer->fetch('p404.twig'));
         } else {
             $response->getBody()->write('404');
@@ -198,8 +198,8 @@ $container['notAllowedHandler'] = function (ContainerInterface $c) {
     return function (\Slim\Http\Request $request, \Slim\Http\Response $response, $methods) use ($c) {
         /** @var \Slim\Views\Twig $renderer */
         $renderer = $c->get('view');
-        if (($path = realpath(THEME_DIR . '/' . $this->getParameter('common_theme', 'default'))) !== false) {
-            $this->renderer->getLoader()->addPath($path);
+        if (($path = realpath(THEME_DIR . '/' . $c->get('parameter')->get('common_theme', 'default'))) !== false) {
+            $renderer->getLoader()->addPath($path);
             $response->getBody()->write($renderer->fetch('p405.twig', ['methods' => $methods]));
         } else {
             $response->getBody()->write('405');
@@ -215,8 +215,8 @@ $container['errorHandler'] = function (ContainerInterface $c) {
     return function (\Slim\Http\Request $request, \Slim\Http\Response $response, $exception) use ($c) {
         /** @var \Slim\Views\Twig $renderer */
         $renderer = $c->get('view');
-        if (($path = realpath(THEME_DIR . '/' . $this->getParameter('common_theme', 'default'))) !== false) {
-            $this->renderer->getLoader()->addPath($path);
+        if (($path = realpath(THEME_DIR . '/' . $c->get('parameter')->get('common_theme', 'default'))) !== false) {
+            $renderer->getLoader()->addPath($path);
             $response->getBody()->write($renderer->fetch('p500.twig', ['exception' => $exception]));
         } else {
             $response->getBody()->write('500');
