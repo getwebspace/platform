@@ -2,13 +2,13 @@
 
 namespace App\Application\Actions\Cup\User;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
 use App\Domain\Entities\User;
 use App\Domain\Entities\User\Subscriber as UserSubscriber;
 use App\Domain\Repository\UserRepository;
 use Psr\Container\ContainerInterface;
 
-abstract class UserAction extends Action
+abstract class UserAction extends AbstractAction
 {
     /**
      * @var UserRepository

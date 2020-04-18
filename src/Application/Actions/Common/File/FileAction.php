@@ -2,10 +2,10 @@
 
 namespace App\Application\Actions\Common\File;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
 use Psr\Container\ContainerInterface;
 
-abstract class FileAction extends Action
+abstract class FileAction extends AbstractAction
 {
     /**
      * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository

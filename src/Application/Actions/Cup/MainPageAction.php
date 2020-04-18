@@ -2,10 +2,10 @@
 
 namespace App\Application\Actions\Cup;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
 use App\Domain\Entities\User;
 
-class MainPageAction extends Action
+class MainPageAction extends AbstractAction
 {
     protected function action(): \Slim\Http\Response
     {

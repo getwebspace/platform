@@ -2,10 +2,10 @@
 
 namespace App\Domain\Service\User;
 
+use App\Domain\AbstractService;
 use App\Domain\Entities\User;
 use App\Domain\Entities\User\Session as UserSession;
 use App\Domain\Repository\UserRepository;
-use App\Domain\Service\AbstractService;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\Exception\UserNotFoundException;

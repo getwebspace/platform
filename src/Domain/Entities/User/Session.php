@@ -2,7 +2,7 @@
 
 namespace App\Domain\Entities\User;
 
-use App\Domain\Entities\AbstractEntity;
+use App\Domain\AbstractEntity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;

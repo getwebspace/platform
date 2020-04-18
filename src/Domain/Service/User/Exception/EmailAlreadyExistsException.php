@@ -2,8 +2,8 @@
 
 namespace App\Domain\Service\User\Exception;
 
-use Exception;
+use App\Domain\AbstractException;
 
-class EmailAlreadyExistsException extends Exception
+class EmailAlreadyExistsException extends AbstractException
 {
 }

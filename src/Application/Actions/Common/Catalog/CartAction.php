@@ -101,7 +101,7 @@ class CartAction extends CatalogAction
 
                     if ($isNeedRunWorker) {
                         // run worker
-                        \App\Domain\Tasks\Task::worker();
+                        \App\Domain\AbstractTask::worker();
                     }
 
                     if (

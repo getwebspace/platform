@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Application\Types;
+namespace App\Domain;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
@@ -8,7 +8,7 @@ use Doctrine\DBAL\Types\Type;
 /**
  * Class EnumType
  */
-abstract class EnumType extends Type
+abstract class AbstractEnumType extends Type
 {
     /**
      * Unique name of type

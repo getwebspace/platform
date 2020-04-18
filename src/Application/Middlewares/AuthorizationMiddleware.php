@@ -2,6 +2,7 @@
 
 namespace App\Application\Middlewares;
 
+use App\Domain\AbstractMiddleware;
 use App\Domain\Repository\UserRepository;
 use DateTime;
 use Psr\Container\ContainerInterface;
@@ -9,7 +10,7 @@ use Ramsey\Uuid\Uuid;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class AuthorizationMiddleware extends Middleware
+class AuthorizationMiddleware extends AbstractMiddleware
 {
     /**
      * @var UserRepository

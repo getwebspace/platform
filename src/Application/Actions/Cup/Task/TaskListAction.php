@@ -2,10 +2,10 @@
 
 namespace App\Application\Actions\Cup\Task;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
 use Psr\Container\ContainerInterface;
 
-class TaskListAction extends Action
+class TaskListAction extends AbstractAction
 {
     /**
      * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository

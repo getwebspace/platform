@@ -2,14 +2,14 @@
 
 namespace App\Application\Actions\Common;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
 use App\Domain\Exceptions\HttpNotFoundException;
 use DateTime;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Slim\Http\UploadedFile;
 
-class FormAction extends Action
+class FormAction extends AbstractAction
 {
     /**
      * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
@@ -174,13 +174,13 @@ class FormAction extends Action
                 $this->entityManager->flush();
 
                 // run worker
-                \App\Domain\Tasks\Task::worker();
+                \App\Domain\AbstractTask::worker();
 
                 return $this->respondWithJson(['status' => 'ok']);
             }
             $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
         } else {
-            throw new HttpNotFoundException($this->request);
+            throw new HttpNotFoundException();
         }
 
         return $this->response->withStatus(500);

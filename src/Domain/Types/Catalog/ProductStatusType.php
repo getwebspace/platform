@@ -2,9 +2,9 @@
 
 namespace App\Domain\Types\Catalog;
 
-use App\Application\Types\EnumType;
+use App\Domain\AbstractEnumType;
 
-class ProductStatusType extends EnumType
+class ProductStatusType extends AbstractEnumType
 {
     public const NAME = 'CatalogProductStatusType';
 

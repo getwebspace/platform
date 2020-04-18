@@ -2,9 +2,9 @@
 
 namespace App\Domain\Types;
 
-use App\Application\Types\EnumType;
+use App\Domain\AbstractEnumType;
 
-class UserStatusType extends EnumType
+class UserStatusType extends AbstractEnumType
 {
     public const NAME = 'UserStatusType';
 

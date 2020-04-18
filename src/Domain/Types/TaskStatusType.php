@@ -2,9 +2,9 @@
 
 namespace App\Domain\Types;
 
-use App\Application\Types\EnumType;
+use App\Domain\AbstractEnumType;
 
-class TaskStatusType extends EnumType
+class TaskStatusType extends AbstractEnumType
 {
     public const NAME = 'TaskStatusType';
 

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Domain\Repository;
+namespace App\Domain;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;

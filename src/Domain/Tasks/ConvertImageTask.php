@@ -3,8 +3,9 @@
 namespace App\Domain\Tasks;
 
 use Alksily\Support\Str;
+use App\Domain\AbstractTask;
 
-class ConvertImageTask extends Task
+class ConvertImageTask extends AbstractTask
 {
     public const TITLE = 'Обработка изображений';
 

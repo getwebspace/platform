@@ -2,10 +2,10 @@
 
 namespace App\Application\Actions\Common;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
 use Psr\Container\ContainerInterface;
 
-class PublicationRSS extends Action
+class PublicationRSS extends AbstractAction
 {
     /**
      * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository

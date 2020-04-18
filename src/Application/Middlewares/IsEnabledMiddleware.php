@@ -2,10 +2,11 @@
 
 namespace App\Application\Middlewares;
 
+use App\Domain\AbstractMiddleware;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class IsEnabledMiddleware extends Middleware
+class IsEnabledMiddleware extends AbstractMiddleware
 {
     /**
      * @param Request  $request

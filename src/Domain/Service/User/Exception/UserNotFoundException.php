@@ -2,8 +2,8 @@
 
 namespace App\Domain\Service\User\Exception;
 
-use Exception;
+use App\Domain\AbstractException;
 
-class UserNotFoundException extends Exception
+class UserNotFoundException extends AbstractException
 {
 }

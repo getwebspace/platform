@@ -2,9 +2,9 @@
 
 namespace App\Application\Actions\Cup;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
 
-class ParametersPageAction extends Action
+class ParametersPageAction extends AbstractAction
 {
     protected function action(): \Slim\Http\Response
     {

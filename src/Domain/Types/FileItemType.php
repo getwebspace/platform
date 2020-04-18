@@ -2,9 +2,9 @@
 
 namespace App\Domain\Types;
 
-use App\Application\Types\EnumType;
+use App\Domain\AbstractEnumType;
 
-class FileItemType extends EnumType
+class FileItemType extends AbstractEnumType
 {
     public const NAME = 'FileItemType';
 

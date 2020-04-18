@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Application;
+namespace App\Domain;
 
 use App\Domain\Exceptions\HttpBadRequestException;
 use Doctrine\ORM\EntityManager;
@@ -11,7 +11,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Views\Twig;
 
-abstract class Plugin
+abstract class AbstractPlugin
 {
     public const NAME          = '';
     public const TITLE         = '';

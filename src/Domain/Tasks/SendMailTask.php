@@ -3,8 +3,9 @@
 namespace App\Domain\Tasks;
 
 use App\Application\Mail;
+use App\Domain\AbstractTask;
 
-class SendMailTask extends Task
+class SendMailTask extends AbstractTask
 {
     public const TITLE = 'Отправка почты';
 

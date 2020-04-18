@@ -2,11 +2,12 @@
 
 namespace App\Application\Middlewares;
 
+use App\Domain\AbstractMiddleware;
 use App\Domain\Entities\User;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-class CupMiddleware extends Middleware
+class CupMiddleware extends AbstractMiddleware
 {
     /**
      * @param Request  $request

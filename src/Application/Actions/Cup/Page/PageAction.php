@@ -2,10 +2,10 @@
 
 namespace App\Application\Actions\Cup\Page;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
 use Psr\Container\ContainerInterface;
 
-abstract class PageAction extends Action
+abstract class PageAction extends AbstractAction
 {
     /**
      * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository

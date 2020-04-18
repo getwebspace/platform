@@ -2,9 +2,9 @@
 
 namespace App\Domain\Tasks\Catalog;
 
-use App\Domain\Tasks\Task;
+use App\Domain\AbstractTask;
 
-class ImportTask extends Task
+class ImportTask extends AbstractTask
 {
     public const TITLE = 'Импорт каталога из Excel файла';
 

@@ -31,7 +31,7 @@ class FileUploadAction extends FileAction
                                 $task->execute(['uuid' => $model->uuid]);
 
                                 // run worker
-                                \App\Domain\Tasks\Task::worker();
+                                \App\Domain\AbstractTask::worker();
                             }
 
                             // save model

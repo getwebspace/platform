@@ -2,9 +2,9 @@
 
 namespace App\Application\Actions\Api;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
 
-abstract class ActionApi extends Action
+abstract class ActionApi extends AbstractAction
 {
     protected function array_criteria_uuid($data)
     {

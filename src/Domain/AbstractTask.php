@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Domain\Tasks;
+namespace App\Domain;
 
 use App\Domain\Exceptions\HttpBadRequestException;
 use Doctrine\ORM\EntityManager;
@@ -8,7 +8,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Slim\Views\Twig;
 
-abstract class Task
+abstract class AbstractTask
 {
     public const TITLE = '';
 

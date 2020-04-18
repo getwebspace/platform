@@ -2,9 +2,9 @@
 
 namespace App\Domain\Types\Catalog;
 
-use App\Application\Types\EnumType;
+use App\Domain\AbstractEnumType;
 
-class OrderStatusType extends EnumType
+class OrderStatusType extends AbstractEnumType
 {
     public const NAME = 'CatalogOrderStatusType';
 

@@ -2,10 +2,10 @@
 
 namespace App\Application\Actions\Cup\Publication;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
 use Psr\Container\ContainerInterface;
 
-abstract class PublicationAction extends Action
+abstract class PublicationAction extends AbstractAction
 {
     /**
      * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository

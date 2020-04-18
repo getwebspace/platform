@@ -5,12 +5,12 @@ ini_set('memory_limit', '-1'); // fix memory usage
 require __DIR__ . '/../src/bootstrap.php';
 
 // exit if another worker works
-if (file_exists(\App\Domain\Tasks\Task::$pid_file)) {
+if (file_exists(\App\Domain\AbstractTask::$pid_file)) {
     exit;
 }
 
 // before work write self PID to file
-file_put_contents(\App\Domain\Tasks\Task::$pid_file, getmypid());
+file_put_contents(\App\Domain\AbstractTask::$pid_file, getmypid());
 
 // App container
 $c = $container = $app->getContainer();
@@ -29,18 +29,18 @@ $queue = $taskRepository->findOneBy(['status' => [\App\Domain\Types\TaskStatusTy
 
 // rerun worker
 register_shutdown_function(function () use ($queue): void {
-    @unlink(\App\Domain\Tasks\Task::$pid_file);
+    @unlink(\App\Domain\AbstractTask::$pid_file);
 
     sleep(3); // timeout
 
     if ($queue) {
-        \App\Domain\Tasks\Task::worker();
+        \App\Domain\AbstractTask::worker();
     }
 });
 
 if ($queue) {
     try {
-        /** @var \App\Domain\Tasks\Task $task */
+        /** @var \App\Domain\AbstractTask $task */
         $task = new $queue->action($c, $queue);
 
         if ($queue->status === \App\Domain\Types\TaskStatusType::STATUS_QUEUE) {

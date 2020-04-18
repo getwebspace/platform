@@ -2,10 +2,10 @@
 
 namespace App\Application\Actions\Cup\Form;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
 use Psr\Container\ContainerInterface;
 
-abstract class FormAction extends Action
+abstract class FormAction extends AbstractAction
 {
     /**
      * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository

@@ -1,11 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace App\Application\Actions;
+namespace App\Domain;
 
 use App\Application\Mail;
 use App\Domain\Exceptions\HttpBadRequestException;
-use App\Domain\Exceptions\HttpException;
+use App\Domain\Exceptions\HttpForbiddenException;
+use App\Domain\Exceptions\HttpMethodNotAllowedException;
 use App\Domain\Exceptions\HttpNotFoundException;
+use App\Domain\Exceptions\HttpNotImplementedException;
 use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -13,17 +15,17 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Views\Twig;
 
-abstract class Action
+abstract class AbstractAction
 {
+    // 40X
     protected const BAD_REQUEST = 'BAD_REQUEST';
-    protected const INSUFFICIENT_PRIVILEGES = 'INSUFFICIENT_PRIVILEGES';
     protected const NOT_ALLOWED = 'NOT_ALLOWED';
-    protected const NOT_IMPLEMENTED = 'NOT_IMPLEMENTED';
     protected const RESOURCE_NOT_FOUND = 'RESOURCE_NOT_FOUND';
     protected const SERVER_ERROR = 'SERVER_ERROR';
     protected const UNAUTHENTICATED = 'UNAUTHENTICATED';
-    protected const VALIDATION_ERROR = 'VALIDATION_ERROR';
-    protected const VERIFICATION_ERROR = 'VERIFICATION_ERROR';
+
+    // 50X
+    protected const NOT_IMPLEMENTED = 'NOT_IMPLEMENTED';
 
     /**
      * @var ContainerInterface
@@ -157,19 +159,26 @@ abstract class Action
 
         try {
             $result = $this->action();
-        } catch (HttpException $exception) {
+        } catch (AbstractHttpException $exception) {
             $error = [
                 'code' => $exception->getCode(),
-                'type' => self::SERVER_ERROR,
-                'error' => 'An internal error has occurred while processing your request.',
-                'message' => $exception->getMessage(),
+                'error' => [
+                    'type' => self::SERVER_ERROR,
+                    'error' => $exception->getDescription(),
+                    'message' => $exception->getMessage(),
+                ],
             ];
 
-            // todo add handles
             if ($exception instanceof HttpNotFoundException) {
-                $error['type'] = self::RESOURCE_NOT_FOUND;
+                $error['error']['type'] = self::RESOURCE_NOT_FOUND;
+            } elseif ($exception instanceof HttpMethodNotAllowedException) {
+                $error['error']['type'] = self::NOT_ALLOWED;
+            } elseif ($exception instanceof HttpForbiddenException) {
+                $error['error']['type'] = self::UNAUTHENTICATED;
             } elseif ($exception instanceof HttpBadRequestException) {
-                $error['type'] = self::BAD_REQUEST;
+                $error['error']['type'] = self::BAD_REQUEST;
+            } elseif ($exception instanceof HttpNotImplementedException) {
+                $error['error']['type'] = self::NOT_IMPLEMENTED;
             }
 
             $result = new Response($error['code']);
@@ -197,7 +206,7 @@ abstract class Action
     protected function resolveArg(string $name)
     {
         if (!isset($this->args[$name])) {
-            throw new HttpBadRequestException($this->request, "Could not resolve argument `{$name}`.");
+            throw new HttpBadRequestException("Could not resolve argument `{$name}`.");
         }
 
         return $this->args[$name];
@@ -247,7 +256,7 @@ abstract class Action
                 $task->execute(['uuid' => $uuids]);
 
                 // run worker
-                \App\Domain\Tasks\Task::worker();
+                \App\Domain\AbstractTask::worker();
             }
         }
 
@@ -354,7 +363,7 @@ abstract class Action
 
             return $rendered;
         } catch (\Twig\Error\LoaderError $exception) {
-            throw new HttpBadRequestException($this->request, $exception->getMessage());
+            throw new HttpBadRequestException($exception->getMessage());
         }
     }
 

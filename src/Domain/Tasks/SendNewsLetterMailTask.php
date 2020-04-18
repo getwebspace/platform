@@ -3,8 +3,9 @@
 namespace App\Domain\Tasks;
 
 use App\Application\Mail;
+use App\Domain\AbstractTask;
 
-class SendNewsLetterMailTask extends Task
+class SendNewsLetterMailTask extends AbstractTask
 {
     public function execute(array $params = []): \App\Domain\Entities\Task
     {

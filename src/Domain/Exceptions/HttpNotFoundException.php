@@ -2,7 +2,9 @@
 
 namespace App\Domain\Exceptions;
 
-class HttpNotFoundException extends HttpException
+use App\Domain\AbstractHttpException;
+
+class HttpNotFoundException extends AbstractHttpException
 {
     protected $code = 404;
 

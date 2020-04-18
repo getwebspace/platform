@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Application\Middlewares;
+namespace App\Domain;
 
 use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
@@ -8,7 +8,7 @@ use Psr\Log\LoggerInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-abstract class Middleware
+abstract class AbstractMiddleware
 {
     /**
      * @var ContainerInterface

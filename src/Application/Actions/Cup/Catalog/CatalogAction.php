@@ -2,10 +2,10 @@
 
 namespace App\Application\Actions\Cup\Catalog;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
 use Psr\Container\ContainerInterface;
 
-abstract class CatalogAction extends Action
+abstract class CatalogAction extends AbstractAction
 {
     /**
      * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository

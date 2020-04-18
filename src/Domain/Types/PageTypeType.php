@@ -2,9 +2,9 @@
 
 namespace App\Domain\Types;
 
-use App\Application\Types\EnumType;
+use App\Domain\AbstractEnumType;
 
-class PageTypeType extends EnumType
+class PageTypeType extends AbstractEnumType
 {
     public const NAME = 'PageTypeType';
 

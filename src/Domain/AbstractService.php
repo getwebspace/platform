@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Domain\Service;
+namespace App\Domain;
 
 use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;

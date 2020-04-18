@@ -2,12 +2,12 @@
 
 namespace App\Application\Actions\Cup;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
 use DateTime;
 use Exception;
 use Psr\Container\ContainerInterface;
 
-class LoginPageAction extends Action
+class LoginPageAction extends AbstractAction
 {
     /**
      * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository

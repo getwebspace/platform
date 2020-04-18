@@ -1,18 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace App\Domain\Exceptions;
+namespace App\Domain;
 
 use Exception;
-use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 
-abstract class HttpException extends Exception
+abstract class AbstractException extends Exception
 {
-    /**
-     * @var ServerRequestInterface
-     */
-    protected $request;
-
     /**
      * @var string
      */
@@ -24,27 +18,16 @@ abstract class HttpException extends Exception
     protected $description = '';
 
     /**
-     * @param ServerRequestInterface $request
      * @param string                 $message
      * @param null|Throwable         $previous
      */
-    public function __construct(ServerRequestInterface $request, ?string $message = null, ?Throwable $previous = null)
+    public function __construct(?string $message = null, ?Throwable $previous = null)
     {
         if ($message !== null) {
             $this->message = $message;
         }
 
         parent::__construct($this->message, $this->code, $previous);
-
-        $this->request = $request;
-    }
-
-    /**
-     * @return ServerRequestInterface
-     */
-    public function getRequest(): ServerRequestInterface
-    {
-        return $this->request;
     }
 
     /**

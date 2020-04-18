@@ -2,9 +2,9 @@
 
 namespace App\Domain\Types;
 
-use App\Application\Types\EnumType;
+use App\Domain\AbstractEnumType;
 
-class UserLevelType extends EnumType
+class UserLevelType extends AbstractEnumType
 {
     public const NAME = 'UserLevelType';
 

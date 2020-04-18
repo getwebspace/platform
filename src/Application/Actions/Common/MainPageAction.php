@@ -2,9 +2,9 @@
 
 namespace App\Application\Actions\Common;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
 
-class MainPageAction extends Action
+class MainPageAction extends AbstractAction
 {
     protected function action(): \Slim\Http\Response
     {

@@ -2,10 +2,10 @@
 
 namespace App\Application\Actions\Cup\GuestBook;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
 use Psr\Container\ContainerInterface;
 
-abstract class GuestBookAction extends Action
+abstract class GuestBookAction extends AbstractAction
 {
     /**
      * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository

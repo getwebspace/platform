@@ -2,9 +2,9 @@
 
 namespace App\Domain\Types;
 
-use App\Application\Types\EnumType;
+use App\Domain\AbstractEnumType;
 
-class GuestBookStatusType extends EnumType
+class GuestBookStatusType extends AbstractEnumType
 {
     public const NAME = 'GuestBookStatusType';
 

@@ -2,7 +2,9 @@
 
 namespace App\Domain\Exceptions;
 
-class HttpBadRequestException extends HttpException
+use App\Domain\AbstractHttpException;
+
+class HttpBadRequestException extends AbstractHttpException
 {
     protected $code = 400;
 

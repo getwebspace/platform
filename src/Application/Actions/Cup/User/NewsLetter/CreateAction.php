@@ -28,7 +28,7 @@ class CreateAction extends UserAction
                 $this->entityManager->flush();
 
                 // run worker
-                \App\Domain\Tasks\Task::worker();
+                \App\Domain\AbstractTask::worker();
 
                 return $this->response->withAddedHeader('Location', '/cup/user/newsletter')->withStatus(301);
             }
