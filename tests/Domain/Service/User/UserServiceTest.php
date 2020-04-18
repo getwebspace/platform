@@ -11,7 +11,7 @@ use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
 use App\Domain\Service\User\UserService;
 use Doctrine\ORM\EntityManager;
-use Tests\TestCase;
+use tests\TestCase;
 
 class UserServiceTest extends TestCase
 {
