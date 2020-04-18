@@ -1,9 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace tests;
-
-// include vars
-require __DIR__ . '/../config/vars.php';
+namespace Tests;
 
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {

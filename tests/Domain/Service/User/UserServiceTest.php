@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace tests\Domain\Service\User;
+namespace Tests\Domain\Service\User;
 
 use App\Domain\Entities\User;
 use App\Domain\Entities\User\Session as UserSession;
