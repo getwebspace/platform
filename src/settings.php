@@ -3,14 +3,12 @@
 // timezone default
 date_default_timezone_set('UTC');
 
-return [
-    // Secret salt
-    'secret' => [
+$settings = [
+    'secret' => [ // Secret salt
         'salt' => ($_ENV['SALT'] ?? 'Li8.1Ej2-<Cid3[bE'),
     ],
 
-    // Doctrine settings
-    'doctrine' => [
+    'doctrine' => [ // Doctrine settings
         'meta' => [
             'entity_path' => [
                 SRC_DIR . '/Domain/Entities',
@@ -73,3 +71,36 @@ return [
         ],
     ],
 ];
+
+switch (!isset($settings['settings']['displayErrorDetails']) || $settings['settings']['displayErrorDetails'] === true) {
+    case true:
+        error_reporting(-1);
+        ini_set('display_errors', '1');
+        ini_set('html_errors', '1');
+        ini_set('error_reporting', '30719');
+
+        // enable Tracy panel
+        \Tracy\Debugger::enable(\Tracy\Debugger::DEVELOPMENT, LOG_DIR);
+
+        // enably Profiler
+        RunTracy\Helpers\Profiler\Profiler::enable();
+
+        break;
+
+    case false:
+        // Set router cache file if display error is negative
+        $settings['settings']['routerCacheFile'] = CACHE_DIR . '/routes.cache.php';
+
+        // enable Tracy panel
+        \Tracy\Debugger::enable(\Tracy\Debugger::PRODUCTION, LOG_DIR);
+
+        break;
+}
+
+if (isset($settings['settings']['sentry']) && $settings['settings']['sentry'] !== null) {
+    \RunTracy\Helpers\Profiler\Profiler::start('sentry');
+    \Sentry\init(['dsn' => $settings['settings']['sentry']]);
+    \RunTracy\Helpers\Profiler\Profiler::finish('sentry');
+}
+
+return $settings;
