@@ -25,7 +25,7 @@ abstract class EnumType extends Type
      */
     public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
     {
-        return 'VARCHAR(' . max(array_map('strlen', array_keys(static::LIST))) . ')';
+        return 'VARCHAR(100)';
     }
 
     /**
@@ -41,7 +41,7 @@ abstract class EnumType extends Type
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
-        if (!in_array($value, array_keys(static::LIST), true)) {
+        if (!in_array($value, static::LIST, true) && !in_array($value, array_keys(static::LIST), true)) {
             throw new \InvalidArgumentException("Invalid '" . static::NAME . "' value.");
         }
 

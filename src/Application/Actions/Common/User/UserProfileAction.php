@@ -11,7 +11,6 @@ class UserProfileAction extends UserAction
 
         if ($user && $this->request->isPost()) {
             $data = [
-                'uuid' => $user->uuid,
                 'firstname' => $this->request->getParam('firstname'),
                 'lastname' => $this->request->getParam('lastname'),
                 'email' => $this->request->getParam('email'),
@@ -19,16 +18,17 @@ class UserProfileAction extends UserAction
                 'password' => $this->request->getParam('password'),
             ];
 
-            $check = \App\Domain\Filters\User::check($data);
+            $user
+                ->setFirstname($data['firstname'])
+                ->setLastname($data['lastname'])
+                ->setEmail($data['email'])
+                ->setPhone($data['phone'])
+                ->setPassword($data['password'])
+                ->setChange('now');
 
-            if ($check === true) {
-                $user->replace($data);
-                $user->change = new \DateTime();
-                $this->entityManager->flush();
+            $this->entityManager->flush();
 
-                return $this->response->withAddedHeader('Location', '/user/profile')->withStatus(301);
-            }
-            $this->addErrorFromCheck($check);
+            return $this->response->withRedirect('/user/profile');
         }
 
         return $this->respondWithTemplate($this->getParameter('user_profile_template', 'user.profile.twig'));

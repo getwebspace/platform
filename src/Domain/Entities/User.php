@@ -2,16 +2,15 @@
 
 namespace App\Domain\Entities;
 
-use Alksily\Entity\Model;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Domain\Repository\UserRepository")
  * @ORM\Table(name="user")
  */
-class User extends Model
+class User extends AbstractEntity
 {
     /**
      * @var Uuid
@@ -20,42 +19,204 @@ class User extends Model
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    public $uuid;
+    private $uuid;
+
+    public function getUuid(): Uuid
+    {
+        return $this->uuid;
+    }
 
     /**
-     * @ORM\Column(type="string", length=50, unique=true, options={"default": ""})
+     * @ORM\Column(type="string", length=50, options={"default": ""})
      */
-    public $username = '';
+    private $username = '';
+
+    /**
+     * @param string $username
+     */
+    public function setUsername(string $username)
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
 
     /**
      * @ORM\Column(type="string", length=120, unique=true, options={"default": ""})
      */
-    public $email = '';
+    private $email = '';
+
+    /**
+     * @param string $email
+     */
+    public function setEmail(string $email)
+    {
+        $this->email = $this->getEmailByValue($email);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    /**
+     * Gravatar
+     *
+     * @param int $size
+     *
+     * @return string
+     */
+    public function avatar(int $size = 40)
+    {
+        return 'https://www.gravatar.com/avatar/' . md5(mb_strtolower(trim($this->email))) . '?s=' . $size;
+    }
 
     /**
      * @ORM\Column(type="string", length=25, options={"default": ""})
      */
-    public $phone = '';
+    private $phone = '';
+
+    /**
+     * @param string $phone
+     */
+    public function setPhone(string $phone)
+    {
+        $this->phone = $this->checkPhoneByValue($phone);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPhone(): string
+    {
+        return $this->phone;
+    }
 
     /**
      * @ORM\Column(type="string", length=140, options={"default": ""})
      */
-    public $password = '';
+    private $password = '';
+
+    /**
+     * @param string $password
+     */
+    public function setPassword(string $password)
+    {
+        if ($password) {
+            $this->password = $this->getPasswordHashByValue($password);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
 
     /**
      * @ORM\Column(type="string", length=50, options={"default": ""})
      */
-    public $firstname = '';
+    private $firstname = '';
+
+    /**
+     * @param string $firstname
+     */
+    public function setFirstname(string $firstname)
+    {
+        $this->firstname = $firstname;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFirstname(): string
+    {
+        return $this->firstname;
+    }
 
     /**
      * @ORM\Column(type="string", length=50, options={"default": ""})
      */
-    public $lastname = '';
+    private $lastname = '';
+
+    /**
+     * @param string $lastname
+     */
+    public function setLastname(string $lastname)
+    {
+        $this->lastname = $lastname;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastname(): string
+    {
+        return $this->lastname;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return string
+     */
+    public function getName(string $type = 'full')
+    {
+        if ($this->lastname || $this->firstname) {
+            switch ($type) {
+                case 'full':
+                    return implode(' ', [$this->lastname, $this->firstname]);
+
+                    break;
+                case 'short':
+                    return implode(' ', [mb_substr($this->lastname, 0, 1) . '.', $this->firstname]);
+
+                    break;
+            }
+        }
+
+        return null;
+    }
 
     /**
      * @ORM\Column(type="boolean", options={"default": true})
      */
-    public $allow_mail = true;
+    private $allow_mail = true;
+
+    public function setAllowMail(bool $allow_mail)
+    {
+        $this->allow_mail = $allow_mail;
+
+        return $this;
+    }
+
+    public function getAllowMail()
+    {
+        return $this->allow_mail;
+    }
 
     /**
      * @var string
@@ -63,7 +224,21 @@ class User extends Model
      * @see \App\Domain\Types\UserStatusType::LIST
      * @ORM\Column(type="UserStatusType", options={"default": \App\Domain\Types\UserStatusType::STATUS_WORK})
      */
-    public $status = \App\Domain\Types\UserStatusType::STATUS_WORK;
+    private $status = \App\Domain\Types\UserStatusType::STATUS_WORK;
+
+    public function setStatus(string $status)
+    {
+        if (in_array($status, \App\Domain\Types\UserStatusType::LIST)) {
+            $this->status = $status;
+        }
+
+        return $this;
+    }
+
+    public function getStatus()
+    {
+        return $this->status;
+    }
 
     /**
      * @var string
@@ -71,26 +246,76 @@ class User extends Model
      * @see \App\Domain\Types\UserLevelType::LIST
      * @ORM\Column(type="UserLevelType", options={"default": \App\Domain\Types\UserLevelType::LEVEL_USER})
      */
-    public $level = \App\Domain\Types\UserLevelType::LEVEL_USER;
+    private $level = \App\Domain\Types\UserLevelType::LEVEL_USER;
+
+    public function setLevel(string $level)
+    {
+        if (in_array($level, \App\Domain\Types\UserLevelType::LIST)) {
+            $this->level = $level;
+        }
+
+        return $this;
+    }
+
+    public function getLevel()
+    {
+        return $this->level;
+    }
 
     /**
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $register = '';
+    private $register;
+
+    public function setRegister($register)
+    {
+        $this->register = $this->getDateTimeByValue($register);
+
+        return $this;
+    }
+
+    public function getRegister()
+    {
+        return $this->register;
+    }
 
     /**
      * @var DateTime
      * @ORM\Column(name="`change`", type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $change = '';
+    private $change;
+
+    public function setChange($change)
+    {
+        $this->change = $this->getDateTimeByValue($change);
+
+        return $this;
+    }
+
+    public function getChange()
+    {
+        return $this->change;
+    }
 
     /**
      * @var \App\Domain\Entities\User\Session
      * @ORM\OneToOne(targetEntity="App\Domain\Entities\User\Session")
      * @ORM\JoinColumn(name="uuid", referencedColumnName="uuid")
      */
-    public $session;
+    private $session;
+
+    public function setSession(\App\Domain\Entities\User\Session $session)
+    {
+        $this->session = $session;
+
+        return $this;
+    }
+
+    public function getSession()
+    {
+        return $this->session;
+    }
 
     /**
      * @var array
@@ -100,7 +325,7 @@ class User extends Model
      *     inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")}
      * )
      */
-    protected $files = [];
+    private $files = [];
 
     public function addFile(\App\Domain\Entities\File $file): void
     {
@@ -147,40 +372,5 @@ class User extends Model
     public function hasFiles()
     {
         return count($this->files);
-    }
-
-    /**
-     * @param string $type
-     *
-     * @return string
-     */
-    public function getName(string $type = 'full')
-    {
-        if ($this->lastname || $this->firstname) {
-            switch ($type) {
-                case 'full':
-                    return implode(' ', [$this->lastname, $this->firstname]);
-
-                    break;
-                case 'short':
-                    return implode(' ', [mb_substr($this->lastname, 0, 1) . '.', $this->firstname]);
-
-                    break;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Gravatar
-     *
-     * @param int $size
-     *
-     * @return string
-     */
-    public function avatar(int $size = 40)
-    {
-        return 'https://www.gravatar.com/avatar/' . md5(mb_strtolower(trim($this->email))) . '?s=' . $size;
     }
 }

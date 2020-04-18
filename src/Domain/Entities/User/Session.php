@@ -2,7 +2,7 @@
 
 namespace App\Domain\Entities\User;
 
-use Alksily\Entity\Model;
+use App\Domain\Entities\AbstractEntity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
@@ -11,28 +11,71 @@ use Ramsey\Uuid\Uuid;
  * @ORM\Entity
  * @ORM\Table(name="user_session", uniqueConstraints={@ORM\UniqueConstraint(name="unique_uuid", columns={"uuid"})})
  */
-class Session extends Model
+class Session extends AbstractEntity
 {
     /**
      * @var Uuid
      * @ORM\Id
-     * @ORM\Column(type="uuid", unique=true)
+     * @ORM\Column(type="uuid")
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    public $uuid;
+    private $uuid;
+
+    public function getUuid(): Uuid
+    {
+        return $this->uuid;
+    }
 
     /**
      * @ORM\Column(type="string", length=16, options={"default": ""})
      */
-    public $ip = '';
+    private $ip = '';
+
+    public function setIp($ip)
+    {
+        $this->ip = $this->getIpByValue($ip);
+
+        return $this;
+    }
+
+    public function getIp()
+    {
+        return $this->ip;
+    }
 
     /**
      * @ORM\Column(type="string", length=256, options={"default": ""})
      */
-    public $agent = '';
+    private $agent = '';
+
+    public function setAgent(string $agent)
+    {
+        $this->agent = $agent;
+
+        return $this;
+    }
+
+    public function getAgent()
+    {
+        return $this->agent;
+    }
 
     /**
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $date;
+    private $date;
+
+    public function setDate($date)
+    {
+        $this->date = $this->getDateTimeByValue($date);
+
+        return $this;
+    }
+
+    public function getDate()
+    {
+        return $this->date;
+    }
 }

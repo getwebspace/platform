@@ -14,3 +14,4 @@ before_script:
 
 script:
     - ./vendor/bin/php-cs-fixer fix --config=.php_cs --diff --verbose --dry-run
+    - ./vendor/bin/phpunit --configuration phpunit.xml --coverage-clover coverage-clover.xml

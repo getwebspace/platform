@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+docker-compose exec platform vendor/bin/phpunit --color=always --configuration phpunit.xml

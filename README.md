@@ -34,10 +34,10 @@ chmod 0777 var/database.sqlite
 
 *Установка зависимостей*
 ```shell script
-./composer
+./composer --ignore-platform-reqs install
 ```
 
-*Проверка кода*
+*Статический аналищатор*
 ```shell script
 ./phpcs
 ```
@@ -58,8 +58,8 @@ E-Mail: `admin@example.com`
 Пароль: `111222`
 
 ```shell script
-docker-compose run platform vendor/bin/doctrine dbal:run-sql "INSERT INTO user_session (uuid) VALUES ('00000000-0000-0000-0000-000000000000');"
-docker-compose run platform vendor/bin/doctrine dbal:run-sql "INSERT INTO user (uuid, username, email, password, status, level) VALUES ('00000000-0000-0000-0000-000000000000', 'admin', 'admin@example.com', '4b60602435c81eca6516601b68219c37f93de49c1192660aaa16066070e23b352fb0578b30cb588bb416b5138f03511a809f8b6610d20d90bf72d2a4d9e9548e06cd3eec8ed6', 'work', 'admin');"
+sql "INSERT INTO user_session (uuid) VALUES ('00000000-0000-0000-0000-000000000000');"
+sql "INSERT INTO user (uuid, username, email, password, status, level) VALUES ('00000000-0000-0000-0000-000000000000', 'admin', 'admin@example.com', '4b60602435c81eca6516601b68219c37f93de49c1192660aaa16066070e23b352fb0578b30cb588bb416b5138f03511a809f8b6610d20d90bf72d2a4d9e9548e06cd3eec8ed6', 'work', 'admin');"
 ```
 
 #### License

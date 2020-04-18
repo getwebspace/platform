@@ -2,12 +2,16 @@
 
 namespace App\Application\Actions\Common\User;
 
-use Ramsey\Uuid\Uuid;
+use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
+use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
+use App\Domain\Service\User\UserService;
 
 class UserRegisterAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
+        $identifier = $this->getParameter('user_login_type', 'username');
+
         if ($this->request->isPost()) {
             $data = [
                 'email' => $this->request->getParam('email'),
@@ -16,29 +20,26 @@ class UserRegisterAction extends UserAction
                 'password_again' => $this->request->getParam('password_again'),
             ];
 
-            $check = \App\Domain\Filters\User::check($data);
+            if ($this->isRecaptchaChecked()) {
+                if ($data['password'] === $data['password_again']) {
+                    try {
+                        $userService = UserService::getFromContainer($this->container);
+                        $userService->createByRegister([
+                            'identifier' => $identifier,
+                            $identifier => $data[$identifier],
+                            'password' => $data['password'],
+                        ]);
 
-            if ($check === true) {
-                if ($this->isRecaptchaChecked()) {
-                    $uuid = Uuid::uuid4();
-                    $session = new \App\Domain\Entities\User\Session();
-                    $session->set('uuid', $uuid);
-                    $this->entityManager->persist($session);
-
-                    $model = new \App\Domain\Entities\User($data);
-                    $model->set('uuid', $uuid);
-                    $model->register = $model->change = new \DateTime();
-                    $model->session = $session;
-                    $this->entityManager->persist($model);
-
-                    $this->entityManager->flush();
-
-                    return $this->response->withAddedHeader('Location', '/user/login')->withStatus(301);
+                        return $this->response->withRedirect('/user/login');
+                    } catch (UsernameAlreadyExistsException $exception) {
+                        $this->addError('username', $exception->getMessage());
+                    } catch (EmailAlreadyExistsException $exception) {
+                        $this->addError('email', $exception->getMessage());
+                    }
                 }
-                $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
-            } else {
-                $this->addErrorFromCheck($check);
             }
+
+            $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
         }
 
         return $this->respondWithTemplate($this->getParameter('user_register_template', 'user.register.twig'));

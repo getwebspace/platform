@@ -2,6 +2,7 @@
 
 namespace App\Application\Middlewares;
 
+use App\Domain\Repository\UserRepository;
 use DateTime;
 use Psr\Container\ContainerInterface;
 use Ramsey\Uuid\Uuid;
@@ -11,14 +12,9 @@ use Slim\Http\Response;
 class AuthorizationMiddleware extends Middleware
 {
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     * @var UserRepository
      */
-    protected $userRepository;
-
-    /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
-     */
-    protected $userSessionRepository;
+    protected $users;
 
     /**
      * {@inheritdoc}
@@ -27,8 +23,7 @@ class AuthorizationMiddleware extends Middleware
     {
         parent::__construct($container);
 
-        $this->userRepository = $this->entityManager->getRepository(\App\Domain\Entities\User::class);
-        $this->userSessionRepository = $this->entityManager->getRepository(\App\Domain\Entities\User\Session::class);
+        $this->users = $this->entityManager->getRepository(\App\Domain\Entities\User::class);
     }
 
     /**
@@ -50,21 +45,23 @@ class AuthorizationMiddleware extends Middleware
         ];
 
         if ($data['uuid'] && Uuid::isValid($data['uuid']) && $data['session']) {
-            try {
-                /** @var \App\Domain\Entities\User\Session $session */
-                $session = $this->userSessionRepository->findOneBy(['uuid' => $data['uuid']]);
+            $user = $this->users->findOneBy([
+                'uuid' => $data['uuid'],
+                'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
+            ]);
 
-                if ($session && $data['session'] === $this->session($session)) {
-                    $user = $this->userRepository->findOneBy([
-                        'uuid' => $session->uuid,
-                        'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
-                    ]);
+            if ($user) {
+                $hash = sha1(
+                    'salt:' . ($this->container->get('secret')['salt'] ?? '') . ';' .
+                    'uuid:' . $user->getUuid()->toString() . ';' .
+                    'ip:' . md5($user->getSession()->getIp()) . ';' .
+                    'agent:' . md5($user->getSession()->getAgent()) . ';' .
+                    'date:' . $user->getSession()->getDate()->getTimestamp()
+                );
 
-                    if ($user) {
-                        $request = $request->withAttribute('user', $user);
-                    }
+                if ($data['session'] === $hash) {
+                    $request = $request->withAttribute('user', $user);
                 }
-            } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
             }
         }
 

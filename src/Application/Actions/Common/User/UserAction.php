@@ -3,14 +3,16 @@
 namespace App\Application\Actions\Common\User;
 
 use App\Application\Actions\Action;
+use App\Domain\Entities\User;
+use App\Domain\Repository\UserRepository;
 use Psr\Container\ContainerInterface;
 
 abstract class UserAction extends Action
 {
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     * @var UserRepository
      */
-    protected $userRepository;
+    protected $users;
 
     /**
      * {@inheritdoc}
@@ -19,6 +21,6 @@ abstract class UserAction extends Action
     {
         parent::__construct($container);
 
-        $this->userRepository = $this->entityManager->getRepository(\App\Domain\Entities\User::class);
+        $this->users = $this->entityManager->getRepository(User::class);
     }
 }

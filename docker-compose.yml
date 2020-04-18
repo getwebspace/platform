@@ -11,17 +11,18 @@ services:
           # - DATABASE=mysql://user:secret@localhost/mydb
           # - SENTRY=""
         volumes:
-            - ./.php_cs:/var/container/.php_cs:ro
-            - ./composer.json:/var/container/composer.json:rw
-            - ./composer.lock:/var/container/composer.lock:rw
             - ./config:/var/container/config:rw
             - ./plugin:/var/container/plugin:rw
             - ./public:/var/container/public:rw
             - ./src:/var/container/src:rw
+            - ./tests:/var/container/tests:rw
             - ./theme:/var/container/theme:rw
             - ./var:/var/container/var:rw
             - ./var/upload:/var/container/public/uploads:rw
             - ./vendor:/var/container/vendor:ro
-            - ./php-cs-fixer.phar:/var/container/php-cs-fixer.phar:ro
+            - ./.php_cs:/var/container/.php_cs:ro
+            - ./composer.json:/var/container/composer.json:rw
+            - ./composer.lock:/var/container/composer.lock:rw
+            - ./phpunit.xml:/var/container/phpunit.xml:ro
         ports:
             - 9000:80

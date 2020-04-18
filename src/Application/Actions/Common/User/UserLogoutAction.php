@@ -9,6 +9,6 @@ class UserLogoutAction extends UserAction
         setcookie('uuid', '-1', time(), '/');
         setcookie('session', '-1', time(), '/');
 
-        return $this->response->withAddedHeader('Location', '/')->withStatus(301);
+        return $this->response->withRedirect('/');
     }
 }

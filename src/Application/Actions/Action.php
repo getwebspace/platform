@@ -94,9 +94,9 @@ abstract class Action
      * @param string $field
      * @param string $reason
      */
-    protected function addError($field, $reason): void
+    protected function addError($field, $reason = ''): void
     {
-        $this->error[$field] = $reason ?? \App\Domain\References\Errors\Common::WRONG_COMMON;
+        $this->error[$field] = $reason;
     }
 
     /**
