@@ -3,7 +3,7 @@
 namespace tests;
 
 // include vars
-require __DIR__ . '/../config/vars.php';
+require_once __DIR__ . '/../config/vars.php';
 
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
