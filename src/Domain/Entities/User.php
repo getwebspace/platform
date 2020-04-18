@@ -206,9 +206,9 @@ class User extends AbstractEntity
      */
     private $allow_mail = true;
 
-    public function setAllowMail(bool $allow_mail)
+    public function setAllowMail($allow_mail)
     {
-        $this->allow_mail = $allow_mail;
+        $this->allow_mail = $this->getBooleanByValue($allow_mail);
 
         return $this;
     }
@@ -228,7 +228,7 @@ class User extends AbstractEntity
 
     public function setStatus(string $status)
     {
-        if (in_array($status, \App\Domain\Types\UserStatusType::LIST)) {
+        if (in_array($status, \App\Domain\Types\UserStatusType::LIST, true)) {
             $this->status = $status;
         }
 
@@ -250,7 +250,7 @@ class User extends AbstractEntity
 
     public function setLevel(string $level)
     {
-        if (in_array($level, \App\Domain\Types\UserLevelType::LIST)) {
+        if (in_array($level, \App\Domain\Types\UserLevelType::LIST, true)) {
             $this->level = $level;
         }
 

@@ -10,20 +10,19 @@ class UserProfileAction extends UserAction
         $user = $this->request->getAttribute('user', false);
 
         if ($user && $this->request->isPost()) {
-            $data = [
-                'firstname' => $this->request->getParam('firstname'),
-                'lastname' => $this->request->getParam('lastname'),
-                'email' => $this->request->getParam('email'),
-                'phone' => $this->request->getParam('phone'),
-                'password' => $this->request->getParam('password'),
-            ];
+            // смена email
+            if (
+                ($email = $this->request->getParam('email')) !== null &&
+                $this->users->findOneByUsername($email) === null
+            ) {
+                $user->setEmail($email);
+            }
 
             $user
-                ->setFirstname($data['firstname'])
-                ->setLastname($data['lastname'])
-                ->setEmail($data['email'])
-                ->setPhone($data['phone'])
-                ->setPassword($data['password'])
+                ->setFirstname($this->request->getParam('firstname'))
+                ->setLastname($this->request->getParam('lastname'))
+                ->setPhone($this->request->getParam('phone'))
+                ->setPassword($this->request->getParam('password'))
                 ->setChange('now');
 
             $this->entityManager->flush();

@@ -98,27 +98,27 @@
                             <thead>
                                 <tr>
                                     <th>Логин</th>
-                                    <th>Группа (Статус)</th>
+                                    <th class="text-center" width="10%">Доступ</th>
                                     <th width="15%">Дата регистрации</th>
                                     <th width="15%">Дата посещения</th>
                                     <th width="10%" class="text-center no-sorting"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for item in list %}
+                                {% for user in list %}
                                     <tr class="
                                         {{
-                                            item.status == reference('/App/Domain/Types/UserStatusType::STATUS_DELETE')
+                                            user.status == reference('/App/Domain/Types/UserStatusType::STATUS_DELETE')
                                             ? 'bg-danger'
                                             : (
-                                                item.status == reference('/App/Domain/Types/UserStatusType::STATUS_BLOCK')
+                                                user.status == reference('/App/Domain/Types/UserStatusType::STATUS_BLOCK')
                                                 ? 'bg-warning'
                                                 : ''
                                             )
                                         }}
                                     ">
                                         <td>
-                                            {{ item.username }}
+                                            {{ user.username }}
 
                                             {% if item.allow_mail %}
                                                 <div class="text-black-50 float-right" data-toggle="tooltip" data-placement="right" title="Подписан на рассылку">
@@ -126,10 +126,7 @@
                                                 </div>
                                             {% endif %}
                                         </td>
-                                        <td>
-                                            {{ reference('/App/Domain/Types/UserLevelType::LIST', item.level) }}
-                                            ({{ reference('/App/Domain/Types/UserStatusType::LIST', item.status) }})
-                                        </td>
+                                        <td class="text-center">{{ user.level }}</td>
                                         <td data-order="{{ item.register.getTimestamp() }}">{{ item.register|df('d.m.Y H:i:s') }}</td>
                                         <td data-order="{{ item.session.date.getTimestamp() }}">{{ item.session.date ? item.session.date|df('d.m.Y H:i:s') : '' }}</td>
                                         <td class="text-center">
@@ -139,11 +136,11 @@
                                                 </button>
                                                 <ul class="dropdown-menu" role="menu">
                                                     <li>
-                                                        <a href="/cup/user/{{ item.uuid }}/edit" class="btn btn-link"><i class="fas fa-edit"></i> Изменить</a>
+                                                        <a href="/cup/user/{{ user.uuid }}/edit" class="btn btn-link"><i class="fas fa-edit"></i> Изменить</a>
                                                     </li>
                                                     <li><div class="dropdown-divider"></div></li>
                                                     <li>
-                                                        <form action="/cup/user/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить пользователя?');">
+                                                        <form action="/cup/user/{{ user.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить пользователя?');">
                                                             <button type="submit" class="btn btn-link text-danger">
                                                                 <i class="fas fa-trash-alt"></i> Удалить
                                                             </button>

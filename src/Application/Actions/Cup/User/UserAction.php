@@ -3,19 +3,22 @@
 namespace App\Application\Actions\Cup\User;
 
 use App\Application\Actions\Action;
+use App\Domain\Entities\User;
+use App\Domain\Entities\User\Subscriber as UserSubscriber;
+use App\Domain\Repository\UserRepository;
 use Psr\Container\ContainerInterface;
 
 abstract class UserAction extends Action
 {
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     * @var UserRepository
      */
-    protected $userRepository;
+    protected $users;
 
     /**
      * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
      */
-    protected $subscriberRepository;
+    protected $usersSubscriber;
 
     /**
      * {@inheritdoc}
@@ -24,7 +27,7 @@ abstract class UserAction extends Action
     {
         parent::__construct($container);
 
-        $this->userRepository = $this->entityManager->getRepository(\App\Domain\Entities\User::class);
-        $this->subscriberRepository = $this->entityManager->getRepository(\App\Domain\Entities\User\Subscriber::class);
+        $this->users = $this->entityManager->getRepository(User::class);
+        $this->usersSubscriber = $this->entityManager->getRepository(UserSubscriber::class);
     }
 }

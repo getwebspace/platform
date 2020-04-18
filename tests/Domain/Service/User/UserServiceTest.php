@@ -1,6 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace Tests\Domain\Service\User;
+namespace tests\Domain\Service\User;
 
 use App\Domain\Entities\User;
 use App\Domain\Entities\User\Session as UserSession;
@@ -32,7 +32,7 @@ class UserServiceTest extends TestCase
         $this->users = new UserService($this->em);
     }
 
-    public function testCreateByRegisterSuccess1()
+    public function testCreateByRegisterSuccess1(): void
     {
         $data = [
             'identifier' => 'username',
@@ -51,10 +51,9 @@ class UserServiceTest extends TestCase
         $u = $userRepo->findOneByUsername($data['username']);
         $this->assertInstanceOf(User::class, $u);
         $this->assertSame($data['username'], $u->getUsername());
-
     }
 
-    public function testCreateByRegisterSuccess2()
+    public function testCreateByRegisterSuccess2(): void
     {
         $data = [
             'identifier' => 'email',
@@ -75,7 +74,7 @@ class UserServiceTest extends TestCase
         $this->assertSame($data['email'], $u->getEmail());
     }
 
-    public function testCreateByRegisterWithUsernameExistent()
+    public function testCreateByRegisterWithUsernameExistent(): void
     {
         // считаем тест успешным, если сервис выкинет исключение
         $this->expectException(UsernameAlreadyExistsException::class);
@@ -98,7 +97,7 @@ class UserServiceTest extends TestCase
         ]);
     }
 
-    public function testCreateByRegisterWithEmailExistent()
+    public function testCreateByRegisterWithEmailExistent(): void
     {
         // считаем тест успешным, если сервис выкинет исключение
         $this->expectException(EmailAlreadyExistsException::class);
@@ -121,7 +120,7 @@ class UserServiceTest extends TestCase
         ]);
     }
 
-    public function testGetByLoginSuccess1()
+    public function testGetByLoginSuccess1(): void
     {
         // создаем пользователя, которого будем тестировать
         $this->users->createByRegister([
@@ -143,7 +142,7 @@ class UserServiceTest extends TestCase
         $this->assertSame($data['identifier'], $user->getUsername());
     }
 
-    public function testGetByLoginSuccess2()
+    public function testGetByLoginSuccess2(): void
     {
         // создаем пользователя, которого будем тестировать
         $this->users->createByRegister([
@@ -165,7 +164,7 @@ class UserServiceTest extends TestCase
         $this->assertSame($data['identifier'], $user->getEmail());
     }
 
-    public function testGetByLoginWithUserNotFound1()
+    public function testGetByLoginWithUserNotFound1(): void
     {
         // считаем тест успешным, если сервис выкинет исключение
         $this->expectException(UserNotFoundException::class);
@@ -181,7 +180,7 @@ class UserServiceTest extends TestCase
         $this->users->getByLogin($data);
     }
 
-    public function testGetByLoginWithUserNotFound2()
+    public function testGetByLoginWithUserNotFound2(): void
     {
         // считаем тест успешным, если сервис выкинет исключение
         $this->expectException(UserNotFoundException::class);
@@ -197,7 +196,7 @@ class UserServiceTest extends TestCase
         $this->users->getByLogin($data);
     }
 
-    public function testGetByLoginWithWrongPassword()
+    public function testGetByLoginWithWrongPassword(): void
     {
         // считаем тест успешным, если сервис выкинет исключение
         $this->expectException(WrongPasswordException::class);

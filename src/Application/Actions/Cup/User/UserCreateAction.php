@@ -2,7 +2,9 @@
 
 namespace App\Application\Actions\Cup\User;
 
-use Ramsey\Uuid\Uuid;
+use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
+use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
+use App\Domain\Service\User\UserService;
 
 class UserCreateAction extends UserAction
 {
@@ -20,30 +22,20 @@ class UserCreateAction extends UserAction
                 'level' => $this->request->getParam('level'),
             ];
 
-            $check = \App\Domain\Filters\User::check($data);
-
-            if ($check === true) {
-                $uuid = Uuid::uuid4();
-                $session = new \App\Domain\Entities\User\Session();
-                $session->set('uuid', $uuid);
-                $this->entityManager->persist($session);
-
-                $model = new \App\Domain\Entities\User($data);
-                $model->set('uuid', $uuid);
-                $model->register = $model->change = new \DateTime();
-                $model->session = $session;
-                $this->entityManager->persist($model);
-
-                $this->entityManager->flush();
+            try {
+                $userService = UserService::getFromContainer($this->container);
+                $user = $userService->createByAdmin($data);
 
                 switch (true) {
                     case $this->request->getParam('save', 'exit') === 'exit':
-                        return $this->response->withAddedHeader('Location', '/cup/user')->withStatus(301);
+                        return $this->response->withRedirect('/cup/user');
                     default:
-                        return $this->response->withAddedHeader('Location', '/cup/user/' . $model->uuid . '/edit')->withStatus(301);
+                        return $this->response->withRedirect('/cup/user/' . $user->getUuid() . '/edit');
                 }
-            } else {
-                $this->addErrorFromCheck($check);
+            } catch (UsernameAlreadyExistsException $exception) {
+                $this->addError('username', $exception->getMessage());
+            } catch (EmailAlreadyExistsException $exception) {
+                $this->addError('email', $exception->getMessage());
             }
         }
 

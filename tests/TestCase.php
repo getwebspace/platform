@@ -1,6 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace Tests;
+namespace tests;
 
 // include vars
 require __DIR__ . '/../config/vars.php';

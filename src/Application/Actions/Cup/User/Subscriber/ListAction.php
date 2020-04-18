@@ -8,7 +8,7 @@ class ListAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $list = collect($this->subscriberRepository->findAll());
+        $list = collect($this->usersSubscriber->findAll());
 
         return $this->respondWithTemplate('cup/user/subscriber/index.twig', ['list' => $list]);
     }

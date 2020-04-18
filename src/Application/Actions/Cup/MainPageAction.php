@@ -3,13 +3,17 @@
 namespace App\Application\Actions\Cup;
 
 use App\Application\Actions\Action;
+use App\Domain\Entities\User;
 
 class MainPageAction extends Action
 {
     protected function action(): \Slim\Http\Response
     {
+        /** @var User $user */
+        $user = $this->request->getAttribute('user', false);
+
         return $this->respondWithTemplate('cup/layout.twig', [
-            'notepad' => $this->getParameter('notepad_' . $this->request->getAttribute('user')->username, ''),
+            'notepad' => $this->getParameter('notepad_' . $user->getUsername(), ''),
             'stats' => [
                 'pages' => $this->entityManager->getRepository(\App\Domain\Entities\Page::class)->count([]),
                 'users' => $this->entityManager->getRepository(\App\Domain\Entities\User::class)->count([]),

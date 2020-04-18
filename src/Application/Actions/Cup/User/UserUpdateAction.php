@@ -6,43 +6,48 @@ class UserUpdateAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
-        if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            /** @var \App\Domain\Entities\User $item */
-            $item = $this->userRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
+        if ($this->resolveArg('uuid')) {
+            $user = $this->users->findByUuid($this->resolveArg('uuid'));
 
-            if (!$item->isEmpty()) {
+            if ($user) {
                 if ($this->request->isPost()) {
-                    $data = [
-                        'uuid' => $item->uuid,
-                        'username' => $this->request->getParam('username'),
-                        'password' => $this->request->getParam('password'),
-                        'firstname' => $this->request->getParam('firstname'),
-                        'lastname' => $this->request->getParam('lastname'),
-                        'email' => $this->request->getParam('email'),
-                        'allow_mail' => $this->request->getParam('allow_mail'),
-                        'phone' => $this->request->getParam('phone'),
-                        'level' => $this->request->getParam('level'),
-                        'status' => $this->request->getParam('status'),
-                    ];
-
-                    $check = \App\Domain\Filters\User::check($data);
-
-                    if ($check === true) {
-                        $item->replace($data);
-                        $item->change = new \DateTime();
-                        $this->entityManager->persist($item);
-                        $this->entityManager->flush();
-
-                        if ($this->request->getParam('save', 'exit') === 'exit') {
-                            return $this->response->withAddedHeader('Location', '/cup/user')->withStatus(301);
-                        }
-
-                        return $this->response->withAddedHeader('Location', $this->request->getUri()->getPath())->withStatus(301);
+                    // смена username
+                    if (
+                        ($username = $this->request->getParam('username')) !== null &&
+                        $this->users->findOneByUsername($username) === null
+                    ) {
+                        $user->setUsername($username);
                     }
-                    $this->addErrorFromCheck($check);
+
+                    // смена email
+                    if (
+                        ($email = $this->request->getParam('email')) !== null &&
+                        $this->users->findOneByUsername($email) === null
+                    ) {
+                        $user->setEmail($email);
+                    }
+
+                    $user
+                        ->setPassword($this->request->getParam('password'))
+                        ->setFirstname($this->request->getParam('firstname'))
+                        ->setLastname($this->request->getParam('lastname'))
+                        ->setAllowMail($this->request->getParam('allow_mail'))
+                        ->setPhone($this->request->getParam('phone'))
+                        ->setLevel($this->request->getParam('level'))
+                        ->setStatus($this->request->getParam('status'))
+                        ->setChange('now');
+
+                    $this->entityManager->flush();
+
+                    switch (true) {
+                        case $this->request->getParam('save', 'exit') === 'exit':
+                            return $this->response->withRedirect('/cup/user');
+                        default:
+                            return $this->response->withRedirect('/cup/user/' . $user->getUuid() . '/edit');
+                    }
                 }
 
-                return $this->respondWithTemplate('cup/user/form.twig', ['item' => $item]);
+                return $this->respondWithTemplate('cup/user/form.twig', ['user' => $user]);
             }
         }
 

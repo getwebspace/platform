@@ -41,7 +41,7 @@ class UserListAction extends UserAction
             }
         }
 
-        $query = $this->userRepository->createQueryBuilder('u');
+        $query = $this->users->createQueryBuilder('u');
 
         foreach ($criteria as $criterion => $value) {
             if (is_array($value)) {

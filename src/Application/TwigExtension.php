@@ -186,9 +186,11 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
             switch ($value) {
                 case null:
-                    return $reference;
+                    if (is_array($reference)) {
+                        return array_combine(array_values($reference), array_values($reference));
+                    }
 
-                    break;
+                    return $reference;
 
                 default:
                     return $reference[$value];

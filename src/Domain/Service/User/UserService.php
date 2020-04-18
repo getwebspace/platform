@@ -30,7 +30,8 @@ class UserService extends AbstractService
      *
      * @throws UserNotFoundException
      * @throws WrongPasswordException
-     * @return User|null
+     *
+     * @return null|User
      */
     public function getByLogin(array $data = []): ?User
     {
@@ -68,7 +69,7 @@ class UserService extends AbstractService
      * @throws EmailAlreadyExistsException
      * @throws UsernameAlreadyExistsException
      *
-     * @return User|null
+     * @return null|User
      */
     public function createByRegister(array $data = []): ?User
     {

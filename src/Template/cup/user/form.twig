@@ -17,7 +17,7 @@
                 <form method="post">
                     <div class="card-header">
                         <div class="card-head-row">
-                            <div class="card-title">{{ item.uuid ? 'Редактирование пользователя ' ~ item.username : 'Добавление пользователя' }}</div>
+                            <div class="card-title">{{ user ? 'Редактирование пользователя ' ~ user.username : 'Добавление пользователя' }}</div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -28,7 +28,7 @@
                                     'type': 'text',
                                     'name': 'username',
                                     'args': {
-                                        'value': item.username,
+                                        'value': user.username,
                                         'required': true,
                                     }
                                 } %}
@@ -39,7 +39,7 @@
                                     'type': 'text',
                                     'name': 'password','postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Оставьте пустым, если не хотите менять"></i>',
                                     'args': {
-                                        'required': item.uuid ? false : true,
+                                        'required': user ? false : true,
                                     }
                                 } %}
                             </div>
@@ -54,7 +54,7 @@
                                     'type': 'text',
                                     'name': 'firstname',
                                     'args': {
-                                        'value': item.firstname,
+                                        'value': user.firstname,
                                     }
                                 } %}
                             </div>
@@ -64,7 +64,7 @@
                                     'type': 'text',
                                     'name': 'lastname',
                                     'args': {
-                                        'value': item.lastname,
+                                        'value': user.lastname,
                                     }
                                 } %}
                             </div>
@@ -79,7 +79,7 @@
                                     'type': 'email',
                                     'name': 'email',
                                     'args': {
-                                        'value': item.email,
+                                        'value': user.email,
                                         'required': true,
                                     }
                                 } %}
@@ -91,7 +91,7 @@
                                     'name': 'allow_mail',
                                     'args': {
                                         'option': {'yes':'Да', 'no':'Нет'},
-                                        'selected': item.allow_mail ? 'yes' : 'no'
+                                        'selected': user.allow_mail ? 'yes' : 'no'
                                     }
                                 } %}
                             </div>
@@ -101,7 +101,7 @@
                                     'type': 'tel',
                                     'name': 'phone',
                                     'args': {
-                                        'value': item.phone,
+                                        'value': user.phone,
                                     }
                                 } %}
                             </div>
@@ -117,19 +117,19 @@
                                     'name': 'level',
                                     'args': {
                                         'option': reference('/App/Domain/Types/UserLevelType::LIST'),
-                                        'selected': item.level
+                                        'selected': user.level
                                     }
                                 } %}
                             </div>
                             <div class="col-md-6">
-                                {% if item.uuid %}
+                                {% if user.uuid %}
                                     {% include 'cup/form.twig' with {
                                         'label': 'Статус',
                                         'type': 'select',
                                         'name': 'status',
                                         'args': {
                                             'option': reference('/App/Domain/Types/UserStatusType::LIST'),
-                                            'selected': item.status
+                                            'selected': user.status
                                         }
                                     } %}
                                 {% endif %}
@@ -144,32 +144,37 @@
             </div>
         </div>
 
-        {% if item.uuid %}
+        {% if user.uuid %}
             <div class="col-md-4">
                 <div class="card card-round">
                     <div class="card-body">
                         <div class="user-profile text-center">
                             <div class="avatar avatar-xl mb-3">
-                                <img src="{{ item.avatar(80) }}" alt="{{ item.name('full') }}" class="avatar-img rounded-circle">
+                                <img src="{{ user.avatar(80) }}" alt="{{ user.name('full') }}" class="avatar-img rounded-circle">
                             </div>
-                            <div class="name">{{ item.username }}</div>
-                            <div class="text-muted">{{ reference('/App/Domain/Types/UserLevelType::LIST', item.level) }}</div>
-                            <div class="text-muted">{{ item.uuid }}</div>
+                            <div class="name">{{ user.username }}</div>
+                            <div class="text-muted">{{ user.level }}</div>
+                            <div class="text-muted">{{ user.uuid }}</div>
                         </div>
                     </div>
                     <div class="card-footer">
                         <ul class="list-group list-group-bordered">
-                            {% if item.firstname or item.lastname %}
-                                <li class="list-group-item">Полное имя: {{ item.getName('full') }}</li>
+                            {% if user.firstname or user.lastname %}
+                                <li class="list-group-item">Полное имя: {{ user.getName('full') }}</li>
                             {% endif %}
-                            <li class="list-group-item">E-Mail: {{ item.email }}</li>
-                            <li class="list-group-item">Зарегистрирован: {{ item.register|df('d.m.Y H:i:s') }}</li>
-                            <li class="list-group-item">Последнее редактирование: {{ item.change|df('d.m.Y H:i:s') }}</li>
-                            {% if item.session.date.getTimestamp() %}
-                                <li class="list-group-item">Последняя активность: {{ item.session.date|df('d.m.Y H:i:s') }}</li>
+
+                            <li class="list-group-item">E-Mail: {{ user.email }}</li>
+                            <li class="list-group-item">Зарегистрирован: {{ user.register|df('d.m.Y H:i:s') }}</li>
+                            <li class="list-group-item">Последнее
+                                редактирование: {{ user.change|df('d.m.Y H:i:s') }}</li>
+
+                            {% if user.session.date.getTimestamp() %}
+                                <li class="list-group-item">Последняя
+                                    активность: {{ user.session.date|df('d.m.Y H:i:s') }}</li>
                             {% endif %}
-                            {% if item.session.ip %}
-                                <li class="list-group-item">IP: {{ item.session.ip }}</li>
+
+                            {% if user.session.ip %}
+                                <li class="list-group-item">IP: {{ user.session.ip }}</li>
                             {% endif %}
                         </ul>
                     </div>

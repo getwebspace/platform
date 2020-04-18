@@ -1,19 +1,19 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Repository;
 
 use App\Domain\Entities\User;
 use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
 
 /**
- * @method User|null find($id, $lockMode = null, $lockVersion = null)
- * @method User|null findOneBy(array $criteria, array $orderBy = null)
+ * @method null|User findByUuid($uuid)
+ * @method null|User find($id, $lockMode = null, $lockVersion = null)
+ * @method null|User findOneBy(array $criteria, array $orderBy = null)
  * @method User[]    findAll()
  * @method User[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class UserRepository extends EntityRepository
+class UserRepository extends AbstractRepository
 {
     public function findOneByUsername(string $username): ?User
     {

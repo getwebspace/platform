@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Entities;
 
@@ -6,6 +6,21 @@ use DateTime;
 
 abstract class AbstractEntity
 {
+    protected function getBooleanByValue($value)
+    {
+        if (is_string($value) || is_int($value) || is_bool($value)) {
+            switch (true) {
+                case $value === true || in_array(mb_strtolower(trim($value)), ['1', 'on', 'true', 't', 'yes', 'y'], true):
+                    return true;
+
+                case $value === false || in_array(mb_strtolower(trim($value)), ['0', 'off', 'false', 'f', 'no', 'n'], true):
+                    return false;
+            }
+        }
+
+        return false;
+    }
+
     protected function getIpByValue(string $value)
     {
         return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6) ? $value : '';
@@ -13,7 +28,7 @@ abstract class AbstractEntity
 
     protected function getEmailByValue(string $value)
     {
-        return !!filter_var($value, FILTER_VALIDATE_EMAIL) ? $value : '';
+        return (bool) filter_var($value, FILTER_VALIDATE_EMAIL) ? $value : '';
     }
 
     protected function getPasswordHashByValue(string $value)
