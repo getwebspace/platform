@@ -2,6 +2,9 @@
 
 namespace tests;
 
+// include vars
+require __DIR__ . '/../config/vars.php';
+
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
     private function getTypes(): array
