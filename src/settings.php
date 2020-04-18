@@ -41,7 +41,7 @@ $settings = [
 
     'settings' => [
         'sentry' => ($_ENV['SENTRY'] ?? null),
-        'displayErrorDetails' => ((bool) $_ENV['DEBUG'] ?? false), // set to false in production
+        'displayErrorDetails' => (bool) ($_ENV['DEBUG'] ?? false), // set to false in production
         'addContentLengthHeader' => false, // allow the web server to send the content-length header
         'determineRouteBeforeAppMiddleware' => true,
 
