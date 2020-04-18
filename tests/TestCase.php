@@ -2,9 +2,6 @@
 
 namespace tests;
 
-// include vars
-require_once __DIR__ . '/../config/vars.php';
-
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
     private function getTypes(): array
@@ -23,6 +20,9 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         static $em;
 
         if (!$em) {
+            // include vars
+            require_once __DIR__ . '/../config/vars.php';
+
             foreach ($this->getTypes() as $type => $class) {
                 \Doctrine\DBAL\Types\Type::addType($type, $class);
             }
