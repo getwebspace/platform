@@ -178,6 +178,7 @@ class FormAction extends AbstractAction
 
                 return $this->respondWithJson(['status' => 'ok']);
             }
+
             $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
         } else {
             throw new HttpNotFoundException();

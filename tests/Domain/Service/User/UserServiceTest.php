@@ -6,10 +6,12 @@ use App\Domain\Entities\User;
 use App\Domain\Entities\User\Session as UserSession;
 use App\Domain\Repository\UserRepository;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
+use App\Domain\Service\User\Exception\MissingUniqueValueException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
 use App\Domain\Service\User\UserService;
+use App\Domain\Types\UserStatusType;
 use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
@@ -23,25 +25,24 @@ class UserServiceTest extends TestCase
     /**
      * @var UserService
      */
-    protected $users;
+    protected $service;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->em = $this->getEntityManager();
-        $this->users = new UserService($this->em);
+        $this->service = new UserService($this->em);
     }
 
     public function testCreateByRegisterSuccess1(): void
     {
         $data = [
-            'identifier' => 'username',
             'username' => 'case1',
             'password' => '123456',
         ];
 
         // проверяем, что сервис создает пользователя
-        $user = $this->users->createByRegister($data);
+        $user = $this->service->createByRegister($data);
         $this->assertInstanceOf(User::class, $user);
         $this->assertSame($data['username'], $user->getUsername());
 
@@ -56,13 +57,12 @@ class UserServiceTest extends TestCase
     public function testCreateByRegisterSuccess2(): void
     {
         $data = [
-            'identifier' => 'email',
             'email' => 'case2@local.host',
             'password' => '123456',
         ];
 
         // проверяем, что сервис создает пользователя
-        $user = $this->users->createByRegister($data);
+        $user = $this->service->createByRegister($data);
         $this->assertInstanceOf(User::class, $user);
         $this->assertSame($data['email'], $user->getEmail());
 
@@ -72,6 +72,15 @@ class UserServiceTest extends TestCase
         $u = $userRepo->findOneByEmail($data['email']);
         $this->assertInstanceOf(User::class, $u);
         $this->assertSame($data['email'], $u->getEmail());
+    }
+
+    public function testCreateByRegisterWithMissingUniqueValue(): void
+    {
+        // считаем тест успешным, если сервис выкинет исключение
+        $this->expectException(MissingUniqueValueException::class);
+
+        // проверяем
+        $this->service->createByRegister();
     }
 
     public function testCreateByRegisterWithUsernameExistent(): void
@@ -90,8 +99,7 @@ class UserServiceTest extends TestCase
         $this->em->flush();
 
         // проверяем
-        $this->users->createByRegister([
-            'identifier' => 'username',
+        $this->service->createByRegister([
             'username' => 'case3',
             'password' => '123456',
         ]);
@@ -113,8 +121,7 @@ class UserServiceTest extends TestCase
         $this->em->flush();
 
         // проверяем
-        $this->users->createByRegister([
-            'identifier' => 'email',
+        $this->service->createByRegister([
             'email' => 'case4@local.host',
             'password' => '123456',
         ]);
@@ -123,8 +130,7 @@ class UserServiceTest extends TestCase
     public function testGetByLoginSuccess1(): void
     {
         // создаем пользователя, которого будем тестировать
-        $this->users->createByRegister([
-            'identifier' => 'username',
+        $this->service->createByRegister([
             'username' => 'case5',
             'password' => '123456',
         ]);
@@ -137,7 +143,7 @@ class UserServiceTest extends TestCase
         ];
 
         // проверяем, что пользователь найден
-        $user = $this->users->getByLogin($data);
+        $user = $this->service->getByLogin($data);
         $this->assertInstanceOf(User::class, $user);
         $this->assertSame($data['identifier'], $user->getUsername());
     }
@@ -145,8 +151,7 @@ class UserServiceTest extends TestCase
     public function testGetByLoginSuccess2(): void
     {
         // создаем пользователя, которого будем тестировать
-        $this->users->createByRegister([
-            'identifier' => 'email',
+        $this->service->createByRegister([
             'email' => 'case6@local.host',
             'password' => '123456',
         ]);
@@ -159,7 +164,7 @@ class UserServiceTest extends TestCase
         ];
 
         // проверяем, что пользователь найден
-        $user = $this->users->getByLogin($data);
+        $user = $this->service->getByLogin($data);
         $this->assertInstanceOf(User::class, $user);
         $this->assertSame($data['identifier'], $user->getEmail());
     }
@@ -177,7 +182,7 @@ class UserServiceTest extends TestCase
         ];
 
         // проверяем
-        $this->users->getByLogin($data);
+        $this->service->getByLogin($data);
     }
 
     public function testGetByLoginWithUserNotFound2(): void
@@ -193,7 +198,7 @@ class UserServiceTest extends TestCase
         ];
 
         // проверяем
-        $this->users->getByLogin($data);
+        $this->service->getByLogin($data);
     }
 
     public function testGetByLoginWithWrongPassword(): void
@@ -202,8 +207,7 @@ class UserServiceTest extends TestCase
         $this->expectException(WrongPasswordException::class);
 
         // создаем пользователя, которого будем тестировать
-        $this->users->createByRegister([
-            'identifier' => 'username',
+        $this->service->createByRegister([
             'username' => 'case9',
             'password' => '123456',
         ]);
@@ -216,6 +220,53 @@ class UserServiceTest extends TestCase
         ];
 
         // проверяем
-        $this->users->getByLogin($data);
+        $this->service->getByLogin($data);
+    }
+
+    public function testChange(): void
+    {
+        // создаем пользователя, которого будем тестировать
+        $user = $this->service->createByCup([
+            'username' => 'case10',
+            'email' => 'case10@local.host',
+            'password' => '123456',
+        ]);
+
+        $data = [
+            'firstname' => 'Sofiya',
+            'lastname' => 'Ilyina',
+            'email' => 's.ilyina@local.host',
+        ];
+
+        $user = $this->service->change($user, $data);
+        $this->assertSame($data['firstname'], $user->getFirstname());
+        $this->assertSame($data['lastname'], $user->getLastname());
+        $this->assertSame($data['email'], $user->getEmail());
+    }
+
+    public function testDelete(): void
+    {
+        // создаем пользователя, которого будем тестировать
+        $user = $this->service->createByCup([
+            'username' => 'case11',
+            'email' => 'case11@local.host',
+            'password' => '123456',
+        ]);
+
+        $user = $this->service->delete($user);
+        $this->assertSame(UserStatusType::STATUS_DELETE, $user->getStatus());
+    }
+
+    public function testBlock(): void
+    {
+        // создаем пользователя, которого будем тестировать
+        $user = $this->service->createByCup([
+            'username' => 'case12',
+            'email' => 'case12@local.host',
+            'password' => '123456',
+        ]);
+
+        $user = $this->service->block($user);
+        $this->assertSame(UserStatusType::STATUS_BLOCK, $user->getStatus());
     }
 }

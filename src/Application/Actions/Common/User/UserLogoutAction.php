@@ -6,8 +6,8 @@ class UserLogoutAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
-        setcookie('uuid', '-1', time(), '/');
-        setcookie('session', '-1', time(), '/');
+        setcookie('uuid', '-1', time() - 10, '/');
+        setcookie('session', '-1', time() - 10, '/');
 
         return $this->response->withRedirect('/');
     }

@@ -18,6 +18,11 @@ abstract class AbstractService
      */
     protected $logger;
 
+    /**
+     * @var AbstractRepository
+     */
+    protected $service;
+
     public function __construct(EntityManager $entityManager, LoggerInterface $logger = null)
     {
         $this->entityManager = $entityManager;

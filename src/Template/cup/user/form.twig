@@ -91,7 +91,7 @@
                                     'name': 'allow_mail',
                                     'args': {
                                         'option': {'yes':'Да', 'no':'Нет'},
-                                        'selected': user.allow_mail ? 'yes' : 'no'
+                                        'selected': user.getAllowMail() ? 'yes' : 'no'
                                     }
                                 } %}
                             </div>
@@ -165,12 +165,10 @@
 
                             <li class="list-group-item">E-Mail: {{ user.email }}</li>
                             <li class="list-group-item">Зарегистрирован: {{ user.register|df('d.m.Y H:i:s') }}</li>
-                            <li class="list-group-item">Последнее
-                                редактирование: {{ user.change|df('d.m.Y H:i:s') }}</li>
+                            <li class="list-group-item">Последнее редактирование: {{ user.change|df('d.m.Y H:i:s') }}</li>
 
                             {% if user.session.date.getTimestamp() %}
-                                <li class="list-group-item">Последняя
-                                    активность: {{ user.session.date|df('d.m.Y H:i:s') }}</li>
+                                <li class="list-group-item">Последняя активность: {{ user.session.date|df('d.m.Y H:i:s') }}</li>
                             {% endif %}
 
                             {% if user.session.ip %}

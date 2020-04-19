@@ -78,4 +78,15 @@ class Session extends AbstractEntity
     {
         return $this->date;
     }
+
+    public function getHash()
+    {
+        return sha1(
+            'salt:' . ($_ENV['SALT'] ?? 'Li8.1Ej2-<Cid3[bE') . ';' .
+            'uuid:' . $this->getUuid() . ';' .
+            'ip:' . md5($this->getIp()) . ';' .
+            'agent:' . md5($this->getAgent()) . ';' .
+            'date:' . $this->getDate()->getTimestamp()
+        );
+    }
 }

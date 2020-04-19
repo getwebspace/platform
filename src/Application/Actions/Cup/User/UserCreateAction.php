@@ -11,20 +11,18 @@ class UserCreateAction extends UserAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->request->isPost()) {
-            $data = [
-                'username' => $this->request->getParam('username'),
-                'password' => $this->request->getParam('password'),
-                'firstname' => $this->request->getParam('firstname'),
-                'lastname' => $this->request->getParam('lastname'),
-                'email' => $this->request->getParam('email'),
-                'allow_mail' => $this->request->getParam('allow_mail'),
-                'phone' => $this->request->getParam('phone'),
-                'level' => $this->request->getParam('level'),
-            ];
-
             try {
                 $userService = UserService::getFromContainer($this->container);
-                $user = $userService->createByAdmin($data);
+                $user = $userService->createByCup([
+                    'username' => $this->request->getParam('username'),
+                    'password' => $this->request->getParam('password'),
+                    'firstname' => $this->request->getParam('firstname'),
+                    'lastname' => $this->request->getParam('lastname'),
+                    'email' => $this->request->getParam('email'),
+                    'allow_mail' => $this->request->getParam('allow_mail'),
+                    'phone' => $this->request->getParam('phone'),
+                    'level' => $this->request->getParam('level'),
+                ]);
 
                 switch (true) {
                     case $this->request->getParam('save', 'exit') === 'exit':
