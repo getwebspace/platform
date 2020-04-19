@@ -112,6 +112,7 @@ class CartAction extends CatalogAction
 
                     return $this->respondWithJson(['redirect' => '/cart/done/' . $model->uuid]);
                 }
+
                 $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
             } else {
                 $this->addErrorFromCheck($check);

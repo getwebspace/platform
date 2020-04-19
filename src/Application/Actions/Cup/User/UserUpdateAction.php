@@ -2,6 +2,13 @@
 
 namespace App\Application\Actions\Cup\User;
 
+use App\Domain\Exceptions\WrongEmailValueException;
+use App\Domain\Exceptions\WrongPhoneValueException;
+use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
+use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
+use App\Domain\Service\User\Exception\UserNotFoundException;
+use App\Domain\Service\User\UserService;
+
 class UserUpdateAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
@@ -11,39 +18,35 @@ class UserUpdateAction extends UserAction
 
             if ($user) {
                 if ($this->request->isPost()) {
-                    // смена username
-                    if (
-                        ($username = $this->request->getParam('username')) !== null &&
-                        $this->users->findOneByUsername($username) === null
-                    ) {
-                        $user->setUsername($username);
-                    }
+                    try {
+                        $userService = UserService::getFromContainer($this->container);
+                        $userService->change(
+                            $user,
+                            [
+                                'username' => $this->request->getParam('username'),
+                                'firstname' => $this->request->getParam('firstname'),
+                                'lastname' => $this->request->getParam('lastname'),
+                                'email' => $this->request->getParam('email'),
+                                'allow_mail' => $this->request->getParam('allow_mail'),
+                                'phone' => $this->request->getParam('phone'),
+                                'password' => $this->request->getParam('password'),
+                                'level' => $this->request->getParam('level'),
+                                'status' => $this->request->getParam('status'),
+                            ]
+                        );
 
-                    // смена email
-                    if (
-                        ($email = $this->request->getParam('email')) !== null &&
-                        $this->users->findOneByUsername($email) === null
-                    ) {
-                        $user->setEmail($email);
-                    }
-
-                    $user
-                        ->setPassword($this->request->getParam('password'))
-                        ->setFirstname($this->request->getParam('firstname'))
-                        ->setLastname($this->request->getParam('lastname'))
-                        ->setAllowMail($this->request->getParam('allow_mail'))
-                        ->setPhone($this->request->getParam('phone'))
-                        ->setLevel($this->request->getParam('level'))
-                        ->setStatus($this->request->getParam('status'))
-                        ->setChange('now');
-
-                    $this->entityManager->flush();
-
-                    switch (true) {
-                        case $this->request->getParam('save', 'exit') === 'exit':
-                            return $this->response->withRedirect('/cup/user');
-                        default:
-                            return $this->response->withRedirect('/cup/user/' . $user->getUuid() . '/edit');
+                        switch (true) {
+                            case $this->request->getParam('save', 'exit') === 'exit':
+                                return $this->response->withRedirect('/cup/user');
+                            default:
+                                return $this->response->withRedirect('/cup/user/' . $user->getUuid() . '/edit');
+                        }
+                    } catch (UsernameAlreadyExistsException $e) {
+                        $this->addError('username', $e->getMessage());
+                    } catch (WrongEmailValueException|EmailAlreadyExistsException $e) {
+                        $this->addError('email', $e->getMessage());
+                    } catch (WrongPhoneValueException $e) {
+                        $this->addError('phone', $e->getMessage());
                     }
                 }
 
@@ -51,6 +54,6 @@ class UserUpdateAction extends UserAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/user')->withStatus(301);
+        return $this->response->withRedirect('/cup/user');
     }
 }

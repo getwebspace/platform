@@ -34,16 +34,8 @@ class UserLoginAction extends UserAction
                         'ip' => $data['ip'],
                     ]);
 
-                    $hash = sha1(
-                        'salt:' . ($this->container->get('secret')['salt'] ?? '') . ';' .
-                        'uuid:' . $user->getUuid()->toString() . ';' .
-                        'ip:' . md5($data['ip']) . ';' .
-                        'agent:' . md5($data['agent']) . ';' .
-                        'date:' . $user->getSession()->getDate()->getTimestamp()
-                    );
-
                     setcookie('uuid', $user->getUuid()->toString(), time() + \App\Domain\References\Date::YEAR, '/');
-                    setcookie('session', $hash, time() + \App\Domain\References\Date::YEAR, '/');
+                    setcookie('session', $user->getSession()->getHash(), time() + \App\Domain\References\Date::YEAR, '/');
 
                     return $this->response->withRedirect($data['redirect'] ? $data['redirect'] : '/user/profile');
                 } catch (UserNotFoundException $exception) {

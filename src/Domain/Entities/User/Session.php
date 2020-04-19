@@ -32,6 +32,13 @@ class Session extends AbstractEntity
      */
     private $ip = '';
 
+    /**
+     * @param $ip
+     *
+     * @throws \App\Domain\Exceptions\WrongIpValueException
+     *
+     * @return $this
+     */
     public function setIp($ip)
     {
         $this->ip = $this->getIpByValue($ip);
@@ -77,5 +84,16 @@ class Session extends AbstractEntity
     public function getDate()
     {
         return $this->date;
+    }
+
+    public function getHash()
+    {
+        return sha1(
+            'salt:' . ($_ENV['SALT'] ?? 'Li8.1Ej2-<Cid3[bE') . ';' .
+            'uuid:' . $this->getUuid() . ';' .
+            'ip:' . md5($this->getIp()) . ';' .
+            'agent:' . md5($this->getAgent()) . ';' .
+            'date:' . $this->getDate()->getTimestamp()
+        );
     }
 }

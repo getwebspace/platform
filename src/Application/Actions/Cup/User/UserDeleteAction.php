@@ -2,19 +2,15 @@
 
 namespace App\Application\Actions\Cup\User;
 
+use App\Domain\Service\User\UserService;
+
 class UserDeleteAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            /** @var \App\Domain\Entities\User $item */
-            $item = $this->users->findOneBy(['uuid' => $this->resolveArg('uuid')]);
-
-            if (!$item->isEmpty()) {
-                $item->set('status', \App\Domain\Types\UserStatusType::STATUS_DELETE);
-                $this->entityManager->persist($item);
-                $this->entityManager->flush();
-            }
+            $userService = UserService::getFromContainer($this->container);
+            $userService->delete($this->resolveArg('uuid'));
         }
 
         return $this->response->withAddedHeader('Location', '/cup/user')->withStatus(301);

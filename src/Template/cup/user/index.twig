@@ -120,7 +120,7 @@
                                         <td>
                                             {{ user.username }}
 
-                                            {% if item.allow_mail %}
+                                            {% if user.getAllowMail() %}
                                                 <div class="text-black-50 float-right" data-toggle="tooltip" data-placement="right" title="Подписан на рассылку">
                                                     <i class="fa fa-envelope"></i>
                                                 </div>

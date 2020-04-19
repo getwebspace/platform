@@ -5,24 +5,30 @@ namespace App\Domain\Service\User;
 use App\Domain\AbstractService;
 use App\Domain\Entities\User;
 use App\Domain\Entities\User\Session as UserSession;
+use App\Domain\Exceptions\WrongEmailValueException;
+use App\Domain\Exceptions\WrongPhoneValueException;
 use App\Domain\Repository\UserRepository;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
+use App\Domain\Service\User\Exception\MissingUniqueValueException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
 use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
+use Ramsey\Uuid\Uuid;
 
 class UserService extends AbstractService
 {
-    /** @var UserRepository */
-    private $users;
+    /**
+     * @var UserRepository
+     */
+    protected $service;
 
     public function __construct(EntityManager $entityManager, LoggerInterface $logger = null)
     {
         parent::__construct($entityManager, $logger);
 
-        $this->users = $this->entityManager->getRepository(User::class);
+        $this->service = $this->entityManager->getRepository(User::class);
     }
 
     /**
@@ -43,7 +49,7 @@ class UserService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        $user = $this->users->findOneByIdentifier($data['identifier']);
+        $user = $this->service->findOneByIdentifier($data['identifier']);
 
         if ($user === null) {
             throw new UserNotFoundException();
@@ -66,7 +72,9 @@ class UserService extends AbstractService
     /**
      * @param array $data
      *
+     * @throws MissingUniqueValueException
      * @throws EmailAlreadyExistsException
+     * @throws WrongEmailValueException
      * @throws UsernameAlreadyExistsException
      *
      * @return null|User
@@ -74,17 +82,19 @@ class UserService extends AbstractService
     public function createByRegister(array $data = []): ?User
     {
         $default = [
-            'identifier' => '',
             'username' => '',
             'email' => '',
             'password' => '',
         ];
         $data = array_merge($default, $data);
 
-        if ($data['username'] && $this->users->findOneByUsername($data['username']) !== null) {
+        if (!$data['username'] && !$data['email']) {
+            throw new MissingUniqueValueException();
+        }
+        if ($data['username'] && $this->service->findOneByUsername($data['username']) !== null) {
             throw new UsernameAlreadyExistsException();
         }
-        if ($data['email'] && $this->users->findOneByEmail($data['email']) !== null) {
+        if ($data['email'] && $this->service->findOneByEmail($data['email']) !== null) {
             throw new EmailAlreadyExistsException();
         }
 
@@ -103,7 +113,17 @@ class UserService extends AbstractService
         return $user;
     }
 
-    public function createByAdmin(array $data = []): ?User
+    /**
+     * @param array $data
+     *
+     * @throws EmailAlreadyExistsException
+     * @throws UsernameAlreadyExistsException
+     * @throws WrongEmailValueException
+     * @throws WrongPhoneValueException
+     *
+     * @return User|null
+     */
+    public function createByCup(array $data = []): ?User
     {
         $default = [
             'username' => '',
@@ -118,10 +138,10 @@ class UserService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        if ($this->users->findOneByUsername($data['username']) !== null) {
+        if ($this->service->findOneByUsername($data['username']) !== null) {
             throw new UsernameAlreadyExistsException();
         }
-        if ($this->users->findOneByEmail($data['email']) !== null) {
+        if ($this->service->findOneByEmail($data['email']) !== null) {
             throw new EmailAlreadyExistsException();
         }
 
@@ -144,5 +164,147 @@ class UserService extends AbstractService
         $this->entityManager->flush();
 
         return $user;
+    }
+
+    /**
+     * @param string|User|Uuid $entity
+     * @param array            $data
+     *
+     * @throws UsernameAlreadyExistsException
+     * @throws EmailAlreadyExistsException
+     * @throws WrongEmailValueException
+     * @throws WrongPhoneValueException
+     * @throws UserNotFoundException
+     *
+     * @return null|User
+     */
+    public function change($entity, array $data = [])
+    {
+        switch (true) {
+            case is_string($entity) && Uuid::isValid($entity):
+            case is_object($entity) && is_a($entity, Uuid::class):
+                $entity = $this->service->findByUuid((string) $entity);
+
+                break;
+        }
+
+        if (is_object($entity) && is_a($entity, User::class)) {
+            $default = [
+                'username' => '',
+                'email' => '',
+                'phone' => '',
+                'password' => '',
+                'firstname' => '',
+                'lastname' => '',
+                'allow_mail' => '',
+                'status' => '',
+                'level' => '',
+            ];
+            $data = array_merge($default, $data);
+
+            if ($data !== $default) {
+                if ($data['username']) {
+                    $found = $this->service->findOneByUsername($data['email']);
+
+                    if ($found === null || $found === $entity) {
+                        $entity->setUsername($data['username']);
+                    } else {
+                        throw new UsernameAlreadyExistsException();
+                    }
+                }
+                if ($data['email']) {
+                    $found = $this->service->findOneByEmail($data['email']);
+
+                    if ($found === null || $found === $entity) {
+                        $entity->setEmail($data['email']);
+                    } else {
+                        throw new EmailAlreadyExistsException();
+                    }
+                }
+                if ($data['phone']) {
+                    $entity->setPhone($data['phone']);
+                }
+                if ($data['password']) {
+                    $entity->setPassword($data['password']);
+                }
+                if ($data['firstname']) {
+                    $entity->setFirstname($data['firstname']);
+                }
+                if ($data['lastname']) {
+                    $entity->setLastname($data['lastname']);
+                }
+                if ($data['allow_mail']) {
+                    $entity->setAllowMail($data['allow_mail']);
+                }
+                if ($data['status']) {
+                    $entity->setStatus($data['status']);
+                }
+                if ($data['level']) {
+                    $entity->setLevel($data['level']);
+                }
+
+                $entity->setChange('now');
+
+                $this->entityManager->flush();
+            }
+
+            return $entity;
+        }
+
+        throw new UserNotFoundException();
+    }
+
+    /**
+     * @param string|User|Uuid $entity
+     *
+     * @throws UserNotFoundException
+     *
+     * @return null|User
+     */
+    public function delete($entity)
+    {
+        if (
+            (is_string($entity) && Uuid::isValid($entity)) ||
+            (is_object($entity) && is_a($entity, Uuid::class))
+        ) {
+            $entity = $this->service->findByUuid((string) $entity);
+        }
+
+        if (is_object($entity) && is_a($entity, User::class)) {
+            $entity->setStatus(\App\Domain\Types\UserStatusType::STATUS_DELETE)->setChange('now');
+
+            $this->entityManager->flush();
+
+            return $entity;
+        }
+
+        throw new UserNotFoundException();
+    }
+
+    /**
+     * @param string|User|Uuid $entity
+     *
+     * @throws UserNotFoundException
+     *
+     * @return null|User
+     */
+    public function block($entity)
+    {
+        if (
+            (is_string($entity) && Uuid::isValid($entity)) ||
+            (is_object($entity) && is_a($entity, Uuid::class))
+        ) {
+            $entity = $this->service->findByUuid((string) $entity);
+        }
+
+        if (is_object($entity) && is_a($entity, User::class)) {
+            $entity->setStatus(\App\Domain\Types\UserStatusType::STATUS_BLOCK)->setChange('now');
+
+            $this->entityManager->flush();
+
+            return $entity;
+        }
+
+        throw new UserNotFoundException();
     }
 }

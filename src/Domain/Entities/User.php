@@ -57,6 +57,8 @@ class User extends AbstractEntity
 
     /**
      * @param string $email
+     *
+     * @throws \App\Domain\Exceptions\WrongEmailValueException
      */
     public function setEmail(string $email)
     {
@@ -92,6 +94,8 @@ class User extends AbstractEntity
 
     /**
      * @param string $phone
+     *
+     * @throws \App\Domain\Exceptions\WrongPhoneValueException
      */
     public function setPhone(string $phone)
     {

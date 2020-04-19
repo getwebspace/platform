@@ -35,7 +35,11 @@ abstract class AbstractException extends Exception
      */
     public function getTitle(): string
     {
-        return $this->title;
+        if ($this->title) {
+            return $this->title;
+        }
+
+        return $this->getDescription();
     }
 
     /**
@@ -55,7 +59,11 @@ abstract class AbstractException extends Exception
      */
     public function getDescription(): string
     {
-        return $this->description;
+        if ($this->description) {
+            return $this->description;
+        }
+
+        return $this->getMessage();
     }
 
     /**

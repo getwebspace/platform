@@ -2,6 +2,9 @@
 
 namespace App\Domain;
 
+use App\Domain\Exceptions\WrongEmailValueException;
+use App\Domain\Exceptions\WrongIpValueException;
+use App\Domain\Exceptions\WrongPhoneValueException;
 use DateTime;
 
 abstract class AbstractEntity
@@ -21,14 +24,36 @@ abstract class AbstractEntity
         return false;
     }
 
+    /**
+     * @param string $value
+     *
+     * @throws WrongIpValueException
+     *
+     * @return string
+     */
     protected function getIpByValue(string $value)
     {
-        return filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6) ? $value : '';
+        if (filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6)) {
+            return $value;
+        }
+
+        throw new WrongIpValueException();
     }
 
+    /**
+     * @param string $value
+     *
+     * @throws WrongEmailValueException
+     *
+     * @return string
+     */
     protected function getEmailByValue(string $value)
     {
-        return (bool) filter_var($value, FILTER_VALIDATE_EMAIL) ? $value : '';
+        if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
+            return $value;
+        }
+
+        throw new WrongEmailValueException();
     }
 
     protected function getPasswordHashByValue(string $value)
@@ -36,6 +61,13 @@ abstract class AbstractEntity
         return crypta_hash($value, ($_ENV['SALT'] ?? 'Li8.1Ej2-<Cid3[bE'));
     }
 
+    /**
+     * @param string $value
+     *
+     * @throws WrongPhoneValueException
+     *
+     * @return string|string[]
+     */
     protected function checkPhoneByValue(string $value)
     {
         if (isset($_ENV['SIMPLE_PHONE_CHECK']) && $_ENV['SIMPLE_PHONE_CHECK']) {
@@ -44,21 +76,32 @@ abstract class AbstractEntity
 
         $pattern = '/\(?\+[0-9]{1,3}\)? ?-?[0-9]{1,3} ?-?[0-9]{3,5} ?-?[0-9]{4}( ?-?[0-9]{3})? ?(\w{1,10}\s?\d{1,6})?/';
 
-        return preg_match($pattern, $value) ? $value : '';
+        if (preg_match($pattern, $value)) {
+            return $value;
+        }
+
+        throw new WrongPhoneValueException();
     }
 
-    protected function getDateTimeByValue($var)
+    /**
+     * @param $value
+     *
+     * @throws \Exception
+     *
+     * @return DateTime
+     */
+    protected function getDateTimeByValue($value)
     {
         switch (true) {
-            case is_string($var):
-            case is_numeric($var):
-                return new DateTime($var);
+            case is_string($value):
+            case is_numeric($value):
+                return new DateTime($value);
 
-            case is_null($var):
-                return new DateTime();
+            case is_null($value):
+                return new DateTime('now');
 
-            case is_a($var, DateTime::class):
-                return clone $var;
+            case is_a($value, DateTime::class):
+                return clone $value;
         }
 
         return new DateTime('now');

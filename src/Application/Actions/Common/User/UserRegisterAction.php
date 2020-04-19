@@ -3,6 +3,7 @@
 namespace App\Application\Actions\Common\User;
 
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
+use App\Domain\Service\User\Exception\MissingUniqueValueException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\UserService;
 
@@ -25,12 +26,13 @@ class UserRegisterAction extends UserAction
                     try {
                         $userService = UserService::getFromContainer($this->container);
                         $userService->createByRegister([
-                            'identifier' => $identifier,
                             $identifier => $data[$identifier],
                             'password' => $data['password'],
                         ]);
 
                         return $this->response->withRedirect('/user/login');
+                    } catch (MissingUniqueValueException $exception) {
+                        $this->addError($identifier, $exception->getMessage());
                     } catch (UsernameAlreadyExistsException $exception) {
                         $this->addError('username', $exception->getMessage());
                     } catch (EmailAlreadyExistsException $exception) {
