@@ -49,11 +49,15 @@ abstract class AbstractEntity
      */
     protected function getEmailByValue(string $value)
     {
-        if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
-            return $value;
+        if ($value) {
+            if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                return $value;
+            }
+
+            throw new WrongEmailValueException();
         }
 
-        throw new WrongEmailValueException();
+        return '';
     }
 
     protected function getPasswordHashByValue(string $value)
@@ -70,17 +74,21 @@ abstract class AbstractEntity
      */
     protected function checkPhoneByValue(string $value)
     {
-        if (isset($_ENV['SIMPLE_PHONE_CHECK']) && $_ENV['SIMPLE_PHONE_CHECK']) {
-            return str_replace([' ', '+', '-', '(', ')'], '', $value);
+        if ($value) {
+            if (isset($_ENV['SIMPLE_PHONE_CHECK']) && $_ENV['SIMPLE_PHONE_CHECK']) {
+                return str_replace([' ', '+', '-', '(', ')'], '', $value);
+            }
+
+            $pattern = '/\(?\+[0-9]{1,3}\)? ?-?[0-9]{1,3} ?-?[0-9]{3,5} ?-?[0-9]{4}( ?-?[0-9]{3})? ?(\w{1,10}\s?\d{1,6})?/';
+
+            if (preg_match($pattern, $value)) {
+                return $value;
+            }
+
+            throw new WrongPhoneValueException();
         }
 
-        $pattern = '/\(?\+[0-9]{1,3}\)? ?-?[0-9]{1,3} ?-?[0-9]{3,5} ?-?[0-9]{4}( ?-?[0-9]{3})? ?(\w{1,10}\s?\d{1,6})?/';
-
-        if (preg_match($pattern, $value)) {
-            return $value;
-        }
-
-        throw new WrongPhoneValueException();
+        return '';
     }
 
     /**
