@@ -121,7 +121,7 @@ class UserService extends AbstractService
      * @throws WrongEmailValueException
      * @throws WrongPhoneValueException
      *
-     * @return User|null
+     * @return null|User
      */
     public function createByCup(array $data = []): ?User
     {
