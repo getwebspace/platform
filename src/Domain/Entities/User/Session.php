@@ -44,8 +44,8 @@ class Session extends AbstractEntity
      */
     public function setIp($ip)
     {
-        if ($this->checkStrLenMax($ip, 16)) {
-            $this->ip = $this->getIpByValue($ip);
+        if ($this->checkStrLenMax($ip, 16) && $this->getIpByValue($ip)) {
+            $this->ip = $ip;
         }
 
         return $this;
