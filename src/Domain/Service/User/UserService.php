@@ -72,10 +72,10 @@ class UserService extends AbstractService
     /**
      * @param array $data
      *
-     * @throws MissingUniqueValueException
      * @throws EmailAlreadyExistsException
-     * @throws WrongEmailValueException
+     * @throws MissingUniqueValueException
      * @throws UsernameAlreadyExistsException
+     * @throws WrongEmailValueException
      *
      * @return null|User
      */

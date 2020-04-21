@@ -9,6 +9,106 @@ use DateTime;
 
 abstract class AbstractEntity
 {
+    /**
+     * @param string $value
+     * @param int    $min
+     * @param int    $max
+     *
+     * @return bool
+     */
+    protected function checkStrLenBetween(string $value, int $min = 0, int $max = INF)
+    {
+        if (!is_scalar($value)) {
+            return false;
+        }
+        $len = mb_strlen($value);
+
+        return $len >= $min && $len <= $max;
+    }
+
+    /**
+     * @param string $value
+     * @param int    $max
+     *
+     * @return bool
+     */
+    protected function checkStrLenMax(string $value, int $max = INF)
+    {
+        if (!is_scalar($value)) {
+            return false;
+        }
+
+        return mb_strlen($value) <= $max;
+    }
+
+    /**
+     * @param string $value
+     * @param int    $min
+     *
+     * @return bool
+     */
+    protected function checkStrLenMin(string $value, int $min = 0)
+    {
+        if (!is_scalar($value)) {
+            return false;
+        }
+
+        return mb_strlen($value) >= $min;
+    }
+
+    /**
+     * @param string $value
+     *
+     * @throws WrongEmailValueException
+     *
+     * @return string
+     */
+    protected function checkEmailByValue(string $value)
+    {
+        if ($value) {
+            if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                return true;
+            }
+
+            throw new WrongEmailValueException();
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $value
+     *
+     * @throws WrongPhoneValueException
+     *
+     * @return bool
+     */
+    protected function checkPhoneByValue(string &$value)
+    {
+        if ($value) {
+            if (isset($_ENV['SIMPLE_PHONE_CHECK']) && $_ENV['SIMPLE_PHONE_CHECK']) {
+                $value = str_replace([' ', '+', '-', '(', ')'], '', $value);
+
+                return true;
+            }
+
+            $pattern = '/\(?\+[0-9]{1,3}\)? ?-?[0-9]{1,3} ?-?[0-9]{3,5} ?-?[0-9]{4}( ?-?[0-9]{3})? ?(\w{1,10}\s?\d{1,6})?/';
+
+            if (preg_match($pattern, $value)) {
+                return true;
+            }
+
+            throw new WrongPhoneValueException();
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $value
+     *
+     * @return bool
+     */
     protected function getBooleanByValue($value)
     {
         if (is_string($value) || is_int($value) || is_bool($value)) {
@@ -34,7 +134,7 @@ abstract class AbstractEntity
     protected function getIpByValue(string $value)
     {
         if (filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6)) {
-            return $value;
+            return true;
         }
 
         throw new WrongIpValueException();
@@ -43,52 +143,11 @@ abstract class AbstractEntity
     /**
      * @param string $value
      *
-     * @throws WrongEmailValueException
-     *
      * @return string
      */
-    protected function getEmailByValue(string $value)
-    {
-        if ($value) {
-            if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                return $value;
-            }
-
-            throw new WrongEmailValueException();
-        }
-
-        return '';
-    }
-
     protected function getPasswordHashByValue(string $value)
     {
         return crypta_hash($value, ($_ENV['SALT'] ?? 'Li8.1Ej2-<Cid3[bE'));
-    }
-
-    /**
-     * @param string $value
-     *
-     * @throws WrongPhoneValueException
-     *
-     * @return string|string[]
-     */
-    protected function checkPhoneByValue(string $value)
-    {
-        if ($value) {
-            if (isset($_ENV['SIMPLE_PHONE_CHECK']) && $_ENV['SIMPLE_PHONE_CHECK']) {
-                return str_replace([' ', '+', '-', '(', ')'], '', $value);
-            }
-
-            $pattern = '/\(?\+[0-9]{1,3}\)? ?-?[0-9]{1,3} ?-?[0-9]{3,5} ?-?[0-9]{4}( ?-?[0-9]{3})? ?(\w{1,10}\s?\d{1,6})?/';
-
-            if (preg_match($pattern, $value)) {
-                return $value;
-            }
-
-            throw new WrongPhoneValueException();
-        }
-
-        return '';
     }
 
     /**
@@ -115,6 +174,9 @@ abstract class AbstractEntity
         return new DateTime('now');
     }
 
+    /**
+     * @return AbstractEntity
+     */
     public function clone()
     {
         return clone $this;

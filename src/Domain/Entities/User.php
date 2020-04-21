@@ -3,6 +3,7 @@
 namespace App\Domain\Entities;
 
 use App\Domain\AbstractEntity;
+use App\Domain\Entities\User\Session as UserSession;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
@@ -20,8 +21,11 @@ class User extends AbstractEntity
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    private $uuid;
+    private Uuid $uuid;
 
+    /**
+     * @return Uuid
+     */
     public function getUuid(): Uuid
     {
         return $this->uuid;
@@ -30,14 +34,18 @@ class User extends AbstractEntity
     /**
      * @ORM\Column(type="string", length=50, options={"default": ""})
      */
-    private $username = '';
+    private string $username = '';
 
     /**
      * @param string $username
+     *
+     * @return $this
      */
     public function setUsername(string $username)
     {
-        $this->username = $username;
+        if ($this->checkStrLenMax($username, 50)) {
+            $this->username = $username;
+        }
 
         return $this;
     }
@@ -53,16 +61,20 @@ class User extends AbstractEntity
     /**
      * @ORM\Column(type="string", length=120, unique=true, options={"default": ""})
      */
-    private $email = '';
+    private string $email = '';
 
     /**
      * @param string $email
      *
      * @throws \App\Domain\Exceptions\WrongEmailValueException
+     *
+     * @return $this
      */
     public function setEmail(string $email)
     {
-        $this->email = $this->getEmailByValue($email);
+        if ($this->checkStrLenMax($email, 120) && $this->checkEmailByValue($email)) {
+            $this->email = $email;
+        }
 
         return $this;
     }
@@ -90,16 +102,20 @@ class User extends AbstractEntity
     /**
      * @ORM\Column(type="string", length=25, options={"default": ""})
      */
-    private $phone = '';
+    private string $phone = '';
 
     /**
      * @param string $phone
      *
      * @throws \App\Domain\Exceptions\WrongPhoneValueException
+     *
+     * @return $this
      */
     public function setPhone(string $phone)
     {
-        $this->phone = $this->checkPhoneByValue($phone);
+        if ($this->checkStrLenMax($phone, 25) && $this->checkPhoneByValue($phone)) {
+            $this->phone = $phone;
+        }
 
         return $this;
     }
@@ -115,14 +131,16 @@ class User extends AbstractEntity
     /**
      * @ORM\Column(type="string", length=140, options={"default": ""})
      */
-    private $password = '';
+    private string $password = '';
 
     /**
      * @param string $password
+     *
+     * @return $this
      */
     public function setPassword(string $password)
     {
-        if ($password) {
+        if ($password && $this->checkStrLenMax($password, 140)) {
             $this->password = $this->getPasswordHashByValue($password);
         }
 
@@ -140,14 +158,18 @@ class User extends AbstractEntity
     /**
      * @ORM\Column(type="string", length=50, options={"default": ""})
      */
-    private $firstname = '';
+    private string $firstname = '';
 
     /**
      * @param string $firstname
+     *
+     * @return $this
      */
     public function setFirstname(string $firstname)
     {
-        $this->firstname = $firstname;
+        if ($this->checkStrLenMax($firstname, 50)) {
+            $this->firstname = $firstname;
+        }
 
         return $this;
     }
@@ -163,14 +185,18 @@ class User extends AbstractEntity
     /**
      * @ORM\Column(type="string", length=50, options={"default": ""})
      */
-    private $lastname = '';
+    private string $lastname = '';
 
     /**
      * @param string $lastname
+     *
+     * @return $this
      */
     public function setLastname(string $lastname)
     {
-        $this->lastname = $lastname;
+        if ($this->checkStrLenMax($lastname, 50)) {
+            $this->lastname = $lastname;
+        }
 
         return $this;
     }
@@ -203,14 +229,19 @@ class User extends AbstractEntity
             }
         }
 
-        return null;
+        return '';
     }
 
     /**
      * @ORM\Column(type="boolean", options={"default": true})
      */
-    private $allow_mail = true;
+    private bool $allow_mail = true;
 
+    /**
+     * @param $allow_mail
+     *
+     * @return $this
+     */
     public function setAllowMail($allow_mail)
     {
         $this->allow_mail = $this->getBooleanByValue($allow_mail);
@@ -218,6 +249,9 @@ class User extends AbstractEntity
         return $this;
     }
 
+    /**
+     * @return bool
+     */
     public function getAllowMail()
     {
         return $this->allow_mail;
@@ -229,8 +263,13 @@ class User extends AbstractEntity
      * @see \App\Domain\Types\UserStatusType::LIST
      * @ORM\Column(type="UserStatusType", options={"default": \App\Domain\Types\UserStatusType::STATUS_WORK})
      */
-    private $status = \App\Domain\Types\UserStatusType::STATUS_WORK;
+    private string $status = \App\Domain\Types\UserStatusType::STATUS_WORK;
 
+    /**
+     * @param string $status
+     *
+     * @return $this
+     */
     public function setStatus(string $status)
     {
         if (in_array($status, \App\Domain\Types\UserStatusType::LIST, true)) {
@@ -240,6 +279,9 @@ class User extends AbstractEntity
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getStatus()
     {
         return $this->status;
@@ -251,8 +293,13 @@ class User extends AbstractEntity
      * @see \App\Domain\Types\UserLevelType::LIST
      * @ORM\Column(type="UserLevelType", options={"default": \App\Domain\Types\UserLevelType::LEVEL_USER})
      */
-    private $level = \App\Domain\Types\UserLevelType::LEVEL_USER;
+    private string $level = \App\Domain\Types\UserLevelType::LEVEL_USER;
 
+    /**
+     * @param string $level
+     *
+     * @return $this
+     */
     public function setLevel(string $level)
     {
         if (in_array($level, \App\Domain\Types\UserLevelType::LIST, true)) {
@@ -262,6 +309,9 @@ class User extends AbstractEntity
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getLevel()
     {
         return $this->level;
@@ -271,8 +321,15 @@ class User extends AbstractEntity
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    private $register;
+    private DateTime $register;
 
+    /**
+     * @param $register
+     *
+     * @throws \Exception
+     *
+     * @return $this
+     */
     public function setRegister($register)
     {
         $this->register = $this->getDateTimeByValue($register);
@@ -280,6 +337,9 @@ class User extends AbstractEntity
         return $this;
     }
 
+    /**
+     * @return DateTime
+     */
     public function getRegister()
     {
         return $this->register;
@@ -289,8 +349,15 @@ class User extends AbstractEntity
      * @var DateTime
      * @ORM\Column(name="`change`", type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    private $change;
+    private DateTime $change;
 
+    /**
+     * @param $change
+     *
+     * @throws \Exception
+     *
+     * @return $this
+     */
     public function setChange($change)
     {
         $this->change = $this->getDateTimeByValue($change);
@@ -298,25 +365,36 @@ class User extends AbstractEntity
         return $this;
     }
 
+    /**
+     * @return DateTime
+     */
     public function getChange()
     {
         return $this->change;
     }
 
     /**
-     * @var \App\Domain\Entities\User\Session
+     * @var UserSession
      * @ORM\OneToOne(targetEntity="App\Domain\Entities\User\Session")
      * @ORM\JoinColumn(name="uuid", referencedColumnName="uuid")
      */
-    private $session;
+    private UserSession $session;
 
-    public function setSession(\App\Domain\Entities\User\Session $session)
+    /**
+     * @param UserSession $session
+     *
+     * @return $this
+     */
+    public function setSession(UserSession $session)
     {
         $this->session = $session;
 
         return $this;
     }
 
+    /**
+     * @return UserSession
+     */
     public function getSession()
     {
         return $this->session;
@@ -330,21 +408,40 @@ class User extends AbstractEntity
      *     inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")}
      * )
      */
-    private $files = [];
+    private \Doctrine\ORM\PersistentCollection $files;
 
-    public function addFile(\App\Domain\Entities\File $file): void
+    /**
+     * @param File $file
+     *
+     * @return $this
+     */
+    public function addFile(\App\Domain\Entities\File $file)
     {
         $this->files[] = $file;
+
+        return $this;
     }
 
-    public function addFiles(array $files): void
+    /**
+     * @param array $files
+     *
+     * @return $this
+     */
+    public function addFiles(array $files)
     {
         foreach ($files as $file) {
             $this->addFile($file);
         }
+
+        return $this;
     }
 
-    public function removeFile(\App\Domain\Entities\File $file): void
+    /**
+     * @param File $file
+     *
+     * @return $this
+     */
+    public function removeFile(\App\Domain\Entities\File $file)
     {
         foreach ($this->files as $key => $value) {
             if ($file === $value) {
@@ -352,28 +449,50 @@ class User extends AbstractEntity
                 $value->unlink();
             }
         }
+
+        return $this;
     }
 
-    public function removeFiles(array $files): void
+    /**
+     * @param array $files
+     *
+     * @return $this
+     */
+    public function removeFiles(array $files)
     {
         foreach ($files as $file) {
             $this->removeFile($file);
         }
+
+        return $this;
     }
 
-    public function clearFiles(): void
+    /**
+     * @return $this
+     */
+    public function clearFiles()
     {
         foreach ($this->files as $key => $file) {
             unset($this->files[$key]);
             $file->unlink();
         }
+
+        return $this;
     }
 
+    /**
+     * @param bool $raw
+     *
+     * @return \Alksily\Entity\Collection|array
+     */
     public function getFiles($raw = false)
     {
         return $raw ? $this->files : collect($this->files);
     }
 
+    /**
+     * @return int
+     */
     public function hasFiles()
     {
         return count($this->files);

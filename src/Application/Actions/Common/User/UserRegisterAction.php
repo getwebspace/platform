@@ -2,6 +2,7 @@
 
 namespace App\Application\Actions\Common\User;
 
+use App\Domain\Exceptions\WrongEmailValueException;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
@@ -31,12 +32,12 @@ class UserRegisterAction extends UserAction
                         ]);
 
                         return $this->response->withRedirect('/user/login');
-                    } catch (MissingUniqueValueException $exception) {
-                        $this->addError($identifier, $exception->getMessage());
-                    } catch (UsernameAlreadyExistsException $exception) {
-                        $this->addError('username', $exception->getMessage());
-                    } catch (EmailAlreadyExistsException $exception) {
-                        $this->addError('email', $exception->getMessage());
+                    } catch (MissingUniqueValueException $e) {
+                        $this->addError($identifier, $e->getMessage());
+                    } catch (UsernameAlreadyExistsException $e) {
+                        $this->addError('username', $e->getMessage());
+                    } catch (WrongEmailValueException|EmailAlreadyExistsException $e) {
+                        $this->addError('email', $e->getMessage());
                     }
                 }
             }

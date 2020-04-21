@@ -20,8 +20,11 @@ class Session extends AbstractEntity
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    private $uuid;
+    private Uuid $uuid;
 
+    /**
+     * @return Uuid
+     */
     public function getUuid(): Uuid
     {
         return $this->uuid;
@@ -30,7 +33,7 @@ class Session extends AbstractEntity
     /**
      * @ORM\Column(type="string", length=16, options={"default": ""})
      */
-    private $ip = '';
+    private string $ip = '';
 
     /**
      * @param $ip
@@ -41,11 +44,16 @@ class Session extends AbstractEntity
      */
     public function setIp($ip)
     {
-        $this->ip = $this->getIpByValue($ip);
+        if ($this->checkStrLenMax($ip, 16)) {
+            $this->ip = $this->getIpByValue($ip);
+        }
 
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getIp()
     {
         return $this->ip;
@@ -54,15 +62,23 @@ class Session extends AbstractEntity
     /**
      * @ORM\Column(type="string", length=256, options={"default": ""})
      */
-    private $agent = '';
+    private string $agent = '';
 
+    /**
+     * @param string $agent
+     */
     public function setAgent(string $agent)
     {
-        $this->agent = $agent;
+        if ($this->checkStrLenMax($agent, 256)) {
+            $this->agent = $agent;
+        }
 
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function getAgent()
     {
         return $this->agent;
@@ -72,8 +88,15 @@ class Session extends AbstractEntity
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    private $date;
+    private DateTime $date;
 
+    /**
+     * @param $date
+     *
+     * @throws \Exception
+     *
+     * @return $this
+     */
     public function setDate($date)
     {
         $this->date = $this->getDateTimeByValue($date);
@@ -81,11 +104,17 @@ class Session extends AbstractEntity
         return $this;
     }
 
+    /**
+     * @return DateTime
+     */
     public function getDate()
     {
         return $this->date;
     }
 
+    /**
+     * @return string
+     */
     public function getHash()
     {
         return sha1(
