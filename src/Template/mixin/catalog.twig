@@ -138,8 +138,13 @@
                             if (!column.view) {
                                 // значение по атрибуту колонки
                                 switch (column.attr) {
-                                    case 'url':
                                     case 'title':
+                                        $column.html(
+                                            $('<span>')
+                                                .text(product.title)
+                                        );
+                                        break;
+                                    case 'url':
                                         $column.html(
                                             $('<a>')
                                                 .attr('href', product.url)
