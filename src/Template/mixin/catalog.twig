@@ -380,7 +380,7 @@
                 // удаляет товар из корзины по index в корзине
                 cartRemoveProductById(index) {
                     if (index >= 0 && this.cart[index]) {
-                        this.cart.splice(id, 1);
+                        this.cart.splice(index, 1);
                         this.triggerEvent('cart:remove', this.cart);
                         this.saveCartData();
                     }
