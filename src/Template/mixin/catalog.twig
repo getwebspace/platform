@@ -449,7 +449,7 @@
                         }
 
                         $.ajax({
-                            url: this.options.cart.handler || location.pathname,
+                            url: this.options.cart.url || location.pathname,
                             type: 'POST',
                             data: data,
                             contentType: false,
