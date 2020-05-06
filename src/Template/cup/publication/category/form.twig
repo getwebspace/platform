@@ -69,7 +69,7 @@
                                     'type': 'select',
                                     'name': 'parent',
                                     'args': {
-                                        'option': {NIL: '---'}|merge(list.whereNotIn('uuid', [item.uuid]).pluck('title', 'uuid').all()),
+                                        'option': {(NIL): '---'}|merge(list.whereNotIn('uuid', [item.uuid]).pluck('title', 'uuid').all()),
                                         'selected': item.parent
                                     }
                                 } %}

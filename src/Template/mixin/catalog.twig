@@ -138,8 +138,13 @@
                             if (!column.view) {
                                 // значение по атрибуту колонки
                                 switch (column.attr) {
-                                    case 'url':
                                     case 'title':
+                                        $column.html(
+                                            $('<span>')
+                                                .text(product.title)
+                                        );
+                                        break;
+                                    case 'url':
                                         $column.html(
                                             $('<a>')
                                                 .attr('href', product.url)
@@ -333,43 +338,49 @@
                 cartProductIncrement(value, field = 'uuid') {
                     let index = this.cartFindProductByField(value, field);
 
-                    this.cart[index].quantity += this.cart[index].quantity_step || 1;
-                    this.triggerEvent('cart:update', this.cart[index]);
-                    this.saveCartData();
+                    if (index >= 0) {
+                        this.cart[index].quantity += this.cart[index].quantity_step || 1;
+                        this.triggerEvent('cart:update', this.cart[index]);
+                        this.saveCartData();
+                    }
                 }
 
                 // уменьшает количество указанного товара в корзине на один
                 cartProductDecrement(value, field = 'uuid') {
                     let index = this.cartFindProductByField(value, field);
 
-                    this.cart[index].quantity -= this.cart[index].quantity_step || 1;
+                    if (index >= 0) {
+                        this.cart[index].quantity -= this.cart[index].quantity_step || 1;
 
-                    if (this.cart[index].quantity === 0) {
-                        this.cartRemoveProductById(index);
+                        if (this.cart[index].quantity === 0) {
+                            this.cartRemoveProductById(index);
+                        }
+
+                        this.triggerEvent('cart:update', this.cart[index]);
+                        this.saveCartData();
                     }
-
-                    this.triggerEvent('cart:update', this.cart[index]);
-                    this.saveCartData();
                 }
 
                 // указывает конкретное количество указанного товара
                 cartProductChangeCount(count, value, field = 'uuid') {
                     let index = this.cartFindProductByField(value, field);
 
-                    this.cart[index].quantity = +count;
+                    if (index >= 0) {
+                        this.cart[index].quantity = +count;
 
-                    if (this.cart[index].quantity === 0) {
-                        this.cartRemoveProductById(index);
+                        if (this.cart[index].quantity === 0) {
+                            this.cartRemoveProductById(index);
+                        }
+
+                        this.triggerEvent('cart:update', this.cart[index]);
+                        this.saveCartData();
                     }
-
-                    this.triggerEvent('cart:update', this.cart[index]);
-                    this.saveCartData();
                 }
 
-                // удаляет товар из корзины по id в корзине
-                cartRemoveProductById(id) {
-                    if (this.cart[id]) {
-                        this.cart.splice(id, 1);
+                // удаляет товар из корзины по index в корзине
+                cartRemoveProductById(index) {
+                    if (index >= 0 && this.cart[index]) {
+                        this.cart.splice(index, 1);
                         this.triggerEvent('cart:remove', this.cart);
                         this.saveCartData();
                     }
@@ -438,7 +449,7 @@
                         }
 
                         $.ajax({
-                            url: this.options.cart.handler || location.pathname,
+                            url: this.options.cart.url || location.pathname,
                             type: 'POST',
                             data: data,
                             contentType: false,
@@ -448,8 +459,8 @@
                                 this.cartRemoveAllProducts();
                                 this.triggerEvent('cart:checkout:after', $fields);
 
-                                if (res && res.statusCode === 200) {
-                                    location = res.data.redirect;
+                                if (res) {
+                                    location = res.redirect;
                                 }
                             }
                         });
