@@ -37,7 +37,7 @@ trait CommonFilterRules
         return function (&$data, $field) use ($orNULL) {
             $value = &$data[$field];
 
-            return Uuid::isValid($value) ? $value : Uuid::NIL;
+            return Uuid::isValid((string) $value) ? $value : Uuid::NIL;
         };
     }
 
