@@ -36,9 +36,9 @@ class Order extends Filter
                 ->addRule($filter->ValidOrderList()))
             ->attr('phone', fn () => $filter
                 ->addRule(
-                    isset($_ENV['SIMPLE_PHONE_CHECK']) && $_ENV['SIMPLE_PHONE_CHECK'] !== 1
-                        ? $filter->checkPhone()
-                        : $filter->leadStrReplace([' ', '+', '-', '(', ')'], '')
+                    isset($_ENV['SIMPLE_PHONE_CHECK']) && $_ENV['SIMPLE_PHONE_CHECK']
+                        ? $filter->leadStrReplace([' ', '+', '-', '(', ')'], '')
+                        : $filter->checkPhone()
                 ))
             ->attr('email', fn () => $filter
                 ->addRule($filter->checkEmail(), 'E-Mail указан с ошибкой'))
