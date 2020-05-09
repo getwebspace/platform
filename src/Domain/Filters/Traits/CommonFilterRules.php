@@ -160,7 +160,7 @@ trait CommonFilterRules
 
             switch (true) {
                 case $value && is_string($value):
-                    $value = new \DateTime($value);
+                    $value = new \DateTime(strtotime($value));
 
                     break;
 
