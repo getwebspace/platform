@@ -37,7 +37,11 @@ trait CommonFilterRules
         return function (&$data, $field) use ($orNULL) {
             $value = &$data[$field];
 
-            return Uuid::isValid((string) $value) ? $value : Uuid::NIL;
+            if (Uuid::isValid((string) $value) === false && $orNULL) {
+                $value = Uuid::NIL;
+            }
+
+            return true;
         };
     }
 
@@ -160,7 +164,7 @@ trait CommonFilterRules
 
             switch (true) {
                 case $value && is_string($value):
-                    $value = new \DateTime(strtotime($value));
+                    $value = new \DateTime($value);
 
                     break;
 
