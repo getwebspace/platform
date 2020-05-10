@@ -19,7 +19,7 @@ class UserUpdateAction extends UserAction
                 if ($this->request->isPost()) {
                     try {
                         $userService = UserService::getFromContainer($this->container);
-                        $userService->change(
+                        $userService->update(
                             $user,
                             [
                                 'username' => $this->request->getParam('username'),

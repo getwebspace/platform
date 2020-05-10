@@ -36,4 +36,12 @@ abstract class AbstractService
             $container->get('monolog')
         );
     }
+
+    abstract function create(array $data = []);
+
+    abstract function read(array $data = []);
+
+    abstract function update($entity, array $data = []);
+
+    abstract function delete($entity);
 }

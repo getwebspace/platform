@@ -86,9 +86,9 @@ abstract class AbstractEntity
     protected function checkPhoneByValue(string &$value)
     {
         if ($value) {
-            if (isset($_ENV['SIMPLE_PHONE_CHECK']) && $_ENV['SIMPLE_PHONE_CHECK']) {
-                $value = str_replace([' ', '+', '-', '(', ')'], '', $value);
+            $value = str_replace([' ', '-', '.', '(', ')'], '', $value);
 
+            if (isset($_ENV['SIMPLE_PHONE_CHECK']) && $_ENV['SIMPLE_PHONE_CHECK']) {
                 return true;
             }
 

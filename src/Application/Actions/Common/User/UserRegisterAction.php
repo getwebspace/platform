@@ -26,7 +26,7 @@ class UserRegisterAction extends UserAction
                 if ($data['password'] === $data['password_again']) {
                     try {
                         $userService = UserService::getFromContainer($this->container);
-                        $userService->createByRegister([
+                        $userService->create([
                             $identifier => $data[$identifier],
                             'password' => $data['password'],
                         ]);

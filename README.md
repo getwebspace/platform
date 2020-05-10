@@ -37,7 +37,7 @@ chmod 0777 var/database.sqlite
 ./composer --ignore-platform-reqs install
 ```
 
-*Статический аналищатор*
+*Статический анализатор*
 ```shell script
 ./phpcs
 ```

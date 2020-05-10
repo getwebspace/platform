@@ -34,96 +34,15 @@ class UserService extends AbstractService
     /**
      * @param array $data
      *
-     * @throws UserNotFoundException
-     * @throws WrongPasswordException
-     *
-     * @return null|User
-     */
-    public function getByLogin(array $data = []): ?User
-    {
-        $default = [
-            'identifier' => '',
-            'password' => '',
-            'agent' => '',
-            'ip' => '',
-        ];
-        $data = array_merge($default, $data);
-
-        $user = $this->service->findOneByIdentifier($data['identifier']);
-
-        if ($user === null) {
-            throw new UserNotFoundException();
-        }
-        if (!crypta_hash_check($data['password'], $user->getPassword())) {
-            throw new WrongPasswordException();
-        }
-
-        $user
-            ->getSession()
-            ->setDate('now')
-            ->setAgent($data['agent'])
-            ->setIp($data['ip']);
-
-        $this->entityManager->flush();
-
-        return $user;
-    }
-
-    /**
-     * @param array $data
-     *
      * @throws EmailAlreadyExistsException
+     * @throws UsernameAlreadyExistsException
      * @throws MissingUniqueValueException
-     * @throws UsernameAlreadyExistsException
-     * @throws WrongEmailValueException
-     *
-     * @return null|User
-     */
-    public function createByRegister(array $data = []): ?User
-    {
-        $default = [
-            'username' => '',
-            'email' => '',
-            'password' => '',
-        ];
-        $data = array_merge($default, $data);
-
-        if (!$data['username'] && !$data['email']) {
-            throw new MissingUniqueValueException();
-        }
-        if ($data['username'] && $this->service->findOneByUsername($data['username']) !== null) {
-            throw new UsernameAlreadyExistsException();
-        }
-        if ($data['email'] && $this->service->findOneByEmail($data['email']) !== null) {
-            throw new EmailAlreadyExistsException();
-        }
-
-        $user = (new User)
-            ->setUsername($data['username'])
-            ->setEmail($data['email'])
-            ->setPassword($data['password'])
-            ->setRegister('now')
-            ->setChange('now')
-            ->setSession($session = (new UserSession)->setDate('now'));
-
-        $this->entityManager->persist($user);
-        $this->entityManager->persist($session);
-        $this->entityManager->flush();
-
-        return $user;
-    }
-
-    /**
-     * @param array $data
-     *
-     * @throws EmailAlreadyExistsException
-     * @throws UsernameAlreadyExistsException
      * @throws WrongEmailValueException
      * @throws WrongPhoneValueException
      *
      * @return null|User
      */
-    public function createByCup(array $data = []): ?User
+    public function create(array $data = []): ?User
     {
         $default = [
             'username' => '',
@@ -138,11 +57,17 @@ class UserService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        if ($this->service->findOneByUsername($data['username']) !== null) {
+        if ($data['username'] && $this->service->findOneByUsername($data['username']) !== null) {
             throw new UsernameAlreadyExistsException();
         }
-        if ($this->service->findOneByEmail($data['email']) !== null) {
+        if ($data['email'] && $this->service->findOneByEmail($data['email']) !== null) {
             throw new EmailAlreadyExistsException();
+        }
+        if (!$data['username'] && !$data['email']) {
+            throw new MissingUniqueValueException();
+        }
+        if (!$data['password']) {
+            throw new WrongPasswordException();
         }
 
         $user = (new User)
@@ -167,6 +92,67 @@ class UserService extends AbstractService
     }
 
     /**
+     * @param array $data
+     *
+     * @throws UserNotFoundException
+     * @throws WrongPasswordException
+     *
+     * @return null|User|User[]
+     */
+    public function read(array $data = []): ?User
+    {
+        $default = [
+            'identifier' => '',
+            'username' => '',
+            'email' => '',
+            'password' => '',
+            'agent' => '',
+            'ip' => '',
+        ];
+        $data = array_merge($default, $data);
+
+        if ($data['identifier'] || $data['username'] || $data['email']) {
+            switch (true) {
+                case $data['identifier']:
+                    $user = $this->service->findOneByIdentifier($data['identifier']);
+                    break;
+
+                case $data['username']:
+                    $user = $this->service->findOneByUsername($data['username']);
+                    break;
+
+                case $data['email']:
+                    $user = $this->service->findOneByEmail($data['email']);
+                    break;
+            }
+
+            if ($user === null) {
+                throw new UserNotFoundException();
+            }
+
+            // проверим пароль, если его передали
+            if ($data['password'] && !crypta_hash_check($data['password'], $user->getPassword())) {
+                throw new WrongPasswordException();
+            }
+
+            // если передали user-agent и ip
+            if ($data['agent'] && $data['ip']) {
+                $user
+                    ->getSession()
+                    ->setDate('now')
+                    ->setAgent($data['agent'])
+                    ->setIp($data['ip']);
+
+                $this->entityManager->flush();
+            }
+
+            return $user;
+        }
+
+        return $this->service->findAll();
+    }
+
+    /**
      * @param string|User|Uuid $entity
      * @param array            $data
      *
@@ -178,7 +164,7 @@ class UserService extends AbstractService
      *
      * @return null|User
      */
-    public function change($entity, array $data = [])
+    public function update($entity, array $data = [])
     {
         switch (true) {
             case is_string($entity) && Uuid::isValid($entity):
@@ -261,7 +247,7 @@ class UserService extends AbstractService
      *
      * @return null|User
      */
-    public function delete($entity)
+    public function block($entity)
     {
         if (
             (is_string($entity) && Uuid::isValid($entity)) ||
@@ -271,7 +257,7 @@ class UserService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, User::class)) {
-            $entity->setStatus(\App\Domain\Types\UserStatusType::STATUS_DELETE)->setChange('now');
+            $entity->setStatus(\App\Domain\Types\UserStatusType::STATUS_BLOCK)->setChange('now');
 
             $this->entityManager->flush();
 
@@ -288,7 +274,7 @@ class UserService extends AbstractService
      *
      * @return null|User
      */
-    public function block($entity)
+    public function delete($entity)
     {
         if (
             (is_string($entity) && Uuid::isValid($entity)) ||
@@ -298,7 +284,7 @@ class UserService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, User::class)) {
-            $entity->setStatus(\App\Domain\Types\UserStatusType::STATUS_BLOCK)->setChange('now');
+            $entity->setStatus(\App\Domain\Types\UserStatusType::STATUS_DELETE)->setChange('now');
 
             $this->entityManager->flush();
 

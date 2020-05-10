@@ -17,7 +17,7 @@ class UserProfileAction extends UserAction
         if ($user && $this->request->isPost()) {
             try {
                 $userService = UserService::getFromContainer($this->container);
-                $userService->change(
+                $userService->update(
                     $user,
                     [
                         'firstname' => $this->request->getParam('firstname'),
