@@ -9,8 +9,7 @@
 !/plugin/index.php
 /vendor/*
 !/vendor/.gitkeep
-/var/db.sqlite
-/var/database.sqlite
+/var/*.sqlite
 /var/cache/*
 !/var/cache/.gitkeep
 /var/log/*
