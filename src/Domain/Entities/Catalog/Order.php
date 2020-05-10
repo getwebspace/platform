@@ -32,7 +32,7 @@ class Order extends Model
 
     /**
      * @var Uuid
-     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
+     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL}, nullable=true)
      */
     public $user_uuid = \Ramsey\Uuid\Uuid::NIL;
 
