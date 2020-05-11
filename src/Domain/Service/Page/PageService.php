@@ -37,7 +37,7 @@ class PageService extends AbstractService
      *
      * @return Page
      */
-    function create(array $data = []): ?Page
+    public function create(array $data = []): ?Page
     {
         $default = [
             'title' => '',
@@ -84,9 +84,9 @@ class PageService extends AbstractService
      *
      * @throws PageNotFoundException
      *
-     * @return null|Page|Collection
+     * @return null|Collection|Page
      */
-    function read(array $data = [])
+    public function read(array $data = [])
     {
         $default = [
             'uuid' => '',
@@ -99,14 +99,17 @@ class PageService extends AbstractService
             switch (true) {
                 case $data['uuid']:
                     $page = $this->service->findOneByUuid($data['uuid']);
+
                     break;
 
                 case $data['title']:
                     $page = $this->service->findOneByTitle($data['title']);
+
                     break;
 
                 case $data['address']:
                     $page = $this->service->findOneByAddress($data['address']);
+
                     break;
             }
 
@@ -121,16 +124,16 @@ class PageService extends AbstractService
     }
 
     /**
-     * @param string|Page|Uuid $entity
+     * @param Page|string|Uuid $entity
      * @param array            $data
      *
      * @throws TitleAlreadyExistsException
      * @throws AddressAlreadyExistsException
      * @throws PageNotFoundException
      *
-     * @return Page|null
+     * @return null|Page
      */
-    function update($entity, array $data = []): ?Page
+    public function update($entity, array $data = []): ?Page
     {
         switch (true) {
             case is_string($entity) && Uuid::isValid($entity):
@@ -201,13 +204,13 @@ class PageService extends AbstractService
     }
 
     /**
-     * @param string|Page|Uuid $entity
+     * @param Page|string|Uuid $entity
      *
      * @throws PageNotFoundException
      *
      * @return bool
      */
-    function delete($entity)
+    public function delete($entity)
     {
         switch (true) {
             case is_string($entity) && Uuid::isValid($entity):

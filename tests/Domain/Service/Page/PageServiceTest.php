@@ -1,6 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace Tests\Domain\Service\Page;
+namespace tests\Domain\Service\Page;
 
 use App\Domain\Entities\Page;
 use App\Domain\Repository\PageRepository;
@@ -167,7 +167,7 @@ class PageServiceTest extends TestCase
 
         $page = $this->service->update($page, $data);
         $this->assertSame($data['title'], $page->getTitle());
-     // $this->assertSame($data['address'], $page->getAddress());
+        // $this->assertSame($data['address'], $page->getAddress());
         $this->assertSame($data['content'], $page->getContent());
         $this->assertSame($data['meta'], $page->getMeta());
         $this->assertSame($data['template'], $page->getTemplate());

@@ -103,7 +103,7 @@ class UserService extends AbstractService
      * @throws UserNotFoundException
      * @throws WrongPasswordException
      *
-     * @return null|User|Collection
+     * @return null|Collection|User
      */
     public function read(array $data = [])
     {
@@ -123,22 +123,27 @@ class UserService extends AbstractService
             switch (true) {
                 case $data['uuid']:
                     $user = $this->service->findOneByUuid($data['uuid']);
+
                     break;
 
                 case $data['identifier']:
                     $user = $this->service->findOneByIdentifier($data['identifier']);
+
                     break;
 
                 case $data['username']:
                     $user = $this->service->findOneByUsername($data['username']);
+
                     break;
 
                 case $data['email']:
                     $user = $this->service->findOneByEmail($data['email']);
+
                     break;
 
                 case $data['phone']:
                     $user = $this->service->findOneByPhone($data['phone']);
+
                     break;
             }
 

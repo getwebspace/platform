@@ -37,11 +37,11 @@ abstract class AbstractService
         );
     }
 
-    abstract function create(array $data = []);
+    abstract public function create(array $data = []);
 
-    abstract function read(array $data = []);
+    abstract public function read(array $data = []);
 
-    abstract function update($entity, array $data = []);
+    abstract public function update($entity, array $data = []);
 
-    abstract function delete($entity);
+    abstract public function delete($entity);
 }
