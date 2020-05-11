@@ -8,7 +8,7 @@ use Ramsey\Uuid\Uuid;
 
 abstract class AbstractRepository extends EntityRepository
 {
-    public function findByUuid($uuid)
+    public function findOneByUuid($uuid)
     {
         if (Uuid::isValid((string) $uuid)) {
             $query = $this->createQueryBuilder('en')

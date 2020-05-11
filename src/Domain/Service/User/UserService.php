@@ -2,6 +2,7 @@
 
 namespace App\Domain\Service\User;
 
+use Alksily\Entity\Collection;
 use App\Domain\AbstractService;
 use App\Domain\Entities\User;
 use App\Domain\Entities\User\Session as UserSession;
@@ -102,11 +103,12 @@ class UserService extends AbstractService
      * @throws UserNotFoundException
      * @throws WrongPasswordException
      *
-     * @return null|User|User[]
+     * @return null|User|Collection
      */
-    public function read(array $data = []): ?User
+    public function read(array $data = [])
     {
         $default = [
+            'uuid' => '',
             'identifier' => '', // включает: username, email, email
             'username' => '',
             'email' => '',
@@ -117,8 +119,12 @@ class UserService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        if ($data['identifier'] || $data['username'] || $data['email'] || $data['phone']) {
+        if ($data['uuid'] || $data['identifier'] || $data['username'] || $data['email'] || $data['phone']) {
             switch (true) {
+                case $data['uuid']:
+                    $user = $this->service->findOneByUuid($data['uuid']);
+                    break;
+
                 case $data['identifier']:
                     $user = $this->service->findOneByIdentifier($data['identifier']);
                     break;
@@ -159,7 +165,7 @@ class UserService extends AbstractService
             return $user;
         }
 
-        return $this->service->findAll();
+        return collect($this->service->findAll());
     }
 
     /**
@@ -180,7 +186,7 @@ class UserService extends AbstractService
         switch (true) {
             case is_string($entity) && Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findByUuid((string) $entity);
+                $entity = $this->service->findOneByUuid((string) $entity);
 
                 break;
         }
@@ -270,7 +276,7 @@ class UserService extends AbstractService
             (is_string($entity) && Uuid::isValid($entity)) ||
             (is_object($entity) && is_a($entity, Uuid::class))
         ) {
-            $entity = $this->service->findByUuid((string) $entity);
+            $entity = $this->service->findOneByUuid((string) $entity);
         }
 
         if (is_object($entity) && is_a($entity, User::class)) {
@@ -297,7 +303,7 @@ class UserService extends AbstractService
             (is_string($entity) && Uuid::isValid($entity)) ||
             (is_object($entity) && is_a($entity, Uuid::class))
         ) {
-            $entity = $this->service->findByUuid((string) $entity);
+            $entity = $this->service->findOneByUuid((string) $entity);
         }
 
         if (is_object($entity) && is_a($entity, User::class)) {

@@ -14,7 +14,7 @@ class UserUpdateAction extends UserAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid')) {
-            $user = $this->users->findByUuid($this->resolveArg('uuid'));
+            $user = $this->users->findOneByUuid($this->resolveArg('uuid'));
 
             if ($user) {
                 if ($this->request->isPost()) {

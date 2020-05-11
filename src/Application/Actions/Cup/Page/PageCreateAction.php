@@ -2,39 +2,38 @@
 
 namespace App\Application\Actions\Cup\Page;
 
+use App\Domain\Service\Page\Exception\AddressAlreadyExistsException;
+use App\Domain\Service\Page\Exception\MissingTitleValueException;
+use App\Domain\Service\Page\Exception\TitleAlreadyExistsException;
+use App\Domain\Service\Page\PageService;
+
 class PageCreateAction extends PageAction
 {
     protected function action(): \Slim\Http\Response
     {
         if ($this->request->isPost()) {
-            $data = [
-                'title' => $this->request->getParam('title'),
-                'address' => $this->request->getParam('address'),
-                'date' => $this->request->getParam('date'),
-                'content' => $this->request->getParam('content'),
-                'type' => $this->request->getParam('type'),
-                'meta' => $this->request->getParam('meta'),
-                'template' => $this->request->getParam('template'),
-            ];
-
-            $check = \App\Domain\Filters\Page::check($data);
-
-            if ($check === true) {
-                $model = new \App\Domain\Entities\Page($data);
-                $model->removeFiles($this->handlerFileRemove());
-                $model->addFiles($this->handlerFileUpload());
-
-                $this->entityManager->persist($model);
-                $this->entityManager->flush();
+            try {
+                $pageService = PageService::getFromContainer($this->container);
+                $page = $pageService->create([
+                    'title' => $this->request->getParam('title'),
+                    'address' => $this->request->getParam('address'),
+                    'date' => $this->request->getParam('date'),
+                    'content' => $this->request->getParam('content'),
+                    'type' => $this->request->getParam('type'),
+                    'meta' => $this->request->getParam('meta'),
+                    'template' => $this->request->getParam('template'),
+                ]);
 
                 switch (true) {
                     case $this->request->getParam('save', 'exit') === 'exit':
-                        return $this->response->withAddedHeader('Location', '/cup/page')->withStatus(301);
+                        return $this->response->withRedirect('/cup/page');
                     default:
-                        return $this->response->withAddedHeader('Location', '/cup/page/' . $model->uuid . '/edit')->withStatus(301);
+                        return $this->response->withRedirect('/cup/page/' . $page->getUuid() . '/edit');
                 }
-            } else {
-                $this->addErrorFromCheck($check);
+            } catch (MissingTitleValueException|TitleAlreadyExistsException $e) {
+                $this->addError('title', $e->getMessage());
+            } catch (AddressAlreadyExistsException $e) {
+                $this->addError('address', $e->getMessage());
             }
         }
 

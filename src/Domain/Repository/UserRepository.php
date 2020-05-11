@@ -8,7 +8,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\NonUniqueResultException;
 
 /**
- * @method null|User findByUuid($uuid)
+ * @method null|User findOneByUuid($uuid)
  * @method null|User find($id, $lockMode = null, $lockVersion = null)
  * @method null|User findOneBy(array $criteria, array $orderBy = null)
  * @method User[]    findAll()

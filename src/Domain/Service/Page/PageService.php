@@ -2,6 +2,7 @@
 
 namespace App\Domain\Service\Page;
 
+use Alksily\Entity\Collection;
 use App\Domain\AbstractService;
 use App\Domain\Entities\Page;
 use App\Domain\Repository\PageRepository;
@@ -83,18 +84,23 @@ class PageService extends AbstractService
      *
      * @throws PageNotFoundException
      *
-     * @return null|Page|Page[]
+     * @return null|Page|Collection
      */
-    function read(array $data = []): ?Page
+    function read(array $data = [])
     {
         $default = [
+            'uuid' => '',
             'title' => '',
             'address' => '',
         ];
         $data = array_merge($default, $data);
 
-        if ($data['title'] || $data['address']) {
+        if ($data['uuid'] || $data['title'] || $data['address']) {
             switch (true) {
+                case $data['uuid']:
+                    $page = $this->service->findOneByUuid($data['uuid']);
+                    break;
+
                 case $data['title']:
                     $page = $this->service->findOneByTitle($data['title']);
                     break;
@@ -111,13 +117,15 @@ class PageService extends AbstractService
             return $page;
         }
 
-        return $this->service->findAll();
+        return collect($this->service->findAll());
     }
 
     /**
      * @param string|Page|Uuid $entity
      * @param array            $data
      *
+     * @throws TitleAlreadyExistsException
+     * @throws AddressAlreadyExistsException
      * @throws PageNotFoundException
      *
      * @return Page|null
@@ -127,7 +135,7 @@ class PageService extends AbstractService
         switch (true) {
             case is_string($entity) && Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findByUuid((string) $entity);
+                $entity = $this->service->findOneByUuid((string) $entity);
 
                 break;
         }
@@ -150,10 +158,22 @@ class PageService extends AbstractService
 
             if ($data !== $default) {
                 if ($data['title']) {
-                    $entity->setTitle($data['title']);
+                    $found = $this->service->findOneByTitle($data['title']);
+
+                    if ($found === null || $found === $entity) {
+                        $entity->setTitle($data['title']);
+                    } else {
+                        throw new TitleAlreadyExistsException();
+                    }
                 }
                 if ($data['address']) {
-                    $entity->setAddress($data['address']);
+                    $found = $this->service->findOneByAddress($data['address']);
+
+                    if ($found === null || $found === $entity) {
+                        $entity->setAddress($data['address']);
+                    } else {
+                        throw new AddressAlreadyExistsException();
+                    }
                 }
                 if ($data['content']) {
                     $entity->setContent($data['content']);
@@ -192,7 +212,7 @@ class PageService extends AbstractService
         switch (true) {
             case is_string($entity) && Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findByUuid((string) $entity);
+                $entity = $this->service->findOneByUuid((string) $entity);
 
                 break;
         }

@@ -8,7 +8,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\NonUniqueResultException;
 
 /**
- * @method null|Page findByUuid($uuid)
+ * @method null|Page findOneByUuid($uuid)
  * @method null|Page find($id, $lockMode = null, $lockVersion = null)
  * @method null|Page findOneBy(array $criteria, array $orderBy = null)
  * @method Page[]    findAll()
