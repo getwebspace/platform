@@ -12,7 +12,7 @@ class PageTypeType extends AbstractEnumType
     public const TYPE_TEXT = 'text';
 
     public const LIST = [
-        self::TYPE_HTML  => 'Исходный текст HTML',
-        self::TYPE_TEXT  => 'Простой текст',
+        self::TYPE_HTML,
+        self::TYPE_TEXT,
     ];
 }

@@ -8,7 +8,9 @@ $container[\Doctrine\ORM\EntityManager::class] = function (ContainerInterface $c
     $settings = $c->get('doctrine');
 
     foreach ($settings['types'] as $type => $class) {
-        \Doctrine\DBAL\Types\Type::addType($type, $class);
+        if (!\Doctrine\DBAL\Types\Type::hasType($type)) {
+            \Doctrine\DBAL\Types\Type::addType($type, $class);
+        }
     }
 
     $config = \Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration(

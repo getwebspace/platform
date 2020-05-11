@@ -2,13 +2,38 @@
 
 namespace App\Domain;
 
+use Alksily\Support\Str;
 use App\Domain\Exceptions\WrongEmailValueException;
 use App\Domain\Exceptions\WrongIpValueException;
 use App\Domain\Exceptions\WrongPhoneValueException;
 use DateTime;
+use Ramsey\Uuid\Uuid;
 
 abstract class AbstractEntity
 {
+    /**
+     * @param string[] $args
+     *
+     * @throws \Exception
+     *
+     * @return string
+     */
+    protected function getAddressByValue(string ...$args): string
+    {
+        foreach ($args as $str) {
+            if ($str) {
+                $str = mb_strtolower($str);
+                $str = Str::translate($str);
+                $str = trim($str);
+                $str = preg_replace(['/[^a-z0-9\s]/', '/\s/'], ['', '-'], $str);
+
+                return $str;
+            }
+        }
+
+        return Uuid::uuid4()->toString();
+    }
+
     /**
      * @param string $value
      * @param int    $min
