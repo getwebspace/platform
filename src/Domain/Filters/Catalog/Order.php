@@ -37,8 +37,8 @@ class Order extends Filter
             ->attr('phone', fn () => $filter
                 ->addRule(
                     isset($_ENV['SIMPLE_PHONE_CHECK']) && $_ENV['SIMPLE_PHONE_CHECK']
-                        ? $filter->checkPhone()
-                        : $filter->leadStrReplace([' ', '+', '-', '(', ')'], '')
+                        ? $filter->leadStrReplace([' ', '+', '-', '(', ')'], '')
+                        : $filter->checkPhone()
                 ))
             ->attr('email', fn () => $filter
                 ->addRule($filter->checkEmail(), 'E-Mail указан с ошибкой'))

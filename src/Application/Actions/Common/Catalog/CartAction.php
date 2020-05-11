@@ -26,7 +26,8 @@ class CartAction extends CatalogAction
             ];
 
             // пользователя заказа
-            if (($user = $this->request->getAttribute('user', false)) && $user !== false) {
+            if (($user = $this->request->getAttribute('user', false)) !== false) {
+                // @var \App\Domain\Entities\User $user
                 $data['user_uuid'] = $user->uuid;
                 $data['user'] = $user;
             }
