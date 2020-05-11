@@ -43,9 +43,13 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "src/",
-            "tests\\": "tests/",
-            "Plugin\\": "plugin/"
+            "Plugin\\": "plugin/",
+            "App\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
         }
     }
 }

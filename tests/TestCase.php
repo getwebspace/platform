@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace tests;
+namespace Tests;
 
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
@@ -34,7 +34,9 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             require_once __DIR__ . '/../config/vars.php';
 
             foreach ($this->getTypes() as $type => $class) {
-                \Doctrine\DBAL\Types\Type::addType($type, $class);
+                if (!\Doctrine\DBAL\Types\Type::hasType($type)) {
+                    \Doctrine\DBAL\Types\Type::addType($type, $class);
+                }
             }
 
             $config = \Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration(
