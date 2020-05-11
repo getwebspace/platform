@@ -3,15 +3,11 @@
 namespace App\Application\Actions\Common;
 
 use App\Domain\AbstractAction;
+use App\Domain\Service\Page\PageService;
 use Psr\Container\ContainerInterface;
 
 class DynamicPageAction extends AbstractAction
 {
-    /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
-     */
-    protected $pageRepository;
-
     /**
      * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
      */
@@ -34,7 +30,6 @@ class DynamicPageAction extends AbstractAction
     {
         parent::__construct($container);
 
-        $this->pageRepository = $this->entityManager->getRepository(\App\Domain\Entities\Page::class);
         $this->publicationCategoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Publication\Category::class);
         $this->publicationRepository = $this->entityManager->getRepository(\App\Domain\Entities\Publication::class);
     }
@@ -47,16 +42,13 @@ class DynamicPageAction extends AbstractAction
         if (preg_match('/\/(?<offset>\d)$/', $path, $matches)) {
             $offset = explode('/', $path);
             $offset = +end($offset);
-            $path = str_replace('/' . $offset , '', $path);
+            $path = str_replace('/' . $offset, '', $path);
         }
 
         // страницы
-        if ($this->pageRepository->count(['address' => $path])) {
-            $page = $this->pageRepository->findOneBy(['address' => $path]);
-
-            return $this->respondWithTemplate($page->template, [
-                'page' => $page,
-            ]);
+        $pageService = PageService::getFromContainer($this->container);
+        if (($page = $pageService->read(['address' => $path])) !== null) {
+            return $this->respondWithTemplate($page->getTemplate(), ['page' => $page]);
         }
 
         $categories = collect($this->publicationCategoryRepository->findAll());
