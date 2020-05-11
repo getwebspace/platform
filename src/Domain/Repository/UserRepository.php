@@ -48,11 +48,28 @@ class UserRepository extends AbstractRepository
         return $result;
     }
 
+    public function findOneByPhone(string $phone): ?User
+    {
+        $query = $this->createQueryBuilder('u')
+            ->andWhere('u.phone = :phone')->setParameter('phone', $phone, Types::STRING)
+            ->getQuery();
+
+        try {
+            $result = $query->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            $results = $query->getResult();
+            $result = array_shift($results);
+        }
+
+        return $result;
+    }
+
     public function findOneByIdentifier(string $identifier): ?User
     {
         $query = $this->createQueryBuilder('u')
             ->orWhere('u.username = :username')->setParameter('username', $identifier, Types::STRING)
             ->orWhere('u.email = :email')->setParameter('email', $identifier, Types::STRING)
+            ->orWhere('u.phone = :phone')->setParameter('phone', $identifier, Types::STRING)
             ->getQuery();
 
         try {

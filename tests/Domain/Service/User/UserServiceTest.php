@@ -1,12 +1,13 @@
 <?php declare(strict_types=1);
 
-namespace tests\Domain\Service\User;
+namespace Tests\Domain\Service\User;
 
 use App\Domain\Entities\User;
 use App\Domain\Entities\User\Session as UserSession;
 use App\Domain\Repository\UserRepository;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
+use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
@@ -44,12 +45,13 @@ class UserServiceTest extends TestCase
             'lastname' => $this->getFaker()->lastName,
         ];
 
-        // проверяем, что сервис создает пользователя
         $user = $this->service->create($data);
         $this->assertInstanceOf(User::class, $user);
         $this->assertSame($data['username'], $user->getUsername());
+        $this->assertSame($data['phone'], $user->getPhone());
+        $this->assertSame($data['firstname'], $user->getFirstname());
+        $this->assertSame($data['lastname'], $user->getLastname());
 
-        // проверяем, что пользователь добавлен в базу
         /** @var UserRepository $userRepo */
         $userRepo = $this->em->getRepository(User::class);
         $u = $userRepo->findOneByUsername($data['username']);
@@ -67,12 +69,13 @@ class UserServiceTest extends TestCase
             'lastname' => $this->getFaker()->lastName,
         ];
 
-        // проверяем, что сервис создает пользователя
         $user = $this->service->create($data);
         $this->assertInstanceOf(User::class, $user);
         $this->assertSame($data['email'], $user->getEmail());
+        $this->assertSame($data['phone'], $user->getPhone());
+        $this->assertSame($data['firstname'], $user->getFirstname());
+        $this->assertSame($data['lastname'], $user->getLastname());
 
-        // проверяем, что пользователь добавлен в базу
         /** @var UserRepository $userRepo */
         $userRepo = $this->em->getRepository(User::class);
         $u = $userRepo->findOneByEmail($data['email']);
@@ -80,21 +83,41 @@ class UserServiceTest extends TestCase
         $this->assertSame($data['email'], $u->getEmail());
     }
 
+    public function testCreateSuccess3(): void
+    {
+        $data = [
+            'email' => $this->getFaker()->email,
+            'password' => $this->getFaker()->password,
+            'phone' => $this->getFaker()->e164PhoneNumber,
+            'firstname' => $this->getFaker()->firstName,
+            'lastname' => $this->getFaker()->lastName,
+        ];
+
+        $user = $this->service->create($data);
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertSame($data['email'], $user->getEmail());
+        $this->assertSame($data['phone'], $user->getPhone());
+        $this->assertSame($data['firstname'], $user->getFirstname());
+        $this->assertSame($data['lastname'], $user->getLastname());
+
+        /** @var UserRepository $userRepo */
+        $userRepo = $this->em->getRepository(User::class);
+        $u = $userRepo->findOneByPhone($data['phone']);
+        $this->assertInstanceOf(User::class, $u);
+        $this->assertSame($data['phone'], $u->getPhone());
+    }
+
     public function testCreateWithMissingUniqueValue(): void
     {
-        // считаем тест успешным, если сервис выкинет исключение
         $this->expectException(MissingUniqueValueException::class);
 
-        // проверяем
         $this->service->create();
     }
 
     public function testCreateWithWrongPassword(): void
     {
-        // считаем тест успешным, если сервис выкинет исключение
         $this->expectException(WrongPasswordException::class);
 
-        // проверяем
         $this->service->create([
             'username' => $this->getFaker()->userName,
             'email' => $this->getFaker()->email,
@@ -103,7 +126,6 @@ class UserServiceTest extends TestCase
 
     public function testCreateWithUsernameExistent(): void
     {
-        // считаем тест успешным, если сервис выкинет исключение
         $this->expectException(UsernameAlreadyExistsException::class);
 
         $data = [
@@ -111,7 +133,6 @@ class UserServiceTest extends TestCase
             'password' => $this->getFaker()->password,
         ];
 
-        // добавим в базу пользователя с логином, который окажется занят
         $user = (new User)
             ->setUsername($data['username'])
             ->setPassword($data['password'])
@@ -122,13 +143,11 @@ class UserServiceTest extends TestCase
         $this->em->persist($session);
         $this->em->flush();
 
-        // проверяем
         $this->service->create($data);
     }
 
     public function testCreateWithEmailExistent(): void
     {
-        // считаем тест успешным, если сервис выкинет исключение
         $this->expectException(EmailAlreadyExistsException::class);
 
         $data = [
@@ -136,7 +155,6 @@ class UserServiceTest extends TestCase
             'password' => $this->getFaker()->password,
         ];
 
-        // добавим в базу пользователя с логином, который окажется занят
         $user = (new User)
             ->setEmail($data['email'])
             ->setPassword($data['password'])
@@ -147,7 +165,28 @@ class UserServiceTest extends TestCase
         $this->em->persist($session);
         $this->em->flush();
 
-        // проверяем
+        $this->service->create($data);
+    }
+
+    public function testCreateWithPhoneExistent(): void
+    {
+        $this->expectException(PhoneAlreadyExistsException::class);
+
+        $data = [
+            'phone' => $this->getFaker()->e164PhoneNumber,
+            'password' => $this->getFaker()->password,
+        ];
+
+        $user = (new User)
+            ->setPhone($data['phone'])
+            ->setPassword($data['password'])
+            ->setRegister('now')->setChange('now')
+            ->setSession($session = (new UserSession)->setDate('now'));
+
+        $this->em->persist($user);
+        $this->em->persist($session);
+        $this->em->flush();
+
         $this->service->create($data);
     }
 
@@ -158,10 +197,12 @@ class UserServiceTest extends TestCase
             'password' => $this->getFaker()->password,
         ];
 
-        // создаем пользователя, которого будем тестировать
         $this->service->create($data);
 
-        // проверяем, что пользователь найден
+        $user = $this->service->read(['identifier' => $data['username']]);
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertSame($data['username'], $user->getUsername());
+
         $user = $this->service->read(array_merge($data, ['agent' => $this->getFaker()->userAgent, 'ip' => $this->getFaker()->ipv4]));
         $this->assertInstanceOf(User::class, $user);
         $this->assertSame($data['username'], $user->getUsername());
@@ -174,21 +215,39 @@ class UserServiceTest extends TestCase
             'password' => $this->getFaker()->password,
         ];
 
-        // создаем пользователя, которого будем тестировать
         $this->service->create($data);
 
-        // проверяем, что пользователь найден
+        $user = $this->service->read(['identifier' => $data['email']]);
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertSame($data['email'], $user->getEmail());
+
         $user = $this->service->read(array_merge($data, ['agent' => $this->getFaker()->userAgent, 'ip' => $this->getFaker()->ipv4]));
         $this->assertInstanceOf(User::class, $user);
         $this->assertSame($data['email'], $user->getEmail());
     }
 
+    public function testReadSuccess3(): void
+    {
+        $data = [
+            'phone' => $this->getFaker()->e164PhoneNumber,
+            'password' => $this->getFaker()->password,
+        ];
+
+        $this->service->create($data);
+
+        $user = $this->service->read(['identifier' => $data['phone']]);
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertSame($data['phone'], $user->getPhone());
+
+        $user = $this->service->read(array_merge($data, ['agent' => $this->getFaker()->userAgent, 'ip' => $this->getFaker()->ipv4]));
+        $this->assertInstanceOf(User::class, $user);
+        $this->assertSame($data['phone'], $user->getPhone());
+    }
+
     public function testReadWithUserNotFound1(): void
     {
-        // считаем тест успешным, если сервис выкинет исключение
         $this->expectException(UserNotFoundException::class);
 
-        // проверяем
         $this->service->read([
             'identifier' => $this->getFaker()->userName,
         ]);
@@ -196,18 +255,24 @@ class UserServiceTest extends TestCase
 
     public function testReadWithUserNotFound2(): void
     {
-        // считаем тест успешным, если сервис выкинет исключение
         $this->expectException(UserNotFoundException::class);
 
-        // проверяем
         $this->service->read([
             'identifier' => $this->getFaker()->email,
         ]);
     }
 
+    public function testReadWithUserNotFound3(): void
+    {
+        $this->expectException(UserNotFoundException::class);
+
+        $this->service->read([
+            'identifier' => $this->getFaker()->e164PhoneNumber,
+        ]);
+    }
+
     public function testReadWithWrongPassword(): void
     {
-        // считаем тест успешным, если сервис выкинет исключение
         $this->expectException(WrongPasswordException::class);
 
         $data = [
@@ -215,10 +280,8 @@ class UserServiceTest extends TestCase
             'password' => $this->getFaker()->password,
         ];
 
-        // создаем пользователя, которого будем тестировать
         $this->service->create($data);
 
-        // проверяем
         $this->service->read([
             'username' => $data['username'],
             'password' => $data['password'] . '-wrong',
@@ -227,7 +290,6 @@ class UserServiceTest extends TestCase
 
     public function testUpdate(): void
     {
-        // создаем пользователя, которого будем тестировать
         $user = $this->service->create([
             'username' => $this->getFaker()->userName,
             'email' => $this->getFaker()->email,
@@ -235,20 +297,30 @@ class UserServiceTest extends TestCase
         ]);
 
         $data = [
+            'username' => $this->getFaker()->userName,
+            'password' => $this->getFaker()->password,
+            'phone' => $this->getFaker()->e164PhoneNumber,
             'firstname' => $this->getFaker()->firstName,
             'lastname' => $this->getFaker()->lastName,
             'email' => $this->getFaker()->email,
         ];
 
         $user = $this->service->update($user, $data);
+        $this->assertSame($data['username'], $user->getUsername());
         $this->assertSame($data['firstname'], $user->getFirstname());
         $this->assertSame($data['lastname'], $user->getLastname());
         $this->assertSame($data['email'], $user->getEmail());
     }
 
+    public function testUpdateWithUserNotFound(): void
+    {
+        $this->expectException(UserNotFoundException::class);
+
+        $this->service->update(null);
+    }
+
     public function testUpdatePhone(): void
     {
-        // создаем пользователя, которого будем тестировать
         $user = $this->service->create([
             'username' => $this->getFaker()->userName,
             'password' => $this->getFaker()->password,
@@ -258,31 +330,36 @@ class UserServiceTest extends TestCase
         $_ENV['SIMPLE_PHONE_CHECK'] = 1;
 
         // 1
+        $phone = $this->getFaker()->phoneNumber;
+        $this->service->update($user, ['phone' => $phone]);
+        $this->assertSame(str_replace(['(', ')', ' ', '.', '-'], '', $phone), $user->getPhone());
+
+        // 2
         $phone = '89991112233';
         $this->service->update($user, ['phone' => $phone]);
         $this->assertSame($phone, $user->getPhone());
 
-        // 2
+        // 3
         $this->service->update($user, ['phone' => '8 (999) 111-22-33']);
         $this->assertSame('89991112233', $user->getPhone());
 
         // убираем флаг
         unset($_ENV['SIMPLE_PHONE_CHECK']);
 
-        // 3
+        // 4
         $phone = '+79991112233';
         $this->service->update($user, ['phone' => $phone]);
         $this->assertSame($phone, $user->getPhone());
 
-        // 4
+        // 5
         $this->service->update($user, ['phone' => '+7 (999) 111-22-33']);
         $this->assertSame('+79991112233', $user->getPhone());
     }
 
     public function testDelete(): void
     {
-        // создаем пользователя, которого будем тестировать
         $user = $this->service->create([
+            'phone' => $this->getFaker()->e164PhoneNumber,
             'username' => $this->getFaker()->userName,
             'email' => $this->getFaker()->email,
             'password' => $this->getFaker()->password,
@@ -294,7 +371,6 @@ class UserServiceTest extends TestCase
 
     public function testDeleteWithNotFound(): void
     {
-        // считаем тест успешным, если сервис выкинет исключение
         $this->expectException(UserNotFoundException::class);
 
         $this->service->block(null);
@@ -302,8 +378,8 @@ class UserServiceTest extends TestCase
 
     public function testBlock(): void
     {
-        // создаем пользователя, которого будем тестировать
         $user = $this->service->create([
+            'phone' => $this->getFaker()->e164PhoneNumber,
             'username' => $this->getFaker()->userName,
             'email' => $this->getFaker()->email,
             'password' => $this->getFaker()->password,
@@ -315,7 +391,6 @@ class UserServiceTest extends TestCase
 
     public function testBlockWithNotFound(): void
     {
-        // считаем тест успешным, если сервис выкинет исключение
         $this->expectException(UserNotFoundException::class);
 
         $this->service->block(null);

@@ -3,6 +3,7 @@
 namespace App\Application\Actions\Cup\User;
 
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
+use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\UserService;
 
@@ -34,6 +35,8 @@ class UserCreateAction extends UserAction
                 $this->addError('username', $exception->getMessage());
             } catch (EmailAlreadyExistsException $exception) {
                 $this->addError('email', $exception->getMessage());
+            } catch (PhoneAlreadyExistsException $exception) {
+                $this->addError('phone', $exception->getMessage());
             }
         }
 

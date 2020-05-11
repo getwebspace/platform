@@ -5,6 +5,7 @@ namespace App\Application\Actions\Cup\User;
 use App\Domain\Exceptions\WrongEmailValueException;
 use App\Domain\Exceptions\WrongPhoneValueException;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
+use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\UserService;
 
@@ -44,7 +45,7 @@ class UserUpdateAction extends UserAction
                         $this->addError('username', $e->getMessage());
                     } catch (WrongEmailValueException|EmailAlreadyExistsException $e) {
                         $this->addError('email', $e->getMessage());
-                    } catch (WrongPhoneValueException $e) {
+                    } catch (WrongPhoneValueException|PhoneAlreadyExistsException $e) {
                         $this->addError('phone', $e->getMessage());
                     }
                 }

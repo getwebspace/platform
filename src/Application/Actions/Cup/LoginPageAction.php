@@ -31,6 +31,7 @@ class LoginPageAction extends AbstractAction
 
         if ($this->request->isPost()) {
             $data = [
+                'phone' => $this->request->getParam('phone'),
                 'email' => $this->request->getParam('email'),
                 'username' => $this->request->getParam('username'),
                 'password' => $this->request->getParam('password'),

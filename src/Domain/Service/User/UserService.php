@@ -10,6 +10,7 @@ use App\Domain\Exceptions\WrongPhoneValueException;
 use App\Domain\Repository\UserRepository;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
+use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
@@ -36,6 +37,7 @@ class UserService extends AbstractService
      *
      * @throws EmailAlreadyExistsException
      * @throws UsernameAlreadyExistsException
+     * @throws PhoneAlreadyExistsException
      * @throws MissingUniqueValueException
      * @throws WrongEmailValueException
      * @throws WrongPhoneValueException
@@ -63,7 +65,10 @@ class UserService extends AbstractService
         if ($data['email'] && $this->service->findOneByEmail($data['email']) !== null) {
             throw new EmailAlreadyExistsException();
         }
-        if (!$data['username'] && !$data['email']) {
+        if ($data['phone'] && $this->service->findOneByPhone($data['phone']) !== null) {
+            throw new PhoneAlreadyExistsException();
+        }
+        if (!$data['username'] && !$data['email'] && !$data['phone']) {
             throw new MissingUniqueValueException();
         }
         if (!$data['password']) {
@@ -102,16 +107,17 @@ class UserService extends AbstractService
     public function read(array $data = []): ?User
     {
         $default = [
-            'identifier' => '',
+            'identifier' => '', // включает: username, email, email
             'username' => '',
             'email' => '',
-            'password' => '',
-            'agent' => '',
-            'ip' => '',
+            'phone' => '',
+            'password' => '', // опционально, передается для проверки
+            'agent' => '', // опционально, передается для обновления
+            'ip' => '', // опционально, передается для обновления
         ];
         $data = array_merge($default, $data);
 
-        if ($data['identifier'] || $data['username'] || $data['email']) {
+        if ($data['identifier'] || $data['username'] || $data['email'] || $data['phone']) {
             switch (true) {
                 case $data['identifier']:
                     $user = $this->service->findOneByIdentifier($data['identifier']);
@@ -123,6 +129,10 @@ class UserService extends AbstractService
 
                 case $data['email']:
                     $user = $this->service->findOneByEmail($data['email']);
+                    break;
+
+                case $data['phone']:
+                    $user = $this->service->findOneByPhone($data['phone']);
                     break;
             }
 
@@ -158,13 +168,14 @@ class UserService extends AbstractService
      *
      * @throws UsernameAlreadyExistsException
      * @throws EmailAlreadyExistsException
+     * @throws PhoneAlreadyExistsException
      * @throws WrongEmailValueException
      * @throws WrongPhoneValueException
      * @throws UserNotFoundException
      *
      * @return null|User
      */
-    public function update($entity, array $data = [])
+    public function update($entity, array $data = []): ?User
     {
         switch (true) {
             case is_string($entity) && Uuid::isValid($entity):
@@ -208,7 +219,13 @@ class UserService extends AbstractService
                     }
                 }
                 if ($data['phone']) {
-                    $entity->setPhone($data['phone']);
+                    $found = $this->service->findOneByPhone($data['phone']);
+
+                    if ($found === null || $found === $entity) {
+                        $entity->setPhone($data['phone']);
+                    } else {
+                        throw new PhoneAlreadyExistsException();
+                    }
                 }
                 if ($data['password']) {
                     $entity->setPassword($data['password']);
@@ -247,7 +264,7 @@ class UserService extends AbstractService
      *
      * @return null|User
      */
-    public function block($entity)
+    public function block($entity): ?User
     {
         if (
             (is_string($entity) && Uuid::isValid($entity)) ||
@@ -274,7 +291,7 @@ class UserService extends AbstractService
      *
      * @return null|User
      */
-    public function delete($entity)
+    public function delete($entity): ?User
     {
         if (
             (is_string($entity) && Uuid::isValid($entity)) ||

@@ -3,8 +3,10 @@
 namespace App\Application\Actions\Common\User;
 
 use App\Domain\Exceptions\WrongEmailValueException;
+use App\Domain\Exceptions\WrongPhoneValueException;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
+use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\UserService;
 
@@ -16,6 +18,7 @@ class UserRegisterAction extends UserAction
 
         if ($this->request->isPost()) {
             $data = [
+                'phone' => $this->request->getParam('phone'),
                 'email' => $this->request->getParam('email'),
                 'username' => $this->request->getParam('username'),
                 'password' => $this->request->getParam('password'),
@@ -38,6 +41,8 @@ class UserRegisterAction extends UserAction
                         $this->addError('username', $e->getMessage());
                     } catch (WrongEmailValueException|EmailAlreadyExistsException $e) {
                         $this->addError('email', $e->getMessage());
+                    } catch (WrongPhoneValueException|PhoneAlreadyExistsException $exception) {
+                        $this->addError('phone', $exception->getMessage());
                     }
                 }
             }
