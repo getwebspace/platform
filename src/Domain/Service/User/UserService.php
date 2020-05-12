@@ -113,6 +113,7 @@ class UserService extends AbstractService
             'username' => '',
             'email' => '',
             'phone' => '',
+            'allow_mail' => '',
             'password' => '', // опционально, передается для проверки
             'agent' => '', // опционально, передается для обновления
             'ip' => '', // опционально, передается для обновления
@@ -170,7 +171,13 @@ class UserService extends AbstractService
             return $user;
         }
 
-        return collect($this->service->findAll());
+        $criteria = [];
+
+        if ($data['allow_mail'] !== '') {
+            $criteria['allow_mail'] = (bool) $data['allow_mail'];
+        }
+
+        return collect($this->service->findBy($criteria));
     }
 
     /**

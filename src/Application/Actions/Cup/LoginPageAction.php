@@ -10,21 +10,6 @@ use Psr\Container\ContainerInterface;
 
 class LoginPageAction extends AbstractAction
 {
-    /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
-     */
-    protected $userRepository;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct(ContainerInterface $container)
-    {
-        parent::__construct($container);
-
-        $this->userRepository = $this->entityManager->getRepository(\App\Domain\Entities\User::class);
-    }
-
     protected function action(): \Slim\Http\Response
     {
         $identifier = $this->getParameter('user_login_type', 'username');

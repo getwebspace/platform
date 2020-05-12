@@ -92,6 +92,8 @@ class PageService extends AbstractService
             'uuid' => '',
             'title' => '',
             'address' => '',
+            'template' => '',
+            'type' => '',
         ];
         $data = array_merge($default, $data);
 
@@ -120,7 +122,16 @@ class PageService extends AbstractService
             return $page;
         }
 
-        return collect($this->service->findAll());
+        $criteria = [];
+
+        if ($data['template']) {
+            $criteria['template'] = $data['template'];
+        }
+        if ($data['type'] !== '' && in_array($data['type'], \App\Domain\Types\PageTypeType::LIST, true)) {
+            $criteria['type'] = $data['type'];
+        }
+
+        return collect($this->service->findBy($criteria));
     }
 
     /**

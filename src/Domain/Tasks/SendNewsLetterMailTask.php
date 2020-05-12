@@ -4,6 +4,7 @@ namespace App\Domain\Tasks;
 
 use App\Application\Mail;
 use App\Domain\AbstractTask;
+use App\Domain\Service\User\UserService;
 
 class SendNewsLetterMailTask extends AbstractTask
 {
@@ -38,14 +39,14 @@ class SendNewsLetterMailTask extends AbstractTask
         );
 
         if ($args['smtp_host'] && $args['smtp_login'] && $args['smtp_pass']) {
-            $userRepository = $this->entityManager->getRepository(\App\Domain\Entities\User::class);
+            $userService = UserService::getFromContainer($this->container);
             $subscriberRepository = $this->entityManager->getRepository(\App\Domain\Entities\User\Subscriber::class);
 
             // список адресов
             switch ($args['type']) {
                 case 'all':
                     $list = collect()
-                        ->merge(collect($userRepository->findBy(['allow_mail' => true]))->pluck('email')->all())
+                        ->merge($userService->read(['allow_mail' => true])->pluck('email')->all())
                         ->merge(collect($subscriberRepository->findAll())->pluck('email')->all())
                         ->unique();
 
@@ -59,7 +60,7 @@ class SendNewsLetterMailTask extends AbstractTask
 
                 case 'users':
                     $list = collect()
-                        ->merge(collect($userRepository->findBy(['allow_mail' => true]))->pluck('email')->all());
+                        ->merge($userService->read(['allow_mail' => true])->pluck('email')->all());
 
                     break;
             }
