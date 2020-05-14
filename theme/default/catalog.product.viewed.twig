@@ -12,7 +12,7 @@
 
             <div class="product-slider owl-carousel">
                 {% for product in viewed %}
-                    <div class="product-item" data-catalog-product>
+                    <div class="product-item" data-catalog-item>
                         <div class="pi-pic">
                             <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ product.address }}">
                                 {% include 'mixin/img.twig' with {
@@ -23,7 +23,7 @@
                                 } only %}
                             </a>
                             <div class="pi-links">
-                                <a href="#" class="add-card" data-catalog-product-add><i class="flaticon-bag"></i><span>В корзину</span></a>
+                                <a href="#" class="add-card" data-catalog-item-add><i class="flaticon-bag"></i><span>В корзину</span></a>
                             </div>
                         </div>
                         <div class="pi-text">

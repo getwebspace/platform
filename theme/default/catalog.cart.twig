@@ -5,6 +5,10 @@
 {% block page %}
     <script>
         window.catalog = {
+            cart: {
+                price_precision: 5,
+                count_precision: 3,
+            },
             events: {
                 'on:ready': (data, cart, obj) => {
                     $('[data-cart-not-empty]').toggle(!!obj.cartCount());
@@ -22,6 +26,9 @@
     </script>
 
     <style>
+        [data-catalog-cart] [data-attr="quantity"] input {
+            text-align: center;
+        }
         [data-catalog-cart] [data-attr="increment"] button,
         [data-catalog-cart] [data-attr="decrement"] button,
         [data-catalog-cart] [data-attr="remove"] button {

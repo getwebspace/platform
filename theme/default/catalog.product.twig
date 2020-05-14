@@ -35,7 +35,7 @@
         </div>
     </div>
 
-    <section class="product-section" data-catalog-product>
+    <section class="product-section" data-catalog-item>
         <div class="container">
             <div class="back-link">
                 <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ category.address }}">&lt;&lt; В категорию "{{ category.title }}"</a>
@@ -74,12 +74,12 @@
                     <div class="quantity">
                         <p>Количество</p>
                         <div class="pro-qty">
-                            <input type="text" class="item_quantity" data-catalog-product-attr="quantity" value="1">
+                            <input type="text" class="item_quantity" data-catalog-item-attr="quantity" value="1">
                         </div>
                     </div>
 
                     {# add class item_add to btn #}
-                    <a href="javascript:;" class="site-btn" data-catalog-product-add>В корзину</a>
+                    <a href="javascript:;" class="site-btn" data-catalog-item-add>В корзину</a>
 
                     <div id="accordion" class="accordion-area">
                         <div class="panel">
