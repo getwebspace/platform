@@ -5,7 +5,7 @@
 
         {% if subNodes.count() %}
             <ul class="sub-menu">
-                {% include 'publication.menu.twig' with {'categories':categories,'parent':node.uuid} only %}
+                {% include 'publication.menu.twig' with {'categories':categories,'parent':node.uuid,'NIL':NIL} only %}
             </ul>
         {% endif %}
     </li>
