@@ -4,6 +4,7 @@ namespace App\Application\Middlewares;
 
 use App\Domain\AbstractMiddleware;
 use App\Domain\Repository\UserRepository;
+use App\Domain\Service\User\UserService;
 use DateTime;
 use Psr\Container\ContainerInterface;
 use Ramsey\Uuid\Uuid;
@@ -46,10 +47,8 @@ class AuthorizationMiddleware extends AbstractMiddleware
         ];
 
         if ($data['uuid'] && Uuid::isValid($data['uuid']) && $data['session']) {
-            $user = $this->users->findOneBy([
-                'uuid' => $data['uuid'],
-                'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
-            ]);
+            $userService = UserService::getFromContainer($this->container);
+            $user = $userService->read(['uuid' => $data['uuid']]);
 
             if ($user) {
                 $hash = sha1(

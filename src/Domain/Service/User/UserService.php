@@ -114,6 +114,7 @@ class UserService extends AbstractService
             'email' => '',
             'phone' => '',
             'allow_mail' => '',
+            'status' => '',
             'password' => '', // опционально, передается для проверки
             'agent' => '', // опционально, передается для обновления
             'ip' => '', // опционально, передается для обновления
@@ -123,7 +124,7 @@ class UserService extends AbstractService
         if ($data['uuid'] || $data['identifier'] || $data['username'] || $data['email'] || $data['phone']) {
             switch (true) {
                 case $data['uuid']:
-                    $user = $this->service->findOneByUuid($data['uuid']);
+                    $user = $this->service->findOneByUuid((string) $data['uuid']);
 
                     break;
 
@@ -148,7 +149,12 @@ class UserService extends AbstractService
                     break;
             }
 
-            if ($user === null) {
+            if (
+                empty($user) &&
+                (
+                    !$data['status'] || (!empty($user) && $data['status'] !== $user->getStatus())
+                )
+            ) {
                 throw new UserNotFoundException();
             }
 
@@ -175,6 +181,9 @@ class UserService extends AbstractService
 
         if ($data['allow_mail'] !== '') {
             $criteria['allow_mail'] = (bool) $data['allow_mail'];
+        }
+        if ($data['status'] !== '' && in_array($data['status'], \App\Domain\Types\UserStatusType::LIST, true)) {
+            $criteria['status'] = $data['status'];
         }
 
         return collect($this->service->findBy($criteria));

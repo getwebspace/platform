@@ -37,6 +37,17 @@ abstract class AbstractService
         );
     }
 
+    /**
+     * @param string $alias
+     * @param string $indexBy the index for the from
+     *
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function createQueryBuilder($alias, $indexBy = null)
+    {
+        return $this->service->createQueryBuilder($alias, $indexBy);
+    }
+
     abstract public function create(array $data = []);
 
     abstract public function read(array $data = []);

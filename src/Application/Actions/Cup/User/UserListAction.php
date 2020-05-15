@@ -2,6 +2,8 @@
 
 namespace App\Application\Actions\Cup\User;
 
+use App\Domain\Service\User\UserService;
+
 class UserListAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
@@ -41,7 +43,8 @@ class UserListAction extends UserAction
             }
         }
 
-        $query = $this->users->createQueryBuilder('u');
+        $userService = UserService::getFromContainer($this->container);
+        $query = $userService->createQueryBuilder('u');
 
         foreach ($criteria as $criterion => $value) {
             if (is_array($value)) {

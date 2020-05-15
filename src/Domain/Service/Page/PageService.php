@@ -100,7 +100,7 @@ class PageService extends AbstractService
         if ($data['uuid'] || $data['title'] || $data['address']) {
             switch (true) {
                 case $data['uuid']:
-                    $page = $this->service->findOneByUuid($data['uuid']);
+                    $page = $this->service->findOneByUuid((string) $data['uuid']);
 
                     break;
 
@@ -115,7 +115,7 @@ class PageService extends AbstractService
                     break;
             }
 
-            if ($page === null) {
+            if (empty($page)) {
                 throw new PageNotFoundException();
             }
 

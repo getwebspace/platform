@@ -373,7 +373,7 @@ class UserServiceTest extends TestCase
     {
         $this->expectException(UserNotFoundException::class);
 
-        $this->service->block(null);
+        $this->service->delete(null);
     }
 
     public function testBlock(): void

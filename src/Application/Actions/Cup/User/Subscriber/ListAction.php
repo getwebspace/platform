@@ -3,13 +3,14 @@
 namespace App\Application\Actions\Cup\User\Subscriber;
 
 use App\Application\Actions\Cup\User\UserAction;
+use App\Domain\Service\User\SubscriberService as UserSubscriberService;
 
 class ListAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $list = collect($this->usersSubscriber->findAll());
+        $userSubscriberService = UserSubscriberService::getFromContainer($this->container);
 
-        return $this->respondWithTemplate('cup/user/subscriber/index.twig', ['list' => $list]);
+        return $this->respondWithTemplate('cup/user/subscriber/index.twig', ['list' => $userSubscriberService->read()]);
     }
 }

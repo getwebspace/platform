@@ -6,7 +6,6 @@ use App\Domain\AbstractAction;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
 use App\Domain\Service\User\UserService;
-use Psr\Container\ContainerInterface;
 
 class LoginPageAction extends AbstractAction
 {

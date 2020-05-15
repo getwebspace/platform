@@ -1,12 +1,12 @@
 <?php declare(strict_types=1);
 
-namespace App\Application\Actions\Cup\User\Subscriber;
+namespace App\Application\Actions\Api\User\Subscriber;
 
 use App\Application\Actions\Cup\User\UserAction;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\SubscriberService as UserSubscriberService;
 
-class DeleteAction extends UserAction
+class UnsubscribeAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
@@ -25,6 +25,6 @@ class DeleteAction extends UserAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/user/subscriber')->withStatus(301);
+        return $this->response->withStatus(208);
     }
 }
