@@ -37,7 +37,7 @@ class PageService extends AbstractService
      *
      * @return Page
      */
-    public function create(array $data = []): ?Page
+    public function create(array $data = []): Page
     {
         $default = [
             'title' => '',
@@ -84,7 +84,7 @@ class PageService extends AbstractService
      *
      * @throws PageNotFoundException
      *
-     * @return null|Collection|Page
+     * @return Collection|Page
      */
     public function read(array $data = [])
     {
@@ -142,9 +142,9 @@ class PageService extends AbstractService
      * @throws AddressAlreadyExistsException
      * @throws PageNotFoundException
      *
-     * @return null|Page
+     * @return Page
      */
-    public function update($entity, array $data = []): ?Page
+    public function update($entity, array $data = []): Page
     {
         switch (true) {
             case is_string($entity) && Uuid::isValid($entity):
@@ -221,7 +221,7 @@ class PageService extends AbstractService
      *
      * @return bool
      */
-    public function delete($entity)
+    public function delete($entity): bool
     {
         switch (true) {
             case is_string($entity) && Uuid::isValid($entity):

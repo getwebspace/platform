@@ -35,9 +35,9 @@ class CategoryService extends AbstractService
      * @throws MissingTitleValueException
      * @throws AddressAlreadyExistsException
      *
-     * @return null|PublicationCategory
+     * @return PublicationCategory
      */
-    public function create(array $data = []): ?PublicationCategory
+    public function create(array $data = []): PublicationCategory
     {
         $default = [
             'title' => '',
@@ -47,9 +47,20 @@ class CategoryService extends AbstractService
             'pagination' => 10,
             'children' => false,
             'public' => true,
-            'sort' => [],
-            'meta' => [],
-            'template' => [],
+            'sort' => [
+                'by' => '',
+                'direction' => '',
+            ],
+            'meta' => [
+                'title' => '',
+                'description' => '',
+                'keywords' => '',
+            ],
+            'template' => [
+                'list' => '',
+                'short' => '',
+                'full' => '',
+            ],
         ];
         $data = array_merge($default, $data);
 
@@ -68,7 +79,7 @@ class CategoryService extends AbstractService
             ->setAddress($data['address'])
             ->setDescription($data['description'])
             ->setParent($data['parent'])
-            ->setPagination($data['pagination'])
+            ->setPagination((int) $data['pagination'])
             ->setChildren((bool) $data['children'])
             ->setPublic((bool) $data['public'])
             ->setSort($data['sort'])
@@ -85,7 +96,8 @@ class CategoryService extends AbstractService
      * @param array $data
      *
      * @throws CategoryNotFoundException
-     * @return null|Collection|PublicationCategory
+     *
+     * @return Collection|PublicationCategory
      */
     public function read(array $data = [])
     {
@@ -132,16 +144,16 @@ class CategoryService extends AbstractService
     }
 
     /**
-     * @param string|PublicationCategory|Uuid $entity
+     * @param PublicationCategory|string|Uuid $entity
      * @param array                           $data
      *
      * @throws TitleAlreadyExistsException
      * @throws AddressAlreadyExistsException
      * @throws CategoryNotFoundException
      *
-     * @return null|PublicationCategory
+     * @return PublicationCategory
      */
-    public function update($entity, array $data = []): ?PublicationCategory
+    public function update($entity, array $data = []): PublicationCategory
     {
         switch (true) {
             case is_string($entity) && Uuid::isValid($entity):
@@ -192,12 +204,12 @@ class CategoryService extends AbstractService
                     $entity->setParent($data['parent']);
                 }
                 if ($data['pagination']) {
-                    $entity->setPagination($data['pagination']);
+                    $entity->setPagination((int) $data['pagination']);
                 }
-                if ($data['children']) {
+                if ($data['children'] !== '') {
                     $entity->setChildren((bool) $data['children']);
                 }
-                if ($data['public']) {
+                if ($data['public'] !== '') {
                     $entity->setPublic((bool) $data['public']);
                 }
                 if ($data['sort']) {
@@ -220,13 +232,13 @@ class CategoryService extends AbstractService
     }
 
     /**
-     * @param string|PublicationCategory|Uuid $entity
+     * @param PublicationCategory|string|Uuid $entity
      *
      * @throws CategoryNotFoundException
      *
-     * @return null|PublicationCategory
+     * @return bool
      */
-    public function delete($entity): ?PublicationCategory
+    public function delete($entity): bool
     {
         if (
             (is_string($entity) && Uuid::isValid($entity)) ||
@@ -239,7 +251,7 @@ class CategoryService extends AbstractService
             $this->entityManager->remove($entity);
             $this->entityManager->flush();
 
-            return $entity;
+            return true;
         }
 
         throw new CategoryNotFoundException();

@@ -44,7 +44,7 @@ class PageServiceTest extends TestCase
                 'keywords' => $this->getFaker()->text,
             ],
             'template' => $this->getFaker()->text,
-            'type' => \App\Domain\Types\PageTypeType::TYPE_TEXT,
+            'type' => $this->getFaker()->randomElement(\App\Domain\Types\PageTypeType::LIST),
         ];
 
         $page = $this->service->create($data);
@@ -154,7 +154,7 @@ class PageServiceTest extends TestCase
 
         $data = [
             'title' => $this->getFaker()->title,
-            'address' => $this->getFaker()->title,
+            'address' => 'test-address-page',
             'content' => $this->getFaker()->text,
             'meta' => [
                 'title' => $this->getFaker()->title,
@@ -162,12 +162,12 @@ class PageServiceTest extends TestCase
                 'keywords' => $this->getFaker()->text,
             ],
             'template' => 'page.derect.twig',
-            'type' => \App\Domain\Types\PageTypeType::TYPE_TEXT,
+            'type' => $this->getFaker()->randomElement(\App\Domain\Types\PageTypeType::LIST),
         ];
 
         $page = $this->service->update($page, $data);
         $this->assertSame($data['title'], $page->getTitle());
-        // $this->assertSame($data['address'], $page->getAddress());
+        $this->assertSame($data['address'], $page->getAddress());
         $this->assertSame($data['content'], $page->getContent());
         $this->assertSame($data['meta'], $page->getMeta());
         $this->assertSame($data['template'], $page->getTemplate());

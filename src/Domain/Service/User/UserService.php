@@ -43,9 +43,9 @@ class UserService extends AbstractService
      * @throws WrongEmailValueException
      * @throws WrongPhoneValueException
      *
-     * @return null|User
+     * @return User
      */
-    public function create(array $data = []): ?User
+    public function create(array $data = []): User
     {
         $default = [
             'username' => '',
@@ -103,7 +103,7 @@ class UserService extends AbstractService
      * @throws UserNotFoundException
      * @throws WrongPasswordException
      *
-     * @return null|Collection|User
+     * @return Collection|User
      */
     public function read(array $data = [])
     {
@@ -200,9 +200,9 @@ class UserService extends AbstractService
      * @throws WrongPhoneValueException
      * @throws UserNotFoundException
      *
-     * @return null|User
+     * @return User
      */
-    public function update($entity, array $data = []): ?User
+    public function update($entity, array $data = []): User
     {
         switch (true) {
             case is_string($entity) && Uuid::isValid($entity):
@@ -289,7 +289,7 @@ class UserService extends AbstractService
      *
      * @throws UserNotFoundException
      *
-     * @return null|User
+     * @return User
      */
     public function block($entity): ?User
     {
@@ -316,9 +316,9 @@ class UserService extends AbstractService
      *
      * @throws UserNotFoundException
      *
-     * @return null|User
+     * @return User
      */
-    public function delete($entity): ?User
+    public function delete($entity): User
     {
         if (
             (is_string($entity) && Uuid::isValid($entity)) ||

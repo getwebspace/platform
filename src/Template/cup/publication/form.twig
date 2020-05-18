@@ -17,7 +17,7 @@
                 <form method="post" enctype="multipart/form-data">
                     <div class="card-header">
                         <div class="d-flex align-items-center">
-                            <h4 class="card-title">{{ item.uuid ? 'Редактирование публикации ' ~ item.title : 'Добавление новой публикации' }}</h4>
+                            <h4 class="card-title">{{ publication.uuid ? 'Редактирование публикации ' ~ publication.title : 'Добавление новой публикации' }}</h4>
 
                             <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
                                 <li class="nav-item">
@@ -51,7 +51,7 @@
                                             'name': 'title',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Заголовок публикации обязателен к заполнению и может содержать не более 255 символов"></i>',
                                             'args': {
-                                                'value': item.title,
+                                                'value': publication.title,
                                                 'required': true,
                                                 'placeholder': 'О нас',
                                             }
@@ -63,7 +63,7 @@
                                             'type': 'datetime',
                                             'name': 'date',
                                             'args': {
-                                                'value': item.date|df('Y-m-d\\TH:i'),
+                                                'value': publication.date|df('Y-m-d\\TH:i'),
                                                 'placeholder': '20.01.2019 12:34',
                                             }
                                         } %}
@@ -80,7 +80,7 @@
                                             'args': {
                                                 'required': true,
                                                 'option': list.pluck('title', 'uuid').all(),
-                                                'selected': item.category
+                                                'selected': publication.category
                                             }
                                         } %}
                                     </div>
@@ -92,7 +92,7 @@
                                             'label': 'Краткое описание',
                                             'name': 'content[short]',
                                             'args': {
-                                                'value': item.content.short
+                                                'value': publication.content.short
                                             }
                                         } %}
                                     </div>
@@ -103,7 +103,7 @@
                                             'label': 'Полное описание',
                                             'name': 'content[full]',
                                             'args': {
-                                                'value': item.content.full
+                                                'value': publication.content.full
                                             }
                                         } %}
                                     </div>
@@ -121,7 +121,7 @@
                                             'name': 'poll[question]',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Укажите вопрос вашего голосования."></i>',
                                             'args': {
-                                                'value': item.question,
+                                                'value': publication.question,
                                                 'placeholder': 'Как вы думаете...',
                                             }
                                         } %}
@@ -136,7 +136,7 @@
                                             'type': 'textarea',
                                             'name': 'poll[answer]',
                                             'args': {
-                                                'value': item.answer,
+                                                'value': publication.answer,
                                                 'placeholder': 'Вот так..',
                                                 'style': 'min-height: 150px;'
                                             }
@@ -156,7 +156,7 @@
                                             'prefix': base_url() ~ '/',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Cсылка для просмотра статьи в браузере. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов"></i>',
                                             'args': {
-                                                'value': item.address,
+                                                'value': publication.address,
                                                 'placeholder': 'my-publication',
                                             }
                                         } %}
@@ -179,7 +179,7 @@
                                             }
                                         } %}
 
-                                        {% for file in item.getFiles() %}
+                                        {% for file in publication.getFiles() %}
                                             <div class="p-2 d-inline-block m-2 bg-grey2 text-center rounded">
                                                 <a href="{{ file.getPublicPath() }}" target="_blank">
                                                     <img class="rounded" height="100" src="{{ file.getPublicPath('small') }}" alt="preview" data-toggle="tooltip" data-placement="top" title="{{ file.getName() }}" />
@@ -215,7 +215,7 @@
                                             'type': 'text',
                                             'name': 'meta[title]',
                                             'args': {
-                                                'value': item.meta.title,
+                                                'value': publication.meta.title,
                                             }
                                         } %}
                                     </div>
@@ -226,7 +226,7 @@
                                             'type': 'text',
                                             'name': 'meta[description]',
                                             'args': {
-                                                'value': item.meta.description,
+                                                'value': publication.meta.description,
                                             }
                                         } %}
                                     </div>
@@ -237,7 +237,7 @@
                                             'type': 'text',
                                             'name': 'meta[keywords]',
                                             'args': {
-                                                'value': item.meta.keywords,
+                                                'value': publication.meta.keywords,
                                             }
                                         } %}
                                     </div>

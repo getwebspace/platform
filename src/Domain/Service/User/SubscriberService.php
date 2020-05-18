@@ -34,9 +34,9 @@ class SubscriberService extends AbstractService
      * @throws EmailAlreadyExistsException
      * @throws WrongEmailValueException
      *
-     * @return null|UserSubscriber
+     * @return UserSubscriber
      */
-    public function create(array $data = []): ?UserSubscriber
+    public function create(array $data = []): UserSubscriber
     {
         $default = [
             'email' => '',
@@ -66,7 +66,7 @@ class SubscriberService extends AbstractService
      *
      * @throws UserNotFoundException
      *
-     * @return null|Collection|UserSubscriber
+     * @return Collection|UserSubscriber
      */
     public function read(array $data = [])
     {
@@ -114,7 +114,7 @@ class SubscriberService extends AbstractService
      * @throws UserNotFoundException
      * @throws WrongEmailValueException
      *
-     * @return null|string|UserSubscriber
+     * @return UserSubscriber
      */
     public function update($entity, array $data = [])
     {
@@ -161,7 +161,7 @@ class SubscriberService extends AbstractService
      *
      * @return bool
      */
-    public function delete($entity)
+    public function delete($entity): bool
     {
         switch (true) {
             case is_string($entity) && Uuid::isValid($entity):

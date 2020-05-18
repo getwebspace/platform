@@ -4,8 +4,8 @@ namespace App\Domain\Tasks;
 
 use App\Application\Mail;
 use App\Domain\AbstractTask;
-use App\Domain\Service\User\UserService;
 use App\Domain\Service\User\SubscriberService as UserSubscriberService;
+use App\Domain\Service\User\UserService;
 
 class SendNewsLetterMailTask extends AbstractTask
 {

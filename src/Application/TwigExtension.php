@@ -234,7 +234,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
      *
      * @return string
      */
-    public function df($obj = 'now', $format = null, $timezone = 'UTC')
+    public function df($obj = 'now', $format = null, $timezone = '')
     {
         if (is_string($obj) || is_numeric($obj)) {
             $obj = new \DateTime($obj);
@@ -245,7 +245,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         }
 
         return $obj
-            ->setTimezone(new \DateTimeZone($this->parameter('common_timezone', $timezone)))
+            ->setTimezone(new \DateTimeZone($timezone ? $timezone : $this->parameter('common_timezone', 'UTC')))
             ->format($format ? $format : $this->parameter('common_date_format', 'j-m-Y, H:i'));
     }
 

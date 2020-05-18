@@ -35,17 +35,24 @@ class PublicationService extends AbstractService
      * @throws MissingTitleValueException
      * @throws AddressAlreadyExistsException
      *
-     * @return null|Publication
+     * @return Publication
      */
-    public function create(array $data = []): ?Publication
+    public function create(array $data = []): Publication
     {
         $default = [
             'title' => '',
             'address' => '',
             'category' => Uuid::NIL,
             'date' => 'now',
-            'content' => [],
-            'meta' => [],
+            'content' => [
+                'short' => '',
+                'full' => '',
+            ],
+            'meta' => [
+                'title' => '',
+                'description' => '',
+                'keywords' => '',
+            ],
         ];
         $data = array_merge($default, $data);
 
@@ -77,7 +84,8 @@ class PublicationService extends AbstractService
      * @param array $data
      *
      * @throws PublicationNotFoundException
-     * @return null|Collection|Publication
+     *
+     * @return Collection|Publication
      */
     public function read(array $data = [])
     {
@@ -86,6 +94,10 @@ class PublicationService extends AbstractService
             'address' => '',
             'title' => '',
             'category' => '',
+
+            'order' => [],
+            'limit' => 1000,
+            'offset' => 0,
         ];
         $data = array_merge($default, $data);
 
@@ -101,7 +113,7 @@ class PublicationService extends AbstractService
 
                     break;
 
-                case $data['username']:
+                case $data['title']:
                     $publication = $this->service->findOneByTitle($data['title']);
 
                     break;
@@ -120,20 +132,20 @@ class PublicationService extends AbstractService
             $criteria['category'] = $data['category'];
         }
 
-        return collect($this->service->findBy($criteria));
+        return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
     }
 
     /**
-     * @param string|Publication|Uuid $entity
+     * @param Publication|string|Uuid $entity
      * @param array                   $data
      *
      * @throws PublicationNotFoundException
      * @throws TitleAlreadyExistsException
      * @throws AddressAlreadyExistsException
      *
-     * @return null|Publication
+     * @return Publication
      */
-    public function update($entity, array $data = []): ?Publication
+    public function update($entity, array $data = []): Publication
     {
         switch (true) {
             case is_string($entity) && Uuid::isValid($entity):
@@ -196,13 +208,13 @@ class PublicationService extends AbstractService
     }
 
     /**
-     * @param string|Publication|Uuid $entity
+     * @param Publication|string|Uuid $entity
      *
      * @throws PublicationNotFoundException
      *
-     * @return null|Publication
+     * @return bool
      */
-    public function delete($entity): ?Publication
+    public function delete($entity): bool
     {
         if (
             (is_string($entity) && Uuid::isValid($entity)) ||
@@ -215,7 +227,7 @@ class PublicationService extends AbstractService
             $this->entityManager->remove($entity);
             $this->entityManager->flush();
 
-            return $entity;
+            return true;
         }
 
         throw new PublicationNotFoundException();

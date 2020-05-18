@@ -107,9 +107,9 @@ class Publication extends AbstractEntity
     }
 
     /**
-     * @return string
+     * @return string|uuid
      */
-    public function getCategory(): string
+    public function getCategory()
     {
         return $this->category;
     }

@@ -145,7 +145,7 @@ class Category extends AbstractEntity
     /**
      * @ORM\Column(type="integer", options={"default": 10})
      */
-    public int $pagination;
+    public int $pagination = 10;
 
     /**
      * @param int $value

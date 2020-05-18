@@ -262,7 +262,7 @@ abstract class AbstractEntity
      * @param $name
      * @param $value
      */
-    public function __set($name, $value)
+    public function __set($name, $value): void
     {
         throw new BadMethodCallException(
             sprintf("You cannot change value '%s' = '%s' by this way in class '%s'.", $name, $value, get_class($this))

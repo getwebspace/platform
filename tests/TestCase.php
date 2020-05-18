@@ -36,6 +36,8 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             foreach ($this->getTypes() as $type => $class) {
                 if (!\Doctrine\DBAL\Types\Type::hasType($type)) {
                     \Doctrine\DBAL\Types\Type::addType($type, $class);
+                } else {
+                    \Doctrine\DBAL\Types\Type::overrideType($type, $class);
                 }
             }
 

@@ -10,6 +10,8 @@ $container[\Doctrine\ORM\EntityManager::class] = function (ContainerInterface $c
     foreach ($settings['types'] as $type => $class) {
         if (!\Doctrine\DBAL\Types\Type::hasType($type)) {
             \Doctrine\DBAL\Types\Type::addType($type, $class);
+        } else {
+            \Doctrine\DBAL\Types\Type::overrideType($type, $class);
         }
     }
 

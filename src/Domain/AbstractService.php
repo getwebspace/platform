@@ -52,6 +52,11 @@ abstract class AbstractService
 
     abstract public function read(array $data = []);
 
+    public function count(array $criteria = [])
+    {
+        return $this->service->count($criteria);
+    }
+
     abstract public function update($entity, array $data = []);
 
     abstract public function delete($entity);

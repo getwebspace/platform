@@ -2,6 +2,8 @@
 
 namespace App\Application\Actions\Api\Publication;
 
+use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
+
 class Category extends PublicationAction
 {
     protected function action(): \Slim\Http\Response
@@ -10,10 +12,6 @@ class Category extends PublicationAction
             'uuid' => $this->request->getParam('uuid'),
             'parent' => $this->request->getParam('parent'),
             'address' => $this->request->getParam('address'),
-
-            'order' => $this->request->getParam('order', []),
-            'limit' => $this->request->getParam('limit', 1000),
-            'offset' => $this->request->getParam('offset', 0),
         ];
 
         $criteria = [];
@@ -28,7 +26,14 @@ class Category extends PublicationAction
             $criteria['address'] = urldecode($data['address']);
         }
 
-        $categories = $this->categoryRepository->findBy($criteria, $data['order'], $data['limit'], $data['offset']);
+        $publicationCategoryService = PublicationCategoryService::getFromContainer($this->container);
+        $categories = $publicationCategoryService->read(
+            array_merge($criteria, [
+                'order' => $this->request->getParam('order', []),
+                'limit' => $this->request->getParam('limit', 1000),
+                'offset' => $this->request->getParam('offset', 0),
+            ])
+        )->toArray();
 
         /** @var \App\Domain\Entities\Publication\Category $category */
         foreach ($categories as &$category) {
