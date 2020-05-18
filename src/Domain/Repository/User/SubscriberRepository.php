@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Domain\Repository;
+namespace App\Domain\Repository\User;
 
 use App\Domain\AbstractRepository;
 use App\Domain\Entities\User\Subscriber as UserSubscriber;
@@ -14,7 +14,7 @@ use Doctrine\ORM\NonUniqueResultException;
  * @method UserSubscriber[]    findAll()
  * @method UserSubscriber[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class UserSubscriberRepository extends AbstractRepository
+class SubscriberRepository extends AbstractRepository
 {
     public function findOneByEmail(string $email): ?UserSubscriber
     {

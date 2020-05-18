@@ -6,7 +6,7 @@ use Alksily\Entity\Collection;
 use App\Domain\AbstractService;
 use App\Domain\Entities\User\Subscriber as UserSubscriber;
 use App\Domain\Exceptions\WrongEmailValueException;
-use App\Domain\Repository\UserSubscriberRepository;
+use App\Domain\Repository\User\SubscriberRepository as UserSubscriberRepository;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
