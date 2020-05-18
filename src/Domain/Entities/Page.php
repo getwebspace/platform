@@ -20,7 +20,7 @@ class Page extends AbstractEntity
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    private Uuid $uuid;
+    protected Uuid $uuid;
 
     /**
      * @return Uuid
@@ -33,7 +33,7 @@ class Page extends AbstractEntity
     /**
      * @ORM\Column(type="string", options={"default": ""})
      */
-    private string $title = '';
+    protected string $title = '';
 
     /**
      * @param string $title
@@ -60,7 +60,7 @@ class Page extends AbstractEntity
     /**
      * @ORM\Column(type="string", unique=true, options={"default": ""})
      */
-    private string $address = '';
+    protected string $address = '';
 
     /**
      * @param string $address
@@ -88,7 +88,7 @@ class Page extends AbstractEntity
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    private DateTime $date;
+    protected DateTime $date;
 
     /**
      * @param $date
@@ -115,7 +115,7 @@ class Page extends AbstractEntity
     /**
      * @ORM\Column(type="text", options={"default": ""})
      */
-    private string $content = '';
+    protected string $content = '';
 
     /**
      * @param string $content
@@ -143,7 +143,7 @@ class Page extends AbstractEntity
      * @see \App\Domain\Types\PageTypeType::LIST
      * @ORM\Column(type="PageTypeType")
      */
-    private string $type = \App\Domain\Types\PageTypeType::TYPE_HTML;
+    protected string $type = \App\Domain\Types\PageTypeType::TYPE_HTML;
 
     /**
      * @param string $type
@@ -171,7 +171,7 @@ class Page extends AbstractEntity
      * @var array
      * @ORM\Column(type="array")
      */
-    private array $meta = [
+    protected array $meta = [
         'title' => '',
         'description' => '',
         'keywords' => '',
@@ -211,7 +211,7 @@ class Page extends AbstractEntity
     /**
      * @ORM\Column(type="string", length=50, options={"default": ""})
      */
-    private string $template = '';
+    protected string $template = '';
 
     /**
      * @param string $template
@@ -234,14 +234,14 @@ class Page extends AbstractEntity
     }
 
     /**
-     * @var array
+     * @var array|\Doctrine\ORM\PersistentCollection
      * @ORM\ManyToMany(targetEntity="App\Domain\Entities\File", cascade={"persist", "remove"}, orphanRemoval=true)
      * @ORM\JoinTable(name="page_files",
      *     joinColumns={@ORM\JoinColumn(name="page_uuid", referencedColumnName="uuid")},
      *     inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")}
      * )
      */
-    private \Doctrine\ORM\PersistentCollection $files;
+    protected \Doctrine\ORM\PersistentCollection $files;
 
     public function addFile(\App\Domain\Entities\File $file): void
     {

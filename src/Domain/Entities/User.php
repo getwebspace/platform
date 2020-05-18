@@ -21,7 +21,7 @@ class User extends AbstractEntity
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    private Uuid $uuid;
+    protected Uuid $uuid;
 
     /**
      * @return Uuid
@@ -34,7 +34,7 @@ class User extends AbstractEntity
     /**
      * @ORM\Column(type="string", length=50, options={"default": ""})
      */
-    private string $username = '';
+    protected string $username = '';
 
     /**
      * @param string $username
@@ -61,7 +61,7 @@ class User extends AbstractEntity
     /**
      * @ORM\Column(type="string", length=120, unique=true, options={"default": ""})
      */
-    private string $email = '';
+    protected string $email = '';
 
     /**
      * @param string $email
@@ -102,7 +102,7 @@ class User extends AbstractEntity
     /**
      * @ORM\Column(type="string", length=25, options={"default": ""})
      */
-    private string $phone = '';
+    protected string $phone = '';
 
     /**
      * @param string $phone
@@ -131,7 +131,7 @@ class User extends AbstractEntity
     /**
      * @ORM\Column(type="string", length=140, options={"default": ""})
      */
-    private string $password = '';
+    protected string $password = '';
 
     /**
      * @param string $password
@@ -158,7 +158,7 @@ class User extends AbstractEntity
     /**
      * @ORM\Column(type="string", length=50, options={"default": ""})
      */
-    private string $firstname = '';
+    protected string $firstname = '';
 
     /**
      * @param string $firstname
@@ -185,7 +185,7 @@ class User extends AbstractEntity
     /**
      * @ORM\Column(type="string", length=50, options={"default": ""})
      */
-    private string $lastname = '';
+    protected string $lastname = '';
 
     /**
      * @param string $lastname
@@ -235,7 +235,7 @@ class User extends AbstractEntity
     /**
      * @ORM\Column(type="boolean", options={"default": true})
      */
-    private bool $allow_mail = true;
+    protected bool $allow_mail = true;
 
     /**
      * @param $allow_mail
@@ -263,7 +263,7 @@ class User extends AbstractEntity
      * @see \App\Domain\Types\UserStatusType::LIST
      * @ORM\Column(type="UserStatusType", options={"default": \App\Domain\Types\UserStatusType::STATUS_WORK})
      */
-    private string $status = \App\Domain\Types\UserStatusType::STATUS_WORK;
+    protected string $status = \App\Domain\Types\UserStatusType::STATUS_WORK;
 
     /**
      * @param string $status
@@ -293,7 +293,7 @@ class User extends AbstractEntity
      * @see \App\Domain\Types\UserLevelType::LIST
      * @ORM\Column(type="UserLevelType", options={"default": \App\Domain\Types\UserLevelType::LEVEL_USER})
      */
-    private string $level = \App\Domain\Types\UserLevelType::LEVEL_USER;
+    protected string $level = \App\Domain\Types\UserLevelType::LEVEL_USER;
 
     /**
      * @param string $level
@@ -321,7 +321,7 @@ class User extends AbstractEntity
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    private DateTime $register;
+    protected DateTime $register;
 
     /**
      * @param $register
@@ -349,7 +349,7 @@ class User extends AbstractEntity
      * @var DateTime
      * @ORM\Column(name="`change`", type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    private DateTime $change;
+    protected DateTime $change;
 
     /**
      * @param $change
@@ -378,7 +378,7 @@ class User extends AbstractEntity
      * @ORM\OneToOne(targetEntity="App\Domain\Entities\User\Session")
      * @ORM\JoinColumn(name="uuid", referencedColumnName="uuid")
      */
-    private UserSession $session;
+    protected UserSession $session;
 
     /**
      * @param UserSession $session
@@ -401,14 +401,14 @@ class User extends AbstractEntity
     }
 
     /**
-     * @var array
+     * @var array|\Doctrine\ORM\PersistentCollection
      * @ORM\ManyToMany(targetEntity="App\Domain\Entities\File", cascade={"persist", "remove"}, orphanRemoval=true)
      * @ORM\JoinTable(name="user_files",
      *     joinColumns={@ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid")},
      *     inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")}
      * )
      */
-    private \Doctrine\ORM\PersistentCollection $files;
+    protected \Doctrine\ORM\PersistentCollection $files;
 
     /**
      * @param File $file

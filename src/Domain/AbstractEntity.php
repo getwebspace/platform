@@ -6,6 +6,7 @@ use Alksily\Support\Str;
 use App\Domain\Exceptions\WrongEmailValueException;
 use App\Domain\Exceptions\WrongIpValueException;
 use App\Domain\Exceptions\WrongPhoneValueException;
+use BadMethodCallException;
 use DateTime;
 use Ramsey\Uuid\Uuid;
 
@@ -25,7 +26,7 @@ abstract class AbstractEntity
                 $str = mb_strtolower($str);
                 $str = Str::translate($str);
                 $str = trim($str);
-                $str = preg_replace(['/[^a-z0-9\s]/', '/\s/'], ['', '-'], $str);
+                $str = preg_replace(['/[^a-z0-9\-]/', '/\s/'], ['', '-'], $str);
 
                 return $str;
             }
@@ -199,11 +200,72 @@ abstract class AbstractEntity
         return new DateTime('now');
     }
 
+    protected function checkUuidByValue($value)
+    {
+        return Uuid::isValid((string) $value);
+    }
+
     /**
      * @return AbstractEntity
      */
     public function clone()
     {
         return clone $this;
+    }
+
+    /**
+     * Return model as array
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return get_object_vars($this);
+    }
+
+    /**
+     * Return model as string
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return json_encode($this->toArray(), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    }
+
+    public function __isset($name)
+    {
+        return property_exists($this, $name);
+    }
+
+    /**
+     * Доступ на чтение параметра
+     *
+     * @param $name
+     *
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        if (property_exists($this, $name)) {
+            return $this->$name;
+        }
+
+        throw new BadMethodCallException(
+            sprintf("Unknown property '%s' in class '%s'.", $name, get_class($this))
+        );
+    }
+
+    /**
+     * Запрет на изменение
+     *
+     * @param $name
+     * @param $value
+     */
+    public function __set($name, $value)
+    {
+        throw new BadMethodCallException(
+            sprintf("You cannot change value '%s' = '%s' by this way in class '%s'.", $name, $value, get_class($this))
+        );
     }
 }

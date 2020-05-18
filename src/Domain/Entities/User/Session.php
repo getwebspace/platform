@@ -20,7 +20,7 @@ class Session extends AbstractEntity
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    private Uuid $uuid;
+    protected Uuid $uuid;
 
     /**
      * @return Uuid
@@ -33,7 +33,7 @@ class Session extends AbstractEntity
     /**
      * @ORM\Column(type="string", length=16, options={"default": ""})
      */
-    private string $ip = '';
+    protected string $ip = '';
 
     /**
      * @param $ip
@@ -62,7 +62,7 @@ class Session extends AbstractEntity
     /**
      * @ORM\Column(type="string", length=256, options={"default": ""})
      */
-    private string $agent = '';
+    protected string $agent = '';
 
     /**
      * @param string $agent
@@ -88,7 +88,7 @@ class Session extends AbstractEntity
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    private DateTime $date;
+    protected DateTime $date;
 
     /**
      * @param $date

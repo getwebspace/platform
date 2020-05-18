@@ -21,7 +21,7 @@ class Subscriber extends AbstractEntity
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    private Uuid $uuid;
+    protected Uuid $uuid;
 
     /**
      * @return Uuid
@@ -35,7 +35,7 @@ class Subscriber extends AbstractEntity
      * @var string
      * @ORM\Column(type="string", length=120, unique=true, options={"default": ""})
      */
-    private string $email = '';
+    protected string $email = '';
 
     /**
      * @param string $email
@@ -65,7 +65,7 @@ class Subscriber extends AbstractEntity
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    private DateTime $date;
+    protected DateTime $date;
 
     /**
      * @param $date

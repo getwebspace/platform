@@ -3,26 +3,24 @@
 namespace App\Application\Actions\Api\User\Subscriber;
 
 use App\Application\Actions\Cup\User\UserAction;
+use App\Domain\Exceptions\WrongEmailValueException;
+use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
+use App\Domain\Service\User\SubscriberService as UserSubscriberService;
 
 class SubscribeAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
         if ($this->request->isPost()) {
-            $data = [
-                'email' => $this->request->getParam('email'),
-                'date'  => $this->request->getParam('date'),
-            ];
+            try {
+                $userSubscriberService = UserSubscriberService::getFromContainer($this->container);
+                $userSubscriber = $userSubscriberService->create(['email' => $this->request->getParam('email')]);
 
-            $check = \App\Domain\Filters\User::subscribeCreate($data);
-
-            if ($check === true) {
-                $model = new \App\Domain\Entities\User\Subscriber($data);
-
-                $this->entityManager->persist($model);
-                $this->entityManager->flush();
-
-                return $this->response->withStatus(201);
+                if ($userSubscriber) {
+                    return $this->response->withStatus(201);
+                }
+            } catch (WrongEmailValueException|EmailAlreadyExistsException $e) {
+                // ignore
             }
         }
 
