@@ -107,7 +107,7 @@ class CategoryService extends AbstractService
             'address' => '',
             'parent' => '',
         ];
-        $data = array_merge($default, $data);
+        $data = array_merge($default, static::$default_read, $data);
 
         if ($data['uuid'] || $data['title'] || $data['address']) {
             switch (true) {
@@ -140,7 +140,7 @@ class CategoryService extends AbstractService
             $criteria['parent'] = $data['parent'];
         }
 
-        return collect($this->service->findBy($criteria));
+        return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
     }
 
     /**

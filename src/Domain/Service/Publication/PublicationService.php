@@ -94,12 +94,8 @@ class PublicationService extends AbstractService
             'address' => '',
             'title' => '',
             'category' => '',
-
-            'order' => [],
-            'limit' => 1000,
-            'offset' => 0,
         ];
-        $data = array_merge($default, $data);
+        $data = array_merge($default, static::$default_read, $data);
 
         if ($data['uuid'] || $data['address'] || $data['title']) {
             switch (true) {

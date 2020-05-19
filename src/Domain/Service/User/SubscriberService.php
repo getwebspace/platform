@@ -75,7 +75,7 @@ class SubscriberService extends AbstractService
             'email' => '',
             'date' => '',
         ];
-        $data = array_merge($default, $data);
+        $data = array_merge($default, static::$default_read, $data);
 
         if ($data['uuid'] || $data['email']) {
             switch (true) {
@@ -103,7 +103,7 @@ class SubscriberService extends AbstractService
             $criteria['date'] = $data['date'];
         }
 
-        return collect($this->service->findBy($criteria));
+        return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
     }
 
     /**

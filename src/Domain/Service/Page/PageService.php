@@ -95,7 +95,7 @@ class PageService extends AbstractService
             'template' => '',
             'type' => '',
         ];
-        $data = array_merge($default, $data);
+        $data = array_merge($default, static::$default_read, $data);
 
         if ($data['uuid'] || $data['title'] || $data['address']) {
             switch (true) {
@@ -131,7 +131,7 @@ class PageService extends AbstractService
             $criteria['type'] = $data['type'];
         }
 
-        return collect($this->service->findBy($criteria));
+        return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
     }
 
     /**

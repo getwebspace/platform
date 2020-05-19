@@ -23,6 +23,15 @@ abstract class AbstractService
      */
     protected $service;
 
+    /**
+     * @var array
+     */
+    protected static array $default_read = [
+        'order' => [],
+        'limit' => 1000,
+        'offset' => 0,
+    ];
+
     public function __construct(EntityManager $entityManager, LoggerInterface $logger = null)
     {
         $this->entityManager = $entityManager;
