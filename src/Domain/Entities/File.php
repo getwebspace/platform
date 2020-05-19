@@ -2,8 +2,7 @@
 
 namespace App\Domain\Entities;
 
-use Alksily\Entity\Model;
-use Alksily\Support\Str;
+use App\Domain\AbstractEntity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
@@ -12,7 +11,7 @@ use Ramsey\Uuid\Uuid;
  * @ORM\Entity
  * @ORM\Table(name="file")
  */
-class File extends Model
+class File extends AbstractEntity
 {
     /**
      * @var Uuid
@@ -21,133 +20,227 @@ class File extends Model
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    public $uuid;
+    protected Uuid $uuid;
+
+    /**
+     * @return Uuid
+     */
+    public function getUuid(): Uuid
+    {
+        return $this->uuid;
+    }
 
     /**
      * @ORM\Column(type="string", options={"default": ""})
      */
-    public $name = '';
+    protected string $name = '';
+
+    /**
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setName(string $name)
+    {
+        if ($this->checkStrLenMax($name, 255)) {
+            $this->name = $name;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
 
     /**
      * @ORM\Column(type="string", options={"default": ""})
      */
-    public $ext = '';
+    protected string $ext = '';
+
+    /**
+     * @param string $ext
+     *
+     * @return $this
+     */
+    public function setExt(string $ext)
+    {
+        if ($this->checkStrLenMax($ext, 32)) {
+            $this->ext = $ext;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExt(): string
+    {
+        return $this->ext;
+    }
 
     /**
      * @ORM\Column(type="string", options={"default": ""})
      */
-    public $type = '';
+    protected string $type = '';
+
+    /**
+     * @param string $type
+     *
+     * @return $this
+     */
+    public function setType(string $type)
+    {
+        if ($this->checkStrLenMax($type, 255)) {
+            $this->type = $type;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType(): string
+    {
+        return $this->type;
+    }
 
     /**
      * @ORM\Column(type="integer", options={"default": 0})
      */
-    public $size = 0;
+    protected int $size = 0;
+
+    /**
+     * @param int $size
+     *
+     * @return $this
+     */
+    public function setSize(int $size)
+    {
+        $this->size = $size;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSize(): int
+    {
+        return $this->size;
+    }
 
     /**
      * @ORM\Column(type="string", options={"default": ""})
      */
-    public $salt = '';
+    protected string $salt = '';
+
+    /**
+     * @param string $salt
+     *
+     * @return $this
+     */
+    public function setSalt(string $salt)
+    {
+        if ($this->checkStrLenMax($salt, 50)) {
+            $this->salt = $salt;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSalt(): string
+    {
+        return $this->salt;
+    }
 
     /**
      * @ORM\Column(type="string", options={"default": ""})
      */
-    public $hash = '';
+    protected string $hash = '';
 
     /**
-     * @ORM\Column(type="boolean")
+     * @param string $hash
+     *
+     * @return $this
      */
-    public $private = false;
+    public function setHash(string $hash)
+    {
+        if ($this->checkStrLenMax($hash, 50)) {
+            $this->hash = $hash;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHash(): string
+    {
+        return $this->hash;
+    }
+
+    /**
+     * @ORM\Column(type="boolean", options={"default": false})
+     */
+    protected bool $private = false;
+
+    /**
+     * @param mixed $value
+     *
+     * @return $this
+     */
+    public function setPrivate($value)
+    {
+        $this->private = $this->getBooleanByValue($value);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getPrivate(): bool
+    {
+        return $this->private;
+    }
 
     /**
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $date;
+    protected DateTime $date;
 
-    protected static function prepareFileName($name)
+    /**
+     * @param $date
+     *
+     * @throws \Exception
+     *
+     * @return $this
+     */
+    public function setDate($date)
     {
-        $entities = ['%20', '%21', '%2A', '%27', '%28', '%29', '%3B', '%3A', '%40', '%26', '%3D', '%2B', '%24', '%2C', '%2F', '%3F', '%25', '%23', '%5B', '%5D'];
-        $replacements = [' ', '!', '*', "'", '(', ')', ';', ':', '@', '&', '=', '+', '$', ',', '/', '?', '%', '#', '[', ']'];
+        $this->date = $this->getDateTimeByValue($date);
 
-        $name = mb_strtolower($name);
-        $name = str_replace(array_merge($entities, $replacements), '', urlencode($name));
-        $name = \Alksily\Support\Str::translate(mb_strtolower($name));
-
-        return $name;
+        return $this;
     }
 
     /**
-     * @param string      $path
-     * @param null|string $name_with_ext
-     *
-     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
-     *
-     * @return null|static
+     * @return DateTime
      */
-    public static function getFromPath(string $path, string $name_with_ext = null)
+    public function getDate()
     {
-        \RunTracy\Helpers\Profiler\Profiler::start('file:getFromPath (%s)', $path);
-
-        // file is saved ?
-        $saved = false;
-
-        // tmp file path
-        $tmp = CACHE_DIR . '/tmp_' . uniqid();
-
-        switch (true) {
-            case Str::start(['http://', 'https://'], $path):
-                $headers = get_headers($path);
-                $code = (int) mb_substr($headers[0], 9, 3);
-
-                if ($code === 200) {
-                    $file = @file_get_contents($path, false, stream_context_create(['http' => ['timeout' => 15]]));
-
-                    if ($file) {
-                        $saved = file_put_contents($tmp, $file);
-                    }
-                }
-
-                break;
-            default:
-                $file = @file_get_contents($path);
-
-                if ($file) {
-                    $saved = file_put_contents($tmp, $file);
-                }
-
-                break;
-        }
-
-        if ($saved) {
-            $salt = uniqid();
-            $dir = UPLOAD_DIR . '/' . $salt;
-
-            if (!is_dir($dir)) {
-                mkdir($dir, 0777, true);
-            }
-
-            $type = addslashes(@exec('file -bi ' . $tmp));
-            $info = pathinfo($name_with_ext ?? $path);
-            $name = static::prepareFileName($info['filename']);
-            $ext = mb_strtolower($info['extension']);
-            $save = $dir . '/' . $name . '.' . $ext;
-
-            if (rename($tmp, $save)) {
-                $model = new static([
-                    'name' => $name,
-                    'ext' => $ext,
-                    'type' => $type,
-                    'size' => filesize($save),
-                    'salt' => $salt,
-                    'hash' => sha1_file($save),
-                    'date' => new \DateTime(),
-                ]);
-            }
-        }
-
-        \RunTracy\Helpers\Profiler\Profiler::finish('file:getFromPath (%s)', $path);
-
-        return $model ?? null;
+        return $this->date;
     }
 
     /**
@@ -166,8 +259,8 @@ class File extends Model
         $info = pathinfo($path);
         $result = [
             'dir' => $info['dirname'],
-            'name' => $info['filename'],
-            'ext' => $info['extension'],
+            'name' => static::prepareFileName($info['filename']),
+            'ext' => mb_strtolower($info['extension']),
             'type' => addslashes(@exec('file -bi ' . $path)),
             'size' => filesize($path),
             'hash' => sha1_file($path),
@@ -178,25 +271,24 @@ class File extends Model
         return $result;
     }
 
+    protected static function prepareFileName($name)
+    {
+        $entities = ['%20', '%21', '%2A', '%27', '%28', '%29', '%3B', '%3A', '%40', '%26', '%3D', '%2B', '%24', '%2C', '%2F', '%3F', '%25', '%23', '%5B', '%5D'];
+        $replacements = [' ', '!', '*', "'", '(', ')', ';', ':', '@', '&', '=', '+', '$', ',', '/', '?', '%', '#', '[', ']'];
+
+        $name = mb_strtolower($name);
+        $name = str_replace(array_merge($entities, $replacements), '', urlencode($name));
+        $name = \Alksily\Support\Str::translate($name);
+
+        return $name;
+    }
+
     /**
      * @return bool|resource
      */
     public function getResource()
     {
-        return fopen(
-            $this->getInternalPath(),
-            'rb'
-        );
-    }
-
-    /**
-     * Formatted file size
-     *
-     * @return string
-     */
-    public function getSize()
-    {
-        return str_convert_size($this->size);
+        return fopen($this->getInternalPath(), 'rb');
     }
 
     /**
@@ -204,9 +296,19 @@ class File extends Model
      *
      * @return string
      */
-    public function getName()
+    public function getFileName()
     {
         return $this->name . '.' . $this->ext;
+    }
+
+    /**
+     * Formatted file size
+     *
+     * @return string
+     */
+    public function getFileSize()
+    {
+        return str_convert_size($this->size);
     }
 
     /**
@@ -277,13 +379,5 @@ class File extends Model
         }
 
         return $buf[$uuid][$size];
-    }
-
-    /**
-     * Remove local files
-     */
-    public function unlink(): void
-    {
-        @exec('rm -rf ' . $this->getDir());
     }
 }

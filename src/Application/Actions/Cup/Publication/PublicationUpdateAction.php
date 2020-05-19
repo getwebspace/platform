@@ -28,6 +28,7 @@ class PublicationUpdateAction extends PublicationAction
                             'poll' => $this->request->getParam('poll'),
                             'meta' => $this->request->getParam('meta'),
                         ]);
+                        $publication = $this->handlerEntityFiles($publication);
 
                         switch (true) {
                             case $this->request->getParam('save', 'exit') === 'exit':

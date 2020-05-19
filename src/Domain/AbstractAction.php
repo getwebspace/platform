@@ -213,6 +213,28 @@ abstract class AbstractAction
     }
 
     /**
+     * @param AbstractEntity $entity
+     * @param string[]       $fields
+     *
+     * @return AbstractEntity
+     */
+    protected function handlerEntityFiles(AbstractEntity $entity, array $fields = []): AbstractEntity
+    {
+        if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
+            $default = [
+                'upload' => 'files',
+                'delete' => 'delete-file',
+            ];
+            $fields = array_merge($default, $fields);
+
+            // todo upload files
+            // todo remove files
+        }
+
+        return $entity;
+    }
+
+    /**
      * Upload image files
      *
      * @param string $field
@@ -314,7 +336,7 @@ abstract class AbstractAction
                 'http' => [
                     'method' => 'POST',
                     'header' => "Content-Type: application/x-www-form-urlencoded\r\n" .
-                                'Content-Length: ' . mb_strlen($query) . "\r\n",
+                        'Content-Length: ' . mb_strlen($query) . "\r\n",
                     'content' => $query,
                     'timeout' => 10,
                 ],

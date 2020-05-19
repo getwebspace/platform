@@ -173,13 +173,13 @@ class Category extends AbstractEntity
     protected bool $children = false;
 
     /**
-     * @param bool $value
+     * @param mixed $value
      *
      * @return $this
      */
-    public function setChildren(bool $value)
+    public function setChildren($value)
     {
-        $this->children = $value;
+        $this->children = $this->getBooleanByValue($value);
 
         return $this;
     }
@@ -198,13 +198,13 @@ class Category extends AbstractEntity
     protected bool $public = true;
 
     /**
-     * @param bool $value
+     * @param mixed $value
      *
      * @return $this
      */
-    public function setPublic(bool $value)
+    public function setPublic($value)
     {
-        $this->public = $value;
+        $this->public = $this->getBooleanByValue($value);
 
         return $this;
     }

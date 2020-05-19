@@ -17,18 +17,16 @@ class PageUpdateAction extends PageAction
             if ($page) {
                 if ($this->request->isPost()) {
                     try {
-                        $page = $pageService->update(
-                            $page,
-                            [
-                                'title' => $this->request->getParam('title'),
-                                'address' => $this->request->getParam('address'),
-                                'date' => $this->request->getParam('date'),
-                                'content' => $this->request->getParam('content'),
-                                'type' => $this->request->getParam('type'),
-                                'meta' => $this->request->getParam('meta'),
-                                'template' => $this->request->getParam('template'),
-                            ]
-                        );
+                        $page = $pageService->update($page, [
+                            'title' => $this->request->getParam('title'),
+                            'address' => $this->request->getParam('address'),
+                            'date' => $this->request->getParam('date'),
+                            'content' => $this->request->getParam('content'),
+                            'type' => $this->request->getParam('type'),
+                            'meta' => $this->request->getParam('meta'),
+                            'template' => $this->request->getParam('template'),
+                        ]);
+                        $page = $this->handlerEntityFiles($page);
 
                         switch (true) {
                             case $this->request->getParam('save', 'exit') === 'exit':

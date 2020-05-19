@@ -238,7 +238,7 @@ class User extends AbstractEntity
     protected bool $allow_mail = true;
 
     /**
-     * @param $allow_mail
+     * @param mixed $allow_mail
      *
      * @return $this
      */
