@@ -261,8 +261,10 @@ abstract class AbstractEntity
      *
      * @param $name
      * @param $value
+     *
+     * @return mixed
      */
-    public function __set($name, $value): void
+    public function __set($name, $value)
     {
         throw new BadMethodCallException(
             sprintf("You cannot change value '%s' = '%s' by this way in class '%s'.", $name, $value, get_class($this))
