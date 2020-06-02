@@ -6,7 +6,6 @@ use App\Domain\AbstractMiddleware;
 use App\Domain\Repository\UserRepository;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\UserService;
-use DateTime;
 use Psr\Container\ContainerInterface;
 use Ramsey\Uuid\Uuid;
 use Slim\Http\Request;
@@ -75,37 +74,5 @@ class AuthorizationMiddleware extends AbstractMiddleware
         \RunTracy\Helpers\Profiler\Profiler::finish('middleware:authorization');
 
         return $next($request, $response);
-    }
-
-    /**
-     * Возвращает ключ сессии
-     *
-     * @param \App\Domain\Entities\User\Session $model
-     *
-     * @throws \Exception
-     *
-     * @return string
-     */
-    protected function session(\App\Domain\Entities\User\Session $model)
-    {
-        if (!$model->isEmpty()) {
-            $default = [
-                'uuid' => null,
-                'ip' => null,
-                'agent' => null,
-                'date' => new DateTime(),
-            ];
-            $data = array_merge($default, $model->toArray());
-
-            return sha1(
-                'salt:' . ($this->container->get('secret')['salt'] ?? '') . ';' .
-                'uuid:' . $data['uuid'] . ';' .
-                'ip:' . md5($data['ip']) . ';' .
-                'agent:' . md5($data['agent']) . ';' .
-                'date:' . $data['date']->getTimestamp()
-            );
-        }
-
-        return null;
     }
 }
