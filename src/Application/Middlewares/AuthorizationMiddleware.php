@@ -4,6 +4,7 @@ namespace App\Application\Middlewares;
 
 use App\Domain\AbstractMiddleware;
 use App\Domain\Repository\UserRepository;
+use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\UserService;
 use DateTime;
 use Psr\Container\ContainerInterface;
@@ -47,21 +48,27 @@ class AuthorizationMiddleware extends AbstractMiddleware
         ];
 
         if ($data['uuid'] && Uuid::isValid($data['uuid']) && $data['session']) {
-            $userService = UserService::getFromContainer($this->container);
-            $user = $userService->read(['uuid' => $data['uuid']]);
+            try {
+                $userService = UserService::getFromContainer($this->container);
+                $user = $userService->read(['uuid' => $data['uuid']]);
 
-            if ($user) {
-                $hash = sha1(
-                    'salt:' . ($this->container->get('secret')['salt'] ?? '') . ';' .
-                    'uuid:' . $user->getUuid()->toString() . ';' .
-                    'ip:' . md5($user->getSession()->getIp()) . ';' .
-                    'agent:' . md5($user->getSession()->getAgent()) . ';' .
-                    'date:' . $user->getSession()->getDate()->getTimestamp()
-                );
+                if ($user) {
+                    $hash = sha1(
+                        'salt:' . ($this->container->get('secret')['salt'] ?? '') . ';' .
+                        'uuid:' . $user->getUuid()->toString() . ';' .
+                        'ip:' . md5($user->getSession()->getIp()) . ';' .
+                        'agent:' . md5($user->getSession()->getAgent()) . ';' .
+                        'date:' . $user->getSession()->getDate()->getTimestamp()
+                    );
 
-                if ($data['session'] === $hash) {
-                    $request = $request->withAttribute('user', $user);
+                    if ($data['session'] === $hash) {
+                        $request = $request->withAttribute('user', $user);
+                    }
                 }
+            } catch (UserNotFoundException $e) {
+                // clear cookie
+                setcookie('uuid', '-1', time() - 10, '/');
+                setcookie('session', '-1', time() - 10, '/');
             }
         }
 
