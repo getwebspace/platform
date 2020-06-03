@@ -56,11 +56,11 @@ class ParameterService extends AbstractService
 
     /**
      * @param array $data
-     * @param mixed $default
+     * @param mixed $fallback
      *
      * @return Collection|Parameter
      */
-    public function read(array $data = [], $default = null)
+    public function read(array $data = [], $fallback = null)
     {
         $default = [
             'key' => '',
@@ -76,7 +76,7 @@ class ParameterService extends AbstractService
             }
 
             if (empty($parameter)) {
-                $parameter = (new Parameter())->setKey($data['key'])->setValue($default);
+                $parameter = (new Parameter())->setKey($data['key'])->setValue($fallback);
             }
 
             return $parameter;

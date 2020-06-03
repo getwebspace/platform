@@ -54,8 +54,8 @@ class ParameterServiceTest extends TestCase
         $this->expectException(ParameterAlreadyExistsException::class);
 
         $data = [
-            'title' => $this->getFaker()->title,
-            'content' => $this->getFaker()->text,
+            'key' => $this->getFaker()->userName,
+            'value' => $this->getFaker()->text,
         ];
 
         $parameter = (new Parameter)
@@ -108,7 +108,6 @@ class ParameterServiceTest extends TestCase
         ];
 
         $parameter = $this->service->update($parameter, $data);
-        $this->assertSame($data['key'], $parameter->getKey());
         $this->assertSame($data['value'], $parameter->getValue());
     }
 
