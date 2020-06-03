@@ -34,8 +34,8 @@ class CartAction extends CatalogAction
 
             // другие отправленные поля дописываются в комментарий
             foreach ($this->request->getParams() as $key => $value) {
-                if (!in_array($key, array_merge(array_keys($data), ['recaptcha']), true)) {
-                    $data['comment'] .= $key . ' ' . $value . PHP_EOL;
+                if (!in_array($key, array_merge(array_keys($data), ['recaptcha']), true) && $value) {
+                    $data['comment'] .= '; ' . $key . ' ' . $value . PHP_EOL;
                 }
             }
 
