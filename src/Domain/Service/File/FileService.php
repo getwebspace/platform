@@ -104,7 +104,7 @@ class FileService extends AbstractService
             $file = @file_get_contents($path, false, stream_context_create(['http' => ['timeout' => 15]]));
 
             if ($file) {
-                $basename = ($t = basename($path)) && strpos($t, '.') ? $t : '/tmp_' . uniqid();
+                $basename = ($t = basename($path)) && mb_strpos($t, '.') ? $t : '/tmp_' . uniqid();
                 $path = CACHE_DIR . '/' . $basename;
 
                 if (file_put_contents($path, $file)) {
