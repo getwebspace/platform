@@ -67,5 +67,4 @@ class Parameter extends AbstractEntity
     {
         return $this->value;
     }
-
 }
