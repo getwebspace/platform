@@ -3,7 +3,6 @@
 namespace App\Domain\Service\File;
 
 use Alksily\Entity\Collection;
-use Alksily\Support\Str;
 use App\Domain\AbstractService;
 use App\Domain\Entities\File;
 use App\Domain\Repository\FileRepository;
@@ -39,31 +38,19 @@ class FileService extends AbstractService
     {
         \RunTracy\Helpers\Profiler\Profiler::start('file:getFromPath (%s)', $path);
 
-        // file is saved ?
         $saved = false;
 
-        // tmp file path
-        $tmp = CACHE_DIR . '/tmp_' . uniqid();
-
+        // is file saved?
         switch (true) {
-            case Str::start(['http://', 'https://'], $path):
-                $headers = get_headers($path);
-                $code = (int) mb_substr($headers[0], 9, 3);
-
-                if ($code === 200) {
-                    $file = @file_get_contents($path, false, stream_context_create(['http' => ['timeout' => 15]]));
-
-                    if ($file) {
-                        $saved = file_put_contents($tmp, $file);
-                    }
+            case str_starts_with(['http://', 'https://'], $path):
+                if (($path = static::getFileFromRemote($path)) !== false) {
+                    $saved = true;
                 }
 
                 break;
             default:
-                $file = @file_get_contents($path);
-
-                if ($file) {
-                    $saved = file_put_contents($tmp, $file);
+                if (file_exists($path)) {
+                    $saved = true;
                 }
 
                 break;
@@ -77,9 +64,9 @@ class FileService extends AbstractService
                 mkdir($dir, 0777, true);
             }
 
-            $info = File::info($tmp);
+            $info = File::info($path);
 
-            if (rename($tmp, $dir . '/' . $info['name'] . '.' . $info['ext'])) {
+            if (rename($path, $dir . '/' . $info['name'] . '.' . $info['ext'])) {
                 return $this->create([
                     'name' => $info['name'],
                     'ext' => $info['ext'],
@@ -92,6 +79,41 @@ class FileService extends AbstractService
         }
 
         return null;
+    }
+
+    /**
+     * Get file from url
+     * recursion when redirect
+     *
+     * @param $path
+     *
+     * @return bool|string
+     */
+    protected static function getFileFromRemote($path)
+    {
+        $headers = get_headers($path, 1);
+        $code = (int) mb_substr($headers[0], 9, 3);
+
+        if ($code === 302) {
+            $url = parse_url($path);
+            $location = $headers['Location'];
+
+            return static::getFileFromRemote(($url['scheme'] ?? 'http') . '://' . $url['host'] . '/' . $location);
+        }
+        if ($code === 200) {
+            $file = @file_get_contents($path, false, stream_context_create(['http' => ['timeout' => 15]]));
+
+            if ($file) {
+                $basename = ($t = basename($path)) && strpos($t, '.') ? $t : '/tmp_' . uniqid();
+                $path = CACHE_DIR . '/' . $basename;
+
+                if (file_put_contents($path, $file)) {
+                    return $path;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -109,7 +131,7 @@ class FileService extends AbstractService
             'type' => '',
             'size' => '',
             'hash' => '',
-            'salt' => '',
+            'salt' => uniqid(),
             'date' => 'now',
         ];
         $data = array_merge($default, $data);

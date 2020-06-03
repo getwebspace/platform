@@ -348,7 +348,7 @@ class File extends AbstractEntity
      */
     public function getInternalPath(string $size = '')
     {
-        return $this->getDir($size) . '/' . $this->getName();
+        return $this->getDir($size) . '/' . $this->getFileName();
     }
 
     /**
