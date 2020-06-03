@@ -80,8 +80,8 @@ class CategoryService extends AbstractService
             ->setDescription($data['description'])
             ->setParent($data['parent'])
             ->setPagination((int) $data['pagination'])
-            ->setChildren((bool) $data['children'])
-            ->setPublic((bool) $data['public'])
+            ->setChildren($data['children'])
+            ->setPublic($data['public'])
             ->setSort($data['sort'])
             ->setMeta($data['meta'])
             ->setTemplate($data['template']);
@@ -207,10 +207,10 @@ class CategoryService extends AbstractService
                     $entity->setPagination((int) $data['pagination']);
                 }
                 if ($data['children'] !== '') {
-                    $entity->setChildren((bool) $data['children']);
+                    $entity->setChildren($data['children']);
                 }
                 if ($data['public'] !== '') {
-                    $entity->setPublic((bool) $data['public']);
+                    $entity->setPublic($data['public']);
                 }
                 if ($data['sort']) {
                     $entity->setSort($data['sort']);

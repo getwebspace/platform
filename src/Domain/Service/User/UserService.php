@@ -83,7 +83,7 @@ class UserService extends AbstractService
             ->setPassword($data['password'])
             ->setFirstname($data['firstname'])
             ->setLastname($data['lastname'])
-            ->setAllowMail((bool) $data['allow_mail'])
+            ->setAllowMail($data['allow_mail'])
             ->setStatus($data['status'])
             ->setLevel($data['level'])
             ->setRegister('now')
