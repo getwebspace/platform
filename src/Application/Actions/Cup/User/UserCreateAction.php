@@ -30,7 +30,7 @@ class UserCreateAction extends UserAction
 
                 $model = new \App\Domain\Entities\User($data);
                 $model->set('uuid', $uuid);
-                $model->register = $model->change = new \DateTime();
+                $model->register = $model->change = $session->date = new \DateTime();
                 $model->session = $session;
                 $this->entityManager->persist($model);
 
