@@ -180,7 +180,7 @@ class CategoryService extends AbstractService
 
             if ($data !== $default) {
                 if ($data['title']) {
-                    $found = $this->service->findOneByTitle($data['email']);
+                    $found = $this->service->findOneByTitle($data['title']);
 
                     if ($found === null || $found === $entity) {
                         $entity->setTitle($data['title']);
