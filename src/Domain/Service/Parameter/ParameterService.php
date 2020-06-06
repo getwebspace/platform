@@ -8,8 +8,6 @@ use App\Domain\Entities\Parameter;
 use App\Domain\Repository\ParameterRepository;
 use App\Domain\Service\Parameter\Exception\ParameterAlreadyExistsException;
 use App\Domain\Service\Parameter\Exception\ParameterNotFoundException;
-use Doctrine\ORM\EntityManager;
-use Psr\Log\LoggerInterface;
 
 class ParameterService extends AbstractService
 {
@@ -18,7 +16,7 @@ class ParameterService extends AbstractService
      */
     protected $service;
 
-    protected function init()
+    protected function init(): void
     {
         $this->service = $this->entityManager->getRepository(Parameter::class);
     }

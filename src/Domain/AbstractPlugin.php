@@ -3,9 +3,7 @@
 namespace App\Domain;
 
 use App\Domain\Exceptions\HttpBadRequestException;
-use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Slim\Http\Request;
 use Slim\Http\Response;

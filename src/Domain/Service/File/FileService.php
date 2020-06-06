@@ -17,7 +17,7 @@ class FileService extends AbstractService
      */
     protected $service;
 
-    protected function init()
+    protected function init(): void
     {
         $this->service = $this->entityManager->getRepository(File::class);
     }

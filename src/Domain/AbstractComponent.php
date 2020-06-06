@@ -2,7 +2,6 @@
 
 namespace App\Domain;
 
-use App\Domain\Service\Parameter\ParameterService;
 use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -26,8 +25,8 @@ abstract class AbstractComponent
 
     /**
      * @param ContainerInterface   $container
-     * @param EntityManager|null   $entityManager
-     * @param LoggerInterface|null $logger
+     * @param null|EntityManager   $entityManager
+     * @param null|LoggerInterface $logger
      */
     public function __construct(ContainerInterface $container = null, EntityManager $entityManager = null, LoggerInterface $logger = null)
     {
@@ -53,7 +52,7 @@ abstract class AbstractComponent
      * @param string|string[] $key
      * @param mixed           $default
      *
-     * @return array|mixed|string|null
+     * @return null|array|mixed|string
      */
     protected function getParameter($key = null, $default = null)
     {

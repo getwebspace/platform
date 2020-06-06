@@ -10,8 +10,6 @@ use App\Domain\Service\Page\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Page\Exception\MissingTitleValueException;
 use App\Domain\Service\Page\Exception\PageNotFoundException;
 use App\Domain\Service\Page\Exception\TitleAlreadyExistsException;
-use Doctrine\ORM\EntityManager;
-use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
 class PageService extends AbstractService
@@ -21,7 +19,7 @@ class PageService extends AbstractService
      */
     protected $service;
 
-    protected function init()
+    protected function init(): void
     {
         $this->service = $this->entityManager->getRepository(Page::class);
     }

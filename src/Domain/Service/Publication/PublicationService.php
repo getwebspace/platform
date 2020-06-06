@@ -10,8 +10,6 @@ use App\Domain\Service\Publication\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Publication\Exception\MissingTitleValueException;
 use App\Domain\Service\Publication\Exception\PublicationNotFoundException;
 use App\Domain\Service\Publication\Exception\TitleAlreadyExistsException;
-use Doctrine\ORM\EntityManager;
-use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
 class PublicationService extends AbstractService
@@ -21,7 +19,7 @@ class PublicationService extends AbstractService
      */
     protected $service;
 
-    protected function init()
+    protected function init(): void
     {
         $this->service = $this->entityManager->getRepository(Publication::class);
     }
