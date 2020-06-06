@@ -27,7 +27,7 @@ class SubscriberServiceTest extends TestCase
     {
         parent::setUp();
         $this->em = $this->getEntityManager();
-        $this->service = new UserSubscriberService(null, $this->em, null);
+        $this->service = UserSubscriberService::getWithEntityManager($this->em);
     }
 
     public function testCreateSuccess(): void

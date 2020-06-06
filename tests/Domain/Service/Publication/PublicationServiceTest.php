@@ -36,9 +36,9 @@ class PublicationServiceTest extends TestCase
     {
         parent::setUp();
         $this->em = $this->getEntityManager();
-        $this->service = new PublicationService(null, $this->em, null);
+        $this->service = PublicationService::getWithEntityManager($this->em);
 
-        $this->category = (new PublicationCategoryService(null, $this->em, null))->create([
+        $this->category = (PublicationCategoryService::getWithEntityManager($this->em))->create([
             'title' => $this->getFaker()->title,
             'address' => 'category-custom-address',
             'description' => $this->getFaker()->text(255),

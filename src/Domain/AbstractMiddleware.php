@@ -18,18 +18,4 @@ abstract class AbstractMiddleware extends AbstractComponent
      * @return Response
      */
     abstract public function __invoke(Request $request, Response $response, $next): \Slim\Http\Response;
-
-    /**
-     * Возвращает значение параметра по переданному ключу
-     * Если передан массив ключей, возвращает массив найденных ключей и их значения
-     *
-     * @param string|string[] $key
-     * @param mixed           $default
-     *
-     * @return array|mixed|string
-     */
-    protected function getParameter($key = null, $default = null)
-    {
-        return $this->container->get('parameter')->get($key, $default);
-    }
 }

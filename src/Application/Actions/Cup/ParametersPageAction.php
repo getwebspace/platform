@@ -3,13 +3,16 @@
 namespace App\Application\Actions\Cup;
 
 use App\Domain\AbstractAction;
+use App\Domain\Service\Parameter\ParameterService;
 
 class ParametersPageAction extends AbstractAction
 {
     protected function action(): \Slim\Http\Response
     {
+        $models = $this->getParameter();
+
         if ($this->request->isPost()) {
-            $models = $this->getParameter();
+            $parameterService = ParameterService::getWithContainer($this->container);
 
             foreach ($this->request->getParsedBody() as $group => $params) {
                 foreach ($params as $key => $value) {
@@ -21,9 +24,11 @@ class ParametersPageAction extends AbstractAction
                     $check = \App\Domain\Filters\Parameter::check($data);
 
                     if ($check === true) {
-                        $model = $models->firstWhere('key', $data['key']) ?? new \App\Domain\Entities\Parameter();
-                        $model->replace($data);
-                        $this->entityManager->persist($model);
+                        if (($model = $models->firstWhere('key', $data['key'])) !== null) {
+                            $parameterService->update($model, $data);
+                        } else {
+                            $parameterService->create($data);
+                        }
                     } else {
                         \Alksily\Support\Form::$globalError[$group . '[' . $key . ']'] = \App\Domain\References\Errors\Parameter::WRONG_VALUE;
                     }
@@ -35,6 +40,6 @@ class ParametersPageAction extends AbstractAction
             return $this->response->withAddedHeader('Location', $this->request->getQueryParam('return', '/cup/parameters'))->withStatus(301);
         }
 
-        return $this->respondWithTemplate('cup/parameters/index.twig', ['parameter' => $this->getParameter()]);
+        return $this->respondWithTemplate('cup/parameters/index.twig', ['parameter' => $models]);
     }
 }

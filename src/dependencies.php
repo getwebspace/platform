@@ -1,5 +1,6 @@
 <?php declare(strict_types=1);
 
+use App\Domain\Service\Parameter\ParameterService;
 use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
 
@@ -69,33 +70,15 @@ $container['plugin'] = function (ContainerInterface $c) {
 
 // wrapper around collection with params
 $container['parameter'] = function (ContainerInterface $c) {
-    \RunTracy\Helpers\Profiler\Profiler::start('parameters');
-
-    /** @var \Alksily\Entity\Collection $parameters */
-    static $parameters;
-
-    if (!$parameters) {
-        /** @var \Doctrine\ORM\EntityManager $em */
-        $em = $c->get(\Doctrine\ORM\EntityManager::class);
-
-        try {
-            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $parametersRepository */
-            $parametersRepository = $em->getRepository(\App\Domain\Entities\Parameter::class);
-            $parameters = collect($parametersRepository->findAll());
-        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
-            $parameters = collect();
-        }
-    }
-
-    \RunTracy\Helpers\Profiler\Profiler::finish('parameters');
-
-    return new class($parameters) {
+    return new class($c) {
         /** @var \Alksily\Entity\Collection */
         private static $parameters;
 
-        final public function __construct(\Alksily\Entity\Collection &$parameters)
+        final public function __construct(ContainerInterface $container)
         {
-            static::$parameters = &$parameters;
+            \RunTracy\Helpers\Profiler\Profiler::start('parameters');
+            static::$parameters = ParameterService::getWithContainer($container)->read();
+            \RunTracy\Helpers\Profiler\Profiler::finish('parameters');
         }
 
         /**

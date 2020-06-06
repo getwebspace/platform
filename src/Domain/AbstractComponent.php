@@ -2,6 +2,7 @@
 
 namespace App\Domain;
 
+use App\Domain\Service\Parameter\ParameterService;
 use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -56,10 +57,10 @@ abstract class AbstractComponent
      */
     protected function getParameter($key = null, $default = null)
     {
-        if ($this->container) {
+        if (!empty($this->container)) {
             return $this->container->get('parameter')->get($key, $default);
         }
 
-        return null;
+        throw new \RuntimeException('Container is null');
     }
 }

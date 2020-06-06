@@ -28,7 +28,7 @@ class PageServiceTest extends TestCase
     {
         parent::setUp();
         $this->em = $this->getEntityManager();
-        $this->service = new PageService(null, $this->em, null);
+        $this->service = PageService::getWithEntityManager($this->em);
     }
 
     public function testCreateSuccess(): void
