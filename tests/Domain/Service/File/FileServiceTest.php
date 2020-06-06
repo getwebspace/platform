@@ -69,12 +69,13 @@ class FileServiceTest extends TestCase
 
     public function testCreateWithFileAlreadyExistent(): void
     {
-        $this->expectException(FileAlreadyExistsException::class);
-
-        $file = $this->service->createFromPath($this->getTestFile());
+        $file1 = $this->service->createFromPath($this->getTestFile());
 
         // create new file obj from previously processed file
-        $this->service->createFromPath($file->getInternalPath());
+        $file2 = $this->service->createFromPath($file1->getInternalPath());
+
+        $this->assertInstanceOf(File::class, $file2);
+        $this->assertSame($file1, $file2);
     }
 
     public function testReadSuccess(): void
