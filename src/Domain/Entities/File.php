@@ -259,8 +259,8 @@ class File extends AbstractEntity
         $info = pathinfo($path);
         $result = [
             'dir' => $info['dirname'],
-            'name' => static::prepareFileName($info['filename']),
-            'ext' => mb_strtolower($info['extension']),
+            'name' => isset($info['filename']) ? static::prepareFileName($info['filename']) : '',
+            'ext' => isset($info['extension']) ? mb_strtolower($info['extension']) : '',
             'type' => addslashes(@exec('file -bi ' . $path)),
             'size' => filesize($path),
             'hash' => sha1_file($path),
@@ -298,7 +298,7 @@ class File extends AbstractEntity
      */
     public function getFileName()
     {
-        return $this->name . '.' . $this->ext;
+        return $this->name . ($this->ext ? '.' . $this->ext : '');
     }
 
     /**
@@ -321,7 +321,7 @@ class File extends AbstractEntity
     protected function isValidSizeAndFileExists(string $size): bool
     {
         if (in_array($size, ['middle', 'small'], true)) {
-            return file_exists(UPLOAD_DIR . '/' . $this->salt . '/' . $size . '/' . $this->getName());
+            return file_exists(UPLOAD_DIR . '/' . $this->salt . '/' . $size . '/' . $this->getFileName());
         }
 
         return false;
@@ -372,7 +372,7 @@ class File extends AbstractEntity
             if ($this->private) {
                 $buf[$uuid][$size] = '/file/get/' . $this->salt . '/' . $this->hash . ($size && $this->isValidSizeAndFileExists($size) ? '/' . $size : '');
             } else {
-                $buf[$uuid][$size] = '/uploads/' . $this->salt . ($size && $this->isValidSizeAndFileExists($size) ? '/' . $size : '') . '/' . $this->getName();
+                $buf[$uuid][$size] = '/uploads/' . $this->salt . ($size && $this->isValidSizeAndFileExists($size) ? '/' . $size : '') . '/' . $this->getFileName();
             }
 
             \RunTracy\Helpers\Profiler\Profiler::finish('file:getPublicPath (%s)', $size, ['uuid' => $uuid]);

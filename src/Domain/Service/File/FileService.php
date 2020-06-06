@@ -54,23 +54,27 @@ class FileService extends AbstractService
 
         if ($saved) {
             $salt = uniqid();
-            $dir = UPLOAD_DIR . '/' . $salt;
+            $dir = UPLOAD_DIR . '/' . $salt . '/' . ($name_with_ext ? $name_with_ext : basename($path));
 
-            if (!is_dir($dir)) {
-                mkdir($dir, 0777, true);
+            if (!is_dir(dirname($dir))) {
+                mkdir(dirname($dir), 0777, true);
             }
 
-            $info = File::info($path);
+            if (rename($path, $dir)) {
+                $info = File::info($dir);
 
-            if (rename($path, $dir . '/' . $info['name'] . '.' . $info['ext'])) {
-                return $this->create([
-                    'name' => $info['name'],
-                    'ext' => $info['ext'],
-                    'type' => $info['type'],
-                    'size' => $info['size'],
-                    'hash' => $info['hash'],
-                    'salt' => $salt,
-                ]);
+                try {
+                    return $this->create([
+                        'name' => $info['name'],
+                        'ext' => $info['ext'],
+                        'type' => $info['type'],
+                        'size' => $info['size'],
+                        'hash' => $info['hash'],
+                        'salt' => $salt,
+                    ]);
+                } catch (FileAlreadyExistsException $exception) {
+                    return $this->read(['hash' => $info['hash']]);
+                }
             }
         }
 
