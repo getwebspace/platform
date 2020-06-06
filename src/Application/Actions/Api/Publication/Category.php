@@ -26,7 +26,7 @@ class Category extends PublicationAction
             $criteria['address'] = urldecode($data['address']);
         }
 
-        $publicationCategoryService = PublicationCategoryService::getFromContainer($this->container);
+        $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
         $categories = $publicationCategoryService->read(
             array_merge($criteria, [
                 'order' => $this->request->getParam('order', []),

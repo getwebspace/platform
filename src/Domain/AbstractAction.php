@@ -15,7 +15,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Views\Twig;
 
-abstract class AbstractAction
+abstract class AbstractAction extends AbstractComponent
 {
     // 40X
     protected const BAD_REQUEST = 'BAD_REQUEST';
@@ -26,21 +26,6 @@ abstract class AbstractAction
 
     // 50X
     protected const NOT_IMPLEMENTED = 'NOT_IMPLEMENTED';
-
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var EntityManager
-     */
-    protected $entityManager;
 
     /**
      * @var Twig
@@ -72,24 +57,9 @@ abstract class AbstractAction
      */
     public function __construct(ContainerInterface $container)
     {
-        $this->container = $container;
-        $this->logger = $container->get('monolog');
-        $this->entityManager = $container->get(\Doctrine\ORM\EntityManager::class);
-        $this->renderer = $container->get('view');
-    }
+        parent::__construct($container);
 
-    /**
-     * Возвращает значение параметра по переданному ключу
-     * Если передан массив ключей, возвращает массив найденных ключей и их значения
-     *
-     * @param string|string[] $key
-     * @param mixed           $default
-     *
-     * @return array|mixed|string
-     */
-    protected function getParameter($key = null, $default = null)
-    {
-        return $this->container->get('parameter')->get($key, $default);
+        $this->renderer = $container->get('view');
     }
 
     /**

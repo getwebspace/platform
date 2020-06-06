@@ -8,8 +8,6 @@ use App\Domain\Entities\File;
 use App\Domain\Repository\FileRepository;
 use App\Domain\Service\File\Exception\FileAlreadyExistsException;
 use App\Domain\Service\File\Exception\FileNotFoundException;
-use Doctrine\ORM\EntityManager;
-use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
 class FileService extends AbstractService
@@ -19,10 +17,8 @@ class FileService extends AbstractService
      */
     protected $service;
 
-    public function __construct(EntityManager $entityManager, LoggerInterface $logger = null)
+    protected function init()
     {
-        parent::__construct($entityManager, $logger);
-
         $this->service = $this->entityManager->getRepository(File::class);
     }
 

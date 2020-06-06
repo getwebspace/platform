@@ -32,7 +32,7 @@ class UserServiceTest extends TestCase
     {
         parent::setUp();
         $this->em = $this->getEntityManager();
-        $this->service = new UserService($this->em);
+        $this->service = new UserService(null, $this->em, null);
     }
 
     public function testCreateSuccess1(): void

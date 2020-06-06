@@ -6,18 +6,8 @@ use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
-abstract class AbstractService
+abstract class AbstractService extends AbstractComponent
 {
-    /**
-     * @var EntityManager
-     */
-    protected $entityManager;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
     /**
      * @var AbstractRepository
      */
@@ -32,19 +22,24 @@ abstract class AbstractService
         'offset' => 0,
     ];
 
-    public function __construct(EntityManager $entityManager, LoggerInterface $logger = null)
+    public function __construct(ContainerInterface $container = null, EntityManager $entityManager = null, LoggerInterface $logger = null)
     {
-        $this->entityManager = $entityManager;
-        $this->logger = $logger;
+        parent::__construct($container, $entityManager, $logger);
+
+        $this->init();
     }
 
-    public static function getFromContainer(ContainerInterface $container)
+    public static function getWithContainer(ContainerInterface $container)
     {
-        return new static(
-            $container->get(\Doctrine\ORM\EntityManager::class),
-            $container->get('monolog')
-        );
+        return new static($container);
     }
+
+    public static function getWithEntityManager(EntityManager $entityManager, LoggerInterface $logger = null)
+    {
+        return new static(null, $entityManager, $logger);
+    }
+
+    abstract protected function init();
 
     /**
      * @param string $alias

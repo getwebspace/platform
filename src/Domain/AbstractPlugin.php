@@ -11,7 +11,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Views\Twig;
 
-abstract class AbstractPlugin
+abstract class AbstractPlugin extends AbstractComponent
 {
     public const NAME          = '';
     public const TITLE         = '';
@@ -20,21 +20,6 @@ abstract class AbstractPlugin
     public const AUTHOR_EMAIL  = '';
     public const AUTHOR_SITE   = '';
     public const VERSION       = '1.0';
-
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var EntityManager
-     */
-    protected $entityManager;
 
     /**
      * @var \Slim\Router
@@ -78,14 +63,13 @@ abstract class AbstractPlugin
 
     public function __construct(ContainerInterface $container)
     {
+        parent::__construct($container);
+
         if (empty(static::NAME) || empty(static::TITLE) || empty(static::AUTHOR)) {
             throw new RuntimeException('Plugin credentials have empty fields');
         }
 
-        $this->container = $container;
         $this->container[static::NAME] = $this;
-        $this->logger = $container->get('monolog');
-        $this->entityManager = $container->get(\Doctrine\ORM\EntityManager::class);
         $this->router = $this->container->get('router');
         $this->renderer = $container->get('view');
     }

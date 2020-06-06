@@ -12,8 +12,8 @@ class PublicationUpdateAction extends PublicationAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            $publicationCategoryService = PublicationCategoryService::getFromContainer($this->container);
-            $publicationService = PublicationService::getFromContainer($this->container);
+            $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
+            $publicationService = PublicationService::getWithContainer($this->container);
             $publication = $publicationService->read(['uuid' => $this->resolveArg('uuid')]);
 
             if ($publication) {

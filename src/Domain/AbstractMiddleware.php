@@ -8,33 +8,8 @@ use Psr\Log\LoggerInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-abstract class AbstractMiddleware
+abstract class AbstractMiddleware extends AbstractComponent
 {
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var EntityManager
-     */
-    protected $entityManager;
-
-    /**
-     * @param ContainerInterface $container
-     */
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-        $this->logger = $container->get('monolog');
-        $this->entityManager = $container->get(\Doctrine\ORM\EntityManager::class);
-    }
-
     /**
      * @param Request  $request
      * @param Response $response

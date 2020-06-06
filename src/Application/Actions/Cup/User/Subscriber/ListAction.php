@@ -9,7 +9,7 @@ class ListAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $userSubscriberService = UserSubscriberService::getFromContainer($this->container);
+        $userSubscriberService = UserSubscriberService::getWithContainer($this->container);
 
         return $this->respondWithTemplate('cup/user/subscriber/index.twig', ['list' => $userSubscriberService->read()]);
     }

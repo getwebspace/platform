@@ -11,7 +11,7 @@ class UnsubscribeAction extends UserAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            $userSubscriberService = UserSubscriberService::getFromContainer($this->container);
+            $userSubscriberService = UserSubscriberService::getWithContainer($this->container);
             $userSubscriber = $userSubscriberService->read(['uuid' => $this->resolveArg('uuid')]);
 
             if ($userSubscriber) {

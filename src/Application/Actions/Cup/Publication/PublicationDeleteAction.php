@@ -9,7 +9,7 @@ class PublicationDeleteAction extends PublicationAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            $publicationService = PublicationService::getFromContainer($this->container);
+            $publicationService = PublicationService::getWithContainer($this->container);
             $publicationService->delete($this->resolveArg('uuid'));
         }
 

@@ -65,6 +65,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             new \Twig\TwigFunction('reference', [$this, 'reference']),
             new \Twig\TwigFunction('parameter', [$this, 'parameter']),
             new \Twig\TwigFunction('pre', [$this, 'pre']),
+            new \Twig\TwigFunction('dump', [$this, 'dump']),
             new \Twig\TwigFunction('count', [$this, 'count']),
             new \Twig\TwigFunction('df', [$this, 'df']),
             new \Twig\TwigFunction('collect', [$this, 'collect']),
@@ -216,6 +217,16 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
     public function pre(...$args): void
     {
         call_user_func_array('pre', $args);
+    }
+
+    /**
+     * Another debug function
+     *
+     * @param mixed ...$args
+     */
+    public function dump(...$args): void
+    {
+        call_user_func_array('dump', $args);
     }
 
     public function count($obj)

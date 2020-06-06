@@ -12,7 +12,7 @@ class CategoryCreateAction extends PublicationAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $publicationCategoryService = PublicationCategoryService::getFromContainer($this->container);
+        $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
 
         if ($this->request->isPost()) {
             try {

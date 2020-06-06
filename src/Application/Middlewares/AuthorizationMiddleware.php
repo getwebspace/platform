@@ -48,7 +48,7 @@ class AuthorizationMiddleware extends AbstractMiddleware
 
         if ($data['uuid'] && Uuid::isValid($data['uuid']) && $data['session']) {
             try {
-                $userService = UserService::getFromContainer($this->container);
+                $userService = UserService::getWithContainer($this->container);
                 $user = $userService->read(['uuid' => $data['uuid']]);
 
                 if ($user) {

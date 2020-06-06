@@ -26,7 +26,7 @@ class ParameterServiceTest extends TestCase
     {
         parent::setUp();
         $this->em = $this->getEntityManager();
-        $this->service = new ParameterService($this->em);
+        $this->service = new ParameterService(null, $this->em, null);
     }
 
     public function testCreateSuccess(): void

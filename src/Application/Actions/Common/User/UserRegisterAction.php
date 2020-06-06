@@ -28,7 +28,7 @@ class UserRegisterAction extends UserAction
             if ($this->isRecaptchaChecked()) {
                 if ($data['password'] === $data['password_again']) {
                     try {
-                        $userService = UserService::getFromContainer($this->container);
+                        $userService = UserService::getWithContainer($this->container);
                         $userService->create([
                             $identifier => $data[$identifier],
                             'password' => $data['password'],

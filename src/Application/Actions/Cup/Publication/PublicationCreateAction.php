@@ -12,8 +12,8 @@ class PublicationCreateAction extends PublicationAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $publicationCategoryService = PublicationCategoryService::getFromContainer($this->container);
-        $publicationService = PublicationService::getFromContainer($this->container);
+        $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
+        $publicationService = PublicationService::getWithContainer($this->container);
 
         if ($this->request->isPost()) {
             try {

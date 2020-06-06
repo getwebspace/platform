@@ -43,7 +43,7 @@ class UserListAction extends UserAction
             }
         }
 
-        $userService = UserService::getFromContainer($this->container);
+        $userService = UserService::getWithContainer($this->container);
         $query = $userService->createQueryBuilder('u');
 
         foreach ($criteria as $criterion => $value) {

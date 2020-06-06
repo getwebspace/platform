@@ -14,7 +14,7 @@ class UserUpdateAction extends UserAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid')) {
-            $userService = UserService::getFromContainer($this->container);
+            $userService = UserService::getWithContainer($this->container);
             $user = $userService->read(['uuid' => $this->resolveArg('uuid')]);
 
             if ($user) {

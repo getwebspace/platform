@@ -27,7 +27,7 @@ class UserLoginAction extends UserAction
 
             if ($this->isRecaptchaChecked()) {
                 try {
-                    $userService = UserService::getFromContainer($this->container);
+                    $userService = UserService::getWithContainer($this->container);
                     $user = $userService->read([
                         'identifier' => $data[$identifier],
                         'password' => $data['password'],

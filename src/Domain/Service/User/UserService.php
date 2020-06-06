@@ -16,6 +16,7 @@ use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
 use Doctrine\ORM\EntityManager;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
@@ -26,10 +27,8 @@ class UserService extends AbstractService
      */
     protected $service;
 
-    public function __construct(EntityManager $entityManager, LoggerInterface $logger = null)
+    protected function init()
     {
-        parent::__construct($entityManager, $logger);
-
         $this->service = $this->entityManager->getRepository(User::class);
     }
 

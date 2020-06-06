@@ -12,7 +12,7 @@ class CategoryUpdateAction extends PublicationAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            $publicationCategoryService = PublicationCategoryService::getFromContainer($this->container);
+            $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
             $publicationCategory = $publicationCategoryService->read(['uuid' => $this->resolveArg('uuid')]);
 
             if ($publicationCategory) {

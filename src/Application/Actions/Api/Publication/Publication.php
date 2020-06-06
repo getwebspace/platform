@@ -26,7 +26,7 @@ class Publication extends PublicationAction
             $criteria['address'] = urldecode($data['address']);
         }
 
-        $publicationService = PublicationService::getFromContainer($this->container);
+        $publicationService = PublicationService::getWithContainer($this->container);
         $publications = $publicationService->read(
             array_merge($criteria, [
                 'order' => $this->request->getParam('order', []),

@@ -13,7 +13,7 @@ class UserCreateAction extends UserAction
     {
         if ($this->request->isPost()) {
             try {
-                $userService = UserService::getFromContainer($this->container);
+                $userService = UserService::getWithContainer($this->container);
                 $user = $userService->create([
                     'username' => $this->request->getParam('username'),
                     'password' => $this->request->getParam('password'),

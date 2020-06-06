@@ -2,8 +2,8 @@
 
 use Slim\Container;
 
-require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../config/vars.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 // App container
 $c = $container = new Container((array) require_once SRC_DIR . '/settings.php');

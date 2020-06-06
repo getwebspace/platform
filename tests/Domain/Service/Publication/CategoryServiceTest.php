@@ -28,7 +28,7 @@ class CategoryServiceTest extends TestCase
     {
         parent::setUp();
         $this->em = $this->getEntityManager();
-        $this->service = new PublicationCategoryService($this->em);
+        $this->service = new PublicationCategoryService(null, $this->em, null);
     }
 
     public function testCreateSuccess(): void

@@ -22,9 +22,9 @@ class DynamicPageAction extends AbstractAction
             $path = str_replace('/' . $offset, '', $path);
         }
 
-        $pageService = PageService::getFromContainer($this->container);
-        $publicationCategoryService = PublicationCategoryService::getFromContainer($this->container);
-        $publicationService = PublicationService::getFromContainer($this->container);
+        $pageService = PageService::getWithContainer($this->container);
+        $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
+        $publicationService = PublicationService::getWithContainer($this->container);
 
         try {
             // страницы

@@ -8,24 +8,9 @@ use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Slim\Views\Twig;
 
-abstract class AbstractTask
+abstract class AbstractTask extends AbstractComponent
 {
     public const TITLE = '';
-
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var EntityManager
-     */
-    protected $entityManager;
 
     /**
      * @var Twig
@@ -51,9 +36,8 @@ abstract class AbstractTask
 
     public function __construct(ContainerInterface $container, \App\Domain\Entities\Task $entity = null)
     {
-        $this->container = $container;
-        $this->logger = $container->get('monolog');
-        $this->entityManager = $container->get(\Doctrine\ORM\EntityManager::class);
+        parent::__construct($container);
+
         $this->renderer = $container->get('view');
 
         if (!$entity) {

@@ -10,8 +10,6 @@ use App\Domain\Repository\User\SubscriberRepository as UserSubscriberRepository;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
-use Doctrine\ORM\EntityManager;
-use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 
 class SubscriberService extends AbstractService
@@ -21,10 +19,8 @@ class SubscriberService extends AbstractService
      */
     protected $service;
 
-    public function __construct(EntityManager $entityManager, LoggerInterface $logger = null)
+    protected function init()
     {
-        parent::__construct($entityManager, $logger);
-
         $this->service = $this->entityManager->getRepository(UserSubscriber::class);
     }
 

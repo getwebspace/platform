@@ -13,7 +13,7 @@ class SubscribeAction extends UserAction
     {
         if ($this->request->isPost()) {
             try {
-                $userSubscriberService = UserSubscriberService::getFromContainer($this->container);
+                $userSubscriberService = UserSubscriberService::getWithContainer($this->container);
                 $userSubscriber = $userSubscriberService->create(['email' => $this->request->getParam('email')]);
 
                 if ($userSubscriber) {

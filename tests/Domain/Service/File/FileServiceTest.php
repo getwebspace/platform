@@ -25,7 +25,7 @@ class FileServiceTest extends TestCase
     {
         parent::setUp();
         $this->em = $this->getEntityManager();
-        $this->service = new FileService($this->em);
+        $this->service = new FileService(null, $this->em, null);
     }
 
     protected function getTestFileUrl()

@@ -18,10 +18,8 @@ class ParameterService extends AbstractService
      */
     protected $service;
 
-    public function __construct(EntityManager $entityManager, LoggerInterface $logger = null)
+    protected function init()
     {
-        parent::__construct($entityManager, $logger);
-
         $this->service = $this->entityManager->getRepository(Parameter::class);
     }
 
