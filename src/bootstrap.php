@@ -20,3 +20,5 @@ RunTracy\Helpers\Profiler\Profiler::start('init plugins');
 require PLUGIN_DIR . '/installed.php';
 
 RunTracy\Helpers\Profiler\Profiler::finish('init plugins');
+
+$app = new \Slim\App($container);
