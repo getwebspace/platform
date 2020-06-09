@@ -28,7 +28,7 @@ class ConvertImageTask extends AbstractTask
 
         /** @var \App\Domain\Entities\File $file */
         foreach ($files as $index => $file) {
-            if (Str::start('image/', $file->type)) {
+            if (Str::start('image/', $file->getType())) {
                 $folder = $file->getDir('');
                 $original = $file->getInternalPath();
 
@@ -61,22 +61,22 @@ class ConvertImageTask extends AbstractTask
                         }
 
                         $buf = array_merge($params, ['-resize x' . $pixels . '\>']);
-                        @exec($command . " '" . $original . "' " . implode(' ', $buf) . " '" . $path . '/' . $file->name . ".jpg'");
-                        $this->logger->info('Task: convert image', ['size' => $size, 'salt' => $file->salt, 'params' => $buf]);
+                        @exec($command . " '" . $original . "' " . implode(' ', $buf) . " '" . $path . '/' . $file->getName() . ".jpg'");
+                        $this->logger->info('Task: convert image', ['size' => $size, 'salt' => $file->getSalt(), 'params' => $buf]);
                     }
                 }
 
-                @exec($command . " '" . $original . "' " . implode(' ', $params) . " '" . $folder . '/' . $file->name . ".jpg'");
-                $this->logger->info('Task: convert image', ['size' => 'original', 'salt' => $file->salt, 'params' => $params]);
+                @exec($command . " '" . $original . "' " . implode(' ', $params) . " '" . $folder . '/' . $file->getName() . ".jpg'");
+                $this->logger->info('Task: convert image', ['size' => 'original', 'salt' => $file->getSalt(), 'params' => $params]);
 
                 // установка расширения файла и типа
-                if ($file->ext !== 'jpg') {
-                    $file->ext = 'jpg';
-                    $file->type = 'image/jpeg; charset=binary';
+                if ($file->getExt() !== 'jpg') {
+                    $file->setExt('jpg');
+                    $file->setType('image/jpeg; charset=binary');
                 }
 
                 // обновление размера файла
-                $file->size = filesize($folder . '/' . $file->name . '.jpg');
+                $file->setSize(filesize($folder . '/' . $file->getName() . '.jpg'));
             }
 
             $this->setProgress($index, count($files));
