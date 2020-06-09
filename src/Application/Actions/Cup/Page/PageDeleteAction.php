@@ -13,6 +13,6 @@ class PageDeleteAction extends PageAction
             $pageService->delete($this->resolveArg('uuid'));
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/page')->withStatus(301);
+        return $this->response->withRedirect('/cup/page');
     }
 }
