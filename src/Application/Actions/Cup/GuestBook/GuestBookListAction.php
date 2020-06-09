@@ -2,11 +2,14 @@
 
 namespace App\Application\Actions\Cup\GuestBook;
 
+use App\Domain\Service\GuestBook\GuestBookService;
+
 class GuestBookListAction extends GuestBookAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $list = collect($this->gbookRepository->findAll());
+        $guestBookService = GuestBookService::getWithContainer($this->container);
+        $list = $guestBookService->read();
 
         return $this->respondWithTemplate('cup/guestbook/index.twig', ['list' => $list]);
     }
