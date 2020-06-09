@@ -73,6 +73,9 @@ class FileService extends AbstractService
                         'salt' => $salt,
                     ]);
                 } catch (FileAlreadyExistsException $exception) {
+                    // remove uploaded temp file
+                    @exec('rm -rf ' . dirname($dir));
+
                     return $this->read(['hash' => $info['hash']]);
                 }
             }
