@@ -2,11 +2,14 @@
 
 namespace App\Application\Actions\Cup\File;
 
+use App\Domain\Service\File\FileService;
+
 class FileListAction extends FileAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $list = collect($this->fileRepository->findAll());
+        $fileService = FileService::getWithContainer($this->container);
+        $list = $fileService->read();
 
         return $this->respondWithTemplate('cup/file/index.twig', ['list' => $list]);
     }

@@ -167,6 +167,7 @@ class FileService extends AbstractService
         $default = [
             'uuid' => '',
             'hash' => '',
+            'name' => '',
             'ext' => '',
             'type' => '',
             'size' => '',
@@ -193,8 +194,15 @@ class FileService extends AbstractService
             return $file;
         }
 
+        if ($data['name'] !== '' && $data['ext'] !== '') {
+            return $this->service->findOneByFilename($data['name'], $data['ext']);
+        }
+
         $criteria = [];
 
+        if ($data['name'] !== '') {
+            $criteria['name'] = $data['name'];
+        }
         if ($data['ext'] !== '') {
             $criteria['ext'] = $data['ext'];
         }

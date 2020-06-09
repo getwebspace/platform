@@ -32,12 +32,20 @@ class FileRepository extends AbstractRepository
         return $result;
     }
 
-    public function findByExt(string $ext)
+    public function findOneByFilename(string $name, string $ext): ?File
     {
-        $query = $this->createQueryBuilder('p')
-            ->andWhere('p.ext = :ext')->setParameter('ext', $ext, Types::STRING)
+        $query = $this->createQueryBuilder('f')
+            ->andWhere('f.name = :name')->setParameter('name', $name, Types::STRING)
+            ->andWhere('f.ext = :ext')->setParameter('ext', $ext, Types::STRING)
             ->getQuery();
 
-        return $query->getArrayResult();
+        try {
+            $result = $query->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            $results = $query->getResult();
+            $result = array_shift($results);
+        }
+
+        return $result;
     }
 }

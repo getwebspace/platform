@@ -3,6 +3,7 @@
 namespace App\Application\Actions\Cup\File\Image;
 
 use App\Application\Actions\Cup\File\FileAction;
+use App\Domain\Service\File\FileService;
 
 class DeleteAction extends FileAction
 {
@@ -11,18 +12,17 @@ class DeleteAction extends FileAction
         $src = $this->request->getParam('src', false);
 
         if ($src !== false) {
+            $fileService = FileService::getWithContainer($this->container);
+
             $info = pathinfo($src);
 
-            /** @var \App\Domain\Entities\File $file */
-            $file = $this->fileRepository->findOneBy([
+            $file = $fileService->read([
                 'name' => str_escape($info['filename']),
                 'ext' => str_escape($info['extension']),
             ]);
 
             if ($file) {
-                $file->unlink();
-                $this->entityManager->remove($file);
-                $this->entityManager->flush();
+                $fileService->delete($file);
             }
         }
 

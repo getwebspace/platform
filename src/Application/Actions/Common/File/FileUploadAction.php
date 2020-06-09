@@ -2,7 +2,7 @@
 
 namespace App\Application\Actions\Common\File;
 
-use Slim\Http\UploadedFile;
+use App\Domain\Service\File\FileService;
 
 class FileUploadAction extends FileAction
 {
@@ -13,31 +13,34 @@ class FileUploadAction extends FileAction
         $models = [];
 
         if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
+            $fileService = FileService::getWithContainer($this->container);
+
             foreach ($this->request->getUploadedFiles() as $field => $files) {
                 if (!is_array($files)) {
-                    $files = [$files];
+                    $files = [$files]; // allow upload one file
                 }
 
-                // @var UploadedFile $file
-                foreach ($files as $file) {
-                    if (!$file->getError()) {
-                        if (($model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename())) !== null) {
-                            $this->entityManager->persist($model);
+                $uuids = [];
+                foreach ($files as $el) {
+                    if (!$el->getError()) {
+                        $model = $fileService->createFromPath($el->file, $el->getClientFilename());
 
-                            // is image
-                            if (\Alksily\Support\Str::start('image/', $model->type)) {
-                                // add task convert
-                                $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
-                                $task->execute(['uuid' => $model->uuid]);
-
-                                // run worker
-                                \App\Domain\AbstractTask::worker();
-                            }
-
-                            // save model
-                            $models[$field][] = $model;
+                        // is image
+                        if (str_starts_with('image/', $model->getType())) {
+                            $uuids[] = $model->getUuid();
                         }
+
+                        $models[$field][] = $model;
                     }
+                }
+
+                if ($uuids) {
+                    // add task convert
+                    $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
+                    $task->execute(['uuid' => $uuids]);
+
+                    // run worker
+                    \App\Domain\AbstractTask::worker();
                 }
             }
 
