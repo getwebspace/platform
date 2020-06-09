@@ -3,7 +3,6 @@
 namespace tests\Domain\Service\File;
 
 use App\Domain\Entities\File;
-use App\Domain\Service\File\Exception\FileAlreadyExistsException;
 use App\Domain\Service\File\Exception\FileNotFoundException;
 use App\Domain\Service\File\FileService;
 use Doctrine\ORM\EntityManager;

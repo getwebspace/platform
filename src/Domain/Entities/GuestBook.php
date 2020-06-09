@@ -2,7 +2,6 @@
 
 namespace App\Domain\Entities;
 
-use Alksily\Entity\Model;
 use App\Domain\AbstractEntity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
