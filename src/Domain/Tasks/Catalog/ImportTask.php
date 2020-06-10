@@ -203,7 +203,14 @@ class ImportTask extends Task
                         break;
                     }
 
-                    $value = trim((string) $cell->getFormattedValue());
+                    switch ($column) {
+                        case 'vendorcode':
+                            $value = trim((string) $cell->getFormattedValue());
+                            break;
+
+                        default:
+                            $value = trim((string) $cell->getValue());
+                    }
 
                     if ($value) {
                         if ($column !== 'empty') {
