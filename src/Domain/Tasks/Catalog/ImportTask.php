@@ -203,7 +203,7 @@ class ImportTask extends Task
                         break;
                     }
 
-                    $value = trim((string) $cell->getValue());
+                    $value = trim((string) $cell->getFormattedValue());
 
                     if ($value) {
                         if ($column !== 'empty') {
