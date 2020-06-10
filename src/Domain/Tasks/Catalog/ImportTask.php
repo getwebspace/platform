@@ -86,10 +86,10 @@ class ImportTask extends Task
                         $data = $item['data'] ?? [];
 
                         if (isset($data[$key_field])) {
-                            $this->logger->info('Search product', [$key_field => $data[$key_field], 'item' => $data]);
+                            $this->logger->info('Search product', [$key_field => '' . $data[$key_field], 'item' => $data]);
 
                             /** @var \App\Domain\Entities\Catalog\Product $product */
-                            $product = $productRepository->findOneBy([$key_field => [$data[$key_field], +$data[$key_field]]]);
+                            $product = $productRepository->findOneBy([$key_field => ['' . $data[$key_field], +$data[$key_field]]]);
 
                             if (!$product && $action === 'insert') {
                                 $this->logger->info('Create product', [$key_field => $data[$key_field]]);
