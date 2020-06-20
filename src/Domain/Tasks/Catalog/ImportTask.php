@@ -86,10 +86,17 @@ class ImportTask extends AbstractTask
                         $data = $item['data'] ?? [];
 
                         if (isset($data[$key_field])) {
-                            $this->logger->info('Search product', [$key_field => $data[$key_field], 'item' => $data]);
+                            $this->logger->info('Search product', [$key_field => '' . $data[$key_field]['formatted'], 'item' => $data]);
 
                             /** @var \App\Domain\Entities\Catalog\Product $product */
-                            $product = $productRepository->findOneBy([$key_field => [$data[$key_field], +$data[$key_field]]]);
+                            $product = $productRepository->findOneBy([
+                                $key_field => [
+                                    '' . $data[$key_field]['raw'],
+                                    '' . $data[$key_field]['formatted'],
+                                    +$data[$key_field]['raw'],
+                                    +$data[$key_field]['formatted'],
+                                ],
+                            ]);
 
                             if (!$product && $action === 'insert') {
                                 $this->logger->info('Create product', [$key_field => $data[$key_field]]);
@@ -108,7 +115,7 @@ class ImportTask extends AbstractTask
                                     'order' => 1,
                                     'date' => $now,
                                     'export' => 'excel',
-                                ], $data);
+                                ], array_column($data, 'raw'));
 
                                 $check = \App\Domain\Filters\Catalog\Product::check($data);
 
@@ -121,7 +128,7 @@ class ImportTask extends AbstractTask
                             }
 
                             if ($product) {
-                                $this->logger->info('Update product data', [$key_field => $data[$key_field]]);
+                                $this->logger->info('Update product data', [$key_field => $data[$key_field]['formatted']]);
 
                                 foreach ($data as $key => $value) {
                                     if (
@@ -129,7 +136,7 @@ class ImportTask extends AbstractTask
                                         in_array($key, \App\Domain\References\Catalog::IMPORT_FIELDS, true) &&
                                         ($value === null) === false
                                     ) {
-                                        $product->set($key, $value);
+                                        $product->set($key, $value['raw']);
                                     }
                                 }
                                 $product->date = $now;
@@ -207,7 +214,10 @@ class ImportTask extends AbstractTask
 
                     if ($value) {
                         if ($column !== 'empty') {
-                            $buf[$fields[$column]] = $value;
+                            $buf[$fields[$column]] = [
+                                'raw' => $value,
+                                'formatted' => trim((string) $cell->getFormattedValue()),
+                            ];
                         }
                         $count++;
                     }
