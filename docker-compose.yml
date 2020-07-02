@@ -9,7 +9,6 @@ services:
           # - SIMPLE_ORDER_SERIAL=1
           # - SIMPLE_PHONE_CHECK=1
           # - DATABASE=mysql://user:secret@localhost/mydb
-          # - SENTRY=""
         volumes:
             - ./config:/var/container/config:rw
             - ./plugin:/var/container/plugin:rw

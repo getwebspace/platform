@@ -40,7 +40,6 @@ $settings = [
     ],
 
     'settings' => [
-        'sentry' => ($_ENV['SENTRY'] ?? null),
         'displayErrorDetails' => (bool) ($_ENV['DEBUG'] ?? false), // set to false in production
         'addContentLengthHeader' => false, // allow the web server to send the content-length header
         'determineRouteBeforeAppMiddleware' => true,
@@ -95,12 +94,6 @@ switch (!isset($settings['settings']['displayErrorDetails']) || $settings['setti
         \Tracy\Debugger::enable(\Tracy\Debugger::PRODUCTION, LOG_DIR);
 
         break;
-}
-
-if (isset($settings['settings']['sentry']) && $settings['settings']['sentry'] !== null) {
-    \RunTracy\Helpers\Profiler\Profiler::start('sentry');
-    \Sentry\init(['dsn' => $settings['settings']['sentry']]);
-    \RunTracy\Helpers\Profiler\Profiler::finish('sentry');
 }
 
 return $settings;

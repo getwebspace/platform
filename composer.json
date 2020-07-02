@@ -31,7 +31,6 @@
         "bacon/bacon-qr-code": "^1.0",
         "monolog/monolog": "^1.17",
         "runcmf/runtracy": "^0.2.10",
-        "sentry/sdk": "2.0.3",
         "nochso/html-compress-twig": "^2.0",
         "tightenco/collect": "^7.12"
     },
