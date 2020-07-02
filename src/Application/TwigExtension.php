@@ -348,7 +348,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
         $criteria = [];
 
         if ($files) {
-            if (!is_a($files, \Alksily\Entity\Collection::class) && !is_array($files)) {
+            if (!is_a($files, \Tightenco\Collect\Support\Collection::class) && !is_array($files)) {
                 $files = [$files];
             }
 
@@ -420,7 +420,7 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
             $data = array_merge_recursive(['uuid' => [], 'address' => [], 'category' => []], $data);
 
             foreach ($data as $type => $values) {
-                if (is_a($values, \Alksily\Entity\Collection::class)) {
+                if (is_a($values, \Tightenco\Collect\Support\Collection::class)) {
                     $values = $values->all();
                 }
                 if (!is_array($data)) {

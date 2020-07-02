@@ -2,7 +2,7 @@
 
 namespace App\Domain\Service\GuestBook;
 
-use Alksily\Entity\Collection;
+use Tightenco\Collect\Support\Collection;
 use App\Domain\AbstractService;
 use App\Domain\Entities\GuestBook;
 use App\Domain\Repository\GuestBookRepository;

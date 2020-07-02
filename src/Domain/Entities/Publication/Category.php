@@ -2,7 +2,7 @@
 
 namespace App\Domain\Entities\Publication;
 
-use Alksily\Entity\Collection;
+use Tightenco\Collect\Support\Collection;
 use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;

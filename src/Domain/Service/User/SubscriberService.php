@@ -2,7 +2,7 @@
 
 namespace App\Domain\Service\User;
 
-use Alksily\Entity\Collection;
+use Tightenco\Collect\Support\Collection;
 use App\Domain\AbstractService;
 use App\Domain\Entities\User\Subscriber as UserSubscriber;
 use App\Domain\Exceptions\WrongEmailValueException;

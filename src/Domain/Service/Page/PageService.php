@@ -2,7 +2,7 @@
 
 namespace App\Domain\Service\Page;
 
-use Alksily\Entity\Collection;
+use Tightenco\Collect\Support\Collection;
 use App\Domain\AbstractService;
 use App\Domain\Entities\Page;
 use App\Domain\Repository\PageRepository;

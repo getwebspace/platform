@@ -33,7 +33,7 @@ $container[\Doctrine\ORM\EntityManager::class] = function (ContainerInterface $c
 // plugin control class
 $container['plugin'] = function (ContainerInterface $c) {
     return new class {
-        /** @var \Alksily\Entity\Collection */
+        /** @var \Tightenco\Collect\Support\Collection */
         private $plugins;
 
         final public function __construct()
@@ -71,7 +71,7 @@ $container['plugin'] = function (ContainerInterface $c) {
 // wrapper around collection with params
 $container['parameter'] = function (ContainerInterface $c) {
     return new class($c) {
-        /** @var \Alksily\Entity\Collection */
+        /** @var \Tightenco\Collect\Support\Collection */
         private static $parameters;
 
         final public function __construct(ContainerInterface $container)

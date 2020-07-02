@@ -2,7 +2,7 @@
 
 namespace App\Domain\Service\Publication;
 
-use Alksily\Entity\Collection;
+use Tightenco\Collect\Support\Collection;
 use App\Domain\AbstractService;
 use App\Domain\Entities\Publication\Category as PublicationCategory;
 use App\Domain\Repository\Publication\CategoryRepository as PublicationCategoryRepository;

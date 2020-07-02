@@ -2,7 +2,7 @@
 
 namespace App\Domain\Service\User;
 
-use Alksily\Entity\Collection;
+use Tightenco\Collect\Support\Collection;
 use App\Domain\AbstractService;
 use App\Domain\Entities\User;
 use App\Domain\Entities\User\Session as UserSession;

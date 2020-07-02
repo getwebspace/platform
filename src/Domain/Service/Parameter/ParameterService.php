@@ -2,7 +2,7 @@
 
 namespace App\Domain\Service\Parameter;
 
-use Alksily\Entity\Collection;
+use Tightenco\Collect\Support\Collection;
 use App\Domain\AbstractService;
 use App\Domain\Entities\Parameter;
 use App\Domain\Repository\ParameterRepository;

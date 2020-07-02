@@ -2,7 +2,7 @@
 
 namespace App\Application\Actions\Common\Catalog;
 
-use Alksily\Entity\Collection;
+use Tightenco\Collect\Support\Collection;
 use Slim\Http\Response;
 
 class ListAction extends CatalogAction

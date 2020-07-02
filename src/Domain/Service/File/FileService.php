@@ -2,7 +2,7 @@
 
 namespace App\Domain\Service\File;
 
-use Alksily\Entity\Collection;
+use Tightenco\Collect\Support\Collection;
 use App\Domain\AbstractService;
 use App\Domain\Entities\File;
 use App\Domain\Repository\FileRepository;

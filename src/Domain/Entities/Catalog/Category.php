@@ -2,7 +2,7 @@
 
 namespace App\Domain\Entities\Catalog;
 
-use Alksily\Entity\Collection;
+use Tightenco\Collect\Support\Collection;
 use Alksily\Entity\Model;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
@@ -191,7 +191,7 @@ class Category extends Model
      * @param Collection $categories
      * @param Category   $parent
      *
-     * @return \Alksily\Entity\Collection
+     * @return \Tightenco\Collect\Support\Collection
      */
     public static function getChildren(Collection $categories, self $parent)
     {

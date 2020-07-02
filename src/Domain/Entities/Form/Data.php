@@ -197,7 +197,7 @@ class Data extends AbstractEntity
     /**
      * @param bool $raw
      *
-     * @return \Alksily\Entity\Collection|array
+     * @return \Tightenco\Collect\Support\Collection|array
      */
     public function getFiles($raw = false)
     {

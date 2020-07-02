@@ -25,7 +25,7 @@ class PluginMiddleware extends AbstractMiddleware
         $route = $request->getAttribute('route');
         $routeName = $route->getName();
 
-        /** @var \Alksily\Entity\Collection $plugins */
+        /** @var \Tightenco\Collect\Support\Collection $plugins */
         $plugins = $this->container->get('plugin')->get()->where('routes', true);
 
         /** @var \App\Application\Plugin $plugin */
