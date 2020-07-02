@@ -99,9 +99,7 @@ class Publication extends AbstractEntity
      */
     public function setCategory($uuid)
     {
-        if ($this->checkUuidByValue($uuid)) {
-            $this->category = $uuid;
-        }
+        $this->category = $this->getUuidByValue($uuid);
 
         return $this;
     }

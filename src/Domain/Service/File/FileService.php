@@ -2,13 +2,13 @@
 
 namespace App\Domain\Service\File;
 
-use Tightenco\Collect\Support\Collection;
 use App\Domain\AbstractService;
 use App\Domain\Entities\File;
 use App\Domain\Repository\FileRepository;
 use App\Domain\Service\File\Exception\FileAlreadyExistsException;
 use App\Domain\Service\File\Exception\FileNotFoundException;
 use Ramsey\Uuid\Uuid;
+use Tightenco\Collect\Support\Collection;
 
 class FileService extends AbstractService
 {
@@ -38,7 +38,8 @@ class FileService extends AbstractService
 
         // is file saved?
         switch (true) {
-            case str_starts_with(['http://', 'https://'], $path):
+            case str_starts_with($path, 'http://'):
+            case str_starts_with($path, 'https://'):
                 if (($path = static::getFileFromRemote($path)) !== false) {
                     $saved = true;
                 }
@@ -168,12 +169,12 @@ class FileService extends AbstractService
     public function read(array $data = [])
     {
         $default = [
-            'uuid' => '',
-            'hash' => '',
-            'name' => '',
-            'ext' => '',
-            'type' => '',
-            'size' => '',
+            'uuid' => null,
+            'hash' => null,
+            'name' => null,
+            'ext' => null,
+            'type' => null,
+            'size' => null,
         ];
         $data = array_merge($default, static::$default_read, $data);
 
@@ -197,22 +198,22 @@ class FileService extends AbstractService
             return $file;
         }
 
-        if ($data['name'] !== '' && $data['ext'] !== '') {
+        if ($data['name'] !== null && $data['ext'] !== null) {
             return $this->service->findOneByFilename($data['name'], $data['ext']);
         }
 
         $criteria = [];
 
-        if ($data['name'] !== '') {
+        if ($data['name'] !== null) {
             $criteria['name'] = $data['name'];
         }
-        if ($data['ext'] !== '') {
+        if ($data['ext'] !== null) {
             $criteria['ext'] = $data['ext'];
         }
-        if ($data['type'] !== '') {
+        if ($data['type'] !== null) {
             $criteria['type'] = $data['type'];
         }
-        if ($data['size'] !== '') {
+        if ($data['size'] !== null) {
             $criteria['size'] = $data['size'];
         }
 
@@ -239,18 +240,18 @@ class FileService extends AbstractService
 
         if (is_object($entity) && is_a($entity, File::class)) {
             $default = [
-                'name' => '',
-                'ext' => '',
-                'type' => '',
-                'size' => '',
-                'hash' => '',
-                'salt' => '',
-                'date' => '',
+                'name' => null,
+                'ext' => null,
+                'type' => null,
+                'size' => null,
+                'hash' => null,
+                'salt' => null,
+                'date' => null,
             ];
             $data = array_merge($default, $data);
 
             if ($data !== $default) {
-                if ($data['hash']) {
+                if ($data['hash'] !== null) {
                     $found = $this->service->findOneByTitle($data['hash']);
 
                     if ($found === null || $found === $entity) {
@@ -259,22 +260,22 @@ class FileService extends AbstractService
                         throw new FileAlreadyExistsException();
                     }
                 }
-                if ($data['name']) {
+                if ($data['name'] !== null) {
                     $entity->setName($data['name']);
                 }
-                if ($data['ext']) {
+                if ($data['ext'] !== null) {
                     $entity->setExt($data['ext']);
                 }
-                if ($data['type']) {
+                if ($data['type'] !== null) {
                     $entity->setType($data['type']);
                 }
-                if ($data['size']) {
+                if ($data['size'] !== null) {
                     $entity->setSize($data['size']);
                 }
-                if ($data['salt']) {
+                if ($data['salt'] !== null) {
                     $entity->setSalt($data['salt']);
                 }
-                if ($data['date']) {
+                if ($data['date'] !== null) {
                     $entity->setDate($data['date']);
                 }
 

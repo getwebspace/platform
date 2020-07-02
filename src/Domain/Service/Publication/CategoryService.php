@@ -2,7 +2,6 @@
 
 namespace App\Domain\Service\Publication;
 
-use Tightenco\Collect\Support\Collection;
 use App\Domain\AbstractService;
 use App\Domain\Entities\Publication\Category as PublicationCategory;
 use App\Domain\Repository\Publication\CategoryRepository as PublicationCategoryRepository;
@@ -11,6 +10,7 @@ use App\Domain\Service\Publication\Exception\CategoryNotFoundException;
 use App\Domain\Service\Publication\Exception\MissingTitleValueException;
 use App\Domain\Service\Publication\Exception\TitleAlreadyExistsException;
 use Ramsey\Uuid\Uuid;
+use Tightenco\Collect\Support\Collection;
 
 class CategoryService extends AbstractService
 {
@@ -98,10 +98,10 @@ class CategoryService extends AbstractService
     public function read(array $data = [])
     {
         $default = [
-            'uuid' => '',
-            'title' => '',
-            'address' => '',
-            'parent' => '',
+            'uuid' => null,
+            'title' => null,
+            'address' => null,
+            'parent' => null,
         ];
         $data = array_merge($default, static::$default_read, $data);
 
@@ -132,7 +132,7 @@ class CategoryService extends AbstractService
 
         $criteria = [];
 
-        if ($data['parent'] !== '') {
+        if ($data['parent'] !== null) {
             $criteria['parent'] = $data['parent'];
         }
 
@@ -161,21 +161,21 @@ class CategoryService extends AbstractService
 
         if (is_object($entity) && is_a($entity, PublicationCategory::class)) {
             $default = [
-                'title' => '',
-                'address' => '',
-                'description' => '',
-                'parent' => '',
-                'pagination' => 10,
-                'children' => false,
-                'public' => true,
-                'sort' => [],
-                'meta' => [],
-                'template' => [],
+                'title' => null,
+                'address' => null,
+                'description' => null,
+                'parent' => null,
+                'pagination' => null,
+                'children' => null,
+                'public' => null,
+                'sort' => null,
+                'meta' => null,
+                'template' => null,
             ];
             $data = array_merge($default, $data);
 
             if ($data !== $default) {
-                if ($data['title']) {
+                if ($data['title'] !== null) {
                     $found = $this->service->findOneByTitle($data['title']);
 
                     if ($found === null || $found === $entity) {
@@ -184,7 +184,7 @@ class CategoryService extends AbstractService
                         throw new TitleAlreadyExistsException();
                     }
                 }
-                if ($data['address']) {
+                if ($data['address'] !== null) {
                     $found = $this->service->findOneByAddress($data['address']);
 
                     if ($found === null || $found === $entity) {
@@ -193,28 +193,28 @@ class CategoryService extends AbstractService
                         throw new AddressAlreadyExistsException();
                     }
                 }
-                if ($data['description']) {
+                if ($data['description'] !== null) {
                     $entity->setDescription($data['description']);
                 }
-                if ($data['parent']) {
+                if ($data['parent'] !== null) {
                     $entity->setParent($data['parent']);
                 }
-                if ($data['pagination']) {
+                if ($data['pagination'] !== null) {
                     $entity->setPagination((int) $data['pagination']);
                 }
-                if ($data['children'] !== '') {
+                if ($data['children'] !== null) {
                     $entity->setChildren($data['children']);
                 }
-                if ($data['public'] !== '') {
+                if ($data['public'] !== null) {
                     $entity->setPublic($data['public']);
                 }
-                if ($data['sort']) {
+                if ($data['sort'] !== null) {
                     $entity->setSort($data['sort']);
                 }
-                if ($data['meta']) {
+                if ($data['meta'] !== null) {
                     $entity->setMeta($data['meta']);
                 }
-                if ($data['template']) {
+                if ($data['template'] !== null) {
                     $entity->setTemplate($data['template']);
                 }
 

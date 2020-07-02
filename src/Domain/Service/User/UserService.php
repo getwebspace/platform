@@ -2,7 +2,6 @@
 
 namespace App\Domain\Service\User;
 
-use Tightenco\Collect\Support\Collection;
 use App\Domain\AbstractService;
 use App\Domain\Entities\User;
 use App\Domain\Entities\User\Session as UserSession;
@@ -16,6 +15,7 @@ use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
 use Ramsey\Uuid\Uuid;
+use Tightenco\Collect\Support\Collection;
 
 class UserService extends AbstractService
 {
@@ -104,16 +104,16 @@ class UserService extends AbstractService
     public function read(array $data = [])
     {
         $default = [
-            'uuid' => '',
-            'identifier' => '', // включает: username, email, email
-            'username' => '',
-            'email' => '',
-            'phone' => '',
-            'allow_mail' => '',
-            'status' => '',
-            'password' => '', // опционально, передается для проверки
-            'agent' => '', // опционально, передается для обновления
-            'ip' => '', // опционально, передается для обновления
+            'uuid' => null,
+            'identifier' => null, // включает: username, email, email
+            'username' => null,
+            'email' => null,
+            'phone' => null,
+            'allow_mail' => null,
+            'status' => null,
+            'password' => null, // опционально, передается для проверки
+            'agent' => null, // опционально, передается для обновления
+            'ip' => null, // опционально, передается для обновления
         ];
         $data = array_merge($default, static::$default_read, $data);
 
@@ -175,10 +175,10 @@ class UserService extends AbstractService
 
         $criteria = [];
 
-        if ($data['allow_mail'] !== '') {
+        if ($data['allow_mail'] !== null) {
             $criteria['allow_mail'] = (bool) $data['allow_mail'];
         }
-        if ($data['status'] !== '' && in_array($data['status'], \App\Domain\Types\UserStatusType::LIST, true)) {
+        if ($data['status'] !== null && in_array($data['status'], \App\Domain\Types\UserStatusType::LIST, true)) {
             $criteria['status'] = $data['status'];
         }
 
@@ -210,20 +210,20 @@ class UserService extends AbstractService
 
         if (is_object($entity) && is_a($entity, User::class)) {
             $default = [
-                'username' => '',
-                'email' => '',
-                'phone' => '',
-                'password' => '',
-                'firstname' => '',
-                'lastname' => '',
-                'allow_mail' => '',
-                'status' => '',
-                'level' => '',
+                'username' => null,
+                'email' => null,
+                'phone' => null,
+                'password' => null,
+                'firstname' => null,
+                'lastname' => null,
+                'allow_mail' => null,
+                'status' => null,
+                'level' => null,
             ];
             $data = array_merge($default, $data);
 
             if ($data !== $default) {
-                if ($data['username']) {
+                if ($data['username'] !== null) {
                     $found = $this->service->findOneByUsername($data['email']);
 
                     if ($found === null || $found === $entity) {
@@ -232,7 +232,7 @@ class UserService extends AbstractService
                         throw new UsernameAlreadyExistsException();
                     }
                 }
-                if ($data['email']) {
+                if ($data['email'] !== null) {
                     $found = $this->service->findOneByEmail($data['email']);
 
                     if ($found === null || $found === $entity) {
@@ -241,7 +241,7 @@ class UserService extends AbstractService
                         throw new EmailAlreadyExistsException();
                     }
                 }
-                if ($data['phone']) {
+                if ($data['phone'] !== null) {
                     $found = $this->service->findOneByPhone($data['phone']);
 
                     if ($found === null || $found === $entity) {
@@ -250,22 +250,22 @@ class UserService extends AbstractService
                         throw new PhoneAlreadyExistsException();
                     }
                 }
-                if ($data['password']) {
+                if ($data['password'] !== null) {
                     $entity->setPassword($data['password']);
                 }
-                if ($data['firstname']) {
+                if ($data['firstname'] !== null) {
                     $entity->setFirstname($data['firstname']);
                 }
-                if ($data['lastname']) {
+                if ($data['lastname'] !== null) {
                     $entity->setLastname($data['lastname']);
                 }
-                if ($data['allow_mail']) {
+                if ($data['allow_mail'] !== null) {
                     $entity->setAllowMail($data['allow_mail']);
                 }
-                if ($data['status']) {
+                if ($data['status'] !== null) {
                     $entity->setStatus($data['status']);
                 }
-                if ($data['level']) {
+                if ($data['level'] !== null) {
                     $entity->setLevel($data['level']);
                 }
 

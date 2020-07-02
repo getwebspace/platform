@@ -2,7 +2,7 @@
 
 namespace App\Domain\Entities\Catalog;
 
-use Alksily\Entity\Model;
+use App\Domain\AbstractEntity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
@@ -13,7 +13,7 @@ use Ramsey\Uuid\Uuid;
  *     @ORM\Index(name="catalog_order_status_idx", columns={"status"}),
  * })
  */
-class Order extends Model
+class Order extends AbstractEntity
 {
     /**
      * @var Uuid

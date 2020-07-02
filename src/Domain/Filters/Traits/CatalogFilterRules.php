@@ -28,7 +28,7 @@ trait CatalogFilterRules
                     /** @var \App\Domain\Entities\Catalog\Category $category */
                     $category = $categoryRepository->findOneBy(['uuid' => str_escape($data['parent']), 'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]);
 
-                    if ($category && !str_starts_with($category->address, $data[$field])) {
+                    if ($category && !str_starts_with($data[$field], $category->address)) {
                         $data[$field] = $category->address . '/' . $data[$field];
                     }
                 }
@@ -158,7 +158,7 @@ trait CatalogFilterRules
                 /** @var \App\Domain\Entities\Catalog\Category $category */
                 $category = $categoryRepository->findOneBy(['uuid' => str_escape($data['category']), 'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]);
 
-                if ($category && !str_starts_with($category->address, $data[$field])) {
+                if ($category && !str_starts_with($data[$field], $category->address)) {
                     $data[$field] = $category->address . '/' . $data[$field];
                 }
             }

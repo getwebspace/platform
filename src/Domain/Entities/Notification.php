@@ -2,7 +2,7 @@
 
 namespace App\Domain\Entities;
 
-use Alksily\Entity\Model;
+use App\Domain\AbstractEntity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
@@ -11,7 +11,7 @@ use Ramsey\Uuid\Uuid;
  * @ORM\Entity
  * @ORM\Table(name="notification")
  */
-class Notification extends Model
+class Notification extends AbstractEntity
 {
     /**
      * @var Uuid

@@ -2,7 +2,6 @@
 
 namespace App\Domain\Service\User;
 
-use Tightenco\Collect\Support\Collection;
 use App\Domain\AbstractService;
 use App\Domain\Entities\User\Subscriber as UserSubscriber;
 use App\Domain\Exceptions\WrongEmailValueException;
@@ -11,6 +10,7 @@ use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use Ramsey\Uuid\Uuid;
+use Tightenco\Collect\Support\Collection;
 
 class SubscriberService extends AbstractService
 {
@@ -67,9 +67,9 @@ class SubscriberService extends AbstractService
     public function read(array $data = [])
     {
         $default = [
-            'uuid' => '',
-            'email' => '',
-            'date' => '',
+            'uuid' => null,
+            'email' => null,
+            'date' => null,
         ];
         $data = array_merge($default, static::$default_read, $data);
 
@@ -95,7 +95,7 @@ class SubscriberService extends AbstractService
 
         $criteria = [];
 
-        if ($data['date']) {
+        if ($data['date'] !== null) {
             $criteria['date'] = $data['date'];
         }
 
@@ -124,12 +124,12 @@ class SubscriberService extends AbstractService
 
         if (is_object($entity) && is_a($entity, UserSubscriber::class)) {
             $default = [
-                'email' => '',
+                'email' => null,
             ];
             $data = array_merge($default, $data);
 
             if ($data !== $default) {
-                if ($data['email']) {
+                if ($data['email'] !== null) {
                     $found = $this->service->findOneByEmail($data['email']);
 
                     if ($found === null || $found === $entity) {

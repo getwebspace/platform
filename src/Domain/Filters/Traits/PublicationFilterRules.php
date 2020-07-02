@@ -124,7 +124,7 @@ trait PublicationFilterRules
                     /** @var \App\Domain\Entities\Publication\Category $category */
                     $category = $categoryRepository->findOneBy(['uuid' => str_escape($data['parent'] ?? $data['category'])]);
 
-                    if ($category && !str_starts_with($category->address, $data[$field])) {
+                    if ($category && !str_starts_with($data[$field], $category->address)) {
                         $data[$field] = $category->address . '/' . $data[$field];
                     }
                 }

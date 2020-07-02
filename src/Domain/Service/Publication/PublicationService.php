@@ -2,7 +2,6 @@
 
 namespace App\Domain\Service\Publication;
 
-use Tightenco\Collect\Support\Collection;
 use App\Domain\AbstractService;
 use App\Domain\Entities\Publication;
 use App\Domain\Repository\PublicationRepository;
@@ -11,6 +10,7 @@ use App\Domain\Service\Publication\Exception\MissingTitleValueException;
 use App\Domain\Service\Publication\Exception\PublicationNotFoundException;
 use App\Domain\Service\Publication\Exception\TitleAlreadyExistsException;
 use Ramsey\Uuid\Uuid;
+use Tightenco\Collect\Support\Collection;
 
 class PublicationService extends AbstractService
 {
@@ -86,10 +86,10 @@ class PublicationService extends AbstractService
     public function read(array $data = [])
     {
         $default = [
-            'uuid' => '',
-            'address' => '',
-            'title' => '',
-            'category' => '',
+            'uuid' => null,
+            'address' => null,
+            'title' => null,
+            'category' => null,
         ];
         $data = array_merge($default, static::$default_read, $data);
 
@@ -120,7 +120,7 @@ class PublicationService extends AbstractService
 
         $criteria = [];
 
-        if ($data['category'] !== '') {
+        if ($data['category'] !== null) {
             $criteria['category'] = $data['category'];
         }
 
@@ -149,17 +149,17 @@ class PublicationService extends AbstractService
 
         if (is_object($entity) && is_a($entity, Publication::class)) {
             $default = [
-                'title' => '',
-                'address' => '',
-                'category' => '',
-                'date' => '',
-                'content' => [],
-                'meta' => [],
+                'title' => null,
+                'address' => null,
+                'category' => null,
+                'date' => null,
+                'content' => null,
+                'meta' => null,
             ];
             $data = array_merge($default, $data);
 
             if ($data !== $default) {
-                if ($data['title']) {
+                if ($data['title'] !== null) {
                     $found = $this->service->findOneByTitle($data['title']);
 
                     if ($found === null || $found === $entity) {
@@ -168,7 +168,7 @@ class PublicationService extends AbstractService
                         throw new TitleAlreadyExistsException();
                     }
                 }
-                if ($data['address']) {
+                if ($data['address'] !== null) {
                     $found = $this->service->findOneByAddress($data['address']);
 
                     if ($found === null || $found === $entity) {
@@ -177,16 +177,16 @@ class PublicationService extends AbstractService
                         throw new AddressAlreadyExistsException();
                     }
                 }
-                if ($data['category']) {
+                if ($data['category'] !== null) {
                     $entity->setCategory($data['category']);
                 }
-                if ($data['date']) {
+                if ($data['date'] !== null) {
                     $entity->setDate($data['date']);
                 }
-                if ($data['content']) {
+                if ($data['content'] !== null) {
                     $entity->setContent($data['content']);
                 }
-                if ($data['meta']) {
+                if ($data['meta'] !== null) {
                     $entity->setMeta($data['meta']);
                 }
 

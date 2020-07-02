@@ -200,9 +200,17 @@ abstract class AbstractEntity
         return new DateTime('now');
     }
 
-    protected function checkUuidByValue($value)
+    protected function getUuidByValue($value)
     {
-        return Uuid::isValid((string) $value);
+        if (Uuid::isValid((string) $value)) {
+            if (is_string($value)) {
+                return Uuid::fromString($value);
+            }
+
+            return $value;
+        }
+
+        return Uuid::NIL;
     }
 
     /**

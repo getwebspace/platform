@@ -2,8 +2,8 @@
 
 namespace App\Application\Actions\Common\Catalog;
 
-use Tightenco\Collect\Support\Collection;
 use Slim\Http\Response;
+use Tightenco\Collect\Support\Collection;
 
 class ListAction extends CatalogAction
 {

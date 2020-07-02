@@ -63,8 +63,8 @@ class DataService extends AbstractService
     public function read(array $data = [])
     {
         $default = [
-            'uuid' => '',
-            'form_uuid' => '',
+            'uuid' => null,
+            'form_uuid' => null,
         ];
         $data = array_merge($default, static::$default_read, $data);
 
@@ -85,7 +85,7 @@ class DataService extends AbstractService
 
         $criteria = [];
 
-        if ($data['form_uuid']) {
+        if ($data['form_uuid'] !== null) {
             $criteria['form_uuid'] = $data['form_uuid'];
         }
 
@@ -112,20 +112,20 @@ class DataService extends AbstractService
 
         if (is_object($entity) && is_a($entity, FromData::class)) {
             $default = [
-                'form_uuid' => Uuid::NIL,
-                'message' => '',
-                'date' => 'now',
+                'form_uuid' => null,
+                'message' => null,
+                'date' => null,
             ];
             $data = array_merge($default, $data);
 
             if ($data !== $default) {
-                if ($data['form_uuid']) {
+                if ($data['form_uuid'] !== null) {
                     $entity->setFormUuid($data['form_uuid']);
                 }
-                if ($data['message']) {
+                if ($data['message'] !== null) {
                     $entity->setMessage($data['message']);
                 }
-                if ($data['date']) {
+                if ($data['date'] !== null) {
                     $entity->setDate($data['date']);
                 }
 

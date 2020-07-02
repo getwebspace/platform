@@ -2,12 +2,12 @@
 
 namespace App\Domain\Service\Parameter;
 
-use Tightenco\Collect\Support\Collection;
 use App\Domain\AbstractService;
 use App\Domain\Entities\Parameter;
 use App\Domain\Repository\ParameterRepository;
 use App\Domain\Service\Parameter\Exception\ParameterAlreadyExistsException;
 use App\Domain\Service\Parameter\Exception\ParameterNotFoundException;
+use Tightenco\Collect\Support\Collection;
 
 class ParameterService extends AbstractService
 {
@@ -59,7 +59,7 @@ class ParameterService extends AbstractService
     public function read(array $data = [], $fallback = null)
     {
         $default = [
-            'key' => '',
+            'key' => null,
         ];
         $data = array_merge($default, static::$default_read, $data);
 
@@ -98,13 +98,13 @@ class ParameterService extends AbstractService
 
         if (is_object($entity) && is_a($entity, Parameter::class)) {
             $default = [
-                'key' => '',
-                'value' => '',
+                'key' => null,
+                'value' => null,
             ];
             $data = array_merge($default, $data);
 
             if ($data !== $default) {
-                if ($data['key']) {
+                if ($data['key'] !== null) {
                     $found = $this->service->findOneByKey($data['key']);
 
                     if ($found === null || $found === $entity) {
@@ -113,7 +113,7 @@ class ParameterService extends AbstractService
                         throw new ParameterAlreadyExistsException();
                     }
                 }
-                if ($data['value']) {
+                if ($data['value'] !== null) {
                     $entity->setValue($data['value']);
                 }
 

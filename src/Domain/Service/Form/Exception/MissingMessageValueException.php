@@ -6,5 +6,4 @@ use App\Domain\AbstractException;
 
 class MissingMessageValueException extends AbstractException
 {
-
 }

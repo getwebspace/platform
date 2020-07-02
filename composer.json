@@ -17,7 +17,7 @@
         "slim/twig-view": "^2.4",
         "slim/http-cache": "^0.4.0",
         "doctrine/orm": "^2",
-        "alksily/support": "^1.0",
+        "alksily/support": "^1.2",
         "twig/twig": "2.12.1",
         "twig/extensions": "^1.5",
         "twig/intl-extra": "3.x-dev",

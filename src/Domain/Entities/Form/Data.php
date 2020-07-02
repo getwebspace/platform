@@ -46,9 +46,7 @@ class Data extends AbstractEntity
      */
     public function setFormUuid($uuid)
     {
-        if ($this->checkUuidByValue($uuid)) {
-            $this->form_uuid = $uuid;
-        }
+        $this->form_uuid = $this->getUuidByValue($uuid);
 
         return $this;
     }
@@ -197,7 +195,7 @@ class Data extends AbstractEntity
     /**
      * @param bool $raw
      *
-     * @return \Tightenco\Collect\Support\Collection|array
+     * @return array|\Tightenco\Collect\Support\Collection
      */
     public function getFiles($raw = false)
     {

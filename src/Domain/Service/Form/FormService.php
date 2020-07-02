@@ -6,8 +6,8 @@ use App\Domain\AbstractService;
 use App\Domain\Entities\Form;
 use App\Domain\Repository\FormRepository;
 use App\Domain\Service\Form\Exception\AddressAlreadyExistsException;
-use App\Domain\Service\Form\Exception\MissingTitleValueException;
 use App\Domain\Service\Form\Exception\FormNotFoundException;
+use App\Domain\Service\Form\Exception\MissingTitleValueException;
 use App\Domain\Service\Form\Exception\TitleAlreadyExistsException;
 use Ramsey\Uuid\Uuid;
 use Tightenco\Collect\Support\Collection;
@@ -81,11 +81,11 @@ class FormService extends AbstractService
     public function read(array $data = [])
     {
         $default = [
-            'uuid' => '',
-            'title' => '',
-            'address' => '',
-            'template' => '',
-            'mailto' => '',
+            'uuid' => null,
+            'title' => null,
+            'address' => null,
+            'template' => null,
+            'mailto' => null,
         ];
         $data = array_merge($default, static::$default_read, $data);
 
@@ -116,10 +116,10 @@ class FormService extends AbstractService
 
         $criteria = [];
 
-        if ($data['template']) {
+        if ($data['template'] !== null) {
             $criteria['template'] = $data['template'];
         }
-        if ($data['mailto']) {
+        if ($data['mailto'] !== null) {
             $criteria['mailto'] = $data['mailto'];
         }
 
@@ -148,18 +148,18 @@ class FormService extends AbstractService
 
         if (is_object($entity) && is_a($entity, Form::class)) {
             $default = [
-                'title' => '',
-                'address' => '',
-                'template' => '',
-                'save_data' => true,
-                'recaptcha' => true,
-                'origin' => [],
-                'mailto' => [],
+                'title' => null,
+                'address' => null,
+                'template' => null,
+                'save_data' => null,
+                'recaptcha' => null,
+                'origin' => null,
+                'mailto' => null,
             ];
             $data = array_merge($default, $data);
 
             if ($data !== $default) {
-                if ($data['title']) {
+                if ($data['title'] !== null) {
                     $found = $this->service->findOneByTitle($data['title']);
 
                     if ($found === null || $found === $entity) {
@@ -168,7 +168,7 @@ class FormService extends AbstractService
                         throw new TitleAlreadyExistsException();
                     }
                 }
-                if ($data['address']) {
+                if ($data['address'] !== null) {
                     $found = $this->service->findOneByAddress($data['address']);
 
                     if ($found === null || $found === $entity) {
@@ -177,22 +177,22 @@ class FormService extends AbstractService
                         throw new AddressAlreadyExistsException();
                     }
                 }
-                if ($data['template']) {
+                if ($data['template'] !== null) {
                     $entity->setTemplate($data['template']);
                 }
-                if ($data['save_data']) {
+                if ($data['save_data'] !== null) {
                     $entity->setSaveData($data['save_data']);
                 }
-                if ($data['recaptcha']) {
+                if ($data['recaptcha'] !== null) {
                     $entity->setRecaptcha($data['recaptcha']);
                 }
-                if ($data['template']) {
+                if ($data['template'] !== null) {
                     $entity->setTemplate($data['template']);
                 }
-                if ($data['origin']) {
+                if ($data['origin'] !== null) {
                     $entity->setOrigin($data['origin']);
                 }
-                if ($data['mailto']) {
+                if ($data['mailto'] !== null) {
                     $entity->setMailto($data['mailto']);
                 }
 

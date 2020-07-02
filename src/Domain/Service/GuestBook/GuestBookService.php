@@ -2,7 +2,6 @@
 
 namespace App\Domain\Service\GuestBook;
 
-use Tightenco\Collect\Support\Collection;
 use App\Domain\AbstractService;
 use App\Domain\Entities\GuestBook;
 use App\Domain\Repository\GuestBookRepository;
@@ -11,6 +10,7 @@ use App\Domain\Service\GuestBook\Exception\MissingEmailValueException;
 use App\Domain\Service\GuestBook\Exception\MissingMessageValueException;
 use App\Domain\Service\GuestBook\Exception\MissingNameValueException;
 use Ramsey\Uuid\Uuid;
+use Tightenco\Collect\Support\Collection;
 
 class GuestBookService extends AbstractService
 {
@@ -79,9 +79,9 @@ class GuestBookService extends AbstractService
     public function read(array $data = [])
     {
         $default = [
-            'uuid' => '',
-            'email' => '',
-            'status' => '',
+            'uuid' => null,
+            'email' => null,
+            'status' => null,
         ];
         $data = array_merge($default, static::$default_read, $data);
 
@@ -102,10 +102,10 @@ class GuestBookService extends AbstractService
 
         $criteria = [];
 
-        if ($data['email'] !== '') {
+        if ($data['email'] !== null) {
             $criteria['email'] = $data['email'];
         }
-        if ($data['status'] !== '') {
+        if ($data['status'] !== null) {
             $criteria['status'] = $data['status'];
         }
 
@@ -132,32 +132,32 @@ class GuestBookService extends AbstractService
 
         if (is_object($entity) && is_a($entity, GuestBook::class)) {
             $default = [
-                'name' => '',
-                'email' => '',
-                'message' => '',
-                'response' => '',
-                'status' => '',
-                'date' => '',
+                'name' => null,
+                'email' => null,
+                'message' => null,
+                'response' => null,
+                'status' => null,
+                'date' => null,
             ];
             $data = array_merge($default, $data);
 
             if ($data !== $default) {
-                if ($data['name']) {
+                if ($data['name'] !== null) {
                     $entity->setName($data['name']);
                 }
-                if ($data['email']) {
+                if ($data['email'] !== null) {
                     $entity->setEmail($data['email']);
                 }
-                if ($data['message']) {
+                if ($data['message'] !== null) {
                     $entity->setMessage($data['message']);
                 }
-                if ($data['response']) {
+                if ($data['response'] !== null) {
                     $entity->setResponse($data['response']);
                 }
-                if ($data['status']) {
+                if ($data['status'] !== null) {
                     $entity->setStatus($data['status']);
                 }
-                if ($data['date']) {
+                if ($data['date'] !== null) {
                     $entity->setDate($data['date']);
                 }
 

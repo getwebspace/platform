@@ -19,7 +19,7 @@ $app->add(\App\Application\Middlewares\PluginMiddleware::class);
 $app->add(function (Request $request, Response $response, $next) {
     $path = $request->getUri()->getPath();
 
-    if ($path !== '/' && str_ends_with('/', $path)) {
+    if ($path !== '/' && str_ends_with($path, '/')) {
         return $response->withAddedHeader('Location', rtrim($path, '/'))->withStatus(308);
     }
 

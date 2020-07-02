@@ -2,7 +2,6 @@
 
 namespace App\Domain\Service\Page;
 
-use Tightenco\Collect\Support\Collection;
 use App\Domain\AbstractService;
 use App\Domain\Entities\Page;
 use App\Domain\Repository\PageRepository;
@@ -11,6 +10,7 @@ use App\Domain\Service\Page\Exception\MissingTitleValueException;
 use App\Domain\Service\Page\Exception\PageNotFoundException;
 use App\Domain\Service\Page\Exception\TitleAlreadyExistsException;
 use Ramsey\Uuid\Uuid;
+use Tightenco\Collect\Support\Collection;
 
 class PageService extends AbstractService
 {
@@ -85,11 +85,11 @@ class PageService extends AbstractService
     public function read(array $data = [])
     {
         $default = [
-            'uuid' => '',
-            'title' => '',
-            'address' => '',
-            'template' => '',
-            'type' => '',
+            'uuid' => null,
+            'title' => null,
+            'address' => null,
+            'template' => null,
+            'type' => null,
         ];
         $data = array_merge($default, static::$default_read, $data);
 
@@ -120,10 +120,10 @@ class PageService extends AbstractService
 
         $criteria = [];
 
-        if ($data['template']) {
+        if ($data['template'] !== null) {
             $criteria['template'] = $data['template'];
         }
-        if ($data['type'] !== '' && in_array($data['type'], \App\Domain\Types\PageTypeType::LIST, true)) {
+        if ($data['type'] !== null && in_array($data['type'], \App\Domain\Types\PageTypeType::LIST, true)) {
             $criteria['type'] = $data['type'];
         }
 
@@ -152,22 +152,18 @@ class PageService extends AbstractService
 
         if (is_object($entity) && is_a($entity, Page::class)) {
             $default = [
-                'title' => '',
-                'address' => '',
-                'content' => '',
-                'date' => '',
-                'meta' => [
-                    'title' => '',
-                    'description' => '',
-                    'keywords' => '',
-                ],
-                'template' => '',
-                'type' => '',
+                'title' => null,
+                'address' => null,
+                'content' => null,
+                'date' => null,
+                'meta' => null,
+                'template' => null,
+                'type' => null,
             ];
             $data = array_merge($default, $data);
 
             if ($data !== $default) {
-                if ($data['title']) {
+                if ($data['title'] !== null) {
                     $found = $this->service->findOneByTitle($data['title']);
 
                     if ($found === null || $found === $entity) {
@@ -176,7 +172,7 @@ class PageService extends AbstractService
                         throw new TitleAlreadyExistsException();
                     }
                 }
-                if ($data['address']) {
+                if ($data['address'] !== null) {
                     $found = $this->service->findOneByAddress($data['address']);
 
                     if ($found === null || $found === $entity) {
@@ -185,19 +181,19 @@ class PageService extends AbstractService
                         throw new AddressAlreadyExistsException();
                     }
                 }
-                if ($data['content']) {
+                if ($data['content'] !== null) {
                     $entity->setContent($data['content']);
                 }
-                if ($data['date']) {
+                if ($data['date'] !== null) {
                     $entity->setDate($data['date']);
                 }
-                if ($data['meta']) {
+                if ($data['meta'] !== null) {
                     $entity->setMeta($data['meta']);
                 }
-                if ($data['template']) {
+                if ($data['template'] !== null) {
                     $entity->setTemplate($data['template']);
                 }
-                if ($data['type']) {
+                if ($data['type'] !== null) {
                     $entity->setType($data['type']);
                 }
 

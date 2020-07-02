@@ -2,10 +2,10 @@
 
 namespace App\Domain\Entities\Catalog;
 
-use Tightenco\Collect\Support\Collection;
-use Alksily\Entity\Model;
+use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
+use Tightenco\Collect\Support\Collection;
 
 /**
  * @ORM\Entity
@@ -15,7 +15,7 @@ use Ramsey\Uuid\Uuid;
  *     @ORM\Index(name="catalog_category_order_idx", columns={"order"})
  * })
  */
-class Category extends Model
+class Category extends AbstractEntity
 {
     /**
      * @var Uuid

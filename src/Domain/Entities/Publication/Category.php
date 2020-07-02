@@ -2,10 +2,10 @@
 
 namespace App\Domain\Entities\Publication;
 
-use Tightenco\Collect\Support\Collection;
 use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
+use Tightenco\Collect\Support\Collection;
 
 /**
  * @ORM\Entity
@@ -127,9 +127,7 @@ class Category extends AbstractEntity
      */
     public function setParent($uuid)
     {
-        if ($this->checkUuidByValue($uuid)) {
-            $this->parent = $uuid;
-        }
+        $this->parent = $this->getUuidByValue($uuid);
 
         return $this;
     }
