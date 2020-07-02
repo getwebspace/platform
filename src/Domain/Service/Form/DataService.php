@@ -5,11 +5,8 @@ namespace App\Domain\Service\Form;
 use App\Domain\AbstractService;
 use App\Domain\Entities\Form\Data as FromData;
 use App\Domain\Repository\Form\DataRepository as FormDataRepository;
-use App\Domain\Service\Form\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Form\Exception\FormDataNotFoundException;
-use App\Domain\Service\Form\Exception\FormNotFoundException;
 use App\Domain\Service\Form\Exception\MissingMessageValueException;
-use App\Domain\Service\Form\Exception\TitleAlreadyExistsException;
 use Ramsey\Uuid\Uuid;
 use Tightenco\Collect\Support\Collection;
 
@@ -59,7 +56,7 @@ class DataService extends AbstractService
     /**
      * @param array $data
      *
-     * @throws FormNotFoundException
+     * @throws FormDataNotFoundException
      *
      * @return Collection|FromData
      */
@@ -99,8 +96,6 @@ class DataService extends AbstractService
      * @param FromData|string|Uuid $entity
      * @param array                $data
      *
-     * @throws TitleAlreadyExistsException
-     * @throws AddressAlreadyExistsException
      * @throws FormDataNotFoundException
      *
      * @return FromData
