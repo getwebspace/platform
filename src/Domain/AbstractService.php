@@ -18,8 +18,8 @@ abstract class AbstractService extends AbstractComponent
      */
     protected static array $default_read = [
         'order' => [],
-        'limit' => 1000,
-        'offset' => 0,
+        'limit' => null,
+        'offset' => null,
     ];
 
     public function __construct(ContainerInterface $container = null, EntityManager $entityManager = null, LoggerInterface $logger = null)
