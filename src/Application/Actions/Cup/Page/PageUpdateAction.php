@@ -45,6 +45,6 @@ class PageUpdateAction extends PageAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/page')->withStatus(301);
+        return $this->response->withRedirect('/cup/page');
     }
 }

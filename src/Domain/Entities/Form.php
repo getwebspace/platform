@@ -165,13 +165,13 @@ class Form extends AbstractEntity
     protected array $origin = [];
 
     /**
-     * @param array $data
+     * @param string|array $data
      *
      * @return $this
      */
-    public function setOrigin(array $data)
+    public function setOrigin($data)
     {
-        $this->origin = $data;
+        $this->origin = explode(PHP_EOL, $data);
 
         return $this;
     }
@@ -191,13 +191,13 @@ class Form extends AbstractEntity
     protected array $mailto = [];
 
     /**
-     * @param array $data
+     * @param string|array $data
      *
      * @return $this
      */
-    public function setMailto(array $data)
+    public function setMailto($data)
     {
-        $this->mailto = $data;
+        $this->mailto = explode(PHP_EOL, $data);
 
         return $this;
     }
