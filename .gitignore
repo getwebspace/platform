@@ -10,6 +10,7 @@
 /vendor/*
 !/vendor/.gitkeep
 /var/*.sqlite
+/var/*.sqlite-journal
 /var/cache/*
 !/var/cache/.gitkeep
 /var/log/*
