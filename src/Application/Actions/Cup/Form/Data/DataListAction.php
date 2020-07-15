@@ -3,8 +3,8 @@
 namespace App\Application\Actions\Cup\Form\Data;
 
 use App\Application\Actions\Cup\Form\FormAction;
-use App\Domain\Service\Form\FormService;
 use App\Domain\Service\Form\DataService as FormDataService;
+use App\Domain\Service\Form\FormService;
 
 class DataListAction extends FormAction
 {

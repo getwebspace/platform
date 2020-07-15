@@ -113,18 +113,6 @@
                                     }
                                 } %}
                             </div>
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Сохранять копии заполненных анкет',
-                                    'message': 'По-умолчанию: включено',
-                                    'type': 'select',
-                                    'name': 'save_data',
-                                    'args': {
-                                        'option': {'yes':'Да', 'no':'Нет'},
-                                        'selected': item.save_data ? 'yes' : 'no'
-                                    }
-                                } %}
-                            </div>
                         </div>
                     </div>
 

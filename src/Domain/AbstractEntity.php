@@ -214,6 +214,25 @@ abstract class AbstractEntity
     }
 
     /**
+     * @param string       $delimiter
+     * @param string|array $string
+     * @param null|int     $limit
+     *
+     * @return array|false|string[]
+     */
+    protected function getArrayByValue($string, string $delimiter, int $limit = null)
+    {
+        if (is_array($string)) {
+            return $string;
+        }
+        if (is_string($delimiter) && is_string($string) && strlen($string) > 0) {
+            return explode($delimiter, $string, $limit);
+        }
+
+        return [];
+    }
+
+    /**
      * @return AbstractEntity
      */
     public function clone()

@@ -4,56 +4,36 @@ namespace App\Application\Actions\Common;
 
 use App\Domain\AbstractAction;
 use App\Domain\Exceptions\HttpNotFoundException;
+use App\Domain\Service\File\FileService;
+use App\Domain\Service\Form\DataService as FormDataService;
+use App\Domain\Service\Form\FormService;
 use DateTime;
-use InvalidArgumentException;
-use Psr\Container\ContainerInterface;
 use Slim\Http\UploadedFile;
 
 class FormAction extends AbstractAction
 {
-    /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
-     */
-    protected $formRepository;
-
-    /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
-     */
-    protected $formDataRepository;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct(ContainerInterface $container)
-    {
-        parent::__construct($container);
-
-        $this->formRepository = $this->entityManager->getRepository(\App\Domain\Entities\Form::class);
-        $this->formDataRepository = $this->entityManager->getRepository(\App\Domain\Entities\Form\Data::class);
-    }
-
     protected function action(): \Slim\Http\Response
     {
-        /** @var \App\Domain\Entities\Form $item */
-        $item = $this->formRepository->findOneBy([
-            'address' => $this->resolveArg('unique'),
-        ]);
+        $fileService = FileService::getWithContainer($this->container);
+        $formService = FormService::getWithContainer($this->container);
+        $formDataService = FormDataService::getWithContainer($this->container);
+        $form = $formService->read(['address' => $this->resolveArg('unique')]);
 
-        if (
-            (
-                empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest'
-            ) && !empty($_SERVER['HTTP_REFERER'])
-        ) {
-            $this->response = $this->response->withHeader('Location', $_SERVER['HTTP_REFERER'])->withStatus(301);
-        }
+        if ($form) {
+            if (
+                (
+                    empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest'
+                ) && !empty($_SERVER['HTTP_REFERER'])
+            ) {
+                $this->response = $this->response->withRedirect($_SERVER['HTTP_REFERER']);
+            }
 
-        if ($item) {
-            if ($item->recaptcha === false || $this->isRecaptchaChecked()) {
+            if (!$form->getRecaptcha() || $this->isRecaptchaChecked()) {
                 $remote = $_SERVER['HTTP_ORIGIN'] ?? $_SERVER['HTTP_REFERER'] ?? false;
                 $data = $this->request->getParams();
 
                 // CORS header sets
-                foreach ($item->origin as $origin) {
+                foreach ($form->getOrigin() as $origin) {
                     if ($remote && mb_strpos($origin, $remote) >= 0) {
                         $this->response = $this->response->withHeader('Access-Control-Allow-Origin', $remote);
 
@@ -70,9 +50,9 @@ class FormAction extends AbstractAction
                     $this->response = $this->response->withHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
                 }
 
-                // подготовка получателей
+                // prepare mailto
                 $mailto = [];
-                foreach (array_map('trim', $item->mailto) as $key => $value) {
+                foreach (array_map('trim', $form->getMailto()) as $key => $value) {
                     $buf = array_map('trim', explode(':', $value));
 
                     if (count($buf) === 2) {
@@ -84,20 +64,12 @@ class FormAction extends AbstractAction
 
                 $isHtml = true;
 
-                // подготовка тела письма
-                if ($item->template && $item->template !== '<p><br></p>') {
-                    $filter = new class($data) extends \Alksily\Validator\Filter {
-                        use \Alksily\Validator\Traits\FilterRules;
-                    };
-                    $filter->addGlobalRule($filter->leadEscape());
-                    $filter->addGlobalRule($filter->leadTrim());
-                    $check = $filter->run();
-
-                    if ($check === true) {
-                        $body = $this->renderer->fetchFromString($item->template, $data);
-                    } else {
-                        throw new InvalidArgumentException('Error in POST data');
-                    }
+                // prepare mail body
+                if (
+                    $form->getTemplate() &&
+                    $form->getTemplate() !== '<p><br></p>'
+                ) {
+                    $body = $this->renderer->fetchFromString($form->getTemplate(), $data);
                 } else {
                     // no template, check post data for mail body
                     if (($buf = $this->request->getParam('body', false)) !== false) {
@@ -109,14 +81,14 @@ class FormAction extends AbstractAction
                     }
                 }
 
-                // подготовка запроса
-                $bufData = new \App\Domain\Entities\Form\Data([
-                    'form_uuid' => $item->uuid,
+                // prepare form data
+                $formData = $formDataService->create([
+                    'form_uuid' => $form->getUuid(),
                     'message' => $body,
                     'date' => new DateTime(),
                 ]);
 
-                // подготовка вложений
+                // prepare attachments
                 $attachments = [];
                 if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
                     foreach ($this->request->getUploadedFiles() as $field => $files) {
@@ -124,54 +96,28 @@ class FormAction extends AbstractAction
                             $files = [$files];
                         }
 
-                        // @var UploadedFile $file
-                        foreach ($files as $file) {
-                            if (
-                                !$file->getError() &&
-                                ($model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename())) !== null
-                            ) {
-                                $bufData->addFile($model);
-
-                                if ($item->save_data === true) {
-                                    $this->entityManager->persist($model);
-                                }
-
-                                // добавляем вложение
+                        /**
+                         * @var UploadedFile $el
+                         */
+                        foreach ($files as $el) {
+                            if (!$el->getError()) {
+                                $model = $fileService->createFromPath($el->file, $el->getClientFilename());
+                                $formData->addFile($model);
                                 $attachments[$model->getName()] = $model->getInternalPath();
                             }
                         }
                     }
                 }
 
-                if ($item->save_data === true) {
-                    $this->entityManager->persist($bufData);
-                }
-
-                // отправляем письмо
+                // send mail task
                 $task = new \App\Domain\Tasks\SendMailTask($this->container);
                 $task->execute([
                     'to' => $mailto,
-                    'subject' => $item->title,
+                    'subject' => $form->getTitle(),
                     'body' => $body,
                     'isHtml' => $isHtml,
                     'attachments' => $attachments,
                 ]);
-
-                // создаем уведомление
-                $notify = new \App\Domain\Entities\Notification([
-                    'title' => 'Ответ на форму: ' . $item->title,
-                    'message' => 'Была заполнена форма, проверьте список ответов и/или почту',
-                    'date' => new DateTime(),
-                ]);
-                $this->entityManager->persist($notify);
-
-                // отправляем пуш
-                $this->container->get('pushstream')->send([
-                    'group' => \App\Domain\Types\UserLevelType::LEVEL_ADMIN,
-                    'content' => $notify,
-                ]);
-
-                $this->entityManager->flush();
 
                 // run worker
                 \App\Domain\AbstractTask::worker();

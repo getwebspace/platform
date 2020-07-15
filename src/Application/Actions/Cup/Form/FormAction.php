@@ -3,7 +3,6 @@
 namespace App\Application\Actions\Cup\Form;
 
 use App\Domain\AbstractAction;
-use Psr\Container\ContainerInterface;
 
 abstract class FormAction extends AbstractAction
 {

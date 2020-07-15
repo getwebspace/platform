@@ -111,31 +111,6 @@ class Form extends AbstractEntity
     /**
      * @ORM\Column(type="boolean", options={"default": true})
      */
-    protected bool $save_data = true;
-
-    /**
-     * @param mixed $save_data
-     *
-     * @return $this
-     */
-    public function setSaveData($save_data)
-    {
-        $this->save_data = $this->getBooleanByValue($save_data);
-
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getSaveData()
-    {
-        return $this->save_data;
-    }
-
-    /**
-     * @ORM\Column(type="boolean", options={"default": true})
-     */
     protected bool $recaptcha = true;
 
     /**
@@ -165,13 +140,13 @@ class Form extends AbstractEntity
     protected array $origin = [];
 
     /**
-     * @param string|array $data
+     * @param array|string $data
      *
      * @return $this
      */
-    public function setOrigin($data)
+    public function setOrigin($value)
     {
-        $this->origin = explode(PHP_EOL, $data);
+        $this->origin = $this->getArrayByValue($value, PHP_EOL);
 
         return $this;
     }
@@ -191,13 +166,13 @@ class Form extends AbstractEntity
     protected array $mailto = [];
 
     /**
-     * @param string|array $data
+     * @param array|string $data
      *
      * @return $this
      */
-    public function setMailto($data)
+    public function setMailto($value)
     {
-        $this->mailto = explode(PHP_EOL, $data);
+        $this->mailto = $this->getArrayByValue($value, PHP_EOL);
 
         return $this;
     }
