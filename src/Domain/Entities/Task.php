@@ -127,7 +127,7 @@ class Task extends AbstractEntity
      *
      * @return $this
      */
-    public function setType(string $status)
+    public function setStatus(string $status)
     {
         if (in_array($status, \App\Domain\Types\TaskStatusType::LIST, true)) {
             $this->status = $status;
@@ -139,7 +139,7 @@ class Task extends AbstractEntity
     /**
      * @return string
      */
-    public function getType()
+    public function getStatus()
     {
         return $this->status;
     }
