@@ -4,9 +4,6 @@ namespace App\Domain\Repository;
 
 use App\Domain\AbstractRepository;
 use App\Domain\Entities\Task;
-use App\Domain\Entities\User;
-use Doctrine\DBAL\Types\Types;
-use Doctrine\ORM\NonUniqueResultException;
 
 /**
  * @method null|Task findOneByUuid($uuid)

@@ -5,9 +5,9 @@ namespace App\Domain\Service\Task;
 use App\Domain\AbstractService;
 use App\Domain\Entities\Task;
 use App\Domain\Repository\TaskRepository;
-use App\Domain\Service\Task\Exception\TaskNotFoundException;
 use App\Domain\Service\Task\Exception\MissingActionValueException;
 use App\Domain\Service\Task\Exception\MissingTitleValueException;
+use App\Domain\Service\Task\Exception\TaskNotFoundException;
 use Ramsey\Uuid\Uuid;
 use Tightenco\Collect\Support\Collection;
 
@@ -108,7 +108,7 @@ class TaskService extends AbstractService
     }
 
     /**
-     * @param Task|string|Uuid $entity
+     * @param string|Task|Uuid $entity
      * @param array            $data
      *
      * @throws TaskNotFoundException
@@ -166,7 +166,7 @@ class TaskService extends AbstractService
     }
 
     /**
-     * @param Task|string|Uuid $entity
+     * @param string|Task|Uuid $entity
      *
      * @throws TaskNotFoundException
      *

@@ -5,10 +5,10 @@ namespace App\Domain\Service\Notification;
 use App\Domain\AbstractService;
 use App\Domain\Entities\Notification;
 use App\Domain\Repository\NotificationRepository;
-use App\Domain\Service\Notification\Exception\NotificationNotFoundException;
-use App\Domain\Service\Notification\Exception\MissingTitleValueException;
 use App\Domain\Service\Notification\Exception\MissingMessageValueException;
+use App\Domain\Service\Notification\Exception\MissingTitleValueException;
 use App\Domain\Service\Notification\Exception\MissingUserUuidValueException;
+use App\Domain\Service\Notification\Exception\NotificationNotFoundException;
 use Ramsey\Uuid\Uuid;
 use Tightenco\Collect\Support\Collection;
 
