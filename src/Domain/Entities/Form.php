@@ -146,7 +146,7 @@ class Form extends AbstractEntity
      */
     public function setOrigin($value)
     {
-        $this->origin = $this->getArrayByValue($value, PHP_EOL);
+        $this->origin = $this->getArrayByExplodeValue($value, PHP_EOL);
 
         return $this;
     }
@@ -172,7 +172,7 @@ class Form extends AbstractEntity
      */
     public function setMailto($value)
     {
-        $this->mailto = $this->getArrayByValue($value, PHP_EOL);
+        $this->mailto = $this->getArrayByExplodeValue($value, PHP_EOL);
 
         return $this;
     }

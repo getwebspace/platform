@@ -20,43 +20,39 @@ class Task extends AbstractEntity
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    public $uuid;
+    protected Uuid $uuid;
+
+    /**
+     * @return Uuid
+     */
+    public function getUuid(): Uuid
+    {
+        return $this->uuid;
+    }
 
     /**
      * @ORM\Column(type="string", options={"default": ""})
      */
-    public $title = '';
+    protected string $title = '';
 
     /**
-     * @ORM\Column(type="string", options={"default": ""})
-     */
-    public $action = '';
-
-    /**
-     * @ORM\Column(type="integer", options={"default": 0})
-     */
-    public $progress = 0;
-
-    /**
-     * @var string
+     * @param string $title
      *
-     * @see \App\Domain\Types\TaskStatusType::LIST
-     * @ORM\Column(type="TaskStatusType", options={"default": \App\Domain\Types\TaskStatusType::STATUS_QUEUE})
+     * @return $this
      */
-    public $status = \App\Domain\Types\TaskStatusType::STATUS_QUEUE;
+    public function setTitle(string $title)
+    {
+        if ($this->checkStrLenMax($title, 255)) {
+            $this->title = $title;
+        }
+
+        return $this;
+    }
 
     /**
-     * @ORM\Column(type="array")
+     * @return string
      */
-    public $params = [];
-
-    /**
-     * @var DateTime
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
-     */
-    public $date;
-
-    public function getTitle()
+    public function getTitle(): string
     {
         if ($this->title) {
             return $this->title;
@@ -65,5 +61,140 @@ class Task extends AbstractEntity
         $action = explode('\\', $this->action);
 
         return end($action);
+    }
+
+    /**
+     * @ORM\Column(type="string", options={"default": ""})
+     */
+    protected string $action = '';
+
+    /**
+     * @param string $action
+     *
+     * @return $this
+     */
+    public function setAction(string $action)
+    {
+        $this->action = $action;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAction(): string
+    {
+        return $this->action;
+    }
+
+    /**
+     * @var int
+     * @ORM\Column(type="integer", options={"default": 0})
+     */
+    protected int $progress = 0;
+
+    /**
+     * @param int $progress
+     *
+     * @return $this
+     */
+    public function setProgress(int $progress)
+    {
+        $this->progress = $progress;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getProgress(): int
+    {
+        return $this->progress;
+    }
+
+    /**
+     * @var string
+     *
+     * @see \App\Domain\Types\TaskStatusType::LIST
+     * @ORM\Column(type="TaskStatusType", options={"default": \App\Domain\Types\TaskStatusType::STATUS_QUEUE})
+     */
+    public string $status = \App\Domain\Types\TaskStatusType::STATUS_QUEUE;
+
+    /**
+     * @param string $status
+     *
+     * @return $this
+     */
+    public function setType(string $status)
+    {
+        if (in_array($status, \App\Domain\Types\TaskStatusType::LIST, true)) {
+            $this->status = $status;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @var array
+     * @ORM\Column(type="array")
+     */
+    protected array $params = [];
+
+    /**
+     * @param array $params
+     *
+     * @return $this
+     */
+    public function setParams(array $params)
+    {
+        $this->params = $params;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParams(): array
+    {
+        return $this->params;
+    }
+
+    /**
+     * @var DateTime
+     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
+     */
+    protected DateTime $date;
+
+    /**
+     * @param $date
+     *
+     * @throws \Exception
+     *
+     * @return $this
+     */
+    public function setDate($date)
+    {
+        $this->date = $this->getDateTimeByValue($date);
+
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
     }
 }

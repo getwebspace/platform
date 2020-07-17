@@ -220,7 +220,7 @@ abstract class AbstractEntity
      *
      * @return array|false|string[]
      */
-    protected function getArrayByValue($string, string $delimiter, int $limit = null)
+    protected function getArrayByExplodeValue($string, string $delimiter, int $limit = null)
     {
         if (is_array($string)) {
             return $string;

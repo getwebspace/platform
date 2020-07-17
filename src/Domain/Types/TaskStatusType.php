@@ -15,12 +15,12 @@ class TaskStatusType extends AbstractEnumType
     public const STATUS_CANCEL = 'cancel';
     public const STATUS_DELETE = 'delete';
 
-    public const LIST          = [
-        self::STATUS_QUEUE => 'В очереди',
-        self::STATUS_WORK => 'В работе',
-        self::STATUS_DONE => 'Завершена',
-        self::STATUS_FAIL => 'Провалена',
-        self::STATUS_CANCEL => 'Отменена',
-        self::STATUS_DELETE => 'Удалена',
+    public const LIST = [
+        self::STATUS_QUEUE,
+        self::STATUS_WORK,
+        self::STATUS_DONE,
+        self::STATUS_FAIL,
+        self::STATUS_CANCEL,
+        self::STATUS_DELETE,
     ];
 }
