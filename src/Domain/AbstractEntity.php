@@ -215,7 +215,7 @@ abstract class AbstractEntity
 
     /**
      * @param string       $delimiter
-     * @param string|array $string
+     * @param array|string $string
      * @param null|int     $limit
      *
      * @return array|false|string[]
@@ -225,7 +225,7 @@ abstract class AbstractEntity
         if (is_array($string)) {
             return $string;
         }
-        if (is_string($delimiter) && is_string($string) && strlen($string) > 0) {
+        if (is_string($delimiter) && is_string($string) && mb_strlen($string) > 0) {
             return explode($delimiter, $string, $limit);
         }
 

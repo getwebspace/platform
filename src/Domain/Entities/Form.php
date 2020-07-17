@@ -140,7 +140,7 @@ class Form extends AbstractEntity
     protected array $origin = [];
 
     /**
-     * @param array|string $data
+     * @param mixed $value
      *
      * @return $this
      */
@@ -166,7 +166,7 @@ class Form extends AbstractEntity
     protected array $mailto = [];
 
     /**
-     * @param array|string $data
+     * @param mixed $value
      *
      * @return $this
      */
