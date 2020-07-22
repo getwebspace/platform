@@ -21,7 +21,7 @@ Licensed under the MIT license. See [License File](LICENSE.md) for more informat
 
 *Установка зависимостей*
 ```shell script
-./composer --ignore-platform-reqs install
+./composer install
 ```
 
 *Статический анализатор*
