@@ -2,8 +2,11 @@
 
 namespace App\Domain;
 
+use App\Domain\Entities\Task;
 use App\Domain\Exceptions\HttpBadRequestException;
+use App\Domain\Service\Task\TaskService;
 use Psr\Container\ContainerInterface;
+use RuntimeException;
 use Slim\Views\Twig;
 
 abstract class AbstractTask extends AbstractComponent
@@ -11,16 +14,21 @@ abstract class AbstractTask extends AbstractComponent
     public const TITLE = '';
 
     /**
-     * @var Twig
+     * @var TaskService
      */
-    protected $renderer;
+    private TaskService $taskService;
 
     /**
-     * @var \App\Domain\Entities\Task
+     * @var Task
      */
-    private $entity;
+    private ?Task $entity;
 
-    public static $pid_file = VAR_DIR . '/worker.pid';
+    /**
+     * @var Twig
+     */
+    private $renderer;
+
+    public static string $pid_file = VAR_DIR . '/worker.pid';
 
     /**
      * Запускает исполнение воркера задач
@@ -32,17 +40,14 @@ abstract class AbstractTask extends AbstractComponent
         }
     }
 
-    public function __construct(ContainerInterface $container, \App\Domain\Entities\Task $entity = null)
+    public function __construct(ContainerInterface $container, Task $entity = null)
     {
         parent::__construct($container);
 
-        $this->renderer = $container->get('view');
-
-        if (!$entity) {
-            $entity = new \App\Domain\Entities\Task();
-            $this->entityManager->persist($entity);
-        }
+        /** @var TaskService $taskService */
+        $this->taskService = TaskService::getWithContainer($container);
         $this->entity = $entity;
+        $this->renderer = $container->get('view');
     }
 
     /**
@@ -82,21 +87,25 @@ abstract class AbstractTask extends AbstractComponent
      */
     public function execute(array $params = []): \App\Domain\Entities\Task
     {
-        $this->entity->replace([
-            'title' => static::TITLE,
-            'action' => static::class,
-            'params' => $params,
-            'status' => \App\Domain\Types\TaskStatusType::STATUS_QUEUE,
-            'date' => new \DateTime(),
-        ]);
+        if (!$this->entity) {
+            $this->entity = $this->taskService->create([
+                'title' => static::TITLE,
+                'action' => static::class,
+                'params' => $params,
+                'status' => \App\Domain\Types\TaskStatusType::STATUS_QUEUE,
+                'date' => 'now',
+            ]);
 
-        return $this->entity;
+            return $this->entity;
+        }
+
+        throw new RuntimeException('Exist Task cannot be changed');
     }
 
     public function run(): void
     {
         $this->setStatusWork();
-        $this->action($this->entity->params);
+        $this->action($this->entity->getParams());
         $this->logger->info('Task: done', ['action' => static::class]);
     }
 
@@ -107,83 +116,57 @@ abstract class AbstractTask extends AbstractComponent
         if ($count !== 0) {
             $value = round(min($value, $count) / $count * 100);
         }
-        if ($value !== $this->entity->progress) {
-            $this->entity->progress = $value;
-
-            switch ($this->entity->progress) {
-                case 100:
-                    sleep(1);
-
-                    break;
-
-                default:
-                    $this->saveStateLogPush();
-
-                    break;
-            }
+        if ($value !== $this->entity->getProgress()) {
+            $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_WORK, $value);
         }
     }
 
     public function setStatusWork()
     {
-        $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_WORK);
-        $this->saveStateLogPush();
+        $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_WORK);
 
         return true;
     }
 
     public function setStatusDone()
     {
-        $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_DONE);
-        $this->saveStateLogPush();
+        $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_DONE);
 
         return true;
     }
 
     public function setStatusFail()
     {
-        $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_FAIL);
-        $this->saveStateLogPush();
+        $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_FAIL);
 
         return false;
     }
 
     public function setStatusCancel()
     {
-        $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_CANCEL);
-        $this->saveStateLogPush();
+        $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_CANCEL);
 
         return false;
     }
 
     public function setStatusDelete()
     {
-        $this->entity->set('status', \App\Domain\Types\TaskStatusType::STATUS_DELETE);
-        $this->saveStateLogPush();
+        $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_DELETE);
 
         return false;
     }
 
-    private function saveStateLogPush(): void
+    private function saveStateWriteLog($status = null, $progress = null): void
     {
-        $this->entityManager->flush();
-
-        // отправляем пуш
-        $this->container->get('pushstream')->send([
-            'group' => \App\Domain\Types\UserLevelType::LEVEL_ADMIN,
-            'content' => [
-                'type' => 'task',
-                'uuid' => $this->entity->uuid->toString(),
-                'title' => $this->entity->getTitle(),
-                'status' => $this->entity->status,
-                'progress' => $this->entity->progress,
-            ],
+        $this->entity = $this->taskService->update($this->entity, [
+            'status' => $status,
+            'progress' => $progress,
         ]);
 
         $this->logger->info('Task: change state', [
             'action' => static::class,
-            'status' => $this->entity->status,
-            'progress' => $this->entity->progress,
+            'status' => $this->entity->getStatus(),
+            'progress' => $this->entity->getProgress(),
         ]);
     }
 }
