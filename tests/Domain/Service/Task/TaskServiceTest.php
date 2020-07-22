@@ -36,7 +36,7 @@ class TaskServiceTest extends TestCase
         $data = [
             'title' => $this->getFaker()->title,
             'action' => $this->getFaker()->text,
-            'progress' => $this->getFaker()->numberBetween(0, 100),
+            'progress' => (float) $this->getFaker()->numberBetween(10, 100),
             'status' => \App\Domain\Types\TaskStatusType::STATUS_QUEUE,
             'params' => [
                 'test' => $this->getFaker()->numberBetween(0, 1000),
@@ -80,14 +80,14 @@ class TaskServiceTest extends TestCase
             'title' => $this->getFaker()->title,
             'action' => $this->getFaker()->text,
             'params' => [
-                'test' => $this->getFaker()->numberBetween(0, 1000),
+                'test' => $this->getFaker()->text,
             ],
         ];
 
         $t = $this->service->create($data);
 
         $t = $this->service->read(['uuid' => $t->getUuid()]);
-        $this->assertInstanceOf(GuestBook::class, $t);
+        $this->assertInstanceOf(Task::class, $t);
         $this->assertSame($data['title'], $t->getTitle());
         $this->assertSame($data['action'], $t->getAction());
         $this->assertSame($data['params'], $t->getParams());
@@ -113,7 +113,7 @@ class TaskServiceTest extends TestCase
         $data = [
             'title' => $this->getFaker()->title,
             'action' => $this->getFaker()->text,
-            'progress' => $this->getFaker()->numberBetween(10, 100),
+            'progress' => (float) $this->getFaker()->numberBetween(10, 100),
             'status' => \App\Domain\Types\TaskStatusType::STATUS_WORK,
             'params' => [
                 'test' => $this->getFaker()->numberBetween(0, 1000),
@@ -128,7 +128,7 @@ class TaskServiceTest extends TestCase
         $this->assertSame($data['params'], $t->getParams());
     }
 
-    public function testUpdateWithEntryNotFound(): void
+    public function testUpdateWithTaskNotFound(): void
     {
         $this->expectException(TaskNotFoundException::class);
 
@@ -138,9 +138,8 @@ class TaskServiceTest extends TestCase
     public function testDeleteSuccess(): void
     {
         $t = $this->service->create([
-            'name' => $this->getFaker()->userName,
-            'email' => $this->getFaker()->email,
-            'message' => $this->getFaker()->text,
+            'title' => $this->getFaker()->title,
+            'action' => $this->getFaker()->text,
         ]);
 
         $result = $this->service->delete($t);
@@ -148,7 +147,7 @@ class TaskServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testDeleteWithPageNotFound(): void
+    public function testDeleteWithTaskNotFound(): void
     {
         $this->expectException(TaskNotFoundException::class);
 
