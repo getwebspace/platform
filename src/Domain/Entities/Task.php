@@ -90,16 +90,16 @@ class Task extends AbstractEntity
 
     /**
      * @var int
-     * @ORM\Column(type="integer", options={"default": 0})
+     * @ORM\Column(type="float", options={"default": 0})
      */
-    protected int $progress = 0;
+    protected float $progress = 0;
 
     /**
-     * @param int $progress
+     * @param float $progress
      *
      * @return $this
      */
-    public function setProgress(int $progress)
+    public function setProgress(float $progress)
     {
         $this->progress = $progress;
 
@@ -107,9 +107,9 @@ class Task extends AbstractEntity
     }
 
     /**
-     * @return int
+     * @return float
      */
-    public function getProgress(): int
+    public function getProgress(): float
     {
         return $this->progress;
     }
