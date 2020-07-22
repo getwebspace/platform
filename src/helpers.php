@@ -81,7 +81,7 @@ if (!function_exists('array_first')) {
      * Return the first element in an array passing a given truth test.
      *
      * @param array         $array
-     * @param callable|null $callback
+     * @param null|callable $callback
      * @param mixed         $default
      *
      * @return mixed
@@ -113,10 +113,8 @@ if (!function_exists('array_forget')) {
      *
      * @param array        $array
      * @param array|string $keys
-     *
-     * @return void
      */
-    function array_forget(&$array, $keys)
+    function array_forget(&$array, $keys): void
     {
         Arr::forget($array, $keys);
     }
@@ -126,7 +124,7 @@ if (!function_exists('array_get')) {
     /**
      * Get an item from an array using "dot" notation.
      *
-     * @param ArrayAccess|array $array
+     * @param array|ArrayAccess $array
      * @param string            $key
      * @param mixed             $default
      *
@@ -142,8 +140,8 @@ if (!function_exists('array_has')) {
     /**
      * Check if an item or items exist in an array using "dot" notation.
      *
-     * @param ArrayAccess|array $array
-     * @param string|array      $keys
+     * @param array|ArrayAccess $array
+     * @param array|string      $keys
      *
      * @return bool
      */
@@ -158,7 +156,7 @@ if (!function_exists('array_last')) {
      * Return the last element in an array passing a given truth test.
      *
      * @param array         $array
-     * @param callable|null $callback
+     * @param null|callable $callback
      * @param mixed         $default
      *
      * @return mixed
@@ -189,8 +187,8 @@ if (!function_exists('array_pluck')) {
      * Pluck an array of values from an array.
      *
      * @param array             $array
-     * @param string|array      $value
-     * @param string|array|null $key
+     * @param array|string      $value
+     * @param null|array|string $key
      *
      * @return array
      */
@@ -237,7 +235,7 @@ if (!function_exists('array_random')) {
      * Get a random value from an array.
      *
      * @param array    $array
-     * @param int|null $num
+     * @param null|int $num
      *
      * @return mixed
      */
@@ -270,7 +268,7 @@ if (!function_exists('array_sort')) {
      * Sort the array by the given callback or attribute name.
      *
      * @param array                $array
-     * @param callable|string|null $callback
+     * @param null|callable|string $callback
      *
      * @return array
      */
