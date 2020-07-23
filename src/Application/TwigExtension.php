@@ -2,23 +2,13 @@
 
 namespace App\Application;
 
-use Doctrine\ORM\EntityManager;
+use App\Domain\AbstractExtension;
 use Psr\Container\ContainerInterface;
 use Ramsey\Uuid\Uuid;
 use Slim\Http\Uri;
 
-class TwigExtension extends \Twig\Extension\AbstractExtension
+class TwigExtension extends AbstractExtension
 {
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    /**
-     * @var EntityManager
-     */
-    protected $entityManager;
-
     /**
      * @var \Slim\Interfaces\RouterInterface
      */
@@ -31,8 +21,8 @@ class TwigExtension extends \Twig\Extension\AbstractExtension
 
     public function __construct(ContainerInterface $container, $uri)
     {
-        $this->container = $container;
-        $this->entityManager = $container->get(\Doctrine\ORM\EntityManager::class);
+        parent::__construct($container);
+
         $this->router = $container->get('router');
         $this->uri = $uri;
     }
