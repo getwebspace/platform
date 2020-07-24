@@ -2,7 +2,6 @@
 
 namespace tests\Domain\Service\Task;
 
-use App\Domain\Entities\GuestBook;
 use App\Domain\Entities\Task;
 use App\Domain\Repository\TaskRepository;
 use App\Domain\Service\Task\Exception\MissingActionValueException;
