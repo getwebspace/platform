@@ -32,32 +32,32 @@ abstract class AbstractPlugin extends AbstractComponent
     /**
      * @var string
      */
-    private $templateFolder;
+    private string $templateFolder;
 
     /**
      * @var array
      */
-    private $handledRoutes = [];
+    private array $handledRoutes = [];
 
     /**
      * @var array
      */
-    private $settingsField = [];
+    private array $settingsField = [];
 
     /**
      * @var array
      */
-    private $toolbars = [];
+    private array $toolbars = [];
 
     /**
      * @var bool
      */
-    public $routes = false;
+    public bool $routes = false;
 
     /**
      * @var bool
      */
-    public $navigation = false;
+    public bool $navigation = false;
 
     public function __construct(ContainerInterface $container)
     {
