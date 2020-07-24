@@ -16,11 +16,11 @@ class OrderStatusType extends AbstractEnumType
     public const STATUS_CANCEL = 'cancel';
 
     public const LIST          = [
-        self::STATUS_NEW => 'Новый',
-        self::STATUS_PROCESS => 'В работе',
-        self::STATUS_PAYMENT => 'Ждет оплаты',
-        self::STATUS_READY => 'Готов к выдаче',
-        self::STATUS_COMPLETE => 'Завершен',
-        self::STATUS_CANCEL => 'Отменен',
+        self::STATUS_NEW,
+        self::STATUS_PROCESS,
+        self::STATUS_PAYMENT,
+        self::STATUS_READY,
+        self::STATUS_COMPLETE,
+        self::STATUS_CANCEL,
     ];
 }

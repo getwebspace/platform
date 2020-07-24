@@ -24,49 +24,204 @@ class Category extends AbstractEntity
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    public $uuid;
+    protected Uuid $uuid;
+
+    /**
+     * @return Uuid
+     */
+    public function getUuid(): Uuid
+    {
+        return $this->uuid;
+    }
 
     /**
      * @var Uuid
      * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
-    public $parent = \Ramsey\Uuid\Uuid::NIL;
+    protected $parent = \Ramsey\Uuid\Uuid::NIL;
+
+    /**
+     * @param string|Uuid $uuid
+     *
+     * @return $this
+     */
+    public function setParent($uuid)
+    {
+        $this->parent = $this->getUuidByValue($uuid);
+
+        return $this;
+    }
+
+    /**
+     * @return Uuid
+     */
+    public function getParent(): Uuid
+    {
+        return $this->parent;
+    }
 
     /**
      * @ORM\Column(type="string", options={"default": ""})
      */
-    public $title = '';
+    protected string $title = '';
 
     /**
-     * @ORM\Column(type="text", options={"default": ""})
+     * @param string $title
+     *
+     * @return $this
      */
-    public $description = '';
+    public function setTitle(string $title)
+    {
+        if ($this->checkStrLenMax($title, 50)) {
+            $this->title = $title;
+        }
+
+        return $this;
+    }
 
     /**
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * @var string
      * @ORM\Column(type="string", options={"default": ""})
      */
-    public $address = '';
+    protected string $description = '';
+
+    /**
+     * @param string $description
+     *
+     * @return $this
+     */
+    public function setDescription(string $description)
+    {
+        if ($this->checkStrLenMax($description, 1000)) {
+            $this->description = $description;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @ORM\Column(type="string", unique=true, options={"default": ""})
+     */
+    protected string $address = '';
+
+    /**
+     * @param string $address
+     *
+     * @return $this
+     */
+    public function setAddress(string $address)
+    {
+        if ($this->checkStrLenMax($address, 255)) {
+            $this->address = $this->getAddressByValue($address, $this->getTitle());
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress(): string
+    {
+        return $this->address;
+    }
 
     /**
      * @ORM\Column(type="text", options={"default": ""})
      */
-    public $field1 = '';
+    protected string $field1 = '';
+
+    /**
+     * @param string $field1
+     */
+    public function setField1(string $field1)
+    {
+        if ($this->checkStrLenMax($field1, 255)) {
+            $this->field1 = $field1;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField1(): string
+    {
+        return $this->field1;
+    }
 
     /**
      * @ORM\Column(type="text", options={"default": ""})
      */
-    public $field2 = '';
+    protected string $field2 = '';
+
+    /**
+     * @param string $field2
+     */
+    public function setField2(string $field2)
+    {
+        if ($this->checkStrLenMax($field2, 255)) {
+            $this->field2 = $field2;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField2(): string
+    {
+        return $this->field2;
+    }
 
     /**
      * @ORM\Column(type="text", options={"default": ""})
      */
-    public $field3 = '';
+    protected string $field3 = '';
+
+    /**
+     * @param string $field3
+     */
+    public function setField3(string $field3)
+    {
+        if ($this->checkStrLenMax($field3, 255)) {
+            $this->field3 = $field3;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField3(): string
+    {
+        return $this->field3;
+    }
 
     /**
      * @var array
      * @ORM\Column(type="array")
      */
-    public $product = [
+    protected array $product = [
         'field_1' => '',
         'field_2' => '',
         'field_3' => '',
@@ -75,55 +230,274 @@ class Category extends AbstractEntity
     ];
 
     /**
+     * @param array $data
+     *
+     * @return $this
+     */
+    public function setProduct(array $data)
+    {
+        $default = [
+            'field_1' => '',
+            'field_2' => '',
+            'field_3' => '',
+            'field_4' => '',
+            'field_5' => '',
+        ];
+        $data = array_merge($default, $data);
+
+        $this->product = [
+            'field_1' => $data['field_1'],
+            'field_2' => $data['field_2'],
+            'field_3' => $data['field_3'],
+            'field_4' => $data['field_4'],
+            'field_5' => $data['field_5'],
+        ];
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getProduct(): array
+    {
+        return $this->product;
+    }
+
+    /**
      * @ORM\Column(type="integer", options={"default": 10})
      */
-    public $pagination = 10;
+    protected int $pagination = 10;
+
+    /**
+     * @param int $pagination
+     *
+     * @return $this
+     */
+    public function setPagination(int $pagination)
+    {
+        $this->pagination = $pagination;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPagination(): int
+    {
+        return $this->pagination;
+    }
 
     /**
      * @ORM\Column(type="boolean", options={"default": false})
      */
-    public $children = false;
+    protected bool $children = false;
+
+    /**
+     * @param mixed $value
+     *
+     * @return $this
+     */
+    public function setChildren($value)
+    {
+        $this->children = $this->getBooleanByValue($value);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getChildren(): bool
+    {
+        return $this->children;
+    }
 
     /**
      * @ORM\Column(name="`order`", type="integer", options={"default": 1})
      */
-    public $order = 1;
+    protected int $order = 1;
+
+    /**
+     * @param int $order
+     *
+     * @return Category
+     */
+    public function setOrder(int $order)
+    {
+        $this->order = $order;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOrder(): int
+    {
+        return $this->order;
+    }
 
     /**
      * @var string
      *
-     * @see \App\Domain\Types\Catalog\CategoryStatusType::LIST
-     * @ORM\Column(type="CatalogCategoryStatusType")
+     * @see \App\Domain\Types\UserStatusType::LIST
+     * @ORM\Column(type="CatalogCategoryStatusType", options={"default": \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK})
      */
-    public $status = \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK;
+    protected string $status = \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK;
+
+    /**
+     * @param string $status
+     *
+     * @return $this
+     */
+    public function setStatus(string $status)
+    {
+        if (in_array($status, \App\Domain\Types\Catalog\CategoryStatusType::LIST, true)) {
+            $this->status = $status;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
 
     /**
      * @var array
      * @ORM\Column(type="array")
      */
-    public $meta = [
+    protected array $meta = [
         'title' => '',
         'description' => '',
         'keywords' => '',
     ];
 
     /**
+     * @param array $data
+     *
+     * @return $this
+     */
+    public function setMeta(array $data)
+    {
+        $default = [
+            'title' => '',
+            'description' => '',
+            'keywords' => '',
+        ];
+        $data = array_merge($default, $data);
+
+        $this->meta = [
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'keywords' => $data['keywords'],
+        ];
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMeta(): array
+    {
+        return $this->meta;
+    }
+
+    /**
      * @ORM\Column(type="array")
      */
-    public $template = [
+    protected array  $template = [
         'category' => '',
         'product' => '',
     ];
 
     /**
+     * @param array $data
+     *
+     * @return $this
+     */
+    public function setTemplate(array $data)
+    {
+        $default = [
+            'category' => '',
+            'product' => '',
+        ];
+        $data = array_merge($default, $data);
+
+        $this->template = [
+            'category' => $data['category'],
+            'product' => $data['product'],
+        ];
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTemplate(): array
+    {
+        return $this->template;
+    }
+
+    /**
      * @ORM\Column(type="string", length=50, options={"default": ""})
      */
-    public $external_id = '';
+    protected string $external_id = '';
+
+    /**
+     * @param string $external_id
+     *
+     * @return $this
+     */
+    public function setExternalId(string $external_id)
+    {
+        if ($this->checkStrLenMax($external_id, 255)) {
+            $this->external_id = $external_id;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExternalId(): string
+    {
+        return $this->external_id;
+    }
 
     /**
      * @ORM\Column(type="string", length=50, options={"default": "manual"})
      */
-    public $export = 'manual';
+    protected string $export = 'manual';
+
+    /**
+     * @param string $export
+     *
+     * @return Category
+     */
+    public function setExport(string $export)
+    {
+        $this->export = $export;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExport(): string
+    {
+        return $this->export;
+    }
 
     /**
      * @var mixed буфурное поле для обработки интеграций
@@ -188,19 +562,21 @@ class Category extends AbstractEntity
     }
 
     /**
+     * @todo переделать в обычный метод
+     *
      * @param Collection $categories
      * @param Category   $parent
      *
      * @return \Tightenco\Collect\Support\Collection
      */
-    public static function getChildren(Collection $categories, self $parent)
+    public static function getNested(Collection $categories, self $parent)
     {
         $result = collect([$parent]);
 
-        if ($parent->children) {
+        if ($parent->getChildren()) {
             // @var \App\Domain\Entities\Catalog\Category $category
             foreach ($categories->where('parent', $parent->uuid) as $child) {
-                $result = $result->merge(static::getChildren($categories, $child));
+                $result = $result->merge(static::getNested($categories, $child));
             }
         }
 

@@ -150,7 +150,7 @@ class ListAction extends CatalogAction
         $category = $categories->firstWhere('address', $params['address']);
 
         if (is_null($category) === false) {
-            $categoryUUIDs = \App\Domain\Entities\Catalog\Category::getChildren($categories, $category)->pluck('uuid')->all();
+            $categoryUUIDs = \App\Domain\Entities\Catalog\Category::getNested($categories, $category)->pluck('uuid')->all();
 
             $qb = $this->entityManager->createQueryBuilder();
             $query = $qb

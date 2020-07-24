@@ -12,7 +12,7 @@ class GuestBookStatusType extends AbstractEnumType
     public const STATUS_MODERATE = 'moderate';
 
     public const LIST          = [
-        self::STATUS_WORK => 'Активный',
-        self::STATUS_MODERATE => 'Модерируется',
+        self::STATUS_WORK,
+        self::STATUS_MODERATE,
     ];
 }

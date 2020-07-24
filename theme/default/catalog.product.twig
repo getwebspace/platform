@@ -114,7 +114,7 @@
                                         {% if product.field3 %}<b>{{ category.product.field_3 }}</b>: {{ product.field3|raw }}<br/>{% endif %}
                                         {% if product.field4 %}<b>{{ category.product.field_4 }}</b>: {{ product.field4|raw }}<br/>{% endif %}
                                         {% if product.field5 %}<b>{{ category.product.field_5 }}</b>: {{ product.field5|raw }}<br/>{% endif %}
-                                        {% if product.volume and product.unit %}<b>Цена за</b>: {{ product.getVolume() }}<br/>{% endif %}
+                                        {% if product.volume and product.unit %}<b>Цена за</b>: {{ product.getVolumeWithUnit() }}<br/>{% endif %}
                                     </p>
                                 </div>
                             </div>

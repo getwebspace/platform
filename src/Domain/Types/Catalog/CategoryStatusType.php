@@ -12,7 +12,7 @@ class CategoryStatusType extends AbstractEnumType
     public const STATUS_DELETE = 'delete';
 
     public const LIST          = [
-        self::STATUS_WORK => 'Активный',
-        self::STATUS_DELETE => 'Удаленный',
+        self::STATUS_WORK,
+        self::STATUS_DELETE,
     ];
 }

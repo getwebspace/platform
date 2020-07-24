@@ -16,7 +16,7 @@ class CategoryDeleteAction extends CatalogAction
                 $categories = collect($this->categoryRepository->findBy([
                     'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
                 ]));
-                $childCategoriesUuid = \App\Domain\Entities\Catalog\Category::getChildren($categories, $item)->pluck('uuid')->all();
+                $childCategoriesUuid = \App\Domain\Entities\Catalog\Category::getNested($categories, $item)->pluck('uuid')->all();
 
                 // удаление вложенных категорий
                 foreach ($this->categoryRepository->findBy(['uuid' => $childCategoriesUuid, 'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]) as $child) {

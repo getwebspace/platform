@@ -40,8 +40,6 @@ class Data extends AbstractEntity
     /**
      * @param string|Uuid $uuid
      *
-     * @throws \Exception
-     *
      * @return $this
      */
     public function setFormUuid($uuid)

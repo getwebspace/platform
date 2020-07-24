@@ -17,12 +17,12 @@ class FileItemType extends AbstractEnumType
     public const ITEM_THEME = 'theme';
 
     public const LIST                  = [
-        self::ITEM_USER_UPLOAD => 'Файл пользователя',
-        self::ITEM_PAGE => 'Файл страницы',
-        self::ITEM_PUBLICATION => 'Файл публикации',
-        self::ITEM_FORM_DATA => 'Файл из анкеты формы',
-        self::ITEM_CATALOG_CATEGORY => 'Файл категории каталога',
-        self::ITEM_CATALOG_PRODUCT => 'Файл продукта каталога',
-        self::ITEM_THEME => 'Файл шаблона',
+        self::ITEM_USER_UPLOAD,
+        self::ITEM_PAGE,
+        self::ITEM_PUBLICATION,
+        self::ITEM_FORM_DATA,
+        self::ITEM_CATALOG_CATEGORY,
+        self::ITEM_CATALOG_PRODUCT,
+        self::ITEM_THEME,
     ];
 }

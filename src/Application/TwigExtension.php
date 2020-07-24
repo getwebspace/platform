@@ -384,7 +384,7 @@ class TwigExtension extends AbstractExtension
                 $unique = \Ramsey\Uuid\Uuid::fromString($unique);
             }
             if (!isset($buf[strval($unique)])) {
-                $uuids = \App\Domain\Entities\Publication\Category::getChildren($categories, $categories->firstWhere('uuid', $unique))->pluck('uuid')->all();
+                $uuids = \App\Domain\Entities\Publication\Category::getChildrens($categories, $categories->firstWhere('uuid', $unique))->pluck('uuid')->all();
                 $buf[strval($unique)] = $categories->whereIn('uuid', $uuids, false);
             }
         }

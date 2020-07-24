@@ -64,4 +64,24 @@ abstract class AbstractService extends AbstractComponent
     abstract public function update($entity, array $data = []);
 
     abstract public function delete($entity);
+
+    /**
+     * @param AbstractEntity $entity
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     *
+     * @return AbstractEntity
+     */
+    public function write(AbstractEntity $entity)
+    {
+        if (is_object($entity) && is_a($entity, AbstractEntity::class)) {
+            $this->entityManager->persist($entity);
+            $this->entityManager->flush();
+
+            return $entity;
+        }
+
+        return null;
+    }
 }

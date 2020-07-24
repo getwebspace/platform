@@ -90,7 +90,7 @@ class Category extends AbstractEntity
      * @var string
      * @ORM\Column(type="string", options={"default": ""})
      */
-    protected string $description;
+    protected string $description = '';
 
     /**
      * @param string $description

@@ -39,8 +39,6 @@ class Notification extends AbstractEntity
     /**
      * @param string|Uuid $uuid
      *
-     * @throws \Exception
-     *
      * @return $this
      */
     public function setUserUuid($uuid)

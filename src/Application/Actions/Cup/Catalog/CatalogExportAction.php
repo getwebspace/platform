@@ -54,7 +54,7 @@ class CatalogExportAction extends CatalogAction
 
                     $category = $categories->firstWhere('uuid', $category);
                     $products = collect($this->productRepository->findBy([
-                        'category' => \App\Domain\Entities\Catalog\Category::getChildren($categories, $category)->pluck('uuid')->all(),
+                        'category' => \App\Domain\Entities\Catalog\Category::getNested($categories, $category)->pluck('uuid')->all(),
                         'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
                     ]));
 
