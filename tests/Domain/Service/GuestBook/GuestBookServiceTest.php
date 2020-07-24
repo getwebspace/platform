@@ -151,7 +151,7 @@ class GuestBookServiceTest extends TestCase
         $this->assertTrue($result);
     }
 
-    public function testDeleteWithPageNotFound(): void
+    public function testDeleteWithEntryNotFound(): void
     {
         $this->expectException(EntryNotFoundException::class);
 
