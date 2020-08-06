@@ -73,33 +73,32 @@ class SubscriberService extends AbstractService
         ];
         $data = array_merge($default, static::$default_read, $data);
 
-        if ($data['uuid'] || $data['email']) {
-            switch (true) {
-                case $data['uuid']:
-                    $userSubscriber = $this->service->findOneByUuid((string) $data['uuid']);
-
-                    break;
-
-                case $data['email']:
-                    $userSubscriber = $this->service->findOneByEmail($data['email']);
-
-                    break;
-            }
-
-            if (empty($userSubscriber)) {
-                throw new UserNotFoundException();
-            }
-
-            return $userSubscriber;
-        }
-
         $criteria = [];
 
+        if ($data['uuid'] !== null) {
+            $criteria['uuid'] = $data['uuid'];
+        }
+        if ($data['email'] !== null) {
+            $criteria['email'] = $data['email'];
+        }
         if ($data['date'] !== null) {
             $criteria['date'] = $data['date'];
         }
 
-        return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+        switch (true) {
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
+            case !is_array($data['email']) && $data['email'] !== null:
+                $userSubscriber = $this->service->findOneBy($criteria);
+
+                if (empty($userSubscriber)) {
+                    throw new UserNotFoundException();
+                }
+
+                return $userSubscriber;
+
+            default:
+                return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+        }
     }
 
     /**

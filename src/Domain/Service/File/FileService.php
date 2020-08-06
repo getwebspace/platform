@@ -178,32 +178,14 @@ class FileService extends AbstractService
         ];
         $data = array_merge($default, static::$default_read, $data);
 
-        if ($data['uuid'] || $data['hash']) {
-            switch (true) {
-                case $data['uuid']:
-                    $file = $this->service->findOneByUuid((string) $data['uuid']);
-
-                    break;
-
-                case $data['hash']:
-                    $file = $this->service->findOneByHash($data['hash']);
-
-                    break;
-            }
-
-            if (empty($file)) {
-                throw new FileNotFoundException();
-            }
-
-            return $file;
-        }
-
-        if ($data['name'] !== null && $data['ext'] !== null) {
-            return $this->service->findOneByFilename($data['name'], $data['ext']);
-        }
-
         $criteria = [];
 
+        if ($data['uuid'] !== null) {
+            $criteria['uuid'] = $data['uuid'];
+        }
+        if ($data['hash'] !== null) {
+            $criteria['hash'] = $data['hash'];
+        }
         if ($data['name'] !== null) {
             $criteria['name'] = $data['name'];
         }
@@ -217,7 +199,29 @@ class FileService extends AbstractService
             $criteria['size'] = $data['size'];
         }
 
-        return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+        switch (true) {
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
+            case !is_array($data['hash']) && $data['hash'] !== null:
+                $file = $this->service->findOneBy($criteria);
+
+                if (empty($file)) {
+                    throw new FileNotFoundException();
+                }
+
+                return $file;
+
+            case !is_array($data['name']) && $data['name'] !== null && !is_array($data['ext']) && $data['ext'] !== null:
+                $file = $this->service->findOneByFilename($data['name'], $data['ext']);
+
+                if (empty($file)) {
+                    throw new FileNotFoundException();
+                }
+
+                return $file;
+
+            default:
+                return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+        }
     }
 
     /**

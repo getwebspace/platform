@@ -93,33 +93,17 @@ class PageService extends AbstractService
         ];
         $data = array_merge($default, static::$default_read, $data);
 
-        if ($data['uuid'] || $data['title'] || $data['address']) {
-            switch (true) {
-                case $data['uuid']:
-                    $page = $this->service->findOneByUuid((string) $data['uuid']);
-
-                    break;
-
-                case $data['title']:
-                    $page = $this->service->findOneByTitle($data['title']);
-
-                    break;
-
-                case $data['address']:
-                    $page = $this->service->findOneByAddress($data['address']);
-
-                    break;
-            }
-
-            if (empty($page)) {
-                throw new PageNotFoundException();
-            }
-
-            return $page;
-        }
-
         $criteria = [];
 
+        if ($data['uuid'] !== null) {
+            $criteria['uuid'] = $data['uuid'];
+        }
+        if ($data['title'] !== null) {
+            $criteria['title'] = $data['title'];
+        }
+        if ($data['address'] !== null) {
+            $criteria['address'] = $data['address'];
+        }
         if ($data['template'] !== null) {
             $criteria['template'] = $data['template'];
         }
@@ -127,7 +111,21 @@ class PageService extends AbstractService
             $criteria['type'] = $data['type'];
         }
 
-        return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+        switch (true) {
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
+            case !is_array($data['title']) && $data['title'] !== null:
+            case !is_array($data['address']) && $data['address'] !== null:
+                $page = $this->service->findOneBy($criteria);
+
+                if (empty($page)) {
+                    throw new PageNotFoundException();
+                }
+
+                return $page;
+
+            default:
+                return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+        }
     }
 
     /**

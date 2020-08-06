@@ -63,22 +63,19 @@ class ParameterService extends AbstractService
         ];
         $data = array_merge($default, static::$default_read, $data);
 
-        if ($data['key']) {
-            switch (true) {
-                case $data['key']:
-                    $parameter = $this->service->findOneByKey((string) $data['key']);
+        switch (true) {
+            case !is_array($data['key']) && $data['key'] !== null:
+                $parameter = $this->service->findOneByKey((string) $data['key']);
 
-                    break;
-            }
+                if (empty($parameter)) {
+                    $parameter = (new Parameter())->setKey($data['key'])->setValue($fallback);
+                }
 
-            if (empty($parameter)) {
-                $parameter = (new Parameter())->setKey($data['key'])->setValue($fallback);
-            }
+                return $parameter;
 
-            return $parameter;
+            default:
+                return collect($this->service->findBy([], $data['order'], $data['limit'], $data['offset']));
         }
-
-        return collect($this->service->findBy([], $data['order'], $data['limit'], $data['offset']));
     }
 
     /**

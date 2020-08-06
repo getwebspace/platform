@@ -104,62 +104,86 @@ class UserService extends AbstractService
     public function read(array $data = [])
     {
         $default = [
+            'identifier' => null, // field for: username, email, email
             'uuid' => null,
-            'identifier' => null, // включает: username, email, email
             'username' => null,
             'email' => null,
             'phone' => null,
             'allow_mail' => null,
             'status' => null,
-            'password' => null, // опционально, передается для проверки
-            'agent' => null, // опционально, передается для обновления
-            'ip' => null, // опционально, передается для обновления
+            'password' => null, // optional: for check
+            'agent' => null, // optional: for update
+            'ip' => null, // optional: for update
         ];
         $data = array_merge($default, static::$default_read, $data);
 
-        if ($data['uuid'] || $data['identifier'] || $data['username'] || $data['email'] || $data['phone']) {
+        $criteria = [];
+
+        if ($data['uuid'] !== null) {
+            $criteria['uuid'] = $data['uuid'];
+        }
+        if ($data['username'] !== null) {
+            $criteria['username'] = $data['username'];
+        }
+        if ($data['email'] !== null) {
+            $criteria['email'] = $data['email'];
+        }
+        if ($data['phone'] !== null) {
+            $criteria['phone'] = $data['phone'];
+        }
+        if ($data['allow_mail'] !== null) {
+            $criteria['allow_mail'] = (bool) $data['allow_mail'];
+        }
+        if ($data['status'] !== null && in_array($data['status'], \App\Domain\Types\UserStatusType::LIST, true)) {
+            $criteria['status'] = $data['status'];
+        }
+
+        if (
+            $data['identifier'] !== null ||
+            !is_array($data['uuid']) && $data['uuid'] !== null ||
+            !is_array($data['username']) && $data['username'] !== null ||
+            !is_array($data['email']) && $data['email'] !== null ||
+            !is_array($data['phone']) && $data['phone'] !== null
+        ) {
             switch (true) {
-                case $data['uuid']:
-                    $user = $this->service->findOneByUuid((string) $data['uuid']);
-
-                    break;
-
                 case $data['identifier']:
                     $user = $this->service->findOneByIdentifier($data['identifier']);
 
                     break;
 
-                case $data['username']:
-                    $user = $this->service->findOneByUsername($data['username']);
+                case $criteria['uuid']:
+                    $user = $this->service->findOneByUuid($criteria['uuid']);
 
                     break;
 
-                case $data['email']:
-                    $user = $this->service->findOneByEmail($data['email']);
+                case $criteria['username']:
+                    $user = $this->service->findOneByUsername($criteria['username']);
 
                     break;
 
-                case $data['phone']:
-                    $user = $this->service->findOneByPhone($data['phone']);
+                case $criteria['email']:
+                    $user = $this->service->findOneByEmail($criteria['email']);
+
+                    break;
+
+                case $criteria['phone']:
+                    $user = $this->service->findOneByPhone($criteria['phone']);
 
                     break;
             }
 
             if (
-                empty($user) &&
-                (
-                    !$data['status'] || (!empty($user) && $data['status'] !== $user->getStatus())
-                )
+                empty($user) || (!empty($criteria['status']) && $data['status'] !== $user->getStatus())
             ) {
                 throw new UserNotFoundException();
             }
 
-            // проверим пароль, если его передали
+            // optional: check password
             if ($data['password'] && !crypta_hash_check($data['password'], $user->getPassword())) {
                 throw new WrongPasswordException();
             }
 
-            // если передали user-agent и ip
+            // optional: update fields
             if ($data['agent'] && $data['ip']) {
                 $user
                     ->getSession()
@@ -171,15 +195,6 @@ class UserService extends AbstractService
             }
 
             return $user;
-        }
-
-        $criteria = [];
-
-        if ($data['allow_mail'] !== null) {
-            $criteria['allow_mail'] = (bool) $data['allow_mail'];
-        }
-        if ($data['status'] !== null && in_array($data['status'], \App\Domain\Types\UserStatusType::LIST, true)) {
-            $criteria['status'] = $data['status'];
         }
 
         return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));

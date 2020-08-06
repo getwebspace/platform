@@ -85,23 +85,11 @@ class GuestBookService extends AbstractService
         ];
         $data = array_merge($default, static::$default_read, $data);
 
-        if ($data['uuid']) {
-            switch (true) {
-                case $data['uuid']:
-                    $entry = $this->service->findOneByUuid((string) $data['uuid']);
-
-                    break;
-            }
-
-            if (empty($entry)) {
-                throw new EntryNotFoundException();
-            }
-
-            return $entry;
-        }
-
         $criteria = [];
 
+        if ($data['uuid'] !== null) {
+            $criteria['uuid'] = $data['uuid'];
+        }
         if ($data['email'] !== null) {
             $criteria['email'] = $data['email'];
         }
@@ -109,7 +97,19 @@ class GuestBookService extends AbstractService
             $criteria['status'] = $data['status'];
         }
 
-        return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+        switch (true) {
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
+                $entry = $this->service->findOneBy($criteria);
+
+                if (empty($entry)) {
+                    throw new EntryNotFoundException();
+                }
+
+                return $entry;
+
+            default:
+                return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+        }
     }
 
     /**

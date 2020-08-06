@@ -93,38 +93,36 @@ class PublicationService extends AbstractService
         ];
         $data = array_merge($default, static::$default_read, $data);
 
-        if ($data['uuid'] || $data['address'] || $data['title']) {
-            switch (true) {
-                case $data['uuid']:
-                    $publication = $this->service->findOneByUuid((string) $data['uuid']);
-
-                    break;
-
-                case $data['address']:
-                    $publication = $this->service->findOneByAddress($data['address']);
-
-                    break;
-
-                case $data['title']:
-                    $publication = $this->service->findOneByTitle($data['title']);
-
-                    break;
-            }
-
-            if (empty($publication)) {
-                throw new PublicationNotFoundException();
-            }
-
-            return $publication;
-        }
-
         $criteria = [];
 
+        if ($data['uuid'] !== null) {
+            $criteria['uuid'] = $data['uuid'];
+        }
+        if ($data['address'] !== null) {
+            $criteria['address'] = $data['address'];
+        }
+        if ($data['title'] !== null) {
+            $criteria['title'] = $data['title'];
+        }
         if ($data['category'] !== null) {
             $criteria['category'] = $data['category'];
         }
 
-        return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+        switch (true) {
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
+            case !is_array($data['title']) && $data['title'] !== null:
+            case !is_array($data['address']) && $data['address'] !== null:
+                $publication = $this->service->findOneBy($criteria);
+
+                if (empty($publication)) {
+                    throw new PublicationNotFoundException();
+                }
+
+                return $publication;
+
+            default:
+                return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+        }
     }
 
     /**

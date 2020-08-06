@@ -68,28 +68,30 @@ class DataService extends AbstractService
         ];
         $data = array_merge($default, static::$default_read, $data);
 
-        if ($data['uuid']) {
-            switch (true) {
-                case $data['uuid']:
-                    $formData = $this->service->findOneByUuid((string) $data['uuid']);
-
-                    break;
-            }
-
-            if (empty($formData)) {
-                throw new FormDataNotFoundException();
-            }
-
-            return $formData;
-        }
-
         $criteria = [];
 
+        if ($data['uuid'] !== null) {
+            $criteria['uuid'] = $data['uuid'];
+        }
         if ($data['form_uuid'] !== null) {
             $criteria['form_uuid'] = $data['form_uuid'];
         }
 
-        return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+        switch (true) {
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
+            case !is_array($data['title']) && $data['title'] !== null:
+            case !is_array($data['address']) && $data['address'] !== null:
+                $formData = $this->service->findOneBy($criteria);
+
+                if (empty($formData)) {
+                    throw new FormDataNotFoundException();
+                }
+
+                return $formData;
+
+            default:
+                return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+        }
     }
 
     /**

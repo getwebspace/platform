@@ -105,38 +105,36 @@ class CategoryService extends AbstractService
         ];
         $data = array_merge($default, static::$default_read, $data);
 
-        if ($data['uuid'] || $data['title'] || $data['address']) {
-            switch (true) {
-                case $data['uuid']:
-                    $publicationCategory = $this->service->findOneByUuid((string) $data['uuid']);
-
-                    break;
-
-                case $data['title']:
-                    $publicationCategory = $this->service->findOneByTitle($data['title']);
-
-                    break;
-
-                case $data['address']:
-                    $publicationCategory = $this->service->findOneByAddress($data['address']);
-
-                    break;
-            }
-
-            if (empty($publicationCategory)) {
-                throw new CategoryNotFoundException();
-            }
-
-            return $publicationCategory;
-        }
-
         $criteria = [];
 
+        if ($data['uuid'] !== null) {
+            $criteria['uuid'] = $data['uuid'];
+        }
+        if ($data['title'] !== null) {
+            $criteria['title'] = $data['title'];
+        }
+        if ($data['address'] !== null) {
+            $criteria['address'] = $data['address'];
+        }
         if ($data['parent'] !== null) {
             $criteria['parent'] = $data['parent'];
         }
 
-        return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+        switch (true) {
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
+            case !is_array($data['title']) && $data['title'] !== null:
+            case !is_array($data['address']) && $data['address'] !== null:
+                $publicationCategory = $this->service->findOneBy($criteria);
+
+                if (empty($publicationCategory)) {
+                    throw new CategoryNotFoundException();
+                }
+
+                return $publicationCategory;
+
+            default:
+                return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+        }
     }
 
     /**
