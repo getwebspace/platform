@@ -127,8 +127,8 @@
                                             {% endif %}
                                         </td>
                                         <td class="text-center">{{ user.level }}</td>
-                                        <td data-order="{{ item.register.getTimestamp() }}">{{ item.register|df('d.m.Y H:i:s') }}</td>
-                                        <td data-order="{{ item.session.date.getTimestamp() }}">{{ item.session.date ? item.session.date|df('d.m.Y H:i:s') : '' }}</td>
+                                        <td data-order="{{ user.register.getTimestamp() }}">{{ user.register|df('d.m.Y H:i:s') }}</td>
+                                        <td data-order="{{ user.session.date.getTimestamp() }}">{{ user.session.date ? user.session.date|df('d.m.Y H:i:s') : '' }}</td>
                                         <td class="text-center">
                                             <div class="btn-group dropdown">
                                                 <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
