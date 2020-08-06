@@ -51,7 +51,7 @@
                                         </td>
                                         <td>{{ item.user ? item.user.getName() : item.delivery.client }}</td>
                                         <td>
-                                            <span class="badge badge-secondary">{{ reference('/App/Domain/Types/Catalog/OrderStatusType::LIST', item.status) }}</span>
+                                            <span class="badge badge-secondary">{{ item.status }}</span>
                                         </td>
                                         <td>
                                             <pre class="mt-2 mb-2">{{ item.comment|truncate(250) }}</pre>

@@ -89,8 +89,8 @@ class CategoryService extends AbstractService
             ->setField3($data['field3'])
             ->setProduct($data['product'])
             ->setStatus($data['status'])
-            ->setPagination($data['pagination'])
-            ->setOrder($data['order'])
+            ->setPagination((int) $data['pagination'])
+            ->setOrder((int) $data['order'])
             ->setMeta($data['meta'])
             ->setTemplate($data['template'])
             ->setExternalId($data['external_id'])
@@ -163,10 +163,10 @@ class CategoryService extends AbstractService
         }
 
         switch (true) {
-            case $data['uuid'] !== null:
-            case $data['title'] !== null:
-            case $data['address'] !== null:
-            case $data['external_id'] !== null:
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
+            case !is_array($data['title']) && $data['title'] !== null:
+            case !is_array($data['address']) && $data['address'] !== null:
+            case !is_array($data['external_id']) && $data['external_id'] !== null:
                 $category = $this->service->findOneBy($criteria);
 
                 if (empty($category)) {
@@ -265,10 +265,10 @@ class CategoryService extends AbstractService
                     $entity->setStatus($data['status']);
                 }
                 if ($data['pagination'] !== null) {
-                    $entity->setPagination($data['pagination']);
+                    $entity->setPagination((int) $data['pagination']);
                 }
                 if ($data['order'] !== null) {
-                    $entity->setOrder($data['order']);
+                    $entity->setOrder((int) $data['order']);
                 }
                 if ($data['meta'] !== null) {
                     $entity->setMeta($data['meta']);

@@ -2,6 +2,8 @@
 
 namespace App\Application\Actions\Common\Catalog;
 
+use App\Domain\Service\Catalog\CategoryService as CatalogCatalogService;
+use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use Slim\Http\Response;
 use Tightenco\Collect\Support\Collection;
 
@@ -15,10 +17,12 @@ class ListAction extends CatalogAction
      */
     protected function action(): \Slim\Http\Response
     {
+        $catalogCategoryService = CatalogCatalogService::getWithContainer($this->container);
+
         $params = $this->parsePath();
-        $categories = collect($this->categoryRepository->findBy([
+        $categories = $catalogCategoryService->read([
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
-        ]));
+        ]);
 
         // Catalog main
         if ($buf = $this->prepareMain($params, $categories)) {
@@ -149,8 +153,8 @@ class ListAction extends CatalogAction
          */
         $category = $categories->firstWhere('address', $params['address']);
 
-        if (is_null($category) === false) {
-            $categoryUUIDs = \App\Domain\Entities\Catalog\Category::getNested($categories, $category)->pluck('uuid')->all();
+        if ($category) {
+            $categoryUUIDs = $category->getNested($categories)->pluck('uuid')->all();
 
             $qb = $this->entityManager->createQueryBuilder();
             $query = $qb
@@ -247,14 +251,14 @@ class ListAction extends CatalogAction
      */
     protected function prepareProduct(array &$params, &$categories)
     {
-        /** @var \App\Domain\Entities\Catalog\Product $product */
-        $product = $this->productRepository->findOneBy([
+        $catalogProductService = CatalogProductService::getWithContainer($this->container);
+        $product = $catalogProductService->read([
             'address' => $params['address'],
             'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
         ]);
 
-        if (is_null($product) === false) {
-            $category = $categories->firstWhere('uuid', $product->category);
+        if ($product) {
+            $category = $categories->firstWhere('uuid', $product->getCategory());
 
             return $this->respondWithTemplate($category->template['product'], [
                 'categories' => $categories,

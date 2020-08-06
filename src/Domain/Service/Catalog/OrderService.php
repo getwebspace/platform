@@ -11,6 +11,8 @@ use Tightenco\Collect\Support\Collection;
 
 class OrderService extends AbstractService
 {
+    protected const SERIAL_LENGTH = 7;
+
     /**
      * @var OrderRepository
      */
@@ -60,6 +62,19 @@ class OrderService extends AbstractService
             ->setDate($data['date'])
             ->setExternalId($data['external_id'])
             ->setExport($data['export']);
+
+        // set serial value
+        if (isset($_ENV['SIMPLE_ORDER_SERIAL']) && $_ENV['SIMPLE_ORDER_SERIAL']) {
+            $lastOrder = $this->service->findOneBy([], ['date' => 'desc']);
+
+            $order->setSerial(
+                $lastOrder ? ((int) $lastOrder->getSerial()) + 1 : 1
+            );
+        } else {
+            $order->setSerial(
+                mb_strtoupper(mb_substr(bin2hex(random_bytes(10 + self::SERIAL_LENGTH)), 0, self::SERIAL_LENGTH))
+            );
+        }
 
         $this->entityManager->persist($order);
         $this->entityManager->flush();
@@ -112,8 +127,8 @@ class OrderService extends AbstractService
         }
 
         switch (true) {
-            case $data['uuid'] !== null:
-            case $data['external_id'] !== null:
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
+            case !is_array($data['external_id']) && $data['external_id'] !== null:
                 $order = $this->service->findOneBy($criteria);
 
                 if (empty($order)) {
@@ -129,7 +144,7 @@ class OrderService extends AbstractService
 
     /**
      * @param Order|string|Uuid $entity
-     * @param array                $data
+     * @param array             $data
      *
      * @throws OrderNotFoundException
      *

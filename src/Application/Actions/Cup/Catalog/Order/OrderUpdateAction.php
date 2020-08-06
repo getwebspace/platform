@@ -3,19 +3,21 @@
 namespace App\Application\Actions\Cup\Catalog\Order;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
+use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
+use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 
 class OrderUpdateAction extends CatalogAction
 {
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('order') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('order'))) {
-            /** @var \App\Domain\Entities\Catalog\Order $order */
-            $order = $this->orderRepository->findOneBy(['uuid' => $this->resolveArg('order')]);
+            $catalogProductService = CatalogProductService::getWithContainer($this->container);
+            $catalogOrderService = CatalogOrderService::getWithContainer($this->container);
+            $order = $catalogOrderService->read(['uuid' => $this->resolveArg('order')]);
 
-            if (!$order->isEmpty()) {
+            if ($order) {
                 if ($this->request->isPost()) {
-                    $data = [
-                        'uuid' => $order->uuid,
+                    $order = $catalogOrderService->update($order, [
                         'serial' => $order->serial,
                         'delivery' => $this->request->getParam('delivery'),
                         'user_uuid' => $this->request->getParam('user_uuid'),
@@ -26,25 +28,17 @@ class OrderUpdateAction extends CatalogAction
                         'comment' => $this->request->getParam('comment'),
                         'shipping' => $this->request->getParam('shipping'),
                         'external_id' => $this->request->getParam('external_id'),
-                    ];
+                    ]);
 
-                    $check = \App\Domain\Filters\Catalog\Order::check($data);
-
-                    if ($check === true) {
-                        $order->replace($data);
-                        $this->entityManager->persist($order);
-                        $this->entityManager->flush();
-
-                        if ($this->request->getParam('save', 'exit') === 'exit') {
-                            return $this->response->withAddedHeader('Location', '/cup/catalog/order')->withStatus(301);
-                        }
-
-                        return $this->response->withAddedHeader('Location', $this->request->getUri()->getPath())->withStatus(301);
+                    switch (true) {
+                        case $this->request->getParam('save', 'exit') === 'exit':
+                            return $this->response->withRedirect('/cup/catalog/order');
+                        default:
+                            return $this->response->withRedirect('/cup/catalog/order/' . $order->getUuid() . '/edit');
                     }
-                    $this->addErrorFromCheck($check);
                 }
 
-                $products = collect($this->productRepository->findBy(['uuid' => array_keys($order->list)]));
+                $products = $catalogProductService->read(['uuid' => array_keys($order->getList())]);
 
                 return $this->respondWithTemplate('cup/catalog/order/form.twig', [
                     'order' => $order,
@@ -53,6 +47,6 @@ class OrderUpdateAction extends CatalogAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/catalog/order')->withStatus(301);
+        return $this->response->withRedirect('/cup/catalog/order');
     }
 }

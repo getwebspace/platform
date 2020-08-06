@@ -3,7 +3,6 @@
 namespace App\Domain\Entities\Catalog;
 
 use App\Domain\AbstractEntity;
-use App\Domain\Entities\User;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
@@ -40,14 +39,14 @@ class Order extends AbstractEntity
     public string $serial = '';
 
     /**
-     * @param string $serial
+     * @param int|string $serial
      *
      * @return $this
      */
-    public function setSerial(string $serial)
+    public function setSerial($serial)
     {
-        if ($this->checkStrLenMax($serial, 500)) {
-            $this->serial = $serial;
+        if (is_string($serial) && $this->checkStrLenMax($serial, 500) || is_int($serial)) {
+            $this->serial = (string) $serial;
         }
 
         return $this;
@@ -271,7 +270,8 @@ class Order extends AbstractEntity
      * @var string
      *
      * @see \App\Domain\Types\OrderStatusType::LIST
-     * @ORM\Column(type="CatalogOrderStatusType", options={"default": \App\Domain\Types\Catalog\OrderStatusType::STATUS_NEW})
+     * @ORM\Column(type="CatalogOrderStatusType", options={"default":
+     *                                            \App\Domain\Types\Catalog\OrderStatusType::STATUS_NEW})
      */
     protected string $status = \App\Domain\Types\Catalog\OrderStatusType::STATUS_NEW;
 

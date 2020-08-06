@@ -2,6 +2,8 @@
 
 namespace App\Application\Actions\Common\Catalog;
 
+use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
+use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use Slim\Http\Response;
 
 class CartCompleteAction extends CatalogAction
@@ -15,11 +17,12 @@ class CartCompleteAction extends CatalogAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('order') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('order'))) {
-            /** @var \App\Domain\Entities\Catalog\Order $order */
-            $order = $this->orderRepository->findOneBy(['uuid' => $this->resolveArg('order')]);
+            $catalogOrderService = CatalogOrderService::getWithContainer($this->container);
+            $order = $catalogOrderService->read(['uuid' => $this->resolveArg('order')]);
 
-            if (!$order->isEmpty()) {
-                $products = collect($this->productRepository->findBy(['uuid' => array_keys($order->list)]));
+            if ($order) {
+                $catalogProductService = CatalogProductService::getWithContainer($this->container);
+                $products = $catalogProductService->read(['uuid' => array_keys($order->getList())]);
 
                 return $this->respondWithTemplate($this->getParameter('catalog_cart_complete_template', 'catalog.cart.complete.twig'), [
                     'order' => $order,
@@ -28,6 +31,6 @@ class CartCompleteAction extends CatalogAction
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cart')->withStatus(301);
+        return $this->response->withRedirect('/cart');
     }
 }

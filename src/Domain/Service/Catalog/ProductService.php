@@ -88,12 +88,12 @@ class ProductService extends AbstractService
             ->setAddress($data['address'])
             ->setVendorCode($data['vendorcode'])
             ->setBarCode($data['barcode'])
-            ->setPriceFirst($data['priceFirst'])
-            ->setPrice($data['price'])
-            ->setPriceWholesale($data['priceWholesale'])
-            ->setVolume($data['volume'])
+            ->setPriceFirst((float) $data['priceFirst'])
+            ->setPrice((float) $data['price'])
+            ->setPriceWholesale((float) $data['priceWholesale'])
+            ->setVolume((float) $data['volume'])
             ->setUnit($data['unit'])
-            ->setStock($data['stock'])
+            ->setStock((float) $data['stock'])
             ->setField1($data['field1'])
             ->setField2($data['field2'])
             ->setField3($data['field3'])
@@ -103,7 +103,7 @@ class ProductService extends AbstractService
             ->setCountry($data['country'])
             ->setManufacturer($data['manufacturer'])
             ->setTags($data['tags'])
-            ->setOrder($data['order'])
+            ->setOrder((int) $data['order'])
             ->setDate($data['date'])
             ->setMeta($data['meta'])
             ->setExternalId($data['external_id'])
@@ -180,10 +180,10 @@ class ProductService extends AbstractService
         }
 
         switch (true) {
-            case $data['uuid'] !== null:
-            case $data['title'] !== null:
-            case $data['address'] !== null:
-            case $data['external_id'] !== null:
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
+            case !is_array($data['title']) && $data['title'] !== null:
+            case !is_array($data['address']) && $data['address'] !== null:
+            case !is_array($data['external_id']) && $data['external_id'] !== null:
                 $product = $this->service->findOneBy($criteria);
 
                 if (empty($product)) {
@@ -199,7 +199,7 @@ class ProductService extends AbstractService
 
     /**
      * @param Product|string|Uuid $entity
-     * @param array                $data
+     * @param array               $data
      *
      * @throws TitleAlreadyExistsException
      * @throws AddressAlreadyExistsException
@@ -284,22 +284,22 @@ class ProductService extends AbstractService
                     $entity->setBarCode($data['barcode']);
                 }
                 if ($data['priceFirst'] !== null) {
-                    $entity->setPriceFirst($data['priceFirst']);
+                    $entity->setPriceFirst((float) $data['priceFirst']);
                 }
                 if ($data['price'] !== null) {
-                    $entity->setPrice($data['price']);
+                    $entity->setPrice((float) $data['price']);
                 }
                 if ($data['priceWholesale'] !== null) {
-                    $entity->setPriceWholesale($data['priceWholesale']);
+                    $entity->setPriceWholesale((float) $data['priceWholesale']);
                 }
                 if ($data['volume'] !== null) {
-                    $entity->setVolume($data['volume']);
+                    $entity->setVolume((float) $data['volume']);
                 }
                 if ($data['unit'] !== null) {
                     $entity->setUnit($data['unit']);
                 }
                 if ($data['stock'] !== null) {
-                    $entity->setStock($data['stock']);
+                    $entity->setStock((float) $data['stock']);
                 }
                 if ($data['field1'] !== null) {
                     $entity->setField1($data['field1']);
@@ -329,7 +329,7 @@ class ProductService extends AbstractService
                     $entity->setTags($data['tags']);
                 }
                 if ($data['order'] !== null) {
-                    $entity->setOrder($data['order']);
+                    $entity->setOrder((int) $data['order']);
                 }
                 if ($data['date'] !== null) {
                     $entity->setDate($data['date']);

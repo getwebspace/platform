@@ -343,7 +343,8 @@ class Category extends AbstractEntity
      * @var string
      *
      * @see \App\Domain\Types\UserStatusType::LIST
-     * @ORM\Column(type="CatalogCategoryStatusType", options={"default": \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK})
+     * @ORM\Column(type="CatalogCategoryStatusType", options={"default":
+     *                                               \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK})
      */
     protected string $status = \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK;
 
@@ -562,21 +563,18 @@ class Category extends AbstractEntity
     }
 
     /**
-     * @todo переделать в обычный метод
-     *
      * @param Collection $categories
-     * @param Category   $parent
      *
      * @return \Tightenco\Collect\Support\Collection
      */
-    public static function getNested(Collection $categories, self $parent)
+    public function getNested(Collection &$categories)
     {
-        $result = collect([$parent]);
+        $result = collect([$this]);
 
-        if ($parent->getChildren()) {
-            // @var \App\Domain\Entities\Catalog\Category $category
-            foreach ($categories->where('parent', $parent->uuid) as $child) {
-                $result = $result->merge(static::getNested($categories, $child));
+        if ($this->getChildren()) {
+            // @var \App\Domain\Entities\Catalog\Category $child
+            foreach ($categories->where('parent', $this->getUuid()) as $child) {
+                $result = $result->merge($child->getNested($categories));
             }
         }
 

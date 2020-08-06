@@ -4,54 +4,54 @@ namespace App\Application\Actions\Cup\Catalog\Category;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
 
+use App\Domain\Service\Catalog\CategoryService as CatalogCatalogService;
+use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
+use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
+use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
+
 class CategoryCreateAction extends CatalogAction
 {
     protected function action(): \Slim\Http\Response
     {
+        $catalogCategoryService = CatalogCatalogService::getWithContainer($this->container);
         $parent = $this->request->getParam('parent', false);
 
         if ($this->request->isPost()) {
-            $data = [
-                'parent' => $this->request->getParam('parent'),
-                'children' => $this->request->getParam('children'),
-                'title' => $this->request->getParam('title'),
-                'description' => $this->request->getParam('description'),
-                'address' => $this->request->getParam('address'),
-                'field1' => $this->request->getParam('field1'),
-                'field2' => $this->request->getParam('field2'),
-                'field3' => $this->request->getParam('field3'),
-                'product' => $this->request->getParam('product'),
-                'pagination' => $this->request->getParam('pagination'),
-                'order' => $this->request->getParam('order'),
-                'meta' => $this->request->getParam('meta'),
-                'template' => $this->request->getParam('template'),
-                'external_id' => $this->request->getParam('external_id'),
-            ];
-
-            $check = \App\Domain\Filters\Catalog\Category::check($data);
-
-            if ($check === true) {
-                $model = new \App\Domain\Entities\Catalog\Category($data);
-                $model->removeFiles($this->handlerFileRemove());
-                $model->addFiles($this->handlerFileUpload());
-
-                $this->entityManager->persist($model);
-                $this->entityManager->flush();
+            try {
+                $category = $catalogCategoryService->create([
+                    'parent' => $this->request->getParam('parent'),
+                    'children' => $this->request->getParam('children'),
+                    'title' => $this->request->getParam('title'),
+                    'description' => $this->request->getParam('description'),
+                    'address' => $this->request->getParam('address'),
+                    'field1' => $this->request->getParam('field1'),
+                    'field2' => $this->request->getParam('field2'),
+                    'field3' => $this->request->getParam('field3'),
+                    'product' => $this->request->getParam('product'),
+                    'pagination' => $this->request->getParam('pagination'),
+                    'order' => $this->request->getParam('order'),
+                    'meta' => $this->request->getParam('meta'),
+                    'template' => $this->request->getParam('template'),
+                    'external_id' => $this->request->getParam('external_id'),
+                ]);
+                $category = $this->handlerEntityFiles($category);
 
                 switch (true) {
                     case $this->request->getParam('save', 'exit') === 'exit':
-                        return $this->response->withAddedHeader('Location', '/cup/catalog/category/' . $model->parent)->withStatus(301);
+                        return $this->response->withRedirect('/cup/catalog/category');
                     default:
-                        return $this->response->withAddedHeader('Location', '/cup/catalog/category/' . $model->uuid . '/edit')->withStatus(301);
+                        return $this->response->withRedirect('/cup/catalog/category/' . $category->getUuid() . '/edit');
                 }
-            } else {
-                $this->addErrorFromCheck($check);
+            } catch (TitleAlreadyExistsException|MissingTitleValueException $e) {
+                $this->addError('title', $e->getMessage());
+            } catch (AddressAlreadyExistsException $e) {
+                $this->addError('address', $e->getMessage());
             }
         }
 
-        $categories = collect($this->categoryRepository->findBy([
+        $categories = $catalogCategoryService->read([
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
-        ]));
+        ]);
 
         return $this->respondWithTemplate('cup/catalog/category/form.twig', [
             'parent' => $parent,

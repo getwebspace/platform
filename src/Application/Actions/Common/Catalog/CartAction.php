@@ -2,7 +2,8 @@
 
 namespace App\Application\Actions\Common\Catalog;
 
-use DateTime;
+use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
+use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use Slim\Http\Response;
 
 class CartAction extends CatalogAction
@@ -15,109 +16,88 @@ class CartAction extends CatalogAction
      */
     protected function action(): \Slim\Http\Response
     {
+        $catalogProductService = CatalogProductService::getWithContainer($this->container);
+        $catalogOrderService = CatalogOrderService::getWithContainer($this->container);
+
         if ($this->request->isPost()) {
             $data = [
                 'delivery' => $this->request->getParam('delivery'),
-                'list' => (array) $this->request->getParam('list', []),
+                'list' => $this->request->getParam('list', []),
                 'phone' => $this->request->getParam('phone'),
                 'email' => $this->request->getParam('email'),
                 'comment' => $this->request->getParam('comment'),
                 'shipping' => $this->request->getParam('shipping'),
             ];
 
-            // пользователя заказа
+            // order user
             if (($user = $this->request->getAttribute('user', false)) !== false) {
                 // @var \App\Domain\Entities\User $user
                 $data['user_uuid'] = $user->uuid;
-                $data['user'] = $user;
             }
 
-            // другие отправленные поля дописываются в комментарий
+            // other posted fields
             foreach ($this->request->getParams() as $key => $value) {
                 if (!in_array($key, array_merge(array_keys($data), ['recaptcha']), true) && $value) {
                     $data['comment'] .= '; ' . $key . ' ' . $value . PHP_EOL;
                 }
             }
 
-            $check = \App\Domain\Filters\Catalog\Order::check($data);
+            if ($this->isRecaptchaChecked()) {
+                $order = $catalogOrderService->create($data);
 
-            if ($check === true) {
-                if ($this->isRecaptchaChecked()) {
-                    $model = new \App\Domain\Entities\Catalog\Order($data);
-                    $this->entityManager->persist($model);
+                $isNeedRunWorker = false;
 
-                    // создаем уведомление
-                    $notify = new \App\Domain\Entities\Notification([
-                        'title' => 'Добавлен заказ: ' . $model->serial,
-                        'message' => 'Поступил новый заказ, проверьте список заказов',
-                        'date' => new DateTime(),
+                // mail to administrator
+                if (
+                    ($this->getParameter('catalog_mail_admin', 'off') === 'on') &&
+                    ($email = $this->getParameter('smtp_from', '')) !== '' &&
+                    ($tpl = $this->getParameter('catalog_mail_admin_template', '')) !== ''
+                ) {
+                    $products = $catalogProductService->read(['uuid' => array_keys($order->getList())]);
+
+                    // add task send admin mail
+                    $task = new \App\Domain\Tasks\SendMailTask($this->container);
+                    $task->execute([
+                        'to' => $email,
+                        'body' => $this->render($tpl, ['order' => $order, 'products' => $products]),
+                        'isHtml' => true,
                     ]);
-                    $this->entityManager->persist($notify);
-
-                    // отправляем пуш
-                    $this->container->get('pushstream')->send([
-                        'group' => \App\Domain\Types\UserLevelType::LEVEL_ADMIN,
-                        'content' => $notify,
-                    ]);
-
-                    $isNeedRunWorker = false;
-
-                    // письмо администратору
-                    if (
-                        ($this->getParameter('catalog_mail_admin', 'off') === 'on') &&
-                        ($email = $this->getParameter('smtp_from', '')) !== '' &&
-                        ($tpl = $this->getParameter('catalog_mail_admin_template', '')) !== ''
-                    ) {
-                        $products = collect($this->productRepository->findBy(['uuid' => array_keys($model->list)]));
-
-                        // add task send admin mail
-                        $task = new \App\Domain\Tasks\SendMailTask($this->container);
-                        $task->execute([
-                            'to' => $email,
-                            'body' => $this->render($tpl, ['order' => $model, 'products' => $products]),
-                            'isHtml' => true,
-                        ]);
-                        $isNeedRunWorker = true;
-                    }
-
-                    // письмо клиенту
-                    if (
-                        ($this->getParameter('catalog_mail_client', 'off') === 'on') &&
-                        $model->email &&
-                        ($tpl = $this->getParameter('catalog_mail_client_template', '')) !== ''
-                    ) {
-                        $products = collect($this->productRepository->findBy(['uuid' => array_keys($model->list)]));
-
-                        // add task send client mail
-                        $task = new \App\Domain\Tasks\SendMailTask($this->container);
-                        $task->execute([
-                            'to' => $model->email,
-                            'body' => $this->render($tpl, ['order' => $model, 'products' => $products]),
-                            'isHtml' => true,
-                        ]);
-                        $isNeedRunWorker = true;
-                    }
-
-                    $this->entityManager->flush();
-
-                    if ($isNeedRunWorker) {
-                        // run worker
-                        \App\Domain\AbstractTask::worker();
-                    }
-
-                    if (
-                        (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') && !empty($_SERVER['HTTP_REFERER'])
-                    ) {
-                        $this->response = $this->response->withHeader('Location', '/cart/done/' . $model->uuid)->withStatus(301);
-                    }
-
-                    return $this->respondWithJson(['redirect' => '/cart/done/' . $model->uuid]);
+                    $isNeedRunWorker = true;
                 }
 
-                $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
-            } else {
-                $this->addErrorFromCheck($check);
+                // mail to client
+                if (
+                    ($this->getParameter('catalog_mail_client', 'off') === 'on') &&
+                    $order->getEmail() &&
+                    ($tpl = $this->getParameter('catalog_mail_client_template', '')) !== ''
+                ) {
+                    $products = $catalogProductService->read(['uuid' => array_keys($order->getList())]);
+
+                    // add task send client mail
+                    $task = new \App\Domain\Tasks\SendMailTask($this->container);
+                    $task->execute([
+                        'to' => $order->getEmail(),
+                        'body' => $this->render($tpl, ['order' => $order, 'products' => $products]),
+                        'isHtml' => true,
+                    ]);
+                    $isNeedRunWorker = true;
+                }
+
+                // run worker
+                if ($isNeedRunWorker) {
+                    \App\Domain\AbstractTask::worker();
+                }
+
+                if (
+                    (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') && !empty($_SERVER['HTTP_REFERER'])
+                ) {
+                    $this->response = $this->response->withHeader('Location', '/cart/done/' . $order->getUuid())->withStatus(301);
+                }
+
+                return $this->respondWithJson(['redirect' => '/cart/done/' . $order->getUuid()]);
             }
+
+            $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
         }
 
         return $this->respondWithTemplate($this->getParameter('catalog_cart_template', 'catalog.cart.twig'));

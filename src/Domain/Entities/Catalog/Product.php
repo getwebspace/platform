@@ -576,16 +576,19 @@ class Product extends AbstractEntity
     /**
      * @ORM\Column(type="array")
      */
-    protected array $tags = [];
+    protected $tags = []; // todo set array
 
     /**
-     * @param array $tags
+     * @param array|string $tags
      *
      * @return $this
      */
-    public function setTags(array $tags)
+    public function setTags($tags)
     {
-        $this->tags = $tags;
+        if (is_string($tags)) {
+            $tags = explode(';', $tags);
+        }
+        $this->tags = array_map('trim', $tags);
 
         return $this;
     }

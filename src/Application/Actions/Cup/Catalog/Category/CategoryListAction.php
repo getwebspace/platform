@@ -3,28 +3,33 @@
 namespace App\Application\Actions\Cup\Catalog\Category;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
+use App\Domain\Service\Catalog\CategoryService as CatalogCatalogService;
 
 class CategoryListAction extends CatalogAction
 {
     protected function action(): \Slim\Http\Response
     {
+        $catalogCategoryService = CatalogCatalogService::getWithContainer($this->container);
         $category = null;
 
         if (!empty($this->args['parent'])) {
-            if (\Ramsey\Uuid\Uuid::isValid($this->resolveArg('parent'))) {
+            if (
+                $this->resolveArg('parent') !== \Ramsey\Uuid\Uuid::NIL &&
+                \Ramsey\Uuid\Uuid::isValid($this->resolveArg('parent'))
+            ) {
                 /** @var \App\Domain\Entities\Catalog\Category $category */
-                $category = $this->categoryRepository->findOneBy([
+                $category = $catalogCategoryService->read([
                     'uuid' => $this->resolveArg('parent'),
                     'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
                 ]);
             } else {
-                return $this->response->withAddedHeader('Location', '/cup/catalog/category')->withStatus(301);
+                return $this->response->withRedirect('/cup/catalog/category');
             }
         }
 
-        $categories = collect($this->categoryRepository->findBy([
+        $categories = $catalogCategoryService->read([
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
-        ]));
+        ]);
 
         return $this->respondWithTemplate('cup/catalog/category/index.twig', [
             'category' => $category,
