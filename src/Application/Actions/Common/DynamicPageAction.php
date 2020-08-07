@@ -40,7 +40,7 @@ class DynamicPageAction extends AbstractAction
         // категории публикаций
         if ($categories->count() && $categories->firstWhere('address', $path)) {
             $category = $categories->firstWhere('address', $path);
-            $childrenCategories = \App\Domain\Entities\Publication\Category::getChildrenCategories($categories, $category)->pluck('uuid')->all();
+            $childrenCategories = $category->getNested($categories)->pluck('uuid')->all();
 
             return $this->respondWithTemplate($category->template['list'], [
                 'categories' => $categories->where('public', true),

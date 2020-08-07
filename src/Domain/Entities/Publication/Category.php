@@ -394,18 +394,17 @@ class Category extends AbstractEntity
 
     /**
      * @param Collection $categories
-     * @param Category   $parent
      *
      * @return Collection
      */
-    public static function getChildrenCategories(Collection $categories, self $parent)
+    public function getNested(Collection $categories)
     {
-        $result = collect();
+        $result = collect([$this]);
 
-        if ($parent->children) {
+        if ($this->getChildren()) {
             // @var \App\Domain\Entities\Publication\Category $category
-            foreach ($categories->where('parent', $parent->uuid) as $child) {
-                $result = $result->merge(static::getChildrenCategories($categories, $child));
+            foreach ($categories->where('parent', $this->getUuid()) as $child) {
+                $result = $result->merge($child->getNested($categories));
             }
         }
 

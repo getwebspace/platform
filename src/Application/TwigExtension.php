@@ -3,9 +3,22 @@
 namespace App\Application;
 
 use App\Domain\AbstractExtension;
+use App\Domain\Service\Catalog\CategoryService as CatalogCatalogService;
+use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
+use App\Domain\Service\Catalog\ProductService as CatalogProductService;
+use App\Domain\Service\File\FileService;
+use App\Domain\Service\GuestBook\GuestBookService;
+use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
+use App\Domain\Service\Publication\PublicationService;
+use DateTime;
+use DateTimeZone;
+use Exception;
 use Psr\Container\ContainerInterface;
 use Ramsey\Uuid\Uuid;
 use Slim\Http\Uri;
+use Tightenco\Collect\Support\Collection;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
 
 class TwigExtension extends AbstractExtension
 {
@@ -35,8 +48,8 @@ class TwigExtension extends AbstractExtension
     public function getFilters()
     {
         return [
-            new \Twig\TwigFilter('count', [$this, 'count']),
-            new \Twig\TwigFilter('df', [$this, 'df']),
+            new TwigFilter('count', [$this, 'count']),
+            new TwigFilter('df', [$this, 'df']),
         ];
     }
 
@@ -44,48 +57,48 @@ class TwigExtension extends AbstractExtension
     {
         return [
             // slim functions
-            new \Twig\TwigFunction('path_for', [$this, 'pathFor']),
-            new \Twig\TwigFunction('full_url_for', [$this, 'fullUrlFor']),
-            new \Twig\TwigFunction('base_url', [$this, 'baseUrl']),
-            new \Twig\TwigFunction('is_current_path', [$this, 'isCurrentPath']),
-            new \Twig\TwigFunction('current_path', [$this, 'currentPath']),
+            new TwigFunction('path_for', [$this, 'pathFor']),
+            new TwigFunction('full_url_for', [$this, 'fullUrlFor']),
+            new TwigFunction('base_url', [$this, 'baseUrl']),
+            new TwigFunction('is_current_path', [$this, 'isCurrentPath']),
+            new TwigFunction('current_path', [$this, 'currentPath']),
 
             // wse functions
-            new \Twig\TwigFunction('form', [$this, 'form'], ['is_safe' => ['html']]),
-            new \Twig\TwigFunction('reference', [$this, 'reference']),
-            new \Twig\TwigFunction('parameter', [$this, 'parameter']),
-            new \Twig\TwigFunction('pre', [$this, 'pre']),
-            new \Twig\TwigFunction('dump', [$this, 'dump']),
-            new \Twig\TwigFunction('dumpe', [$this, 'dumpe']),
-            new \Twig\TwigFunction('count', [$this, 'count']),
-            new \Twig\TwigFunction('df', [$this, 'df']),
-            new \Twig\TwigFunction('collect', [$this, 'collect']),
-            new \Twig\TwigFunction('non_page_path', [$this, 'non_page_path']),
-            new \Twig\TwigFunction('current_page_number', [$this, 'current_page_number']),
-            new \Twig\TwigFunction('current_query', [$this, 'current_query'], ['is_safe' => ['html']]),
-            new \Twig\TwigFunction('is_current_page_number', [$this, 'is_current_page_number']),
-            new \Twig\TwigFunction('qr_code', [$this, 'qr_code'], ['is_safe' => ['html']]),
+            new TwigFunction('form', [$this, 'form'], ['is_safe' => ['html']]),
+            new TwigFunction('reference', [$this, 'reference']),
+            new TwigFunction('parameter', [$this, 'parameter']),
+            new TwigFunction('pre', [$this, 'pre']),
+            new TwigFunction('dump', [$this, 'dump']),
+            new TwigFunction('dumpe', [$this, 'dumpe']),
+            new TwigFunction('count', [$this, 'count']),
+            new TwigFunction('df', [$this, 'df']),
+            new TwigFunction('collect', [$this, 'collect']),
+            new TwigFunction('non_page_path', [$this, 'non_page_path']),
+            new TwigFunction('current_page_number', [$this, 'current_page_number']),
+            new TwigFunction('current_query', [$this, 'current_query'], ['is_safe' => ['html']]),
+            new TwigFunction('is_current_page_number', [$this, 'is_current_page_number']),
+            new TwigFunction('qr_code', [$this, 'qr_code'], ['is_safe' => ['html']]),
 
             // files functions
-            new \Twig\TwigFunction('files', [$this, 'files']),
+            new TwigFunction('files', [$this, 'files']),
 
             // publication functions
-            new \Twig\TwigFunction('publication', [$this, 'publication']),
-            new \Twig\TwigFunction('publication_category', [$this, 'publication_category']),
+            new TwigFunction('publication', [$this, 'publication']),
+            new TwigFunction('publication_category', [$this, 'publication_category']),
 
             // guestbook functions
-            new \Twig\TwigFunction('guestbook', [$this, 'guestbook']),
+            new TwigFunction('guestbook', [$this, 'guestbook']),
 
             // catalog functions
-            new \Twig\TwigFunction('catalog_category', [$this, 'catalog_category']),
-            new \Twig\TwigFunction('catalog_breadcrumb', [$this, 'catalog_breadcrumb']),
-            new \Twig\TwigFunction('catalog_products', [$this, 'catalog_products']),
-            new \Twig\TwigFunction('catalog_product', [$this, 'catalog_product']),
-            new \Twig\TwigFunction('catalog_product_view', [$this, 'catalog_product_view']),
-            new \Twig\TwigFunction('catalog_order', [$this, 'catalog_order']),
+            new TwigFunction('catalog_category', [$this, 'catalog_category']),
+            new TwigFunction('catalog_breadcrumb', [$this, 'catalog_breadcrumb']),
+            new TwigFunction('catalog_products', [$this, 'catalog_products']),
+            new TwigFunction('catalog_product', [$this, 'catalog_product']),
+            new TwigFunction('catalog_product_view', [$this, 'catalog_product_view']),
+            new TwigFunction('catalog_order', [$this, 'catalog_order']),
 
             // trademaster
-            new \Twig\TwigFunction('tm_api', [$this, 'tm_api']),
+            new TwigFunction('tm_api', [$this, 'tm_api']),
         ];
     }
 
@@ -182,7 +195,7 @@ class TwigExtension extends AbstractExtension
                 default:
                     return $reference[$value];
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // todo nothing
         }
 
@@ -233,26 +246,26 @@ class TwigExtension extends AbstractExtension
     /**
      * Date format function
      *
-     * @param \DateTime|string $obj
-     * @param string           $format
+     * @param DateTime|string $obj
+     * @param null|string      $format
      * @param string           $timezone
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return string
      */
     public function df($obj = 'now', $format = null, $timezone = '')
     {
         if (is_string($obj) || is_numeric($obj)) {
-            $obj = new \DateTime($obj);
+            $obj = new DateTime($obj);
         } elseif (is_null($obj)) {
-            $obj = new \DateTime();
+            $obj = new DateTime();
         } else {
             $obj = clone $obj;
         }
 
         return $obj
-            ->setTimezone(new \DateTimeZone($timezone ? $timezone : $this->parameter('common_timezone', 'UTC')))
+            ->setTimezone(new DateTimeZone($timezone ? $timezone : $this->parameter('common_timezone', 'UTC')))
             ->format($format ? $format : $this->parameter('common_date_format', 'j-m-Y, H:i'));
     }
 
@@ -339,9 +352,8 @@ class TwigExtension extends AbstractExtension
             }
         }
 
-        /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
-        $repository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
-        $result = collect($repository->findBy($criteria));
+        $fileService = FileService::getWithContainer($this->container);
+        $result = $fileService->read($criteria);
 
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:files', $files);
 
@@ -358,25 +370,21 @@ class TwigExtension extends AbstractExtension
         static $categories;
 
         if (!$categories) {
-            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
-            $repository = $this->entityManager->getRepository(\App\Domain\Entities\Publication\Category::class);
-            $categories = collect($repository->findAll());
+            $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
+            $categories = $publicationCategoryService->read();
         }
 
         static $buf;
 
         if (is_null($unique)) {
-            if (!isset($buf[$unique])) {
-                $buf[$unique] = collect($categories->where('public', true));
-            }
-        } else {
-            if (is_string($unique)) {
-                $unique = \Ramsey\Uuid\Uuid::fromString($unique);
-            }
-            if (!isset($buf[strval($unique)])) {
-                $uuids = \App\Domain\Entities\Publication\Category::getChildrens($categories, $categories->firstWhere('uuid', $unique))->pluck('uuid')->all();
-                $buf[strval($unique)] = $categories->whereIn('uuid', $uuids, false);
-            }
+            return $categories->where('public', true);
+        }
+        if (is_string($unique)) {
+            $unique = \Ramsey\Uuid\Uuid::fromString($unique);
+        }
+        if (!array_key_exists($unique, $buf)) {
+            $uuids = $categories->firstWhere('uuid', $unique)->getNested($categories)->pluck('uuid')->all();
+            $buf[strval($unique)] = $categories->whereIn('uuid', $uuids, false);
         }
 
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:publication_category');
@@ -400,7 +408,7 @@ class TwigExtension extends AbstractExtension
             $data = array_merge_recursive(['uuid' => [], 'address' => [], 'category' => []], $data);
 
             foreach ($data as $type => $values) {
-                if (is_a($values, \Tightenco\Collect\Support\Collection::class)) {
+                if (is_a($values, Collection::class)) {
                     $values = $values->all();
                 }
                 if (!is_array($data)) {
@@ -417,7 +425,7 @@ class TwigExtension extends AbstractExtension
                             break;
                         case 'category':
                             if (is_object($value) && is_a($value, \App\Domain\Entities\Publication\Category::class)) {
-                                $criteria['category'][] = $value->uuid;
+                                $criteria['category'][] = $value->getUuid();
                             } else {
                                 if (\Ramsey\Uuid\Uuid::isValid(strval($value)) === true) {
                                     $criteria['category'][] = $value;
@@ -435,10 +443,12 @@ class TwigExtension extends AbstractExtension
         $key = json_encode($criteria, JSON_UNESCAPED_UNICODE) . $limit . $offset;
 
         if (!isset($buf[$key])) {
-            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
-            $repository = $this->entityManager->getRepository(\App\Domain\Entities\Publication::class);
-
-            $buf[$key] = $limit > 1 ? collect($repository->findBy($criteria, $order, $limit, $offset)) : $repository->findOneBy($criteria, $order);
+            $publicationService = PublicationService::getWithContainer($this->container);
+            $buf[$key] = $publicationService->read(array_merge($criteria, [
+                'order' => $order,
+                'limit' => $limit,
+                'offset' => $offset,
+            ]));
         }
 
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:publication');
@@ -458,16 +468,15 @@ class TwigExtension extends AbstractExtension
         $key = json_encode($order, JSON_UNESCAPED_UNICODE) . $limit . $offset;
 
         if (!$buf) {
-            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
-            $repository = $this->entityManager->getRepository(\App\Domain\Entities\GuestBook::class);
-
-            // get list of comments and obfuscate email address
-            $buf[$key] = collect(
-                $limit > 1
-                    ? $repository->findBy(['status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK], $order, $limit, $offset)
-                    : $repository->findOneBy([], $order)
-            )->map(
-                function ($el) {
+            $guestBookService = GuestBookService::getWithContainer($this->container);
+            $buf[$key] = $guestBookService
+                ->read([
+                    'status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK,
+                    'order' => $order,
+                    'limit' => $limit,
+                    'offset' => $offset,
+                ])
+                ->map(function ($el) {
                     if ($el->email) {
                         $em = explode('@', $el->email);
                         $name = implode(array_slice($em, 0, count($em) - 1), '@');
@@ -477,8 +486,7 @@ class TwigExtension extends AbstractExtension
                     }
 
                     return $el;
-                }
-            );
+                });
         }
 
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:guestbook');
@@ -496,10 +504,10 @@ class TwigExtension extends AbstractExtension
         static $buf;
 
         if (!$buf) {
-            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
-            $repository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class);
-
-            $buf = collect($repository->findBy(['status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]));
+            $catalogCategoryService = CatalogCatalogService::getWithContainer($this->container);
+            $buf = $catalogCategoryService->read([
+                'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+            ]);
         }
 
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_category');
@@ -518,11 +526,11 @@ class TwigExtension extends AbstractExtension
         if (!is_null($category)) {
             $breadcrumb[] = $category;
 
-            while ($category->parent->toString() !== Uuid::NIL) {
+            while ($category->getParent()->toString() !== Uuid::NIL) {
                 /**
                  * @var \App\Domain\Entities\Catalog\Category;
                  */
-                $category = $categories->firstWhere('uuid', $category->parent);
+                $category = $categories->firstWhere('uuid', $category->getParent());
                 $breadcrumb[] = $category;
             }
         }
@@ -565,11 +573,9 @@ class TwigExtension extends AbstractExtension
 
         $key = json_encode($criteria, JSON_UNESCAPED_UNICODE) . $limit . $offset;
 
-        if (!isset($buf[$key])) {
-            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
-            $repository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
-
-            $buf[$key] = $limit > 1 ? collect($repository->findBy($criteria, $order, $limit, $offset)) : $repository->findOneBy($criteria, $order);
+        if (!array_key_exists($key, $buf)) {
+            $catalogProductService = CatalogProductService::getWithContainer($this->container);
+            $buf[$key] = $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
         }
 
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_products (%s)', $key);
@@ -615,11 +621,9 @@ class TwigExtension extends AbstractExtension
 
         $key = json_encode($criteria, JSON_UNESCAPED_UNICODE) . $limit . $offset;
 
-        if (!isset($buf[$key])) {
-            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
-            $repository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
-
-            $buf[$key] = $limit > 1 ? collect($repository->findBy($criteria, $order, $limit, $offset)) : $repository->findOneBy($criteria, $order);
+        if (!array_key_exists($key, $buf)) {
+            $catalogProductService = CatalogProductService::getWithContainer($this->container);
+            $buf[$key] = $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
         }
 
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_product (%s)', $key);
@@ -633,10 +637,10 @@ class TwigExtension extends AbstractExtension
         $list = $_SESSION['catalog_product_view'] ?? [];
 
         switch (true) {
-            case is_null($uuid) === true:
+            case is_null($uuid):
                 return $list;
 
-            case Uuid::isValid($uuid) === true:
+            case Uuid::isValid($uuid):
                 $list[] = $uuid->toString();
                 $list = array_unique($list);
 
@@ -646,7 +650,11 @@ class TwigExtension extends AbstractExtension
                 }
 
                 $_SESSION['catalog_product_view'] = $list;
+
+                return true;
         }
+
+        return null;
     }
 
     // получение заказа
@@ -659,12 +667,12 @@ class TwigExtension extends AbstractExtension
         $criteria = [];
 
         switch (true) {
-            case \Ramsey\Uuid\Uuid::isValid($unique) === true:
+            case \Ramsey\Uuid\Uuid::isValid($unique):
                 $criteria['uuid'] = $unique;
 
                 break;
 
-            case is_numeric($unique) === true:
+            case is_numeric($unique):
                 $criteria['external_id'] = $unique;
 
                 break;
@@ -677,11 +685,9 @@ class TwigExtension extends AbstractExtension
 
         $key = json_encode($criteria, JSON_UNESCAPED_UNICODE);
 
-        if (!isset($buf[$key])) {
-            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $repository */
-            $repository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Order::class);
-
-            $buf[$key] = collect($repository->findOneBy($criteria));
+        if (!array_key_exists($key, $buf)) {
+            $catalogOrderService = CatalogOrderService::getWithContainer($this->container);
+            $buf[$key] = $catalogOrderService->read($criteria);
         }
 
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_order (%s)', $key);
