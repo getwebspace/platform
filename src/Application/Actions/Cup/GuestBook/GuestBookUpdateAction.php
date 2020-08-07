@@ -9,12 +9,11 @@ class GuestBookUpdateAction extends GuestBookAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            $guestBookService = GuestBookService::getWithContainer($this->container);
-            $entry = $guestBookService->read(['uuid' => $this->resolveArg('uuid')]);
+            $entry = $this->guestBookService->read(['uuid' => $this->resolveArg('uuid')]);
 
             if ($entry) {
                 if ($this->request->isPost()) {
-                    $entry = $guestBookService->update($entry, [
+                    $entry = $this->guestBookService->update($entry, [
                         'name' => $this->request->getParam('name'),
                         'email' => $this->request->getParam('email'),
                         'message' => $this->request->getParam('message'),

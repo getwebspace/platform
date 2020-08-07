@@ -8,8 +8,7 @@ class GuestBookListAction extends GuestBookAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $guestBookService = GuestBookService::getWithContainer($this->container);
-        $list = $guestBookService->read();
+        $list = $this->guestBookService->read();
 
         return $this->respondWithTemplate('cup/guestbook/index.twig', ['list' => $list]);
     }
