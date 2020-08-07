@@ -11,12 +11,10 @@ class DataListAction extends FormAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            $formService = FormService::getWithContainer($this->container);
-            $form = $formService->read(['uuid' => $this->resolveArg('uuid')]);
+            $form = $this->formService->read(['uuid' => $this->resolveArg('uuid')]);
 
             if ($form) {
-                $formDataService = FormDataService::getWithContainer($this->container);
-                $list = $formDataService->read(['form_uuid' => $form->getUuid()]);
+                $list = $this->formDataService->read(['form_uuid' => $form->getUuid()]);
 
                 return $this->respondWithTemplate('cup/form/view/list.twig', [
                     'form' => $form,

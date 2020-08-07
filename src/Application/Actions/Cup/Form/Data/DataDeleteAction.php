@@ -13,8 +13,7 @@ class DataDeleteAction extends FormAction
             $this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid')) &&
             $this->resolveArg('data') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('data'))
         ) {
-            $formDataService = FormDataService::getWithContainer($this->container);
-            $formDataService->delete($this->resolveArg('data'));
+            $this->formDataService->delete($this->resolveArg('data'));
         }
 
         return $this->response->withRedirect('/cup/form/' . $this->resolveArg('uuid') . '/view');

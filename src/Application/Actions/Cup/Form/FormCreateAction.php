@@ -13,8 +13,7 @@ class FormCreateAction extends FormAction
     {
         if ($this->request->isPost()) {
             try {
-                $formService = FormService::getWithContainer($this->container);
-                $form = $formService->create([
+                $form = $this->formService->create([
                     'title' => $this->request->getParam('title'),
                     'address' => $this->request->getParam('address'),
                     'template' => $this->request->getParam('template'),

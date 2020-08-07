@@ -8,8 +8,7 @@ class FormListAction extends FormAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $formService = FormService::getWithContainer($this->container);
-        $list = $formService->read();
+        $list = $this->formService->read();
 
         return $this->respondWithTemplate('cup/form/index.twig', ['list' => $list]);
     }

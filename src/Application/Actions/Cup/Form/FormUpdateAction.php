@@ -11,13 +11,12 @@ class FormUpdateAction extends FormAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            $formService = FormService::getWithContainer($this->container);
-            $form = $formService->read(['uuid' => $this->resolveArg('uuid')]);
+            $form = $this->formService->read(['uuid' => $this->resolveArg('uuid')]);
 
             if ($form) {
                 if ($this->request->isPost()) {
                     try {
-                        $form = $formService->update($form, [
+                        $form = $this->formService->update($form, [
                             'title' => $this->request->getParam('title'),
                             'address' => $this->request->getParam('address'),
                             'template' => $this->request->getParam('template'),

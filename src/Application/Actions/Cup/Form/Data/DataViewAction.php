@@ -13,8 +13,7 @@ class DataViewAction extends FormAction
             $this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid')) &&
             $this->resolveArg('data') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('data'))
         ) {
-            $formDataService = FormDataService::getWithContainer($this->container);
-            $data = $formDataService->read([
+            $data = $this->formDataService->read([
                 'uuid' => $this->resolveArg('data'),
             ]);
 
