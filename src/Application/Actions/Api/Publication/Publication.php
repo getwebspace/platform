@@ -8,32 +8,15 @@ class Publication extends PublicationAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $data = [
+        $publications = from_service_to_array($this->publicationService->read([
             'uuid' => $this->request->getParam('uuid'),
             'category' => $this->request->getParam('category'),
             'address' => $this->request->getParam('address'),
-        ];
 
-        $criteria = [];
-
-        if ($data['uuid']) {
-            $criteria['uuid'] = $this->array_criteria_uuid($data['uuid']);
-        }
-        if ($data['category']) {
-            $criteria['category'] = $this->array_criteria_uuid($data['category']);
-        }
-        if ($data['address']) {
-            $criteria['address'] = urldecode($data['address']);
-        }
-
-        $publicationService = PublicationService::getWithContainer($this->container);
-        $publications = $publicationService->read(
-            array_merge($criteria, [
-                'order' => $this->request->getParam('order', []),
-                'limit' => $this->request->getParam('limit', 1000),
-                'offset' => $this->request->getParam('offset', 0),
-            ])
-        )->toArray();
+            'order' => $this->request->getParam('order', []),
+            'limit' => $this->request->getParam('limit', 1000),
+            'offset' => $this->request->getParam('offset', 0),
+        ]));
 
         /** @var \App\Domain\Entities\Publication $publication */
         foreach ($publications as &$publication) {

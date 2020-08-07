@@ -2,38 +2,19 @@
 
 namespace App\Application\Actions\Api\Publication;
 
-use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
-
 class Category extends PublicationAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $data = [
+        $categories = from_service_to_array($this->publicationCategoryService->read([
             'uuid' => $this->request->getParam('uuid'),
             'parent' => $this->request->getParam('parent'),
             'address' => $this->request->getParam('address'),
-        ];
 
-        $criteria = [];
-
-        if ($data['uuid']) {
-            $criteria['uuid'] = $this->array_criteria_uuid($data['uuid']);
-        }
-        if ($data['parent']) {
-            $criteria['parent'] = $this->array_criteria_uuid($data['parent']);
-        }
-        if ($data['address']) {
-            $criteria['address'] = urldecode($data['address']);
-        }
-
-        $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
-        $categories = $publicationCategoryService->read(
-            array_merge($criteria, [
-                'order' => $this->request->getParam('order', []),
-                'limit' => $this->request->getParam('limit', 1000),
-                'offset' => $this->request->getParam('offset', 0),
-            ])
-        )->toArray();
+            'order' => $this->request->getParam('order', []),
+            'limit' => $this->request->getParam('limit', 1000),
+            'offset' => $this->request->getParam('offset', 0),
+        ]));
 
         /** @var \App\Domain\Entities\Publication\Category $category */
         foreach ($categories as &$category) {
