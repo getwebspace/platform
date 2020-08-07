@@ -8,7 +8,7 @@ class File extends FileAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $files = $this->fileService->read([
+        $files = from_service_to_array($this->fileService->read([
             'uuid' => $this->request->getParam('uuid'),
             'name' => $this->request->getParam('name'),
             'ext' => $this->request->getParam('ext'),
@@ -16,7 +16,7 @@ class File extends FileAction
             'order' => $this->request->getParam('order', []),
             'limit' => $this->request->getParam('limit', 1000),
             'offset' => $this->request->getParam('offset', 0),
-        ]);
+        ]));
 
         /** @var \App\Domain\Entities\File $file */
         foreach ($files as &$file) {
@@ -34,6 +34,6 @@ class File extends FileAction
             $file['path'] = $path;
         }
 
-        return $this->respondWithJson($files->map(fn($item) => $item->toArray())->all());
+        return $this->respondWithJson($files);
     }
 }

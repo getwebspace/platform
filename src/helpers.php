@@ -1,6 +1,8 @@
 <?php declare(strict_types=1);
 
+use App\Domain\AbstractEntity;
 use Tightenco\Collect\Support\Arr;
+use Tightenco\Collect\Support\Collection;
 
 if (!function_exists('array_add')) {
     /**
@@ -331,5 +333,25 @@ if (!function_exists('blank')) {
         }
 
         return empty($value);
+    }
+}
+
+if (!function_exists('from_service_to_array')) {
+    /**
+     * Helper for read from Service class and return always array
+     *
+     * @param Collection|AbstractEntity $object
+     *
+     * @return array
+     */
+    function from_service_to_array($object)
+    {
+        switch (true) {
+            case is_a($object, Collection::class):
+                return $object->toArray();
+
+            case is_a($object, AbstractEntity::class):
+                return [$object];
+        }
     }
 }
