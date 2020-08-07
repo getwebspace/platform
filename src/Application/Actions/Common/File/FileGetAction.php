@@ -8,10 +8,8 @@ class FileGetAction extends FileAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $fileService = FileService::getWithContainer($this->container);
-
         // @var \App\Domain\Entities\File $file
-        $file = $fileService->read([
+        $file = $this->fileService->read([
             'salt' => $this->resolveArg('salt'),
             'hash' => $this->resolveArg('hash'),
         ]);

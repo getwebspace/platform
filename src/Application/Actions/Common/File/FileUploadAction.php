@@ -13,8 +13,6 @@ class FileUploadAction extends FileAction
         $models = [];
 
         if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
-            $fileService = FileService::getWithContainer($this->container);
-
             foreach ($this->request->getUploadedFiles() as $field => $files) {
                 if (!is_array($files)) {
                     $files = [$files]; // allow upload one file
@@ -23,7 +21,7 @@ class FileUploadAction extends FileAction
                 $uuids = [];
                 foreach ($files as $el) {
                     if (!$el->getError()) {
-                        $model = $fileService->createFromPath($el->file, $el->getClientFilename());
+                        $model = $this->fileService->createFromPath($el->file, $el->getClientFilename());
 
                         // is image
                         if (str_starts_with($model->getType(), 'image/')) {
