@@ -64,7 +64,6 @@ class TwigExtension extends AbstractExtension
             new \Twig\TwigFunction('current_page_number', [$this, 'current_page_number']),
             new \Twig\TwigFunction('current_query', [$this, 'current_query'], ['is_safe' => ['html']]),
             new \Twig\TwigFunction('is_current_page_number', [$this, 'is_current_page_number']),
-            new \Twig\TwigFunction('pushstream_channel', [$this, 'pushstream_channel']),
             new \Twig\TwigFunction('qr_code', [$this, 'qr_code'], ['is_safe' => ['html']]),
 
             // files functions
@@ -310,11 +309,6 @@ class TwigExtension extends AbstractExtension
     public function is_current_page_number($number)
     {
         return $this->current_page_number() === $number;
-    }
-
-    public function pushstream_channel($user_uuid)
-    {
-        return $this->container->get('pushstream')->getChannel($user_uuid);
     }
 
     public function qr_code($value, $width = 256, $height = 256)

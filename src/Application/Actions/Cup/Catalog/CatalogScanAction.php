@@ -6,12 +6,6 @@ class CatalogScanAction extends CatalogAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $channel = $this->resolveArg('channel');
-
-        if ($this->container->get('pushstream')->isOnline($channel)) {
-            return $this->respondWithTemplate('cup/catalog/barcode-scan.twig', ['channel' => $channel]);
-        }
-
-        return $this->response->withAddedHeader('Location', '/cup/catalog/product')->withStatus(301);
+        return $this->respondWithTemplate('cup/catalog/barcode-scan.twig');
     }
 }

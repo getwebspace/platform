@@ -147,11 +147,6 @@ $container['twig_profile'] = function (ContainerInterface $c) {
     return new \Twig\Profiler\Profile();
 };
 
-// push stream
-$container['pushstream'] = function (ContainerInterface $c) {
-    return new \App\Application\PushStream($c);
-};
-
 // monolog
 $container['monolog'] = function (ContainerInterface $c) {
     $settings = $c->get('logger');
