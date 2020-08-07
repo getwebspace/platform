@@ -31,9 +31,9 @@
                                             'name': 'delivery[client]',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="ФИО клиента"></i>',
                                             'args': {
-                                                'value': order.user ? order.user.getName() : order.delivery.client,
+                                                'value': order.user_uuid and user ? user.getName() : order.delivery.client,
                                                 'required': true,
-                                                'readonly': order.user ? true : false
+                                                'readonly': order.user_uuid and user ? true : false
                                             }
                                         } %}
                                     </div>
@@ -90,8 +90,8 @@
                                             'type': 'tel',
                                             'name': 'phone',
                                             'args': {
-                                                'value': order.user and order.user.phone ? order.user.phone : order.phone,
-                                                'readonly': order.user and order.user.phone ? true : false
+                                                'value': order.user_uuid and user.phone ? user.phone : order.phone,
+                                                'readonly': order.user_uuid and user.phone ? true : false
                                             }
                                         } %}
                                     </div>
@@ -104,8 +104,8 @@
                                             'type': 'email',
                                             'name': 'email',
                                             'args': {
-                                                'value': order.user and order.user.email ? order.user.email : order.email,
-                                                'readonly': order.user and order.user.email ? true : false
+                                                'value': order.user_uuid and user.email ? user.email : order.email,
+                                                'readonly': order.user_uuid and user.email ? true : false
                                             }
                                         } %}
                                     </div>
@@ -211,7 +211,7 @@
                                     'name': 'user_uuid',
                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
                                     'args': {
-                                        'value': order.user ? order.user.uuid : ''
+                                        'value': order.user_uuid ? user.uuid : ''
                                     }
                                 } %}
                             </div>

@@ -86,10 +86,6 @@ class TwigExtension extends AbstractExtension
 
             // trademaster
             new \Twig\TwigFunction('tm_api', [$this, 'tm_api']),
-
-            // other
-            new \Twig\TwigFunction('task', [$this, 'task']),
-            new \Twig\TwigFunction('notification', [$this, 'notification']),
         ];
     }
 
@@ -691,62 +687,5 @@ class TwigExtension extends AbstractExtension
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_order (%s)', $key);
 
         return $buf[$key];
-    }
-
-    // other functions
-
-    public function task($limit = 50)
-    {
-        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:task');
-
-        $qb = $this->entityManager->createQueryBuilder();
-        $counts = $qb
-            ->select('COUNT(t) AS count, t.status')
-            ->from(\App\Domain\Entities\Task::class, 't')
-            ->groupBy('t.status')
-            ->getQuery()
-            ->getScalarResult();
-
-        $qb = $this->entityManager->createQueryBuilder();
-        $list = $qb
-            ->select('t')
-            ->from(\App\Domain\Entities\Task::class, 't')
-            ->orderBy('t.date', 'DESC')
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult();
-
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:task');
-
-        return [
-            'count' => collect($counts)->pluck('count', 'status'),
-            'list' => collect($list),
-        ];
-    }
-
-    public function notification($user_uuid = null, $limit = 30)
-    {
-        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:notification');
-
-        $qb = $this->entityManager->createQueryBuilder();
-        $query = $qb->select('n')
-            ->from(\App\Domain\Entities\Notification::class, 'n')
-            ->where('n.user_uuid IS NULL' . ($user_uuid ? ' OR n.user_uuid = :uuid' : ''))
-            ->andWhere('n.date > :period')
-            ->orderBy('n.date', 'DESC')
-            ->setMaxResults($limit)
-            ->setParameter('uuid', $user_uuid, \Ramsey\Uuid\Doctrine\UuidType::NAME)
-            ->setParameter('period',
-                date(
-                    \App\Domain\References\Date::DATETIME,
-                    time() - ($this->parameter('notification_period', \App\Domain\References\Date::HOUR) * 24)
-                ), \Doctrine\DBAL\Types\Type::STRING
-            );
-
-        $result = collect($query->getQuery()->getResult());
-
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:notification');
-
-        return $result;
     }
 }

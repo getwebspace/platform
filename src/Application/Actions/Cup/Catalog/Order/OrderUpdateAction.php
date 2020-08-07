@@ -5,14 +5,18 @@ namespace App\Application\Actions\Cup\Catalog\Order;
 use App\Application\Actions\Cup\Catalog\CatalogAction;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
+use App\Domain\Service\User\Exception\UserNotFoundException;
+use App\Domain\Service\User\Exception\WrongPasswordException;
+use App\Domain\Service\User\UserService;
 
 class OrderUpdateAction extends CatalogAction
 {
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('order') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('order'))) {
-            $catalogProductService = CatalogProductService::getWithContainer($this->container);
             $catalogOrderService = CatalogOrderService::getWithContainer($this->container);
+            $catalogProductService = CatalogProductService::getWithContainer($this->container);
+            $userService = UserService::getWithContainer($this->container);
             $order = $catalogOrderService->read(['uuid' => $this->resolveArg('order')]);
 
             if ($order) {
@@ -40,9 +44,16 @@ class OrderUpdateAction extends CatalogAction
 
                 $products = $catalogProductService->read(['uuid' => array_keys($order->getList())]);
 
+                try {
+                    $user = $userService->read(['uuid' => $order->getUserUuid()]);
+                } catch (UserNotFoundException $e) {
+                    $user = null;
+                }
+
                 return $this->respondWithTemplate('cup/catalog/order/form.twig', [
                     'order' => $order,
                     'products' => $products,
+                    'user' => $user,
                 ]);
             }
         }
