@@ -10,8 +10,8 @@ class Publication
 
     // list of order by
     public const ORDER_BY = [
-        self::ORDER_BY_DATE => 'По дате',
-        self::ORDER_BY_TITLE => 'По названию',
+        self::ORDER_BY_DATE,
+        self::ORDER_BY_TITLE,
     ];
 
     // possible order directions
@@ -20,7 +20,7 @@ class Publication
 
     // list of order directions
     public const ORDER_DIRECTION = [
-        self::ORDER_DIRECTION_DESC => 'По убыванию',
-        self::ORDER_DIRECTION_ASC => 'По возрастанию',
+        self::ORDER_DIRECTION_DESC,
+        self::ORDER_DIRECTION_ASC,
     ];
 }

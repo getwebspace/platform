@@ -11,8 +11,8 @@ class User
 
     // list of address type
     public const NEWSLETTER_TYPE = [
-        self::NEWSLETTER_TYPE_ALL => 'Все',
-        self::NEWSLETTER_TYPE_USERS => 'Пользователи',
-        self::NEWSLETTER_TYPE_SUBSCRIBERS => 'Подписчики',
+        self::NEWSLETTER_TYPE_ALL,
+        self::NEWSLETTER_TYPE_USERS,
+        self::NEWSLETTER_TYPE_SUBSCRIBERS,
     ];
 }
