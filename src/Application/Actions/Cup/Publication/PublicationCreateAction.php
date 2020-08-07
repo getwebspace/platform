@@ -2,11 +2,9 @@
 
 namespace App\Application\Actions\Cup\Publication;
 
-use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
 use App\Domain\Service\Publication\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Publication\Exception\MissingTitleValueException;
 use App\Domain\Service\Publication\Exception\TitleAlreadyExistsException;
-use App\Domain\Service\Publication\PublicationService;
 
 class PublicationCreateAction extends PublicationAction
 {

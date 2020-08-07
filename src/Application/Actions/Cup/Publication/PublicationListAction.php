@@ -2,9 +2,6 @@
 
 namespace App\Application\Actions\Cup\Publication;
 
-use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
-use App\Domain\Service\Publication\PublicationService;
-
 class PublicationListAction extends PublicationAction
 {
     protected function action(): \Slim\Http\Response

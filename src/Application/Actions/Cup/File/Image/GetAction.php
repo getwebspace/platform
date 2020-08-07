@@ -4,7 +4,6 @@ namespace App\Application\Actions\Cup\File\Image;
 
 use Alksily\Support\Str;
 use App\Application\Actions\Cup\File\FileAction;
-use App\Domain\Service\File\FileService;
 
 class GetAction extends FileAction
 {

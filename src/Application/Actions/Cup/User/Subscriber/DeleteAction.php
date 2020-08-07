@@ -4,7 +4,6 @@ namespace App\Application\Actions\Cup\User\Subscriber;
 
 use App\Application\Actions\Cup\User\UserAction;
 use App\Domain\Service\User\Exception\UserNotFoundException;
-use App\Domain\Service\User\SubscriberService as UserSubscriberService;
 
 class DeleteAction extends UserAction
 {

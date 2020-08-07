@@ -3,17 +3,14 @@
 namespace App\Application\Actions\Cup\Catalog\Product;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
-use App\Domain\Service\Catalog\CategoryService as CatalogCatalogService;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
-use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 
 class ProductUpdateAction extends CatalogAction
 {
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('product') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('product'))) {
-
             $product = $this->catalogProductService->read([
                 'uuid' => $this->resolveArg('product'),
                 'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,

@@ -3,7 +3,6 @@
 namespace App\Application\Actions\Cup\Publication\Category;
 
 use App\Application\Actions\Cup\Publication\PublicationAction;
-use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
 use App\Domain\Service\Publication\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Publication\Exception\MissingTitleValueException;
 use App\Domain\Service\Publication\Exception\TitleAlreadyExistsException;

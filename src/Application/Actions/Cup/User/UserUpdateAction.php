@@ -7,7 +7,6 @@ use App\Domain\Exceptions\WrongPhoneValueException;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
-use App\Domain\Service\User\UserService;
 
 class UserUpdateAction extends UserAction
 {

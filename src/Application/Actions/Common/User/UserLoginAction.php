@@ -4,7 +4,6 @@ namespace App\Application\Actions\Common\User;
 
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
-use App\Domain\Service\User\UserService;
 
 class UserLoginAction extends UserAction
 {

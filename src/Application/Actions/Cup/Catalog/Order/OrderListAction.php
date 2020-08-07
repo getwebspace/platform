@@ -3,8 +3,6 @@
 namespace App\Application\Actions\Cup\Catalog\Order;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
-use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
-use App\Domain\Service\User\UserService;
 
 class OrderListAction extends CatalogAction
 {

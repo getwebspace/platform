@@ -2,8 +2,6 @@
 
 namespace App\Application\Actions\Cup\File;
 
-use App\Domain\Service\File\FileService;
-
 class FileDeleteAction extends FileAction
 {
     protected function action(): \Slim\Http\Response

@@ -4,7 +4,6 @@ namespace App\Application\Actions\Cup\Page;
 
 use App\Domain\Service\Page\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Page\Exception\TitleAlreadyExistsException;
-use App\Domain\Service\Page\PageService;
 
 class PageUpdateAction extends PageAction
 {

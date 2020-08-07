@@ -2,8 +2,6 @@
 
 namespace App\Application\Actions\Cup\Page;
 
-use App\Domain\Service\Page\PageService;
-
 class PageDeleteAction extends PageAction
 {
     protected function action(): \Slim\Http\Response

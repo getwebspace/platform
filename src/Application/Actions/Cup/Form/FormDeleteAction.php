@@ -2,8 +2,6 @@
 
 namespace App\Application\Actions\Cup\Form;
 
-use App\Domain\Service\Form\FormService;
-
 class FormDeleteAction extends FormAction
 {
     protected function action(): \Slim\Http\Response

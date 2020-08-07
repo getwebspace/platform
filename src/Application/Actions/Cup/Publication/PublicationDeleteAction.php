@@ -2,8 +2,6 @@
 
 namespace App\Application\Actions\Cup\Publication;
 
-use App\Domain\Service\Publication\PublicationService;
-
 class PublicationDeleteAction extends PublicationAction
 {
     protected function action(): \Slim\Http\Response

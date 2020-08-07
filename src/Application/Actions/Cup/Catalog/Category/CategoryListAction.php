@@ -3,7 +3,6 @@
 namespace App\Application\Actions\Cup\Catalog\Category;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
-use App\Domain\Service\Catalog\CategoryService as CatalogCatalogService;
 
 class CategoryListAction extends CatalogAction
 {

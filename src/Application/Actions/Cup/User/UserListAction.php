@@ -2,8 +2,6 @@
 
 namespace App\Application\Actions\Cup\User;
 
-use App\Domain\Service\User\UserService;
-
 class UserListAction extends UserAction
 {
     protected function action(): \Slim\Http\Response

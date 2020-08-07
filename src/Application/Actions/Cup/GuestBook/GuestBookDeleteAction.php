@@ -2,8 +2,6 @@
 
 namespace App\Application\Actions\Cup\GuestBook;
 
-use App\Domain\Service\GuestBook\GuestBookService;
-
 class GuestBookDeleteAction extends GuestBookAction
 {
     protected function action(): \Slim\Http\Response

@@ -3,7 +3,6 @@
 namespace App\Application\Actions\Cup\Form\Data;
 
 use App\Application\Actions\Cup\Form\FormAction;
-use App\Domain\Service\Form\DataService as FormDataService;
 
 class DataDeleteAction extends FormAction
 {

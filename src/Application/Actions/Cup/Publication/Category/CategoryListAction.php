@@ -3,7 +3,6 @@
 namespace App\Application\Actions\Cup\Publication\Category;
 
 use App\Application\Actions\Cup\Publication\PublicationAction;
-use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
 
 class CategoryListAction extends PublicationAction
 {
