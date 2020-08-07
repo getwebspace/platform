@@ -12,13 +12,12 @@ class CategoryUpdateAction extends PublicationAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
-            $publicationCategory = $publicationCategoryService->read(['uuid' => $this->resolveArg('uuid')]);
+            $publicationCategory = $this->publicationCategoryService->read(['uuid' => $this->resolveArg('uuid')]);
 
             if ($publicationCategory) {
                 if ($this->request->isPost()) {
                     try {
-                        $publicationCategory = $publicationCategoryService->update($publicationCategory, [
+                        $publicationCategory = $this->publicationCategoryService->update($publicationCategory, [
                             'title' => $this->request->getParam('title'),
                             'address' => $this->request->getParam('address'),
                             'description' => $this->request->getParam('description'),
@@ -45,7 +44,7 @@ class CategoryUpdateAction extends PublicationAction
                     }
                 }
 
-                return $this->respondWithTemplate('cup/publication/category/form.twig', ['list' => $publicationCategoryService->read(), 'item' => $publicationCategory]);
+                return $this->respondWithTemplate('cup/publication/category/form.twig', ['list' => $this->publicationCategoryService->read(), 'item' => $publicationCategory]);
             }
         }
 

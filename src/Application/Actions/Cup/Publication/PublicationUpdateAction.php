@@ -12,14 +12,12 @@ class PublicationUpdateAction extends PublicationAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
-            $publicationService = PublicationService::getWithContainer($this->container);
-            $publication = $publicationService->read(['uuid' => $this->resolveArg('uuid')]);
+            $publication = $this->publicationService->read(['uuid' => $this->resolveArg('uuid')]);
 
             if ($publication) {
                 if ($this->request->isPost()) {
                     try {
-                        $publication = $publicationService->update($publication, [
+                        $publication = $this->publicationService->update($publication, [
                             'title' => $this->request->getParam('title'),
                             'address' => $this->request->getParam('address'),
                             'date' => $this->request->getParam('date'),
@@ -44,7 +42,7 @@ class PublicationUpdateAction extends PublicationAction
                 }
 
                 return $this->respondWithTemplate('cup/publication/form.twig', [
-                    'list' => $publicationCategoryService->read(),
+                    'list' => $this->publicationCategoryService->read(),
                     'publication' => $publication,
                 ]);
             }

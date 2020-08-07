@@ -12,12 +12,9 @@ class PublicationCreateAction extends PublicationAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
-        $publicationService = PublicationService::getWithContainer($this->container);
-
         if ($this->request->isPost()) {
             try {
-                $publication = $publicationService->create([
+                $publication = $this->publicationService->create([
                     'title' => $this->request->getParam('title'),
                     'address' => $this->request->getParam('address'),
                     'date' => $this->request->getParam('date'),
@@ -41,6 +38,6 @@ class PublicationCreateAction extends PublicationAction
             }
         }
 
-        return $this->respondWithTemplate('cup/publication/form.twig', ['list' => $publicationCategoryService->read()]);
+        return $this->respondWithTemplate('cup/publication/form.twig', ['list' => $this->publicationCategoryService->read()]);
     }
 }

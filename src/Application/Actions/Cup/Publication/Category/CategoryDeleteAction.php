@@ -10,8 +10,7 @@ class CategoryDeleteAction extends PublicationAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
-            $publicationCategoryService->delete($this->resolveArg('uuid'));
+            $this->publicationCategoryService->delete($this->resolveArg('uuid'));
         }
 
         return $this->response->withAddedHeader('Location', '/cup/publication/category')->withStatus(301);

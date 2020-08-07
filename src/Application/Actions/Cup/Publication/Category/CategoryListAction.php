@@ -9,8 +9,6 @@ class CategoryListAction extends PublicationAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
-
-        return $this->respondWithTemplate('cup/publication/category/index.twig', ['list' => $publicationCategoryService->read()]);
+        return $this->respondWithTemplate('cup/publication/category/index.twig', ['list' => $this->publicationCategoryService->read()]);
     }
 }
