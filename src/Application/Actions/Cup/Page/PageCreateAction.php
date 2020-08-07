@@ -13,8 +13,7 @@ class PageCreateAction extends PageAction
     {
         if ($this->request->isPost()) {
             try {
-                $pageService = PageService::getWithContainer($this->container);
-                $page = $pageService->create([
+                $page = $this->pageService->create([
                     'title' => $this->request->getParam('title'),
                     'address' => $this->request->getParam('address'),
                     'date' => $this->request->getParam('date'),

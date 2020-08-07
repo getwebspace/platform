@@ -11,13 +11,12 @@ class PageUpdateAction extends PageAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            $pageService = PageService::getWithContainer($this->container);
-            $page = $pageService->read(['uuid' => $this->resolveArg('uuid')]);
+            $page = $this->pageService->read(['uuid' => $this->resolveArg('uuid')]);
 
             if ($page) {
                 if ($this->request->isPost()) {
                     try {
-                        $page = $pageService->update($page, [
+                        $page = $this->pageService->update($page, [
                             'title' => $this->request->getParam('title'),
                             'address' => $this->request->getParam('address'),
                             'date' => $this->request->getParam('date'),

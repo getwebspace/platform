@@ -8,8 +8,7 @@ class PageListAction extends PageAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $pageService = PageService::getWithContainer($this->container);
-        $list = $pageService->read();
+        $list = $this->pageService->read();
 
         return $this->respondWithTemplate('cup/page/index.twig', ['list' => $list]);
     }
