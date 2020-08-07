@@ -2,8 +2,6 @@
 
 namespace App\Application\Actions\Common\File;
 
-use App\Domain\Service\File\FileService;
-
 class FileUploadAction extends FileAction
 {
     protected function action(): \Slim\Http\Response

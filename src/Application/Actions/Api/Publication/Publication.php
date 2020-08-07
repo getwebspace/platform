@@ -2,8 +2,6 @@
 
 namespace App\Application\Actions\Api\Publication;
 
-use App\Domain\Service\Publication\PublicationService;
-
 class Publication extends PublicationAction
 {
     protected function action(): \Slim\Http\Response

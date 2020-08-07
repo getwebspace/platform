@@ -3,8 +3,8 @@
 namespace App\Application\Actions\Api\Publication;
 
 use App\Application\Actions\Api\ActionApi;
-use App\Domain\Service\Publication\PublicationService;
 use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
+use App\Domain\Service\Publication\PublicationService;
 use Psr\Container\ContainerInterface;
 
 abstract class PublicationAction extends ActionApi

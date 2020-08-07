@@ -23,14 +23,14 @@ class RefreshAction extends AbstractAction
                     'order' => ['date' => 'desc'],
                     'limit' => 25,
                 ])
-                ->map(fn($item) => $item->toArray()),
+                ->map(fn ($item) => $item->toArray()),
 
             'task' => $taskService
                 ->read([
                     'order' => ['date' => 'desc'],
                     'limit' => 25,
                 ])
-                ->map(fn($item) => $item->toArray()),
+                ->map(fn ($item) => $item->toArray()),
         ]);
     }
 }

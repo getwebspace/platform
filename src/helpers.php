@@ -340,7 +340,7 @@ if (!function_exists('from_service_to_array')) {
     /**
      * Helper for read from Service class and return always array
      *
-     * @param Collection|AbstractEntity $object
+     * @param AbstractEntity|Collection $object
      *
      * @return array
      */

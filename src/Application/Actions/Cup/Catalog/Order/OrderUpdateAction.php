@@ -6,7 +6,6 @@ use App\Application\Actions\Cup\Catalog\CatalogAction;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\User\Exception\UserNotFoundException;
-use App\Domain\Service\User\Exception\WrongPasswordException;
 use App\Domain\Service\User\UserService;
 
 class OrderUpdateAction extends CatalogAction
