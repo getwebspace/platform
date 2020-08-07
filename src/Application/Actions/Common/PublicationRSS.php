@@ -3,19 +3,21 @@
 namespace App\Application\Actions\Common;
 
 use App\Domain\AbstractAction;
+use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
+use App\Domain\Service\Publication\PublicationService;
 use Psr\Container\ContainerInterface;
 
 class PublicationRSS extends AbstractAction
 {
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     * @var PublicationCategoryService
      */
-    protected $publicationCategoryRepository;
+    protected PublicationCategoryService $publicationCategoryService;
 
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     * @var PublicationService
      */
-    protected $publicationRepository;
+    protected PublicationService $publicationService;
 
     /**
      * {@inheritdoc}
@@ -24,8 +26,8 @@ class PublicationRSS extends AbstractAction
     {
         parent::__construct($container);
 
-        $this->publicationCategoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Publication\Category::class);
-        $this->publicationRepository = $this->entityManager->getRepository(\App\Domain\Entities\Publication::class);
+        $this->publicationService = PublicationService::getWithContainer($container);
+        $this->publicationCategoryService = PublicationCategoryService::getWithContainer($container);
     }
 
     protected function action(): \Slim\Http\Response
@@ -36,28 +38,27 @@ class PublicationRSS extends AbstractAction
             ($url = $this->getParameter('common_homepage', false)) !== false &&
             ($channel = $this->resolveArg('channel'))
         ) {
-            /** @var \App\Domain\Entities\Publication\Category $category */
-            $category = $this->publicationCategoryRepository->findOneBy(['address' => str_escape($channel)]);
+            $category = $this->publicationCategoryService->read(['address' => str_escape($channel)]);
 
             $channel = new \Bhaktaraz\RSSGenerator\Channel();
             $channel
-                ->title($category->title)
-                ->description(strip_tags($category->description))
-                ->url($url . $category->address)
-                ->atomLinkSelf($url . 'rss/' . $category->address)
+                ->title($category->getTitle())
+                ->description(strip_tags($category->getDescription()))
+                ->url($url . $category->getAddress())
+                ->atomLinkSelf($url . 'rss/' . $category->getAddress())
                 ->appendTo($feed);
 
             /** @var \App\Domain\Entities\Publication $publication */
-            foreach ($this->publicationRepository->findBy(['category' => $category->uuid], [$category->sort['by'] => $category->sort['direction']]) as $publication) {
+            foreach ($this->publicationService->read(['category' => $category->getUuid(), 'order' => [$category->getSort()['by'] => $category->getSort()['direction']]]) as $publication) {
                 $item = new \Bhaktaraz\RSSGenerator\Item();
                 $item
-                    ->guid($publication->uuid->toString())
-                    ->title($publication->title)
-                    ->category($category->title)
-                    ->description(strip_tags($publication->content['short']))
-                    ->content($publication->content['full'])
-                    ->pubDate($publication->date->getTimestamp())
-                    ->url($url . $publication->address)
+                    ->guid($publication->getUuid()->toString())
+                    ->title($publication->getTitle())
+                    ->category($category->getTitle())
+                    ->description(strip_tags($publication->getContent()['short']))
+                    ->content($publication->getContent()['full'])
+                    ->pubDate($publication->getDate()->getTimestamp())
+                    ->url($url . $publication->getAddress())
                     ->appendTo($channel);
             }
         }
