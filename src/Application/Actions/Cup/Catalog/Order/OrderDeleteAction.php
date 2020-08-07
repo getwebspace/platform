@@ -10,8 +10,7 @@ class OrderDeleteAction extends CatalogAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('order') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('order'))) {
-            $catalogOrderService = CatalogOrderService::getWithContainer($this->container);
-            $catalogOrderService->delete($this->resolveArg('order'));
+            $this->catalogOrderService->delete($this->resolveArg('order'));
         }
 
         return $this->response->withRedirect('/cup/catalog/order');

@@ -12,9 +12,8 @@ class ProductDeleteAction extends CatalogAction
         $product = null;
 
         if ($this->resolveArg('product') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('product'))) {
-            $catalogProductService = CatalogProductService::getWithContainer($this->container);
-            $product = $catalogProductService->read(['uuid' => $this->resolveArg('product')]);
-            $catalogProductService->delete($this->resolveArg('product'));
+            $product = $this->catalogProductService->read(['uuid' => $this->resolveArg('product')]);
+            $this->catalogProductService->delete($this->resolveArg('product'));
         }
 
         return $this->response->withRedirect('/cup/catalog/product' . ($product ? '/' . $product->getCategory() : ''));

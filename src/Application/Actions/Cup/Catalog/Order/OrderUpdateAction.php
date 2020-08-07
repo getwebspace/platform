@@ -13,14 +13,11 @@ class OrderUpdateAction extends CatalogAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('order') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('order'))) {
-            $catalogOrderService = CatalogOrderService::getWithContainer($this->container);
-            $catalogProductService = CatalogProductService::getWithContainer($this->container);
-            $userService = UserService::getWithContainer($this->container);
-            $order = $catalogOrderService->read(['uuid' => $this->resolveArg('order')]);
+            $order = $this->catalogOrderService->read(['uuid' => $this->resolveArg('order')]);
 
             if ($order) {
                 if ($this->request->isPost()) {
-                    $order = $catalogOrderService->update($order, [
+                    $order = $this->catalogOrderService->update($order, [
                         'serial' => $order->serial,
                         'delivery' => $this->request->getParam('delivery'),
                         'user_uuid' => $this->request->getParam('user_uuid'),
@@ -41,10 +38,10 @@ class OrderUpdateAction extends CatalogAction
                     }
                 }
 
-                $products = $catalogProductService->read(['uuid' => array_keys($order->getList())]);
+                $products = $this->catalogProductService->read(['uuid' => array_keys($order->getList())]);
 
                 try {
-                    $user = $userService->read(['uuid' => $order->getUserUuid()]);
+                    $user = $this->userService->read(['uuid' => $order->getUserUuid()]);
                 } catch (UserNotFoundException $e) {
                     $user = null;
                 }

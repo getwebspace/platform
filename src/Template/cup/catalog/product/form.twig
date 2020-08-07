@@ -122,13 +122,11 @@
                                             'label': 'Штрих код',
                                             'type': 'number',
                                             'name': 'barcode',
-                                            'postfix': '<a href="#btn-modal-scan" rel="modal:open" style="color: #495057" data-toggle="tooltip" data-placement="top" title="Сканер QR/Bar кодов"><i class="fas fa-barcode"></i></a>',
                                             'args': {
                                                 'value': item.barcode,
                                                 'placeholder': '4820038494130',
                                             }
                                         } %}
-                                        {% include "cup/catalog/barcode-modal.twig" %}
                                     </div>
                                 </div>
 
@@ -451,29 +449,3 @@
     </div>
 {% endblock %}
 
-{% block script %}
-    {{ parent() }}
-
-    <script>
-        $(() => {
-            let $field = $('[name="barcode"]');
-
-            $(window).on('event:barcode_scan:result', (e, data) => {
-                if (data.barcode) {
-                    $field.val(data.barcode);
-
-                    $.notify({
-                        title: 'Отсканирован код',
-                        message: data.barcode
-                    }, {
-                        type: 'info',
-                        animate: {
-                            enter: 'animated fadeInRight',
-                            exit: 'animated fadeOutRight'
-                        }
-                    });
-                }
-            });
-        })
-    </script>
-{% endblock %}

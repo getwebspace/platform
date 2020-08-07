@@ -9,7 +9,6 @@ class CategoryListAction extends CatalogAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $catalogCategoryService = CatalogCatalogService::getWithContainer($this->container);
         $category = null;
 
         if (!empty($this->args['parent'])) {
@@ -18,7 +17,7 @@ class CategoryListAction extends CatalogAction
                 \Ramsey\Uuid\Uuid::isValid($this->resolveArg('parent'))
             ) {
                 /** @var \App\Domain\Entities\Catalog\Category $category */
-                $category = $catalogCategoryService->read([
+                $category = $this->catalogCategoryService->read([
                     'uuid' => $this->resolveArg('parent'),
                     'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
                 ]);
@@ -27,7 +26,7 @@ class CategoryListAction extends CatalogAction
             }
         }
 
-        $categories = $catalogCategoryService->read([
+        $categories = $this->catalogCategoryService->read([
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
         ]);
 

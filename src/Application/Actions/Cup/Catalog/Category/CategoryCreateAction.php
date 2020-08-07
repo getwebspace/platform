@@ -13,12 +13,11 @@ class CategoryCreateAction extends CatalogAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $catalogCategoryService = CatalogCatalogService::getWithContainer($this->container);
         $parent = $this->request->getParam('parent', false);
 
         if ($this->request->isPost()) {
             try {
-                $category = $catalogCategoryService->create([
+                $category = $this->catalogCategoryService->create([
                     'parent' => $this->request->getParam('parent'),
                     'children' => $this->request->getParam('children'),
                     'title' => $this->request->getParam('title'),
@@ -49,7 +48,7 @@ class CategoryCreateAction extends CatalogAction
             }
         }
 
-        $categories = $catalogCategoryService->read([
+        $categories = $this->catalogCategoryService->read([
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
         ]);
 

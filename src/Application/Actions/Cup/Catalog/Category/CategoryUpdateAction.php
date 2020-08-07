@@ -13,8 +13,7 @@ class CategoryUpdateAction extends CatalogAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('category') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('category'))) {
-            $catalogCategoryService = CatalogCatalogService::getWithContainer($this->container);
-            $category = $catalogCategoryService->read([
+            $category = $this->catalogCategoryService->read([
                 'uuid' => $this->resolveArg('category'),
                 'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
             ]);
@@ -22,7 +21,7 @@ class CategoryUpdateAction extends CatalogAction
             if ($category) {
                 if ($this->request->isPost()) {
                     try {
-                        $category = $catalogCategoryService->update($category, [
+                        $category = $this->catalogCategoryService->update($category, [
                             'parent' => $this->request->getParam('parent'),
                             'children' => $this->request->getParam('children'),
                             'title' => $this->request->getParam('title'),
@@ -53,7 +52,7 @@ class CategoryUpdateAction extends CatalogAction
                     }
                 }
 
-                $categories = $catalogCategoryService->read([
+                $categories = $this->catalogCategoryService->read([
                     'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
                 ]);
 

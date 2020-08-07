@@ -41,9 +41,9 @@ class CatalogExportAction extends CatalogAction
                 'cols' => max(0, +$this->getParameter('catalog_import_export_offset_cols', 0)),
             ];
 
-            $categories = collect($this->categoryRepository->findBy([
+            $categories = $this->catalogCategoryService->read([
                 'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
-            ]));
+            ]);
 
             // Products
             switch (($category = $this->request->getParam('category', false))) {
@@ -53,18 +53,18 @@ class CatalogExportAction extends CatalogAction
                     }
 
                     $category = $categories->firstWhere('uuid', $category);
-                    $products = collect($this->productRepository->findBy([
-                        'category' => \App\Domain\Entities\Catalog\Category::getNested($categories, $category)->pluck('uuid')->all(),
+                    $products = $this->catalogProductService->read([
+                        'category' => $category->getNested($categories)->pluck('uuid')->all(),
                         'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
-                    ]));
+                    ]);
 
                     break;
 
                     false:
                 case false:
-                    $products = collect($this->productRepository->findBy([
+                    $products = $this->catalogProductService->read([
                         'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
-                    ]));
+                    ]);
 
                     break;
             }
@@ -89,13 +89,13 @@ class CatalogExportAction extends CatalogAction
             // Write table data row by row
             foreach ($products->sortBy('category') as $model) {
                 /** @var \App\Domain\Entities\Catalog\Product $model */
-                if ($lastCategory !== $model->category->toString()) {
+                if ($lastCategory !== $model->getCategory()->toString()) {
                     // get header cell
                     $sheet
                         ->getCell($this->getCellCoordinate(0 + $offset['cols'], $row + 1 + $offset['rows']))
-                        ->setValue($categories->firstWhere('uuid', $model->category)->title ?? 'Без категории');
+                        ->setValue($categories->firstWhere('uuid', $model->getCategory())->title ?? 'Без категории');
 
-                    $lastCategory = $model->category->toString();
+                    $lastCategory = $model->getCategory()->toString();
                     $row++;
                 }
 
@@ -111,14 +111,14 @@ class CatalogExportAction extends CatalogAction
 
                         switch ($field) {
                             case 'category':
-                                $cell->setValue($categories->firstWhere('uuid', $model->category)->title ?? 'Без категории');
+                                $cell->setValue($categories->firstWhere('uuid', $model->getCategory())->title ?? 'Без категории');
 
                                 break;
 
                             case 'description':
                             case 'extra':
                                 $cell
-                                    ->setValue(trim($wizard->toRichTextObject($model->get($field))->getPlainText()));
+                                    ->setValue(trim($wizard->toRichTextObject($model->$field)->getPlainText()));
 
                                 break;
 
@@ -126,7 +126,7 @@ class CatalogExportAction extends CatalogAction
                             case 'price':
                             case 'priceWholesale':
                                 $cell
-                                    ->setValue($model->get($field))
+                                    ->setValue($model->$field)
                                     ->getStyle()
                                     ->getNumberFormat()
                                     ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED2);
@@ -136,7 +136,7 @@ class CatalogExportAction extends CatalogAction
                             case 'vendorcode':
                             case 'barcode':
                                 $cell
-                                    ->setValue($model->get($field))
+                                    ->setValue($model->$field)
                                     ->getStyle()
                                     ->getAlignment()
                                     ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
@@ -147,7 +147,7 @@ class CatalogExportAction extends CatalogAction
                             case 'stock':
                             case 'order':
                                 $cell
-                                    ->setValue($model->get($field))
+                                    ->setValue($model->$field)
                                     ->getStyle()
                                     ->getNumberFormat()
                                     ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_00);
@@ -156,7 +156,7 @@ class CatalogExportAction extends CatalogAction
 
                             case 'date':
                                 $cell
-                                    ->setValue(\PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($model->date))
+                                    ->setValue(\PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($model->getDate()))
                                     ->getStyle()
                                     ->getNumberFormat()
                                     ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_DATETIME);
@@ -164,7 +164,7 @@ class CatalogExportAction extends CatalogAction
                                 break;
 
                             default:
-                                $cell->setValue($model->get($field));
+                                $cell->setValue($model->$field);
 
                                 break;
                         }

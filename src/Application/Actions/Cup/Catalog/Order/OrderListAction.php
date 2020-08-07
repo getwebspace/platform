@@ -10,11 +10,8 @@ class OrderListAction extends CatalogAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $catalogOrderService = CatalogOrderService::getWithContainer($this->container);
-        $userService = UserService::getWithContainer($this->container);
-
-        $list = $catalogOrderService->read();
-        $users = $userService->read(['uuid' => $list->pluck('user_uuid')->all()]);
+        $list = $this->catalogOrderService->read();
+        $users = $this->userService->read(['uuid' => $list->pluck('user_uuid')->all()]);
 
         return $this->respondWithTemplate('cup/catalog/order/index.twig', [
             'orders' => $list,

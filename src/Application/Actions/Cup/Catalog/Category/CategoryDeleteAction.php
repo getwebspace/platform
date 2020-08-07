@@ -11,10 +11,7 @@ class CategoryDeleteAction extends CatalogAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('category') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('category'))) {
-            $catalogCategoryService = CatalogCatalogService::getWithContainer($this->container);
-            $catalogProductService = CatalogProductService::getWithContainer($this->container);
-
-            $category = $catalogCategoryService->read([
+            $category = $this->catalogCategoryService->read([
                 'uuid' => $this->resolveArg('category'),
                 'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
             ]);
@@ -25,21 +22,21 @@ class CategoryDeleteAction extends CatalogAction
                 /**
                  * @var \App\Domain\Entities\Catalog\Category $child
                  */
-                foreach ($catalogCategoryService->read(['parent' => $childrenUuids]) as $child) {
+                foreach ($this->catalogCategoryService->read(['parent' => $childrenUuids]) as $child) {
                     $child->setStatus(\App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE);
-                    $catalogCategoryService->write($child);
+                    $this->catalogCategoryService->write($child);
                 }
 
                 /**
                  * @var \App\Domain\Entities\Catalog\Product $product
                  */
-                foreach ($catalogProductService->read(['category' => $childrenUuids]) as $product) {
+                foreach ($this->catalogProductService->read(['category' => $childrenUuids]) as $product) {
                     $product->setStatus(\App\Domain\Types\Catalog\ProductStatusType::STATUS_DELETE);
-                    $catalogProductService->write($product);
+                    $this->catalogProductService->write($product);
                 }
 
                 $category->setStatus(\App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE);
-                $catalogCategoryService->write($category);
+                $this->catalogCategoryService->write($category);
             }
         }
 

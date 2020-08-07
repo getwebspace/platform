@@ -10,8 +10,6 @@ class ProductListAction extends CatalogAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $catalogCategoryService = CatalogCatalogService::getWithContainer($this->container);
-        $catalogProductService = CatalogProductService::getWithContainer($this->container);
         $category = null;
 
         if (!empty($this->args['category'])) {
@@ -20,7 +18,7 @@ class ProductListAction extends CatalogAction
                 \Ramsey\Uuid\Uuid::isValid($this->resolveArg('category'))
             ) {
                 /** @var \App\Domain\Entities\Catalog\Category $category */
-                $category = $catalogCategoryService->read([
+                $category = $this->catalogCategoryService->read([
                     'uuid' => $this->resolveArg('category'),
                     'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
                 ]);
@@ -29,10 +27,10 @@ class ProductListAction extends CatalogAction
             }
         }
 
-        $categories = $catalogCategoryService->read([
+        $categories = $this->catalogCategoryService->read([
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
         ]);
-        $products = $catalogProductService->read([
+        $products = $this->catalogProductService->read([
             'category' => $category ? $category->getNested($categories)->pluck('uuid')->all() : null,
             'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
         ]);

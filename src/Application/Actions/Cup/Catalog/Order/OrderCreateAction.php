@@ -10,8 +10,7 @@ class OrderCreateAction extends CatalogAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->request->isPost()) {
-            $catalogOrderService = CatalogOrderService::getWithContainer($this->container);
-            $order = $catalogOrderService->create([
+            $order = $this->catalogOrderService->create([
                 'delivery' => $this->request->getParam('delivery'),
                 'user_uuid' => $this->request->getParam('user_uuid'),
                 'list' => $this->request->getParam('list', []),

@@ -13,13 +13,11 @@ class ProductCreateAction extends CatalogAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $catalogCategoryService = CatalogCatalogService::getWithContainer($this->container);
-        $catalogProductService = CatalogProductService::getWithContainer($this->container);
         $category = $this->request->getParam('category', false);
 
         if ($this->request->isPost()) {
             try {
-                $product = $catalogProductService->create([
+                $product = $this->catalogProductService->create([
                     'category' => $this->request->getParam('category'),
                     'title' => $this->request->getParam('title'),
                     'description' => $this->request->getParam('description'),
@@ -60,7 +58,7 @@ class ProductCreateAction extends CatalogAction
             }
         }
 
-        $categories = $catalogCategoryService->read([
+        $categories = $this->catalogCategoryService->read([
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
         ]);
 

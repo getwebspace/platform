@@ -152,46 +152,41 @@
                         <div class="d-flex align-items-center">
                             <div class="card-title">Состав заказа</div>
 
-                            <a href="#btn-modal-scan" rel="modal:open" class="btn btn-icon btn-info ml-auto">
-                                <i class="fas fa-barcode"></i>
-                            </a>
-                            {% include "cup/catalog/barcode-modal.twig" %}
-
-                            <button type="button" data-btn-modal-products class="btn btn-primary btn-round ml-1">
+                            <button type="button" data-btn-modal-products class="btn btn-primary btn-round ml-auto">
                                 <i class="fa fa-plus"></i>
                                 Добавить товар
                             </button>
                         </div>
                     </div>
                     <div class="card-body">
-                        <table data-table class="display table table-striped table-hover" >
+                        <table data-table class="display table table-striped table-hover">
                             <thead>
-                                <tr>
-                                    <th class="no-sorting">Позиция</th>
-                                    <th width="15%" class="no-sorting">Цена</th>
-                                    <th width="15%" class="no-sorting">Количество</th>
-                                </tr>
+                            <tr>
+                                <th class="no-sorting">Позиция</th>
+                                <th width="15%" class="no-sorting">Цена</th>
+                                <th width="15%" class="no-sorting">Количество</th>
+                            </tr>
                             </thead>
                             <tbody>
-                                {% for product in products %}
-                                    {% set count = order.list[product.uuid.toString()] %}
-                                    <tr>
-                                        <td>{{ product.title }}</td>
-                                        <td>{{ product.price|number_format(2, '.', ' ') }}</td>
-                                        <td>
-                                            {% include 'cup/form.twig' with {
-                                                'type': 'number',
-                                                'name': 'list['~ product.uuid ~']',
-                                                'args': {
-                                                    'value': count,
-                                                    'placeholder': '1',
-                                                    'step': 'any',
-                                                    'min': '0',
-                                                }
-                                            } %}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
+                            {% for product in products %}
+                                {% set count = order.list[product.uuid.toString()] %}
+                                <tr>
+                                    <td>{{ product.title }}</td>
+                                    <td>{{ product.price|number_format(2, '.', ' ') }}</td>
+                                    <td>
+                                        {% include 'cup/form.twig' with {
+                                            'type': 'number',
+                                            'name': 'list['~ product.uuid ~']',
+                                            'args': {
+                                                'value': count,
+                                                'placeholder': '1',
+                                                'step': 'any',
+                                                'min': '0',
+                                            }
+                                        } %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -378,46 +373,6 @@
                         .find('td:last-child').html($('<div class="form-group">').append($input));
 
                     $.modal.close();
-                }
-            });
-
-            $(window).on('event:barcode_scan:result', (e, data) => {
-                if (data.barcode) {
-                    $.get('/api/catalog/product', {'barcode': data.barcode}, (res) => {
-                        if (res.length) {
-                            let product = res[0],
-                                $input = $('<input class="form-control" type="number" placeholder="1" min="0" step="any">')
-                                        .attr('name', 'list[' + product.uuid + ']').val(1)
-                            ;
-
-                            table.row.add([product.title, product.price, 1])
-                                .draw(true)
-                                .nodes().to$()
-                                .find('td:last-child').html($('<div class="form-group">').append($input));
-
-                            $.notify({
-                                title: 'Отсканирован код',
-                                message: 'В перечень товаров был добавлен товар: ' + product.title
-                            }, {
-                                type: 'info',
-                                animate: {
-                                    enter: 'animated fadeInRight',
-                                    exit: 'animated fadeOutRight'
-                                }
-                            });
-                        } else {
-                            $.notify({
-                                title: 'Отсканирован код',
-                                message: 'Товар с кодом: ' + data.barcode + ' не найден'
-                            }, {
-                                type: 'warning',
-                                animate: {
-                                    enter: 'animated fadeInRight',
-                                    exit: 'animated fadeOutRight'
-                                }
-                            });
-                        }
-                    });
                 }
             });
         })

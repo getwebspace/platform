@@ -13,10 +13,8 @@ class ProductUpdateAction extends CatalogAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('product') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('product'))) {
-            $catalogCategoryService = CatalogCatalogService::getWithContainer($this->container);
-            $catalogProductService = CatalogProductService::getWithContainer($this->container);
 
-            $product = $catalogProductService->read([
+            $product = $this->catalogProductService->read([
                 'uuid' => $this->resolveArg('product'),
                 'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
             ]);
@@ -24,7 +22,7 @@ class ProductUpdateAction extends CatalogAction
             if ($product) {
                 if ($this->request->isPost()) {
                     try {
-                        $product = $catalogProductService->update($product, [
+                        $product = $this->catalogProductService->update($product, [
                             'category' => $this->request->getParam('category'),
                             'title' => $this->request->getParam('title'),
                             'description' => $this->request->getParam('description'),
@@ -65,7 +63,7 @@ class ProductUpdateAction extends CatalogAction
                     }
                 }
 
-                $categories = $catalogCategoryService->read([
+                $categories = $this->catalogCategoryService->read([
                     'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
                 ]);
 

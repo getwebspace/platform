@@ -23,12 +23,7 @@
                         {% endif %}
                         <h4 class="card-title">Номенклатура {{ category ? 'в категории ' ~ category.title : '' }} ({{ products.count() }})</h4>
 
-                        <a href="#btn-modal-scan" rel="modal:open" class="btn btn-icon btn-info ml-auto" data-toggle="tooltip" data-placement="top" title="Сканер штрих и QR кодов">
-                            <i class="fas fa-barcode"></i>
-                        </a>
-                        {% include "cup/catalog/barcode-modal.twig" %}
-
-                        <a href="#btn-modal-import" rel="modal:open" class="btn btn-secondary btn-icon ml-1 text-white" data-toggle="tooltip" data-placement="top" title="Импорт продуктов">
+                        <a href="#btn-modal-import" rel="modal:open" class="btn btn-secondary btn-icon ml-auto text-white" data-toggle="tooltip" data-placement="top" title="Импорт продуктов">
                             <i class="fas fa-file-import"></i>
                         </a>
                         {% include "cup/catalog/import-modal.twig" %}
@@ -132,31 +127,3 @@
     </div>
 {% endblock %}
 
-{% block script %}
-    {{ parent() }}
-
-    <script>
-        $(() => {
-            let
-                $table = $('[data-table]'),
-                table = $table.DataTable();
-
-            $(window).on('event:barcode_scan:result', (e, data) => {
-                if (data.barcode) {
-                    table.search(data.barcode).draw();
-
-                    $.notify({
-                        title: 'Отсканирован код',
-                        message: data.barcode
-                    }, {
-                        type: 'info',
-                        animate: {
-                            enter: 'animated fadeInRight',
-                            exit: 'animated fadeOutRight'
-                        }
-                    });
-                }
-            });
-        })
-    </script>
-{% endblock %}
