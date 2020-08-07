@@ -151,23 +151,23 @@ class UserService extends AbstractService
 
                     break;
 
-                case $criteria['uuid']:
-                    $user = $this->service->findOneByUuid($criteria['uuid']);
+                case $data['uuid']:
+                    $user = $this->service->findOneByUuid($data['uuid']);
 
                     break;
 
-                case $criteria['username']:
-                    $user = $this->service->findOneByUsername($criteria['username']);
+                case $data['username']:
+                    $user = $this->service->findOneByUsername($data['username']);
 
                     break;
 
-                case $criteria['email']:
-                    $user = $this->service->findOneByEmail($criteria['email']);
+                case $data['email']:
+                    $user = $this->service->findOneByEmail($data['email']);
 
                     break;
 
-                case $criteria['phone']:
-                    $user = $this->service->findOneByPhone($criteria['phone']);
+                case $data['phone']:
+                    $user = $this->service->findOneByPhone($data['phone']);
 
                     break;
             }
