@@ -43,17 +43,17 @@
                     <table class="table mt-3 mb-5">
                         <tr>
                             <td style="width: 50%">Имя</td>
-                            <td style="width: 50%">{{ order.delivery.client }}</td>
+                            <td style="width: 50%">{{ order.user_uuid and user ? user.getName() : order.delivery.client }}</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>Телефон</td>
-                            <td>{{ order.phone }}</td>
+                            <td>{{ order.user_uuid and user and user.phone ? user.phone : order.phone }}</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>E-Mail</td>
-                            <td>{{ order.email }}</td>
+                            <td>{{ order.user_uuid and user and user.email ? user.email : order.email }}</td>
                             <td></td>
                         </tr>
                         <tr>

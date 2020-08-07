@@ -90,8 +90,8 @@
                                             'type': 'tel',
                                             'name': 'phone',
                                             'args': {
-                                                'value': order.user_uuid and user.phone ? user.phone : order.phone,
-                                                'readonly': order.user_uuid and user.phone ? true : false
+                                                'value': order.user_uuid and user and user.phone ? user.phone : order.phone,
+                                                'readonly': order.user_uuid and user and user.phone ? true : false
                                             }
                                         } %}
                                     </div>
@@ -104,8 +104,8 @@
                                             'type': 'email',
                                             'name': 'email',
                                             'args': {
-                                                'value': order.user_uuid and user.email ? user.email : order.email,
-                                                'readonly': order.user_uuid and user.email ? true : false
+                                                'value': order.user_uuid and user and user.email ? user.email : order.email,
+                                                'readonly': order.user_uuid and user and user.email ? true : false
                                             }
                                         } %}
                                     </div>

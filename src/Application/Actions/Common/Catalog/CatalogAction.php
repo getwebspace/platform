@@ -6,10 +6,16 @@ use App\Domain\AbstractAction;
 use App\Domain\Service\Catalog\CategoryService as CatalogCatalogService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
+use App\Domain\Service\User\UserService;
 use Psr\Container\ContainerInterface;
 
 abstract class CatalogAction extends AbstractAction
 {
+    /**
+     * @var UserService
+     */
+    protected UserService $userService;
+
     /**
      * @var CatalogCatalogService
      */
@@ -32,8 +38,9 @@ abstract class CatalogAction extends AbstractAction
     {
         parent::__construct($container);
 
-        $this->catalogCategoryService = CatalogCatalogService::getWithContainer($this->container);
-        $this->catalogProductService = CatalogProductService::getWithContainer($this->container);
-        $this->catalogOrderService = CatalogOrderService::getWithContainer($this->container);
+        $this->userService = UserService::getWithContainer($container);
+        $this->catalogCategoryService = CatalogCatalogService::getWithContainer($container);
+        $this->catalogProductService = CatalogProductService::getWithContainer($container);
+        $this->catalogOrderService = CatalogOrderService::getWithContainer($container);
     }
 }
