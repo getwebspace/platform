@@ -12,17 +12,15 @@ class DeleteAction extends FileAction
         $src = $this->request->getParam('src', false);
 
         if ($src !== false) {
-            $fileService = FileService::getWithContainer($this->container);
-
             $info = pathinfo($src);
 
-            $file = $fileService->read([
+            $file = $this->fileService->read([
                 'name' => str_escape($info['filename']),
                 'ext' => str_escape($info['extension']),
             ]);
 
             if ($file) {
-                $fileService->delete($file);
+                $this->fileService->delete($file);
             }
         }
 

@@ -8,8 +8,7 @@ class FileListAction extends FileAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $fileService = FileService::getWithContainer($this->container);
-        $list = $fileService->read();
+        $list = $this->fileService->read();
 
         return $this->respondWithTemplate('cup/file/index.twig', ['list' => $list]);
     }

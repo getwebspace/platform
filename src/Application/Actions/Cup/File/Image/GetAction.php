@@ -10,11 +10,9 @@ class GetAction extends FileAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $fileService = FileService::getWithContainer($this->container);
-
         $result = [];
 
-        foreach ($fileService->read() as $file) {
+        foreach ($this->fileService->read() as $file) {
             /** @var \App\Domain\Entities\File $file */
             if (Str::start('image/', $file->getType())) {
                 $result[] = [
