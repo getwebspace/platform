@@ -2,12 +2,11 @@
 
 namespace App\Application\Actions\Cup;
 
-use App\Domain\AbstractAction;
+use App\Application\Actions\Cup\User\UserAction;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
-use App\Domain\Service\User\UserService;
 
-class LoginPageAction extends AbstractAction
+class LoginPageAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
@@ -28,8 +27,7 @@ class LoginPageAction extends AbstractAction
 
             if ($this->isRecaptchaChecked()) {
                 try {
-                    $userService = UserService::getWithContainer($this->container);
-                    $user = $userService->read([
+                    $user = $this->userService->read([
                         'identifier' => $data[$identifier],
                         'password' => $data['password'],
                         'agent' => $data['agent'],
