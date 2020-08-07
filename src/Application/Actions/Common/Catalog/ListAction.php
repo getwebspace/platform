@@ -2,8 +2,6 @@
 
 namespace App\Application\Actions\Common\Catalog;
 
-use App\Domain\Service\Catalog\CategoryService as CatalogCatalogService;
-use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use Slim\Http\Response;
 use Tightenco\Collect\Support\Collection;
 
@@ -17,10 +15,8 @@ class ListAction extends CatalogAction
      */
     protected function action(): \Slim\Http\Response
     {
-        $catalogCategoryService = CatalogCatalogService::getWithContainer($this->container);
-
         $params = $this->parsePath();
-        $categories = $catalogCategoryService->read([
+        $categories = $this->catalogCategoryService->read([
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
         ]);
 
@@ -251,8 +247,7 @@ class ListAction extends CatalogAction
      */
     protected function prepareProduct(array &$params, &$categories)
     {
-        $catalogProductService = CatalogProductService::getWithContainer($this->container);
-        $product = $catalogProductService->read([
+        $product = $this->catalogProductService->read([
             'address' => $params['address'],
             'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
         ]);

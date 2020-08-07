@@ -2,8 +2,6 @@
 
 namespace App\Application\Actions\Common\Catalog;
 
-use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
-use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use Slim\Http\Response;
 
 class CartAction extends CatalogAction
@@ -16,9 +14,6 @@ class CartAction extends CatalogAction
      */
     protected function action(): \Slim\Http\Response
     {
-        $catalogProductService = CatalogProductService::getWithContainer($this->container);
-        $catalogOrderService = CatalogOrderService::getWithContainer($this->container);
-
         if ($this->request->isPost()) {
             $data = [
                 'delivery' => $this->request->getParam('delivery'),
@@ -43,7 +38,7 @@ class CartAction extends CatalogAction
             }
 
             if ($this->isRecaptchaChecked()) {
-                $order = $catalogOrderService->create($data);
+                $order = $this->catalogOrderService->create($data);
 
                 $isNeedRunWorker = false;
 
@@ -53,7 +48,7 @@ class CartAction extends CatalogAction
                     ($email = $this->getParameter('smtp_from', '')) !== '' &&
                     ($tpl = $this->getParameter('catalog_mail_admin_template', '')) !== ''
                 ) {
-                    $products = $catalogProductService->read(['uuid' => array_keys($order->getList())]);
+                    $products = $this->catalogProductService->read(['uuid' => array_keys($order->getList())]);
 
                     // add task send admin mail
                     $task = new \App\Domain\Tasks\SendMailTask($this->container);
@@ -71,7 +66,7 @@ class CartAction extends CatalogAction
                     $order->getEmail() &&
                     ($tpl = $this->getParameter('catalog_mail_client_template', '')) !== ''
                 ) {
-                    $products = $catalogProductService->read(['uuid' => array_keys($order->getList())]);
+                    $products = $this->catalogProductService->read(['uuid' => array_keys($order->getList())]);
 
                     // add task send client mail
                     $task = new \App\Domain\Tasks\SendMailTask($this->container);
