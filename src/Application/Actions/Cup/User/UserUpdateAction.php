@@ -14,13 +14,12 @@ class UserUpdateAction extends UserAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid')) {
-            $userService = UserService::getWithContainer($this->container);
-            $user = $userService->read(['uuid' => $this->resolveArg('uuid')]);
+            $user = $this->userService->read(['uuid' => $this->resolveArg('uuid')]);
 
             if ($user) {
                 if ($this->request->isPost()) {
                     try {
-                        $userService->update($user, [
+                        $this->userService->update($user, [
                             'username' => $this->request->getParam('username'),
                             'firstname' => $this->request->getParam('firstname'),
                             'lastname' => $this->request->getParam('lastname'),

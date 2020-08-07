@@ -9,8 +9,7 @@ class UserDeleteAction extends UserAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            $userService = UserService::getWithContainer($this->container);
-            $userService->delete($this->resolveArg('uuid'));
+            $this->userService->delete($this->resolveArg('uuid'));
         }
 
         return $this->response->withAddedHeader('Location', '/cup/user')->withStatus(301);

@@ -13,8 +13,7 @@ class UserCreateAction extends UserAction
     {
         if ($this->request->isPost()) {
             try {
-                $userService = UserService::getWithContainer($this->container);
-                $user = $userService->create([
+                $user = $this->userService->create([
                     'username' => $this->request->getParam('username'),
                     'password' => $this->request->getParam('password'),
                     'firstname' => $this->request->getParam('firstname'),
@@ -32,12 +31,12 @@ class UserCreateAction extends UserAction
                     default:
                         return $this->response->withRedirect('/cup/user/' . $user->getUuid() . '/edit');
                 }
-            } catch (UsernameAlreadyExistsException $exception) {
-                $this->addError('username', $exception->getMessage());
-            } catch (EmailAlreadyExistsException $exception) {
-                $this->addError('email', $exception->getMessage());
-            } catch (PhoneAlreadyExistsException $exception) {
-                $this->addError('phone', $exception->getMessage());
+            } catch (UsernameAlreadyExistsException $e) {
+                $this->addError('username', $e->getMessage());
+            } catch (EmailAlreadyExistsException $e) {
+                $this->addError('email', $e->getMessage());
+            } catch (PhoneAlreadyExistsException $e) {
+                $this->addError('phone', $e->getMessage());
             }
         }
 

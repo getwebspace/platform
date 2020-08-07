@@ -9,30 +9,17 @@ class CreateAction extends UserAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->request->isPost()) {
-            $data = [
+            $task = new \App\Domain\Tasks\SendNewsLetterMailTask($this->container);
+            $task->execute([
                 'subject' => $this->request->getParam('subject'),
                 'body' => $this->request->getParam('body'),
                 'type' => $this->request->getParam('type'),
-            ];
+            ]);
 
-            $check = \App\Domain\Filters\User::newsletter($data);
+            // run worker
+            \App\Domain\AbstractTask::worker();
 
-            if ($check === true) {
-                $task = new \App\Domain\Tasks\SendNewsLetterMailTask($this->container);
-                $task->execute([
-                    'subject' => $data['subject'],
-                    'body' => $data['body'],
-                    'type' => $data['type'],
-                ]);
-
-                $this->entityManager->flush();
-
-                // run worker
-                \App\Domain\AbstractTask::worker();
-
-                return $this->response->withAddedHeader('Location', '/cup/user/newsletter')->withStatus(301);
-            }
-            $this->addErrorFromCheck($check);
+            return $this->response->withRedirect('/cup/user/newsletter');
         }
 
         return $this->respondWithTemplate('cup/user/newsletter/form.twig');

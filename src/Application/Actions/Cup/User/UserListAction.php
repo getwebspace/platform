@@ -43,8 +43,7 @@ class UserListAction extends UserAction
             }
         }
 
-        $userService = UserService::getWithContainer($this->container);
-        $query = $userService->createQueryBuilder('u');
+        $query = $this->userService->createQueryBuilder('u');
 
         foreach ($criteria as $criterion => $value) {
             if (is_array($value)) {
