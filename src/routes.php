@@ -60,6 +60,10 @@ $app
                 $app->map(['get', 'post'], '/parameters', \App\Application\Actions\Cup\ParametersPageAction::class)
                     ->setName('cup:parameters');
 
+                // refresh
+                $app->map(['post'], '/refresh', \App\Application\Actions\Cup\RefreshAction::class)
+                    ->setName('cup:refresh');
+
                 // users
                 $app->group('/user', function (App $app): void {
                     // users subscribers
