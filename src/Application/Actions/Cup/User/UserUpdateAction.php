@@ -29,7 +29,7 @@ class UserUpdateAction extends UserAction
                             'level' => $this->request->getParam('level'),
                             'status' => $this->request->getParam('status'),
                         ]);
-                        $user = $this->handlerEntityFiles($user);
+                        $user = $this->processEntityFiles($user);
 
                         switch (true) {
                             case $this->request->getParam('save', 'exit') === 'exit':

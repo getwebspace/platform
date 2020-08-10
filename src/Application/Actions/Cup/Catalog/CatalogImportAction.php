@@ -12,12 +12,12 @@ class CatalogImportAction extends CatalogAction
 
             if ($fields) {
                 /** @var \App\Domain\Entities\File $file */
-                $file = array_first($this->handlerFileUpload('excel'));
+                $file = array_first($this->getUploadedFiles('excel'));
 
                 if ($file) {
                     // add import task
                     $task = new \App\Domain\Tasks\Catalog\ImportTask($this->container);
-                    $task->execute(['file' => $file->uuid->toString()]);
+                    $task->execute(['file' => $file->getUuid()->toString()]);
 
                     $this->entityManager->flush();
 

@@ -32,7 +32,7 @@ class CategoryCreateAction extends CatalogAction
                     'template' => $this->request->getParam('template'),
                     'external_id' => $this->request->getParam('external_id'),
                 ]);
-                $category = $this->handlerEntityFiles($category);
+                $category = $this->processEntityFiles($category);
 
                 switch (true) {
                     case $this->request->getParam('save', 'exit') === 'exit':

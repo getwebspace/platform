@@ -259,9 +259,9 @@ class File extends AbstractEntity
         $info = pathinfo($path);
         $result = [
             'dir' => $info['dirname'],
-            'name' => isset($info['filename']) ? static::prepareFileName($info['filename']) : '',
+            'name' => isset($info['filename']) ? static::prepareName($info['filename']) : '',
             'ext' => isset($info['extension']) ? mb_strtolower($info['extension']) : '',
-            'type' => addslashes(@exec('file -bi ' . $path)),
+            'type' => addslashes(@exec('file -bi "' . $path . '"')),
             'size' => filesize($path),
             'hash' => sha1_file($path),
         ];
@@ -271,13 +271,21 @@ class File extends AbstractEntity
         return $result;
     }
 
-    protected static function prepareFileName($name)
+    public static function prepareName($name)
     {
-        $entities = ['%20', '%21', '%2A', '%27', '%28', '%29', '%3B', '%3A', '%40', '%26', '%3D', '%2B', '%24', '%2C', '%2F', '%3F', '%25', '%23', '%5B', '%5D'];
-        $replacements = [' ', '!', '*', "'", '(', ')', ';', ':', '@', '&', '=', '+', '$', ',', '/', '?', '%', '#', '[', ']'];
+        $replacements = [
+            '!', '*', "'",
+            '(', ')', ';',
+            ':', '@', '&',
+            '=', '+', '$',
+            ',', '/', '?',
+            '%', '#', '[',
+            ']',
+        ];
 
-        $name = mb_strtolower($name);
-        $name = str_replace(array_merge($entities, $replacements), '', urlencode($name));
+        $name = urldecode($name);
+        $name = str_replace(' ', '_', $name);
+        $name = str_replace($replacements, '', $name);
         $name = \Alksily\Support\Str::translate($name);
 
         return $name;

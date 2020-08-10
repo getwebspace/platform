@@ -156,7 +156,7 @@ abstract class AbstractTask extends AbstractComponent
         return false;
     }
 
-    private function saveStateWriteLog($status = null, $progress = null): void
+    private function saveStateWriteLog($status = null, $progress = 0): void
     {
         $this->entity = $this->taskService->update($this->entity, [
             'status' => $status,

@@ -28,7 +28,7 @@ class CategoryUpdateAction extends PublicationAction
                             'meta' => $this->request->getParam('meta'),
                             'template' => $this->request->getParam('template'),
                         ]);
-                        $publicationCategory = $this->handlerEntityFiles($publicationCategory);
+                        $publicationCategory = $this->processEntityFiles($publicationCategory);
 
                         switch (true) {
                             case $this->request->getParam('save', 'exit') === 'exit':

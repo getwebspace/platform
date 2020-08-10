@@ -247,8 +247,8 @@ class TwigExtension extends AbstractExtension
      * Date format function
      *
      * @param DateTime|string $obj
-     * @param null|string      $format
-     * @param string           $timezone
+     * @param null|string     $format
+     * @param string          $timezone
      *
      * @throws Exception
      *
@@ -382,7 +382,7 @@ class TwigExtension extends AbstractExtension
         if (is_string($unique)) {
             $unique = \Ramsey\Uuid\Uuid::fromString($unique);
         }
-        if (!array_key_exists($unique, $buf)) {
+        if (!array_key_exists($unique, (array) $buf)) {
             $uuids = $categories->firstWhere('uuid', $unique)->getNested($categories)->pluck('uuid')->all();
             $buf[strval($unique)] = $categories->whereIn('uuid', $uuids, false);
         }
@@ -573,7 +573,7 @@ class TwigExtension extends AbstractExtension
 
         $key = json_encode($criteria, JSON_UNESCAPED_UNICODE) . $limit . $offset;
 
-        if (!array_key_exists($key, $buf)) {
+        if (!array_key_exists($key, (array) $buf)) {
             $catalogProductService = CatalogProductService::getWithContainer($this->container);
             $buf[$key] = $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
         }
@@ -621,7 +621,7 @@ class TwigExtension extends AbstractExtension
 
         $key = json_encode($criteria, JSON_UNESCAPED_UNICODE) . $limit . $offset;
 
-        if (!array_key_exists($key, $buf)) {
+        if (!array_key_exists($key, (array) $buf)) {
             $catalogProductService = CatalogProductService::getWithContainer($this->container);
             $buf[$key] = $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
         }
@@ -685,7 +685,7 @@ class TwigExtension extends AbstractExtension
 
         $key = json_encode($criteria, JSON_UNESCAPED_UNICODE);
 
-        if (!array_key_exists($key, $buf)) {
+        if (!array_key_exists($key, (array) $buf)) {
             $catalogOrderService = CatalogOrderService::getWithContainer($this->container);
             $buf[$key] = $catalogOrderService->read($criteria);
         }

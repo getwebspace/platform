@@ -3,6 +3,15 @@
 namespace App\Domain\Tasks\Catalog;
 
 use App\Domain\AbstractTask;
+use App\Domain\Service\Catalog\CategoryService as CatalogCatalogService;
+use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
+use App\Domain\Service\Catalog\Exception\CategoryNotFoundException;
+use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
+use App\Domain\Service\Catalog\Exception\ProductNotFoundException;
+use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
+use App\Domain\Service\Catalog\ProductService as CatalogProductService;
+use App\Domain\Service\File\Exception\FileNotFoundException;
+use App\Domain\Service\File\FileService;
 
 class ImportTask extends AbstractTask
 {
@@ -20,10 +29,16 @@ class ImportTask extends AbstractTask
 
     protected function action(array $args = [])
     {
-        /** @var \App\Domain\Entities\File $file */
-        $file = $this->entityManager->getRepository(\App\Domain\Entities\File::class)->findOneBy([
-            'uuid' => $args['file'],
-        ]);
+        $fileService = FileService::getWithContainer($this->container);
+
+        try {
+            $file = $fileService->read(['uuid' => $args['file']]);
+        } catch (FileNotFoundException $e) {
+            return $this->setStatusFail();
+        }
+
+        $catalogCategoryService = CatalogCatalogService::getWithContainer($this->container);
+        $catalogProductService = CatalogProductService::getWithContainer($this->container);
 
         // parse excel file
         if (($data = $this->getParsedExcelData($file->getInternalPath())) !== []) {
@@ -36,44 +51,31 @@ class ImportTask extends AbstractTask
             ];
 
             $now = new \DateTime();
-
-            $categoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class);
-            $productRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
-
-            /** @var \App\Domain\Entities\Catalog\Category $lastCategory */
-            $lastCategory = null;
+            $category = null;
             $nested = false;
 
             foreach ($data as $index => $item) {
                 switch ($item['type']) {
                     case 'category':
                         if ($action === 'insert') {
-                            $this->logger->info('Search category', ['title' => $item]);
-
-                            /** @var \App\Domain\Entities\Catalog\Category $category */
-                            $category = $categoryRepository->findOneBy(['title' => $item]);
-
-                            if (!$category) {
+                            try {
+                                $this->logger->info('Search category', ['title' => $item]);
+                                $category = $catalogCategoryService->read(['title' => $item]);
+                            } catch (CategoryNotFoundException $e) {
                                 $this->logger->info('Create category', ['title' => $item]);
 
-                                $data = [
-                                    'title' => $item['title'],
-                                    'parent' => $nested === true ? $lastCategory->uuid : \Ramsey\Uuid\Uuid::NIL,
-                                    'description' => '',
-                                    'field1' => '', 'field2' => '', 'field3' => '',
-                                    'pagination' => $pagination,
-                                    'order' => 1,
-                                    'template' => $template,
-                                    'external_id' => '',
-                                    'export' => 'excel',
-                                ];
-                                $check = \App\Domain\Filters\Catalog\Category::check($data);
-
-                                if ($check === true) {
-                                    $lastCategory = $category = new \App\Domain\Entities\Catalog\Category($data);
-                                    $this->entityManager->persist($category);
-                                } else {
-                                    $this->logger->warning('Catalog wrong data', $check);
+                                try {
+                                    $category = $catalogCategoryService->create([
+                                        'title' => $item['title'],
+                                        'parent' => $nested === true ? $category->getUuid() : \Ramsey\Uuid\Uuid::NIL,
+                                        'pagination' => $pagination,
+                                        'template' => $template,
+                                        'export' => 'excel',
+                                    ]);
+                                } catch (TitleAlreadyExistsException|MissingTitleValueException $e) {
+                                    $this->logger->warning('Category wrong title value');
+                                } catch (AddressAlreadyExistsException $e) {
+                                    $this->logger->warning('Category wrong address value');
                                 }
                             }
                         }
@@ -83,63 +85,73 @@ class ImportTask extends AbstractTask
                         break;
 
                     case 'product':
+                        $product = null;
                         $data = $item['data'] ?? [];
 
                         if (isset($data[$key_field])) {
-                            $this->logger->info('Search product', [$key_field => '' . $data[$key_field]['formatted'], 'item' => $data]);
+                            try {
+                                $this->logger->info('Search product', [$key_field => '' . $data[$key_field]['formatted'], 'item' => $data]);
+                                $product = $catalogProductService
+                                    ->read([
+                                        $key_field => [
+                                            '' . $data[$key_field]['raw'],
+                                            '' . $data[$key_field]['formatted'],
+                                            '' . $data[$key_field]['trimmed'],
+                                            floatval($data[$key_field]['raw']),
+                                        ],
+                                    ])
+                                    ->first();
+                            } catch (ProductNotFoundException $e) {
+                                if ($action === 'insert') {
+                                    $this->logger->info('Create product', [$key_field => $data[$key_field]]);
 
-                            /** @var \App\Domain\Entities\Catalog\Product $product */
-                            $product = $productRepository->findOneBy([
-                                $key_field => [
-                                    '' . $data[$key_field]['raw'],
-                                    '' . $data[$key_field]['formatted'],
-                                    +$data[$key_field]['raw'],
-                                    +$data[$key_field]['formatted'],
-                                ],
-                            ]);
-
-                            if (!$product && $action === 'insert') {
-                                $this->logger->info('Create product', [$key_field => $data[$key_field]]);
-
-                                $data = array_merge([
-                                    'title' => '',
-                                    'external_id' => '',
-                                    'category' => $lastCategory->uuid,
-                                    'description' => '', 'extra' => '',
-                                    'address' => '',
-                                    'vendorcode' => '', 'barcode' => '',
-                                    'priceFirst' => '', 'price' => '', 'priceWholesale' => '',
-                                    'volume' => '', 'unit' => '', 'stock' => '',
-                                    'field1' => '', 'field2' => '', 'field3' => '', 'field4' => '', 'field5' => '',
-                                    'country' => '', 'manufacturer' => '',
-                                    'order' => 1,
-                                    'date' => $now,
-                                    'export' => 'excel',
-                                ], array_column($data, 'raw'));
-
-                                $check = \App\Domain\Filters\Catalog\Product::check($data);
-
-                                if ($check === true) {
-                                    $product = new \App\Domain\Entities\Catalog\Product();
-                                    $this->entityManager->persist($product);
-                                } else {
-                                    $this->logger->warning('Product wrong data', $check);
-                                }
-                            }
-
-                            if ($product) {
-                                $this->logger->info('Update product data', [$key_field => $data[$key_field]['formatted']]);
-
-                                foreach ($data as $key => $value) {
-                                    if (
-                                        $key !== 'empty' &&
-                                        in_array($key, \App\Domain\References\Catalog::IMPORT_FIELDS, true) &&
-                                        ($value === null) === false
-                                    ) {
-                                        $product->set($key, $value['raw']);
+                                    try {
+                                        $create = [];
+                                        foreach ($data as $key => $value) {
+                                            if (
+                                                $key !== 'empty' &&
+                                                in_array($key, \App\Domain\References\Catalog::IMPORT_FIELDS, true) &&
+                                                !in_array($value, \App\Domain\References\Catalog::IMPORT_FIELDS, true) &&
+                                                ($value === null) === false
+                                            ) {
+                                                $create[$key] = $value['raw'];
+                                            }
+                                        }
+                                        $product = $catalogProductService->create(
+                                            array_merge(
+                                                $create,
+                                                [
+                                                    'category' => $category->getUuid(),
+                                                    'date' => $now,
+                                                    'export' => 'excel',
+                                                ]
+                                            )
+                                        );
+                                    } catch (MissingTitleValueException|TitleAlreadyExistsException $e) {
+                                        $this->logger->warning('Product wrong title value');
+                                    } catch (AddressAlreadyExistsException $e) {
+                                        $this->logger->warning('Product wrong address value');
                                     }
+
+                                    continue 2;
                                 }
-                                $product->date = $now;
+                            } finally {
+                                if ($product) {
+                                    $this->logger->info('Update product data', [$key_field => $data[$key_field]['formatted']]);
+
+                                    $update = ['date' => $now];
+                                    foreach ($data as $key => $value) {
+                                        if (
+                                            $key !== 'empty' &&
+                                            in_array($key, \App\Domain\References\Catalog::IMPORT_FIELDS, true) &&
+                                            !in_array($value, \App\Domain\References\Catalog::IMPORT_FIELDS, true) &&
+                                            ($value === null) === false
+                                        ) {
+                                            $update[$key] = $value['raw'];
+                                        }
+                                    }
+                                    $catalogProductService->update($product, $update);
+                                }
                             }
                         }
 
@@ -153,9 +165,7 @@ class ImportTask extends AbstractTask
         }
 
         // rm excel file
-        $file->unlink();
-        $this->entityManager->remove($file);
-        $this->entityManager->flush();
+        $fileService->delete($file);
 
         return $this->setStatusDone();
     }
@@ -194,7 +204,7 @@ class ImportTask extends AbstractTask
 
             $output = [];
             foreach ($spreadsheet->getActiveSheet()->getRowIterator() as $row) {
-                if ($row->getRowIndex() < $offset['rows'] + 1) {
+                if ($row->getRowIndex() <= $offset['rows'] + 1) {
                     continue;
                 }
 
@@ -216,7 +226,8 @@ class ImportTask extends AbstractTask
                         if ($column !== 'empty') {
                             $buf[$fields[$column]] = [
                                 'raw' => $value,
-                                'formatted' => trim((string) $cell->getFormattedValue()),
+                                'formatted' => (string) $cell->getFormattedValue(),
+                                'trimmed' => trim((string) $cell->getFormattedValue()),
                             ];
                         }
                         $count++;

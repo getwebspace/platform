@@ -22,7 +22,7 @@ class UserCreateAction extends UserAction
                     'phone' => $this->request->getParam('phone'),
                     'level' => $this->request->getParam('level'),
                 ]);
-                $user = $this->handlerEntityFiles($user);
+                $user = $this->processEntityFiles($user);
 
                 switch (true) {
                     case $this->request->getParam('save', 'exit') === 'exit':

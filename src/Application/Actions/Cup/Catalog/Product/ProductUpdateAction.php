@@ -45,7 +45,7 @@ class ProductUpdateAction extends CatalogAction
                             'date' => $this->request->getParam('date'),
                             'external_id' => $this->request->getParam('external_id'),
                         ]);
-                        $product = $this->handlerEntityFiles($product);
+                        $product = $this->processEntityFiles($product);
 
                         switch (true) {
                             case $this->request->getParam('save', 'exit') === 'exit':

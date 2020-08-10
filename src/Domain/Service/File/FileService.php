@@ -26,8 +26,6 @@ class FileService extends AbstractService
      * @param string      $path
      * @param null|string $name_with_ext
      *
-     * @throws FileAlreadyExistsException
-     *
      * @return null|File
      */
     public function createFromPath(string $path, string $name_with_ext = null)
@@ -55,7 +53,7 @@ class FileService extends AbstractService
 
         if ($saved) {
             $salt = uniqid();
-            $dir = UPLOAD_DIR . '/' . $salt . '/' . ($name_with_ext ? $name_with_ext : basename($path));
+            $dir = UPLOAD_DIR . '/' . $salt . '/' . File::prepareName($name_with_ext ? $name_with_ext : basename($path));
 
             if (!is_dir(dirname($dir))) {
                 mkdir(dirname($dir), 0777, true);
@@ -77,7 +75,11 @@ class FileService extends AbstractService
                     // remove uploaded temp file
                     @exec('rm -rf ' . dirname($dir));
 
-                    return $this->read(['hash' => $info['hash']]);
+                    try {
+                        return $this->read(['hash' => $info['hash']]);
+                    } catch (FileNotFoundException $e) {
+                        return null;
+                    }
                 }
             }
         }
@@ -108,7 +110,7 @@ class FileService extends AbstractService
             $file = @file_get_contents($path, false, stream_context_create(['http' => ['timeout' => 15]]));
 
             if ($file) {
-                $basename = ($t = basename($path)) && mb_strpos($t, '.') ? $t : '/tmp_' . uniqid();
+                $basename = File::prepareName(($t = basename($path)) && mb_strpos($t, '.') ? $t : '/tmp_' . uniqid());
                 $path = CACHE_DIR . '/' . $basename;
 
                 if (file_put_contents($path, $file)) {

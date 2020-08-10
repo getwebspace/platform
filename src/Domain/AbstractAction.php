@@ -3,6 +3,7 @@
 namespace App\Domain;
 
 use App\Application\Mail;
+use App\Domain\Entities\File;
 use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Exceptions\HttpForbiddenException;
 use App\Domain\Exceptions\HttpMethodNotAllowedException;
@@ -182,12 +183,14 @@ abstract class AbstractAction extends AbstractComponent
     }
 
     /**
+     * For add or remove files for AbstractEntity with files
+     *
      * @param AbstractEntity $entity
      * @param string[]       $fields
      *
      * @return AbstractEntity
      */
-    protected function handlerEntityFiles(AbstractEntity $entity, array $fields = []): AbstractEntity
+    protected function processEntityFiles(AbstractEntity $entity, array $fields = []): AbstractEntity
     {
         if (
             $this->getParameter('file_is_enabled', 'no') === 'yes' &&
@@ -249,6 +252,55 @@ abstract class AbstractAction extends AbstractComponent
     }
 
     /**
+     * For uploaded files without entity
+     *
+     * @param string $field
+     *
+     * @return File[]
+     */
+    protected function getUploadedFiles(string $field = 'files')
+    {
+        $result = [];
+
+        if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
+            $fileService = FileService::getWithContainer($this->container);
+
+            /** @var \Psr\Http\Message\UploadedFileInterface[] $files */
+            $files = $this->request->getUploadedFiles()[$field] ?? [];
+
+            if (!is_array($files)) {
+                $files = [$files]; // allow upload one file
+            }
+
+            $uuids = [];
+
+            foreach ($files as $file) {
+                if (!$file->getError()) {
+                    if (($model = $fileService->createFromPath($file->file, $file->getClientFilename())) !== null) {
+                        $result[] = $model;
+
+                        // is image
+                        if (\Alksily\Support\Str::start('image/', $model->getType())) {
+                            $uuids[] = $model->getUuid();
+                        }
+                    }
+                }
+            }
+
+            if ($uuids) {
+                // add task convert
+                $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
+                $task->execute(['uuid' => $uuids]);
+
+                // run worker
+                \App\Domain\AbstractTask::worker();
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Upload image files
      *
      * @param string $field
@@ -256,9 +308,9 @@ abstract class AbstractAction extends AbstractComponent
      * @throws \Doctrine\ORM\ORMException
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      *
-     * @deprecated
-     *
      * @return array
+     *
+     * @deprecated
      */
     protected function handlerFileUpload(string $field = 'files')
     {
@@ -270,9 +322,9 @@ abstract class AbstractAction extends AbstractComponent
      *
      * @param string $field
      *
-     * @deprecated
-     *
      * @return array
+     *
+     * @deprecated
      */
     protected function handlerFileRemove(string $field = 'delete-file')
     {

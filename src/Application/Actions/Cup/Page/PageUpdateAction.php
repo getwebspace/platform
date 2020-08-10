@@ -24,7 +24,7 @@ class PageUpdateAction extends PageAction
                             'meta' => $this->request->getParam('meta'),
                             'template' => $this->request->getParam('template'),
                         ]);
-                        $page = $this->handlerEntityFiles($page);
+                        $page = $this->processEntityFiles($page);
 
                         switch (true) {
                             case $this->request->getParam('save', 'exit') === 'exit':

@@ -129,6 +129,8 @@ class ProductService extends AbstractService
             'category' => null,
             'title' => null,
             'address' => null,
+            'vendorcode' => null,
+            'barcode' => null,
             'field1' => null,
             'field2' => null,
             'field3' => null,
@@ -153,6 +155,12 @@ class ProductService extends AbstractService
         }
         if ($data['address'] !== null) {
             $criteria['address'] = $data['address'];
+        }
+        if ($data['vendorcode'] !== null) {
+            $criteria['vendorcode'] = $data['vendorcode'];
+        }
+        if ($data['barcode'] !== null) {
+            $criteria['barcode'] = $data['barcode'];
         }
         if ($data['field1'] !== null) {
             $criteria['field1'] = $data['field1'];
@@ -183,6 +191,8 @@ class ProductService extends AbstractService
             case !is_array($data['uuid']) && $data['uuid'] !== null:
             case !is_array($data['title']) && $data['title'] !== null:
             case !is_array($data['address']) && $data['address'] !== null:
+            case !is_array($data['vendorcode']) && $data['vendorcode'] !== null:
+            case !is_array($data['barcode']) && $data['barcode'] !== null:
             case !is_array($data['external_id']) && $data['external_id'] !== null:
                 $product = $this->service->findOneBy($criteria);
 
