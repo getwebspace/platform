@@ -212,6 +212,7 @@ class TwigExtension extends AbstractExtension
      * old debug function
      *
      * @deprecated
+     *
      * @param mixed ...$args
      */
     public function pre(...$args): void

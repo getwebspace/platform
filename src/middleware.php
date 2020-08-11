@@ -4,9 +4,7 @@ use Slim\App;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-/**
- * @var App $app
- */
+// @var App $app
 
 // RunTracy
 $app->add(new RunTracy\Middlewares\TracyMiddleware($app));

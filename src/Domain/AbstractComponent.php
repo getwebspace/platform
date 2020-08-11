@@ -25,7 +25,7 @@ abstract class AbstractComponent
     protected LoggerInterface $logger;
 
     /**
-     * @param ContainerInterface|null $container
+     * @param null|ContainerInterface $container
      * @param null|EntityManager      $entityManager
      * @param null|LoggerInterface    $logger
      */
@@ -50,7 +50,7 @@ abstract class AbstractComponent
      * Возвращает значение параметра по переданному ключу
      * Если передан массив ключей, возвращает массив найденных ключей и их значения
      *
-     * @param string|string[]|null $key
+     * @param null|string|string[] $key
      * @param mixed                $default
      *
      * @return null|array|mixed|string

@@ -5,7 +5,7 @@ use Slim\App;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-/**
+/*
  * @var App                $app
  * @var ContainerInterface $container
  */
