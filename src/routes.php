@@ -10,6 +10,7 @@ use Slim\Http\Response;
  * @var ContainerInterface $container
  */
 
+// API section
 $app
     ->group('/api', function (App $app): void {
         // users
@@ -49,6 +50,7 @@ $app
         });
     });
 
+// CUP section
 $app
     ->group('/cup', function (App $app): void {
         $app->map(['get', 'post'], '/login', \App\Application\Actions\Cup\LoginPageAction::class);
@@ -236,6 +238,7 @@ $app
             ->add(new \App\Application\Middlewares\CupMiddleware($app->getContainer()));
     });
 
+// COMMON section
 // main path
 $app
     ->get('/', \App\Application\Actions\Common\MainPageAction::class)

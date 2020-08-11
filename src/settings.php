@@ -4,11 +4,13 @@
 date_default_timezone_set('UTC');
 
 $settings = [
-    'secret' => [ // Secret salt
+    // Secret salt
+    'secret' => [
         'salt' => ($_ENV['SALT'] ?? 'Li8.1Ej2-<Cid3[bE'),
     ],
 
-    'doctrine' => [ // Doctrine settings
+    // Doctrine settings
+    'doctrine' => [
         'meta' => [
             'entity_path' => [
                 SRC_DIR . '/Domain/Entities',
@@ -40,8 +42,8 @@ $settings = [
     ],
 
     'settings' => [
-        'displayErrorDetails' => (bool) ($_ENV['DEBUG'] ?? false), // set to false in production
-        'addContentLengthHeader' => false, // allow the web server to send the content-length header
+        'displayErrorDetails' => (bool) ($_ENV['DEBUG'] ?? false),
+        'addContentLengthHeader' => false,
         'determineRouteBeforeAppMiddleware' => true,
 
         'tracy' => [
@@ -87,7 +89,7 @@ switch (!isset($settings['settings']['displayErrorDetails']) || $settings['setti
         break;
 
     case false:
-        // Set router cache file if display error is negative
+        // set router cache file if display error is negative
         $settings['settings']['routerCacheFile'] = CACHE_DIR . '/routes.cache.php';
 
         // enable Tracy panel

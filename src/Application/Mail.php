@@ -7,7 +7,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 class Mail
 {
     /**
-     * Производит отправку письма
+     * Send E-Mail
      *
      * @param array $data
      *

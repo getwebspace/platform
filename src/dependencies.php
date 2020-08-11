@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-use App\Domain\Service\Parameter\ParameterService;
 use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
+use Tightenco\Collect\Support\Collection;
 
 // doctrine
 $container[\Doctrine\ORM\EntityManager::class] = function (ContainerInterface $c): EntityManager {
@@ -30,11 +30,11 @@ $container[\Doctrine\ORM\EntityManager::class] = function (ContainerInterface $c
     return $em;
 };
 
-// plugin control class
+// plugins
 $container['plugin'] = function (ContainerInterface $c) {
     return new class {
-        /** @var \Tightenco\Collect\Support\Collection */
-        private $plugins;
+        /** @var Collection */
+        private Collection $plugins;
 
         final public function __construct()
         {
@@ -44,16 +44,16 @@ $container['plugin'] = function (ContainerInterface $c) {
         /**
          * Register plugin
          *
-         * @param \App\Application\Plugin $plugin
+         * @param \App\Domain\AbstractPlugin $plugin
          *
          * @return array|mixed|string
          */
-        final public function register(\App\Application\Plugin $plugin)
+        final public function register(\App\Domain\AbstractPlugin $plugin)
         {
             $class_name = get_class($plugin);
 
             if (!$this->plugins->has($class_name)) {
-                $this->plugins->set($class_name, $plugin);
+                $this->plugins[$class_name] = $plugin;
 
                 return true;
             }
@@ -61,7 +61,7 @@ $container['plugin'] = function (ContainerInterface $c) {
             return false;
         }
 
-        final public function get()
+        final public function get(): Collection
         {
             return $this->plugins;
         }
