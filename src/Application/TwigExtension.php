@@ -205,7 +205,7 @@ class TwigExtension extends AbstractExtension
     // возвращает значение параметра
     public function parameter($key = null, $default = null)
     {
-        return $this->container->get('parameter')->get($key, $default);
+        return parent::parameter($key, $default);
     }
 
     /**

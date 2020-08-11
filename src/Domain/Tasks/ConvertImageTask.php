@@ -33,7 +33,7 @@ class ConvertImageTask extends AbstractTask
                     $folder = $file->getDir('');
                     $original = $file->getInternalPath();
 
-                    $command = $this->getParameter('image_convert_bin', '/usr/bin/convert');
+                    $command = $this->parameter('image_convert_bin', '/usr/bin/convert');
                     $params = [
                         '-sampling-factor 4:2:0',
                         '-strip',
@@ -50,8 +50,8 @@ class ConvertImageTask extends AbstractTask
 
                     foreach (
                         [
-                            'middle' => $this->getParameter('image_convert_size_middle', 450),
-                            'small' => $this->getParameter('image_convert_size_small', 200),
+                            'middle' => $this->parameter('image_convert_size_middle', 450),
+                            'small' => $this->parameter('image_convert_size_small', 200),
                         ] as $size => $pixels
                     ) {
                         if ($pixels > 0) {

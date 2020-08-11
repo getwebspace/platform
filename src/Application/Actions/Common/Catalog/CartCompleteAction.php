@@ -27,7 +27,7 @@ class CartCompleteAction extends CatalogAction
                     $user = null;
                 }
 
-                return $this->respondWithTemplate($this->getParameter('catalog_cart_complete_template', 'catalog.cart.complete.twig'), [
+                return $this->respondWithTemplate($this->parameter('catalog_cart_complete_template', 'catalog.cart.complete.twig'), [
                     'order' => $order,
                     'products' => $products,
                     'user' => $user,

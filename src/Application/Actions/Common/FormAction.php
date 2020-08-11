@@ -90,7 +90,7 @@ class FormAction extends AbstractAction
 
                 // prepare attachments
                 $attachments = [];
-                if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
+                if ($this->parameter('file_is_enabled', 'no') === 'yes') {
                     foreach ($this->request->getUploadedFiles() as $field => $files) {
                         if (!is_array($files)) {
                             $files = [$files];

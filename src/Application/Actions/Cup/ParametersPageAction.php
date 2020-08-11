@@ -9,7 +9,7 @@ class ParametersPageAction extends AbstractAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $parameters = $this->getParameter();
+        $parameters = $this->parameter();
 
         if ($this->request->isPost()) {
             $parameterService = ParameterService::getWithContainer($this->container);

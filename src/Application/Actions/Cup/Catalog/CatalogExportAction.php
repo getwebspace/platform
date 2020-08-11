@@ -32,13 +32,13 @@ class CatalogExportAction extends CatalogAction
     protected function action(): \Slim\Http\Response
     {
         // Fields
-        $fields = trim($this->getParameter('catalog_export_columns', ''));
+        $fields = trim($this->parameter('catalog_export_columns', ''));
 
         if ($fields) {
             $fields = array_map('trim', explode(PHP_EOL, $fields));
             $offset = [
-                'rows' => max(0, +$this->getParameter('catalog_import_export_offset_rows', 0)),
-                'cols' => max(0, +$this->getParameter('catalog_import_export_offset_cols', 0)),
+                'rows' => max(0, +$this->parameter('catalog_import_export_offset_rows', 0)),
+                'cols' => max(0, +$this->parameter('catalog_import_export_offset_cols', 0)),
             ];
 
             $categories = $this->catalogCategoryService->read([

@@ -28,7 +28,7 @@ class SendMailTask extends AbstractTask
     protected function action(array $args = []): void
     {
         $args = array_merge(
-            $this->getParameter(
+            $this->parameter(
                 [
                     'smtp_from', 'smtp_from_name',
                     'smtp_login', 'smtp_pass',
@@ -37,7 +37,7 @@ class SendMailTask extends AbstractTask
                 ]
             ),
             [
-                'subject' => $args['subject'] ? $args['subject'] : $this->getParameter('smtp_subject', 'WebSpaceEngine | Default subject'),
+                'subject' => $args['subject'] ? $args['subject'] : $this->parameter('smtp_subject', 'WebSpaceEngine | Default subject'),
                 'to' => $args['to'],
                 'cc' => $args['cc'],
                 'bcc' => $args['bcc'],

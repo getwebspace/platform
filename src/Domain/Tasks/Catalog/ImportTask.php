@@ -42,12 +42,12 @@ class ImportTask extends AbstractTask
 
         // parse excel file
         if (($data = $this->getParsedExcelData($file->getInternalPath())) !== []) {
-            $action = $this->getParameter('catalog_import_action', 'update');
-            $key_field = $this->getParameter('catalog_import_key', 'vendorcode');
-            $pagination = $this->getParameter('catalog_category_pagination', 10);
+            $action = $this->parameter('catalog_import_action', 'update');
+            $key_field = $this->parameter('catalog_import_key', 'vendorcode');
+            $pagination = $this->parameter('catalog_category_pagination', 10);
             $template = [
-                'category' => $this->getParameter('catalog_category_template', 'catalog.category.twig'),
-                'product' => $this->getParameter('catalog_product_template', 'catalog.product.twig'),
+                'category' => $this->parameter('catalog_category_template', 'catalog.category.twig'),
+                'product' => $this->parameter('catalog_product_template', 'catalog.product.twig'),
             ];
 
             $now = new \DateTime();
@@ -191,13 +191,13 @@ class ImportTask extends AbstractTask
      */
     protected function getParsedExcelData($path = '')
     {
-        $fields = trim($this->getParameter('catalog_import_columns', ''));
+        $fields = trim($this->parameter('catalog_import_columns', ''));
 
         if ($fields) {
             $fields = array_map('trim', explode(PHP_EOL, $fields));
             $offset = [
-                'rows' => max(1, +$this->getParameter('catalog_import_export_offset_rows', 1)),
-                'cols' => max(0, +$this->getParameter('catalog_import_export_offset_cols', 0)),
+                'rows' => max(1, +$this->parameter('catalog_import_export_offset_rows', 1)),
+                'cols' => max(0, +$this->parameter('catalog_import_export_offset_cols', 0)),
             ];
 
             $spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($path);

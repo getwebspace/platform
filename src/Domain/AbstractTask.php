@@ -64,7 +64,7 @@ abstract class AbstractTask extends AbstractComponent
         try {
             \RunTracy\Helpers\Profiler\Profiler::start('render (%s)', $template);
 
-            if (($path = realpath(THEME_DIR . '/' . $this->getParameter('common_theme', 'default'))) !== false) {
+            if (($path = realpath(THEME_DIR . '/' . $this->parameter('common_theme', 'default'))) !== false) {
                 $this->renderer->getLoader()->addPath($path);
             }
             $rendered = $this->renderer->fetch($template, $data);

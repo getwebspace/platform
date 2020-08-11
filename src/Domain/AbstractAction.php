@@ -91,7 +91,7 @@ abstract class AbstractAction extends AbstractComponent
     protected function send_mail(array $data = [])
     {
         $data = array_merge(
-            $this->getParameter(
+            $this->parameter(
                 [
                     'smtp_from', 'smtp_from_name',
                     'smtp_login', 'smtp_pass',
@@ -193,7 +193,7 @@ abstract class AbstractAction extends AbstractComponent
     protected function processEntityFiles(AbstractEntity $entity, array $fields = []): AbstractEntity
     {
         if (
-            $this->getParameter('file_is_enabled', 'no') === 'yes' &&
+            $this->parameter('file_is_enabled', 'no') === 'yes' &&
             method_exists($entity, 'addFile') && method_exists($entity, 'removeFile')
         ) {
             $default = [
@@ -262,7 +262,7 @@ abstract class AbstractAction extends AbstractComponent
     {
         $result = [];
 
-        if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
+        if ($this->parameter('file_is_enabled', 'no') === 'yes') {
             $fileService = FileService::getWithContainer($this->container);
 
             /** @var \Psr\Http\Message\UploadedFileInterface[] $files */
@@ -338,11 +338,11 @@ abstract class AbstractAction extends AbstractComponent
      */
     protected function isRecaptchaChecked(): bool
     {
-        if ($this->request->isPost() && $this->getParameter('integration_recaptcha', 'off') === 'on') {
+        if ($this->request->isPost() && $this->parameter('integration_recaptcha', 'off') === 'on') {
             \RunTracy\Helpers\Profiler\Profiler::start('recaptcha');
 
             $query = http_build_query([
-                'secret' => $this->getParameter('integration_recaptcha_private'),
+                'secret' => $this->parameter('integration_recaptcha_private'),
                 'response' => $this->request->getParam('recaptcha', ''),
                 'remoteip' => $this->request->getServerParam('REMOTE_ADDR'),
             ]);
@@ -390,7 +390,7 @@ abstract class AbstractAction extends AbstractComponent
                 ],
                 $data
             );
-            if (($path = realpath(THEME_DIR . '/' . $this->getParameter('common_theme', 'default'))) !== false) {
+            if (($path = realpath(THEME_DIR . '/' . $this->parameter('common_theme', 'default'))) !== false) {
                 $this->renderer->getLoader()->addPath($path);
             }
             $rendered = $this->renderer->fetch($template, $data);

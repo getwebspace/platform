@@ -44,9 +44,9 @@ class CartAction extends CatalogAction
 
                 // mail to administrator
                 if (
-                    ($this->getParameter('catalog_mail_admin', 'off') === 'on') &&
-                    ($email = $this->getParameter('smtp_from', '')) !== '' &&
-                    ($tpl = $this->getParameter('catalog_mail_admin_template', '')) !== ''
+                    ($this->parameter('catalog_mail_admin', 'off') === 'on') &&
+                    ($email = $this->parameter('smtp_from', '')) !== '' &&
+                    ($tpl = $this->parameter('catalog_mail_admin_template', '')) !== ''
                 ) {
                     $products = $this->catalogProductService->read(['uuid' => array_keys($order->getList())]);
 
@@ -62,9 +62,9 @@ class CartAction extends CatalogAction
 
                 // mail to client
                 if (
-                    ($this->getParameter('catalog_mail_client', 'off') === 'on') &&
+                    ($this->parameter('catalog_mail_client', 'off') === 'on') &&
                     $order->getEmail() &&
-                    ($tpl = $this->getParameter('catalog_mail_client_template', '')) !== ''
+                    ($tpl = $this->parameter('catalog_mail_client_template', '')) !== ''
                 ) {
                     $products = $this->catalogProductService->read(['uuid' => array_keys($order->getList())]);
 
@@ -95,6 +95,6 @@ class CartAction extends CatalogAction
             $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
         }
 
-        return $this->respondWithTemplate($this->getParameter('catalog_cart_template', 'catalog.cart.twig'));
+        return $this->respondWithTemplate($this->parameter('catalog_cart_template', 'catalog.cart.twig'));
     }
 }

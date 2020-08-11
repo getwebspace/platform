@@ -1,8 +1,14 @@
 <?php declare(strict_types=1);
 
+use Psr\Container\ContainerInterface;
 use Slim\App;
 use Slim\Http\Request;
 use Slim\Http\Response;
+
+/**
+ * @var App                $app
+ * @var ContainerInterface $container
+ */
 
 $app
     ->group('/api', function (App $app): void {
@@ -284,7 +290,8 @@ $app
 // catalog
 $app
     ->group('', function (App $app) use ($container): void {
-        $pathCatalog = $container->get('parameter')->get('catalog_address', 'catalog');
+        $pathCatalog = \App\Domain\Service\Parameter\ParameterService::getWithContainer($container)
+                ->read(['key' => 'catalog_address'])->getValue() ?? 'catalog';
 
         // view categories and products
         $app

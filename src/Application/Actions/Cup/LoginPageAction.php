@@ -10,7 +10,7 @@ class LoginPageAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $identifier = $this->getParameter('user_login_type', 'username');
+        $identifier = $this->parameter('user_login_type', 'username');
 
         if ($this->request->isPost()) {
             $data = [

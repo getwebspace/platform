@@ -58,8 +58,8 @@ class CategoryUpdateAction extends CatalogAction
                 return $this->respondWithTemplate('cup/catalog/category/form.twig', [
                     'categories' => $categories,
                     'category' => $category,
-                    'fields' => $this->getParameter(['catalog_category_field_1', 'catalog_category_field_2', 'catalog_category_field_3']),
-                    'params' => $this->getParameter(['catalog_category_template', 'catalog_product_template', 'catalog_category_pagination']),
+                    'fields' => $this->parameter(['catalog_category_field_1', 'catalog_category_field_2', 'catalog_category_field_3']),
+                    'params' => $this->parameter(['catalog_category_template', 'catalog_product_template', 'catalog_category_pagination']),
                 ]);
             }
         }

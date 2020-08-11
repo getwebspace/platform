@@ -50,7 +50,7 @@ class ListAction extends CatalogAction
     protected function prepareMain(array &$params, &$categories)
     {
         if ($params['address'] === '') {
-            $pagination = $this->getParameter('catalog_category_pagination', 10);
+            $pagination = $this->parameter('catalog_category_pagination', 10);
 
             $qb = $this->entityManager->createQueryBuilder();
             $query = $qb
@@ -115,7 +115,7 @@ class ListAction extends CatalogAction
             );
             $count = $query->select('count(p)')->setMaxResults(null)->setFirstResult(null)->getQuery()->getSingleScalarResult();
 
-            return $this->respondWithTemplate($this->getParameter('catalog_category_template', 'catalog.category.twig'), [
+            return $this->respondWithTemplate($this->parameter('catalog_category_template', 'catalog.category.twig'), [
                 'categories' => $categories,
                 'products' => [
                     'all' => $products,
@@ -271,7 +271,7 @@ class ListAction extends CatalogAction
      */
     protected function parsePath()
     {
-        $pathCatalog = $this->getParameter('catalog_address', 'catalog');
+        $pathCatalog = $this->parameter('catalog_address', 'catalog');
         $parts = explode('/', ltrim(str_replace("/{$pathCatalog}", '', $this->request->getUri()->getPath()), '/'));
         $offset = 0;
 

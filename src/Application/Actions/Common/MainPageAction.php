@@ -8,6 +8,6 @@ class MainPageAction extends AbstractAction
 {
     protected function action(): \Slim\Http\Response
     {
-        return $this->respondWithTemplate($this->getParameter('common_template', 'main.twig'));
+        return $this->respondWithTemplate($this->parameter('common_template', 'main.twig'));
     }
 }

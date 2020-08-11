@@ -54,7 +54,7 @@ abstract class CatalogAction extends AbstractAction
      */
     protected function getMeasure($list = false)
     {
-        $measure = $this->getParameter('catalog_measure');
+        $measure = $this->parameter('catalog_measure');
         $result = [];
 
         if ($measure) {

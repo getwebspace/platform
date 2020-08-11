@@ -26,7 +26,7 @@ class SendNewsLetterMailTask extends AbstractTask
     protected function action(array $args = [])
     {
         $args = array_merge(
-            $this->getParameter(
+            $this->parameter(
                 [
                     'smtp_from', 'smtp_from_name',
                     'smtp_login', 'smtp_pass',

@@ -35,6 +35,6 @@ class UserProfileAction extends UserAction
             }
         }
 
-        return $this->respondWithTemplate($this->getParameter('user_profile_template', 'user.profile.twig'));
+        return $this->respondWithTemplate($this->parameter('user_profile_template', 'user.profile.twig'));
     }
 }

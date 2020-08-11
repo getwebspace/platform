@@ -23,7 +23,7 @@ class IsEnabledMiddleware extends AbstractMiddleware
         $route = $request->getAttribute('route');
         $routeName = array_first(explode(':', $route->getName()));
 
-        if ($this->getParameter($routeName . '_is_enabled', 'yes') !== 'no') {
+        if ($this->parameter($routeName . '_is_enabled', 'yes') !== 'no') {
             return $next($request, $response);
         }
 

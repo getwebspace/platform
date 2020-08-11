@@ -13,7 +13,7 @@ class MainPageAction extends AbstractAction
         $user = $this->request->getAttribute('user', false);
 
         return $this->respondWithTemplate('cup/layout.twig', [
-            'notepad' => $this->getParameter('notepad_' . $user->getUsername(), ''),
+            'notepad' => $this->parameter('notepad_' . $user->getUsername(), ''),
             'stats' => [
                 'pages' => $this->entityManager->getRepository(\App\Domain\Entities\Page::class)->count([]),
                 'users' => $this->entityManager->getRepository(\App\Domain\Entities\User::class)->count([]),

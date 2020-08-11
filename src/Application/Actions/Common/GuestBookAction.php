@@ -47,7 +47,7 @@ class GuestBookAction extends AbstractAction
             }
         }
 
-        $pagination = $this->getParameter('guestbook_pagination', 10);
+        $pagination = $this->parameter('guestbook_pagination', 10);
         $offset = (int) ($this->args['page'] ?? 0);
 
         // получение списка и обфускация адресов
@@ -64,7 +64,7 @@ class GuestBookAction extends AbstractAction
             return array_merge($model->toArray(), ['email' => mb_substr($name, 0, $len) . str_repeat('*', $len) . '@' . end($em)]);
         });
 
-        return $this->respondWithTemplate($this->getParameter('guestbook_template', 'guestbook.twig'), [
+        return $this->respondWithTemplate($this->parameter('guestbook_template', 'guestbook.twig'), [
             'messages' => $list,
             'pagination' => [
                 'count' => $guestBookService->count(['status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK]),

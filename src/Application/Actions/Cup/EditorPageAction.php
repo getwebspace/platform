@@ -12,7 +12,7 @@ class EditorPageAction extends AbstractAction
         $list = collect();
         $file = null;
         $content = null;
-        $theme_dir = THEME_DIR . '/' . $this->getParameter('common_theme', 'default');
+        $theme_dir = THEME_DIR . '/' . $this->parameter('common_theme', 'default');
 
         if (($path = realpath($theme_dir)) !== false) {
             $list = $this->getCatalog($path)->sortBy('type');

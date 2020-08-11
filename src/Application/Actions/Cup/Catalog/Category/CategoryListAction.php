@@ -32,7 +32,7 @@ class CategoryListAction extends CatalogAction
         return $this->respondWithTemplate('cup/catalog/category/index.twig', [
             'category' => $category,
             'categories' => $categories,
-            'fields' => $this->getParameter(['catalog_category_field_1', 'catalog_category_field_2', 'catalog_category_field_3']),
+            'fields' => $this->parameter(['catalog_category_field_1', 'catalog_category_field_2', 'catalog_category_field_3']),
         ]);
     }
 }

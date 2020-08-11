@@ -68,46 +68,6 @@ $container['plugin'] = function (ContainerInterface $c) {
     };
 };
 
-// wrapper around collection with params
-$container['parameter'] = function (ContainerInterface $c) {
-    return new class($c) {
-        /** @var \Tightenco\Collect\Support\Collection */
-        private static $parameters;
-
-        final public function __construct(ContainerInterface $container)
-        {
-            \RunTracy\Helpers\Profiler\Profiler::start('parameters');
-            static::$parameters = ParameterService::getWithContainer($container)->read();
-            \RunTracy\Helpers\Profiler\Profiler::finish('parameters');
-        }
-
-        /**
-         * Return value by key
-         * if key is array return array founded keys with values
-         *
-         * @param string|string[] $key
-         * @param mixed           $default
-         *
-         * @return array|mixed|string
-         */
-        final public function get($key = null, $default = null)
-        {
-            if ($key === null) {
-                return static::$parameters->mapWithKeys(function ($item) {
-                    [$group, $key] = explode('_', $item->key, 2);
-
-                    return [$group . '[' . $key . ']' => $item];
-                });
-            }
-            if (is_string($key)) {
-                return static::$parameters->firstWhere('key', $key)->value ?? $default;
-            }
-
-            return static::$parameters->whereIn('key', $key)->pluck('value', 'key')->all() ?? $default;
-        }
-    };
-};
-
 // view twig file render
 $container['view'] = function (ContainerInterface $c) {
     $settings = array_merge(

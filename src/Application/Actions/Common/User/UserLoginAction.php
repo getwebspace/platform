@@ -9,7 +9,7 @@ class UserLoginAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $identifier = $this->getParameter('user_login_type', 'username');
+        $identifier = $this->parameter('user_login_type', 'username');
 
         if ($this->request->isPost()) {
             $data = [
@@ -47,6 +47,6 @@ class UserLoginAction extends UserAction
             $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
         }
 
-        return $this->respondWithTemplate($this->getParameter('user_login_template', 'user.login.twig'), ['identifier' => $identifier]);
+        return $this->respondWithTemplate($this->parameter('user_login_template', 'user.login.twig'), ['identifier' => $identifier]);
     }
 }
