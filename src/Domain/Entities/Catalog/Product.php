@@ -576,7 +576,7 @@ class Product extends AbstractEntity
     /**
      * @ORM\Column(type="array")
      */
-    protected array $tags = []; // todo set array
+    protected $tags = []; // todo set array
 
     /**
      * @param array|string $tags
