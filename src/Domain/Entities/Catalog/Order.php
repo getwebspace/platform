@@ -210,7 +210,7 @@ class Order extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="string", length=120, unique=true, options={"default": ""})
+     * @ORM\Column(type="string", length=120, options={"default": ""})
      */
     protected string $email = '';
 

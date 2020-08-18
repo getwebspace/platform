@@ -94,7 +94,7 @@ class Product extends AbstractEntity
 
     /**
      * @var string
-     * @ORM\Column(type="string", options={"default": ""})
+     * @ORM\Column(type="text", options={"default": ""})
      */
     protected string $description = '';
 

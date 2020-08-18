@@ -84,7 +84,7 @@ class Form extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="string", length=50, options={"default": ""})
+     * @ORM\Column(type="text", options={"default": ""})
      */
     protected string $template = '';
 
