@@ -1,13 +1,12 @@
 <?php declare(strict_types=1);
 
-use Psr\Container\ContainerInterface;
 use Slim\App;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-/*
- * @var App                $app
- * @var ContainerInterface $container
+/**
+ * @var \Slim\App $app
+ * @var \Psr\Container\ContainerInterface $container
  */
 
 // API section

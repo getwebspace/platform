@@ -13,6 +13,10 @@ if (PHP_SAPI === 'cli-server') {
 // Include global const's
 require __DIR__ . '/../src/bootstrap.php';
 
+/**
+ * @var \Slim\App $app
+ */
+
 RunTracy\Helpers\Profiler\Profiler::start('init middleware');
 
 // Register middleware

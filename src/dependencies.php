@@ -4,6 +4,10 @@ use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
 use Tightenco\Collect\Support\Collection;
 
+/**
+ * @var \Slim\App $app
+ */
+
 // doctrine
 $container[\Doctrine\ORM\EntityManager::class] = function (ContainerInterface $c): EntityManager {
     $settings = $c->get('doctrine');

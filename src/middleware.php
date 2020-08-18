@@ -1,10 +1,11 @@
 <?php declare(strict_types=1);
 
-use Slim\App;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
-// @var App $app
+/**
+ * @var \Slim\App $app
+ */
 
 // RunTracy
 $app->add(new RunTracy\Middlewares\TracyMiddleware($app));

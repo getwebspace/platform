@@ -23,7 +23,7 @@ $settings = [
         'types' => require CONFIG_DIR . '/types.php',
 
         // Connection to DB settings
-        'connection' => $_ENV['DATABASE'] ?? [
+        'connection' => !empty($_ENV['DATABASE']) ? ['url' => $_ENV['DATABASE']] : [
             'driver' => 'pdo_sqlite',
             'path' => VAR_DIR . '/database.sqlite',
         ],
