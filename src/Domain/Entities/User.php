@@ -408,7 +408,7 @@ class User extends AbstractEntity
      *     inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")}
      * )
      */
-    protected $files;
+    protected $files = [];
 
     /**
      * @param File $file

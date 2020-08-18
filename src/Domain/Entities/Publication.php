@@ -20,7 +20,7 @@ class Publication extends AbstractEntity
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    protected $uuid;
+    protected Uuid $uuid;
 
     /**
      * @return Uuid
@@ -182,7 +182,7 @@ class Publication extends AbstractEntity
      * @var array
      * @ORM\Column(type="array")
      */
-    protected $poll = [
+    protected array $poll = [
         // 'question' => '',
         // 'answer' => '',
     ];
@@ -236,7 +236,7 @@ class Publication extends AbstractEntity
      *     inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")}
      * )
      */
-    protected $files;
+    protected $files = [];
 
     public function addFile(\App\Domain\Entities\File $file): void
     {

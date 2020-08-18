@@ -414,7 +414,7 @@ class Category extends AbstractEntity
     /**
      * @ORM\Column(type="array")
      */
-    protected array  $template = [
+    protected array $template = [
         'category' => '',
         'product' => '',
     ];

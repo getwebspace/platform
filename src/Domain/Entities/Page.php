@@ -241,7 +241,7 @@ class Page extends AbstractEntity
      *     inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")}
      * )
      */
-    protected $files;
+    protected $files = [];
 
     public function addFile(\App\Domain\Entities\File $file): void
     {
