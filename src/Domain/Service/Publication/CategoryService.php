@@ -234,14 +234,30 @@ class CategoryService extends AbstractService
      */
     public function delete($entity): bool
     {
-        if (
-            (is_string($entity) && Uuid::isValid($entity)) ||
-            (is_object($entity) && is_a($entity, Uuid::class))
-        ) {
-            $entity = $this->service->findOneByUuid((string) $entity);
+        switch (true) {
+            case is_string($entity) && Uuid::isValid($entity):
+            case is_object($entity) && is_a($entity, Uuid::class):
+                $entity = $this->service->findOneByUuid((string) $entity);
+
+                break;
         }
 
         if (is_object($entity) && is_a($entity, PublicationCategory::class)) {
+            if (($files = $entity->getFiles()) && $files->isNotEmpty()) {
+                $fileService = \App\Domain\Service\File\FileService::getWithContainer($this->container);
+
+                /**
+                 * @var \App\Domain\Entities\File $file
+                 */
+                foreach ($files as $file) {
+                    try {
+                        $fileService->delete($file);
+                    } catch (\App\Domain\Service\File\Exception\FileNotFoundException $e) {
+                        // nothing, file not found
+                    }
+                }
+            }
+
             $this->entityManager->remove($entity);
             $this->entityManager->flush();
 

@@ -331,11 +331,12 @@ class UserService extends AbstractService
      */
     public function delete($entity): User
     {
-        if (
-            (is_string($entity) && Uuid::isValid($entity)) ||
-            (is_object($entity) && is_a($entity, Uuid::class))
-        ) {
-            $entity = $this->service->findOneByUuid((string) $entity);
+        switch (true) {
+            case is_string($entity) && Uuid::isValid($entity):
+            case is_object($entity) && is_a($entity, Uuid::class):
+                $entity = $this->service->findOneByUuid((string) $entity);
+
+                break;
         }
 
         if (is_object($entity) && is_a($entity, User::class)) {

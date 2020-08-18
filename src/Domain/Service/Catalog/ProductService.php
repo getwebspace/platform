@@ -381,6 +381,21 @@ class ProductService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, Product::class)) {
+            if (($files = $entity->getFiles()) && $files->isNotEmpty()) {
+                $fileService = \App\Domain\Service\File\FileService::getWithContainer($this->container);
+
+                /**
+                 * @var \App\Domain\Entities\File $file
+                 */
+                foreach ($files as $file) {
+                    try {
+                        $fileService->delete($file);
+                    } catch (\App\Domain\Service\File\Exception\FileNotFoundException $e) {
+                        // nothing, file not found
+                    }
+                }
+            }
+
             $this->entityManager->remove($entity);
             $this->entityManager->flush();
 
