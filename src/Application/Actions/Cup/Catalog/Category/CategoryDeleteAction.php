@@ -15,6 +15,7 @@ class CategoryDeleteAction extends CatalogAction
             ]);
 
             if ($category) {
+                $categories = $this->catalogCategoryService->read();
                 $childrenUuids = $category->getNested($categories)->pluck('uuid')->all();
 
                 /**
