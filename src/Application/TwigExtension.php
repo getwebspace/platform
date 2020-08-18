@@ -132,13 +132,12 @@ class TwigExtension extends AbstractExtension
         $scheme = $uri->getScheme();
         $authority = $uri->getAuthority();
 
-        $host = ($scheme ? $scheme . ':' : '')
-            . ($authority ? '//' . $authority : '');
+        $host = ($scheme ? $scheme . ':' : '') . ($authority ? '//' . $authority : '');
 
         return $host . $path;
     }
 
-    // базовый адрес без слеша в конце
+    // base address without slash in end
     public function baseUrl()
     {
         return rtrim($this->parameter('common_homepage', ''), '/');
@@ -178,7 +177,7 @@ class TwigExtension extends AbstractExtension
         return form($type, $name, $args);
     }
 
-    // todo посмотреть на это решение еще
+    // todo review this
     public function reference($reference, $value = null)
     {
         try {
@@ -202,7 +201,7 @@ class TwigExtension extends AbstractExtension
         return $value;
     }
 
-    // возвращает значение параметра
+    // return parameter value by key or default
     public function parameter($key = null, $default = null)
     {
         return parent::parameter($key, $default);
@@ -335,7 +334,7 @@ class TwigExtension extends AbstractExtension
 
     // files functions
 
-    // получает файлы по параметрам
+    // fetch files by args
     public function files($files = [])
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:files', $files);
@@ -364,7 +363,7 @@ class TwigExtension extends AbstractExtension
 
     // publication functions
 
-    // получение списка категорий публикаций
+    // fetch publication category by unique
     public function publication_category($unique = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:publication_category');
@@ -394,7 +393,7 @@ class TwigExtension extends AbstractExtension
         return $buf[strval($unique)];
     }
 
-    // получение списка публикаций
+    // fetch publications by args
     public function publication($data = null, $order = [], $limit = 10, $offset = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:publication');
@@ -460,7 +459,7 @@ class TwigExtension extends AbstractExtension
 
     // guestbook functions
 
-    // получение списка записей в гостевой книге
+    // fetch guest book rows
     public function guestbook($order = [], $limit = 10, $offset = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:guestbook');
@@ -517,7 +516,7 @@ class TwigExtension extends AbstractExtension
         return $buf;
     }
 
-    // вернет список родительских категорий
+    // return parent categories
     public function catalog_breadcrumb(\App\Domain\Entities\Catalog\Category $category = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_breadcrumb');
@@ -544,7 +543,7 @@ class TwigExtension extends AbstractExtension
         return $result;
     }
 
-    // получение списка товаров по category_uuid
+    // fetch product list by category_uuid
     public function catalog_products($unique, $order = [], $limit = 10, $offset = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_products');
@@ -585,7 +584,7 @@ class TwigExtension extends AbstractExtension
         return $buf[$key];
     }
 
-    // получение списка товаров по uuid, external_id или address
+    // fetch product list by uuid, external_id or address
     public function catalog_product($unique = null, $order = [], $limit = 10, $offset = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_product');
@@ -633,7 +632,7 @@ class TwigExtension extends AbstractExtension
         return $buf[$key];
     }
 
-    // сохраняет переданный в аргумент uuid товара, если null возвращает список товаров
+    // save uuid of product in session or return saved list
     public function catalog_product_view(\Ramsey\Uuid\UuidInterface $uuid = null, $limit = 10)
     {
         $list = $_SESSION['catalog_product_view'] ?? [];
@@ -659,7 +658,7 @@ class TwigExtension extends AbstractExtension
         return null;
     }
 
-    // получение заказа
+    // fetch order
     public function catalog_order($unique)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_order');

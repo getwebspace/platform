@@ -70,13 +70,13 @@ class ConvertImageTask extends AbstractTask
                     @exec($command . " '" . $original . "' " . implode(' ', $params) . " '" . $folder . '/' . $file->getName() . ".jpg'");
                     $this->logger->info('Task: convert image', ['size' => 'original', 'salt' => $file->getSalt(), 'params' => $params]);
 
-                    // установка расширения файла и типа
+                    // set file type and ext
                     if ($file->getExt() !== 'jpg') {
                         $file->setExt('jpg');
                         $file->setType('image/jpeg; charset=binary');
                     }
 
-                    // обновление размера файла
+                    // update file size
                     $file->setSize(filesize($folder . '/' . $file->getName() . '.jpg'));
                 }
             } catch (FileNotFoundException $e) {

@@ -27,7 +27,7 @@ class DynamicPageAction extends AbstractAction
         $publicationService = PublicationService::getWithContainer($this->container);
 
         try {
-            // страницы
+            // site pages
             if (($page = $pageService->read(['address' => $path])) !== null) {
                 return $this->respondWithTemplate($page->getTemplate(), ['page' => $page]);
             }
@@ -37,7 +37,7 @@ class DynamicPageAction extends AbstractAction
 
         $categories = $publicationCategoryService->read();
 
-        // категории публикаций
+        // publication categories
         if ($categories->count() && $categories->firstWhere('address', $path)) {
             $category = $categories->firstWhere('address', $path);
             $childrenCategories = $category->getNested($categories)->pluck('uuid')->all();
@@ -60,7 +60,7 @@ class DynamicPageAction extends AbstractAction
         }
 
         try {
-            // публикация
+            // publication
             if (($publication = $publicationService->read(['address' => $path])) !== null) {
                 $category = $categories->firstWhere('uuid', $publication->getUuid()->toString());
 

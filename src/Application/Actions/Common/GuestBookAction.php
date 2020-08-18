@@ -50,7 +50,7 @@ class GuestBookAction extends AbstractAction
         $pagination = $this->parameter('guestbook_pagination', 10);
         $offset = (int) ($this->args['page'] ?? 0);
 
-        // получение списка и обфускация адресов
+        // fetch list and hide part of email
         $list = $guestBookService->read([
             'status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK,
             'limit' => $pagination,
