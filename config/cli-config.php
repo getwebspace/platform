@@ -6,7 +6,6 @@ use Psr\Container\ContainerInterface;
 /**
  * @global ContainerInterface $container
  */
-
 require __DIR__ . '/../src/bootstrap.php';
 
 return ConsoleRunner::createHelperSet(

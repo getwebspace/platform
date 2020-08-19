@@ -16,7 +16,6 @@ require __DIR__ . '/../src/bootstrap.php';
 /**
  * @var \Slim\App $app
  */
-
 RunTracy\Helpers\Profiler\Profiler::start('init middleware');
 
 // Register middleware

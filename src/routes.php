@@ -296,7 +296,9 @@ $app
                 ->read(['key' => 'catalog_address'])->getValue();
 
         // fallback value
-        if (!$pathCatalog) $pathCatalog = 'catalog';
+        if (!$pathCatalog) {
+            $pathCatalog = 'catalog';
+        }
 
         // view categories and products
         $app
