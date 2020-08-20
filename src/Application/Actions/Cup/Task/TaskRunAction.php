@@ -16,12 +16,12 @@ class TaskRunAction extends AbstractAction
                 /** @var \App\Domain\AbstractTask $task */
                 $task = new $name($this->container);
                 $task->execute($this->request->getParam('params', []));
-                $this->entityManager->flush();
+
+                // run worker
+                \App\Domain\AbstractTask::worker();
+
                 $this->response = $this->response->withAddedHeader('Location', '/cup')->withStatus(301);
             }
-
-            // run worker
-            \App\Domain\AbstractTask::worker();
         }
 
         return $this->respondWithJson(['run' => time()]);

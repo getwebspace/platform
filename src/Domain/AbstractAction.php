@@ -217,7 +217,7 @@ abstract class AbstractAction extends AbstractComponent
                         $entity->addFile($model);
 
                         // is image
-                        if (str_starts_with($model->getType(), 'image/')) {
+                        if (str_start_with($model->getType(), 'image/')) {
                             $uuids[] = $model->getUuid();
                         }
                     }

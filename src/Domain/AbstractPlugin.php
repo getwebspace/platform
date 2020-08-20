@@ -103,12 +103,18 @@ abstract class AbstractPlugin extends AbstractComponent
         return $this->templateFolder;
     }
 
+    /**
+     * @param mixed ...$name
+     */
     protected function setHandledRoute(...$name): void
     {
         $this->routes = true;
         $this->handledRoutes = array_merge($this->handledRoutes, $name);
     }
 
+    /**
+     * @return array
+     */
     public function getRoute()
     {
         return $this->handledRoutes;

@@ -36,8 +36,8 @@ class FileService extends AbstractService
 
         // is file saved?
         switch (true) {
-            case str_starts_with($path, 'http://'):
-            case str_starts_with($path, 'https://'):
+            case str_start_with($path, 'http://'):
+            case str_start_with($path, 'https://'):
                 if (($path = static::getFileFromRemote($path)) !== false) {
                     $saved = true;
                 }

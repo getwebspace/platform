@@ -3,6 +3,7 @@
 namespace App\Application\Middlewares;
 
 use App\Domain\AbstractMiddleware;
+use App\Domain\AbstractPlugin;
 use Slim\Http\Request;
 use Slim\Http\Response;
 
@@ -28,9 +29,9 @@ class PluginMiddleware extends AbstractMiddleware
         /** @var \Tightenco\Collect\Support\Collection $plugins */
         $plugins = $this->container->get('plugin')->get()->where('routes', true);
 
-        /** @var \App\Application\Plugin $plugin */
+        /** @var AbstractPlugin $plugin */
         foreach ($plugins as $plugin) {
-            if (str_starts_with($routeName, $plugin->getRoute())) {
+            if (str_start_with($routeName, $plugin->getRoute())) {
                 \RunTracy\Helpers\Profiler\Profiler::start('plugin (%s)', $plugin->getCredentials('name'));
                 $response = $plugin->before($request, $response, $route->getName());
                 \RunTracy\Helpers\Profiler\Profiler::finish('plugin (%s)', $plugin->getCredentials('name'));
@@ -39,9 +40,9 @@ class PluginMiddleware extends AbstractMiddleware
 
         $response = $next($request, $response);
 
-        /** @var \App\Application\Plugin $plugin */
+        /** @var AbstractPlugin $plugin */
         foreach ($plugins as $plugin) {
-            if (str_starts_with($routeName, $plugin->getRoute())) {
+            if (str_start_with($routeName, $plugin->getRoute())) {
                 \RunTracy\Helpers\Profiler\Profiler::start('plugin (%s)', $plugin->getCredentials('name'));
                 $response = $plugin->after($request, $response, $route->getName());
                 \RunTracy\Helpers\Profiler\Profiler::finish('plugin (%s)', $plugin->getCredentials('name'));

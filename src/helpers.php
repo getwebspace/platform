@@ -1,5 +1,6 @@
 <?php declare(strict_types=1);
 
+use Alksily\Support\Str;
 use App\Domain\AbstractEntity;
 use Tightenco\Collect\Support\Arr;
 use Tightenco\Collect\Support\Collection;
@@ -306,6 +307,36 @@ if (!function_exists('array_where')) {
     function array_where($array, callable $callback)
     {
         return Arr::where($array, $callback);
+    }
+}
+
+if (!function_exists('str_start_with')) {
+    /**
+     * Determine if a given string starts with a given substring.
+     *
+     * @param string       $haystack
+     * @param string|array $needles
+     *
+     * @return bool
+     */
+    function str_start_with($haystack, $needles)
+    {
+        return Str::start($haystack, $needles);
+    }
+}
+
+if (!function_exists('str_end_with')) {
+    /**
+     * Determine if a given string ends with a given substring.
+     *
+     * @param string       $haystack
+     * @param string|array $needles
+     *
+     * @return bool
+     */
+    function str_end_with($haystack, $needles)
+    {
+        return Str::end($haystack, $needles);
     }
 }
 

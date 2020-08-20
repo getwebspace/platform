@@ -29,7 +29,7 @@ class ConvertImageTask extends AbstractTask
                 $file = $fileService->read(['uuid' => $uuid]);
                 $this->logger->info('Task: info', $file->toArray());
 
-                if (str_starts_with($file->getType(), 'image/')) {
+                if (str_start_with($file->getType(), 'image/')) {
                     $folder = $file->getDir('');
                     $original = $file->getInternalPath();
 
