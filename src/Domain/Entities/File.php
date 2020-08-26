@@ -287,7 +287,7 @@ class File extends AbstractEntity
         $name = str_replace(' ', '_', $name);
         $name = str_replace($replacements, '', $name);
         $name = \Alksily\Support\Str::translate($name);
-        $name = strtolower($name);
+        $name = mb_strtolower($name);
 
         return $name;
     }

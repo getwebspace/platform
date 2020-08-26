@@ -315,7 +315,7 @@ if (!function_exists('str_start_with')) {
      * Determine if a given string starts with a given substring.
      *
      * @param string       $haystack
-     * @param string|array $needles
+     * @param array|string $needles
      *
      * @return bool
      */
@@ -330,7 +330,7 @@ if (!function_exists('str_end_with')) {
      * Determine if a given string ends with a given substring.
      *
      * @param string       $haystack
-     * @param string|array $needles
+     * @param array|string $needles
      *
      * @return bool
      */
