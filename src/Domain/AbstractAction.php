@@ -280,7 +280,7 @@ abstract class AbstractAction extends AbstractComponent
                         $result[] = $model;
 
                         // is image
-                        if (\Alksily\Support\Str::start('image/', $model->getType())) {
+                        if (str_start_with('image/', $model->getType())) {
                             $uuids[] = $model->getUuid();
                         }
                     }

@@ -27,7 +27,6 @@ class ConvertImageTask extends AbstractTask
         foreach ((array) $args['uuid'] as $index => $uuid) {
             try {
                 $file = $fileService->read(['uuid' => $uuid]);
-                $this->logger->info('Task: info', $file->toArray());
 
                 if (str_start_with($file->getType(), 'image/')) {
                     $folder = $file->getDir('');
@@ -77,7 +76,7 @@ class ConvertImageTask extends AbstractTask
                     }
 
                     // update file size
-                    $file->setSize(filesize($folder . '/' . $file->getName() . '.jpg'));
+                    $file->setSize(+filesize($folder . '/' . $file->getName() . '.jpg'));
                 }
             } catch (FileNotFoundException $e) {
                 $this->logger->alert('Task: file not found');

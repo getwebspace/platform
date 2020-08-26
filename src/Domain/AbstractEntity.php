@@ -26,7 +26,7 @@ abstract class AbstractEntity
                 $str = mb_strtolower($str);
                 $str = Str::translate($str);
                 $str = trim($str);
-                $str = preg_replace(['/[^a-z0-9\-]/', '/\s/'], ['', '-'], $str);
+                $str = preg_replace(['/[^a-z0-9\-\/]/', '/\s/'], ['', '-'], $str);
 
                 return $str;
             }
