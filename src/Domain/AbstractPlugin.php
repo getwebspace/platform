@@ -122,7 +122,7 @@ abstract class AbstractPlugin extends AbstractComponent
 
     protected function addTwigExtension($extension): void
     {
-        $this->renderer->addExtension(new $extension($this->container, $this));
+        $this->renderer->addExtension(new $extension($this->container));
     }
 
     protected function addSettingsField($params = []): void

@@ -781,7 +781,7 @@ class Product extends AbstractEntity
     /**
      * @var mixed буфурное поле для обработки интеграций
      */
-    public $buf;
+    public $buf = null;
 
     /**
      * @var array

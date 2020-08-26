@@ -12,6 +12,10 @@ if (file_exists(\App\Domain\AbstractTask::$pid_file)) {
 // before work write self PID to file
 file_put_contents(\App\Domain\AbstractTask::$pid_file, getmypid());
 
+/**
+ * @var \Slim\App $app
+ */
+
 // app container
 $container = $app->getContainer();
 
