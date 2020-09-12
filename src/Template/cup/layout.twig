@@ -51,6 +51,12 @@
                                     {% endfor %}
                                 {% endfor %}
 
+                                <li class="nav-item submenu">
+                                    <a href="#" class="nav-link quick-sidebar-toggler">
+                                        <i class="fa fa-th"></i>
+                                    </a>
+                                </li>
+
                                 <li class="nav-item">
                                     <a class="nav-link" href="/" target="_blank">
                                         <i class="fas fa-globe"></i>
@@ -310,6 +316,8 @@
                         </div>
                     </footer>
                 </div>
+
+                {% include 'cup/sidebar.twig' %}
             </div>
         {% endblock %}
     </body>

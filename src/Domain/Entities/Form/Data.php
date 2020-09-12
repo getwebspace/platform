@@ -151,16 +151,13 @@ class Data extends AbstractEntity
      *
      * @return $this
      */
-    public function removeFile(\App\Domain\Entities\File $file)
+    public function removeFile(\App\Domain\Entities\File $file): void
     {
         foreach ($this->files as $key => $value) {
             if ($file === $value) {
                 unset($this->files[$key]);
-                $value->unlink();
             }
         }
-
-        return $this;
     }
 
     /**
@@ -184,7 +181,6 @@ class Data extends AbstractEntity
     {
         foreach ($this->files as $key => $file) {
             unset($this->files[$key]);
-            $file->unlink();
         }
 
         return $this;

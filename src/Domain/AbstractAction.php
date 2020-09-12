@@ -194,7 +194,7 @@ abstract class AbstractAction extends AbstractComponent
     {
         if (
             $this->parameter('file_is_enabled', 'no') === 'yes' &&
-            method_exists($entity, 'addFile') && method_exists($entity, 'removeFile')
+            method_exists($entity, 'addFile') && method_exists($entity, 'getFiles') && method_exists($entity, 'removeFile')
         ) {
             $default = [
                 'upload' => 'files',
@@ -213,12 +213,15 @@ abstract class AbstractAction extends AbstractComponent
                 $uuids = [];
                 foreach ($files as $el) {
                     if (!$el->getError()) {
-                        $model = $fileService->createFromPath($el->file, $el->getClientFilename());
-                        $entity->addFile($model);
+                        $file = $fileService->createFromPath($el->file, $el->getClientFilename());
 
-                        // is image
-                        if (str_start_with($model->getType(), 'image/')) {
-                            $uuids[] = $model->getUuid();
+                        if (!$entity->getFiles()->firstWhere('uuid', $file->getUuid())) {
+                            $entity->addFile($file);
+
+                            // is image
+                            if (str_start_with($file->getType(), 'image/')) {
+                                $uuids[] = $file->getUuid();
+                            }
                         }
                     }
                 }
@@ -240,7 +243,13 @@ abstract class AbstractAction extends AbstractComponent
                 }
 
                 foreach ($files as $uuid) {
-                    $fileService->delete($uuid);
+                    try {
+                        $file = $fileService->read(['uuid' => $uuid]);
+                        $entity->removeFile($file);
+                        $fileService->delete($file);
+                    } catch (Service\File\Exception\FileNotFoundException $e) {
+                        // nothing
+                    }
                 }
             }
 

@@ -65,7 +65,7 @@ $app
                     ->setName('cup:parameters');
 
                 // refresh
-                $app->map(['post'], '/refresh', \App\Application\Actions\Cup\RefreshAction::class)
+                $app->map(['post', 'get'], '/refresh', \App\Application\Actions\Cup\RefreshAction::class)
                     ->setName('cup:refresh');
 
                 // users

@@ -362,7 +362,6 @@ class Category extends AbstractEntity
         foreach ($this->files as $key => $value) {
             if ($file === $value) {
                 unset($this->files[$key]);
-                $value->unlink();
             }
         }
     }
@@ -378,7 +377,6 @@ class Category extends AbstractEntity
     {
         foreach ($this->files as $key => $file) {
             unset($this->files[$key]);
-            $file->unlink();
         }
     }
 

@@ -1,0 +1,149 @@
+<div class="quick-sidebar">
+    <a href="#" class="close-quick-sidebar">
+        <i class="fa fa-times"></i>
+    </a>
+    <div class="quick-sidebar-wrapper">
+        <ul class="nav nav-tabs nav-line nav-color-secondary" role="tablist">
+            <li class="nav-item"><a class="nav-link active show" data-toggle="tab" href="#notif">Уведомления</a></li>
+            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#task">Фоновые задачи</a></li>
+        </ul>
+        <div class="tab-content mt-3">
+
+            {# TAB: Notifications #}
+            <div class="tab-chat tab-pane fade show active" id="notif">
+                <div class="quick-wrapper notif-box">
+                    <div class="quick-scroll scrollbar-outer">
+                        <div class="quick-content notif-center">
+                            <a href="#" data-notif-item>
+                                <div class="notif-content">
+                                    <span class="block"></span>
+                                    <span class="time"></span>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# TAB: Tasks #}
+            <div class="tab-chat tab-pane fade" id="task">
+                <div class="quick-wrapper">
+                    <div class="quick-scroll scrollbar-outer">
+                        <div class="quick-content">
+                            <div class="list-group list-group-file-item list-group-reflow list-group-flush list-group-divider">
+                                <div class="list-group-item align-items-start" data-task-item>
+                                    <div class="list-group-item-body">
+                                        <h5 class="list-group-item-title text-truncate m-0"></h5>
+                                        <div class="progress mt-2" style="display: none; height: 10px">
+                                            <div class="progress-bar" style="width: 0"></div>
+                                        </div>
+                                    </div>
+                                    <div class="list-group-item-figure">
+                                        <p class="list-group-item-text small"><span></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        let
+            data = {
+                notifications: [],
+                tasks: {},
+            },
+            $notifList = $('.notif-center'),
+            $elNotiftem = $('[data-notif-item]').detach(),
+            $taskList = $('.list-group'),
+            $elTaskItem = $('[data-task-item]').detach();
+
+        (function refresh() {
+            $.post('/cup/refresh', data, (res) => {
+                if (res) {
+                    // notification
+                    if (res.notification && res.notification.length) {
+                        for (let notification of res.notification) {
+                            let $buf = $elNotiftem.clone();
+
+                            $buf.find('.block').text(notification.title);
+                            $buf.find('.time').text(moment(notification.date.date).format('DD.MM.YYYY HH:mm:ss'));
+
+                            $notifList.append($buf);
+                            data.notifications.push(notification.uuid);
+                        }
+                    }
+
+                    // task
+                    if (res.task && (res.task.new.length || res.task.update.length)) {
+                        function renderTask(task, $buf) {
+                            let color = '', text = '';
+
+                            // color & status
+                            switch (task.status) {
+                                case 'queue': {
+                                    color = 'text-muted';
+                                    text = 'Очередь';
+                                    break;
+                                }
+                                case 'work': {
+                                    color = 'text-info';
+                                    text = 'Работает';
+                                    break;
+                                }
+                                case 'done': {
+                                    color = 'text-success';
+                                    text = 'Выполнено';
+                                    break;
+                                }
+                                case 'fail': {
+                                    color = 'text-danger';
+                                    text = 'Ошибка';
+                                    break;
+                                }
+                                case 'cancel': {
+                                    color = 'text-warning';
+                                    text = 'Отменено';
+                                    break;
+                                }
+                                case 'delete': {
+                                    color = 'text-warning';
+                                    text = 'Удалено';
+                                    break;
+                                }
+                            }
+
+                            $buf.attr('data-task-uuid', task.uuid);
+                            $buf.find('h5').text(task.title ? task.title : task.action);
+                            $buf.find('.progress').toggle(task.progress > 0 && task.status === 'work');
+                            $buf.find('.progress-bar').css('width', task.progress + '%');
+                            $buf.find('p span').attr('class', color).text(text);
+
+                            return $buf;
+                        }
+
+                        // new
+                        for (let task of res.task.new) {
+                            $taskList.prepend(renderTask(task, $elTaskItem.clone()));
+                            data.tasks[task.uuid] = {status: task.status, progress: task.progress};
+                        }
+
+                        // update
+                        for (let task of res.task.update) {
+                            renderTask(task, $taskList.find('[data-task-uuid="' + task.uuid + '"]'));
+                            data.tasks[task.uuid] = {status: task.status, progress: task.progress};
+                        }
+                    }
+                }
+            });
+
+            setTimeout(refresh, 1000);
+        })();
+    });
+</script>

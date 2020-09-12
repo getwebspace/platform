@@ -238,7 +238,7 @@ class Page extends AbstractEntity
      * @ORM\ManyToMany(targetEntity="App\Domain\Entities\File", cascade={"persist", "remove"}, orphanRemoval=true)
      * @ORM\JoinTable(name="page_files",
      *     joinColumns={@ORM\JoinColumn(name="page_uuid", referencedColumnName="uuid")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")}
+     *     inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")},
      * )
      */
     protected $files = [];
@@ -260,7 +260,6 @@ class Page extends AbstractEntity
         foreach ($this->files as $key => $value) {
             if ($file === $value) {
                 unset($this->files[$key]);
-                $value->unlink();
             }
         }
     }
@@ -276,7 +275,6 @@ class Page extends AbstractEntity
     {
         foreach ($this->files as $key => $file) {
             unset($this->files[$key]);
-            $file->unlink();
         }
     }
 

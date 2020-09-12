@@ -3,6 +3,7 @@
 namespace App\Application\Actions\Cup;
 
 use App\Domain\AbstractAction;
+use App\Domain\Entities\Task;
 use App\Domain\Entities\User;
 use App\Domain\Service\Notification\NotificationService;
 use App\Domain\Service\Task\TaskService;
@@ -14,7 +15,26 @@ class RefreshAction extends AbstractAction
         /** @var User $user */
         $user = $this->request->getAttribute('user', false);
         $notificationService = NotificationService::getWithContainer($this->container);
+
         $taskService = TaskService::getWithContainer($this->container);
+        $tasks = ['new' => [], 'update' => []];
+        $exclude = (array) $this->request->getParam('tasks');
+        foreach ($taskService->read(['order' => ['date' => 'desc'], 'limit' => 25])->sortBy('date') as $task) {
+            /** @var Task $task */
+            if (!in_array($task->getUuid()->toString(), array_keys($exclude))) {
+                $tasks['new'][] = array_except($task->toArray(), ['params']);
+            } else {
+                if (
+                    in_array($task->getUuid()->toString(), array_keys($exclude)) &&
+                    (
+                        $task->getStatus() !== $exclude[$task->getUuid()->toString()]['status'] ||
+                        (int)$task->getProgress() !== (int)$exclude[$task->getUuid()->toString()]['progress']
+                    )
+                ) {
+                    $tasks['update'][] = array_except($task->toArray(), ['params']);
+                }
+            }
+        }
 
         return $this->respondWithJson([
             'notification' => $notificationService
@@ -23,14 +43,10 @@ class RefreshAction extends AbstractAction
                     'order' => ['date' => 'desc'],
                     'limit' => 25,
                 ])
-                ->map(fn ($item) => $item->toArray()),
+                ->whereNotIn('uuid', (array) $this->request->getParam('notifications'))
+                ->map(fn($item) => $item->toArray()),
 
-            'task' => $taskService
-                ->read([
-                    'order' => ['date' => 'desc'],
-                    'limit' => 25,
-                ])
-                ->map(fn ($item) => $item->toArray()),
+            'task' => $tasks,
         ]);
     }
 }

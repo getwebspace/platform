@@ -6260,7 +6260,7 @@ label.error {
 }
 
 .notif-box, .messages-notif-box {
-    width: 280px;
+    /*width: 280px;*/
     padding: 0 !important;
 }
 
@@ -6390,10 +6390,6 @@ label.error {
 
 .notif-box .see-all i, .messages-notif-box .see-all i {
     float: right;
-}
-
-.notif-box .notif-scroll {
-    max-height: 256px;
 }
 
 .messages-notif-box .message-notif-scroll {
@@ -18823,7 +18819,7 @@ img.mfp-img {
     }
     
     .topbar_open .main-panel {
-        transform: translate3d(0, 62px, 0) !important;
+        transform: translate3d(0, 61px, 0) !important;
     }
     
     .topbar_open > .content {

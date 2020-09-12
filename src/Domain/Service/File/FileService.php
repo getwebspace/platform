@@ -59,7 +59,7 @@ class FileService extends AbstractService
                 mkdir(dirname($dir), 0777, true);
             }
 
-            if (rename($path, $dir)) {
+            if (rename($path, $dir) && chmod($dir, 444)) {
                 $info = File::info($dir);
 
                 try {
