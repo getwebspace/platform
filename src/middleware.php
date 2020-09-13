@@ -10,9 +10,6 @@ use Slim\Http\Response;
 // RunTracy
 $app->add(new RunTracy\Middlewares\TracyMiddleware($app));
 
-// http cache
-$app->add(new \Slim\HttpCache\Cache('public', 86400));
-
 // check user auth
 $app->add(\App\Application\Middlewares\AuthorizationMiddleware::class);
 

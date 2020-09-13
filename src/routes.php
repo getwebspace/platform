@@ -5,7 +5,7 @@ use Slim\Http\Request;
 use Slim\Http\Response;
 
 /**
- * @var \Slim\App $app
+ * @var \Slim\App                         $app
  * @var \Psr\Container\ContainerInterface $container
  */
 
@@ -47,7 +47,8 @@ $app
                 ->setName('catalog:product:api')
                 ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
         });
-    });
+    })
+    ->add(new \Slim\HttpCache\Cache('public', 86400, true));
 
 // CUP section
 $app
@@ -235,7 +236,8 @@ $app
                 $app->post('/console', '\RunTracy\Controllers\RunTracyConsole:index');
             })
             ->add(new \App\Application\Middlewares\CupMiddleware($app->getContainer()));
-    });
+    })
+    ->add(new \Slim\HttpCache\Cache('private'));
 
 // COMMON section
 // main path
@@ -283,56 +285,63 @@ $app->group('/user', function (App $app): void {
         });
 });
 
-// form
-$app
-    ->post('/form/{unique}', \App\Application\Actions\Common\FormAction::class)
-    ->setName('form')
-    ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-
-// catalog
+// public
 $app
     ->group('', function (App $app) use ($container): void {
-        $pathCatalog = \App\Domain\Service\Parameter\ParameterService::getWithContainer($container)
-                ->read(['key' => 'catalog_address'])->getValue();
-
-        // fallback value
-        if (!$pathCatalog) {
-            $pathCatalog = 'catalog';
-        }
-
-        // view categories and products
+        // form
         $app
-            ->get("/{$pathCatalog}[/{args:.*}]", \App\Application\Actions\Common\Catalog\ListAction::class)
-            ->setName('catalog:list')
+            ->post('/form/{unique}', \App\Application\Actions\Common\FormAction::class)
+            ->setName('form')
             ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
 
-        // view cart
+        // catalog
         $app
-            ->map(['get', 'post'], '/cart', \App\Application\Actions\Common\Catalog\CartAction::class)
-            ->setName('catalog:cart')
+            ->group('', function (App $app) use ($container): void {
+                $pathCatalog = \App\Domain\Service\Parameter\ParameterService::getWithContainer($container)
+                    ->read(['key' => 'catalog_address'])->getValue();
+
+                // fallback value
+                if (!$pathCatalog) {
+                    $pathCatalog = 'catalog';
+                }
+
+                // view categories and products
+                $app
+                    ->get("/{$pathCatalog}[/{args:.*}]", \App\Application\Actions\Common\Catalog\ListAction::class)
+                    ->setName('catalog:list')
+                    ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+
+                // view cart
+                $app
+                    ->map(['get', 'post'], '/cart', \App\Application\Actions\Common\Catalog\CartAction::class)
+                    ->setName('catalog:cart')
+                    ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+
+                // view order confirm
+                $app
+                    ->get('/cart/done/{order}', \App\Application\Actions\Common\Catalog\CartCompleteAction::class)
+                    ->setName('catalog:cart:done')
+                    ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+            });
+
+        // guest book
+        $app
+            ->map(['get', 'post'], '/guestbook[/{page:[0-9]+}}]', \App\Application\Actions\Common\GuestBookAction::class)
+            ->setName('guestbook')
             ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
 
-        // view order confirm
-        $app
-            ->get('/cart/done/{order}', \App\Application\Actions\Common\Catalog\CartCompleteAction::class)
-            ->setName('catalog:cart:done')
-            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-    });
+        // xml files
+        $app->get('/xml/{name}', \App\Application\Actions\Common\XMLFileAction::class)
+            ->setName('xml');
 
-// guest book
-$app
-    ->map(['get', 'post'], '/guestbook[/{page:[0-9]+}}]', \App\Application\Actions\Common\GuestBookAction::class)
-    ->setName('guestbook')
-    ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+        // publication rss
+        $app->get('/rss/{channel:.*}', \App\Application\Actions\Common\PublicationRSS::class)
+            ->setName('rss');
 
-// xml files
-$app->get('/xml/{name}', \App\Application\Actions\Common\XMLFileAction::class)
-    ->setName('xml');
+        // dynamic path handler
+        $app->get('/{args:.*}', \App\Application\Actions\Common\DynamicPageAction::class)
+            ->setName('dynamic');
 
-// publication rss
-$app->get('/rss/{channel:.*}', \App\Application\Actions\Common\PublicationRSS::class)
-    ->setName('rss');
 
-// dynamic path handler
-$app->get('/{args:.*}', \App\Application\Actions\Common\DynamicPageAction::class)
-    ->setName('dynamic');
+    })
+    ->add(new \Slim\HttpCache\Cache('public'));
