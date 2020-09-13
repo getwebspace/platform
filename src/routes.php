@@ -48,7 +48,7 @@ $app
                 ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
         });
     })
-    ->add(new \Slim\HttpCache\Cache('public', 86400, true));
+    ->add(new \Slim\HttpCache\Cache('public', 0));
 
 // CUP section
 $app
@@ -237,57 +237,56 @@ $app
             })
             ->add(new \App\Application\Middlewares\CupMiddleware($app->getContainer()));
     })
-    ->add(new \Slim\HttpCache\Cache('private'));
+    ->add(new \Slim\HttpCache\Cache('private', 0));
 
 // COMMON section
-// main path
-$app
-    ->get('/', \App\Application\Actions\Common\MainPageAction::class)
-    ->setName('main');
-
-// file
-$app->group('/file', function (App $app): void {
-    $app->get('/get/{salt}/{hash}', \App\Application\Actions\Common\File\FileGetAction::class)
-        ->setName('file:get');
-    $app
-        ->post('/upload', \App\Application\Actions\Common\File\FileUploadAction::class)
-        ->setName('file:upload')
-        ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-});
-
-// user
-$app->group('/user', function (App $app): void {
-    $app
-        ->map(['get', 'post'], '/login', \App\Application\Actions\Common\User\UserLoginAction::class)
-        ->setName('user:login')
-        ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-
-    $app
-        ->map(['get', 'post'], '/register', \App\Application\Actions\Common\User\UserRegisterAction::class)
-        ->setName('user:register')
-        ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-
-    $app->map(['get', 'post'], '/logout', \App\Application\Actions\Common\User\UserLogoutAction::class)
-        ->setName('user:logout');
-
-    $app
-        ->map(['get', 'post'], '/profile', \App\Application\Actions\Common\User\UserProfileAction::class)
-        ->setName('user:profile')
-        ->add(\App\Application\Middlewares\IsEnabledMiddleware::class)
-        ->add(function (Request $request, Response $response, $next) {
-            $user = $request->getAttribute('user', false);
-
-            if ($user === false) {
-                return $response->withHeader('Location', '/user/login')->withStatus(301);
-            }
-
-            return $next($request, $response);
-        });
-});
-
-// public
 $app
     ->group('', function (App $app) use ($container): void {
+        // main path
+        $app
+            ->get('/', \App\Application\Actions\Common\MainPageAction::class)
+            ->setName('main');
+
+        // file
+        $app->group('/file', function (App $app): void {
+            $app->get('/get/{salt}/{hash}', \App\Application\Actions\Common\File\FileGetAction::class)
+                ->setName('file:get');
+            $app
+                ->post('/upload', \App\Application\Actions\Common\File\FileUploadAction::class)
+                ->setName('file:upload')
+                ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+        });
+
+        // user
+        $app->group('/user', function (App $app): void {
+            $app
+                ->map(['get', 'post'], '/login', \App\Application\Actions\Common\User\UserLoginAction::class)
+                ->setName('user:login')
+                ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+
+            $app
+                ->map(['get', 'post'], '/register', \App\Application\Actions\Common\User\UserRegisterAction::class)
+                ->setName('user:register')
+                ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+
+            $app->map(['get', 'post'], '/logout', \App\Application\Actions\Common\User\UserLogoutAction::class)
+                ->setName('user:logout');
+
+            $app
+                ->map(['get', 'post'], '/profile', \App\Application\Actions\Common\User\UserProfileAction::class)
+                ->setName('user:profile')
+                ->add(\App\Application\Middlewares\IsEnabledMiddleware::class)
+                ->add(function (Request $request, Response $response, $next) {
+                    $user = $request->getAttribute('user', false);
+
+                    if ($user === false) {
+                        return $response->withHeader('Location', '/user/login')->withStatus(301);
+                    }
+
+                    return $next($request, $response);
+                });
+        });
+
         // form
         $app
             ->post('/form/{unique}', \App\Application\Actions\Common\FormAction::class)
