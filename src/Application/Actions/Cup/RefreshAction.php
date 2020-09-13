@@ -44,7 +44,8 @@ class RefreshAction extends AbstractAction
                     'limit' => 25,
                 ])
                 ->whereNotIn('uuid', (array) $this->request->getParam('notifications'))
-                ->map(fn($item) => $item->toArray()),
+                ->map(fn($item) => array_except($item->toArray(), ['params']))
+                ->toArray(),
 
             'task' => $tasks,
         ]);
