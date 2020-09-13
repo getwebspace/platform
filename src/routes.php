@@ -285,7 +285,8 @@ $app
 
                     return $next($request, $response);
                 });
-        });
+        })
+        ->add(new \Slim\HttpCache\Cache('public', 0));
 
         // form
         $app
