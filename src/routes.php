@@ -341,7 +341,5 @@ $app
         // dynamic path handler
         $app->get('/{args:.*}', \App\Application\Actions\Common\DynamicPageAction::class)
             ->setName('dynamic');
-
-
     })
     ->add(new \Slim\HttpCache\Cache('public'));

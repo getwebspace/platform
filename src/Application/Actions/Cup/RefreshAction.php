@@ -21,14 +21,14 @@ class RefreshAction extends AbstractAction
         $exclude = (array) $this->request->getParam('tasks');
         foreach ($taskService->read(['order' => ['date' => 'desc'], 'limit' => 25])->sortBy('date') as $task) {
             /** @var Task $task */
-            if (!in_array($task->getUuid()->toString(), array_keys($exclude))) {
+            if (!in_array($task->getUuid()->toString(), array_keys($exclude), true)) {
                 $tasks['new'][] = array_except($task->toArray(), ['params']);
             } else {
                 if (
-                    in_array($task->getUuid()->toString(), array_keys($exclude)) &&
+                    in_array($task->getUuid()->toString(), array_keys($exclude), true) &&
                     (
                         $task->getStatus() !== $exclude[$task->getUuid()->toString()]['status'] ||
-                        (int)$task->getProgress() !== (int)$exclude[$task->getUuid()->toString()]['progress']
+                        (int) $task->getProgress() !== (int) $exclude[$task->getUuid()->toString()]['progress']
                     )
                 ) {
                     $tasks['update'][] = array_except($task->toArray(), ['params']);
@@ -44,7 +44,7 @@ class RefreshAction extends AbstractAction
                     'limit' => 25,
                 ])
                 ->whereNotIn('uuid', (array) $this->request->getParam('notifications'))
-                ->map(fn($item) => array_except($item->toArray(), ['params']))
+                ->map(fn ($item) => array_except($item->toArray(), ['params']))
                 ->toArray(),
 
             'task' => $tasks,
