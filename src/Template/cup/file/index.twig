@@ -27,7 +27,7 @@
                             <tr>
                                 <th width="20%">Имя</th>
                                 <th>Тип</th>
-                                <th>Размер</th>
+                                <th width="10%">Размер</th>
                                 <th width="15%">Дата создания</th>
                                 <th width="10%" class="text-center no-sorting"></th>
                             </tr>
@@ -42,7 +42,7 @@
                                             </a>
                                         </td>
                                         <td>{{ item.type }}</td>
-                                        <td>{{ item.getSize() }}</td>
+                                        <td>{{ item.getFileSize() }}</td>
                                         <td data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i:s') }}</td>
                                         <td class="text-center">
                                             <div class="btn-group dropdown">
