@@ -194,7 +194,7 @@ abstract class AbstractAction extends AbstractComponent
     {
         if (
             $this->parameter('file_is_enabled', 'no') === 'yes' &&
-            method_exists($entity, 'addFile') && method_exists($entity, 'getFiles') && method_exists($entity, 'removeFile')
+            method_exists($entity, 'addFile') && method_exists($entity, 'getFiles') && method_exists($entity, 'removeFiles')
         ) {
             $default = [
                 'upload' => 'files',
@@ -238,23 +238,12 @@ abstract class AbstractAction extends AbstractComponent
 
             // remove files
             if (($files = $this->request->getParam($fields['delete'])) !== null) {
-                if (!is_array($files)) {
-                    $files = [$files];
-                }
-
-                foreach ($files as $uuid) {
-                    try {
-                        $file = $fileService->read(['uuid' => $uuid]);
-                        $entity->removeFile($file);
-                        $fileService->delete($file);
-                    } catch (Service\File\Exception\FileNotFoundException $e) {
-                        // nothing
-                    }
-                }
+                $entity->removeFiles(
+                    $fileService->read(['uuid' => is_array($files) ? $files : [$files]])->toArray()
+                );
             }
 
-            // flush data
-            $this->entityManager->flush();
+            $fileService->write($entity);
         }
 
         return $entity;

@@ -785,7 +785,7 @@ class Product extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\ManyToMany(targetEntity="App\Domain\Entities\File", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\ManyToMany(targetEntity="App\Domain\Entities\File")
      * @ORM\JoinTable(name="catalog_product_files",
      *     joinColumns={@ORM\JoinColumn(name="product_uuid", referencedColumnName="uuid")},
      *     inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")}

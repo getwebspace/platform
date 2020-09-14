@@ -7,6 +7,9 @@ use App\Domain\Entities\File;
 use App\Domain\Repository\FileRepository;
 use App\Domain\Service\File\Exception\FileAlreadyExistsException;
 use App\Domain\Service\File\Exception\FileNotFoundException;
+use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
+use Doctrine\ORM\ORMException;
+use PDOException;
 use Ramsey\Uuid\Uuid;
 use Tightenco\Collect\Support\Collection;
 
@@ -314,8 +317,12 @@ class FileService extends AbstractService
         if (is_object($entity) && is_a($entity, File::class)) {
             @exec('rm -rf ' . $entity->getDir());
 
-            $this->entityManager->remove($entity);
-            $this->entityManager->flush();
+            try {
+                $this->entityManager->beginTransaction();
+                $this->entityManager->remove($entity);
+            } catch (\Doctrine\DBAL\DBALException|ForeignKeyConstraintViolationException $e) {
+                $this->entityManager->rollback();
+            }
 
             return true;
         }

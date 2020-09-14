@@ -402,7 +402,7 @@ class User extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\ManyToMany(targetEntity="App\Domain\Entities\File", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\ManyToMany(targetEntity="App\Domain\Entities\File")
      * @ORM\JoinTable(name="user_files",
      *     joinColumns={@ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid")},
      *     inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")}

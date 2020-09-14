@@ -75,8 +75,7 @@ abstract class AbstractService extends AbstractComponent
      */
     public function write(AbstractEntity $entity)
     {
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        $this->entityManager->flush($entity);
 
         return $entity;
     }
