@@ -23,6 +23,12 @@
                 <div class="quick-wrapper notif-box">
                     <div class="quick-scroll scrollbar-outer">
                         <div class="quick-content notif-center">
+                            <div data-notif-empty>
+                                <div class="text-center my-3">
+                                    Уведомлений пока нет
+                                </div>
+                            </div>
+
                             <a href="#" data-notif-item>
                                 <div class="notif-content">
                                     <span class="block"></span>
@@ -40,6 +46,12 @@
                     <div class="quick-scroll scrollbar-outer">
                         <div class="quick-content">
                             <div class="list-group list-group-file-item list-group-reflow list-group-flush list-group-divider">
+                                <div data-task-empty>
+                                    <div class="text-center my-3">
+                                        Нет данных о фоновых задачах
+                                    </div>
+                                </div>
+
                                 <div class="list-group-item align-items-start" data-task-item>
                                     <div class="list-group-item-body">
                                         <h5 class="list-group-item-title text-truncate m-0"></h5>
@@ -69,8 +81,10 @@
                 tasks: {},
             },
             $notifList = $('.notif-center'),
-            $elNotiftem = $('[data-notif-item]').detach(),
+            $elNotifEmpty = $('[data-notif-empty]'),
+            $elNotifItem = $('[data-notif-item]').detach(),
             $taskList = $('.list-group'),
+            $elTaskEmpty = $('[data-task-empty]'),
             $elTaskItem = $('[data-task-item]').detach();
 
         (function refresh() {
@@ -78,8 +92,10 @@
                 if (res) {
                     // notification
                     if (res.notification && res.notification.length) {
+                        $elNotifEmpty.hide();
+
                         for (let notification of res.notification) {
-                            let $buf = $elNotiftem.clone();
+                            let $buf = $elNotifItem.clone();
 
                             $buf.find('.block').text(notification.title);
                             $buf.find('.time').text(moment(notification.date.date).format('DD.MM.YYYY HH:mm:ss'));
@@ -91,6 +107,8 @@
 
                     // task
                     if (res.task && (res.task.new.length || res.task.update.length)) {
+                        $elTaskEmpty.hide();
+
                         function renderTask(task, $buf) {
                             let color = '', text = '';
 
