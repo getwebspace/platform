@@ -315,12 +315,8 @@ class FileService extends AbstractService
         if (is_object($entity) && is_a($entity, File::class)) {
             @exec('rm -rf ' . $entity->getDir());
 
-            try {
-                $this->entityManager->beginTransaction();
-                $this->entityManager->remove($entity);
-            } catch (\Doctrine\DBAL\DBALException|ForeignKeyConstraintViolationException $e) {
-                $this->entityManager->rollback();
-            }
+            $this->entityManager->remove($entity);
+            $this->entityManager->flush();
 
             return true;
         }
