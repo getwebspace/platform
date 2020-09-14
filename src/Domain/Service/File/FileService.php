@@ -8,8 +8,6 @@ use App\Domain\Repository\FileRepository;
 use App\Domain\Service\File\Exception\FileAlreadyExistsException;
 use App\Domain\Service\File\Exception\FileNotFoundException;
 use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
-use Doctrine\ORM\ORMException;
-use PDOException;
 use Ramsey\Uuid\Uuid;
 use Tightenco\Collect\Support\Collection;
 
