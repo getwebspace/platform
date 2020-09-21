@@ -4,27 +4,27 @@ _(Content Management System)_
 
 [![Build Status](https://travis-ci.com/0x12f/platform.svg?branch=master)](https://travis-ci.com/0x12f/platform)
 
-Многофункциональная система управления сайтом,
-в первую очередь предназначена для:
-* организации средств массовой информации;
-* блогов;
-* интернет-магазинов;
+Multifunctional content management system,
+primarily intended for:
+* organization of mass media;
+* blogs;
+* online stores;
 
 #### License
 Licensed under the MIT license. See [License File](LICENSE.md) for more information.
 
 #### Production mode
-[Инструкция по установке](https://github.com/0x12f/platform/wiki/Установка-(Docker)) в Docker из шаблона [0x12f/platform-template](https://github.com/0x12f/platform-template)  
+[Installation instructions](https://github.com/0x12f/platform/wiki/Установка-(Docker)) from Docker template [0x12f/platform-template](https://github.com/0x12f/platform-template)  
 
 #### Developer mode
-Воспользуйтесь `Docker` выполнив команду: `docker-compose up -d`
+Use `Docker` by running the command: `docker-compose up -d`
 
-*Установка зависимостей*
+*Install dependencies*
 ```shell script
 ./composer install
 ```
 
-*Статический анализатор*
+*Static analyzer*
 ```shell script
 ./phpcs
 ```
