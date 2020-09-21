@@ -4,8 +4,8 @@ namespace App\Domain\Entities\Catalog;
 
 use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
+use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
-use Tightenco\Collect\Support\Collection;
 
 /**
  * @ORM\Entity
@@ -563,7 +563,7 @@ class Category extends AbstractEntity
     /**
      * @param Collection $categories
      *
-     * @return \Tightenco\Collect\Support\Collection
+     * @return \Illuminate\Support\Collection
      */
     public function getNested(Collection &$categories)
     {

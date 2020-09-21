@@ -8,8 +8,8 @@ use App\Domain\Repository\TaskRepository;
 use App\Domain\Service\Task\Exception\MissingActionValueException;
 use App\Domain\Service\Task\Exception\MissingTitleValueException;
 use App\Domain\Service\Task\Exception\TaskNotFoundException;
+use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
-use Tightenco\Collect\Support\Collection;
 
 class TaskService extends AbstractService
 {

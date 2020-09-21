@@ -25,7 +25,7 @@ $logger = $container->get('monolog');
 /** @var \App\Domain\Service\Task\TaskService $taskService */
 $taskService = \App\Domain\Service\Task\TaskService::getWithContainer($container);
 
-/** @var \Tightenco\Collect\Support\Collection $queue */
+/** @var \Illuminate\Support\Collection $queue */
 $queue = $taskService->read([
     'status' => [
         \App\Domain\Types\TaskStatusType::STATUS_QUEUE,

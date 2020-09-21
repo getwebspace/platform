@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
 use Doctrine\ORM\EntityManager;
+use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
-use Tightenco\Collect\Support\Collection;
 
 /**
  * @var \Slim\App $app

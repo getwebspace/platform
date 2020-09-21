@@ -14,8 +14,8 @@ use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
+use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
-use Tightenco\Collect\Support\Collection;
 
 class UserService extends AbstractService
 {

@@ -7,8 +7,8 @@ use App\Domain\Service\Catalog\CategoryService as CatalogCatalogService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\User\UserService;
+use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
-use Tightenco\Collect\Support\Collection;
 
 abstract class CatalogAction extends AbstractAction
 {

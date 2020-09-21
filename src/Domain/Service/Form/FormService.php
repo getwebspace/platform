@@ -9,8 +9,8 @@ use App\Domain\Service\Form\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Form\Exception\FormNotFoundException;
 use App\Domain\Service\Form\Exception\MissingTitleValueException;
 use App\Domain\Service\Form\Exception\TitleAlreadyExistsException;
+use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
-use Tightenco\Collect\Support\Collection;
 
 class FormService extends AbstractService
 {

@@ -9,8 +9,8 @@ use App\Domain\Service\Notification\Exception\MissingMessageValueException;
 use App\Domain\Service\Notification\Exception\MissingTitleValueException;
 use App\Domain\Service\Notification\Exception\MissingUserUuidValueException;
 use App\Domain\Service\Notification\Exception\NotificationNotFoundException;
+use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
-use Tightenco\Collect\Support\Collection;
 
 class NotificationService extends AbstractService
 {

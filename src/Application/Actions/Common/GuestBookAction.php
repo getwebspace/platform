@@ -57,11 +57,13 @@ class GuestBookAction extends AbstractAction
             'offset' => $pagination * $offset,
         ])->map(function ($model) {
             /** @var $model GuestBook */
-            $em = explode('@', $model->getEmail());
-            $name = implode('@', array_slice($em, 0, count($em) - 1));
+            $email = explode('@', $model->getEmail());
+            $name = implode('@', array_slice($email, 0, count($email) - 1));
             $len = (int) floor(mb_strlen($name) / 2);
 
-            return array_merge($model->toArray(), ['email' => mb_substr($name, 0, $len) . str_repeat('*', $len) . '@' . end($em)]);
+            $model->setEmail(mb_substr($name, 0, $len) . str_repeat('*', $len) . '@' . end($email));
+
+            return $model;
         });
 
         return $this->respondWithTemplate($this->parameter('guestbook_template', 'guestbook.twig'), [

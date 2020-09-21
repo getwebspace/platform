@@ -7,8 +7,8 @@ use App\Domain\Repository\Catalog\OrderRepository;
 use App\Domain\Service\Catalog\Exception\OrderNotFoundException;
 use App\Domain\Service\Catalog\OrderService;
 use Doctrine\ORM\EntityManager;
+use Illuminate\Support\Collection;
 use tests\TestCase;
-use Tightenco\Collect\Support\Collection;
 
 class OrderServiceTest extends TestCase
 {

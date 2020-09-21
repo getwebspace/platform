@@ -4,8 +4,8 @@ namespace App\Domain\Entities\Publication;
 
 use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
+use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
-use Tightenco\Collect\Support\Collection;
 
 /**
  * @ORM\Entity

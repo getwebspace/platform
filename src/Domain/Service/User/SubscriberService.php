@@ -9,8 +9,8 @@ use App\Domain\Repository\User\SubscriberRepository as UserSubscriberRepository;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
+use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
-use Tightenco\Collect\Support\Collection;
 
 class SubscriberService extends AbstractService
 {

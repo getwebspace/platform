@@ -7,8 +7,8 @@ use App\Domain\Entities\Form\Data as FromData;
 use App\Domain\Repository\Form\DataRepository as FormDataRepository;
 use App\Domain\Service\Form\Exception\FormDataNotFoundException;
 use App\Domain\Service\Form\Exception\MissingMessageValueException;
+use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
-use Tightenco\Collect\Support\Collection;
 
 class DataService extends AbstractService
 {

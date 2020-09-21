@@ -7,9 +7,8 @@ use App\Domain\Entities\File;
 use App\Domain\Repository\FileRepository;
 use App\Domain\Service\File\Exception\FileAlreadyExistsException;
 use App\Domain\Service\File\Exception\FileNotFoundException;
-use Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException;
+use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
-use Tightenco\Collect\Support\Collection;
 
 class FileService extends AbstractService
 {

@@ -9,8 +9,8 @@ use App\Domain\Service\GuestBook\Exception\EntryNotFoundException;
 use App\Domain\Service\GuestBook\Exception\MissingEmailValueException;
 use App\Domain\Service\GuestBook\Exception\MissingMessageValueException;
 use App\Domain\Service\GuestBook\Exception\MissingNameValueException;
+use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
-use Tightenco\Collect\Support\Collection;
 
 class GuestBookService extends AbstractService
 {

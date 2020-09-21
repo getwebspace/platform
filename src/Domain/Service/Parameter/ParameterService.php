@@ -7,7 +7,7 @@ use App\Domain\Entities\Parameter;
 use App\Domain\Repository\ParameterRepository;
 use App\Domain\Service\Parameter\Exception\ParameterAlreadyExistsException;
 use App\Domain\Service\Parameter\Exception\ParameterNotFoundException;
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Support\Collection;
 
 class ParameterService extends AbstractService
 {

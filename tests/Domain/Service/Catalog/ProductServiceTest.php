@@ -10,8 +10,8 @@ use App\Domain\Service\Catalog\Exception\ProductNotFoundException;
 use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\Catalog\ProductService;
 use Doctrine\ORM\EntityManager;
+use Illuminate\Support\Collection;
 use tests\TestCase;
-use Tightenco\Collect\Support\Collection;
 
 class ProductServiceTest extends TestCase
 {

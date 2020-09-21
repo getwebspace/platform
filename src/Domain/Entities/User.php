@@ -479,7 +479,7 @@ class User extends AbstractEntity
     /**
      * @param bool $raw
      *
-     * @return array|\Tightenco\Collect\Support\Collection
+     * @return array|\Illuminate\Support\Collection
      */
     public function getFiles($raw = false)
     {

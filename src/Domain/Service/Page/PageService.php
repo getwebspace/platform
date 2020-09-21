@@ -9,8 +9,8 @@ use App\Domain\Service\Page\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Page\Exception\MissingTitleValueException;
 use App\Domain\Service\Page\Exception\PageNotFoundException;
 use App\Domain\Service\Page\Exception\TitleAlreadyExistsException;
+use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
-use Tightenco\Collect\Support\Collection;
 
 class PageService extends AbstractService
 {

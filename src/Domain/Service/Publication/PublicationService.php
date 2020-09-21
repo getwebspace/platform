@@ -9,8 +9,8 @@ use App\Domain\Service\Publication\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Publication\Exception\MissingTitleValueException;
 use App\Domain\Service\Publication\Exception\PublicationNotFoundException;
 use App\Domain\Service\Publication\Exception\TitleAlreadyExistsException;
+use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
-use Tightenco\Collect\Support\Collection;
 
 class PublicationService extends AbstractService
 {

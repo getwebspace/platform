@@ -13,10 +13,10 @@ use App\Domain\Service\Publication\PublicationService;
 use DateTime;
 use DateTimeZone;
 use Exception;
+use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 use Ramsey\Uuid\Uuid;
 use Slim\Http\Uri;
-use Tightenco\Collect\Support\Collection;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
@@ -83,15 +83,16 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('files', [$this, 'files']),
 
             // publication functions
-            new TwigFunction('publication', [$this, 'publication']),
             new TwigFunction('publication_category', [$this, 'publication_category']),
+            new TwigFunction('publication', [$this, 'publication']),
 
             // guestbook functions
             new TwigFunction('guestbook', [$this, 'guestbook']),
 
             // catalog functions
             new TwigFunction('catalog_category', [$this, 'catalog_category']),
-            new TwigFunction('catalog_breadcrumb', [$this, 'catalog_breadcrumb']),
+            new TwigFunction('catalog_category_parents', [$this, 'catalog_category_parents']),
+            new TwigFunction('catalog_breadcrumb', [$this, 'catalog_breadcrumb']), // todo remove this, later
             new TwigFunction('catalog_products', [$this, 'catalog_products']),
             new TwigFunction('catalog_product', [$this, 'catalog_product']),
             new TwigFunction('catalog_product_view', [$this, 'catalog_product_view']),
@@ -145,7 +146,7 @@ class TwigExtension extends AbstractExtension
 
     public function isCurrentPath($name, $data = [])
     {
-        return $this->router->pathFor($name, $data) === $this->uri->getBasePath() . '/' . ltrim($this->uri->getPath(), '/');
+        return $this->router->pathFor($name, $data) === $this->baseUrl() . '/' . ltrim($this->uri->getPath(), '/');
     }
 
     /**
@@ -161,7 +162,7 @@ class TwigExtension extends AbstractExtension
             return $this->uri;
         }
 
-        $path = $this->uri->getBasePath() . '/' . ltrim($this->uri->getPath(), '/');
+        $path = $this->baseUrl() . '/' . ltrim($this->uri->getPath(), '/');
 
         if ($withQueryString && '' !== $query = $this->uri->getQuery()) {
             $path .= '?' . $query;
@@ -195,10 +196,8 @@ class TwigExtension extends AbstractExtension
                     return $reference[$value];
             }
         } catch (Exception $e) {
-            // todo nothing
+            return $value;
         }
-
-        return $value;
     }
 
     // return parameter value by key or default
@@ -230,15 +229,10 @@ class TwigExtension extends AbstractExtension
     }
 
     /**
-     * New debug function & exit shortcut.
+     * @param $obj
      *
-     * @param mixed ...$args
+     * @return false|int
      */
-    public function dumpe(...$args): void
-    {
-        call_user_func_array('dumpe', $args);
-    }
-
     public function count($obj)
     {
         return is_countable($obj) ? count($obj) : false;
@@ -277,7 +271,7 @@ class TwigExtension extends AbstractExtension
 
     public function non_page_path()
     {
-        $path = $this->uri->getBasePath() . '/' . ltrim($this->uri->getPath(), '/');
+        $path = $this->baseUrl() . '/' . ltrim($this->uri->getPath(), '/');
         $path = explode('/', $path);
 
         if (($key = count($path) - 1) && ($buf = $path[$key]) && ctype_digit($buf)) {
@@ -342,7 +336,7 @@ class TwigExtension extends AbstractExtension
         $criteria = [];
 
         if ($files) {
-            if (!is_a($files, \Tightenco\Collect\Support\Collection::class) && !is_array($files)) {
+            if (!is_a($files, \Illuminate\Support\Collection::class) && !is_array($files)) {
                 $files = [$files];
             }
 
@@ -477,16 +471,15 @@ class TwigExtension extends AbstractExtension
                     'limit' => $limit,
                     'offset' => $offset,
                 ])
-                ->map(function ($el) {
-                    if ($el->email) {
-                        $em = explode('@', $el->email);
-                        $name = implode(array_slice($em, 0, count($em) - 1), '@');
-                        $len = floor(mb_strlen($name) / 2);
+                ->map(function ($model) {
+                    /** @var $model \App\Domain\Entities\GuestBook */
+                    $email = explode('@', $model->getEmail());
+                    $name = implode('@', array_slice($email, 0, count($email) - 1));
+                    $len = (int) floor(mb_strlen($name) / 2);
 
-                        $el->email = mb_substr($name, 0, $len) . str_repeat('*', $len) . '@' . end($em);
-                    }
+                    $model->setEmail(mb_substr($name, 0, $len) . str_repeat('*', $len) . '@' . end($email));
 
-                    return $el;
+                    return $model;
                 });
         }
 
@@ -517,9 +510,9 @@ class TwigExtension extends AbstractExtension
     }
 
     // return parent categories
-    public function catalog_breadcrumb(\App\Domain\Entities\Catalog\Category $category = null)
+    public function catalog_category_parents(\App\Domain\Entities\Catalog\Category $category = null)
     {
-        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_breadcrumb');
+        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_category_parents');
 
         $categories = $this->catalog_category();
         $breadcrumb = [];
@@ -538,7 +531,7 @@ class TwigExtension extends AbstractExtension
 
         $result = collect($breadcrumb)->reverse();
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_breadcrumb');
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_category_parents');
 
         return $result;
     }

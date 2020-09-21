@@ -201,7 +201,7 @@ abstract class AbstractPlugin extends AbstractComponent
      *
      * @return \Slim\Interfaces\RouteInterface|\Slim\Route
      */
-    protected function map($params)
+    protected function map(array $params)
     {
         $default = [
             'methods' => ['get', 'post'],

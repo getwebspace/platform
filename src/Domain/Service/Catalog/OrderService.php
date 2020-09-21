@@ -6,8 +6,8 @@ use App\Domain\AbstractService;
 use App\Domain\Entities\Catalog\Order;
 use App\Domain\Repository\Catalog\OrderRepository;
 use App\Domain\Service\Catalog\Exception\OrderNotFoundException;
+use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
-use Tightenco\Collect\Support\Collection;
 
 class OrderService extends AbstractService
 {
@@ -94,6 +94,7 @@ class OrderService extends AbstractService
         $default = [
             'uuid' => null,
             'user_uuid' => null,
+            'serial' => null,
             'phone' => null,
             'email' => null,
             'status' => null,
@@ -109,6 +110,9 @@ class OrderService extends AbstractService
         }
         if ($data['user_uuid'] !== null) {
             $criteria['user_uuid'] = $data['user_uuid'];
+        }
+        if ($data['serial'] !== null) {
+            $criteria['serial'] = $data['serial'];
         }
         if ($data['phone'] !== null) {
             $criteria['phone'] = $data['phone'];
@@ -128,6 +132,7 @@ class OrderService extends AbstractService
 
         switch (true) {
             case !is_array($data['uuid']) && $data['uuid'] !== null:
+            case !is_array($data['serial']) && $data['serial'] !== null:
             case !is_array($data['external_id']) && $data['external_id'] !== null:
                 $order = $this->service->findOneBy($criteria);
 

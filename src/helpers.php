@@ -2,8 +2,8 @@
 
 use Alksily\Support\Str;
 use App\Domain\AbstractEntity;
-use Tightenco\Collect\Support\Arr;
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 if (!function_exists('array_add')) {
     /**
