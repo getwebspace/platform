@@ -53,7 +53,11 @@ $app
 // CUP section
 $app
     ->group('/cup', function (App $app): void {
+        // login cup
         $app->map(['get', 'post'], '/login', \App\Application\Actions\Cup\LoginPageAction::class);
+
+        // installer
+        $app->map(['get', 'post'], '/system', \App\Application\Actions\Cup\SystemPageAction::class);
 
         $app
             ->group('', function (App $app): void {
@@ -298,7 +302,7 @@ $app
         $app
             ->group('', function (App $app) use ($container): void {
                 $paramService = \App\Domain\Service\Parameter\ParameterService::getWithContainer($container);
-                $pathCatalog = ($buf = $paramService->read(['key' => 'catalog_address'])) ? $buf->getValue() : 'catalog';
+                $pathCatalog = $paramService->read(['key' => 'catalog_address'], 'catalog')->getValue();
 
                 // view categories and products
                 $app
