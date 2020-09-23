@@ -138,66 +138,70 @@ class UserService extends AbstractService
             $criteria['status'] = $data['status'];
         }
 
-        if (
-            $data['identifier'] !== null ||
-            !is_array($data['uuid']) && $data['uuid'] !== null ||
-            !is_array($data['username']) && $data['username'] !== null ||
-            !is_array($data['email']) && $data['email'] !== null ||
-            !is_array($data['phone']) && $data['phone'] !== null
-        ) {
-            switch (true) {
-                case $data['identifier']:
-                    $user = $this->service->findOneByIdentifier($data['identifier']);
-
-                    break;
-
-                case $data['uuid']:
-                    $user = $this->service->findOneByUuid($data['uuid']);
-
-                    break;
-
-                case $data['username']:
-                    $user = $this->service->findOneByUsername($data['username']);
-
-                    break;
-
-                case $data['email']:
-                    $user = $this->service->findOneByEmail($data['email']);
-
-                    break;
-
-                case $data['phone']:
-                    $user = $this->service->findOneByPhone($data['phone']);
-
-                    break;
-            }
-
+        try {
             if (
-                empty($user) || (!empty($criteria['status']) && $data['status'] !== $user->getStatus())
+                $data['identifier'] !== null ||
+                !is_array($data['uuid']) && $data['uuid'] !== null ||
+                !is_array($data['username']) && $data['username'] !== null ||
+                !is_array($data['email']) && $data['email'] !== null ||
+                !is_array($data['phone']) && $data['phone'] !== null
             ) {
-                throw new UserNotFoundException();
+                switch (true) {
+                    case $data['identifier']:
+                        $user = $this->service->findOneByIdentifier($data['identifier']);
+
+                        break;
+
+                    case $data['uuid']:
+                        $user = $this->service->findOneByUuid($data['uuid']);
+
+                        break;
+
+                    case $data['username']:
+                        $user = $this->service->findOneByUsername($data['username']);
+
+                        break;
+
+                    case $data['email']:
+                        $user = $this->service->findOneByEmail($data['email']);
+
+                        break;
+
+                    case $data['phone']:
+                        $user = $this->service->findOneByPhone($data['phone']);
+
+                        break;
+                }
+
+                if (
+                    empty($user) || (!empty($criteria['status']) && $data['status'] !== $user->getStatus())
+                ) {
+                    throw new UserNotFoundException();
+                }
+
+                // optional: check password
+                if ($data['password'] && !crypta_hash_check($data['password'], $user->getPassword())) {
+                    throw new WrongPasswordException();
+                }
+
+                // optional: update fields
+                if ($data['agent'] && $data['ip']) {
+                    $user
+                        ->getSession()
+                        ->setDate('now')
+                        ->setAgent($data['agent'])
+                        ->setIp($data['ip']);
+
+                    $this->entityManager->flush();
+                }
+
+                return $user;
             }
 
-            // optional: check password
-            if ($data['password'] && !crypta_hash_check($data['password'], $user->getPassword())) {
-                throw new WrongPasswordException();
-            }
-
-            // optional: update fields
-            if ($data['agent'] && $data['ip']) {
-                $user
-                    ->getSession()
-                    ->setDate('now')
-                    ->setAgent($data['agent'])
-                    ->setIp($data['ip']);
-
-                $this->entityManager->flush();
-            }
-
-            return $user;
+            return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
+            return null;
         }
-
-        return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
     }
 
     /**

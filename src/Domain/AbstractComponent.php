@@ -57,15 +57,19 @@ abstract class AbstractComponent
      */
     protected function parameter($key = null, $default = null)
     {
-        if ($this->container) {
-            static $parameters;
+        static $parameters;
 
-            if (!$parameters) {
+        if (!$parameters) {
+            if ($this->container) {
                 \RunTracy\Helpers\Profiler\Profiler::start('parameters');
                 $parameters = ParameterService::getWithContainer($this->container)->read();
                 \RunTracy\Helpers\Profiler\Profiler::finish('parameters');
+            } else {
+                throw new \RuntimeException('Container is null');
             }
+        }
 
+        if ($parameters) {
             if ($key === null) {
                 return $parameters->mapWithKeys(function ($item) {
                     [$group, $key] = explode('_', $item->key, 2);
@@ -74,12 +78,12 @@ abstract class AbstractComponent
                 });
             }
             if (is_string($key)) {
-                return $parameters->firstWhere('key', $key)->value ?? $default;
+                return ($buf = $parameters->firstWhere('key', $key)) ? $buf->getValue() : $default;
             }
 
             return $parameters->whereIn('key', $key)->pluck('value', 'key')->all() ?? $default;
         }
 
-        throw new \RuntimeException('Container is null');
+        return $default;
     }
 }

@@ -63,18 +63,22 @@ class ParameterService extends AbstractService
         ];
         $data = array_merge($default, static::$default_read, $data);
 
-        switch (true) {
-            case !is_array($data['key']) && $data['key'] !== null:
-                $parameter = $this->service->findOneByKey((string) $data['key']);
+        try {
+            switch (true) {
+                case !is_array($data['key']) && $data['key'] !== null:
+                    $parameter = $this->service->findOneByKey((string) $data['key']);
 
-                if (empty($parameter)) {
-                    $parameter = (new Parameter())->setKey($data['key'])->setValue($fallback);
-                }
+                    if (empty($parameter)) {
+                        $parameter = (new Parameter())->setKey($data['key'])->setValue($fallback);
+                    }
 
-                return $parameter;
+                    return $parameter;
 
-            default:
-                return collect($this->service->findBy([], $data['order'], $data['limit'], $data['offset']));
+                default:
+                    return collect($this->service->findBy([], $data['order'], $data['limit'], $data['offset']));
+            }
+        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
+            return null;
         }
     }
 

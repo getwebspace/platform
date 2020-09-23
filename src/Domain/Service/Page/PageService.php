@@ -111,20 +111,24 @@ class PageService extends AbstractService
             $criteria['type'] = $data['type'];
         }
 
-        switch (true) {
-            case !is_array($data['uuid']) && $data['uuid'] !== null:
-            case !is_array($data['title']) && $data['title'] !== null:
-            case !is_array($data['address']) && $data['address'] !== null:
-                $page = $this->service->findOneBy($criteria);
+        try {
+            switch (true) {
+                case !is_array($data['uuid']) && $data['uuid'] !== null:
+                case !is_array($data['title']) && $data['title'] !== null:
+                case !is_array($data['address']) && $data['address'] !== null:
+                    $page = $this->service->findOneBy($criteria);
 
-                if (empty($page)) {
-                    throw new PageNotFoundException();
-                }
+                    if (empty($page)) {
+                        throw new PageNotFoundException();
+                    }
 
-                return $page;
+                    return $page;
 
-            default:
-                return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+                default:
+                    return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+            }
+        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
+            return null;
         }
     }
 

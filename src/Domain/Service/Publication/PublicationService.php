@@ -108,20 +108,24 @@ class PublicationService extends AbstractService
             $criteria['category'] = $data['category'];
         }
 
-        switch (true) {
-            case !is_array($data['uuid']) && $data['uuid'] !== null:
-            case !is_array($data['title']) && $data['title'] !== null:
-            case !is_array($data['address']) && $data['address'] !== null:
-                $publication = $this->service->findOneBy($criteria);
+        try {
+            switch (true) {
+                case !is_array($data['uuid']) && $data['uuid'] !== null:
+                case !is_array($data['title']) && $data['title'] !== null:
+                case !is_array($data['address']) && $data['address'] !== null:
+                    $publication = $this->service->findOneBy($criteria);
 
-                if (empty($publication)) {
-                    throw new PublicationNotFoundException();
-                }
+                    if (empty($publication)) {
+                        throw new PublicationNotFoundException();
+                    }
 
-                return $publication;
+                    return $publication;
 
-            default:
-                return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+                default:
+                    return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+            }
+        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
+            return null;
         }
     }
 

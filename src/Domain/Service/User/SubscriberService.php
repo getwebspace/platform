@@ -85,19 +85,23 @@ class SubscriberService extends AbstractService
             $criteria['date'] = $data['date'];
         }
 
-        switch (true) {
-            case !is_array($data['uuid']) && $data['uuid'] !== null:
-            case !is_array($data['email']) && $data['email'] !== null:
-                $userSubscriber = $this->service->findOneBy($criteria);
+        try {
+            switch (true) {
+                case !is_array($data['uuid']) && $data['uuid'] !== null:
+                case !is_array($data['email']) && $data['email'] !== null:
+                    $userSubscriber = $this->service->findOneBy($criteria);
 
-                if (empty($userSubscriber)) {
-                    throw new UserNotFoundException();
-                }
+                    if (empty($userSubscriber)) {
+                        throw new UserNotFoundException();
+                    }
 
-                return $userSubscriber;
+                    return $userSubscriber;
 
-            default:
-                return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+                default:
+                    return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+            }
+        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
+            return null;
         }
     }
 

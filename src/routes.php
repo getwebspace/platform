@@ -297,13 +297,8 @@ $app
         // catalog
         $app
             ->group('', function (App $app) use ($container): void {
-                $pathCatalog = \App\Domain\Service\Parameter\ParameterService::getWithContainer($container)
-                    ->read(['key' => 'catalog_address'])->getValue();
-
-                // fallback value
-                if (!$pathCatalog) {
-                    $pathCatalog = 'catalog';
-                }
+                $paramService = \App\Domain\Service\Parameter\ParameterService::getWithContainer($container);
+                $pathCatalog = ($buf = $paramService->read(['key' => 'catalog_address'])) ? $buf->getValue() : 'catalog';
 
                 // view categories and products
                 $app

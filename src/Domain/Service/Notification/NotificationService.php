@@ -91,24 +91,28 @@ class NotificationService extends AbstractService
             $criteria['user_uuid'] = $data['user_uuid'];
         }
 
-        switch (true) {
-            case !is_array($data['uuid']) && $data['uuid'] !== null:
-                $entry = $this->service->findOneBy($criteria);
+        try {
+            switch (true) {
+                case !is_array($data['uuid']) && $data['uuid'] !== null:
+                    $entry = $this->service->findOneBy($criteria);
 
-                if (empty($entry)) {
-                    throw new NotificationNotFoundException();
-                }
+                    if (empty($entry)) {
+                        throw new NotificationNotFoundException();
+                    }
 
-                return $entry;
+                    return $entry;
 
-            default:
-                return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+                default:
+                    return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+            }
+        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
+            return null;
         }
     }
 
     /**
      * @param Notification|string|Uuid $entity
-     * @param array            $data
+     * @param array                    $data
      *
      * @throws NotificationNotFoundException
      *

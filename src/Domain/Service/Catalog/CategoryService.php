@@ -162,21 +162,25 @@ class CategoryService extends AbstractService
             $criteria['export'] = $data['export'];
         }
 
-        switch (true) {
-            case !is_array($data['uuid']) && $data['uuid'] !== null:
-            case !is_array($data['title']) && $data['title'] !== null:
-            case !is_array($data['address']) && $data['address'] !== null:
-            case !is_array($data['external_id']) && $data['external_id'] !== null:
-                $category = $this->service->findOneBy($criteria);
+        try {
+            switch (true) {
+                case !is_array($data['uuid']) && $data['uuid'] !== null:
+                case !is_array($data['title']) && $data['title'] !== null:
+                case !is_array($data['address']) && $data['address'] !== null:
+                case !is_array($data['external_id']) && $data['external_id'] !== null:
+                    $category = $this->service->findOneBy($criteria);
 
-                if (empty($category)) {
-                    throw new CategoryNotFoundException();
-                }
+                    if (empty($category)) {
+                        throw new CategoryNotFoundException();
+                    }
 
-                return $category;
+                    return $category;
 
-            default:
-                return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+                default:
+                    return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+            }
+        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
+            return null;
         }
     }
 

@@ -130,20 +130,24 @@ class OrderService extends AbstractService
             $criteria['export'] = $data['export'];
         }
 
-        switch (true) {
-            case !is_array($data['uuid']) && $data['uuid'] !== null:
-            case !is_array($data['serial']) && $data['serial'] !== null:
-            case !is_array($data['external_id']) && $data['external_id'] !== null:
-                $order = $this->service->findOneBy($criteria);
+        try {
+            switch (true) {
+                case !is_array($data['uuid']) && $data['uuid'] !== null:
+                case !is_array($data['serial']) && $data['serial'] !== null:
+                case !is_array($data['external_id']) && $data['external_id'] !== null:
+                    $order = $this->service->findOneBy($criteria);
 
-                if (empty($order)) {
-                    throw new OrderNotFoundException();
-                }
+                    if (empty($order)) {
+                        throw new OrderNotFoundException();
+                    }
 
-                return $order;
+                    return $order;
 
-            default:
-                return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+                default:
+                    return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+            }
+        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
+            return null;
         }
     }
 

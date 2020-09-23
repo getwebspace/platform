@@ -201,28 +201,32 @@ class FileService extends AbstractService
             $criteria['size'] = $data['size'];
         }
 
-        switch (true) {
-            case !is_array($data['uuid']) && $data['uuid'] !== null:
-            case !is_array($data['hash']) && $data['hash'] !== null:
-                $file = $this->service->findOneBy($criteria);
+        try {
+            switch (true) {
+                case !is_array($data['uuid']) && $data['uuid'] !== null:
+                case !is_array($data['hash']) && $data['hash'] !== null:
+                    $file = $this->service->findOneBy($criteria);
 
-                if (empty($file)) {
-                    throw new FileNotFoundException();
-                }
+                    if (empty($file)) {
+                        throw new FileNotFoundException();
+                    }
 
-                return $file;
+                    return $file;
 
-            case !is_array($data['name']) && $data['name'] !== null && !is_array($data['ext']) && $data['ext'] !== null:
-                $file = $this->service->findOneByFilename($data['name'], $data['ext']);
+                case !is_array($data['name']) && $data['name'] !== null && !is_array($data['ext']) && $data['ext'] !== null:
+                    $file = $this->service->findOneByFilename($data['name'], $data['ext']);
 
-                if (empty($file)) {
-                    throw new FileNotFoundException();
-                }
+                    if (empty($file)) {
+                        throw new FileNotFoundException();
+                    }
 
-                return $file;
+                    return $file;
 
-            default:
-                return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+                default:
+                    return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+            }
+        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
+            return null;
         }
     }
 

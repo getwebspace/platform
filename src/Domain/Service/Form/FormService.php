@@ -105,20 +105,24 @@ class FormService extends AbstractService
             $criteria['mailto'] = $data['mailto'];
         }
 
-        switch (true) {
-            case !is_array($data['uuid']) && $data['uuid'] !== null:
-            case !is_array($data['title']) && $data['title'] !== null:
-            case !is_array($data['address']) && $data['address'] !== null:
-                $form = $this->service->findOneBy($criteria);
+        try {
+            switch (true) {
+                case !is_array($data['uuid']) && $data['uuid'] !== null:
+                case !is_array($data['title']) && $data['title'] !== null:
+                case !is_array($data['address']) && $data['address'] !== null:
+                    $form = $this->service->findOneBy($criteria);
 
-                if (empty($form)) {
-                    throw new FormNotFoundException();
-                }
+                    if (empty($form)) {
+                        throw new FormNotFoundException();
+                    }
 
-                return $form;
+                    return $form;
 
-            default:
-                return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+                default:
+                    return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+            }
+        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
+            return null;
         }
     }
 

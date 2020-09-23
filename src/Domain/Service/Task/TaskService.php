@@ -92,18 +92,22 @@ class TaskService extends AbstractService
             $criteria['status'] = $data['status'];
         }
 
-        switch (true) {
-            case !is_array($data['uuid']) && $data['uuid'] !== null:
-                $entry = $this->service->findOneBy($criteria);
+        try {
+            switch (true) {
+                case !is_array($data['uuid']) && $data['uuid'] !== null:
+                    $entry = $this->service->findOneBy($criteria);
 
-                if (empty($entry)) {
-                    throw new TaskNotFoundException();
-                }
+                    if (empty($entry)) {
+                        throw new TaskNotFoundException();
+                    }
 
-                return $entry;
+                    return $entry;
 
-            default:
-                return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+                default:
+                    return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+            }
+        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
+            return null;
         }
     }
 
