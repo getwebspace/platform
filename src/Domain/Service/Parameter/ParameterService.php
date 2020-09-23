@@ -78,6 +78,10 @@ class ParameterService extends AbstractService
                     return collect($this->service->findBy([], $data['order'], $data['limit'], $data['offset']));
             }
         } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
+            if ($fallback) {
+                return (new Parameter())->setKey($data['key'])->setValue($fallback);
+            }
+
             return null;
         }
     }
