@@ -92,7 +92,6 @@ class TwigExtension extends AbstractExtension
             // catalog functions
             new TwigFunction('catalog_category', [$this, 'catalog_category']),
             new TwigFunction('catalog_category_parents', [$this, 'catalog_category_parents']),
-            new TwigFunction('catalog_breadcrumb', [$this, 'catalog_breadcrumb']), // todo remove this, later
             new TwigFunction('catalog_products', [$this, 'catalog_products']),
             new TwigFunction('catalog_product', [$this, 'catalog_product']),
             new TwigFunction('catalog_product_view', [$this, 'catalog_product_view']),

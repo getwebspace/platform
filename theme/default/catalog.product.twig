@@ -28,7 +28,7 @@
             <div class="site-pagination">
                 <a href="/">Главная</a> /
                 <a href="/{{ parameter('catalog_address', 'catalog') }}">Каталог</a>
-                {% for breadcrumb in catalog_breadcrumb(category) %}
+                {% for breadcrumb in catalog_category_parents(category) %}
                     / <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ breadcrumb.address }}">{{ breadcrumb.meta.title ? breadcrumb.meta.title : breadcrumb.title }}</a>
                 {% endfor %}
             </div>
