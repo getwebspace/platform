@@ -15,7 +15,7 @@
                                 handlers: true,
                             },
                             cart: {
-                                group_header: false, // отображение заголовков групп
+                                group_header: true, // отображение заголовков групп
                                 columns: [
                                     {label: '', attr: 'thumb', view: null, class: null, style: 'width: 10%; text-align: center;'},
                                     {label: 'Наименование', attr: 'title', view: null, class: null, style: null},
@@ -153,7 +153,9 @@
                                 ;
 
                                 for (let column of this.options.cart.columns) {
-                                    let $column = $Tag('td').attr('data-attr', column.attr);
+                                    let $column = $Tag('td')
+                                        .attr('data-label', column.label)
+                                        .attr('data-attr', column.attr);
 
                                     if (column.class) {
                                         $column.addClass(column.class);
