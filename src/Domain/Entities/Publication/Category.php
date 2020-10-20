@@ -32,7 +32,7 @@ class Category extends AbstractEntity
 
     /**
      * @var string
-     * @ORM\Column(type="string", unique=true, options={"default": ""})
+     * @ORM\Column(type="string", length=1000, unique=true, options={"default": ""})
      */
     protected string $address = '';
 
@@ -43,7 +43,7 @@ class Category extends AbstractEntity
      */
     public function setAddress(string $address)
     {
-        if ($this->checkStrLenMax($address, 255)) {
+        if ($this->checkStrLenMax($address, 1000)) {
             $this->address = $this->getAddressByValue($address, $this->getTitle());
         }
 
