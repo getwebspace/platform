@@ -27,7 +27,7 @@ class Form extends Model
     public $title;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", length=1000)
      */
     public $address;
 

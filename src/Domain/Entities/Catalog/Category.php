@@ -43,7 +43,7 @@ class Category extends Model
     public $description;
 
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string", length=1000)
      */
     public $address;
 

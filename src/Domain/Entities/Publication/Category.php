@@ -23,7 +23,7 @@ class Category extends Model
     public $uuid;
 
     /**
-     * @ORM\Column(type="string", unique=true)
+     * @ORM\Column(type="string", length=1000, unique=true)
      */
     public $address;
 
