@@ -14,7 +14,7 @@ primarily intended for:
 Licensed under the MIT license. See [License File](LICENSE.md) for more information.
 
 #### Production mode
-[Installation instructions](https://github.com/0x12f/platform/wiki/Установка-(Docker)) from Docker template [0x12f/platform-template](https://github.com/0x12f/platform-template)  
+[Installation instructions](https://github.com/0x12f/platform/wiki/Installation-(Docker)) from Docker template [0x12f/platform-template](https://github.com/0x12f/platform-template)  
 
 #### Developer mode
 Use `Docker` by running the command: `docker-compose up -d`
