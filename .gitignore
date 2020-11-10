@@ -19,3 +19,5 @@
 !/var/upload/.gitkeep
 /var/xml/*.xml
 !/var/xml/.gitkeep
+/var/installer.lock
+/var/worker.pid
