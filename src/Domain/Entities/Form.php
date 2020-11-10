@@ -30,7 +30,7 @@ class Form extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="string", options={"default": ""})
+     * @ORM\Column(type="string", length=255, options={"default": ""})
      */
     protected string $title = '';
 
@@ -41,7 +41,7 @@ class Form extends AbstractEntity
      */
     public function setTitle(string $title)
     {
-        if ($this->checkStrLenMax($title, 50)) {
+        if ($this->checkStrLenMax($title, 255)) {
             $this->title = $title;
         }
 

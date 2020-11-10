@@ -31,7 +31,7 @@ class Task extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="string", options={"default": ""})
+     * @ORM\Column(type="string", length=255, options={"default": ""})
      */
     protected string $title = '';
 
