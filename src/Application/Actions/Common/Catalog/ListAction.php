@@ -2,6 +2,8 @@
 
 namespace App\Application\Actions\Common\Catalog;
 
+use App\Domain\Service\Catalog\Exception\CategoryNotFoundException;
+use App\Domain\Service\Catalog\Exception\ProductNotFoundException;
 use Illuminate\Support\Collection;
 use Slim\Http\Response;
 
@@ -26,13 +28,23 @@ class ListAction extends CatalogAction
         }
 
         // Category
-        if ($buf = $this->prepareCategory($params, $categories)) {
-            return $buf;
+        try {
+            if ($buf = $this->prepareCategory($params, $categories)) {
+                return $buf;
+            }
+        } catch (CategoryNotFoundException $e) {
+            // 404
+            return $this->respondWithTemplate('p404.twig')->withStatus(404);
         }
 
         // Product
-        if ($buf = $this->prepareProduct($params, $categories)) {
-            return $buf;
+        try {
+            if ($buf = $this->prepareProduct($params, $categories)) {
+                return $buf;
+            }
+        } catch (ProductNotFoundException $e) {
+            // 404
+            return $this->respondWithTemplate('p404.twig')->withStatus(404);
         }
 
         // 404
