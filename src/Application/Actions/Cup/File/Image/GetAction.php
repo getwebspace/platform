@@ -2,7 +2,6 @@
 
 namespace App\Application\Actions\Cup\File\Image;
 
-use Alksily\Support\Str;
 use App\Application\Actions\Cup\File\FileAction;
 
 class GetAction extends FileAction
@@ -13,7 +12,7 @@ class GetAction extends FileAction
 
         foreach ($this->fileService->read() as $file) {
             /** @var \App\Domain\Entities\File $file */
-            if (Str::start('image/', $file->getType())) {
+            if (str_start_with($file->getType(), 'image/')) {
                 $result[] = [
                     'url' => $file->getPublicPath(),
                     'thumb' => $file->getPublicPath('small'),

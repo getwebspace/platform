@@ -2,8 +2,6 @@
 
 namespace App\Application\Actions\Api\File;
 
-use Alksily\Support\Str;
-
 class File extends FileAction
 {
     protected function action(): \Slim\Http\Response
@@ -22,7 +20,7 @@ class File extends FileAction
         foreach ($files as &$file) {
             $path = $file->getPublicPath();
 
-            if (Str::start('image/', $file->getType())) {
+            if (str_start_with($file->getType(), 'image/')) {
                 $path = ['full' => $path];
 
                 foreach (['middle', 'small'] as $size) {

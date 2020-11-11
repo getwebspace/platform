@@ -321,7 +321,13 @@ if (!function_exists('str_start_with')) {
      */
     function str_start_with($haystack, $needles)
     {
-        return Str::start($haystack, $needles);
+        foreach ((array)$needles as $needle) {
+            if ($needle !== '' && substr($haystack, 0, strlen($needle)) === (string)$needle) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 
@@ -336,7 +342,13 @@ if (!function_exists('str_end_with')) {
      */
     function str_end_with($haystack, $needles)
     {
-        return Str::end($haystack, $needles);
+        foreach ((array)$needles as $needle) {
+            if (substr($haystack, -strlen($needle)) === (string)$needle) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
 
