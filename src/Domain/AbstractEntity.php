@@ -2,7 +2,6 @@
 
 namespace App\Domain;
 
-use Alksily\Support\Str;
 use App\Domain\Exceptions\WrongEmailValueException;
 use App\Domain\Exceptions\WrongIpValueException;
 use App\Domain\Exceptions\WrongPhoneValueException;
