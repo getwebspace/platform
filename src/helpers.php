@@ -1,6 +1,5 @@
 <?php declare(strict_types=1);
 
-use Alksily\Support\Str;
 use App\Domain\AbstractEntity;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -321,8 +320,8 @@ if (!function_exists('str_start_with')) {
      */
     function str_start_with($haystack, $needles)
     {
-        foreach ((array)$needles as $needle) {
-            if ($needle !== '' && substr($haystack, 0, strlen($needle)) === (string)$needle) {
+        foreach ((array) $needles as $needle) {
+            if ($needle !== '' && mb_substr($haystack, 0, mb_strlen($needle)) === (string) $needle) {
                 return true;
             }
         }
@@ -342,8 +341,8 @@ if (!function_exists('str_end_with')) {
      */
     function str_end_with($haystack, $needles)
     {
-        foreach ((array)$needles as $needle) {
-            if (substr($haystack, -strlen($needle)) === (string)$needle) {
+        foreach ((array) $needles as $needle) {
+            if (mb_substr($haystack, -mb_strlen($needle)) === (string) $needle) {
                 return true;
             }
         }
