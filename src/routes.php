@@ -234,10 +234,12 @@ $app
                 });
 
                 // task add to queue
-                $app->post('/task/run', \App\Application\Actions\Cup\Task\TaskRunAction::class);
+                $app->post('/task/run', \App\Application\Actions\Cup\Task\TaskRunAction::class)
+                    ->setName('cup:task:run');
 
                 // dev console
-                $app->post('/console', '\RunTracy\Controllers\RunTracyConsole:index');
+                $app->post('/console', '\RunTracy\Controllers\RunTracyConsole:index')
+                    ->setName('cup:console');
             })
             ->add(new \App\Application\Middlewares\CupMiddleware($app->getContainer()));
     })
