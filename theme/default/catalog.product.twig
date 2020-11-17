@@ -44,7 +44,7 @@
                 <div class="col-lg-6">
                     <div class="product-pic-zoom">
                         {% include 'mixin/img.twig' with {
-                            'src': product.getFiles().first().getPublicPath('middle'),
+                            'src': product.hasFiles() ? product.getFiles().first().getPublicPath('middle') : '/assets/img/no_image.png',
                             'class': 'product-big-img',
                             'title': product.title,
                             'alt': product.title,

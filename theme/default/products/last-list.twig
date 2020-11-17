@@ -14,7 +14,7 @@
                     <div class="pi-pic">
                         <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ product.address }}" style="text-align: center;">
                             {% include 'mixin/img.twig' with {
-                                'src': product.getFiles().first().getPublicPath('middle'),
+                                'src': product.hasFiles() ? product.getFiles().first().getPublicPath('middle') : '/assets/img/no_image.png',
                                 'title': product.title,
                                 'alt': product.title,
                                 'style': 'display:block; height: 300px; width: 100%; object-fit: contain; object-position: center center;'
