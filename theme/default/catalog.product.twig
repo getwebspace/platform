@@ -53,15 +53,23 @@
                     </div>
                     <div class="product-thumbs" tabindex="1" style="overflow: hidden; outline: none;">
                         <div class="product-thumbs-track">
-                            {% for index, file in product.getFiles() %}
-                                <div class="pt {{ index == 0 ? 'active' : '' }}" data-imgbigurl="{{ file.getPublicPath() }}">
-                                    {% include 'mixin/img.twig' with {
-                                        'src': file.getPublicPath('small'),
-                                        'title': product.title,
-                                        'alt': product.title ~ ' ' ~ index
-                                    } only %}
-                                </div>
-                            {% endfor %}
+                            {% if product.hasFiles() %}
+                                {% for index, file in product.getFiles() %}
+                                    <div class="pt {{ index == 0 ? 'active' : '' }}" data-imgbigurl="{{ file.getPublicPath() }}">
+                                        {% include 'mixin/img.twig' with {
+                                            'src': file.getPublicPath('small'),
+                                            'title': product.title,
+                                            'alt': product.title ~ ' ' ~ index
+                                        } only %}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                {% include 'mixin/img.twig' with {
+                                    'src': '/assets/img/no_image.png',
+                                    'title': product.title,
+                                    'alt': product.title ~ ' ' ~ index
+                                } only %}
+                            {% endif %}
                         </div>
                     </div>
                 </div>
