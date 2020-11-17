@@ -80,12 +80,13 @@
                 notifications: [],
                 tasks: {},
             },
-            $notifList = $('.notif-center'),
-            $elNotifEmpty = $('[data-notif-empty]'),
-            $elNotifItem = $('[data-notif-item]').detach(),
-            $taskList = $('.list-group'),
-            $elTaskEmpty = $('[data-task-empty]'),
-            $elTaskItem = $('[data-task-item]').detach();
+            $quickSidebar = $('.quick-sidebar'),
+            $notifList = $quickSidebar.find('.notif-center'),
+            $elNotifEmpty = $quickSidebar.find('[data-notif-empty]'),
+            $elNotifItem = $quickSidebar.find('[data-notif-item]').detach(),
+            $taskList = $quickSidebar.find('.list-group'),
+            $elTaskEmpty = $quickSidebar.find('[data-task-empty]'),
+            $elTaskItem = $quickSidebar.find('[data-task-item]').detach();
 
         (function refresh() {
             $.post('/cup/refresh', data, (res) => {
