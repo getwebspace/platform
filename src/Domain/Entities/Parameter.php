@@ -40,7 +40,7 @@ class Parameter extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="text", options={"default": ""})
+     * @ORM\Column(type="text", length=3000, options={"default": ""})
      */
     public string $value = '';
 
