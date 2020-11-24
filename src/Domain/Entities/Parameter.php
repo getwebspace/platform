@@ -53,7 +53,7 @@ class Parameter extends AbstractEntity
     {
         $value = (string) $value;
 
-        if ($this->checkStrLenMax($value, 1000)) {
+        if ($this->checkStrLenMax($value, 3000)) {
             $this->value = $value;
         }
 
