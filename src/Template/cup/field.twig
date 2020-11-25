@@ -98,7 +98,7 @@
             {% endif %}
 
             {% if message is not empty %}
-                <small class="form-text text-muted">{{ message }}</small>
+                <small class="form-text text-muted">{{ message|raw }}</small>
             {% endif %}
         </div>
     </div>
