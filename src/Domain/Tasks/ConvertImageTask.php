@@ -34,13 +34,15 @@ class ConvertImageTask extends AbstractTask
 
                     $command = $this->parameter('image_convert_bin', '/usr/bin/convert');
                     $params = [
+                        '-quality 70%',
+                        '-filter Lanczos',
+                        '-gaussian-blur 0.05',
                         '-sampling-factor 4:2:0',
-                        '-strip',
-                        '-quality 75%',
-                        '-depth 8',
-                        '-define jpeg:extent=300k',
-                        '-interlace JPEG',
                         '-colorspace RGB',
+                        '-interlace Plane',
+                        '-strip',
+                        '-depth 8',
+                        '-в',
                         '-background white',
                         '-alpha remove',
                         '-alpha off',
