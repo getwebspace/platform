@@ -225,7 +225,11 @@ abstract class AbstractEntity
             return $string;
         }
         if (is_string($delimiter) && is_string($string) && mb_strlen($string) > 0) {
-            return explode($delimiter, $string, $limit);
+            if ($limit) {
+                return explode($delimiter, $string, $limit);
+            }
+
+            return explode($delimiter, $string);
         }
 
         return [];
