@@ -10,12 +10,12 @@ abstract class AbstractException extends Exception
     /**
      * @var string
      */
-    protected $title = '';
+    protected string $title = '';
 
     /**
      * @var string
      */
-    protected $description = '';
+    protected string $description = '';
 
     /**
      * @param string                 $message
