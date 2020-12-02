@@ -54,10 +54,12 @@ $app
 $app
     ->group('/cup', function (App $app): void {
         // login cup
-        $app->map(['get', 'post'], '/login', \App\Application\Actions\Cup\LoginPageAction::class);
+        $app->map(['get', 'post'], '/login', \App\Application\Actions\Cup\LoginPageAction::class)
+            ->setName('cup:login');
 
         // installer
-        $app->map(['get', 'post'], '/system', \App\Application\Actions\Cup\SystemPageAction::class);
+        $app->map(['get', 'post'], '/system', \App\Application\Actions\Cup\SystemPageAction::class)
+            ->setName('cup:system');
 
         $app
             ->group('', function (App $app): void {
