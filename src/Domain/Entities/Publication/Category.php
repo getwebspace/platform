@@ -87,7 +87,7 @@ class Category extends AbstractEntity
 
     /**
      * @var string
-     * @ORM\Column(type="string", options={"default": ""})
+     * @ORM\Column(type="text", length=10000, options={"default": ""})
      */
     protected string $description = '';
 
@@ -98,7 +98,7 @@ class Category extends AbstractEntity
      */
     public function setDescription(string $description)
     {
-        if ($this->checkStrLenMax($description, 255)) {
+        if ($this->checkStrLenMax($description, 10000)) {
             $this->description = $description;
         }
 

@@ -94,7 +94,7 @@ class Product extends AbstractEntity
 
     /**
      * @var string
-     * @ORM\Column(type="text", options={"default": ""})
+     * @ORM\Column(type="text", length=10000, options={"default": ""})
      */
     protected string $description = '';
 
@@ -105,7 +105,7 @@ class Product extends AbstractEntity
      */
     public function setDescription(string $description)
     {
-        if ($this->checkStrLenMax($description, 1000)) {
+        if ($this->checkStrLenMax($description, 10000)) {
             $this->description = $description;
         }
 
@@ -121,7 +121,7 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="text", options={"default": ""})
+     * @ORM\Column(type="text", length=10000, options={"default": ""})
      */
     protected string $extra = '';
 
@@ -132,7 +132,7 @@ class Product extends AbstractEntity
      */
     public function setExtra(string $extra)
     {
-        if ($this->checkStrLenMax($extra, 255)) {
+        if ($this->checkStrLenMax($extra, 10000)) {
             $this->extra = $extra;
         }
 
