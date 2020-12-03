@@ -313,6 +313,7 @@ class UserServiceTest extends TestCase
         $this->assertSame($data['username'], $user->getUsername());
         $this->assertSame($data['firstname'], $user->getFirstname());
         $this->assertSame($data['lastname'], $user->getLastname());
+        $this->assertSame($data['address'], $user->getAddress());
         $this->assertSame($data['email'], $user->getEmail());
     }
 
