@@ -248,6 +248,12 @@ $app
     ->add(new \Slim\HttpCache\Cache('private', 0));
 
 // COMMON section
+// main path
+$app
+    ->get('/', \App\Application\Actions\Common\MainPageAction::class)
+    ->setName('main')
+    ->add(new \Slim\HttpCache\Cache('public', 0));
+
 // user
 $app
     ->group('/user', function (App $app): void {
@@ -283,11 +289,6 @@ $app
 // other
 $app
     ->group('', function (App $app) use ($container): void {
-        // main path
-        $app
-            ->get('/', \App\Application\Actions\Common\MainPageAction::class)
-            ->setName('main');
-
         // file
         $app
             ->group('/file', function (App $app): void {
