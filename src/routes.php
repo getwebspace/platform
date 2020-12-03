@@ -248,6 +248,39 @@ $app
     ->add(new \Slim\HttpCache\Cache('private', 0));
 
 // COMMON section
+// user
+$app
+    ->group('/user', function (App $app): void {
+        $app
+            ->map(['get', 'post'], '/login', \App\Application\Actions\Common\User\UserLoginAction::class)
+            ->setName('user:login')
+            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+
+        $app
+            ->map(['get', 'post'], '/register', \App\Application\Actions\Common\User\UserRegisterAction::class)
+            ->setName('user:register')
+            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+
+        $app->map(['get', 'post'], '/logout', \App\Application\Actions\Common\User\UserLogoutAction::class)
+            ->setName('user:logout');
+
+        $app
+            ->map(['get', 'post'], '/profile', \App\Application\Actions\Common\User\UserProfileAction::class)
+            ->setName('user:profile')
+            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class)
+            ->add(function (Request $request, Response $response, $next) {
+                $user = $request->getAttribute('user', false);
+
+                if ($user === false) {
+                    return $response->withHeader('Location', '/user/login')->withStatus(301);
+                }
+
+                return $next($request, $response);
+            });
+    })
+    ->add(new \Slim\HttpCache\Cache('private', 86400));
+
+// other
 $app
     ->group('', function (App $app) use ($container): void {
         // main path
@@ -256,45 +289,16 @@ $app
             ->setName('main');
 
         // file
-        $app->group('/file', function (App $app): void {
-            $app->get('/get/{salt}/{hash}', \App\Application\Actions\Common\File\FileGetAction::class)
-                ->setName('file:get');
-            $app
-                ->post('/upload', \App\Application\Actions\Common\File\FileUploadAction::class)
-                ->setName('file:upload')
-                ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-        });
-
-        // user
-        $app->group('/user', function (App $app): void {
-            $app
-                ->map(['get', 'post'], '/login', \App\Application\Actions\Common\User\UserLoginAction::class)
-                ->setName('user:login')
-                ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-
-            $app
-                ->map(['get', 'post'], '/register', \App\Application\Actions\Common\User\UserRegisterAction::class)
-                ->setName('user:register')
-                ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-
-            $app->map(['get', 'post'], '/logout', \App\Application\Actions\Common\User\UserLogoutAction::class)
-                ->setName('user:logout');
-
-            $app
-                ->map(['get', 'post'], '/profile', \App\Application\Actions\Common\User\UserProfileAction::class)
-                ->setName('user:profile')
-                ->add(\App\Application\Middlewares\IsEnabledMiddleware::class)
-                ->add(function (Request $request, Response $response, $next) {
-                    $user = $request->getAttribute('user', false);
-
-                    if ($user === false) {
-                        return $response->withHeader('Location', '/user/login')->withStatus(301);
-                    }
-
-                    return $next($request, $response);
-                });
-        })
-        ->add(new \Slim\HttpCache\Cache('public', 0));
+        $app
+            ->group('/file', function (App $app): void {
+                $app->get('/get/{salt}/{hash}', \App\Application\Actions\Common\File\FileGetAction::class)
+                    ->setName('file:get');
+                $app
+                    ->post('/upload', \App\Application\Actions\Common\File\FileUploadAction::class)
+                    ->setName('file:upload')
+                    ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+            })
+        ;
 
         // form
         $app
@@ -325,7 +329,8 @@ $app
                     ->get('/cart/done/{order}', \App\Application\Actions\Common\Catalog\CartCompleteAction::class)
                     ->setName('catalog:cart:done')
                     ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-            });
+            })
+        ;
 
         // guest book
         $app
@@ -345,4 +350,4 @@ $app
         $app->get('/{args:.*}', \App\Application\Actions\Common\DynamicPageAction::class)
             ->setName('dynamic');
     })
-    ->add(new \Slim\HttpCache\Cache('public'));
+    ->add(new \Slim\HttpCache\Cache(($_ENV['DEBUG'] ?? false) ? 'private' : 'public'));
