@@ -47,7 +47,7 @@ class UserUpdateAction extends UserAction
                     }
                 }
 
-                return $this->respondWithTemplate('cup/user/form.twig', ['user' => $user]);
+                return $this->respondWithTemplate('cup/user/form.twig', ['item' => $user]);
             }
         }
 
