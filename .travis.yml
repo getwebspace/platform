@@ -13,5 +13,5 @@ before_script:
     - composer install
 
 script:
-    - ./vendor/bin/php-cs-fixer fix --config=.php_cs --diff --verbose --dry-run
+    - ./vendor/bin/php-cs-fixer fix --config=.php_cs.dist --diff --verbose --dry-run
     - ./vendor/bin/phpunit --configuration phpunit.xml

@@ -44,7 +44,9 @@
             "Plugin\\": "plugin/",
             "App\\": "src/"
         },
-        "files": ["src/helpers.php"]
+        "files": [
+            "src/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
