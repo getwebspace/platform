@@ -105,6 +105,16 @@
                                     }
                                 } %}
                             </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Адрес',
+                                    'type': 'textarea',
+                                    'name': 'address',
+                                    'args': {
+                                        'value': user.address,
+                                    }
+                                } %}
+                            </div>
                         </div>
 
                         <hr>

@@ -50,6 +50,7 @@ class UserService extends AbstractService
             'password' => '',
             'firstname' => '',
             'lastname' => '',
+            'address' => '',
             'allow_mail' => true,
             'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
             'level' => \App\Domain\Types\UserLevelType::LEVEL_USER,
@@ -79,6 +80,7 @@ class UserService extends AbstractService
             ->setPassword($data['password'])
             ->setFirstname($data['firstname'])
             ->setLastname($data['lastname'])
+            ->setAddress($data['address'])
             ->setAllowMail($data['allow_mail'])
             ->setStatus($data['status'])
             ->setLevel($data['level'])
@@ -235,6 +237,7 @@ class UserService extends AbstractService
                 'password' => null,
                 'firstname' => null,
                 'lastname' => null,
+                'address' => null,
                 'allow_mail' => null,
                 'status' => null,
                 'level' => null,
@@ -277,6 +280,9 @@ class UserService extends AbstractService
                 }
                 if ($data['lastname'] !== null) {
                     $entity->setLastname($data['lastname']);
+                }
+                if ($data['address'] !== null) {
+                    $entity->setAddress($data['address']);
                 }
                 if ($data['allow_mail'] !== null) {
                     $entity->setAllowMail($data['allow_mail']);

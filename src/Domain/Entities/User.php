@@ -233,6 +233,33 @@ class User extends AbstractEntity
     }
 
     /**
+     * @ORM\Column(type="string", length=500, options={"default": ""})
+     */
+    protected string $address = '';
+
+    /**
+     * @param string $address
+     *
+     * @return $this
+     */
+    public function setAddress(string $address)
+    {
+        if ($this->checkStrLenMax($address, 500)) {
+            $this->address = $address;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress(): string
+    {
+        return $this->address;
+    }
+
+    /**
      * @ORM\Column(type="boolean", options={"default": true})
      */
     protected bool $allow_mail = true;

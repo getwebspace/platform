@@ -22,6 +22,7 @@ class UserUpdateAction extends UserAction
                             'username' => $this->request->getParam('username'),
                             'firstname' => $this->request->getParam('firstname'),
                             'lastname' => $this->request->getParam('lastname'),
+                            'address' => $this->request->getParam('address'),
                             'email' => $this->request->getParam('email'),
                             'allow_mail' => $this->request->getParam('allow_mail'),
                             'phone' => $this->request->getParam('phone'),
