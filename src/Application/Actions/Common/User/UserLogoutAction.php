@@ -2,6 +2,8 @@
 
 namespace App\Application\Actions\Common\User;
 
+use Slim\Http\StatusCode;
+
 class UserLogoutAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
@@ -9,6 +11,6 @@ class UserLogoutAction extends UserAction
         setcookie('uuid', '-1', time() - 10, '/');
         setcookie('session', '-1', time() - 10, '/');
 
-        return $this->response->withRedirect('/');
+        return $this->response->withRedirect('/', StatusCode::HTTP_FOUND);
     }
 }

@@ -284,7 +284,7 @@ $app
                 return $next($request, $response);
             });
     })
-    ->add(new \Slim\HttpCache\Cache('private', 86400));
+    ->add(new \Slim\HttpCache\Cache('private', 0));
 
 // other
 $app
