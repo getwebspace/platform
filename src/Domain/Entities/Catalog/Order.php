@@ -376,4 +376,29 @@ class Order extends AbstractEntity
     {
         return $this->export;
     }
+
+    /**
+     * @ORM\Column(type="string", length=500, options={"default": ""})
+     */
+    protected string $system = '';
+
+    /**
+     * @param string $system
+     *
+     * @return $this
+     */
+    public function setSystem(string $system)
+    {
+        $this->system = $system;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSystem(): string
+    {
+        return $this->system;
+    }
 }

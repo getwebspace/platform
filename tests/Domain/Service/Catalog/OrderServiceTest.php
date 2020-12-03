@@ -50,6 +50,7 @@ class OrderServiceTest extends TestCase
             'date' => $this->getFaker()->dateTime,
             'external_id' => $this->getFaker()->word,
             'export' => $this->getFaker()->word,
+            'system' => $this->getFaker()->text,
         ];
 
         $order = $this->service->create($data);
@@ -65,6 +66,7 @@ class OrderServiceTest extends TestCase
         $this->assertEquals($data['date'], $order->getDate());
         $this->assertSame($data['external_id'], $order->getExternalId());
         $this->assertSame($data['export'], $order->getExport());
+        $this->assertSame($data['system'], $order->getSystem());
 
         /** @var OrderRepository $orderRepo */
         $orderRepo = $this->em->getRepository(Order::class);
@@ -81,6 +83,7 @@ class OrderServiceTest extends TestCase
         $this->assertEquals($data['date'], $o->getDate());
         $this->assertSame($data['external_id'], $o->getExternalId());
         $this->assertSame($data['export'], $o->getExport());
+        $this->assertSame($data['system'], $order->getSystem());
     }
 
     public function testReadSuccess1(): void
@@ -170,6 +173,7 @@ class OrderServiceTest extends TestCase
             'date' => $this->getFaker()->dateTime,
             'external_id' => $this->getFaker()->word,
             'export' => $this->getFaker()->word,
+            'system' => $this->getFaker()->text,
         ]);
 
         $data = [
@@ -191,6 +195,7 @@ class OrderServiceTest extends TestCase
             'date' => $this->getFaker()->dateTime,
             'external_id' => $this->getFaker()->word,
             'export' => $this->getFaker()->word,
+            'system' => $this->getFaker()->text,
         ];
 
         $order = $this->service->update($order, $data);
@@ -206,6 +211,7 @@ class OrderServiceTest extends TestCase
         $this->assertEquals($data['date'], $order->getDate());
         $this->assertSame($data['external_id'], $order->getExternalId());
         $this->assertSame($data['export'], $order->getExport());
+        $this->assertSame($data['system'], $order->getSystem());
     }
 
     public function testUpdateWithOrderNotFound(): void

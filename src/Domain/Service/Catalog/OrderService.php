@@ -47,6 +47,7 @@ class OrderService extends AbstractService
             'date' => 'now',
             'external_id' => '',
             'export' => 'manual',
+            'system' => '',
         ];
         $data = array_merge($default, $data);
 
@@ -61,7 +62,8 @@ class OrderService extends AbstractService
             ->setShipping($data['shipping'])
             ->setDate($data['date'])
             ->setExternalId($data['external_id'])
-            ->setExport($data['export']);
+            ->setExport($data['export'])
+            ->setSystem($data['system']);
 
         // set serial value
         if (isset($_ENV['SIMPLE_ORDER_SERIAL']) && $_ENV['SIMPLE_ORDER_SERIAL']) {
@@ -182,6 +184,7 @@ class OrderService extends AbstractService
                 'date' => null,
                 'external_id' => null,
                 'export' => null,
+                'system' => null,
             ];
             $data = array_merge($default, $data);
 
@@ -218,6 +221,9 @@ class OrderService extends AbstractService
                 }
                 if ($data['export'] !== null) {
                     $entity->setExport($data['export']);
+                }
+                if ($data['system'] !== null) {
+                    $entity->setSystem($data['system']);
                 }
 
                 $this->entityManager->flush();
