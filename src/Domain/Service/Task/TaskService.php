@@ -39,6 +39,7 @@ class TaskService extends AbstractService
             'progress' => 0,
             'status' => \App\Domain\Types\TaskStatusType::STATUS_QUEUE,
             'params' => [],
+            'output' => '',
             'date' => 'now',
         ];
         $data = array_merge($default, $data);
@@ -56,6 +57,7 @@ class TaskService extends AbstractService
             ->setProgress($data['progress'])
             ->setStatus($data['status'])
             ->setParams($data['params'])
+            ->setOutput($data['output'])
             ->setDate($data['date']);
 
         $this->entityManager->persist($task);
@@ -136,6 +138,7 @@ class TaskService extends AbstractService
                 'progress' => null,
                 'status' => null,
                 'params' => null,
+                'output' => null,
                 'date' => null,
             ];
             $data = array_merge($default, $data);
@@ -155,6 +158,9 @@ class TaskService extends AbstractService
                 }
                 if ($data['params'] !== null) {
                     $entity->setParams($data['params']);
+                }
+                if ($data['output'] !== null) {
+                    $entity->setOutput($data['output']);
                 }
                 if ($data['date'] !== null) {
                     $entity->setDate($data['date']);

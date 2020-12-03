@@ -34,13 +34,13 @@ class TaskServiceTest extends TestCase
     {
         $data = [
             'title' => $this->getFaker()->title,
-            'action' => $this->getFaker()->text,
+            'action' => $this->getFaker()->word,
             'progress' => (float) $this->getFaker()->numberBetween(10, 100),
             'status' => \App\Domain\Types\TaskStatusType::STATUS_QUEUE,
             'params' => [
                 'test' => $this->getFaker()->numberBetween(0, 1000),
             ],
-            'output' => $this->getFaker()->text,
+            'output' => $this->getFaker()->text(200),
         ];
 
         $t = $this->service->create($data);
