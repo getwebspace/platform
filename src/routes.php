@@ -297,8 +297,7 @@ $app
                     ->post('/upload', \App\Application\Actions\Common\File\FileUploadAction::class)
                     ->setName('file:upload')
                     ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-            })
-        ;
+            });
 
         // form
         $app
@@ -329,8 +328,7 @@ $app
                     ->get('/cart/done/{order}', \App\Application\Actions\Common\Catalog\CartCompleteAction::class)
                     ->setName('catalog:cart:done')
                     ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-            })
-        ;
+            });
 
         // guest book
         $app
