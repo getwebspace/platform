@@ -128,45 +128,52 @@ abstract class AbstractTask extends AbstractComponent
         return true;
     }
 
-    public function setStatusDone()
+    public function setStatusDone($output = '')
     {
-        $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_DONE);
+        $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_DONE, 0, $output);
 
         return true;
     }
 
-    public function setStatusFail()
+    public function setStatusFail($output = '')
     {
-        $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_FAIL);
+        $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_FAIL, 0, $output);
 
         return false;
     }
 
-    public function setStatusCancel()
+    public function setStatusCancel($output = '')
     {
-        $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_CANCEL);
+        $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_CANCEL, 0, $output);
 
         return false;
     }
 
-    public function setStatusDelete()
+    public function setStatusDelete($output = '')
     {
-        $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_DELETE);
+        $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_DELETE, 0, $output);
 
         return false;
     }
 
-    private function saveStateWriteLog($status = null, $progress = 0): void
+    /**
+     * @param null|string $status
+     * @param int         $progress
+     * @param string      $output
+     */
+    private function saveStateWriteLog($status = null, $progress = 0, $output = ''): void
     {
         $this->entity = $this->taskService->update($this->entity, [
             'status' => $status,
             'progress' => $progress,
+            'output' => $output,
         ]);
 
         $this->logger->info('Task: change state', [
             'action' => static::class,
             'status' => $this->entity->getStatus(),
             'progress' => $this->entity->getProgress(),
+            'output' => $this->entity->getOutput(),
         ]);
     }
 }

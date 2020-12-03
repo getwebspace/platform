@@ -54,10 +54,10 @@ class SendMailTask extends AbstractTask
             if ($mail !== false) {
                 if (!$mail->isError()) {
                     $this->logger->info('Mail is sent', ['mailto' => $args['to']]);
-                    $this->setStatusDone();
+                    $this->setStatusDone('ok');
                 } else {
                     $this->logger->warning('Mail will not sent', ['mailto' => $args['to'], 'error' => $mail->ErrorInfo]);
-                    $this->setStatusFail();
+                    $this->setStatusFail($mail->ErrorInfo);
                 }
 
                 return;

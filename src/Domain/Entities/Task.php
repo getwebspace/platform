@@ -171,6 +171,32 @@ class Task extends AbstractEntity
     }
 
     /**
+     * @var array
+     * @ORM\Column(type="string", length=1000, options={"default": ""})
+     */
+    protected array $output = [];
+
+    /**
+     * @param array $output
+     *
+     * @return $this
+     */
+    public function setOutput(array $output)
+    {
+        $this->output = $output;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOutput(): array
+    {
+        return $this->output;
+    }
+
+    /**
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */

@@ -40,6 +40,7 @@ class TaskServiceTest extends TestCase
             'params' => [
                 'test' => $this->getFaker()->numberBetween(0, 1000),
             ],
+            'output' => $this->getFaker()->text,
         ];
 
         $t = $this->service->create($data);
@@ -49,6 +50,7 @@ class TaskServiceTest extends TestCase
         $this->assertSame($data['progress'], $t->getProgress());
         $this->assertSame($data['status'], $t->getStatus());
         $this->assertSame($data['params'], $t->getParams());
+        $this->assertSame($data['output'], $t->getOutput());
 
         /** @var TaskRepository $taskRepo */
         $taskRepo = $this->em->getRepository(Task::class);
@@ -107,6 +109,7 @@ class TaskServiceTest extends TestCase
             'params' => [
                 'test' => $this->getFaker()->numberBetween(0, 1000),
             ],
+            'output' => $this->getFaker()->text,
         ]);
 
         $data = [
@@ -117,6 +120,7 @@ class TaskServiceTest extends TestCase
             'params' => [
                 'test' => $this->getFaker()->numberBetween(0, 1000),
             ],
+            'output' => $this->getFaker()->text,
         ];
 
         $t = $this->service->update($t, $data);
@@ -125,6 +129,7 @@ class TaskServiceTest extends TestCase
         $this->assertSame($data['progress'], $t->getProgress());
         $this->assertSame($data['status'], $t->getStatus());
         $this->assertSame($data['params'], $t->getParams());
+        $this->assertSame($data['output'], $t->getOutput());
     }
 
     public function testUpdateWithTaskNotFound(): void
