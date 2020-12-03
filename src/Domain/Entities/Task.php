@@ -171,17 +171,17 @@ class Task extends AbstractEntity
     }
 
     /**
-     * @var array
+     * @var string
      * @ORM\Column(type="string", length=1000, options={"default": ""})
      */
-    protected array $output = [];
+    protected string $output = '';
 
     /**
-     * @param array $output
+     * @param string $output
      *
      * @return $this
      */
-    public function setOutput(array $output)
+    public function setOutput(string $output)
     {
         $this->output = $output;
 
@@ -189,9 +189,9 @@ class Task extends AbstractEntity
     }
 
     /**
-     * @return array
+     * @return string
      */
-    public function getOutput(): array
+    public function getOutput(): string
     {
         return $this->output;
     }
