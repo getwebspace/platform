@@ -29,11 +29,6 @@ jobs:
 
             - name: Build Debian image and push
               run: |
-                  IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
-
-                  # Change all uppercase to lowercase
-                  IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-
                   # Strip git ref prefix from version
                   VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
 
@@ -46,5 +41,5 @@ jobs:
                   echo IMAGE_ID=$IMAGE_ID
                   echo VERSION=$VERSION
 
-                  docker build . --build-arg=COMMIT=$IMAGE_ID --build-arg=BRANCH=$VERSION --file docker/debian/Dockerfile --tag $IMAGE_NAME:$VERSION
-                  docker push $IMAGE_ID:$VERSION
+                  docker build . --build-arg=COMMIT=${{ github.sha }} --build-arg=BRANCH=$VERSION --file docker/debian/Dockerfile --tag $IMAGE_NAME:$VERSION
+                  docker push $IMAGE_NAME:$VERSION
