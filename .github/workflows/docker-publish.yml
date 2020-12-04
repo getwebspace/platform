@@ -25,7 +25,7 @@ jobs:
             - uses: actions/checkout@v2
 
             - name: Log into registry
-              run: echo docker login -u ${{ github.actor }} -p ${{ secrets.DOCKER_HUB }}
+              run: echo "${{ secrets.DOCKER_HUB }}" | docker login --username ${{ github.actor }} --password-stdin
 
             - name: Build Debian image and push
               run: |
