@@ -46,5 +46,5 @@ jobs:
                   echo IMAGE_ID=$IMAGE_ID
                   echo VERSION=$VERSION
 
-                  docker build . --build-arg=COMMIT=$IMAGE_ID --build-arg=BRANCH=$VERSION --file docker/debian/Dockerfile --tag $IMAGE_NAME
+                  docker build . --build-arg=COMMIT=$IMAGE_ID --build-arg=BRANCH=$VERSION --file docker/debian/Dockerfile --tag $IMAGE_NAME:$VERSION
                   docker push $IMAGE_ID:$VERSION
