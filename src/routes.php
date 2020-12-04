@@ -48,7 +48,7 @@ $app
                 ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
         });
     })
-    ->add(new \Slim\HttpCache\Cache('public', 0));
+    ->add(new \Slim\HttpCache\Cache('public', 0, true));
 
 // CUP section
 $app
@@ -245,14 +245,14 @@ $app
             })
             ->add(new \App\Application\Middlewares\CupMiddleware($app->getContainer()));
     })
-    ->add(new \Slim\HttpCache\Cache('private', 0));
+    ->add(new \Slim\HttpCache\Cache('private', 0, true));
 
 // COMMON section
 // main path
 $app
     ->get('/', \App\Application\Actions\Common\MainPageAction::class)
     ->setName('main')
-    ->add(new \Slim\HttpCache\Cache('public', 0));
+    ->add(new \Slim\HttpCache\Cache('public', 86400, true));
 
 // user
 $app
@@ -349,4 +349,4 @@ $app
         $app->get('/{args:.*}', \App\Application\Actions\Common\DynamicPageAction::class)
             ->setName('dynamic');
     })
-    ->add(new \Slim\HttpCache\Cache(($_ENV['DEBUG'] ?? false) ? 'private' : 'public'));
+    ->add(new \Slim\HttpCache\Cache(($_ENV['DEBUG'] ?? false) ? 'private' : 'public'), 86400, true);
