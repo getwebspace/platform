@@ -1,13 +1,37 @@
 version: "3"
 
 services:
-    platform:
+    phpcs:
         build:
             context: .
             dockerfile: docker/debian/Dockerfile
         image: 0x12f/platform:test
         environment:
             - DEBUG=0
+        command: /var/container/vendor/bin/php-cs-fixer fix --config=.php_cs.dist
+        volumes:
+            - ./config:/var/container/config:rw
+            - ./plugin:/var/container/plugin:rw
+            - ./public:/var/container/public:rw
+            - ./src:/var/container/src:rw
+            - ./tests:/var/container/tests:rw
+            - ./theme:/var/container/theme:rw
+            - ./var:/var/container/var:rw
+            - ./var/upload:/var/container/public/uploads:rw
+            - ./vendor:/var/container/vendor:ro
+            - ./.php_cs.dist:/var/container/.php_cs.dist:ro
+            - ./composer.json:/var/container/composer.json:rw
+            - ./composer.lock:/var/container/composer.lock:rw
+            - ./phpunit.xml:/var/container/phpunit.xml:ro
+
+    phpunit:
+        build:
+            context: .
+            dockerfile: docker/debian/Dockerfile
+        image: 0x12f/platform:test
+        environment:
+            - DEBUG=0
+        command: /var/container/vendor/bin/phpunit --color=always --configuration phpunit.xml
         volumes:
             - ./config:/var/container/config:rw
             - ./plugin:/var/container/plugin:rw

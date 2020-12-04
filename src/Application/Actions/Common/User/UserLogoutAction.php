@@ -2,8 +2,6 @@
 
 namespace App\Application\Actions\Common\User;
 
-use Slim\Http\StatusCode;
-
 class UserLogoutAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
