@@ -15,6 +15,20 @@ env:
     IMAGE_NAME: 0x12f/platform
 
 jobs:
+    # Run tests.
+    # See also https://docs.docker.com/docker-hub/builds/automated-testing/
+    test:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Run tests
+              run: |
+                  docker-compose --file docker-compose.test.yml build
+                  docker-compose exec platform vendor/bin/php-cs-fixer fix --config=.php_cs.dist
+                  docker-compose exec platform vendor/bin/phpunit --color=always --configuration phpunit.xml
+
     # Push image to GitHub Packages.
     # See also https://docs.docker.com/docker-hub/builds/
     push:
@@ -29,13 +43,8 @@ jobs:
 
             - name: Build Debian image and push
               run: |
-                  # Strip git ref prefix from version
                   VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-
-                  # Strip "v" prefix from tag name
                   [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-
-                  # Use Docker `latest` tag convention
                   [ "$VERSION" == "master" ] && VERSION=latest
 
                   echo IMAGE_ID=$IMAGE_ID

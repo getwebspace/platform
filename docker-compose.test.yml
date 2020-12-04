@@ -2,13 +2,10 @@ version: "3"
 
 services:
     platform:
-        image: 0x12f/platform:dev
+        build:
+        image: 0x12f/platform:test
         environment:
-            - DEBUG=1
-          # - SALT=Please-Change-Me
-          # - SIMPLE_ORDER_SERIAL=1
-          # - SIMPLE_PHONE_CHECK=1
-          # - DATABASE=mysql://user:secret@localhost/mydb
+            - DEBUG=0
         volumes:
             - ./config:/var/container/config:rw
             - ./plugin:/var/container/plugin:rw
