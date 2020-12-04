@@ -26,8 +26,8 @@ jobs:
             - name: Run tests
               run: |
                   docker-compose --file docker-compose.test.yml build
-                  docker-compose exec platform vendor/bin/php-cs-fixer fix --config=.php_cs.dist
-                  docker-compose exec platform vendor/bin/phpunit --color=always --configuration phpunit.xml
+                  docker-compose --file docker-compose.test.yml run platform vendor/bin/php-cs-fixer fix --config=.php_cs.dist
+                  docker-compose --file docker-compose.test.yml run platform vendor/bin/phpunit --color=always --configuration phpunit.xml
 
     # Push image to GitHub Packages.
     # See also https://docs.docker.com/docker-hub/builds/
