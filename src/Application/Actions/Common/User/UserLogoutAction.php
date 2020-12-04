@@ -8,9 +8,22 @@ class UserLogoutAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
-        setcookie('uuid', '-1', time() - 10, '/');
-        setcookie('session', '-1', time() - 10, '/');
+        /** @var \App\Domain\Entities\User $user */
+        $user = $this->request->getAttribute('user', false);
 
-        return $this->response->withRedirect('/', StatusCode::HTTP_FOUND);
+        if ($user) {
+            $session = $user->getSession()
+                ->setAgent('')
+                ->setDate(null)
+                ->setIp('0.0.0.0');
+
+            // write clear session
+            $this->userService->write($session);
+
+            setcookie('uuid', '-1', time(), '/');
+            setcookie('session', '-1', time(), '/');
+        }
+
+        return $this->response->withRedirect('/');
     }
 }

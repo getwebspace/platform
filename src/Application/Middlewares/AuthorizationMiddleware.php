@@ -66,8 +66,8 @@ class AuthorizationMiddleware extends AbstractMiddleware
                 }
             } catch (UserNotFoundException $e) {
                 // clear cookie
-                setcookie('uuid', '-1', time() - 10, '/');
-                setcookie('session', '-1', time() - 10, '/');
+                setcookie('uuid', '-1', time(), '/');
+                setcookie('session', '-1', time(), '/');
             }
         }
 
