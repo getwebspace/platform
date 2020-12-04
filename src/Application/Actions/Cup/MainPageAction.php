@@ -27,7 +27,10 @@ class MainPageAction extends AbstractAction
                 'files' => $this->entityManager->getRepository(\App\Domain\Entities\File::class)->count([]),
             ],
             'properties' => [
-                'version' => ($_ENV['COMMIT_BRANCH'] ?? 'other') . ' (' . ($_ENV['COMMIT_SHA'] ?? 'specific') . ')',
+                'version' => [
+                    'branch' => ($_ENV['COMMIT_BRANCH'] ?? 'other'),
+                    'commit' => ($_ENV['COMMIT_SHA'] ?? 'specific'),
+                ],
                 'os' => @implode(' ', [php_uname('s'), php_uname('r'), php_uname('m')]),
                 'php' => PHP_VERSION,
                 'memory_limit' => ini_get('memory_limit'),
