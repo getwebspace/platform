@@ -349,4 +349,8 @@ $app
         $app->get('/{args:.*}', \App\Application\Actions\Common\DynamicPageAction::class)
             ->setName('dynamic');
     })
-    ->add(new \Slim\HttpCache\Cache(($_ENV['DEBUG'] ?? false) ? 'private' : 'public'), 86400, true);
+    ->add(
+        ($_ENV['DEBUG'] ?? false) ?
+            new \Slim\HttpCache\Cache('private', 0, true) :
+            new \Slim\HttpCache\Cache('public', 86400, true)
+    );
