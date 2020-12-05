@@ -8,7 +8,7 @@ services:
         image: 0x12f/platform:test
         environment:
             - DEBUG=0
-        command: /var/container/vendor/bin/php-cs-fixer fix --config=.php_cs.dist
+        command: vendor/bin/php-cs-fixer fix --config=.php_cs.dist
         volumes:
             - ./config:/var/container/config:rw
             - ./plugin:/var/container/plugin:rw
@@ -31,7 +31,7 @@ services:
         image: 0x12f/platform:test
         environment:
             - DEBUG=0
-        command: /var/container/vendor/bin/phpunit --color=always --configuration phpunit.xml
+        command: vendor/bin/phpunit --color=always --configuration phpunit.xml
         volumes:
             - ./config:/var/container/config:rw
             - ./plugin:/var/container/plugin:rw
