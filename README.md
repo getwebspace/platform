@@ -2,7 +2,7 @@ WebSpace Engine
 ====
 _(Content Management System)_
 
-[![Build Status](https://travis-ci.com/0x12f/platform.svg?branch=master)](https://travis-ci.com/0x12f/platform)
+![Docker builder](https://github.com/0x12f/platform/workflows/Docker%20builder/badge.svg)
 
 Multifunctional content management system,
 primarily intended for:
