@@ -2,7 +2,7 @@ version: "3"
 
 services:
     platform:
-        image: 0x12f/platform:dev
+        image: 0x12f/platform:alpine
         environment:
             - DEBUG=1
           # - SALT=Please-Change-Me

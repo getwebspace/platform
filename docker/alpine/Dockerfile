@@ -1,4 +1,4 @@
-FROM php:7.4-fpm
+FROM php:7.4-fpm-alpine
 MAINTAINER Aleksey Ilyin <alksily@outlook.com>
 
 # Set args
@@ -13,31 +13,21 @@ ENV PLATFORM_HOME="/var/container"
 
 # Install packages, install php modules
 RUN set -x \
-    && apt-get update \
-    && apt-get install --no-install-recommends -y \
-        wget \
-        gnupg2 \
-    && echo "deb-src http://nginx.org/packages/debian buster nginx" | tee /etc/apt/sources.list.d/nginx.list \
-    && wget http://nginx.org/keys/nginx_signing.key && apt-key add nginx_signing.key && rm nginx_signing.key \
-    && apt-get update \
-    && apt-get install --no-install-recommends -y \
-        nginx \
+    && apk update \
+    && apk upgrade \
+    && apk add --no-cache --virtual .phpize-deps $PHPIZE_DEPS \
+    && apk add --no-cache --virtual .build-deps libstdc++ make \
+    && apk add --no-cache \
         git \
-        supervisor \
-        libfreetype6-dev \
-        libjpeg62-turbo-dev \
-        libmcrypt-dev \
-        libpng-dev \
         libzip-dev \
-        libonig-dev \
-        libmagickwand-dev \
-        zlib1g-dev \
-        jpegoptim \
-        optipng \
-        pngquant \
-        gifsicle \
+        libjpeg-turbo-dev \
+        libpng-dev \
+        zlib-dev \
+        gettext-dev \
+        libmcrypt-dev \
+        oniguruma-dev \
+        imagemagick-dev \
         imagemagick \
-    && nginx -V \
     && pecl install imagick \
     && docker-php-ext-configure gd \
     && docker-php-ext-install -j$(nproc) gettext zip gd pdo_mysql mbstring \
@@ -49,9 +39,6 @@ RUN set -x \
 
 # Copy configs
 COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini
-COPY docker/debian/nginx.conf /etc/nginx/nginx.conf
-COPY docker/debian/supervisor.conf /etc/supervisor/conf.d/supervisor.conf
-COPY docker/debian/entrypoint.sh /entrypoint.sh
 
 # Set homedir as work
 WORKDIR ${PLATFORM_HOME}
@@ -71,19 +58,16 @@ ADD var ${PLATFORM_HOME}/var
 
 # Final step
 RUN set -x \
-    && chmod 755 /entrypoint.sh \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && rm /var/log/lastlog /var/log/faillog \
+    && rm -rf /var/cache/apk/* \
     && chmod -R 0777 ${PLATFORM_HOME}/plugin \
     && chmod -R 0777 ${PLATFORM_HOME}/public/resource \
     && chmod -R 0777 ${PLATFORM_HOME}/public/uploads \
     && chmod -R 0777 ${PLATFORM_HOME}/theme \
     && chmod -R 0777 ${PLATFORM_HOME}/var
 
-EXPOSE 80/tcp 443/tcp
+EXPOSE 80/tcp
 VOLUME ["${PLATFORM_HOME}/plugin", "${PLATFORM_HOME}/public/resource", "${PLATFORM_HOME}/theme", "${PLATFORM_HOME}/var", "${PLATFORM_HOME}/public/uploads"]
 
 STOPSIGNAL SIGTERM
 
-CMD ["/entrypoint.sh"]
+ENTRYPOINT ["php", "-S", "0.0.0.0:80", "-t", "public/"]
