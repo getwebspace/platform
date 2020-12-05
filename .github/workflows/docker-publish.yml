@@ -12,7 +12,7 @@ on:
             - '*'
 
 env:
-    IMAGE_NAME: 0x12f/platform
+    DEFAULT_IMAGE_NAME: 0x12f/platform
 
 jobs:
     # Run tests.
@@ -43,17 +43,22 @@ jobs:
         steps:
             - uses: actions/checkout@v2
 
-            - name: Log into registry
-              run: echo "${{ secrets.DOCKER_HUB }}" | docker login --username ${{ github.actor }} --password-stdin
-
-            - name: Build Debian image and push
+            - name: Definition version
               run: |
                   VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
                   [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
                   [ "$VERSION" == "master" ] && VERSION=latest
 
-                  echo IMAGE_ID=$IMAGE_ID
                   echo VERSION=$VERSION
 
-                  docker build . --build-arg=COMMIT=${{ github.sha }} --build-arg=BRANCH=$VERSION --file docker/debian/Dockerfile --tag $IMAGE_NAME:$VERSION
-                  docker push $IMAGE_NAME:$VERSION
+            - name: Build Debian image and push
+              run: |
+                  echo Building default container: $VERSION
+
+                  docker build . --build-arg=COMMIT=${{ github.sha }} --build-arg=BRANCH=$VERSION --file docker/debian/Dockerfile --tag $DEFAULT_IMAGE_NAME:$VERSION
+
+            - name: Log into registry
+              run: echo "${{ secrets.DOCKER_HUB }}" | docker login --username ${{ github.actor }} --password-stdin
+
+            - name: Push containers
+              run: docker push $DEFAULT_IMAGE_NAME:$VERSION
