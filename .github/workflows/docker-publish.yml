@@ -58,7 +58,7 @@ jobs:
                   docker build . --build-arg=COMMIT=${{ github.sha }} --build-arg=BRANCH=$VERSION --file docker/debian/Dockerfile --tag $DEFAULT_IMAGE_NAME:$VERSION
 
             - name: Log into registry
-              run: echo "${{ secrets.DOCKER_HUB }}" | docker login --username ${{ github.actor }} --password-stdin
+              run: echo "${{ secrets.DOCKER_HUB }}" | docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
 
             - name: Push containers
               run: docker push $DEFAULT_IMAGE_NAME:$VERSION
