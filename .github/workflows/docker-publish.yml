@@ -23,11 +23,14 @@ jobs:
         steps:
             - uses: actions/checkout@v2
 
-            - name: Run tests
-              run: |
-                  docker-compose --file docker-compose.test.yml build
-                  docker-compose --file docker-compose.test.yml run phpcs
-                  docker-compose --file docker-compose.test.yml run phpunit
+            - name: Build test version
+              run: docker-compose --file docker-compose.test.yml build --build-arg=NO_DEV=""
+
+            - name: Run test PHP_CS
+              run: docker-compose --file docker-compose.test.yml run phpcs
+
+            - name: Run test PHPUnit
+              run: docker-compose --file docker-compose.test.yml run phpunit
 
     # Push image to GitHub Packages.
     # See also https://docs.docker.com/docker-hub/builds/

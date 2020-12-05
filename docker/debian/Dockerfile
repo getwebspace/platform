@@ -4,6 +4,7 @@ MAINTAINER Aleksey Ilyin <alksily@outlook.com>
 # Set args
 ARG BRANCH="master"
 ARG COMMIT="latest"
+ARG NO_DEV="--no-dev"
 
 # Set env vars
 ENV COMMIT_BRANCH=${BRANCH}
@@ -59,7 +60,7 @@ WORKDIR ${PLATFORM_HOME}
 # Install PHP libs
 COPY composer.json ${PLATFORM_HOME}/composer.json
 COPY composer.lock ${PLATFORM_HOME}/composer.lock
-RUN composer install --no-dev --no-suggest --no-progress
+RUN composer install ${NO_DEV} --no-suggest --no-progress
 
 # Copy platform
 ADD config ${PLATFORM_HOME}/config
