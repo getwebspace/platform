@@ -48,7 +48,7 @@ $app
                 ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
         });
     })
-    ->add(new \Slim\HttpCache\Cache('public', 0, true));
+    ->add(new \Slim\HttpCache\Cache('public', 0));
 
 // CUP section
 $app
@@ -252,7 +252,11 @@ $app
 $app
     ->get('/', \App\Application\Actions\Common\MainPageAction::class)
     ->setName('main')
-    ->add(new \Slim\HttpCache\Cache('public', 86400, true));
+    ->add(
+        ($_ENV['DEBUG'] ?? false) ?
+            new \Slim\HttpCache\Cache('private', 0, false) :
+            new \Slim\HttpCache\Cache('public', 60, true)
+    );
 
 // user
 $app
@@ -284,7 +288,7 @@ $app
                 return $next($request, $response);
             });
     })
-    ->add(new \Slim\HttpCache\Cache('private', 0));
+    ->add(new \Slim\HttpCache\Cache('private', 0, true));
 
 // other
 $app
@@ -351,6 +355,6 @@ $app
     })
     ->add(
         ($_ENV['DEBUG'] ?? false) ?
-            new \Slim\HttpCache\Cache('private', 0, true) :
-            new \Slim\HttpCache\Cache('public', 86400, true)
+            new \Slim\HttpCache\Cache('private', 0, false) :
+            new \Slim\HttpCache\Cache('public', 60, true)
     );
