@@ -52,14 +52,11 @@ jobs:
                   echo VERSION=$VERSION
                   echo "::set-env name=VERSION::$VERSION"
 
-            - name: Build Debian image and push
-              run: |
-                  echo Building default container: $VERSION
-
-                  docker build . --build-arg=COMMIT=${{ github.sha }} --build-arg=BRANCH=${{ env.BRANCH }} --file docker/debian/Dockerfile --tag $DEFAULT_IMAGE_NAME:${{ env.BRANCH }}
+            - name: Build Debian image
+              run: docker build . --build-arg=COMMIT=${{ github.sha }} --build-arg=BRANCH=${{ env.VERSION }} --file docker/debian/Dockerfile --tag $DEFAULT_IMAGE_NAME:${{ env.VERSION }}
 
             - name: Log into registry
               run: echo "${{ secrets.DOCKER_HUB }}" | docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
 
             - name: Push containers
-              run: docker push $DEFAULT_IMAGE_NAME:${{ env.BRANCH }}
+              run: docker push $DEFAULT_IMAGE_NAME:${{ env.VERSION }}
