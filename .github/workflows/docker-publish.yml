@@ -54,10 +54,9 @@ jobs:
 
             - name: Build Debian image and push
               run: |
-                  echo “${{ jobs.version_job.steps.version_step.outputs.version_number }}”
-                  echo Building default container: ${{ env.BRANCH }}
+                  echo Building default container: $VERSION
 
-                  docker build . --build-arg=COMMIT=${{ github.sha }} --build-arg=BRANCH=${{ env.BRANCH }} --file docker/debian/Dockerfile --tag $DEFAULT_IMAGE_NAME:$VERSION
+                  docker build . --build-arg=COMMIT=${{ github.sha }} --build-arg=BRANCH=${{ env.BRANCH }} --file docker/debian/Dockerfile --tag $DEFAULT_IMAGE_NAME:${{ env.BRANCH }}
 
             - name: Log into registry
               run: echo "${{ secrets.DOCKER_HUB }}" | docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
