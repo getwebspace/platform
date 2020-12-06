@@ -70,4 +70,4 @@ VOLUME ["${PLATFORM_HOME}/plugin", "${PLATFORM_HOME}/public/resource", "${PLATFO
 
 STOPSIGNAL SIGTERM
 
-ENTRYPOINT ["php", "-S", "0.0.0.0:80", "-t", "public/"]
+ENTRYPOINT ["php", "-S", "0.0.0.0:80", "-t", "public", "public/index.php"]
