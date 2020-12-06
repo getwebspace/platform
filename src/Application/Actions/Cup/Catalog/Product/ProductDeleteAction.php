@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Catalog\Product;
 
@@ -8,19 +8,13 @@ class ProductDeleteAction extends CatalogAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $item = null;
+        $product = null;
 
         if ($this->resolveArg('product') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('product'))) {
-            /** @var \App\Domain\Entities\Catalog\Product $item */
-            $item = $this->productRepository->findOneBy(['uuid' => $this->resolveArg('product'), 'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK]);
-
-            if (!$item->isEmpty()) {
-                $item->set('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_DELETE);
-                $this->entityManager->persist($item);
-                $this->entityManager->flush();
-            }
+            $product = $this->catalogProductService->read(['uuid' => $this->resolveArg('product')]);
+            $this->catalogProductService->delete($this->resolveArg('product'));
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/catalog/product' . ($item ? '/' . $item->category : ''))->withStatus(301);
+        return $this->response->withRedirect('/cup/catalog/product' . ($product ? '/' . $product->getCategory() : ''));
     }
 }

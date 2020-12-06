@@ -1,46 +1,27 @@
-<?php
+<?php declare(strict_types=1);
 
+require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../config/vars.php';
 
 /**
- * @return \Slim\App
+ * @var \Psr\Container\ContainerInterface $c
+ * @var \Psr\Container\ContainerInterface $container
  */
-function app_create()
-{
-    session_start();
 
-    // Get app settings
-    $settings = require SRC_DIR . '/settings.php';
+// app container
+$c = $container = new \Slim\Container((array) require_once SRC_DIR . '/settings.php');
 
-    switch (!isset($settings['settings']['displayErrorDetails']) || $settings['settings']['displayErrorDetails'] === true) {
-        case true:
-            error_reporting(-1);
-            ini_set('display_errors',   '1');
-            ini_set('html_errors',      '1');
-            ini_set('error_reporting',  '30719');
+RunTracy\Helpers\Profiler\Profiler::start('init dependencies');
 
-            // enable Tracy panel
-            \Tracy\Debugger::enable(\Tracy\Debugger::DEVELOPMENT, LOG_DIR);
+// set up dependencies
+require SRC_DIR . '/dependencies.php';
 
-            // enably Profiler
-            RunTracy\Helpers\Profiler\Profiler::enable();
-            break;
+RunTracy\Helpers\Profiler\Profiler::finish('init dependencies');
+RunTracy\Helpers\Profiler\Profiler::start('init plugins');
 
-        case false:
-            // Set router cache file if display error is negative
-            $settings['settings']['routerCacheFile'] = CACHE_DIR . '/routes.cache.php';
+// include plugins
+require PLUGIN_DIR . '/installed.php';
 
-            // enable Tracy panel
-            \Tracy\Debugger::enable(\Tracy\Debugger::PRODUCTION, LOG_DIR);
-            break;
-    }
+RunTracy\Helpers\Profiler\Profiler::finish('init plugins');
 
-    if (isset($settings['settings']['sentry']) && $settings['settings']['sentry'] !== null) {
-        \RunTracy\Helpers\Profiler\Profiler::start('sentry');
-        \Sentry\init(['dsn' => $settings['settings']['sentry']]);
-        \RunTracy\Helpers\Profiler\Profiler::finish('sentry');
-    }
-
-    // Instantiate and return the app instance
-    return new \Slim\App($settings);
-}
+$app = new \Slim\App($container);

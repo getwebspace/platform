@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Catalog\Category;
 
@@ -9,36 +9,36 @@ class CategoryDeleteAction extends CatalogAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('category') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('category'))) {
-            /** @var \App\Domain\Entities\Catalog\Category $item */
-            $item = $this->categoryRepository->findOneBy(['uuid' => $this->resolveArg('category'), 'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]);
+            $category = $this->catalogCategoryService->read([
+                'uuid' => $this->resolveArg('category'),
+                'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+            ]);
 
-            if (!$item->isEmpty()) {
-                $categories = collect($this->categoryRepository->findBy([
-                    'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
-                ]));
-                $childCategoriesUuid = \App\Domain\Entities\Catalog\Category::getChildren($categories, $item)->pluck('uuid')->all();
+            if ($category) {
+                $categories = $this->catalogCategoryService->read();
+                $childrenUuids = $category->getNested($categories)->pluck('uuid')->all();
 
-                // удаление вложенных категорий
-                foreach ($this->categoryRepository->findBy(['uuid' => $childCategoriesUuid, 'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]) as $child) {
-                    $child->set('status', \App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE);
-                    $this->entityManager->persist($child);
+                /**
+                 * @var \App\Domain\Entities\Catalog\Category $child
+                 */
+                foreach ($this->catalogCategoryService->read(['parent' => $childrenUuids]) as $child) {
+                    $child->setStatus(\App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE);
+                    $this->catalogCategoryService->write($child);
                 }
 
-                // удаление продуктов
-                foreach ($this->productRepository->findBy(['category' => $childCategoriesUuid, 'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK]) as $child) {
-                    $child->set('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_DELETE);
-                    $this->entityManager->persist($child);
+                /**
+                 * @var \App\Domain\Entities\Catalog\Product $product
+                 */
+                foreach ($this->catalogProductService->read(['category' => $childrenUuids]) as $product) {
+                    $product->setStatus(\App\Domain\Types\Catalog\ProductStatusType::STATUS_DELETE);
+                    $this->catalogProductService->write($product);
                 }
 
-                // удаление категории
-                $item->set('status', \App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE);
-                $this->entityManager->persist($item);
-
-                // commit
-                $this->entityManager->flush();
+                $category->setStatus(\App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE);
+                $this->catalogCategoryService->write($category);
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/catalog/category')->withStatus(301);
+        return $this->response->withRedirect('/cup/catalog/category');
     }
 }

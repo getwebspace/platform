@@ -17,10 +17,10 @@
                 <form method="post" enctype="multipart/form-data">
                     <div class="card-header">
                         <div class="d-flex align-items-center">
-                            <a href="/cup/catalog/category{{ item.parent ? '/' ~ item.parent : (parent ? '/' ~ parent : '') }}" class="btn btn-secondary btn-icon mr-1">
+                            <a href="/cup/catalog/category{{ category.parent ? '/' ~ category.parent : (parent ? '/' ~ parent : '') }}" class="btn btn-secondary btn-icon mr-1">
                                 <i class="fas fa-long-arrow-alt-left"></i>
                             </a>
-                            <div class="card-title">{{ item.uuid ? 'Редактирование категории ' ~ item.title : 'Создание новой категории' }}</div>
+                            <div class="card-title">{{ category.uuid ? 'Редактирование категории ' ~ category.title : 'Создание новой категории' }}</div>
 
                             <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
                                 <li class="nav-item">
@@ -48,7 +48,7 @@
                                             'name': 'title',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Краткое описание категории"></i>',
                                             'args': {
-                                                'value': item.title,
+                                                'value': category.title,
                                                 'required': true,
                                                 'placeholder': 'Еда',
                                             }
@@ -60,8 +60,8 @@
                                             'type': 'select',
                                             'name': 'parent',
                                             'args': {
-                                                'option': {'00000000-0000-0000-0000-000000000000': '---'}|merge(categories.whereNotIn('uuid', [item.uuid]).pluck('title', 'uuid').all()),
-                                                'selected': item.parent ?? parent
+                                                'option': {(NIL): '---'}|merge(categories.whereNotIn('uuid', [category.uuid]).pluck('title', 'uuid').all()),
+                                                'selected': category.parent ?? parent
                                             }
                                         } %}
                                     </div>
@@ -75,7 +75,7 @@
                                             'label': 'Описание категории',
                                             'name': 'description',
                                             'args': {
-                                                'value': item.description
+                                                'value': category.description
                                             }
                                         } %}
                                     </div>
@@ -91,7 +91,7 @@
                                             'name': 'children',
                                             'args': {
                                                 'option': {'yes':'Да', 'no':'Нет'},
-                                                'selected': item.children ? 'yes' : 'no'
+                                                'selected': category.children ? 'yes' : 'no'
                                             }
                                         } %}
                                     </div>
@@ -101,7 +101,7 @@
                                             'type': 'text',
                                             'name': 'pagination',
                                             'args': {
-                                                'value': item.pagination is not empty ? item.pagination : (params.catalog_category_pagination ?? '10'),
+                                                'value': category.pagination is not empty ? category.pagination : (params.catalog_category_pagination ?? '10'),
                                             }
                                         } %}
                                     </div>
@@ -119,7 +119,7 @@
                                                     'name': 'product[field_1]',
                                                     'message': 'Индивидуальное поле продукта категории',
                                                     'args': {
-                                                        'value': item.product.field_1 is not empty ? item.product.field_1 : '',
+                                                        'value': category.product.field_1 is not empty ? category.product.field_1 : '',
                                                         'placeholder': 'Поле 1',
                                                     }
                                                 } %}
@@ -131,7 +131,7 @@
                                                     'name': 'product[field_2]',
                                                     'message': 'Индивидуальное поле продукта категории',
                                                     'args': {
-                                                        'value': item.product.field_2 is not empty ? item.product.field_2 : '',
+                                                        'value': category.product.field_2 is not empty ? category.product.field_2 : '',
                                                         'placeholder': 'Поле 2',
                                                     }
                                                 } %}
@@ -143,7 +143,7 @@
                                                     'name': 'product[field_3]',
                                                     'message': 'Индивидуальное поле продукта категории',
                                                     'args': {
-                                                        'value': item.product.field_3 is not empty ? item.product.field_3 : '',
+                                                        'value': category.product.field_3 is not empty ? category.product.field_3 : '',
                                                         'placeholder': 'Поле 3',
                                                     }
                                                 } %}
@@ -155,7 +155,7 @@
                                                     'name': 'product[field_4]',
                                                     'message': 'Индивидуальное поле продукта категории',
                                                     'args': {
-                                                        'value': item.product.field_4 is not empty ? item.product.field_4 : '',
+                                                        'value': category.product.field_4 is not empty ? category.product.field_4 : '',
                                                         'placeholder': 'Поле 4',
                                                     }
                                                 } %}
@@ -167,7 +167,7 @@
                                                     'name': 'product[field_5]',
                                                     'message': 'Индивидуальное поле продукта категории',
                                                     'args': {
-                                                        'value': item.product.field_5 is not empty ? item.product.field_5 : '',
+                                                        'value': category.product.field_5 is not empty ? category.product.field_5 : '',
                                                         'placeholder': 'Поле 5',
                                                     }
                                                 } %}
@@ -192,7 +192,7 @@
                                             }
                                         } %}
 
-                                        {% for file in item.getFiles() %}
+                                        {% for file in category.getFiles() %}
                                             <div class="p-2 d-inline-block m-2 bg-grey2 text-center rounded">
                                                 <a href="{{ file.getPublicPath() }}" target="_blank">
                                                     <img class="rounded" height="100" src="{{ file.getPublicPath('small') }}" alt="preview" data-toggle="tooltip" data-placement="top" title="{{ file.getName() }}" />
@@ -200,7 +200,7 @@
                                                 <div class="pt-2">
                                                     <div class="row">
                                                         <div class="col-6">
-                                                            <span class="text-small">{{ file.getSize() }}</span>
+                                                            <span class="text-small">{{ file.getFileSize() }}</span>
                                                         </div>
                                                         <div class="col-6 text-right float-right">
                                                             {% include 'cup/form.twig' with {
@@ -231,7 +231,7 @@
                                             'prefix': base_url() ~ '/' ~ parameter('catalog_address', 'catalog') ~ '/',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Название категории. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов"></i>',
                                             'args': {
-                                                'value': item.address,
+                                                'value': category.address,
                                                 'placeholder': 'food',
                                             }
                                         } %}
@@ -242,9 +242,9 @@
                                             'type': 'number',
                                             'name': 'order',
                                             'args': {
-                                                'value': item.order is not empty ? item.order : '1',
+                                                'value': category.order is not empty ? category.order : '1',
                                                 'placeholder': '1',
-                                                'min': '1'
+                                                'min': '0'
                                             }
                                         } %}
                                     </div>
@@ -255,7 +255,7 @@
                                             'name': 'external_id',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
                                             'args': {
-                                                'value': item.external_id,
+                                                'value': category.external_id,
                                             }
                                         } %}
                                     </div>
@@ -271,7 +271,7 @@
                                             'name': 'field1',
                                             'message': 'Индивидуальное поле',
                                             'args': {
-                                                'value': item.field1,
+                                                'value': category.field1,
                                             }
                                         } %}
                                     </div>
@@ -282,7 +282,7 @@
                                             'name': 'field2',
                                             'message': 'Индивидуальное поле',
                                             'args': {
-                                                'value': item.field2,
+                                                'value': category.field2,
                                             }
                                         } %}
                                     </div>
@@ -293,7 +293,7 @@
                                             'name': 'field3',
                                             'message': 'Индивидуальное поле',
                                             'args': {
-                                                'value': item.field3,
+                                                'value': category.field3,
                                             }
                                         } %}
                                     </div>
@@ -309,7 +309,7 @@
                                             'name': 'template[category]',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="Укажите название шаблона, который хотите использовать для данной категории или оставьте <b>catalog.category.twig</b>"></i>',
                                             'args': {
-                                                'value': item.template.category is not empty ? item.template.category : (params.catalog_category_template ?? 'catalog.category.twig'),
+                                                'value': category.template.category is not empty ? category.template.category : (params.catalog_category_template ?? 'catalog.category.twig'),
                                                 'required': true,
                                             }
                                         } %}
@@ -321,7 +321,7 @@
                                             'name': 'template[product]',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="Укажите название шаблона, который хотите использовать для товаров в данной категории или оставьте <b>catalog.product.twig</b>"></i>',
                                             'args': {
-                                                'value': item.template.product is not empty ? item.template.product : (params.catalog_product_template ?? 'catalog.product.twig'),
+                                                'value': category.template.product is not empty ? category.template.product : (params.catalog_product_template ?? 'catalog.product.twig'),
                                                 'required': true,
                                             }
                                         } %}
@@ -337,7 +337,7 @@
                                             'type': 'text',
                                             'name': 'meta[title]',
                                             'args': {
-                                                'value': item.meta.title,
+                                                'value': category.meta.title,
                                             }
                                         } %}
                                     </div>
@@ -348,7 +348,7 @@
                                             'type': 'text',
                                             'name': 'meta[description]',
                                             'args': {
-                                                'value': item.meta.description,
+                                                'value': category.meta.description,
                                             }
                                         } %}
                                     </div>
@@ -359,7 +359,7 @@
                                             'type': 'text',
                                             'name': 'meta[keywords]',
                                             'args': {
-                                                'value': item.meta.keywords,
+                                                'value': category.meta.keywords,
                                             }
                                         } %}
                                     </div>

@@ -1,12 +1,12 @@
-<?php
+<?php declare(strict_types=1);
 
 // timezone default
 date_default_timezone_set('UTC');
 
-return [
+$settings = [
     // Secret salt
     'secret' => [
-        'salt' => ($_ENV['SALT'] ?? "Li8.1Ej2-<Cid3[bE"),
+        'salt' => ($_ENV['SALT'] ?? 'Li8.1Ej2-<Cid3[bE'),
     ],
 
     // Doctrine settings
@@ -20,21 +20,10 @@ return [
             'cache' => null,
         ],
 
-        'types' => [
-            Ramsey\Uuid\Doctrine\UuidType::NAME => Ramsey\Uuid\Doctrine\UuidType::class,
-            App\Domain\Types\Catalog\CategoryStatusType::NAME => \App\Domain\Types\Catalog\CategoryStatusType::class,
-            App\Domain\Types\Catalog\ProductStatusType::NAME => \App\Domain\Types\Catalog\ProductStatusType::class,
-            App\Domain\Types\Catalog\OrderStatusType::NAME => \App\Domain\Types\Catalog\OrderStatusType::class,
-            App\Domain\Types\FileItemType::NAME => \App\Domain\Types\FileItemType::class,
-            App\Domain\Types\GuestBookStatusType::NAME => \App\Domain\Types\GuestBookStatusType::class,
-            App\Domain\Types\PageTypeType::NAME => \App\Domain\Types\PageTypeType::class,
-            App\Domain\Types\TaskStatusType::NAME => \App\Domain\Types\TaskStatusType::class,
-            App\Domain\Types\UserLevelType::NAME => \App\Domain\Types\UserLevelType::class,
-            App\Domain\Types\UserStatusType::NAME => \App\Domain\Types\UserStatusType::class,
-        ],
+        'types' => require CONFIG_DIR . '/types.php',
 
         // Connection to DB settings
-        'connection' => isset($_ENV['DATABASE']) ? $_ENV['DATABASE'] : [
+        'connection' => !empty($_ENV['DATABASE']) ? ['url' => $_ENV['DATABASE']] : [
             'driver' => 'pdo_sqlite',
             'path' => VAR_DIR . '/database.sqlite',
         ],
@@ -47,15 +36,14 @@ return [
 
     // Monolog settings
     'logger' => [
-        'name' => 'wse',
+        'name' => 'WSE',
         'path' => isset($_ENV['docker']) ? 'php://stdout' : LOG_DIR . '/app.log',
         'level' => \Monolog\Logger::DEBUG,
     ],
 
     'settings' => [
-        'sentry' => ($_ENV['SENTRY'] ?? null),
-        'displayErrorDetails' => ((bool)$_ENV['DEBUG'] ?? false), // set to false in production
-        'addContentLengthHeader' => false, // allow the web server to send the content-length header
+        'displayErrorDetails' => (bool) ($_ENV['DEBUG'] ?? false),
+        'addContentLengthHeader' => false,
         'determineRouteBeforeAppMiddleware' => true,
 
         'tracy' => [
@@ -84,3 +72,30 @@ return [
         ],
     ],
 ];
+
+switch (!isset($settings['settings']['displayErrorDetails']) || $settings['settings']['displayErrorDetails'] === true) {
+    case true:
+        error_reporting(-1);
+        ini_set('display_errors', '1');
+        ini_set('html_errors', '1');
+        ini_set('error_reporting', '30719');
+
+        // enable Tracy panel
+        \Tracy\Debugger::enable(\Tracy\Debugger::DEVELOPMENT, LOG_DIR);
+
+        // enably Profiler
+        RunTracy\Helpers\Profiler\Profiler::enable();
+
+        break;
+
+    case false:
+        // set router cache file if display error is negative
+        $settings['settings']['routerCacheFile'] = CACHE_DIR . '/routes.cache.php';
+
+        // enable Tracy panel
+        \Tracy\Debugger::enable(\Tracy\Debugger::PRODUCTION, LOG_DIR);
+
+        break;
+}
+
+return $settings;

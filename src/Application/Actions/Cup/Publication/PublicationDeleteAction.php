@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Publication;
 
@@ -7,13 +7,7 @@ class PublicationDeleteAction extends PublicationAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            /** @var \App\Domain\Entities\Publication $item */
-            $item = $this->publicationRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
-
-            if (!$item->isEmpty()) {
-                $this->entityManager->remove($item);
-                $this->entityManager->flush();
-            }
+            $this->publicationService->delete($this->resolveArg('uuid'));
         }
 
         return $this->response->withAddedHeader('Location', '/cup/publication')->withStatus(301);

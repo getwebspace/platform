@@ -1,23 +1,27 @@
-<?php
+<?php declare(strict_types=1);
 
 use Slim\Http\Request;
 use Slim\Http\Response;
 
+/**
+ * @var \Slim\App $app
+ */
+
 // RunTracy
 $app->add(new RunTracy\Middlewares\TracyMiddleware($app));
 
-// http cache
-$app->add(new \Slim\HttpCache\Cache('public', 86400));
-
 // check user auth
 $app->add(\App\Application\Middlewares\AuthorizationMiddleware::class);
+
+// plugin functions
+$app->add(\App\Application\Middlewares\PluginMiddleware::class);
 
 // redirect to address without slash in end
 $app->add(function (Request $request, Response $response, $next) {
     $path = $request->getUri()->getPath();
 
-    if ($path != '/' && str_ends_with('/', $path)) {
-        return $response->withAddedHeader('Location', rtrim($path, '/'))->withStatus(308);
+    if ($path !== '/' && str_end_with($path, '/')) {
+        return $response->withRedirect(rtrim($path, '/'));
     }
 
     return $next($request, $response);

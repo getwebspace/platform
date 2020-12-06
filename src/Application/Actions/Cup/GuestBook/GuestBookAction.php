@@ -1,24 +1,25 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\GuestBook;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
+use App\Domain\Service\GuestBook\GuestBookService;
 use Psr\Container\ContainerInterface;
 
-abstract class GuestBookAction extends Action
+abstract class GuestBookAction extends AbstractAction
 {
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     * @var GuestBookService
      */
-    protected $gbookRepository;
+    protected GuestBookService $guestBookService;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
 
-        $this->gbookRepository = $this->entityManager->getRepository(\App\Domain\Entities\GuestBook::class);
+        $this->guestBookService = GuestBookService::getWithContainer($container);
     }
 }

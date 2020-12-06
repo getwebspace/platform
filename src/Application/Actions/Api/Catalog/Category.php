@@ -1,12 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Api\Catalog;
+
+use App\Domain\Service\Catalog\CategoryService as CatalogCatalogService;
 
 class Category extends CatalogAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $data = [
+        $catalogCategoryService = CatalogCatalogService::getWithContainer($this->container);
+        $categories = from_service_to_array($catalogCategoryService->read([
             'uuid' => $this->request->getParam('uuid'),
             'parent' => $this->request->getParam('parent'),
             'address' => $this->request->getParam('address'),
@@ -16,27 +19,7 @@ class Category extends CatalogAction
             'order' => $this->request->getParam('order', []),
             'limit' => $this->request->getParam('limit', 1000),
             'offset' => $this->request->getParam('offset', 0),
-        ];
-
-        $criteria = [];
-
-        if ($data['uuid']) {
-            $criteria['uuid'] = $this->array_criteria_uuid($data['uuid']);
-        }
-        if ($data['parent']) {
-            $criteria['parent'] = $this->array_criteria_uuid($data['parent']);
-        }
-        if ($data['address']) {
-            $criteria['address'] = urldecode($data['address']);
-        }
-        if ($data['status']) {
-            $criteria['status'] = $data['status'];
-        }
-        if ($data['external_id']) {
-            $criteria['external_id'] = $this->array_criteria($data['external_id']);
-        }
-
-        $categories = $this->categoryRepository->findBy($criteria, $data['order'], $data['limit'], $data['offset']);
+        ]));
 
         /** @var \App\Domain\Entities\Catalog\Category $category */
         foreach ($categories as &$category) {
@@ -57,6 +40,6 @@ class Category extends CatalogAction
             unset($category['buf']);
         }
 
-        return $this->respondWithData($categories);
+        return $this->respondWithJson($categories);
     }
 }

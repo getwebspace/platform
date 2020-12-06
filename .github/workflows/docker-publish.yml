@@ -1,0 +1,90 @@
+name: Docker builder
+
+on:
+    push:
+        # Publish `master` as Docker `latest` image.
+        branches:
+            - master
+            - dev
+
+        # Publish `1.2.3` tags as releases.
+        tags:
+            - '*'
+
+env:
+    ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+    DEFAULT_IMAGE_NAME: 0x12f/platform
+
+jobs:
+    # Run tests.
+    # See also https://docs.docker.com/docker-hub/builds/automated-testing/
+    test:
+        runs-on: ubuntu-20.04
+
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Build test version
+              run: docker-compose --file docker-compose.test.yml build --build-arg=NO_DEV=""
+
+            - name: Run test PHP_CS
+              run: docker-compose --file docker-compose.test.yml run phpcs
+
+            - name: Run test PHPUnit
+              run: docker-compose --file docker-compose.test.yml run phpunit
+
+    # build debian based container
+    debian:
+        needs: test
+
+        runs-on: ubuntu-20.04
+        if: github.event_name == 'push'
+
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Definition version
+              run: |
+                  VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+                  [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+                  [ "$VERSION" == "master" ] && VERSION=latest
+
+                  echo VERSION=$VERSION
+                  echo "::set-env name=VERSION::$VERSION"
+
+            - name: Build container
+              run: docker build . --build-arg=COMMIT=${{ github.sha }} --build-arg=BRANCH=${{ env.VERSION }} --file docker/debian/Dockerfile --tag $DEFAULT_IMAGE_NAME:${{ env.VERSION }}
+
+            - name: Log into registry
+              run: echo "${{ secrets.DOCKER_HUB }}" | docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+
+            - name: Push container
+              run: docker push $DEFAULT_IMAGE_NAME:${{ env.VERSION }}
+
+    # build alpine based container
+    alpine:
+        needs: test
+
+        runs-on: ubuntu-20.04
+        if: github.event_name == 'push'
+
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Definition version
+              run: |
+                  VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+                  [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+                  [ "$VERSION" == "master" ] && VERSION=latest
+
+                  echo VERSION=$VERSION
+                  echo "::set-env name=VERSION::$VERSION"
+
+            - name: Build container
+              run: docker build . --build-arg=COMMIT=${{ github.sha }} --build-arg=BRANCH=${{ env.VERSION }} --file docker/alpine/Dockerfile --tag $DEFAULT_IMAGE_NAME:${{ env.VERSION }}-alpine
+
+            - name: Log into registry
+              run: echo "${{ secrets.DOCKER_HUB }}" | docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+
+            - name: Push container
+              run: docker push $DEFAULT_IMAGE_NAME:${{ env.VERSION }}-alpine

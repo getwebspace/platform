@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Form\Data;
 
@@ -12,19 +12,17 @@ class DataViewAction extends FormAction
             $this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid')) &&
             $this->resolveArg('data') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('data'))
         ) {
-            /** @var \App\Domain\Entities\Form\Data $item */
-            $item = $this->dataRepository->findOneBy([
-                'form_uuid' => $this->resolveArg('uuid'),
+            $data = $this->formDataService->read([
                 'uuid' => $this->resolveArg('data'),
             ]);
 
-            if (!$item->isEmpty()) {
-                return $this->respondRender('cup/form/view/detail.twig', [
-                    'item' => $item,
+            if ($data) {
+                return $this->respondWithTemplate('cup/form/view/detail.twig', [
+                    'item' => $data,
                 ]);
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/form')->withStatus(301);
+        return $this->response->withRedirect('/cup/form');
     }
 }

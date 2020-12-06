@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Common\User;
 
@@ -6,9 +6,22 @@ class UserLogoutAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
-        setcookie('uuid', '-1', time(), '/');
-        setcookie('session', '-1', time(), '/');
+        /** @var \App\Domain\Entities\User $user */
+        $user = $this->request->getAttribute('user', false);
 
-        return $this->response->withAddedHeader('Location', '/')->withStatus(301);
+        if ($user) {
+            $session = $user->getSession()
+                ->setAgent('')
+                ->setDate(null)
+                ->setIp('0.0.0.0');
+
+            // write clear session
+            $this->userService->write($session);
+
+            setcookie('uuid', '-1', time(), '/');
+            setcookie('session', '-1', time(), '/');
+        }
+
+        return $this->response->withRedirect('/');
     }
 }

@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Entities\Catalog;
 
-use Alksily\Entity\Model;
+use App\Domain\AbstractEntity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
@@ -20,7 +20,7 @@ use Ramsey\Uuid\Uuid;
  *     @ORM\Index(name="catalog_product_order_idx", columns={"order"})
  * })
  */
-class Product extends Model
+class Product extends AbstractEntity
 {
     /**
      * @var Uuid
@@ -29,203 +29,802 @@ class Product extends Model
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    public $uuid;
+    protected Uuid $uuid;
 
     /**
-     * @var Uuid
-     * @ORM\Column(type="uuid", options={"default": NULL})
+     * @return Uuid
      */
-    public $category;
+    public function getUuid(): Uuid
+    {
+        return $this->uuid;
+    }
 
     /**
-     * @ORM\Column(type="string")
+     * @var string|Uuid
+     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
-    public $title;
+    protected $category = \Ramsey\Uuid\Uuid::NIL;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @param string|Uuid $uuid
+     *
+     * @return $this
      */
-    public $description;
+    public function setCategory($uuid)
+    {
+        $this->category = $this->getUuidByValue($uuid);
+
+        return $this;
+    }
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @return Uuid
      */
-    public $extra;
+    public function getCategory(): Uuid
+    {
+        return $this->category;
+    }
 
     /**
-     * @ORM\Column(type="string", length=1000)
+     * @ORM\Column(type="string", length=255, options={"default": ""})
      */
-    public $address;
+    protected string $title = '';
 
     /**
-     * @ORM\Column(type="text")
+     * @param string $title
+     *
+     * @return $this
      */
-    public $vendorcode = '';
+    public function setTitle(string $title)
+    {
+        if ($this->checkStrLenMax($title, 255)) {
+            $this->title = $title;
+        }
+
+        return $this;
+    }
 
     /**
-     * @ORM\Column(type="text")
+     * @return string
      */
-    public $barcode = '';
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * @var string
+     * @ORM\Column(type="text", length=10000, options={"default": ""})
+     */
+    protected string $description = '';
+
+    /**
+     * @param string $description
+     *
+     * @return $this
+     */
+    public function setDescription(string $description)
+    {
+        if ($this->checkStrLenMax($description, 10000)) {
+            $this->description = $description;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @ORM\Column(type="text", length=10000, options={"default": ""})
+     */
+    protected string $extra = '';
+
+    /**
+     * @param string $extra
+     *
+     * @return $this
+     */
+    public function setExtra(string $extra)
+    {
+        if ($this->checkStrLenMax($extra, 10000)) {
+            $this->extra = $extra;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExtra(): string
+    {
+        return $this->extra;
+    }
+
+    /**
+     * @ORM\Column(type="string", length=1000, unique=true, options={"default": ""})
+     */
+    protected string $address = '';
+
+    /**
+     * @param string $address
+     *
+     * @return $this
+     */
+    public function setAddress(string $address)
+    {
+        if ($this->checkStrLenMax($address, 1000)) {
+            $this->address = $this->getAddressByValue($address, $this->getTitle());
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress(): string
+    {
+        return $this->address;
+    }
+
+    /**
+     * @ORM\Column(type="text", options={"default": ""})
+     */
+    protected string $vendorcode = '';
+
+    /**
+     * @param string $value
+     *
+     * @return $this
+     */
+    public function setVendorCode(string $value)
+    {
+        if ($this->checkStrLenMax($value, 255)) {
+            $this->vendorcode = $value;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVendorCode()
+    {
+        return $this->vendorcode;
+    }
+
+    /**
+     * @ORM\Column(type="text", options={"default": ""})
+     */
+    protected string $barcode = '';
+
+    /**
+     * @param string $value
+     *
+     * @return $this
+     */
+    public function setBarCode(string $value)
+    {
+        if ($this->checkStrLenMax($value, 255)) {
+            $this->barcode = $value;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBarCode()
+    {
+        return $this->barcode;
+    }
 
     /**
      * // себестоимость
-     * @ORM\Column(type="decimal", scale=2, precision=10)
+     *
+     * @ORM\Column(type="decimal", scale=2, precision=10, options={"default": 0})
      */
-    public $priceFirst = .0;
+    protected float $priceFirst = .0;
 
     /**
-     * @ORM\Column(type="decimal", scale=2, precision=10)
+     * @param float $value
+     *
+     * @return $this
      */
-    public $price = .0;
+    public function setPriceFirst(float $value)
+    {
+        $this->priceFirst = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPriceFirst(): float
+    {
+        return $this->priceFirst;
+    }
+
+    /**
+     * @ORM\Column(type="decimal", scale=2, precision=10, options={"default": 0})
+     */
+    protected float $price = .0;
+
+    /**
+     * @param float $value
+     *
+     * @return $this
+     */
+    public function setPrice(float $value)
+    {
+        $this->price = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPrice(): float
+    {
+        return $this->price;
+    }
 
     /**
      * // оптовая цена
-     * @ORM\Column(type="decimal", scale=2, precision=10)
+     *
+     * @ORM\Column(type="decimal", scale=2, precision=10, options={"default": 0})
      */
-    public $priceWholesale = .0;
+    protected float $priceWholesale = .0;
 
     /**
-     * @ORM\Column(type="decimal", scale=2, precision=10)
+     * @param float $value
+     *
+     * @return $this
      */
-    public $volume = 1.0;
+    public function setPriceWholesale(float $value)
+    {
+        $this->priceWholesale = $value;
+
+        return $this;
+    }
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @return float
      */
-    public $unit = 'kg';
+    public function getPriceWholesale(): float
+    {
+        return $this->priceWholesale;
+    }
 
     /**
-     * @ORM\Column(type="float", scale=2, precision=10)
+     * @ORM\Column(type="decimal", scale=2, precision=10, options={"default": 1})
      */
-    public $stock = 0;
+    protected float $volume = 1.0;
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @param float $value
+     *
+     * @return $this
      */
-    public $field1;
+    public function setVolume(float $value)
+    {
+        $this->volume = $value;
+
+        return $this;
+    }
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @return float
      */
-    public $field2;
+    public function getVolume(): float
+    {
+        return $this->volume;
+    }
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @ORM\Column(type="string", options={"default": "kg"})
      */
-    public $field3;
+    protected string $unit = 'kg';
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @param string $value
+     *
+     * @return $this
      */
-    public $field4;
+    public function setUnit(string $value)
+    {
+        if ($this->checkStrLenMax($value, 255)) {
+            $this->unit = $value;
+        }
+
+        return $this;
+    }
 
     /**
-     * @ORM\Column(type="text", nullable=true)
+     * @return string
      */
-    public $field5;
+    public function getUnit(): string
+    {
+        return $this->unit;
+    }
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
      */
-    public $country;
+    protected float $stock = 0;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @param float $value
+     *
+     * @return $this
      */
-    public $manufacturer;
+    public function setStock(float $value)
+    {
+        $this->stock = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getStock(): float
+    {
+        return $this->stock;
+    }
+
+    /**
+     * @ORM\Column(type="text", options={"default": ""})
+     */
+    protected string $field1 = '';
+
+    /**
+     * @param string $value
+     *
+     * @return $this
+     */
+    public function setField1(string $value)
+    {
+        if ($this->checkStrLenMax($value, 512)) {
+            $this->field1 = $value;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField1(): string
+    {
+        return $this->field1;
+    }
+
+    /**
+     * @ORM\Column(type="text", options={"default": ""})
+     */
+    protected string $field2 = '';
+
+    /**
+     * @param string $value
+     *
+     * @return $this
+     */
+    public function setField2(string $value)
+    {
+        if ($this->checkStrLenMax($value, 512)) {
+            $this->field2 = $value;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField2(): string
+    {
+        return $this->field2;
+    }
+
+    /**
+     * @ORM\Column(type="text", options={"default": ""})
+     */
+    protected string $field3 = '';
+
+    /**
+     * @param string $value
+     *
+     * @return $this
+     */
+    public function setField3(string $value)
+    {
+        if ($this->checkStrLenMax($value, 512)) {
+            $this->field3 = $value;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField3(): string
+    {
+        return $this->field3;
+    }
+
+    /**
+     * @ORM\Column(type="text", options={"default": ""})
+     */
+    protected string $field4 = '';
+
+    /**
+     * @param string $value
+     *
+     * @return $this
+     */
+    public function setField4(string $value)
+    {
+        if ($this->checkStrLenMax($value, 512)) {
+            $this->field4 = $value;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField4(): string
+    {
+        return $this->field4;
+    }
+
+    /**
+     * @ORM\Column(type="text", options={"default": ""})
+     */
+    protected string $field5 = '';
+
+    /**
+     * @param string $value
+     *
+     * @return $this
+     */
+    public function setField5(string $value)
+    {
+        if ($this->checkStrLenMax($value, 512)) {
+            $this->field5 = $value;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getField5(): string
+    {
+        return $this->field5;
+    }
+
+    /**
+     * @ORM\Column(type="string", options={"default": ""})
+     */
+    protected string $country = '';
+
+    /**
+     * @param string $value
+     *
+     * @return $this
+     */
+    public function setCountry(string $value)
+    {
+        if ($this->checkStrLenMax($value, 255)) {
+            $this->country = $value;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCountry(): string
+    {
+        return $this->country;
+    }
+
+    /**
+     * @ORM\Column(type="string", options={"default": ""})
+     */
+    protected string $manufacturer = '';
+
+    /**
+     * @param string $value
+     *
+     * @return $this
+     */
+    public function setManufacturer(string $value)
+    {
+        if ($this->checkStrLenMax($value, 255)) {
+            $this->manufacturer = $value;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getManufacturer(): string
+    {
+        return $this->manufacturer;
+    }
 
     /**
      * @ORM\Column(type="array")
      */
-    public $tags = [];
+    protected $tags = []; // todo set array
 
     /**
-     * @ORM\Column(name="`order`", type="integer")
+     * @param array|string $tags
+     *
+     * @return $this
      */
-    public $order = 1;
+    public function setTags($tags)
+    {
+        if (is_string($tags)) {
+            $tags = explode(';', $tags);
+        }
+        $this->tags = array_map('trim', $tags);
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTags(): array
+    {
+        return $this->tags;
+    }
+
+    /**
+     * @ORM\Column(name="`order`", type="integer", options={"default": 1})
+     */
+    protected int $order = 1;
+
+    /**
+     * @param int $order
+     *
+     * @return $this
+     */
+    public function setOrder(int $order)
+    {
+        $this->order = $order;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOrder(): int
+    {
+        return $this->order;
+    }
 
     /**
      * @var string
-     * @see \App\Domain\Types\Catalog\ProductStatusType::LIST
-     * @ORM\Column(type="CatalogProductStatusType")
+     *
+     * @see \App\Domain\Types\ProductStatusType::LIST
+     * @ORM\Column(type="CatalogProductStatusType", options={"default":
+     *                                              \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK})
      */
-    public $status = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
+    protected string $status = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
+
+    /**
+     * @param string $status
+     *
+     * @return $this
+     */
+    public function setStatus(string $status)
+    {
+        if (in_array($status, \App\Domain\Types\Catalog\ProductStatusType::LIST, true)) {
+            $this->status = $status;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
 
     /**
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $date;
+    protected DateTime $date;
+
+    /**
+     * @param $date
+     *
+     * @throws \Exception
+     *
+     * @return $this
+     */
+    public function setDate($date)
+    {
+        $this->date = $this->getDateTimeByValue($date);
+
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
 
     /**
      * @var array
      * @ORM\Column(type="array")
      */
-    public $meta = [
+    protected array $meta = [
         'title' => '',
         'description' => '',
         'keywords' => '',
     ];
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @param array $data
+     *
+     * @return $this
      */
-    public $external_id;
+    public function setMeta(array $data)
+    {
+        $default = [
+            'title' => '',
+            'description' => '',
+            'keywords' => '',
+        ];
+        $data = array_merge($default, $data);
+
+        $this->meta = [
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'keywords' => $data['keywords'],
+        ];
+
+        return $this;
+    }
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @return array
      */
-    public $export = 'manual';
+    public function getMeta(): array
+    {
+        return $this->meta;
+    }
+
+    /**
+     * @ORM\Column(type="string", length=50, options={"default": ""})
+     */
+    protected string $external_id = '';
+
+    /**
+     * @param string $external_id
+     *
+     * @return $this
+     */
+    public function setExternalId(string $external_id)
+    {
+        if ($this->checkStrLenMax($external_id, 255)) {
+            $this->external_id = $external_id;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExternalId(): string
+    {
+        return $this->external_id;
+    }
+
+    /**
+     * @ORM\Column(type="string", length=50, options={"default": "manual"})
+     */
+    protected string $export = 'manual';
+
+    /**
+     * @param string $export
+     *
+     * @return Product
+     */
+    public function setExport(string $export)
+    {
+        $this->export = $export;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExport(): string
+    {
+        return $this->export;
+    }
 
     /**
      * @var mixed буфурное поле для обработки интеграций
      */
-    public $buf = null;
+    public $buf;
 
     /**
      * @var array
-     * @ORM\ManyToMany(targetEntity="App\Domain\Entities\File", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\ManyToMany(targetEntity="App\Domain\Entities\File")
      * @ORM\JoinTable(name="catalog_product_files",
-     *  joinColumns={@ORM\JoinColumn(name="product_uuid", referencedColumnName="uuid")},
-     *  inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")}
+     *     joinColumns={@ORM\JoinColumn(name="product_uuid", referencedColumnName="uuid")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")}
      * )
      */
     protected $files = [];
 
-    public function addFile(\App\Domain\Entities\File $file)
+    public function addFile(\App\Domain\Entities\File $file): void
     {
         $this->files[] = $file;
     }
 
-    public function addFiles(array $files)
+    public function addFiles(array $files): void
     {
         foreach ($files as $file) {
             $this->addFile($file);
         }
     }
 
-    public function removeFile(\App\Domain\Entities\File $file)
+    public function removeFile(\App\Domain\Entities\File $file): void
     {
         foreach ($this->files as $key => $value) {
             if ($file === $value) {
                 unset($this->files[$key]);
-                $value->unlink();
             }
         }
     }
 
-    public function removeFiles(array $files)
+    public function removeFiles(array $files): void
     {
         foreach ($files as $file) {
             $this->removeFile($file);
         }
     }
 
-    public function clearFiles()
+    public function clearFiles(): void
     {
         foreach ($this->files as $key => $file) {
             unset($this->files[$key]);
-            $file->unlink();
         }
     }
 
@@ -244,8 +843,8 @@ class Product extends Model
      *
      * @return string
      */
-    public function getVolume()
+    public function getVolumeWithUnit()
     {
-        return ($this->volume ?? .0) . ($this->unit != 'null' ? $this->unit : '');
+        return ($this->volume ?? .0) . ($this->unit !== 'null' ? $this->unit : '');
     }
 }

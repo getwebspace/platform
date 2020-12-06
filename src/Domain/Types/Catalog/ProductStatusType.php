@@ -1,18 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Types\Catalog;
 
-use App\Application\Types\EnumType;
+use App\Domain\AbstractEnumType;
 
-class ProductStatusType extends EnumType
+class ProductStatusType extends AbstractEnumType
 {
-    const NAME = 'CatalogProductStatusType';
+    public const NAME = 'CatalogProductStatusType';
 
-    const STATUS_WORK = 'work',
-          STATUS_DELETE = 'delete';
+    public const STATUS_WORK = 'work';
+    public const STATUS_DELETE = 'delete';
 
-    const LIST          = [
-        self::STATUS_WORK => 'Активный',
-        self::STATUS_DELETE => 'Удаленный',
+    public const LIST          = [
+        self::STATUS_WORK,
+        self::STATUS_DELETE,
     ];
 }

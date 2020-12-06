@@ -31,6 +31,25 @@ $(() => {
         }
     });
     
+    // sidebar
+    $('body').on('click', '.quick-sidebar-toggler, .close-quick-sidebar, .quick-sidebar-overlay', (e) => {
+        $(e.currentTarget).toggleClass('toggled');
+        $('html').toggleClass('quick_sidebar_open');
+    
+        let $el;
+        if (($el = $('.quick-sidebar-overlay')) && $el.length) {
+            $el.remove();
+        } else {
+            $('<div class="quick-sidebar-overlay"></div>').insertAfter('.quick-sidebar');
+        }
+    });
+    
+    // scrollbars
+    $('.sidebar .scrollbar').scrollbar();
+    $('.main-panel .content-scroll').scrollbar();
+    $('.quick-scroll').scrollbar();
+    $('.quick-actions-scroll').scrollbar();
+    
     // navigation highlight
     let buf = 0, $active = null;
     $('.sidebar a').each((i, el) => {
@@ -59,6 +78,7 @@ $(() => {
     });
     
     $('[data-table]').DataTable({
+        'deferRender': true,
         'stateSave': true,
         'language': {
             'search': 'Поиск:',
@@ -68,10 +88,10 @@ $(() => {
             'infoEmpty': 'Нет записей',
             'infoFiltered': '(проверено в _MAX_ результатах)',
             'paginate': {
-                'first':      'В начало',
-                'previous':   'Сюда',
-                'next':       'Туда',
-                'last':       'В конец'
+                'first': 'В начало',
+                'previous': 'Сюда',
+                'next': 'Туда',
+                'last': 'В конец'
             },
         }
     });

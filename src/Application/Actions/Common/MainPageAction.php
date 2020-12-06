@@ -1,13 +1,13 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Common;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
 
-class MainPageAction extends Action
+class MainPageAction extends AbstractAction
 {
     protected function action(): \Slim\Http\Response
     {
-        return $this->respondRender($this->getParameter('common_template', 'main.twig'));
+        return $this->respondWithTemplate($this->parameter('common_template', 'main.twig'));
     }
 }

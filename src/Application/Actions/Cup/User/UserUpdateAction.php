@@ -1,54 +1,56 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\User;
 
-use Exception;
+use App\Domain\Exceptions\WrongEmailValueException;
+use App\Domain\Exceptions\WrongPhoneValueException;
+use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
+use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
+use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 
 class UserUpdateAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
-        if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            /** @var \App\Domain\Entities\User $item */
-            $item = $this->userRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
+        if ($this->resolveArg('uuid')) {
+            $user = $this->userService->read(['uuid' => $this->resolveArg('uuid')]);
 
-            if (!$item->isEmpty()) {
+            if ($user) {
                 if ($this->request->isPost()) {
-                    $data = [
-                        'uuid' => $item->uuid,
-                        'username' => $this->request->getParam('username'),
-                        'password' => $this->request->getParam('password'),
-                        'firstname' => $this->request->getParam('firstname'),
-                        'lastname' => $this->request->getParam('lastname'),
-                        'email' => $this->request->getParam('email'),
-                        'allow_mail' => $this->request->getParam('allow_mail'),
-                        'phone' => $this->request->getParam('phone'),
-                        'level' => $this->request->getParam('level'),
-                        'status' => $this->request->getParam('status'),
-                    ];
+                    try {
+                        $this->userService->update($user, [
+                            'username' => $this->request->getParam('username'),
+                            'firstname' => $this->request->getParam('firstname'),
+                            'lastname' => $this->request->getParam('lastname'),
+                            'address' => $this->request->getParam('address'),
+                            'email' => $this->request->getParam('email'),
+                            'allow_mail' => $this->request->getParam('allow_mail'),
+                            'phone' => $this->request->getParam('phone'),
+                            'password' => $this->request->getParam('password'),
+                            'level' => $this->request->getParam('level'),
+                            'status' => $this->request->getParam('status'),
+                        ]);
+                        $user = $this->processEntityFiles($user);
 
-                    $check = \App\Domain\Filters\User::check($data);
-
-                    if ($check === true) {
-                        $item->replace($data);
-                        $item->change = new \DateTime();
-                        $this->entityManager->persist($item);
-                        $this->entityManager->flush();
-
-                        if ($this->request->getParam('save', 'exit') === 'exit') {
-                            return $this->response->withAddedHeader('Location', '/cup/user')->withStatus(301);
+                        switch (true) {
+                            case $this->request->getParam('save', 'exit') === 'exit':
+                                return $this->response->withRedirect('/cup/user');
+                            default:
+                                return $this->response->withRedirect('/cup/user/' . $user->getUuid() . '/edit');
                         }
-
-                        return $this->response->withAddedHeader('Location', $this->request->getUri()->getPath())->withStatus(301);
-                    } else {
-                        $this->addErrorFromCheck($check);
+                    } catch (UsernameAlreadyExistsException $e) {
+                        $this->addError('username', $e->getMessage());
+                    } catch (WrongEmailValueException|EmailAlreadyExistsException $e) {
+                        $this->addError('email', $e->getMessage());
+                    } catch (WrongPhoneValueException|PhoneAlreadyExistsException $e) {
+                        $this->addError('phone', $e->getMessage());
                     }
                 }
 
-                return $this->respondRender('cup/user/form.twig', ['item' => $item]);
+                return $this->respondWithTemplate('cup/user/form.twig', ['item' => $user]);
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/user')->withStatus(301);
+        return $this->response->withRedirect('/cup/user');
     }
 }

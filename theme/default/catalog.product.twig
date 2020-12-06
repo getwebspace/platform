@@ -28,14 +28,14 @@
             <div class="site-pagination">
                 <a href="/">Главная</a> /
                 <a href="/{{ parameter('catalog_address', 'catalog') }}">Каталог</a>
-                {% for breadcrumb in catalog_breadcrumb(category) %}
+                {% for breadcrumb in catalog_category_parents(category) %}
                     / <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ breadcrumb.address }}">{{ breadcrumb.meta.title ? breadcrumb.meta.title : breadcrumb.title }}</a>
                 {% endfor %}
             </div>
         </div>
     </div>
 
-    <section class="product-section" data-catalog-product>
+    <section class="product-section" data-catalog-item>
         <div class="container">
             <div class="back-link">
                 <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ category.address }}">&lt;&lt; В категорию "{{ category.title }}"</a>
@@ -43,13 +43,23 @@
             <div class="row">
                 <div class="col-lg-6">
                     <div class="product-pic-zoom">
-                        <img class="product-big-img" src="{{ product.getFiles().first().getPublicPath() }}" style="max-height: 300px; width: 100%; object-fit: contain; object-position: center center;" alt="{{ product.title }}">
+                        {% include 'mixin/img.twig' with {
+                            'src': product.hasFiles() ? product.getFiles().first().getPublicPath('middle') : '/assets/img/no_image.png',
+                            'class': 'product-big-img',
+                            'title': product.title,
+                            'alt': product.title,
+                            'style': 'display:block; height: 300px; width: 100%; object-fit: contain; object-position: center center;'
+                        } only %}
                     </div>
                     <div class="product-thumbs" tabindex="1" style="overflow: hidden; outline: none;">
                         <div class="product-thumbs-track">
                             {% for index, file in product.getFiles() %}
                                 <div class="pt {{ index == 0 ? 'active' : '' }}" data-imgbigurl="{{ file.getPublicPath() }}">
-                                    <img src="{{ file.getPublicPath('small') }}" alt="{{ product.title }} {{ index }}" />
+                                    {% include 'mixin/img.twig' with {
+                                        'src': file.getPublicPath('small'),
+                                        'title': product.title,
+                                        'alt': product.title ~ ' ' ~ index
+                                    } only %}
                                 </div>
                             {% endfor %}
                         </div>
@@ -58,18 +68,18 @@
                 <div class="col-lg-6 product-details">
                     <h2 class="p-title">{{ product.title }}</h2>
                     <h3 class="p-price">{{ product.price }}</h3>
-                    <h4 class="p-stock">Наличие: {{ product.stock >= 0 ? '<span>На складе</span>' : '<span>Отсутствует</span>' }}</h4>
+                    <h4 class="p-stock">Наличие: {{ product.stock > 0 ? '<span>На складе</span>' : '<span>Отсутствует</span>' }}</h4>
 
                     {# add class item_quantity to quantity input #}
                     <div class="quantity">
                         <p>Количество</p>
                         <div class="pro-qty">
-                            <input type="text" class="item_quantity" data-catalog-product-attr="quantity" value="1">
+                            <input type="text" class="item_quantity" data-catalog-item-attr="quantity" value="1">
                         </div>
                     </div>
 
                     {# add class item_add to btn #}
-                    <a href="javascript:;" class="site-btn" data-catalog-product-add>В корзину</a>
+                    <a href="javascript:;" class="site-btn" data-catalog-item-add>В корзину</a>
 
                     <div id="accordion" class="accordion-area">
                         <div class="panel">
@@ -104,7 +114,7 @@
                                         {% if product.field3 %}<b>{{ category.product.field_3 }}</b>: {{ product.field3|raw }}<br/>{% endif %}
                                         {% if product.field4 %}<b>{{ category.product.field_4 }}</b>: {{ product.field4|raw }}<br/>{% endif %}
                                         {% if product.field5 %}<b>{{ category.product.field_5 }}</b>: {{ product.field5|raw }}<br/>{% endif %}
-                                        {% if product.volume and product.unit %}<b>Цена за</b>: {{ product.getVolume() }}<br/>{% endif %}
+                                        {% if product.volume and product.unit %}<b>Цена за</b>: {{ product.getVolumeWithUnit() }}<br/>{% endif %}
                                     </p>
                                 </div>
                             </div>

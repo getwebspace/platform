@@ -1,30 +1,32 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Form;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
+use App\Domain\Service\Form\DataService as FormDataService;
+use App\Domain\Service\Form\FormService;
 use Psr\Container\ContainerInterface;
 
-abstract class FormAction extends Action
+abstract class FormAction extends AbstractAction
 {
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     * @var FormService
      */
-    protected $formRepository;
+    protected FormService $formService;
 
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     * @var FormDataService
      */
-    protected $dataRepository;
+    protected FormDataService $formDataService;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
 
-        $this->formRepository = $this->entityManager->getRepository(\App\Domain\Entities\Form::class);
-        $this->dataRepository = $this->entityManager->getRepository(\App\Domain\Entities\Form\Data::class);
+        $this->formService = FormService::getWithContainer($container);
+        $this->formDataService = FormDataService::getWithContainer($container);
     }
 }

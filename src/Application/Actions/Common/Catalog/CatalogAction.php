@@ -1,36 +1,46 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Common\Catalog;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
+use App\Domain\Service\Catalog\CategoryService as CatalogCatalogService;
+use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
+use App\Domain\Service\Catalog\ProductService as CatalogProductService;
+use App\Domain\Service\User\UserService;
 use Psr\Container\ContainerInterface;
 
-abstract class CatalogAction extends Action
+abstract class CatalogAction extends AbstractAction
 {
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     * @var UserService
      */
-    protected $categoryRepository;
+    protected UserService $userService;
 
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     * @var CatalogCatalogService
      */
-    protected $productRepository;
+    protected CatalogCatalogService $catalogCategoryService;
 
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     * @var CatalogProductService
      */
-    protected $orderRepository;
+    protected CatalogProductService $catalogProductService;
 
     /**
-     * @inheritDoc
+     * @var CatalogOrderService
+     */
+    protected CatalogOrderService $catalogOrderService;
+
+    /**
+     * {@inheritdoc}
      */
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
 
-        $this->categoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class);
-        $this->productRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class);
-        $this->orderRepository = $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Order::class);
+        $this->userService = UserService::getWithContainer($container);
+        $this->catalogCategoryService = CatalogCatalogService::getWithContainer($container);
+        $this->catalogProductService = CatalogProductService::getWithContainer($container);
+        $this->catalogOrderService = CatalogOrderService::getWithContainer($container);
     }
 }

@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Entities;
 
-use Alksily\Entity\Model;
+use App\Domain\AbstractEntity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
@@ -11,7 +11,7 @@ use Ramsey\Uuid\Uuid;
  * @ORM\Entity
  * @ORM\Table(name="notification")
  */
-class Notification extends Model
+class Notification extends AbstractEntity
 {
     /**
      * @var Uuid
@@ -20,34 +20,145 @@ class Notification extends Model
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    public $uuid;
+    protected Uuid $uuid;
 
     /**
-     * @var Uuid
-     * @ORM\Column(type="uuid", options={"default": NULL}, nullable=true)
+     * @return Uuid
      */
-    public $user_uuid;
+    public function getUuid(): Uuid
+    {
+        return $this->uuid;
+    }
 
     /**
-     * @var string
-     * @ORM\Column(type="string", nullable=true)
+     * @var string|Uuid
+     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
-    public $title;
+    protected $user_uuid = \Ramsey\Uuid\Uuid::NIL;
 
     /**
-     * @var string
-     * @ORM\Column(type="text", nullable=true)
+     * @param string|Uuid $uuid
+     *
+     * @return $this
      */
-    public $message;
+    public function setUserUuid($uuid)
+    {
+        $this->user_uuid = $this->getUuidByValue($uuid);
+
+        return $this;
+    }
 
     /**
+     * @return Uuid
+     */
+    public function getUserUuid(): Uuid
+    {
+        return $this->user_uuid;
+    }
+
+    /**
+     * @ORM\Column(type="string", length=255, options={"default": ""})
+     */
+    protected string $title = '';
+
+    /**
+     * @param string $title
+     *
+     * @return $this
+     */
+    public function setTitle(string $title)
+    {
+        if ($this->checkStrLenMax($title, 255)) {
+            $this->title = $title;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * @ORM\Column(type="text", options={"default": ""})
+     */
+    protected string $message = '';
+
+    /**
+     * @param string $message
+     *
+     * @return $this
+     */
+    public function setMessage(string $message)
+    {
+        $this->message = $message;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessage(): string
+    {
+        return $this->message;
+    }
+
+    /**
+     * @var array
      * @ORM\Column(type="array")
      */
-    public $params = [];
+    protected array $params = [];
+
+    /**
+     * @param array $params
+     *
+     * @return $this
+     */
+    public function setParams(array $params)
+    {
+        $this->params = $params;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParams(): array
+    {
+        return $this->params;
+    }
 
     /**
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $date;
+    protected DateTime $date;
+
+    /**
+     * @param $date
+     *
+     * @throws \Exception
+     *
+     * @return $this
+     */
+    public function setDate($date)
+    {
+        $this->date = $this->getDateTimeByValue($date);
+
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
 }

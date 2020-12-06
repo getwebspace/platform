@@ -2,22 +2,26 @@ version: "3"
 
 services:
     platform:
-        image: 0x12f/platform:dev
+        image: 0x12f/platform:dev-alpine
         environment:
             - DEBUG=1
           # - SALT=Please-Change-Me
           # - SIMPLE_ORDER_SERIAL=1
           # - SIMPLE_PHONE_CHECK=1
           # - DATABASE=mysql://user:secret@localhost/mydb
-          # - SENTRY=""
         volumes:
-            - ./config:/var/container/config:ro
+            - ./config:/var/container/config:rw
             - ./plugin:/var/container/plugin:rw
-            - ./public:/var/container/public:ro
-            - ./src:/var/container/src:ro
+            - ./public:/var/container/public:rw
+            - ./src:/var/container/src:rw
+            - ./tests:/var/container/tests:rw
             - ./theme:/var/container/theme:rw
             - ./var:/var/container/var:rw
             - ./var/upload:/var/container/public/uploads:rw
             - ./vendor:/var/container/vendor:ro
+            - ./.php_cs.dist:/var/container/.php_cs.dist:ro
+            - ./composer.json:/var/container/composer.json:rw
+            - ./composer.lock:/var/container/composer.lock:rw
+            - ./phpunit.xml:/var/container/phpunit.xml:ro
         ports:
             - 9000:80

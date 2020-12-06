@@ -1,18 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
 use DirectoryIterator;
 
-class EditorPageAction extends Action
+class EditorPageAction extends AbstractAction
 {
     protected function action(): \Slim\Http\Response
     {
         $list = collect();
         $file = null;
         $content = null;
-        $theme_dir = THEME_DIR . '/' . $this->getParameter('common_theme');
+        $theme_dir = THEME_DIR . '/' . $this->parameter('common_theme', 'default');
 
         if (($path = realpath($theme_dir)) !== false) {
             $list = $this->getCatalog($path)->sortBy('type');
@@ -45,7 +45,7 @@ class EditorPageAction extends Action
             return $this->response->withAddedHeader('Location', '/cup/editor/' . $path)->withStatus(301);
         }
 
-        return $this->respondRender('cup/editor/index.twig', ['list' => $list, 'file' => $file, 'content' => $content]);
+        return $this->respondWithTemplate('cup/editor/index.twig', ['list' => $list, 'file' => $file, 'content' => $content]);
     }
 
     private function getCatalog($path)
@@ -53,7 +53,7 @@ class EditorPageAction extends Action
         $list = collect();
 
         foreach ((new DirectoryIterator($path)) as $file) {
-            if (!$file->isDot() && !str_starts_with('.', $file->getFilename())) {
+            if (!$file->isDot() && !str_start_with($file->getFilename(), '.')) {
                 if ($file->isDir()) {
                     $list = $list->merge([['name' => $file->getFilename(), 'type' => 'dir', 'list' => $this->getCatalog($path . '/' . $file->getFilename())]]);
                 } else {

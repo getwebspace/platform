@@ -1,53 +1,59 @@
-<div id="adbd">
-    <p><b>Пожалуйста, отключите AdBlock</b></p>
-    <p>
-        AdBlock мешает корректной работе нашего сайта<br>
-        Внесите наш сайт в список исключений
-    </p>
-</div>
-<div id="wrapfabtest">
-    <div class="adBanner">&nbsp;</div>
-</div>
-<style id="adbd_styles">
-    html.adbd_active #adbd {
-        visibility: visible;
-    }
-    #adbd {
-        visibility: hidden;
-        position: fixed;
-        padding: 15px 0 5px 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 9999;
-        background-color: #333;
-    }
-    #adbd p {
-        margin: 0;
-        padding: 0 0 5px 0;
-        color: #fff;
-        text-align: center;
-    }
-    #wrapfabtest {
-        z-index: 10000;
-    }
-    #wrapfabtest .adBanner {
-        background-color: transparent;
-        height: 1px;
-        width: 1px;
-    }
-</style>
-<script id="adbd_script">
-    setTimeout(() => {
-        if ($("#wrapfabtest").height() <= 0) {
-            document.documentElement.classList.add('adbd_active');
-        } else {
-            document.documentElement.classList.add('adbd_clean');
-            document.querySelector('#adbd').remove();
-            document.querySelector('#adbd_styles').remove();
+{% htmlcompress %}
+    <div id="adbd">
+        <p><b>Пожалуйста, отключите AdBlock</b></p>
+        <p>
+            AdBlock мешает корректной работе нашего сайта<br>
+            Внесите наш сайт в список исключений
+        </p>
+    </div>
+    <div id="wrapfabtest">
+        <div class="adBanner">&nbsp;</div>
+    </div>
+    <style id="adbd_styles">
+        html.adbd_active #adbd {
+            visibility: visible;
         }
 
-        document.querySelector('#wrapfabtest').remove();
-        document.querySelector('#adbd_script').remove();
-    }, 1500);
-</script>
+        #adbd {
+            visibility: hidden;
+            position: fixed;
+            padding: 15px 0 5px 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 9999;
+            background-color: #333;
+        }
+
+        #adbd p {
+            margin: 0;
+            padding: 0 0 5px 0;
+            color: #fff;
+            text-align: center;
+        }
+
+        #wrapfabtest {
+            z-index: 10000;
+        }
+
+        #wrapfabtest .adBanner {
+            background-color: transparent;
+            height: 1px;
+            width: 1px;
+        }
+    </style>
+    <script id="adbd_script">
+        setTimeout(() => {
+            if ($("#wrapfabtest").height() <= 0) {
+                document.documentElement.classList.add('adbd_active');
+            } else {
+                document.documentElement.classList.add('adbd_clean');
+                document.querySelector('#adbd').remove();
+                document.querySelector('#adbd_styles').remove();
+            }
+
+            document.querySelector('#wrapfabtest').remove();
+            document.querySelector('#adbd_script').remove();
+        }, 1500);
+    </script>
+{% endhtmlcompress %}

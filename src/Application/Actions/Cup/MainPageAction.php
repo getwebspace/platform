@@ -1,15 +1,19 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
+use App\Domain\Entities\User;
 
-class MainPageAction extends Action
+class MainPageAction extends AbstractAction
 {
     protected function action(): \Slim\Http\Response
     {
-        return $this->respondRender('cup/layout.twig', [
-            'notepad' => $this->getParameter('notepad_' . $this->request->getAttribute('user')->username, ''),
+        /** @var User $user */
+        $user = $this->request->getAttribute('user', false);
+
+        return $this->respondWithTemplate('cup/layout.twig', [
+            'notepad' => $this->parameter('notepad_' . $user->getUsername(), ''),
             'stats' => [
                 'pages' => $this->entityManager->getRepository(\App\Domain\Entities\Page::class)->count([]),
                 'users' => $this->entityManager->getRepository(\App\Domain\Entities\User::class)->count([]),
@@ -23,7 +27,10 @@ class MainPageAction extends Action
                 'files' => $this->entityManager->getRepository(\App\Domain\Entities\File::class)->count([]),
             ],
             'properties' => [
-                'version' => ($_ENV['COMMIT_BRANCH'] ?? 'other') . ' (' . ($_ENV['COMMIT_SHA'] ?? 'specific') . ')',
+                'version' => [
+                    'branch' => ($_ENV['COMMIT_BRANCH'] ?? 'other'),
+                    'commit' => ($_ENV['COMMIT_SHA'] ?? 'specific'),
+                ],
                 'os' => @implode(' ', [php_uname('s'), php_uname('r'), php_uname('m')]),
                 'php' => PHP_VERSION,
                 'memory_limit' => ini_get('memory_limit'),

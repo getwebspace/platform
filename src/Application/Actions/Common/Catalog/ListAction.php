@@ -1,23 +1,26 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Common\Catalog;
 
-use Alksily\Entity\Collection;
+use App\Domain\Service\Catalog\Exception\CategoryNotFoundException;
+use App\Domain\Service\Catalog\Exception\ProductNotFoundException;
+use Illuminate\Support\Collection;
 use Slim\Http\Response;
 
 class ListAction extends CatalogAction
 {
     /**
-     * @return Response
      * @throws \Doctrine\DBAL\DBALException
      * @throws \App\Domain\Exceptions\HttpBadRequestException
+     *
+     * @return Response
      */
     protected function action(): \Slim\Http\Response
     {
         $params = $this->parsePath();
-        $categories = collect($this->categoryRepository->findBy([
+        $categories = $this->catalogCategoryService->read([
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
-        ]));
+        ]);
 
         // Catalog main
         if ($buf = $this->prepareMain($params, $categories)) {
@@ -25,30 +28,41 @@ class ListAction extends CatalogAction
         }
 
         // Category
-        if ($buf = $this->prepareCategory($params, $categories)) {
-            return $buf;
+        try {
+            if ($buf = $this->prepareCategory($params, $categories)) {
+                return $buf;
+            }
+        } catch (CategoryNotFoundException $e) {
+            // 404
+            return $this->respondWithTemplate('p404.twig')->withStatus(404);
         }
 
         // Product
-        if ($buf = $this->prepareProduct($params, $categories)) {
-            return $buf;
+        try {
+            if ($buf = $this->prepareProduct($params, $categories)) {
+                return $buf;
+            }
+        } catch (ProductNotFoundException $e) {
+            // 404
+            return $this->respondWithTemplate('p404.twig')->withStatus(404);
         }
 
         // 404
-        return $this->respondRender('p404.twig')->withStatus(404);
+        return $this->respondWithTemplate('p404.twig')->withStatus(404);
     }
 
     /**
      * @param array      $params
      * @param Collection $categories
      *
-     * @return Response
      * @throws \App\Domain\Exceptions\HttpBadRequestException
+     *
+     * @return Response
      */
     protected function prepareMain(array &$params, &$categories)
     {
-        if ($params['address'] == '') {
-            $pagination = $this->getParameter('catalog_category_pagination', 10);
+        if ($params['address'] === '') {
+            $pagination = $this->parameter('catalog_category_pagination', 10);
 
             $qb = $this->entityManager->createQueryBuilder();
             $query = $qb
@@ -59,28 +73,28 @@ class ListAction extends CatalogAction
 
             $products = collect($query->select('p')->getQuery()->getResult());
 
-            for($i = 1; $i <= 5; $i++) {
+            for ($i = 1; $i <= 5; $i++) {
                 if (($field = $this->request->getParam('field' . $i, false)) !== false) {
                     $params['field'][$i] = $field;
                     $query
-                        ->andWhere('p.field'.$i.' = :field'.$i.'')
-                        ->setParameter('field'.$i, str_escape($field), \Doctrine\DBAL\Types\Type::STRING);
+                        ->andWhere('p.field' . $i . ' = :field' . $i . '')
+                        ->setParameter('field' . $i, str_escape($field), \Doctrine\DBAL\Types\Type::STRING);
                 }
             }
             if (($price = $this->request->getParam('price', false)) !== false) {
-                $price = array_merge(['min' => 0, 'max' => 0], (array)$price);
+                $price = array_merge(['min' => 0, 'max' => 0], (array) $price);
 
                 if ($price['min']) {
                     $params['price']['min'] = $price['min'];
                     $query
                         ->andWhere('p.price >= :minPrice')
-                        ->setParameter('minPrice', (int)$price['min'], \Doctrine\DBAL\Types\Type::INTEGER);
+                        ->setParameter('minPrice', (int) $price['min'], \Doctrine\DBAL\Types\Type::INTEGER);
                 }
                 if ($price['max']) {
                     $params['price']['max'] = $price['max'];
                     $query
                         ->andWhere('p.price <= :maxPrice')
-                        ->setParameter('maxPrice', (int)$price['max'], \Doctrine\DBAL\Types\Type::INTEGER);
+                        ->setParameter('maxPrice', (int) $price['max'], \Doctrine\DBAL\Types\Type::INTEGER);
                 }
             }
             if (($country = $this->request->getParam('country', false)) !== false) {
@@ -96,8 +110,8 @@ class ListAction extends CatalogAction
             if (($order = $this->request->getParam('order', false)) !== false) {
                 $direction = $this->request->getParam('direction', 'asc');
 
-                if (in_array($order, ['title', 'price', 'field1', 'field2', 'field3', 'field4', 'field5'])) {
-                    $query->addOrderBy('p.' . $order, in_array(strtolower($direction), ['asc', 'desc']) ? $direction : 'ASC');
+                if (in_array($order, ['title', 'price', 'field1', 'field2', 'field3', 'field4', 'field5'], true)) {
+                    $query->addOrderBy('p.' . $order, in_array(mb_strtolower($direction), ['asc', 'desc'], true) ? $direction : 'ASC');
                 }
             } else {
                 $query->addOrderBy('p.title', 'ASC');
@@ -113,7 +127,7 @@ class ListAction extends CatalogAction
             );
             $count = $query->select('count(p)')->setMaxResults(null)->setFirstResult(null)->getQuery()->getSingleScalarResult();
 
-            return $this->respondRender($this->getParameter('catalog_category_template', 'catalog.category.twig'), [
+            return $this->respondWithTemplate($this->parameter('catalog_category_template', 'catalog.category.twig'), [
                 'categories' => $categories,
                 'products' => [
                     'all' => $products,
@@ -125,7 +139,7 @@ class ListAction extends CatalogAction
                     'count' => $count,
                     'page' => $pagination,
                     'offset' => $params['offset'],
-                ]
+                ],
             ]);
         }
 
@@ -136,18 +150,19 @@ class ListAction extends CatalogAction
      * @param array      $params
      * @param Collection $categories
      *
-     * @return Response
      * @throws \App\Domain\Exceptions\HttpBadRequestException
+     *
+     * @return Response
      */
     protected function prepareCategory(array &$params, &$categories)
     {
         /**
-         * @var \App\Domain\Entities\Catalog\Category $category
+         * @var \App\Domain\Entities\Catalog\Category
          */
         $category = $categories->firstWhere('address', $params['address']);
 
-        if (is_null($category) === false) {
-            $categoryUUIDs = \App\Domain\Entities\Catalog\Category::getChildren($categories, $category)->pluck('uuid')->all();
+        if ($category) {
+            $categoryUUIDs = $category->getNested($categories)->pluck('uuid')->all();
 
             $qb = $this->entityManager->createQueryBuilder();
             $query = $qb
@@ -160,28 +175,28 @@ class ListAction extends CatalogAction
 
             $products = collect($query->select('p')->getQuery()->getResult());
 
-            for($i = 1; $i <= 5; $i++) {
+            for ($i = 1; $i <= 5; $i++) {
                 if (($field = $this->request->getParam('field' . $i, false)) !== false) {
                     $params['field'][$i] = $field;
                     $query
-                        ->andWhere('p.field'.$i.' = :field'.$i.'')
-                        ->setParameter('field'.$i, str_escape($field), \Doctrine\DBAL\Types\Type::STRING);
+                        ->andWhere('p.field' . $i . ' = :field' . $i . '')
+                        ->setParameter('field' . $i, str_escape($field), \Doctrine\DBAL\Types\Type::STRING);
                 }
             }
             if (($price = $this->request->getParam('price', false)) !== false) {
-                $price = array_merge(['min' => 0, 'max' => 0], (array)$price);
+                $price = array_merge(['min' => 0, 'max' => 0], (array) $price);
 
                 if ($price['min']) {
                     $params['price']['min'] = $price['min'];
                     $query
                         ->andWhere('p.price >= :minPrice')
-                        ->setParameter('minPrice', (int)$price['min'], \Doctrine\DBAL\Types\Type::INTEGER);
+                        ->setParameter('minPrice', (int) $price['min'], \Doctrine\DBAL\Types\Type::INTEGER);
                 }
                 if ($price['max']) {
                     $params['price']['max'] = $price['max'];
                     $query
                         ->andWhere('p.price <= :maxPrice')
-                        ->setParameter('maxPrice', (int)$price['max'], \Doctrine\DBAL\Types\Type::INTEGER);
+                        ->setParameter('maxPrice', (int) $price['max'], \Doctrine\DBAL\Types\Type::INTEGER);
                 }
             }
             if (($country = $this->request->getParam('country', false)) !== false) {
@@ -197,8 +212,8 @@ class ListAction extends CatalogAction
             if (($order = $this->request->getParam('order', false)) !== false) {
                 $direction = $this->request->getParam('direction', 'asc');
 
-                if (in_array($order, ['title', 'price', 'field1', 'field2', 'field3', 'field4', 'field5'])) {
-                    $query->addOrderBy('p.' . $order, in_array(strtolower($direction), ['asc', 'desc']) ? $direction : 'ASC');
+                if (in_array($order, ['title', 'price', 'field1', 'field2', 'field3', 'field4', 'field5'], true)) {
+                    $query->addOrderBy('p.' . $order, in_array(mb_strtolower($direction), ['asc', 'desc'], true) ? $direction : 'ASC');
                 }
             } else {
                 $query->addOrderBy('p.title', 'ASC');
@@ -214,7 +229,7 @@ class ListAction extends CatalogAction
             );
             $count = $query->select('count(p)')->setMaxResults(null)->setFirstResult(null)->getQuery()->getSingleScalarResult();
 
-            return $this->respondRender($category->template['category'], [
+            return $this->respondWithTemplate($category->template['category'], [
                 'categories' => $categories,
                 'category' => $category,
                 'products' => [
@@ -227,7 +242,7 @@ class ListAction extends CatalogAction
                     'count' => $count,
                     'page' => $category->pagination,
                     'offset' => $params['offset'],
-                ]
+                ],
             ]);
         }
 
@@ -238,21 +253,21 @@ class ListAction extends CatalogAction
      * @param array      $params
      * @param Collection $categories
      *
-     * @return Response
      * @throws \App\Domain\Exceptions\HttpBadRequestException
+     *
+     * @return Response
      */
     protected function prepareProduct(array &$params, &$categories)
     {
-        /** @var \App\Domain\Entities\Catalog\Product $product */
-        $product = $this->productRepository->findOneBy([
+        $product = $this->catalogProductService->read([
             'address' => $params['address'],
             'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
         ]);
 
-        if (is_null($product) === false) {
-            $category = $categories->firstWhere('uuid', $product->category);
+        if ($product) {
+            $category = $categories->firstWhere('uuid', $product->getCategory());
 
-            return $this->respondRender($category->template['product'], [
+            return $this->respondWithTemplate($category->template['product'], [
                 'categories' => $categories,
                 'category' => $category,
                 'product' => $product,
@@ -268,7 +283,7 @@ class ListAction extends CatalogAction
      */
     protected function parsePath()
     {
-        $pathCatalog = $this->getParameter('catalog_address', 'catalog');
+        $pathCatalog = $this->parameter('catalog_address', 'catalog');
         $parts = explode('/', ltrim(str_replace("/{$pathCatalog}", '', $this->request->getUri()->getPath()), '/'));
         $offset = 0;
 

@@ -17,7 +17,7 @@
                 <form method="post">
                     <div class="card-header">
                         <div class="card-head-row">
-                            <div class="card-title">{{ item.uuid ? 'Редактирование пользователя ' ~ item.username : 'Добавление пользователя' }}</div>
+                            <div class="card-title">{{ item ? 'Редактирование пользователя ' ~ item.username : 'Добавление пользователя' }}</div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -39,7 +39,7 @@
                                     'type': 'text',
                                     'name': 'password','postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Оставьте пустым, если не хотите менять"></i>',
                                     'args': {
-                                        'required': item.uuid ? false : true,
+                                        'required': user ? false : true,
                                     }
                                 } %}
                             </div>
@@ -91,7 +91,7 @@
                                     'name': 'allow_mail',
                                     'args': {
                                         'option': {'yes':'Да', 'no':'Нет'},
-                                        'selected': item.allow_mail ? 'yes' : 'no'
+                                        'selected': item.getAllowMail() ? 'yes' : 'no'
                                     }
                                 } %}
                             </div>
@@ -102,6 +102,16 @@
                                     'name': 'phone',
                                     'args': {
                                         'value': item.phone,
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Адрес',
+                                    'type': 'textarea',
+                                    'name': 'address',
+                                    'args': {
+                                        'value': item.address,
                                     }
                                 } %}
                             </div>
@@ -153,7 +163,7 @@
                                 <img src="{{ item.avatar(80) }}" alt="{{ item.name('full') }}" class="avatar-img rounded-circle">
                             </div>
                             <div class="name">{{ item.username }}</div>
-                            <div class="text-muted">{{ reference('/App/Domain/Types/UserLevelType::LIST', item.level) }}</div>
+                            <div class="text-muted">{{ item.level }}</div>
                             <div class="text-muted">{{ item.uuid }}</div>
                         </div>
                     </div>
@@ -162,12 +172,15 @@
                             {% if item.firstname or item.lastname %}
                                 <li class="list-group-item">Полное имя: {{ item.getName('full') }}</li>
                             {% endif %}
+
                             <li class="list-group-item">E-Mail: {{ item.email }}</li>
                             <li class="list-group-item">Зарегистрирован: {{ item.register|df('d.m.Y H:i:s') }}</li>
                             <li class="list-group-item">Последнее редактирование: {{ item.change|df('d.m.Y H:i:s') }}</li>
+
                             {% if item.session.date.getTimestamp() %}
                                 <li class="list-group-item">Последняя активность: {{ item.session.date|df('d.m.Y H:i:s') }}</li>
                             {% endif %}
+
                             {% if item.session.ip %}
                                 <li class="list-group-item">IP: {{ item.session.ip }}</li>
                             {% endif %}

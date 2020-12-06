@@ -1,26 +1,26 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Types\Catalog;
 
-use App\Application\Types\EnumType;
+use App\Domain\AbstractEnumType;
 
-class OrderStatusType extends EnumType
+class OrderStatusType extends AbstractEnumType
 {
-    const NAME = 'CatalogOrderStatusType';
+    public const NAME = 'CatalogOrderStatusType';
 
-    const STATUS_NEW = 'new',
-          STATUS_PROCESS = 'process',
-          STATUS_PAYMENT = 'payment',
-          STATUS_READY = 'ready',
-          STATUS_COMPLETE = 'complete',
-          STATUS_CANCEL = 'cancel';
+    public const STATUS_NEW = 'new';
+    public const STATUS_PROCESS = 'process';
+    public const STATUS_PAYMENT = 'payment';
+    public const STATUS_READY = 'ready';
+    public const STATUS_COMPLETE = 'complete';
+    public const STATUS_CANCEL = 'cancel';
 
-    const LIST          = [
-        self::STATUS_NEW => 'Новый',
-        self::STATUS_PROCESS => 'В работе',
-        self::STATUS_PAYMENT => 'Ждет оплаты',
-        self::STATUS_READY => 'Готов к выдаче',
-        self::STATUS_COMPLETE => 'Завершен',
-        self::STATUS_CANCEL => 'Отменен',
+    public const LIST          = [
+        self::STATUS_NEW,
+        self::STATUS_PROCESS,
+        self::STATUS_PAYMENT,
+        self::STATUS_READY,
+        self::STATUS_COMPLETE,
+        self::STATUS_CANCEL,
     ];
 }

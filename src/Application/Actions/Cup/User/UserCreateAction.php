@@ -1,53 +1,45 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\User;
 
-use Exception;
-use Ramsey\Uuid\Uuid;
+use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
+use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
+use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 
 class UserCreateAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
         if ($this->request->isPost()) {
-            $data = [
-                'username' => $this->request->getParam('username'),
-                'password' => $this->request->getParam('password'),
-                'firstname' => $this->request->getParam('firstname'),
-                'lastname' => $this->request->getParam('lastname'),
-                'email' => $this->request->getParam('email'),
-                'allow_mail' => $this->request->getParam('allow_mail'),
-                'phone' => $this->request->getParam('phone'),
-                'level' => $this->request->getParam('level'),
-            ];
-
-            $check = \App\Domain\Filters\User::check($data);
-
-            if ($check === true) {
-                $uuid = Uuid::uuid4();
-                $session = new \App\Domain\Entities\User\Session();
-                $session->set('uuid', $uuid);
-                $this->entityManager->persist($session);
-
-                $model = new \App\Domain\Entities\User($data);
-                $model->set('uuid', $uuid);
-                $model->register = $model->change = new \DateTime();
-                $model->session = $session;
-                $this->entityManager->persist($model);
-
-                $this->entityManager->flush();
+            try {
+                $user = $this->userService->create([
+                    'username' => $this->request->getParam('username'),
+                    'password' => $this->request->getParam('password'),
+                    'firstname' => $this->request->getParam('firstname'),
+                    'lastname' => $this->request->getParam('lastname'),
+                    'address' => $this->request->getParam('address'),
+                    'email' => $this->request->getParam('email'),
+                    'allow_mail' => $this->request->getParam('allow_mail'),
+                    'phone' => $this->request->getParam('phone'),
+                    'level' => $this->request->getParam('level'),
+                ]);
+                $user = $this->processEntityFiles($user);
 
                 switch (true) {
                     case $this->request->getParam('save', 'exit') === 'exit':
-                        return $this->response->withAddedHeader('Location', '/cup/user')->withStatus(301);
+                        return $this->response->withRedirect('/cup/user');
                     default:
-                        return $this->response->withAddedHeader('Location', '/cup/user/' . $model->uuid . '/edit')->withStatus(301);
+                        return $this->response->withRedirect('/cup/user/' . $user->getUuid() . '/edit');
                 }
-            } else {
-                $this->addErrorFromCheck($check);
+            } catch (UsernameAlreadyExistsException $e) {
+                $this->addError('username', $e->getMessage());
+            } catch (EmailAlreadyExistsException $e) {
+                $this->addError('email', $e->getMessage());
+            } catch (PhoneAlreadyExistsException $e) {
+                $this->addError('phone', $e->getMessage());
             }
         }
 
-        return $this->respondRender('cup/user/form.twig');
+        return $this->respondWithTemplate('cup/user/form.twig');
     }
 }

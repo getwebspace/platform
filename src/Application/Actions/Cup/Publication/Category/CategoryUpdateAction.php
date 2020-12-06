@@ -1,56 +1,49 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Publication\Category;
 
 use App\Application\Actions\Cup\Publication\PublicationAction;
+use App\Domain\Service\Publication\Exception\AddressAlreadyExistsException;
+use App\Domain\Service\Publication\Exception\TitleAlreadyExistsException;
 
 class CategoryUpdateAction extends PublicationAction
 {
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            /** @var \App\Domain\Entities\Publication\Category $item */
-            $item = $this->categoryRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
+            $publicationCategory = $this->publicationCategoryService->read(['uuid' => $this->resolveArg('uuid')]);
 
-            if (!$item->isEmpty()) {
+            if ($publicationCategory) {
                 if ($this->request->isPost()) {
-                    $data = [
-                        'uuid' => $item->uuid,
-                        'title' => $this->request->getParam('title'),
-                        'address' => $this->request->getParam('address'),
-                        'description' => $this->request->getParam('description'),
-                        'parent' => $this->request->getParam('parent'),
-                        'public' => $this->request->getParam('public'),
-                        'children' => $this->request->getParam('children'),
-                        'pagination' => $this->request->getParam('pagination'),
-                        'sort' => $this->request->getParam('sort'),
-                        'meta' => $this->request->getParam('meta'),
-                        'template' => $this->request->getParam('template'),
-                    ];
+                    try {
+                        $publicationCategory = $this->publicationCategoryService->update($publicationCategory, [
+                            'title' => $this->request->getParam('title'),
+                            'address' => $this->request->getParam('address'),
+                            'description' => $this->request->getParam('description'),
+                            'parent' => $this->request->getParam('parent'),
+                            'public' => $this->request->getParam('public'),
+                            'children' => $this->request->getParam('children'),
+                            'pagination' => $this->request->getParam('pagination'),
+                            'sort' => $this->request->getParam('sort'),
+                            'meta' => $this->request->getParam('meta'),
+                            'template' => $this->request->getParam('template'),
+                        ]);
+                        $publicationCategory = $this->processEntityFiles($publicationCategory);
 
-                    $check = \App\Domain\Filters\Publication\Category::check($data);
-
-                    if ($check === true) {
-                        $item->replace($data);
-                        $item->removeFiles($this->handlerFileRemove());
-                        $item->addFiles($this->handlerFileUpload());
-
-                        $this->entityManager->persist($item);
-                        $this->entityManager->flush();
-
-                        if ($this->request->getParam('save', 'exit') === 'exit') {
-                            return $this->response->withAddedHeader('Location', '/cup/publication/category')->withStatus(301);
+                        switch (true) {
+                            case $this->request->getParam('save', 'exit') === 'exit':
+                                return $this->response->withAddedHeader('Location', '/cup/publication/category')->withStatus(301);
+                            default:
+                                return $this->response->withAddedHeader('Location', '/cup/publication/category/' . $publicationCategory->getUuid() . '/edit')->withStatus(301);
                         }
-
-                        return $this->response->withAddedHeader('Location', $this->request->getUri()->getPath())->withStatus(301);
-                    } else {
-                        $this->addErrorFromCheck($check);
+                    } catch (TitleAlreadyExistsException $e) {
+                        $this->addError('title', $e->getMessage());
+                    } catch (AddressAlreadyExistsException $e) {
+                        $this->addError('address', $e->getMessage());
                     }
                 }
 
-                $list = collect($this->categoryRepository->findAll());
-
-                return $this->respondRender('cup/publication/category/form.twig', ['list' => $list, 'item' => $item]);
+                return $this->respondWithTemplate('cup/publication/category/form.twig', ['list' => $this->publicationCategoryService->read(), 'item' => $publicationCategory]);
             }
         }
 

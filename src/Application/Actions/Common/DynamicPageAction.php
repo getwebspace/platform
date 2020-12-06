@@ -1,44 +1,16 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Common;
 
-use App\Application\Actions\Action;
-use Psr\Container\ContainerInterface;
+use App\Domain\AbstractAction;
+use App\Domain\Service\Page\Exception\PageNotFoundException;
+use App\Domain\Service\Page\PageService;
+use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
+use App\Domain\Service\Publication\Exception\PublicationNotFoundException;
+use App\Domain\Service\Publication\PublicationService;
 
-class DynamicPageAction extends Action
+class DynamicPageAction extends AbstractAction
 {
-    /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
-     */
-    protected $pageRepository;
-
-    /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
-     */
-    protected $publicationCategoryRepository;
-
-    /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
-     */
-    protected $publicationRepository;
-
-    /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
-     */
-    protected $fileRepository;
-
-    /**
-     * @inheritDoc
-     */
-    public function __construct(ContainerInterface $container)
-    {
-        parent::__construct($container);
-
-        $this->pageRepository = $this->entityManager->getRepository(\App\Domain\Entities\Page::class);
-        $this->publicationCategoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Publication\Category::class);
-        $this->publicationRepository = $this->entityManager->getRepository(\App\Domain\Entities\Publication::class);
-    }
-
     protected function action(): \Slim\Http\Response
     {
         $path = ltrim($this->resolveArg('args'), '/');
@@ -47,62 +19,63 @@ class DynamicPageAction extends Action
         if (preg_match('/\/(?<offset>\d)$/', $path, $matches)) {
             $offset = explode('/', $path);
             $offset = +end($offset);
-            $path = str_replace('/' . $offset , '', $path);
+            $path = str_replace('/' . $offset, '', $path);
         }
 
-        // страницы
-        if ($this->pageRepository->count(['address' => $path])) {
-            $page = $this->pageRepository->findOneBy(['address' => $path]);
+        $pageService = PageService::getWithContainer($this->container);
+        $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
+        $publicationService = PublicationService::getWithContainer($this->container);
 
-            return $this->respondRender($page->template, [
-                'page' => $page,
-            ]);
+        try {
+            // site pages
+            if (($page = $pageService->read(['address' => $path])) !== null) {
+                return $this->respondWithTemplate($page->getTemplate(), ['page' => $page]);
+            }
+        } catch (PageNotFoundException $e) {
+            // ignore
         }
 
-        $categories = collect($this->publicationCategoryRepository->findAll());
+        $categories = $publicationCategoryService->read();
 
-        // категории публикаций
-        if ($categories->firstWhere('address', $path)) {
+        // publication categories
+        if ($categories->count() && $categories->firstWhere('address', $path)) {
             $category = $categories->firstWhere('address', $path);
+            $childrenCategories = $category->getNested($categories)->pluck('uuid')->all();
 
-            $publications = collect($this->publicationRepository->findBy(
-                ['category' => \App\Domain\Entities\Publication\Category::getChildren($categories, $category)->pluck('uuid')->all()],
-                [$category->sort['by'] => $category->sort['direction']],
-                $category->pagination,
-                $category->pagination * $offset
-            ));
-
-            return $this->respondRender($category->template['list'], [
+            return $this->respondWithTemplate($category->template['list'], [
                 'categories' => $categories->where('public', true),
                 'category' => $category,
-                'publications' => $publications,
+                'publications' => $publicationService->read([
+                    ['category' => $childrenCategories],
+                    'order' => [$category->sort['by'] => $category->sort['direction']],
+                    'limit' => $category->pagination,
+                    'offset' => $category->pagination * $offset,
+                ]),
                 'pagination' => [
-                    'count' => $this->publicationRepository->count([
-                        'category' => \App\Domain\Entities\Publication\Category::getChildren($categories, $category)->pluck('uuid')->all()
-                    ]),
+                    'count' => $publicationService->count(['category' => $childrenCategories]),
                     'page' => $category->pagination,
                     'offset' => $offset,
                 ],
             ]);
         }
 
-        // публикация
-        if ($this->publicationRepository->count(['address' => $path])) {
-            $category = $categories->filter(function ($model) use ($path) {
-                return strpos($path, $model->address) !== false;
-            })->first();
+        try {
+            // publication
+            if (($publication = $publicationService->read(['address' => $path])) !== null) {
+                $category = $categories->firstWhere('uuid', $publication->getUuid()->toString());
 
-            if ($category) {
-                $publication = $this->publicationRepository->findOneBy(['address' => $path]);
-
-                return $this->respondRender($category->template['full'], [
-                    'categories' => $categories->where('public', true),
-                    'category' => $category,
-                    'publication' => $publication,
-                ]);
+                if ($category) {
+                    return $this->respondWithTemplate($category->template['full'], [
+                        'categories' => $categories->where('public', true),
+                        'category' => $category,
+                        'publication' => $publication,
+                    ]);
+                }
             }
+        } catch (PublicationNotFoundException $e) {
+            // ignore
         }
 
-        return $this->respondRender('p404.twig')->withStatus(404);
+        return $this->respondWithTemplate('p404.twig')->withStatus(404);
     }
 }

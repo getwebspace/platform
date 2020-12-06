@@ -1,8 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Entities;
 
-use Alksily\Entity\Model;
+use App\Domain\AbstractEntity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
@@ -11,7 +11,7 @@ use Ramsey\Uuid\Uuid;
  * @ORM\Entity
  * @ORM\Table(name="publication")
  */
-class Publication extends Model
+class Publication extends AbstractEntity
 {
     /**
      * @var Uuid
@@ -20,101 +20,255 @@ class Publication extends Model
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    public $uuid;
+    protected Uuid $uuid;
 
     /**
-     * @ORM\Column(type="string", length=1000, unique=true)
+     * @return Uuid
      */
-    public $address;
+    public function getUuid(): Uuid
+    {
+        return $this->uuid;
+    }
 
     /**
-     * @ORM\Column(type="string")
+     * @var string
+     * @ORM\Column(type="string", length=1000, unique=true, options={"default": ""})
      */
-    public $title;
+    protected string $address = '';
 
     /**
-     * @ORM\Column(type="uuid", options={"default": NULL})
+     * @param string $address
+     *
+     * @return $this
      */
-    public $category;
+    public function setAddress(string $address)
+    {
+        if ($this->checkStrLenMax($address, 1000)) {
+            $this->address = $this->getAddressByValue($address, $this->getTitle());
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress(): string
+    {
+        return $this->address;
+    }
+
+    /**
+     * @ORM\Column(type="string", length=255, options={"default": ""})
+     */
+    protected string $title = '';
+
+    /**
+     * @param string $title
+     *
+     * @return $this
+     */
+    public function setTitle(string $title)
+    {
+        if ($this->checkStrLenMax($title, 255)) {
+            $this->title = $title;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * @var string|uuid
+     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
+     */
+    protected $category = \Ramsey\Uuid\Uuid::NIL;
+
+    /**
+     * @param string|Uuid $uuid
+     *
+     * @return $this
+     */
+    public function setCategory($uuid)
+    {
+        $this->category = $this->getUuidByValue($uuid);
+
+        return $this;
+    }
+
+    /**
+     * @return string|uuid
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
 
     /**
      * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
-    public $date;
+    protected DateTime $date;
+
+    /**
+     * @param $date
+     *
+     * @throws \Exception
+     *
+     * @return $this
+     */
+    public function setDate($date)
+    {
+        $this->date = $this->getDateTimeByValue($date);
+
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
 
     /**
      * @var array
      * @ORM\Column(type="array")
      */
-    public $content = [
+    protected array $content = [
         'short' => '',
         'full' => '',
     ];
 
     /**
+     * @param array $data
+     *
+     * @return $this
+     */
+    public function setContent(array $data)
+    {
+        $default = [
+            'short' => '',
+            'full' => '',
+        ];
+        $data = array_merge($default, $data);
+
+        $this->content = [
+            'short' => $data['short'],
+            'full' => $data['full'],
+        ];
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getContent(): array
+    {
+        return $this->content;
+    }
+
+    /**
      * @var array
      * @ORM\Column(type="array")
      */
-    public $poll = [
-        'question' => '',
-        'answer' => '',
+    protected array $poll = [
+        // 'question' => '',
+        // 'answer' => '',
     ];
 
     /**
      * @var array
      * @ORM\Column(type="array")
      */
-    public $meta = [
+    protected array $meta = [
         'title' => '',
         'description' => '',
         'keywords' => '',
     ];
 
     /**
+     * @param array $data
+     *
+     * @return $this
+     */
+    public function setMeta(array $data)
+    {
+        $default = [
+            'title' => '',
+            'description' => '',
+            'keywords' => '',
+        ];
+        $data = array_merge($default, $data);
+
+        $this->meta = [
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'keywords' => $data['keywords'],
+        ];
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMeta(): array
+    {
+        return $this->meta;
+    }
+
+    /**
      * @var array
-     * @ORM\ManyToMany(targetEntity="App\Domain\Entities\File", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\ManyToMany(targetEntity="App\Domain\Entities\File")
      * @ORM\JoinTable(name="publication_files",
-     *  joinColumns={@ORM\JoinColumn(name="publication_uuid", referencedColumnName="uuid")},
-     *  inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")}
+     *     joinColumns={@ORM\JoinColumn(name="publication_uuid", referencedColumnName="uuid")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")}
      * )
      */
     protected $files = [];
 
-    public function addFile(\App\Domain\Entities\File $file)
+    public function addFile(\App\Domain\Entities\File $file): void
     {
         $this->files[] = $file;
     }
 
-    public function addFiles(array $files)
+    public function addFiles(array $files): void
     {
         foreach ($files as $file) {
             $this->addFile($file);
         }
     }
 
-    public function removeFile(\App\Domain\Entities\File $file)
+    public function removeFile(\App\Domain\Entities\File $file): void
     {
         foreach ($this->files as $key => $value) {
             if ($file === $value) {
                 unset($this->files[$key]);
-                $value->unlink();
             }
         }
     }
 
-    public function removeFiles(array $files)
+    public function removeFiles(array $files): void
     {
         foreach ($files as $file) {
             $this->removeFile($file);
         }
     }
 
-    public function clearFiles()
+    public function clearFiles(): void
     {
         foreach ($this->files as $key => $file) {
             unset($this->files[$key]);
-            $file->unlink();
         }
     }
 

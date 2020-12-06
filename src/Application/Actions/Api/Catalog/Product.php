@@ -1,12 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Api\Catalog;
+
+use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 
 class Product extends CatalogAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $data = [
+        $catalogProductService = CatalogProductService::getWithContainer($this->container);
+        $products = from_service_to_array($catalogProductService->read([
             'uuid' => $this->request->getParam('uuid'),
             'category' => $this->request->getParam('category'),
             'address' => $this->request->getParam('address'),
@@ -18,33 +21,7 @@ class Product extends CatalogAction
             'order' => $this->request->getParam('order', []),
             'limit' => $this->request->getParam('limit', 1000),
             'offset' => $this->request->getParam('offset', 0),
-        ];
-
-        $criteria = [];
-
-        if ($data['uuid']) {
-            $criteria['uuid'] = $this->array_criteria_uuid($data['uuid']);
-        }
-        if ($data['category']) {
-            $criteria['category'] = $this->array_criteria_uuid($data['category']);
-        }
-        if ($data['address']) {
-            $criteria['address'] = urldecode($data['address']);
-        }
-        if ($data['status']) {
-            $criteria['status'] = $data['status'];
-        }
-        if ($data['vendorcode']) {
-            $criteria['vendorcode'] = $data['vendorcode'];
-        }
-        if ($data['barcode']) {
-            $criteria['barcode'] = $data['barcode'];
-        }
-        if ($data['external_id']) {
-            $criteria['category'] = $this->array_criteria($data['external_id']);
-        }
-
-        $products = $this->productRepository->findBy($criteria, $data['order'], $data['limit'], $data['offset']);
+        ]));
 
         /** @var \App\Domain\Entities\Catalog\Product $product */
         foreach ($products as &$product) {
@@ -65,6 +42,6 @@ class Product extends CatalogAction
             unset($product['buf']);
         }
 
-        return $this->respondWithData($products);
+        return $this->respondWithJson($products);
     }
 }

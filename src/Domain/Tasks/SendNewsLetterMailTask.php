@@ -1,10 +1,13 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Tasks;
 
 use App\Application\Mail;
+use App\Domain\AbstractTask;
+use App\Domain\Service\User\SubscriberService as UserSubscriberService;
+use App\Domain\Service\User\UserService;
 
-class SendNewsLetterMailTask extends Task
+class SendNewsLetterMailTask extends AbstractTask
 {
     public function execute(array $params = []): \App\Domain\Entities\Task
     {
@@ -23,7 +26,7 @@ class SendNewsLetterMailTask extends Task
     protected function action(array $args = [])
     {
         $args = array_merge(
-            $this->getParameter(
+            $this->parameter(
                 [
                     'smtp_from', 'smtp_from_name',
                     'smtp_login', 'smtp_pass',
@@ -37,26 +40,29 @@ class SendNewsLetterMailTask extends Task
         );
 
         if ($args['smtp_host'] && $args['smtp_login'] && $args['smtp_pass']) {
-            $userRepository = $this->entityManager->getRepository(\App\Domain\Entities\User::class);
-            $subscriberRepository = $this->entityManager->getRepository(\App\Domain\Entities\User\Subscriber::class);
+            $userService = UserService::getWithContainer($this->container);
+            $userSubscriberService = UserSubscriberService::getWithContainer($this->container);
 
             // список адресов
             switch ($args['type']) {
                 case 'all':
                     $list = collect()
-                        ->merge(collect($userRepository->findBy(['allow_mail' => true]))->pluck('email')->all())
-                        ->merge(collect($subscriberRepository->findAll())->pluck('email')->all())
+                        ->merge($userService->read(['allow_mail' => true])->pluck('email')->all())
+                        ->merge($userSubscriberService->read()->pluck('email')->all())
                         ->unique();
+
                     break;
 
                 case 'subscribers':
                     $list = collect()
-                        ->merge(collect($subscriberRepository->findAll())->pluck('email')->all());
+                        ->merge($userSubscriberService->read()->pluck('email')->all());
+
                     break;
 
                 case 'users':
                     $list = collect()
-                        ->merge(collect($userRepository->findBy(['allow_mail' => true]))->pluck('email')->all());
+                        ->merge($userService->read(['allow_mail' => true])->pluck('email')->all());
+
                     break;
             }
 
@@ -64,7 +70,7 @@ class SendNewsLetterMailTask extends Task
                 $perPage = 10;
                 $count = ceil($list->count() / $perPage);
 
-                for($i = 0; $i < $count; $i++){
+                for ($i = 0; $i < $count; $i++) {
                     foreach ($list->forPage($i, $perPage) as $email) {
                         $mail = Mail::send(array_merge($args, ['to' => $email]));
 

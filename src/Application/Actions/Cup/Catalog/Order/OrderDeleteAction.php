@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Catalog\Order;
 
@@ -9,15 +9,9 @@ class OrderDeleteAction extends CatalogAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('order') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('order'))) {
-            /** @var \App\Domain\Entities\Catalog\Order $item */
-            $item = $this->orderRepository->findOneBy(['uuid' => $this->resolveArg('order')]);
-
-            if (!$item->isEmpty()) {
-                $this->entityManager->remove($item);
-                $this->entityManager->flush();
-            }
+            $this->catalogOrderService->delete($this->resolveArg('order'));
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/catalog/order')->withStatus(301);
+        return $this->response->withRedirect('/cup/catalog/order');
     }
 }

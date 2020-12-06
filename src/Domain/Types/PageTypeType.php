@@ -1,18 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Types;
 
-use App\Application\Types\EnumType;
+use App\Domain\AbstractEnumType;
 
-class PageTypeType extends EnumType
+class PageTypeType extends AbstractEnumType
 {
-    const NAME = 'PageTypeType';
+    public const NAME = 'PageTypeType';
 
-    const TYPE_HTML = 'html',
-          TYPE_TEXT = 'text';
+    public const TYPE_HTML = 'html';
+    public const TYPE_TEXT = 'text';
 
-    const LIST = [
-        self::TYPE_HTML  => 'Исходный текст HTML',
-        self::TYPE_TEXT  => 'Простой текст',
+    public const LIST = [
+        self::TYPE_HTML,
+        self::TYPE_TEXT,
     ];
 }

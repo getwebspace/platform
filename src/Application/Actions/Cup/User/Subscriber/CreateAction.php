@@ -1,28 +1,25 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\User\Subscriber;
 
 use App\Application\Actions\Cup\User\UserAction;
+use App\Domain\Exceptions\WrongEmailValueException;
+use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 
 class CreateAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
         if ($this->request->isPost()) {
-            $data = [
-                'email' => $this->request->getParam('email'),
-            ];
-
-            $check = \App\Domain\Filters\User::subscribeCreate($data);
-
-            if ($check === true) {
-                $model = new \App\Domain\Entities\User\Subscriber($data);
-
-                $this->entityManager->persist($model);
-                $this->entityManager->flush();
+            try {
+                $this->userSubscriberService->create([
+                    'email' => $this->request->getParam('email'),
+                ]);
+            } catch (WrongEmailValueException|EmailAlreadyExistsException $e) {
+                $this->addError('email', $e->getMessage());
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/user/subscriber')->withStatus(301);
+        return $this->response->withRedirect('/cup/user/subscriber');
     }
 }

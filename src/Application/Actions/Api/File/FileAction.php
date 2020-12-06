@@ -1,24 +1,25 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Api\File;
 
 use App\Application\Actions\Api\ActionApi;
+use App\Domain\Service\File\FileService;
 use Psr\Container\ContainerInterface;
 
 abstract class FileAction extends ActionApi
 {
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     * @var FileService
      */
-    protected $fileRepository;
+    protected FileService $fileService;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
 
-        $this->fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
+        $this->fileService = FileService::getWithContainer($container);
     }
 }

@@ -1,24 +1,24 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Types;
 
-use App\Application\Types\EnumType;
+use App\Domain\AbstractEnumType;
 
-class UserLevelType extends EnumType
+class UserLevelType extends AbstractEnumType
 {
-    const NAME = 'UserLevelType';
+    public const NAME = 'UserLevelType';
 
-    const LEVEL_USER    = 'user',
-          LEVEL_ADMIN   = 'admin',
-          LEVEL_DEMO    = 'demo';
+    public const LEVEL_USER = 'user';
+    public const LEVEL_ADMIN = 'admin';
+    public const LEVEL_DEMO = 'demo';
 
-    const LIST = [
-        self::LEVEL_USER  => 'Пользователь',
-        self::LEVEL_ADMIN => 'Администратор',
-        self::LEVEL_DEMO => 'Демо пользователь',
+    public const LIST = [
+        self::LEVEL_USER,
+        self::LEVEL_ADMIN,
+        self::LEVEL_DEMO,
     ];
 
-    const CUP_ACCESS = [
+    public const CUP_ACCESS = [
         self::LEVEL_ADMIN,
         self::LEVEL_DEMO,
     ];

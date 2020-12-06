@@ -1,14 +1,23 @@
-<?php
+<?php declare(strict_types=1);
 
 use Doctrine\ORM\EntityManager;
+use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 
+/**
+ * @var \Slim\App $app
+ */
+
 // doctrine
-$container[\Doctrine\ORM\EntityManager::class] = function (ContainerInterface $c) : EntityManager {
+$container[\Doctrine\ORM\EntityManager::class] = function (ContainerInterface $c): EntityManager {
     $settings = $c->get('doctrine');
 
     foreach ($settings['types'] as $type => $class) {
-        \Doctrine\DBAL\Types\Type::addType($type, $class);
+        if (!\Doctrine\DBAL\Types\Type::hasType($type)) {
+            \Doctrine\DBAL\Types\Type::addType($type, $class);
+        } else {
+            \Doctrine\DBAL\Types\Type::overrideType($type, $class);
+        }
     }
 
     $config = \Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration(
@@ -19,65 +28,46 @@ $container[\Doctrine\ORM\EntityManager::class] = function (ContainerInterface $c
         false
     );
 
-    return \Doctrine\ORM\EntityManager::create($settings['connection'], $config);
+    $em = \Doctrine\ORM\EntityManager::create($settings['connection'], $config);
+    $em->getConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+
+    return $em;
 };
 
-// wrapper around collection with params
-$container['parameter'] = function (ContainerInterface $c) {
-    \RunTracy\Helpers\Profiler\Profiler::start('parameters');
+// plugins
+$container['plugin'] = function (ContainerInterface $c) {
+    return new class {
+        /** @var Collection */
+        private Collection $plugins;
 
-    /** @var \Alksily\Entity\Collection $parameters */
-    static $parameters;
-
-    if (!$parameters) {
-        /** @var \Doctrine\ORM\EntityManager $em */
-        $em = $c->get(\Doctrine\ORM\EntityManager::class);
-
-        try {
-            /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $parametersRepository */
-            $parametersRepository = $em->getRepository(\App\Domain\Entities\Parameter::class);
-            $parameters = collect($parametersRepository->findAll());
-        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
-            $parameters = collect();
-        }
-    }
-
-    \RunTracy\Helpers\Profiler\Profiler::finish('parameters');
-
-    return new class($parameters)
-    {
-        /** @var \Alksily\Entity\Collection */
-        private static $parameters;
-
-        public final function __construct(\Alksily\Entity\Collection &$parameters)
+        final public function __construct()
         {
-            static::$parameters = &$parameters;
+            $this->plugins = collect();
         }
 
         /**
-         * Return value by key
-         * if key is array return array founded keys with values
+         * Register plugin
          *
-         * @param string|string[] $key
-         * @param mixed           $default
+         * @param \App\Domain\AbstractPlugin $plugin
          *
-         * @return array|string|mixed
+         * @return array|mixed|string
          */
-        public final function get($key = null, $default = null)
+        final public function register(\App\Domain\AbstractPlugin $plugin)
         {
-            //
-            if ($key === null) {
-                return static::$parameters->mapWithKeys(function ($item) {
-                    list($group, $key) = explode('_', $item->key, 2);
+            $class_name = get_class($plugin);
 
-                    return [$group . '[' . $key . ']' => $item];
-                });
-            }
-            if (is_string($key)) {
-                return static::$parameters->firstWhere('key', $key)->value ?? $default;
+            if (!$this->plugins->has($class_name)) {
+                $this->plugins[$class_name] = $plugin;
+
+                return true;
             }
 
-            return static::$parameters->whereIn('key', $key)->pluck('value', 'key')->all() ?? $default;
+            return false;
+        }
+
+        final public function get(): Collection
+        {
+            return $this->plugins;
         }
     };
 };
@@ -99,6 +89,7 @@ $container['view'] = function (ContainerInterface $c) {
     $view->addExtension(new \Twig_Extensions_Extension_Text());
     $view->addExtension(new \Twig\Extension\StringLoaderExtension());
     $view->addExtension(new \Phive\Twig\Extensions\Deferred\DeferredExtension());
+    $view->addExtension(new \nochso\HtmlCompressTwig\Extension());
 
     // if debug
     if ($settings['displayErrorDetails']) {
@@ -120,16 +111,6 @@ $container['twig_profile'] = function (ContainerInterface $c) {
     return new \Twig\Profiler\Profile();
 };
 
-// trademaster api
-$container['trademaster'] = function (ContainerInterface $c) {
-    return new \App\Application\TradeMaster($c);
-};
-
-// push stream
-$container['pushstream'] = function (ContainerInterface $c) {
-    return new \App\Application\PushStream($c);
-};
-
 // monolog
 $container['monolog'] = function (ContainerInterface $c) {
     $settings = $c->get('logger');
@@ -139,43 +120,4 @@ $container['monolog'] = function (ContainerInterface $c) {
     $logger->pushHandler(new Monolog\Handler\StreamHandler($settings['path'], $settings['level']));
 
     return $logger;
-};
-
-// not found
-$container['notFoundHandler'] = function (ContainerInterface $c) {
-    return function (\Slim\Http\Request $request, \Slim\Http\Response $response) use ($c) {
-        /** @var \Slim\Views\Twig $renderer */
-        $renderer = $c->get('view');
-        $renderer->getLoader()->addPath(THEME_DIR . '/' . $c->get('parameter')->get('common_theme', 'default'));
-        $response->getBody()->write($renderer->fetch('p404.twig'));
-        $response->withStatus(404);
-
-        return $response;
-    };
-};
-
-// not allowed
-$container['notAllowedHandler'] = function (ContainerInterface $c) {
-    return function (\Slim\Http\Request $request, \Slim\Http\Response $response, $methods) use ($c) {
-        /** @var \Slim\Views\Twig $renderer */
-        $renderer = $c->get('view');
-        $renderer->getLoader()->addPath(THEME_DIR . '/' . $c->get('parameter')->get('common_theme', 'default'));
-        $response->getBody()->write($renderer->fetch('p405.twig', ['methods' => $methods]));
-        $response->withStatus(405);
-
-        return $response;
-    };
-};
-
-// error
-$container['errorHandler'] = function (ContainerInterface $c) {
-    return function (\Slim\Http\Request $request, \Slim\Http\Response $response, $exception) use ($c) {
-        /** @var \Slim\Views\Twig $renderer */
-        $renderer = $c->get('view');
-        $renderer->getLoader()->addPath(THEME_DIR . '/' . $c->get('parameter')->get('common_theme', 'default'));
-        $response->getBody()->write($renderer->fetch('p500.twig', ['exception' => $exception]));
-        $response->withStatus(500);
-
-        return $response;
-    };
 };

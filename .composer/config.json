@@ -1,9 +1,0 @@
-{
-    "config": {
-        "prestissimo": {
-            "maxConnections": 10,
-            "minConnections": 3,
-            "pipeline": true
-        }
-    }
-}

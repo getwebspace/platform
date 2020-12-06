@@ -1,99 +1,52 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Common\User;
 
-use DateTime;
-use Exception;
+use App\Domain\Service\User\Exception\UserNotFoundException;
+use App\Domain\Service\User\Exception\WrongPasswordException;
 
 class UserLoginAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $identifier = $this->getParameter('user_login_type', 'username');
+        $identifier = $this->parameter('user_login_type', 'username');
 
         if ($this->request->isPost()) {
             $data = [
+                'phone' => $this->request->getParam('phone'),
                 'email' => $this->request->getParam('email'),
                 'username' => $this->request->getParam('username'),
                 'password' => $this->request->getParam('password'),
+
                 'agent' => $this->request->getServerParam('HTTP_USER_AGENT'),
                 'ip' => $this->request->getServerParam('REMOTE_ADDR'),
 
                 'redirect' => $this->request->getParam('redirect'),
             ];
 
-            $check = \App\Domain\Filters\User::login($data);
+            if ($this->isRecaptchaChecked()) {
+                try {
+                    $user = $this->userService->read([
+                        'identifier' => $data[$identifier],
+                        'password' => $data['password'],
+                        'agent' => $data['agent'],
+                        'ip' => $data['ip'],
+                    ]);
 
-            if ($check === true) {
-                if ($this->isRecaptchaChecked()) {
-                    /** @var \App\Domain\Entities\User $user */
-                    $user = $this->userRepository->findOneBy([$identifier => $data[$identifier]]);
+                    setcookie('uuid', $user->getUuid()->toString(), time() + \App\Domain\References\Date::YEAR, '/');
+                    setcookie('session', $user->getSession()->getHash(), time() + \App\Domain\References\Date::YEAR, '/');
 
-                    if ($user) {
-                        if (crypta_hash_check($data['password'], $user->password)) {
-                            try {
-                                $session = $user->session->replace([
-                                    'uuid' => $user->uuid,
-                                    'agent' => $data['agent'],
-                                    'ip' => $data['ip'],
-                                    'date' => new DateTime(),
-                                ]);
-                                $this->entityManager->flush();
-
-                                $hash = $this->session($session);
-
-                                setcookie('uuid', $user->uuid, time() + \App\Domain\References\Date::YEAR, '/');
-                                setcookie('session', $hash, time() + \App\Domain\References\Date::YEAR, '/');
-
-                                return $this->response->withAddedHeader('Location', $data['redirect'] ? $data['redirect'] : '/user/profile')->withStatus(301);
-                            } catch (Exception $e) {
-                                $this->logger->warning('/login failure', $data);
-                            }
-                        } else {
-                            $this->addError('password', \App\Domain\References\Errors\User::WRONG_PASSWORD);
-                        }
-                    } else {
-                        $this->addError($identifier, \App\Domain\References\Errors\User::NOT_FOUND);
-                    }
-                } else {
-                    $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
+                    return $this->response->withRedirect($data['redirect'] ? $data['redirect'] : '/user/profile');
+                } catch (UserNotFoundException $exception) {
+                    $this->addError($identifier, $exception->getMessage());
+                } catch (WrongPasswordException $exception) {
+                    $this->addError('password', $exception->getMessage());
                 }
-            } else {
-                $this->addErrorFromCheck($check);
             }
+
+            $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
         }
 
-        return $this->respondRender($this->getParameter('user_login_template', 'user.login.twig'), ['identifier' => $identifier]);
-    }
-
-    /**
-     * Возвращает ключ сессии
-     *
-     * @param \App\Domain\Entities\User\Session $model
-     *
-     * @return string
-     * @throws \Exception
-     */
-    protected function session(\App\Domain\Entities\User\Session $model)
-    {
-        if (!$model->isEmpty()) {
-            $default = [
-                'uuid' => null,
-                'ip' => null,
-                'agent' => null,
-                'date' => new DateTime(),
-            ];
-            $data = array_merge($default, $model->toArray());
-
-            return sha1(
-                'salt:' . ($this->container->get('secret')['salt'] ?? '') . ';' .
-                'uuid:' . $data['uuid'] . ';' .
-                'ip:' . md5($data['ip']) . ';' .
-                'agent:' . md5($data['agent']) . ';' .
-                'date:' . $data['date']->getTimestamp()
-            );
-        }
-
-        return null;
+        return $this->respondWithTemplate($this->parameter('user_login_template', 'user.login.twig'), ['identifier' => $identifier]);
     }
 }

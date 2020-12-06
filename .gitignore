@@ -5,10 +5,12 @@
 /theme/*
 !/theme/default
 
+/plugin/*
+!/plugin/installed.php
 /vendor/*
 !/vendor/.gitkeep
-/var/db.sqlite
-/var/database.sqlite
+/var/*.sqlite
+/var/*.sqlite-journal
 /var/cache/*
 !/var/cache/.gitkeep
 /var/log/*
@@ -17,3 +19,5 @@
 !/var/upload/.gitkeep
 /var/xml/*.xml
 !/var/xml/.gitkeep
+/var/installer.lock
+/var/worker.pid

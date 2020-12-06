@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\File\Image;
 
@@ -13,19 +13,16 @@ class DeleteAction extends FileAction
         if ($src !== false) {
             $info = pathinfo($src);
 
-            /** @var \App\Domain\Entities\File $file */
-            $file = $this->fileRepository->findOneBy([
+            $file = $this->fileService->read([
                 'name' => str_escape($info['filename']),
                 'ext' => str_escape($info['extension']),
             ]);
 
             if ($file) {
-                $file->unlink();
-                $this->entityManager->remove($file);
-                $this->entityManager->flush();
+                $this->fileService->delete($file);
             }
         }
 
-        return $this->respondWithData(['status' => 'ok']);
+        return $this->respondWithJson(['status' => 'ok']);
     }
 }

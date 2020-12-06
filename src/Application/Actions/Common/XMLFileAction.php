@@ -1,16 +1,16 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Common;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
 
-class XMLFileAction extends Action
+class XMLFileAction extends AbstractAction
 {
     protected function action(): \Slim\Http\Response
     {
         $name = $this->resolveArg('name');
 
-        if ($name && in_array($name, ['yml', 'gmf', 'sitemap'])) {
+        if ($name && in_array($name, ['yml', 'gmf', 'sitemap'], true)) {
             $path = VAR_DIR . '/xml/' . $name . '.xml';
 
             if (file_exists($path)) {
@@ -20,6 +20,6 @@ class XMLFileAction extends Action
             }
         }
 
-        return $this->respondRender('p404.twig')->withStatus(404);
+        return $this->respondWithTemplate('p404.twig')->withStatus(404);
     }
 }

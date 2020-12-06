@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Catalog\Product;
 
@@ -11,37 +11,32 @@ class ProductListAction extends CatalogAction
         $category = null;
 
         if (!empty($this->args['category'])) {
-            if (\Ramsey\Uuid\Uuid::isValid($this->resolveArg('category'))) {
+            if (
+                $this->resolveArg('category') !== \Ramsey\Uuid\Uuid::NIL &&
+                \Ramsey\Uuid\Uuid::isValid($this->resolveArg('category'))
+            ) {
                 /** @var \App\Domain\Entities\Catalog\Category $category */
-                $category = $this->categoryRepository->findOneBy([
+                $category = $this->catalogCategoryService->read([
                     'uuid' => $this->resolveArg('category'),
                     'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
                 ]);
             } else {
-                return $this->response->withAddedHeader('Location', '/cup/shop/product')->withStatus(301);
+                return $this->response->withRedirect('/cup/catalog/category');
             }
         }
 
-        $categories = collect($this->categoryRepository->findAll());
+        $categories = $this->catalogCategoryService->read([
+            'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+        ]);
+        $products = $this->catalogProductService->read([
+            'category' => $category ? $category->getNested($categories)->pluck('uuid')->all() : null,
+            'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+        ]);
 
-        switch (is_null($category)) {
-            case true:
-                $products = collect($this->productRepository->findBy([
-                    'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
-                ]));
-                break;
-            default:
-                $products = collect($this->productRepository->findBy([
-                    'category' => \App\Domain\Entities\Catalog\Category::getChildren($categories, $category)->pluck('uuid')->all(),
-                    'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
-                ]));
-                break;
-        }
-
-        return $this->respondRender('cup/catalog/product/index.twig', [
+        return $this->respondWithTemplate('cup/catalog/product/index.twig', [
             'categories' => $categories,
             'category' => $category,
-            'products' => $products
+            'products' => $products,
         ]);
     }
 }

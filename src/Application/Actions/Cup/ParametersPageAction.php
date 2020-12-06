@@ -1,15 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
+use App\Domain\Service\Parameter\ParameterService;
 
-class ParametersPageAction extends Action
+class ParametersPageAction extends AbstractAction
 {
     protected function action(): \Slim\Http\Response
     {
+        $parameters = $this->parameter();
+
         if ($this->request->isPost()) {
-            $models = $this->getParameter();
+            $parameterService = ParameterService::getWithContainer($this->container);
 
             foreach ($this->request->getParsedBody() as $group => $params) {
                 foreach ($params as $key => $value) {
@@ -18,23 +21,17 @@ class ParametersPageAction extends Action
                         'value' => $value,
                     ];
 
-                    $check = \App\Domain\Filters\Parameter::check($data);
-
-                    if ($check === true) {
-                        $model = $models->firstWhere('key', $data['key']) ?? new \App\Domain\Entities\Parameter();
-                        $model->replace($data);
-                        $this->entityManager->persist($model);
+                    if (($parameter = $parameters->firstWhere('key', $data['key'])) !== null) {
+                        $parameterService->update($parameter, $data);
                     } else {
-                        \Alksily\Support\Form::$globalError[$group . '[' . $key . ']'] = \App\Domain\References\Errors\Parameter::WRONG_VALUE;
+                        $parameterService->create($data);
                     }
                 }
             }
 
-            $this->entityManager->flush();
-
-            return $this->response->withAddedHeader('Location', $this->request->getQueryParam('return', '/cup/parameters'))->withStatus(301);
+            return $this->response->withRedirect($this->request->getQueryParam('return', '/cup/parameters'));
         }
 
-        return $this->respondRender('cup/parameters/index.twig', ['parameter' => $this->getParameter()]);
+        return $this->respondWithTemplate('cup/parameters/index.twig', ['parameter' => $parameters]);
     }
 }

@@ -1,47 +1,53 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Common\User;
 
-use Ramsey\Uuid\Uuid;
+use App\Domain\Exceptions\WrongEmailValueException;
+use App\Domain\Exceptions\WrongPhoneValueException;
+use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
+use App\Domain\Service\User\Exception\MissingUniqueValueException;
+use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
+use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 
 class UserRegisterAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
+        $identifier = $this->parameter('user_login_type', 'username');
+
         if ($this->request->isPost()) {
             $data = [
+                'phone' => $this->request->getParam('phone'),
                 'email' => $this->request->getParam('email'),
                 'username' => $this->request->getParam('username'),
                 'password' => $this->request->getParam('password'),
-                'password_again' => $this->request->getParam('password_again')
+                'password_again' => $this->request->getParam('password_again'),
             ];
 
-            $check = \App\Domain\Filters\User::check($data);
+            if ($this->isRecaptchaChecked()) {
+                if ($data['password'] === $data['password_again']) {
+                    try {
+                        $this->userService->create([
+                            $identifier => $data[$identifier],
+                            'password' => $data['password'],
+                        ]);
 
-            if ($check === true) {
-                if ($this->isRecaptchaChecked()) {
-                    $uuid = Uuid::uuid4();
-                    $session = new \App\Domain\Entities\User\Session();
-                    $session->set('uuid', $uuid);
-                    $this->entityManager->persist($session);
-
-                    $model = new \App\Domain\Entities\User($data);
-                    $model->set('uuid', $uuid);
-                    $model->register = $model->change = new \DateTime();
-                    $model->session = $session;
-                    $this->entityManager->persist($model);
-
-                    $this->entityManager->flush();
-
-                    return $this->response->withAddedHeader('Location', '/user/login')->withStatus(301);
-                } else {
-                    $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
+                        return $this->response->withRedirect('/user/login');
+                    } catch (MissingUniqueValueException $e) {
+                        $this->addError($identifier, $e->getMessage());
+                    } catch (UsernameAlreadyExistsException $e) {
+                        $this->addError('username', $e->getMessage());
+                    } catch (WrongEmailValueException|EmailAlreadyExistsException $e) {
+                        $this->addError('email', $e->getMessage());
+                    } catch (WrongPhoneValueException|PhoneAlreadyExistsException $exception) {
+                        $this->addError('phone', $exception->getMessage());
+                    }
                 }
-            } else {
-                $this->addErrorFromCheck($check);
             }
+
+            $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
         }
 
-        return $this->respondRender($this->getParameter('user_register_template', 'user.register.twig'));
+        return $this->respondWithTemplate($this->parameter('user_register_template', 'user.register.twig'));
     }
 }

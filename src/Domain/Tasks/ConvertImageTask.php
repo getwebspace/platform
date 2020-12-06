@@ -1,78 +1,90 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Tasks;
 
-use Alksily\Support\Str;
+use App\Domain\AbstractTask;
+use App\Domain\Service\File\Exception\FileNotFoundException;
+use App\Domain\Service\File\FileService;
 
-class ConvertImageTask extends Task
+class ConvertImageTask extends AbstractTask
 {
+    public const TITLE = 'Обработка изображений';
+
     public function execute(array $params = []): \App\Domain\Entities\Task
     {
         $default = [
-            'uuid' => \Ramsey\Uuid\Uuid::NIL,
+            'uuid' => [\Ramsey\Uuid\Uuid::NIL],
         ];
         $params = array_merge($default, $params);
 
         return parent::execute($params);
     }
 
-    protected function action(array $args = [])
+    protected function action(array $args = []): void
     {
-        /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $fileRepository */
-        $fileRepository = $this->entityManager->getRepository(\App\Domain\Entities\File::class);
+        $fileService = FileService::getWithContainer($this->container);
 
-        /** @var \App\Domain\Entities\File $file */
-        $file = $fileRepository->findOneBy(['uuid' => $args['uuid']]);
+        foreach ((array) $args['uuid'] as $index => $uuid) {
+            try {
+                $file = $fileService->read(['uuid' => $uuid]);
 
-        if ($file && Str::start('image/', $file->type)) {
-            $folder = $file->getDir('');
-            $original = $file->getInternalPath();
+                if (str_start_with($file->getType(), 'image/')) {
+                    $folder = $file->getDir('');
+                    $original = $file->getInternalPath();
 
-            $command = $this->getParameter('image_convert_bin', '/usr/bin/convert');
-            $params = [
-                '-sampling-factor 4:2:0',
-                '-strip',
-                '-quality 75%',
-                '-depth 8',
-                '-define jpeg:extent=300k',
-                '-interlace JPEG',
-                '-colorspace RGB',
-                '-background white',
-                '-alpha remove',
-                '-alpha off',
-                '-set comment "Converted in WebSpace Engine CMS"',
-            ];
+                    $command = $this->parameter('image_convert_bin', '/usr/bin/convert');
+                    $params = [
+                        '-quality 70%',
+                        '-filter Lanczos',
+                        '-gaussian-blur 0.05',
+                        '-sampling-factor 4:2:0',
+                        '-colorspace RGB',
+                        '-interlace Plane',
+                        '-strip',
+                        '-depth 8',
+                        '-в',
+                        '-background white',
+                        '-alpha remove',
+                        '-alpha off',
+                        '-set comment "Converted in WebSpace Engine CMS"',
+                    ];
 
-            foreach (
-                [
-                    'middle' => $this->getParameter('image_convert_size_middle', 450),
-                    'small' => $this->getParameter('image_convert_size_small', 200),
-                ] as $size => $pixels
-            ) {
-                if ($pixels > 0) {
-                    $path = $folder . '/' . $size;
+                    foreach (
+                        [
+                            'middle' => $this->parameter('image_convert_size_middle', 450),
+                            'small' => $this->parameter('image_convert_size_small', 200),
+                        ] as $size => $pixels
+                    ) {
+                        if ($pixels > 0) {
+                            $path = $folder . '/' . $size;
 
-                    if (!file_exists($path)) {
-                        mkdir($path, 0777, true);
+                            if (!file_exists($path)) {
+                                mkdir($path, 0777, true);
+                            }
+
+                            $buf = array_merge($params, ['-resize x' . $pixels . '\>']);
+                            @exec($command . " '" . $original . "' " . implode(' ', $buf) . " '" . $path . '/' . $file->getName() . ".jpg'");
+                            $this->logger->info('Task: convert image', ['size' => $size, 'salt' => $file->getSalt(), 'params' => $buf]);
+                        }
                     }
 
-                    $buf = array_merge($params, ['-resize x' . $pixels . '\>']);
-                    @exec($command . " '" . $original . "' " . implode(' ', $buf) . " '" . $path . "/" . $file->name . ".jpg'");
-                    $this->logger->info('Task: convert image', ['size' => $size, 'salt' => $file->salt, 'params' => $buf]);
+                    @exec($command . " '" . $original . "' " . implode(' ', $params) . " '" . $folder . '/' . $file->getName() . ".jpg'");
+                    $this->logger->info('Task: convert image', ['size' => 'original', 'salt' => $file->getSalt(), 'params' => $params]);
+
+                    // set file type and ext
+                    if ($file->getExt() !== 'jpg') {
+                        $file->setExt('jpg');
+                        $file->setType('image/jpeg; charset=binary');
+                    }
+
+                    // update file size
+                    $file->setSize(+filesize($folder . '/' . $file->getName() . '.jpg'));
                 }
+            } catch (FileNotFoundException $e) {
+                $this->logger->alert('Task: file not found');
             }
 
-            @exec($command . " '" . $original . "' " . implode(' ', $params) . " '" . $folder . "/" . $file->name . ".jpg'");
-            $this->logger->info('Task: convert image', ['size' => 'original', 'salt' => $file->salt, 'params' => $params]);
-
-            // установка расширения файла и типа
-            if ($file->ext !== 'jpg') {
-                $file->ext = 'jpg';
-                $file->type = 'image/jpeg; charset=binary';
-            }
-
-            // обновление размера файла
-            $file->size = filesize($folder . '/' . $file->name . '.jpg');
+            $this->setProgress($index, count($args['uuid']));
         }
 
         $this->setStatusDone();

@@ -1,8 +1,11 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Common\User;
 
-use Exception;
+use App\Domain\Exceptions\WrongEmailValueException;
+use App\Domain\Exceptions\WrongPhoneValueException;
+use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
+use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 
 class UserProfileAction extends UserAction
 {
@@ -12,28 +15,27 @@ class UserProfileAction extends UserAction
         $user = $this->request->getAttribute('user', false);
 
         if ($user && $this->request->isPost()) {
-            $data = [
-                'uuid' => $user->uuid,
-                'firstname' => $this->request->getParam('firstname'),
-                'lastname' => $this->request->getParam('lastname'),
-                'email' => $this->request->getParam('email'),
-                'phone' => $this->request->getParam('phone'),
-                'password' => $this->request->getParam('password'),
-            ];
+            try {
+                $this->userService->update(
+                    $user,
+                    [
+                        'firstname' => $this->request->getParam('firstname'),
+                        'lastname' => $this->request->getParam('lastname'),
+                        'address' => $this->request->getParam('address'),
+                        'email' => $this->request->getParam('email'),
+                        'phone' => $this->request->getParam('phone'),
+                        'password' => $this->request->getParam('password'),
+                    ]
+                );
 
-            $check = \App\Domain\Filters\User::check($data);
-
-            if ($check === true) {
-                $user->replace($data);
-                $user->change = new \DateTime();
-                $this->entityManager->flush();
-
-                return $this->response->withAddedHeader('Location', '/user/profile')->withStatus(301);
-            } else {
-                $this->addErrorFromCheck($check);
+                return $this->response->withRedirect('/user/profile');
+            } catch (WrongEmailValueException|EmailAlreadyExistsException $e) {
+                $this->addError('email', $e->getMessage());
+            } catch (WrongPhoneValueException|PhoneAlreadyExistsException $e) {
+                $this->addError('phone', $e->getMessage());
             }
         }
 
-        return $this->respondRender($this->getParameter('user_profile_template', 'user.profile.twig'));
+        return $this->respondWithTemplate($this->parameter('user_profile_template', 'user.profile.twig'));
     }
 }

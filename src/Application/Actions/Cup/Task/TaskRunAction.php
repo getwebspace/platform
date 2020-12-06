@@ -1,30 +1,29 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Task;
 
-use Alksily\Support\Str;
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
 
-class TaskRunAction extends Action
+class TaskRunAction extends AbstractAction
 {
     protected function action(): \Slim\Http\Response
     {
         if ($this->request->isPost()) {
             if (
                 ($name = $this->request->getParam('task', null)) !== null &&
-                Str::start('App\Domain\Tasks', $name) && class_exists($name)
+                class_exists($name)
             ) {
-                /** @var \App\Domain\Tasks\Task $task */
+                /** @var \App\Domain\AbstractTask $task */
                 $task = new $name($this->container);
                 $task->execute($this->request->getParam('params', []));
-                $this->entityManager->flush();
+
+                // run worker
+                \App\Domain\AbstractTask::worker();
+
                 $this->response = $this->response->withAddedHeader('Location', '/cup')->withStatus(301);
             }
-
-            // run worker
-            \App\Domain\Tasks\Task::worker();
         }
 
-        return $this->respondWithData(['run' => time()]);
+        return $this->respondWithJson(['run' => time()]);
     }
 }

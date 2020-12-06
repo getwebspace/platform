@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Page;
 
@@ -7,15 +7,9 @@ class PageDeleteAction extends PageAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            /** @var \App\Domain\Entities\Page $item */
-            $item = $this->pageRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
-
-            if (!$item->isEmpty()) {
-                $this->entityManager->remove($item);
-                $this->entityManager->flush();
-            }
+            $this->pageService->delete($this->resolveArg('uuid'));
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/page')->withStatus(301);
+        return $this->response->withRedirect('/cup/page');
     }
 }

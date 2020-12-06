@@ -1,8 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Common\File;
-
-use Slim\Http\UploadedFile;
 
 class FileUploadAction extends FileAction
 {
@@ -12,30 +10,33 @@ class FileUploadAction extends FileAction
 
         $models = [];
 
-        if ($this->getParameter('file_is_enabled', 'no') === 'yes') {
+        if ($this->parameter('file_is_enabled', 'no') === 'yes') {
             foreach ($this->request->getUploadedFiles() as $field => $files) {
-                if (!is_array($files)) $files = [$files];
+                if (!is_array($files)) {
+                    $files = [$files]; // allow upload one file
+                }
 
-                /* @var UploadedFile $file */
-                foreach ($files as $file) {
-                    if (!$file->getError()) {
-                        if (($model = \App\Domain\Entities\File::getFromPath($file->file, $file->getClientFilename())) !== null) {
-                            $this->entityManager->persist($model);
+                $uuids = [];
+                foreach ($files as $el) {
+                    if (!$el->getError()) {
+                        $model = $this->fileService->createFromPath($el->file, $el->getClientFilename());
 
-                            // is image
-                            if (\Alksily\Support\Str::start('image/', $model->type)) {
-                                // add task convert
-                                $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
-                                $task->execute(['uuid' => $model->uuid]);
-
-                                // run worker
-                                \App\Domain\Tasks\Task::worker();
-                            }
-
-                            // save model
-                            $models[$field][] = $model;
+                        // is image
+                        if (str_start_with($model->getType(), 'image/')) {
+                            $uuids[] = $model->getUuid();
                         }
+
+                        $models[$field][] = $model;
                     }
+                }
+
+                if ($uuids) {
+                    // add task convert
+                    $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
+                    $task->execute(['uuid' => $uuids]);
+
+                    // run worker
+                    \App\Domain\AbstractTask::worker();
                 }
             }
 
@@ -46,7 +47,7 @@ class FileUploadAction extends FileAction
             $file = array_shift($models)[0] ?? false;
 
             if ($file) {
-                /** @var \App\Domain\Entities\File $file */
+                // @var \App\Domain\Entities\File $file
                 return $this->respondWithJson(['link' => $file->getPublicPath()]);
             }
         }

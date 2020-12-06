@@ -1,24 +1,25 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Common\User;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
+use App\Domain\Service\User\UserService;
 use Psr\Container\ContainerInterface;
 
-abstract class UserAction extends Action
+abstract class UserAction extends AbstractAction
 {
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     * @var UserService
      */
-    protected $userRepository;
+    protected UserService $userService;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
 
-        $this->userRepository = $this->entityManager->getRepository(\App\Domain\Entities\User::class);
+        $this->userService = UserService::getWithContainer($container);
     }
 }

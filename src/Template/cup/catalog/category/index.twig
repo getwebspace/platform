@@ -21,7 +21,7 @@
                                 <i class="fas fa-arrow-left"></i>
                             </a>
                         {% endif %}
-                        <h4 class="card-title">Список категорий {{ category ? 'вложенный в ' ~ category.title : '' }} ({{ categories.where('parent', category ? category.uuid : '00000000-0000-0000-0000-000000000000').count() }})</h4>
+                        <h4 class="card-title">Список категорий {{ category ? 'вложенный в ' ~ category.title : '' }} ({{ categories.where('parent', category ? category.uuid : NIL).count() }})</h4>
                         <a href="/cup/catalog/category/add{{ category ? '?parent=' ~ category.uuid : '' }}" class="btn btn-primary btn-round ml-auto">
                             <i class="fa fa-plus"></i>
                             Добавить категорию
@@ -33,9 +33,9 @@
                         <table data-table class="display table table-striped table-hover" >
                             <thead>
                                 <tr>
-                                    <th width="3%">#</th>
+                                    <th class="d-none">#</th>
                                     <th width="20%">Наименование</th>
-                                    <th width="15%">Основная категория</th>
+                                    <th width="15%">Родительская категория</th>
                                     <th>{{ fields.catalog_category_field_1 ?? 'Поле 1' }}</th>
                                     <th>{{ fields.catalog_category_field_2 ?? 'Поле 2' }}</th>
                                     <th>{{ fields.catalog_category_field_3 ?? 'Поле 3' }}</th>
@@ -43,9 +43,9 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for category in categories.where('parent', category ? category.uuid : '00000000-0000-0000-0000-000000000000') %}
+                                {% for category in categories.where('parent', category ? category.uuid : NIL) %}
                                     <tr>
-                                        <td class="text-center">{{ category.order }}</td>
+                                        <td class="text-center d-none">{{ category.order }}</td>
                                         <td>
                                             <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ category.address }}" target="_blank">
                                                 {{ category.title }}
@@ -67,6 +67,9 @@
                                                     </li>
                                                     <li>
                                                         <a href="/cup/catalog/product/{{ category.uuid }}" class="btn btn-link"><i class="fas fa-eye"></i> Номенклатура</a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="/cup/catalog/data/export?category={{ category.uuid }}" class="btn btn-link"><i class="fas fa-file-export"></i> Экспорт продуктов</a>
                                                     </li>
                                                     <li>
                                                         <a href="/cup/catalog/category/{{ category.uuid }}/edit" class="btn btn-link"><i class="fas fa-edit"></i> Изменить</a>

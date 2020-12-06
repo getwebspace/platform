@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Form\Data;
 
@@ -9,19 +9,18 @@ class DataListAction extends FormAction
     protected function action(): \Slim\Http\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            /** @var \App\Domain\Entities\Form $item */
-            $item = $this->formRepository->findOneBy(['uuid' => $this->resolveArg('uuid')]);
+            $form = $this->formService->read(['uuid' => $this->resolveArg('uuid')]);
 
-            if (!$item->isEmpty()) {
-                $list = collect($this->dataRepository->findBy(['form_uuid' => $item->uuid]));
+            if ($form) {
+                $list = $this->formDataService->read(['form_uuid' => $form->getUuid()]);
 
-                return $this->respondRender('cup/form/view/list.twig', [
-                    'form' => $item,
+                return $this->respondWithTemplate('cup/form/view/list.twig', [
+                    'form' => $form,
                     'list' => $list,
                 ]);
             }
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/form')->withStatus(301);
+        return $this->response->withRedirect('/cup/form');
     }
 }

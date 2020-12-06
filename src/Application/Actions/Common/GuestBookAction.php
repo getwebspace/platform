@@ -1,103 +1,75 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Common;
 
-use App\Application\Actions\Action;
-use DateTime;
-use Psr\Container\ContainerInterface;
+use App\Domain\AbstractAction;
+use App\Domain\Entities\GuestBook;
+use App\Domain\Service\GuestBook\Exception\MissingEmailValueException;
+use App\Domain\Service\GuestBook\Exception\MissingMessageValueException;
+use App\Domain\Service\GuestBook\Exception\MissingNameValueException;
+use App\Domain\Service\GuestBook\GuestBookService;
 
-class GuestBookAction extends Action
+class GuestBookAction extends AbstractAction
 {
-    /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
-     */
-    protected $gbookRepository;
-
-    /**
-     * @inheritDoc
-     */
-    public function __construct(ContainerInterface $container)
-    {
-        parent::__construct($container);
-
-        $this->gbookRepository = $this->entityManager->getRepository(\App\Domain\Entities\GuestBook::class);
-    }
-
     protected function action(): \Slim\Http\Response
     {
+        $guestBookService = GuestBookService::getWithContainer($this->container);
+
         if ($this->request->isPost()) {
-            $data = [
-                'name' => $this->request->getParam('name'),
-                'email' => $this->request->getParam('email'),
-                'message' => $this->request->getParam('message'),
-            ];
-
-            $check = \App\Domain\Filters\GuestBook::check($data);
-
             if ($this->isRecaptchaChecked()) {
-                if ($check === true) {
-                    $model = new \App\Domain\Entities\GuestBook($data);
-                    $model->status = \App\Domain\Types\GuestBookStatusType::STATUS_MODERATE;
-                    $this->entityManager->persist($model);
-
-                    // создаем уведомление
-                    $notify = new \App\Domain\Entities\Notification([
-                        'title' => 'Добавлен отзыв',
-                        'message' => 'Был добавлен отзыв в гостевой книге',
-                        'date' => new DateTime(),
-                    ]);
-                    $this->entityManager->persist($notify);
-
-                    // отправляем пуш
-                    $this->container->get('pushstream')->send([
-                        'group' => \App\Domain\Types\UserLevelType::LEVEL_ADMIN,
-                        'content' => $notify,
+                try {
+                    $guestBookService->create([
+                        'name' => $this->request->getParam('name'),
+                        'email' => $this->request->getParam('email'),
+                        'message' => $this->request->getParam('message'),
                     ]);
 
-                    $this->entityManager->flush();
+                    // todo add admin notify
 
                     if (
-                        (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] != 'XMLHttpRequest') && !empty($_SERVER['HTTP_REFERER'])
+                        (
+                            empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest'
+                        ) && !empty($_SERVER['HTTP_REFERER'])
                     ) {
                         $this->response = $this->response->withHeader('Location', $_SERVER['HTTP_REFERER'])->withStatus(301);
                     }
 
-                    return $this->respondWithData(['description' => 'Message added']);
-                } else {
-                    $this->addErrorFromCheck($check);
+                    return $this->respondWithJson(['description' => 'Message added']);
+                } catch (MissingEmailValueException $e) {
+                    $this->addError('name', $e->getMessage());
+                } catch (MissingMessageValueException $e) {
+                    $this->addError('email', $e->getMessage());
+                } catch (MissingNameValueException $e) {
+                    $this->addError('message', $e->getMessage());
                 }
             } else {
                 $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
             }
         }
 
-        $pagination = $this->getParameter('guestbook_pagination', 10);
-        $offset = (int)($this->args['page'] ?? 0);
+        $pagination = $this->parameter('guestbook_pagination', 10);
+        $offset = (int) ($this->args['page'] ?? 0);
 
-        // получение списка и обфускация адресов
-        $list = collect(
-            $this->gbookRepository->findBy(
-                ['status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK],
-                [], $pagination, $pagination * $offset
-            )
-        )->map(
-            function ($el) {
-                if ($el->email) {
-                    $em = explode('@', $el->email);
-                    $name = implode(array_slice($em, 0, count($em) - 1), '@');
-                    $len = floor(strlen($name) / 2);
+        // fetch list and hide part of email
+        $list = $guestBookService->read([
+            'status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK,
+            'limit' => $pagination,
+            'offset' => $pagination * $offset,
+        ])->map(function ($model) {
+            /** @var $model GuestBook */
+            $email = explode('@', $model->getEmail());
+            $name = implode('@', array_slice($email, 0, count($email) - 1));
+            $len = (int) floor(mb_strlen($name) / 2);
 
-                    $el->email = mb_substr($name, 0, $len) . str_repeat('*', $len) . '@' . end($em);
-                }
+            $model->setEmail(mb_substr($name, 0, $len) . str_repeat('*', $len) . '@' . end($email));
 
-                return $el;
-            }
-        );
+            return $model;
+        });
 
-        return $this->respondRender($this->getParameter('guestbook_template', 'guestbook.twig'), [
+        return $this->respondWithTemplate($this->parameter('guestbook_template', 'guestbook.twig'), [
             'messages' => $list,
             'pagination' => [
-                'count' => $this->gbookRepository->count(['status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK]),
+                'count' => $guestBookService->count(['status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK]),
                 'page' => $pagination,
                 'offset' => $offset,
             ],

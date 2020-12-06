@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Form\Data;
 
@@ -12,18 +12,9 @@ class DataDeleteAction extends FormAction
             $this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid')) &&
             $this->resolveArg('data') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('data'))
         ) {
-            /** @var \App\Domain\Entities\Form\Data $item */
-            $item = $this->dataRepository->findOneBy([
-                'form_uuid' => $this->resolveArg('uuid'),
-                'uuid' => $this->resolveArg('data'),
-            ]);
-
-            if (!$item->isEmpty()) {
-                $this->entityManager->remove($item);
-                $this->entityManager->flush();
-            }
+            $this->formDataService->delete($this->resolveArg('data'));
         }
 
-        return $this->response->withAddedHeader('Location', '/cup/form/' . $this->resolveArg('uuid') . '/view')->withStatus(301);
+        return $this->response->withRedirect('/cup/form/' . $this->resolveArg('uuid') . '/view');
     }
 }

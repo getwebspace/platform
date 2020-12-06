@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Catalog\Category;
 
@@ -11,25 +11,28 @@ class CategoryListAction extends CatalogAction
         $category = null;
 
         if (!empty($this->args['parent'])) {
-            if (\Ramsey\Uuid\Uuid::isValid($this->resolveArg('parent'))) {
+            if (
+                $this->resolveArg('parent') !== \Ramsey\Uuid\Uuid::NIL &&
+                \Ramsey\Uuid\Uuid::isValid($this->resolveArg('parent'))
+            ) {
                 /** @var \App\Domain\Entities\Catalog\Category $category */
-                $category = $this->categoryRepository->findOneBy([
+                $category = $this->catalogCategoryService->read([
                     'uuid' => $this->resolveArg('parent'),
                     'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
                 ]);
             } else {
-                return $this->response->withAddedHeader('Location', '/cup/catalog/category')->withStatus(301);
+                return $this->response->withRedirect('/cup/catalog/category');
             }
         }
 
-        $categories = collect($this->categoryRepository->findBy([
+        $categories = $this->catalogCategoryService->read([
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
-        ]));
+        ]);
 
-        return $this->respondRender('cup/catalog/category/index.twig', [
+        return $this->respondWithTemplate('cup/catalog/category/index.twig', [
             'category' => $category,
             'categories' => $categories,
-            'fields' => $this->getParameter(['catalog_category_field_1', 'catalog_category_field_2', 'catalog_category_field_3'])
+            'fields' => $this->parameter(['catalog_category_field_1', 'catalog_category_field_2', 'catalog_category_field_3']),
         ]);
     }
 }

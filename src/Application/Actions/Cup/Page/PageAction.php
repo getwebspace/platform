@@ -1,24 +1,25 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Page;
 
-use App\Application\Actions\Action;
+use App\Domain\AbstractAction;
+use App\Domain\Service\Page\PageService;
 use Psr\Container\ContainerInterface;
 
-abstract class PageAction extends Action
+abstract class PageAction extends AbstractAction
 {
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     * @var PageService
      */
-    protected $pageRepository;
+    protected PageService $pageService;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
 
-        $this->pageRepository = $this->entityManager->getRepository(\App\Domain\Entities\Page::class);
+        $this->pageService = PageService::getWithContainer($container);
     }
 }

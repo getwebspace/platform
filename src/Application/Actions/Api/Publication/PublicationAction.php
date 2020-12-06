@@ -1,30 +1,32 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Api\Publication;
 
 use App\Application\Actions\Api\ActionApi;
+use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
+use App\Domain\Service\Publication\PublicationService;
 use Psr\Container\ContainerInterface;
 
 abstract class PublicationAction extends ActionApi
 {
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     * @var PublicationService
      */
-    protected $publicationRepository;
+    protected PublicationService $publicationService;
 
     /**
-     * @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository
+     * @var PublicationCategoryService
      */
-    protected $categoryRepository;
+    protected PublicationCategoryService $publicationCategoryService;
 
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
 
-        $this->publicationRepository = $this->entityManager->getRepository(\App\Domain\Entities\Publication::class);
-        $this->categoryRepository = $this->entityManager->getRepository(\App\Domain\Entities\Publication\Category::class);
+        $this->publicationService = PublicationService::getWithContainer($container);
+        $this->publicationCategoryService = PublicationCategoryService::getWithContainer($container);
     }
 }

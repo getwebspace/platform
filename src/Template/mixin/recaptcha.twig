@@ -1,46 +1,51 @@
 {% if parameter('integration_recaptcha', 'off') == 'on' %}
-    <script src="https://www.google.com/recaptcha/api.js?render={{ parameter('integration_recaptcha_public') }}"></script>
-    <script>
-        grecaptcha.ready(() => {
-            // Just get token
-            // Usage: let token = await window.getRCToken();
-            grecaptcha.getToken = async function () {
-                console.info('reCAPTCHA token');
-                let token = await grecaptcha.execute('{{ parameter('integration_recaptcha_public') }}');
-                console.info('reCAPTCHA token: done');
+    {% htmlcompress %}
+        <script src="https://www.google.com/recaptcha/api.js?render={{ parameter('integration_recaptcha_public') }}"></script>
+        <script>
+            grecaptcha.ready(() => {
+                // Just get token
+                // Usage: let token = await window.getRCToken();
+                grecaptcha.getToken = async function () {
+                    console.info('reCAPTCHA token');
+                    let token = await grecaptcha.execute('{{ parameter('integration_recaptcha_public') }}');
+                    console.info('reCAPTCHA token: done');
 
-                return token;
-            };
-
-            // auto handle function with [data-grecaptcha] flag
-            // <form data-grecaptcha ..
-            for (let form of document.querySelectorAll('form[data-grecaptcha]')) {
-                let handler = async function (e) {
-                    e.preventDefault();
-
-                    // remove listener
-                    form.removeEventListener('submit', handler);
-
-                    // get token
-                    form.setAttribute('data-grecaptcha-loading', 'true');
-                    let token = await grecaptcha.getToken();
-                    form.setAttribute('data-grecaptcha-loading', 'false');
-
-                    // add input to form
-                    let input = document.createElement('input');
-                        input.setAttribute('type', 'hidden');
-                        input.setAttribute('name', 'recaptcha');
-                        input.setAttribute('value', token);
-
-                    form.appendChild(input);
-
-                    // submit form
-                    form.submit();
+                    return token;
                 };
 
-                // add listener
-                form.addEventListener('submit', handler);
-            }
-        });
-    </script>
+                // auto handle function with [data-grecaptcha] flag
+                // <form data-grecaptcha ..
+                for (let form of document.querySelectorAll('form[data-grecaptcha]')) {
+                    let handler = async function (e) {
+                        e.preventDefault();
+
+                        // remove listener
+                        form.removeEventListener('submit', handler);
+
+                        // get token
+                        form.setAttribute('data-grecaptcha-loading', 'true');
+                        let token = await grecaptcha.getToken();
+                        form.setAttribute('data-grecaptcha-loading', 'false');
+
+                        // add input to form
+                        let input = document.createElement('input');
+                            input.setAttribute('type', 'hidden');
+                            input.setAttribute('name', 'recaptcha');
+                            input.setAttribute('value', token);
+
+                        form.appendChild(input);
+
+                        // submit form
+                        form.submit();
+
+                        // add listener again
+                        form.addEventListener('submit', handler);
+                    };
+
+                    // add listener
+                    form.addEventListener('submit', handler);
+                }
+            });
+        </script>
+    {% endhtmlcompress %}
 {% endif %}

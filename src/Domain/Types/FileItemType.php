@@ -1,28 +1,28 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Types;
 
-use App\Application\Types\EnumType;
+use App\Domain\AbstractEnumType;
 
-class FileItemType extends EnumType
+class FileItemType extends AbstractEnumType
 {
-    const NAME = 'FileItemType';
+    public const NAME = 'FileItemType';
 
-    const ITEM_USER_UPLOAD = 'user_upload',
-          ITEM_PAGE = 'page',
-          ITEM_PUBLICATION = 'publication',
-          ITEM_CATALOG_CATEGORY = 'catalog_category',
-          ITEM_CATALOG_PRODUCT = 'catalog_product',
-          ITEM_FORM_DATA = 'form_data',
-          ITEM_THEME = 'theme';
+    public const ITEM_USER_UPLOAD = 'user_upload';
+    public const ITEM_PAGE = 'page';
+    public const ITEM_PUBLICATION = 'publication';
+    public const ITEM_CATALOG_CATEGORY = 'catalog_category';
+    public const ITEM_CATALOG_PRODUCT = 'catalog_product';
+    public const ITEM_FORM_DATA = 'form_data';
+    public const ITEM_THEME = 'theme';
 
-    const LIST                  = [
-        self::ITEM_USER_UPLOAD => 'Файл пользователя',
-        self::ITEM_PAGE => 'Файл страницы',
-        self::ITEM_PUBLICATION => 'Файл публикации',
-        self::ITEM_FORM_DATA => 'Файл из анкеты формы',
-        self::ITEM_CATALOG_CATEGORY => 'Файл категории каталога',
-        self::ITEM_CATALOG_PRODUCT => 'Файл продукта каталога',
-        self::ITEM_THEME => 'Файл шаблона',
+    public const LIST                  = [
+        self::ITEM_USER_UPLOAD,
+        self::ITEM_PAGE,
+        self::ITEM_PUBLICATION,
+        self::ITEM_FORM_DATA,
+        self::ITEM_CATALOG_CATEGORY,
+        self::ITEM_CATALOG_PRODUCT,
+        self::ITEM_THEME,
     ];
 }

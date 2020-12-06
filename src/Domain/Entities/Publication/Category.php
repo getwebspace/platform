@@ -1,17 +1,17 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Entities\Publication;
 
-use Alksily\Entity\Collection;
-use Alksily\Entity\Model;
+use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
+use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="publication_category")
  */
-class Category extends Model
+class Category extends AbstractEntity
 {
     /**
      * @var Uuid
@@ -20,116 +20,362 @@ class Category extends Model
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    public $uuid;
+    protected $uuid;
 
     /**
-     * @ORM\Column(type="string", length=1000, unique=true)
+     * @return Uuid
      */
-    public $address;
+    public function getUuid(): Uuid
+    {
+        return $this->uuid;
+    }
 
     /**
-     * @ORM\Column(type="string")
+     * @var string
+     * @ORM\Column(type="string", length=1000, unique=true, options={"default": ""})
      */
-    public $title;
+    protected string $address = '';
 
     /**
-     * @ORM\Column(type="string")
+     * @param string $address
+     *
+     * @return $this
      */
-    public $description;
+    public function setAddress(string $address)
+    {
+        if ($this->checkStrLenMax($address, 1000)) {
+            $this->address = $this->getAddressByValue($address, $this->getTitle());
+        }
+
+        return $this;
+    }
 
     /**
-     * @ORM\Column(type="uuid", options={"default": NULL})
+     * @return string
      */
-    public $parent;
+    public function getAddress(): string
+    {
+        return $this->address;
+    }
 
     /**
-     * @ORM\Column(type="integer", options={"default": "10"})
+     * @ORM\Column(type="string", length=255, options={"default": ""})
      */
-    public $pagination;
+    protected string $title = '';
+
+    /**
+     * @param string $title
+     *
+     * @return $this
+     */
+    public function setTitle(string $title)
+    {
+        if ($this->checkStrLenMax($title, 255)) {
+            $this->title = $title;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
+    /**
+     * @var string
+     * @ORM\Column(type="text", length=10000, options={"default": ""})
+     */
+    protected string $description = '';
+
+    /**
+     * @param string $description
+     *
+     * @return $this
+     */
+    public function setDescription(string $description)
+    {
+        if ($this->checkStrLenMax($description, 10000)) {
+            $this->description = $description;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string
+    {
+        return $this->description;
+    }
+
+    /**
+     * @var string|uuid
+     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
+     */
+    protected $parent = \Ramsey\Uuid\Uuid::NIL;
+
+    /**
+     * @param string|Uuid $uuid
+     *
+     * @return $this
+     */
+    public function setParent($uuid)
+    {
+        $this->parent = $this->getUuidByValue($uuid);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getParent(): string
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @ORM\Column(type="integer", options={"default": 10})
+     */
+    public int $pagination = 10;
+
+    /**
+     * @param int $value
+     *
+     * @return $this
+     */
+    public function setPagination(int $value)
+    {
+        $this->pagination = $value;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPagination(): int
+    {
+        return $this->pagination;
+    }
 
     /**
      * @ORM\Column(type="boolean", options={"default": false})
      */
-    public $children = false;
+    protected bool $children = false;
+
+    /**
+     * @param mixed $value
+     *
+     * @return $this
+     */
+    public function setChildren($value)
+    {
+        $this->children = $this->getBooleanByValue($value);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getChildren(): bool
+    {
+        return $this->children;
+    }
 
     /**
      * @ORM\Column(type="boolean", options={"default": true})
      */
-    public $public = true;
+    protected bool $public = true;
 
     /**
-     * @var array
-     * @ORM\Column(type="array", nullable=true)
+     * @param mixed $value
+     *
+     * @return $this
      */
-    public $sort = [
-        'by' => \App\Domain\References\Publication::ORDER_BY_DATE,
-        'direction' => \App\Domain\References\Publication::ORDER_DIRECTION_ASC,
-    ];
+    public function setPublic($value)
+    {
+        $this->public = $this->getBooleanByValue($value);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getPublic(): bool
+    {
+        return $this->public;
+    }
 
     /**
      * @var array
      * @ORM\Column(type="array")
      */
-    public $meta = [
+    protected array $sort = [
+        'by' => \App\Domain\References\Publication::ORDER_BY_DATE,
+        'direction' => \App\Domain\References\Publication::ORDER_DIRECTION_ASC,
+    ];
+
+    /**
+     * @param array $data
+     *
+     * @return $this
+     */
+    public function setSort(array $data)
+    {
+        $default = [
+            'by' => \App\Domain\References\Publication::ORDER_BY_DATE,
+            'direction' => \App\Domain\References\Publication::ORDER_DIRECTION_ASC,
+        ];
+        $data = array_merge($default, $data);
+
+        $this->sort = [
+            'by' => $data['by'],
+            'direction' => $data['direction'],
+        ];
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSort(): array
+    {
+        return $this->sort;
+    }
+
+    /**
+     * @var array
+     * @ORM\Column(type="array")
+     */
+    protected array $meta = [
         'title' => '',
         'description' => '',
         'keywords' => '',
     ];
 
     /**
+     * @param array $data
+     *
+     * @return $this
+     */
+    public function setMeta(array $data)
+    {
+        $default = [
+            'title' => '',
+            'description' => '',
+            'keywords' => '',
+        ];
+        $data = array_merge($default, $data);
+
+        $this->meta = [
+            'title' => $data['title'],
+            'description' => $data['description'],
+            'keywords' => $data['keywords'],
+        ];
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMeta(): array
+    {
+        return $this->meta;
+    }
+
+    /**
      * @var array
      * @ORM\Column(type="array")
      */
-    public $template = [
+    protected array $template = [
         'list' => '',
         'short' => '',
         'full' => '',
     ];
 
     /**
+     * @param array $data
+     *
+     * @return $this
+     */
+    public function setTemplate(array $data)
+    {
+        $default = [
+            'list' => '',
+            'short' => '',
+            'full' => '',
+        ];
+        $data = array_merge($default, $data);
+
+        $this->template = [
+            'list' => $data['list'],
+            'short' => $data['short'],
+            'full' => $data['full'],
+        ];
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTemplate(): array
+    {
+        return $this->template;
+    }
+
+    /**
      * @var array
-     * @ORM\ManyToMany(targetEntity="App\Domain\Entities\File", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\ManyToMany(targetEntity="App\Domain\Entities\File")
      * @ORM\JoinTable(name="publication_category_files",
-     *  joinColumns={@ORM\JoinColumn(name="category_uuid", referencedColumnName="uuid")},
-     *  inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")}
+     *     joinColumns={@ORM\JoinColumn(name="category_uuid", referencedColumnName="uuid")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")}
      * )
      */
     protected $files = [];
 
-    public function addFile(\App\Domain\Entities\File $file)
+    public function addFile(\App\Domain\Entities\File $file): void
     {
         $this->files[] = $file;
     }
 
-    public function addFiles(array $files)
+    public function addFiles(array $files): void
     {
         foreach ($files as $file) {
             $this->addFile($file);
         }
     }
 
-    public function removeFile(\App\Domain\Entities\File $file)
+    public function removeFile(\App\Domain\Entities\File $file): void
     {
         foreach ($this->files as $key => $value) {
             if ($file === $value) {
                 unset($this->files[$key]);
-                $value->unlink();
             }
         }
     }
 
-    public function removeFiles(array $files)
+    public function removeFiles(array $files): void
     {
         foreach ($files as $file) {
             $this->removeFile($file);
         }
     }
 
-    public function clearFiles()
+    public function clearFiles(): void
     {
         foreach ($this->files as $key => $file) {
             unset($this->files[$key]);
-            $file->unlink();
         }
     }
 
@@ -145,18 +391,17 @@ class Category extends Model
 
     /**
      * @param Collection $categories
-     * @param Category   $parent
      *
      * @return Collection
      */
-    public static function getChildren(Collection $categories, \App\Domain\Entities\Publication\Category $parent)
+    public function getNested(Collection $categories)
     {
-        $result = collect([$parent]);
+        $result = collect([$this]);
 
-        if ($parent->children) {
-            /** @var \App\Domain\Entities\Publication\Category $category */
-            foreach ($categories->where('parent', $parent->uuid) as $child) {
-                $result = $result->merge(static::getChildren($categories, $child));
+        if ($this->getChildren()) {
+            // @var \App\Domain\Entities\Publication\Category $category
+            foreach ($categories->where('parent', $this->getUuid()) as $child) {
+                $result = $result->merge($child->getNested($categories));
             }
         }
 

@@ -3,9 +3,8 @@
 {% block title %}ЦУП CMS{% endblock %}
 
 {% block head %}
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css">
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/assets/css/fonts.css">
     <link rel="stylesheet" href="/assets/css/datatables.min.css">
     <link rel="stylesheet" href="/assets/js/plugin/jquery.modal/jquery.modal.min.css">
     <link rel="stylesheet" href="/assets/js/plugin/codemirror/lib/codemirror.css">
@@ -22,15 +21,17 @@
                 <div class="main-header">
                     <!-- Logo Header -->
                     <div class="logo-header" data-background-color="blue">
+                        <a href="/cup" class="logo text-white">WebSpace Engine</a>
+
                         <button class="navbar-toggler sidenav-toggler ml-auto" type="button" data-toggle="collapse" data-target="collapse" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon">
-                                <i class="icon-menu"></i>
+                                <i class="fas fa-bars"></i>
                             </span>
                         </button>
-                        <button class="topbar-toggler more"><i class="icon-options-vertical"></i></button>
+                        <button class="topbar-toggler more"><i class="fas fa-bars"></i></button>
                         <div class="nav-toggle">
                             <button class="btn btn-toggle toggle-sidebar">
-                                <i class="icon-menu"></i>
+                                <i class="fas fa-bars"></i>
                             </button>
                         </div>
                     </div>
@@ -40,10 +41,21 @@
                     <nav class="navbar navbar-header navbar-expand-lg" data-background-color="blue2">
                         <div class="container-fluid">
                             <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
-                                {% include 'cup/notification.twig' %}
-                                {% include 'cup/task.twig' %}
-                                {% include 'cup/quickaction.twig' %}
-                                {% include 'cup/trademaster.twig' %}
+                                {% for plugin in plugins %}
+                                    {% for param in plugin.getToolbarItem() %}
+                                        {% if param.twig %}
+                                            {% include param.twig %}
+                                        {% elseif param.html %}
+                                            {{ param.html|raw }}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+
+                                <li class="nav-item submenu">
+                                    <a href="#" class="nav-link quick-sidebar-toggler">
+                                        <i class="fa fa-th"></i>
+                                    </a>
+                                </li>
 
                                 <li class="nav-item">
                                     <a class="nav-link" href="/" target="_blank">
@@ -98,8 +110,8 @@
                                 <div class="page-inner py-5">
                                     <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                                         <div>
-                                            <h2 class="text-white pb-2 fw-bold">Доска управления</h2>
-                                            <h5 class="text-white op-7 mb-2">Добро пожаловать в панель администратора</h5>
+                                            <h2 class="text-white pb-2 fw-bold">Панель управления</h2>
+                                            <h5 class="text-white op-7 mb-2">Добро пожаловать в панель управления сайтом</h5>
                                         </div>
                                         <div class="ml-md-auto py-2 py-md-0">
                                             {#<a href="#" class="btn btn-white btn-border btn-round mr-2">Manage</a>
@@ -184,6 +196,14 @@
                                                                     <td width="50%">{{ stats.files }}</td>
                                                                 </tr>
                                                             {% endif %}
+                                                            {% if plugins.count() %}
+                                                                <tr>
+                                                                    <th width="50%">Количество плагинов:</th>
+                                                                    <td width="50%">
+                                                                        {{ plugins.count() }}
+                                                                    </td>
+                                                                </tr>
+                                                            {% endif %}
                                                         </table>
                                                     </div>
 
@@ -213,7 +233,10 @@
                                                         <table class="table table-properties">
                                                             <tr>
                                                                 <th width="50%">Версия движка:</th>
-                                                                <td width="50%">{{ properties.version }}</td>
+                                                                <td width="50%">
+                                                                    {{ properties.version.branch }}
+                                                                    (<a href="https://github.com/0x12f/platform/tree/{{ properties.version.commit }}" target="_blank">source</a>)
+                                                                </td>
                                                             </tr>
                                                             <tr>
                                                                 <th width="50%">Операционная система:</th>
@@ -254,8 +277,9 @@
                                             </div>
                                         </div>
                                     </div>
+                                    {#
                                     <div class="col-md-4">
-                                        {#<div class="card card-primary bg-primary-gradient">
+                                        <div class="card card-primary bg-primary-gradient">
                                             <div class="card-body">
                                                 <h4 class="mt-3 b-b1 pb-2 mb-4 fw-bold">Сейчас на сайте</h4>
                                                 <h1 class="mb-4 fw-bold">17</h1>
@@ -269,8 +293,9 @@
                                                     <li class="d-flex justify-content-between pb-1 pt-1"><small>/product/atlantis/demo.html</small> <span>10</span></li>
                                                 </ul>
                                             </div>
-                                        </div>#}
+                                        </div>
                                     </div>
+                                    #}
                                 </div>
                             {% endblock %}
                         </div>
@@ -281,18 +306,23 @@
                             <nav class="pull-left">
                                 <ul class="nav">
                                     <li class="nav-item">
-                                        <a class="nav-link" target="_blank" href="https://github.com/0x12f">
+                                        <a class="nav-link" href="https://github.com/0x12f/platform" target="_blank">
                                             GitHub
                                         </a>
                                     </li>
                                 </ul>
                             </nav>
                             <div class="copyright ml-auto">
-                                Сделано с <i class="fa fa-heart heart text-danger"></i> в <a href="https://github.com/0x12f">0x12f</a>, {{ 'now'|df('Y') }}
+                                Copyright &copy; {{ 'now'|df('Y') }} All rights reserved |
+                                Powered by
+                                <a href="https://alksily.0x12f.com" target="_blank">Aleksey Ilyin</a>,
+                                <a href="https://github.com/0x12f" target="_blank">0x12f.com</a>
                             </div>
                         </div>
                     </footer>
                 </div>
+
+                {% include 'cup/sidebar.twig' %}
             </div>
         {% endblock %}
     </body>
@@ -325,8 +355,6 @@
     <script src="/assets/js/plugin/froala/ru.js"></script>
 
     <script src="/assets/js/cup/script.js"></script>
-
-    {% include 'mixin/pushstream.twig' %}
 
     {% block script '' %}
 {% endblock %}

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Application\Actions\Cup\Publication\Category;
 
@@ -8,8 +8,6 @@ class CategoryListAction extends PublicationAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $list = collect($this->categoryRepository->findAll());
-
-        return $this->respondRender('cup/publication/category/index.twig', ['list' => $list]);
+        return $this->respondWithTemplate('cup/publication/category/index.twig', ['list' => $this->publicationCategoryService->read()]);
     }
 }

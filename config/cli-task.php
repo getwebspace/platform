@@ -1,50 +1,77 @@
-<?php
+<?php declare(strict_types=1);
+
+ini_set('memory_limit', '-1'); // fix memory usage
 
 require __DIR__ . '/../src/bootstrap.php';
 
 // exit if another worker works
-if (file_exists(\App\Domain\Tasks\Task::$pid_file)) exit;
+if (file_exists(\App\Domain\AbstractTask::$pid_file)) {
+    exit;
+}
 
 // before work write self PID to file
-file_put_contents(\App\Domain\Tasks\Task::$pid_file, getmypid());
+file_put_contents(\App\Domain\AbstractTask::$pid_file, getmypid());
 
-// App container
-$c = $container = $app->getContainer();
+/**
+ * @var \Slim\App $app
+ */
 
-// Set up dependencies
-require __DIR__ . '/../src/dependencies.php';
+// app container
+$container = $app->getContainer();
 
-/** @var \Doctrine\ORM\EntityManager $entityManager */
-$entityManager = $container->get(\Doctrine\ORM\EntityManager::class);
+/** @var \Monolog\Logger $logger */
+$logger = $container->get('monolog');
 
-/** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository $taskRepository */
-$taskRepository = $entityManager->getRepository(\App\Domain\Entities\Task::class);
+/** @var \App\Domain\Service\Task\TaskService $taskService */
+$taskService = \App\Domain\Service\Task\TaskService::getWithContainer($container);
 
-/** @var \App\Domain\Entities\Task $queue */
-$queue = $taskRepository->findOneBy(['status' => [\App\Domain\Types\TaskStatusType::STATUS_QUEUE, \App\Domain\Types\TaskStatusType::STATUS_WORK]], ['date' => 'asc']);
+/** @var \Illuminate\Support\Collection $queue */
+$queue = $taskService->read([
+    'status' => [
+        \App\Domain\Types\TaskStatusType::STATUS_QUEUE,
+        \App\Domain\Types\TaskStatusType::STATUS_WORK,
+    ],
+    'order' => [
+        'date' => 'asc',
+    ],
+    'limit' => 1,
+]);
 
 // rerun worker
-register_shutdown_function(function () use ($queue) {
-    @unlink(\App\Domain\Tasks\Task::$pid_file);
+register_shutdown_function(function () use ($queue): void {
+    @unlink(\App\Domain\AbstractTask::$pid_file);
+
+    sleep(1); // timeout
 
     if ($queue) {
-        \App\Domain\Tasks\Task::worker();
+        \App\Domain\AbstractTask::worker();
     }
 });
 
-if ($queue) {
-    /** @var \App\Domain\Tasks\Task $task */
-    $task = new $queue->action($c, $queue);
+if ($queue->count()) {
+    /** @var \App\Domain\Entities\Task $entity */
+    $entity = $queue->first();
+    $action = $entity->getAction();
 
-    if ($queue->status === \App\Domain\Types\TaskStatusType::STATUS_QUEUE) {
-        $task->run();
-    } else {
-        // удаление задачи по времени
-        if ((new DateTime())->diff($queue->date)->i >= 30) {
-            $task->setStatusDelete();
-            $entityManager->flush();
+    try {
+        /** @var \App\Domain\AbstractTask $task */
+        $task = new $action($container, $entity);
+
+        if ($entity->getStatus() === \App\Domain\Types\TaskStatusType::STATUS_QUEUE) {
+            $task->run();
         } else {
-            sleep(30);
+            // remove task by time
+            if ((new DateTime())->diff($entity->getDate())->i >= 30) {
+                $task->setStatusDelete();
+            } else {
+                sleep(30);
+            }
         }
+    } catch (Exception $e) {
+        $logger->error('Task catch exception', [
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'code' => $e->getCode(),
+        ]);
     }
 }
