@@ -182,7 +182,7 @@ class UserService extends AbstractService
                 }
 
                 // optional: check password
-                if ($data['password'] && !crypta_hash_check($data['password'], $user->getPassword())) {
+                if ($data['password'] !== null && !crypta_hash_check($data['password'], $user->getPassword())) {
                     throw new WrongPasswordException();
                 }
 
