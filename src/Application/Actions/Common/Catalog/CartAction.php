@@ -30,11 +30,17 @@ class CartAction extends CatalogAction
                 $data['user_uuid'] = $user->uuid;
             }
 
-            // other posted fields
-            foreach ($this->request->getParams() as $key => $value) {
-                if (!in_array($key, array_merge(array_keys($data), ['recaptcha']), true) && $value) {
-                    $data['comment'] .= '; ' . $key . ' ' . $value . PHP_EOL;
+            // add to comment other posted fields
+            if ($this->parameter('catalog_order_fields', 'off') === 'on') {
+                $data['comment'] = [$data['comment']];
+
+                foreach ($this->request->getParams() as $key => $value) {
+                    if (!in_array($key, array_merge(array_keys($data), ['recaptcha']), true) && $value) {
+                        $data['comment'] .= '; ' . $key . ' ' . $value . PHP_EOL;
+                    }
                 }
+
+                $data['comment'] = implode(PHP_EOL, $data['comment']);
             }
 
             if ($this->isRecaptchaChecked()) {
