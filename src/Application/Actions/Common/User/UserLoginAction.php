@@ -16,7 +16,7 @@ class UserLoginAction extends UserAction
                 'phone' => $this->request->getParam('phone'),
                 'email' => $this->request->getParam('email'),
                 'username' => $this->request->getParam('username'),
-                'password' => $this->request->getParam('password'),
+                'password' => $this->request->getParam('password', ''),
 
                 'agent' => $this->request->getServerParam('HTTP_USER_AGENT'),
                 'ip' => $this->request->getServerParam('REMOTE_ADDR'),

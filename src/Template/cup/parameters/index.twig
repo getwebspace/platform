@@ -605,6 +605,17 @@
                                             {# TAB: Catalog Additional #}
                                             <div class="tab-pane fade" id="catalog-additional">
                                                 {% include 'cup/field.twig' with {
+                                                    'label': 'Обработка полей корзины',
+                                                    'description': 'Дополнительные поля, переданные с корзиной, будут добавлены в конец поля комментария',
+                                                    'type': 'select',
+                                                    'name': 'catalog[order_fields]',
+                                                    'args': {
+                                                        'option': {'yes':'Да', 'no':'Нет'},
+                                                        'selected': 'no'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
                                                     'label': 'Дополнительное поле',
                                                     'description': 'Поле 1',
                                                     'type': 'text',
