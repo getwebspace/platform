@@ -2,7 +2,10 @@ version: "3"
 
 services:
     platform:
-        image: 0x12f/platform:dev-alpine
+        build:
+            context: .
+            dockerfile: docker/debian/Dockerfile
+        image: 0x12f/platform:dev
         environment:
             - DEBUG=1
           # - SALT=Please-Change-Me

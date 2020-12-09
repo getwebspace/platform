@@ -31,6 +31,7 @@ RUN set -x \
         libzip-dev \
         libonig-dev \
         libmagickwand-dev \
+        libyaml-dev \
         zlib1g-dev \
         jpegoptim \
         optipng \
@@ -38,10 +39,10 @@ RUN set -x \
         gifsicle \
         imagemagick \
     && nginx -V \
-    && pecl install imagick \
+    && pecl install imagick yaml \
     && docker-php-ext-configure gd \
     && docker-php-ext-install -j$(nproc) gettext zip gd pdo_mysql mbstring \
-    && docker-php-ext-enable opcache.so imagick \
+    && docker-php-ext-enable opcache.so imagick yaml \
     && docker-php-source delete \
     && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php --quiet --install-dir=/usr/bin --filename=composer \
