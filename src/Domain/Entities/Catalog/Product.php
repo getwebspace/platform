@@ -231,9 +231,9 @@ class Product extends AbstractEntity
     /**
      * // себестоимость
      *
-     * @ORM\Column(type="decimal", scale=2, precision=10, options={"default": 0})
+     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
      */
-    protected float $priceFirst = .0;
+    protected float $priceFirst = .00;
 
     /**
      * @param float $value
@@ -256,9 +256,9 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="decimal", scale=2, precision=10, options={"default": 0})
+     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
      */
-    protected float $price = .0;
+    protected float $price = .00;
 
     /**
      * @param float $value
@@ -283,9 +283,9 @@ class Product extends AbstractEntity
     /**
      * // оптовая цена
      *
-     * @ORM\Column(type="decimal", scale=2, precision=10, options={"default": 0})
+     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
      */
-    protected float $priceWholesale = .0;
+    protected float $priceWholesale = .00;
 
     /**
      * @param float $value
@@ -308,9 +308,9 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="decimal", scale=2, precision=10, options={"default": 1})
+     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 1.0})
      */
-    protected float $volume = 1.0;
+    protected float $volume = 1.00;
 
     /**
      * @param float $value
@@ -362,7 +362,7 @@ class Product extends AbstractEntity
     /**
      * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
      */
-    protected float $stock = 0;
+    protected float $stock = .00;
 
     /**
      * @param float $value

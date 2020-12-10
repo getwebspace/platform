@@ -89,10 +89,10 @@ class Task extends AbstractEntity
     }
 
     /**
-     * @var int
-     * @ORM\Column(type="float", options={"default": 0})
+     * @var float
+     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
      */
-    protected float $progress = 0;
+    protected float $progress = .00;
 
     /**
      * @param float $progress
