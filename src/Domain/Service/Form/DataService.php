@@ -80,8 +80,6 @@ class DataService extends AbstractService
         try {
             switch (true) {
                 case !is_array($data['uuid']) && $data['uuid'] !== null:
-                case !is_array($data['title']) && $data['title'] !== null:
-                case !is_array($data['address']) && $data['address'] !== null:
                     $formData = $this->service->findOneBy($criteria);
 
                     if (empty($formData)) {
