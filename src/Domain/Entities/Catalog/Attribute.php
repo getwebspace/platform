@@ -3,7 +3,6 @@
 namespace App\Domain\Entities\Catalog;
 
 use App\Domain\AbstractEntity;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 
@@ -69,7 +68,7 @@ class Attribute extends AbstractEntity
      */
     public function setType(string $type)
     {
-        if ($this->checkStrLenMax($type, 255) && in_array($type, ['string', 'integer', 'float'])) {
+        if ($this->checkStrLenMax($type, 255) && in_array($type, ['string', 'integer', 'float'], true)) {
             $this->type = $type;
         }
 

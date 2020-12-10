@@ -343,8 +343,7 @@ class Category extends AbstractEntity
      * @var string
      *
      * @see \App\Domain\Types\UserStatusType::LIST
-     * @ORM\Column(type="CatalogCategoryStatusType", options={"default":
-     *                                               \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK})
+     * @ORM\Column(type="CatalogCategoryStatusType", options={"default": \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK})
      */
     protected string $status = \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK;
 

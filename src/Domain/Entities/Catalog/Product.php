@@ -630,8 +630,7 @@ class Product extends AbstractEntity
      * @var string
      *
      * @see \App\Domain\Types\ProductStatusType::LIST
-     * @ORM\Column(type="CatalogProductStatusType", options={"default":
-     *                                              \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK})
+     * @ORM\Column(type="CatalogProductStatusType", options={"default": \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK})
      */
     protected string $status = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
 

@@ -99,7 +99,7 @@ class ProductAttribute extends AbstractEntity
     /**
      * @ORM\Column(type="string", length=1000, options={"default": ""})
      */
-    public string $value = "";
+    public string $value = '';
 
     /**
      * @param mixed $value
