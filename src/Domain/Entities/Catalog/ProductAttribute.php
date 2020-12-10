@@ -9,7 +9,7 @@ use RuntimeException;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="catalog_attribute")
+ * @ORM\Table(name="catalog_product_attribute")
  */
 class ProductAttribute extends AbstractEntity
 {
