@@ -270,8 +270,7 @@ class Order extends AbstractEntity
      * @var string
      *
      * @see \App\Domain\Types\OrderStatusType::LIST
-     * @ORM\Column(type="CatalogOrderStatusType", options={"default":
-     *                                            \App\Domain\Types\Catalog\OrderStatusType::STATUS_NEW})
+     * @ORM\Column(type="CatalogOrderStatusType", options={"default": \App\Domain\Types\Catalog\OrderStatusType::STATUS_NEW})
      */
     protected string $status = \App\Domain\Types\Catalog\OrderStatusType::STATUS_NEW;
 
