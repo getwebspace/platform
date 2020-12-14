@@ -22,6 +22,7 @@ class UserProfileAction extends UserAction
                         'firstname' => $this->request->getParam('firstname'),
                         'lastname' => $this->request->getParam('lastname'),
                         'address' => $this->request->getParam('address'),
+                        'additional' => $this->request->getParam('additional'),
                         'email' => $this->request->getParam('email'),
                         'phone' => $this->request->getParam('phone'),
                         'password' => $this->request->getParam('password'),
