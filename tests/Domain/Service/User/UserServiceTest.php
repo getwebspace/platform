@@ -44,6 +44,7 @@ class UserServiceTest extends TestCase
             'firstname' => $this->getFaker()->firstName,
             'lastname' => $this->getFaker()->lastName,
             'address' => $this->getFaker()->address,
+            'additional' => $this->getFaker()->text,
         ];
 
         $user = $this->service->create($data);
@@ -53,6 +54,7 @@ class UserServiceTest extends TestCase
         $this->assertSame($data['firstname'], $user->getFirstname());
         $this->assertSame($data['lastname'], $user->getLastname());
         $this->assertSame($data['address'], $user->getAddress());
+        $this->assertSame($data['additional'], $user->getAdditional());
 
         /** @var UserRepository $userRepo */
         $userRepo = $this->em->getRepository(User::class);
@@ -297,6 +299,7 @@ class UserServiceTest extends TestCase
             'email' => $this->getFaker()->email,
             'password' => $this->getFaker()->password,
             'address' => $this->getFaker()->address,
+            'additional' => $this->getFaker()->text,
         ]);
 
         $data = [
@@ -306,6 +309,7 @@ class UserServiceTest extends TestCase
             'firstname' => $this->getFaker()->firstName,
             'lastname' => $this->getFaker()->lastName,
             'address' => $this->getFaker()->address,
+            'additional' => $this->getFaker()->text,
             'email' => $this->getFaker()->email,
         ];
 
@@ -314,6 +318,7 @@ class UserServiceTest extends TestCase
         $this->assertSame($data['firstname'], $user->getFirstname());
         $this->assertSame($data['lastname'], $user->getLastname());
         $this->assertSame($data['address'], $user->getAddress());
+        $this->assertSame($data['additional'], $user->getAdditional());
         $this->assertSame($data['email'], $user->getEmail());
     }
 

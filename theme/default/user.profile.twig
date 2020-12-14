@@ -69,6 +69,16 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 {% include 'mixin/form.twig' with {
+                                    'label': 'Доп. инфо',
+                                    'type': 'text',
+                                    'name': 'additional',
+                                    'args': {
+                                        'value': user.additional
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-12 col-md-6">
+                                {% include 'mixin/form.twig' with {
                                     'label': 'Новый пароль',
                                     'type': 'tel',
                                     'name': 'password',

@@ -260,6 +260,33 @@ class User extends AbstractEntity
     }
 
     /**
+     * @ORM\Column(type="string", length=250, options={"default": ""})
+     */
+    protected string $additional = '';
+
+    /**
+     * @param string $additional
+     *
+     * @return $this
+     */
+    public function setAdditional(string $additional)
+    {
+        if ($this->checkStrLenMax($additional, 250)) {
+            $this->additional = $additional;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAdditional(): string
+    {
+        return $this->additional;
+    }
+
+    /**
      * @ORM\Column(type="boolean", options={"default": true})
      */
     protected bool $allow_mail = true;

@@ -51,6 +51,7 @@ class UserService extends AbstractService
             'firstname' => '',
             'lastname' => '',
             'address' => '',
+            'additional' => '',
             'allow_mail' => true,
             'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
             'level' => \App\Domain\Types\UserLevelType::LEVEL_USER,
@@ -81,6 +82,7 @@ class UserService extends AbstractService
             ->setFirstname($data['firstname'])
             ->setLastname($data['lastname'])
             ->setAddress($data['address'])
+            ->setAdditional($data['additional'])
             ->setAllowMail($data['allow_mail'])
             ->setStatus($data['status'])
             ->setLevel($data['level'])
@@ -111,6 +113,7 @@ class UserService extends AbstractService
             'username' => null,
             'email' => null,
             'phone' => null,
+            'additional' => null,
             'allow_mail' => null,
             'status' => null,
             'password' => null, // optional: for check
@@ -132,6 +135,9 @@ class UserService extends AbstractService
         }
         if ($data['phone'] !== null) {
             $criteria['phone'] = $data['phone'];
+        }
+        if ($data['additional'] !== null) {
+            $criteria['additional'] = $data['additional'];
         }
         if ($data['allow_mail'] !== null) {
             $criteria['allow_mail'] = (bool) $data['allow_mail'];
@@ -238,6 +244,7 @@ class UserService extends AbstractService
                 'firstname' => null,
                 'lastname' => null,
                 'address' => null,
+                'additional' => null,
                 'allow_mail' => null,
                 'status' => null,
                 'level' => null,
@@ -283,6 +290,9 @@ class UserService extends AbstractService
                 }
                 if ($data['address'] !== null) {
                     $entity->setAddress($data['address']);
+                }
+                if ($data['additional'] !== null) {
+                    $entity->setAdditional($data['additional']);
                 }
                 if ($data['allow_mail'] !== null) {
                     $entity->setAllowMail($data['allow_mail']);
