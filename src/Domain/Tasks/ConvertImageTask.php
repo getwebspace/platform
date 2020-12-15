@@ -22,6 +22,11 @@ class ConvertImageTask extends AbstractTask
 
     protected function action(array $args = []): void
     {
+        if ($this->parameter('image_enable', 'no') === 'no') {
+            $this->setStatusCancel();
+            return;
+        }
+
         $fileService = FileService::getWithContainer($this->container);
 
         foreach ((array) $args['uuid'] as $index => $uuid) {
