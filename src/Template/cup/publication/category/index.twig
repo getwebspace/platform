@@ -58,11 +58,11 @@
                                                 </button>
                                                 <ul class="dropdown-menu" role="menu">
                                                     <li>
-                                                        <a href="/cup/publication/category/{{ item.uuid }}/edit" class="btn btn-link"><i class="fas fa-edit"></i> Изменить</a>
+                                                        <a href="/cup/publication/category/{{ item.uuid }}/edit" class="btn btn-link"><i class="fas fa-fw fa-edit"></i> Изменить</a>
                                                         <div class="dropdown-divider"></div>
                                                         <form action="/cup/publication/category/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить категорию?');">
                                                             <button type="submit" class="btn btn-link text-danger">
-                                                                <i class="fas fa-trash-alt"></i> Удалить
+                                                                <i class="fas fa-fw fa-trash-alt"></i> Удалить
                                                             </button>
                                                         </form>
                                                     </li>

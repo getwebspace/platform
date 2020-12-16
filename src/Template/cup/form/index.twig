@@ -65,16 +65,16 @@
                                                 </button>
                                                 <ul class="dropdown-menu" role="menu">
                                                     <li>
-                                                        <a href="/cup/form/{{ item.uuid }}/view" class="btn btn-link"><i class="fas fa-eye"></i> Заявки</a>
+                                                        <a href="/cup/form/{{ item.uuid }}/view" class="btn btn-link"><i class="fas fa-fw fa-eye"></i> Заявки</a>
                                                     </li>
                                                     <li>
-                                                        <a href="/cup/form/{{ item.uuid }}/edit" class="btn btn-link"><i class="fas fa-edit"></i> Изменить</a>
+                                                        <a href="/cup/form/{{ item.uuid }}/edit" class="btn btn-link"><i class="fas fa-fw fa-edit"></i> Изменить</a>
                                                     </li>
                                                     <li><div class="dropdown-divider"></div></li>
                                                     <li>
                                                         <form action="/cup/form/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить форму?');">
                                                             <button type="submit" class="btn btn-link text-danger">
-                                                                <i class="fas fa-trash-alt"></i> Удалить
+                                                                <i class="fas fa-fw fa-trash-alt"></i> Удалить
                                                             </button>
                                                         </form>
                                                     </li>

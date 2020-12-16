@@ -80,7 +80,6 @@ $(() => {
     $('[data-table]').DataTable({
         'deferRender': true,
         'stateSave': true,
-        'scrollX': true,
         'language': {
             'search': 'Поиск:',
             'lengthMenu': 'Отображать _MENU_ строк на страницу',

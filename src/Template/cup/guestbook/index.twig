@@ -64,18 +64,17 @@
                                                 </button>
                                                 <ul class="dropdown-menu" role="menu">
                                                     <li>
-                                                        <a href="/cup/guestbook/{{ item.uuid }}/edit" class="btn btn-link"><i class="fas fa-edit"></i> Изменить</a>
+                                                        <a href="/cup/guestbook/{{ item.uuid }}/edit" class="btn btn-link"><i class="fas fa-fw fa-edit"></i> Изменить</a>
                                                     </li>
                                                     <li><div class="dropdown-divider"></div></li>
                                                     <li>
                                                         <form action="/cup/guestbook/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить запись?');">
                                                             <button type="submit" class="btn btn-link text-danger">
-                                                                <i class="fas fa-trash-alt"></i> Удалить
+                                                                <i class="fas fa-fw fa-trash-alt"></i> Удалить
                                                             </button>
                                                         </form>
                                                     </li>
                                                 </ul>
-
                                             </div>
                                         </td>
                                     </tr>

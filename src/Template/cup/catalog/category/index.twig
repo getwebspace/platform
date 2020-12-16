@@ -57,22 +57,22 @@
                                                 </button>
                                                 <ul class="dropdown-menu" role="menu">
                                                     <li>
-                                                        <a href="/cup/catalog/category/{{ category.uuid }}" class="btn btn-link"><i class="fas fa-sitemap"></i> Вложенные категории</a>
+                                                        <a href="/cup/catalog/category/{{ category.uuid }}" class="btn btn-link"><i class="fas fa-fw fa-sitemap"></i> Вложенные категории</a>
                                                     </li>
                                                     <li>
-                                                        <a href="/cup/catalog/product/{{ category.uuid }}" class="btn btn-link"><i class="fas fa-eye"></i> Номенклатура</a>
+                                                        <a href="/cup/catalog/product/{{ category.uuid }}" class="btn btn-link"><i class="fas fa-fw fa-eye"></i> Номенклатура</a>
                                                     </li>
                                                     <li>
-                                                        <a href="/cup/catalog/data/export?category={{ category.uuid }}" class="btn btn-link"><i class="fas fa-file-export"></i> Экспорт продуктов</a>
+                                                        <a href="/cup/catalog/data/export?category={{ category.uuid }}" class="btn btn-link"><i class="fas fa-fw fa-file-export"></i> Экспорт продуктов</a>
                                                     </li>
                                                     <li>
-                                                        <a href="/cup/catalog/category/{{ category.uuid }}/edit" class="btn btn-link"><i class="fas fa-edit"></i> Изменить</a>
+                                                        <a href="/cup/catalog/category/{{ category.uuid }}/edit" class="btn btn-link"><i class="fas fa-fw fa-edit"></i> Изменить</a>
                                                     </li>
                                                     <li><div class="dropdown-divider"></div></li>
                                                     <li>
                                                         <form action="/cup/catalog/category/{{ category.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить категорию?');">
                                                             <button type="submit" class="btn btn-link text-danger">
-                                                                <i class="fas fa-trash-alt"></i> Удалить
+                                                                <i class="fas fa-fw fa-trash-alt"></i> Удалить
                                                             </button>
                                                         </form>
                                                     </li>
