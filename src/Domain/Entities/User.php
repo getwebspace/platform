@@ -547,4 +547,17 @@ class User extends AbstractEntity
     {
         return count($this->files);
     }
+
+    /**
+     * Return model as array
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        $buf = parent::toArray();
+        $buf['session'] = $this->session->toArray();
+
+        return $buf;
+    }
 }
