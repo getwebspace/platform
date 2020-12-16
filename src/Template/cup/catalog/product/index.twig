@@ -61,7 +61,7 @@
                                                 <i class="fas fa-external-link-alt"></i>
                                             </a>
                                         </td>
-                                        <td class="text-right">{{ item.price|number_format(2, '.', ' ') }}</td>
+                                        <td class="text-right" data-order="{{ item.price }}">{{ item.price|number_format(2, '.', ' ') }}</td>
                                         <td class="text-center">{{ item.getVolumeWithUnit() }}</td>
                                         <td class="text-center">{{ item.stock|format_number({fraction_digit: 2}) }}</td>
                                         <td>
