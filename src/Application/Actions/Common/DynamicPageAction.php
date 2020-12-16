@@ -38,15 +38,14 @@ class DynamicPageAction extends AbstractAction
         $categories = $publicationCategoryService->read();
 
         // publication categories
-        if ($categories->count() && $categories->firstWhere('address', $path)) {
-            $category = $categories->firstWhere('address', $path);
+        if ($categories->count() && ($category = $categories->firstWhere('address', $path)) !== null) {
             $childrenCategories = $category->getNested($categories)->pluck('uuid')->all();
 
             return $this->respondWithTemplate($category->template['list'], [
                 'categories' => $categories->where('public', true),
                 'category' => $category,
                 'publications' => $publicationService->read([
-                    ['category' => $childrenCategories],
+                    'category' => $childrenCategories,
                     'order' => [$category->sort['by'] => $category->sort['direction']],
                     'limit' => $category->pagination,
                     'offset' => $category->pagination * $offset,
