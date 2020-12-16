@@ -62,7 +62,7 @@ class DynamicPageAction extends AbstractAction
         try {
             // publication
             if (($publication = $publicationService->read(['address' => $path])) !== null) {
-                $category = $categories->firstWhere('uuid', $publication->getUuid()->toString());
+                $category = $categories->firstWhere('uuid', $publication->getCategory()->toString());
 
                 if ($category) {
                     return $this->respondWithTemplate($category->template['full'], [
