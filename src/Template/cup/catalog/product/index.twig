@@ -44,17 +44,15 @@
                                 <tr>
                                     <th class="d-none">#</th>
                                     <th>Наименование</th>
-                                    <th width="15%">Категория</th>
-                                    <th width="10%">Артикул</th>
                                     <th width="10%">Цена</th>
                                     <th width="7%" class="text-center"><i class="fas fa-boxes" data-toggle="tooltip" data-placement="top" title="Количество на складе"></i></th>
                                     <th width="7%" class="text-center"><i class="fas fa-warehouse" data-toggle="tooltip" data-placement="top" title="Объем упаковки"></i></th>
+                                    <th width="10%">Артикул</th>
                                     <th width="10%" class="text-center no-sorting"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for item in products %}
-                                    {% set buf = categories.firstWhere('uuid', item.category) %}
                                     <tr>
                                         <td class="text-center d-none">{{ item.order }}</td>
                                         <td>
@@ -63,22 +61,20 @@
                                                 <i class="fas fa-external-link-alt"></i>
                                             </a>
                                         </td>
-                                        <td>
-                                            <a href="/cup/catalog/product/{{ buf.uuid }}">
-                                                {{ buf.title }}
-                                            </a>
-                                        </td>
+                                        <td class="text-right">{{ item.price|number_format(2, '.', ' ') }}</td>
+                                        <td class="text-center">{{ item.getVolumeWithUnit() }}</td>
+                                        <td class="text-center">{{ item.stock|format_number({fraction_digit: 2}) }}</td>
                                         <td>
                                             {% if item.vendorcode %}
                                                 <div>{{ item.vendorcode }}</div>
                                             {% endif %}
                                             {% if item.barcode %}
-                                                <div><i class="fas fa-barcode d-inline pr-1"></i>{{ item.barcode }}</div>
+                                                <div class="text-nowrap">
+                                                    <i class="fas fa-barcode d-inline pr-1" data-toggle="tooltip" data-placement="right" title="Штрихкод"></i>
+                                                    {{ item.barcode }}
+                                                </div>
                                             {% endif %}
                                         </td>
-                                        <td>{{ item.price|number_format(2, '.', ' ') }}</td>
-                                        <td class="text-center">{{ item.getVolumeWithUnit() }}</td>
-                                        <td class="text-center">{{ item.stock|format_number({fraction_digit: 2}) }}</td>
                                         <td class="text-center">
                                             <div class="btn-group dropdown">
                                                 <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
