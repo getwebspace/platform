@@ -250,7 +250,7 @@ abstract class AbstractEntity
      */
     public function toArray(): array
     {
-        return get_object_vars($this);
+        return array_except(get_object_vars($this), ['__initializer__', '__cloner__', '__isInitialized__']);
     }
 
     /**
