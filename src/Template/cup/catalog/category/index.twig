@@ -30,15 +30,12 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table data-table class="display table table-striped table-hover" >
+                        <table data-table class="table table-striped table-hover" style="width: 100%;">
                             <thead>
                                 <tr>
                                     <th class="d-none">#</th>
-                                    <th width="20%">Наименование</th>
-                                    <th width="15%">Родительская категория</th>
-                                    <th>{{ fields.catalog_category_field_1 ?? 'Поле 1' }}</th>
-                                    <th>{{ fields.catalog_category_field_2 ?? 'Поле 2' }}</th>
-                                    <th>{{ fields.catalog_category_field_3 ?? 'Поле 3' }}</th>
+                                    <th>Наименование</th>
+                                    <th width="15%">Категория</th>
                                     <th width="10%" class="text-center no-sorting"></th>
                                 </tr>
                             </thead>
@@ -53,9 +50,6 @@
                                             </a>
                                         </td>
                                         <td>{{ categories.where('uuid', category.parent).first().title ?? '&mdash;' }}</td>
-                                        <td>{{ category.field1 }}</td>
-                                        <td>{{ category.field2 }}</td>
-                                        <td>{{ category.field3 }}</td>
                                         <td class="text-center">
                                             <div class="btn-group dropdown">
                                                 <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
