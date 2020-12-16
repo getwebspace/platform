@@ -14,6 +14,9 @@ $app
     ->group('/api', function (App $app): void {
         // users
         $app->group('/user', function (App $app): void {
+            $app->map(['get', 'post'], '/info', \App\Application\Actions\Api\User\Info::class)
+                ->setName('user:info:api');
+
             // users subscribers
             $app->group('/newsletter', function (App $app): void {
                 $app->map(['get', 'post'], '/subscribe', \App\Application\Actions\Api\User\Subscriber\SubscribeAction::class)
