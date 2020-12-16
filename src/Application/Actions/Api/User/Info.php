@@ -8,8 +8,12 @@ class Info extends UserAction
     {
         $users = from_service_to_array($this->userService->read([
             'uuid' => $this->request->getParam('uuid'),
-            'parent' => $this->request->getParam('parent'),
-            'address' => $this->request->getParam('address'),
+            'identifier' => $this->request->getParam('identifier'),
+            'username' => $this->request->getParam('username'),
+            'email' => $this->request->getParam('email'),
+            'phone' => $this->request->getParam('phone'),
+            'status' => $this->request->getParam('status'),
+            'ip' => $this->request->getParam('ip'),
 
             'order' => $this->request->getParam('order', []),
             'limit' => $this->request->getParam('limit', 1000),
