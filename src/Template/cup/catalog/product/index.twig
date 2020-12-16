@@ -45,8 +45,8 @@
                                     <th class="d-none">#</th>
                                     <th>Наименование</th>
                                     <th width="10%">Цена</th>
-                                    <th width="7%" class="text-center"><i class="fas fa-boxes" data-toggle="tooltip" data-placement="top" title="Количество на складе"></i></th>
-                                    <th width="7%" class="text-center"><i class="fas fa-warehouse" data-toggle="tooltip" data-placement="top" title="Объем упаковки"></i></th>
+                                    <th width="7%" class="text-center"><i class="fas fa-boxes" data-toggle="tooltip" data-placement="top" title="Объем упаковки"></i></th>
+                                    <th width="7%" class="text-center"><i class="fas fa-warehouse" data-toggle="tooltip" data-placement="top" title="Количество на складе"></i></th>
                                     <th width="10%">Артикул</th>
                                     <th width="10%" class="text-center no-sorting"></th>
                                 </tr>
@@ -62,8 +62,8 @@
                                             </a>
                                         </td>
                                         <td class="text-right" data-order="{{ item.price }}">{{ item.price|number_format(2, '.', ' ') }}</td>
-                                        <td class="text-center">{{ item.getVolumeWithUnit() }}</td>
-                                        <td class="text-center">{{ item.stock|format_number({fraction_digit: 2}) }}</td>
+                                        <td class="text-center" data-order="{{ item.volume }}">{{ item.getVolumeWithUnit() }}</td>
+                                        <td class="text-center" data-order="{{ item.stock }}">{{ item.stock|format_number({fraction_digit: 2}) }}</td>
                                         <td>
                                             {% if item.vendorcode %}
                                                 <div>{{ item.vendorcode }}</div>
