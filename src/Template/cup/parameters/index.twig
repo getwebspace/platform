@@ -731,7 +731,7 @@
                                         {% for index,item in parameter %}
                                             {% if item.key starts with 'var_' and item.value %}
                                                 {% include 'cup/field.twig' with {
-                                                    'label': item.key,
+                                                    'label': '<code>' ~ item.key ~ '</code>',
                                                     'type': 'text',
                                                     'name': index,
                                                     'args': {
