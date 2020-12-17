@@ -23,7 +23,7 @@ abstract class AbstractEnumType extends Type
     /**
      * {@inheritdoc}
      */
-    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         return 'VARCHAR(100)';
     }
@@ -51,7 +51,7 @@ abstract class AbstractEnumType extends Type
     /**
      * {@inheritdoc}
      */
-    public function getName()
+    public function getName(): ?string
     {
         return static::NAME;
     }
@@ -59,7 +59,7 @@ abstract class AbstractEnumType extends Type
     /**
      * {@inheritdoc}
      */
-    public function requiresSQLCommentHint(AbstractPlatform $platform)
+    public function requiresSQLCommentHint(AbstractPlatform $platform): bool
     {
         return true;
     }

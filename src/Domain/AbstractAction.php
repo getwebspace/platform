@@ -35,22 +35,22 @@ abstract class AbstractAction extends AbstractComponent
     /**
      * @var Request
      */
-    protected $request;
+    protected Request $request;
 
     /**
      * @var Response
      */
-    protected $response;
+    protected Response $response;
 
     /**
      * @var array
      */
-    protected $args;
+    protected array $args;
 
     /**
      * @var array
      */
-    private $error = [];
+    private array $error = [];
 
     /**
      * @param ContainerInterface $container
@@ -66,7 +66,7 @@ abstract class AbstractAction extends AbstractComponent
      * @param string $field
      * @param string $reason
      */
-    protected function addError($field, $reason = ''): void
+    protected function addError(string $field, string $reason = ''): void
     {
         $this->error[$field] = $reason;
     }
@@ -117,7 +117,7 @@ abstract class AbstractAction extends AbstractComponent
      *
      * @return Response
      */
-    public function __invoke(Request $request, Response $response, $args): Response
+    public function __invoke(Request $request, Response $response, array $args): Response
     {
         \RunTracy\Helpers\Profiler\Profiler::start('route');
 
@@ -256,7 +256,7 @@ abstract class AbstractAction extends AbstractComponent
      *
      * @return File[]
      */
-    protected function getUploadedFiles(string $field = 'files')
+    protected function getUploadedFiles(string $field = 'files'): array
     {
         $result = [];
 
@@ -299,38 +299,9 @@ abstract class AbstractAction extends AbstractComponent
     }
 
     /**
-     * Upload image files
-     *
-     * @param string $field
-     *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
-     *
-     * @return array
-     *
-     * @deprecated
-     */
-    protected function handlerFileUpload(string $field = 'files')
-    {
-        return [];
-    }
-
-    /**
-     * Upload image files
-     *
-     * @param string $field
-     *
-     * @return array
-     *
-     * @deprecated
-     */
-    protected function handlerFileRemove(string $field = 'delete-file')
-    {
-        return [];
-    }
-
-    /**
      * Return recaptcha status if is enabled
+     *
+     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      *
      * @return bool
      */
@@ -373,7 +344,7 @@ abstract class AbstractAction extends AbstractComponent
      *
      * @return string
      */
-    protected function render($template, array $data = [])
+    protected function render($template, array $data = []): string
     {
         try {
             \RunTracy\Helpers\Profiler\Profiler::start('render (%s)', $template);
@@ -410,11 +381,15 @@ abstract class AbstractAction extends AbstractComponent
      *
      * @return Response
      */
-    protected function respondWithTemplate($template, array $data = [])
+    protected function respondWithTemplate($template, array $data = []): Response
     {
-        $this->response->getBody()->write(
-            $this->render($template, $data)
-        );
+        try {
+            $this->response->getBody()->write(
+                $this->render($template, $data)
+            );
+        } catch (\Exception $e) {
+            return $this->respondWithTemplate('p400.twig', ['exception' => $e])->withStatus(400);
+        }
 
         return $this->response;
     }

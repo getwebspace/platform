@@ -19,14 +19,14 @@ abstract class AbstractTask extends AbstractComponent
     private TaskService $taskService;
 
     /**
-     * @var Task
+     * @var null|Task
      */
     private ?Task $entity;
 
     /**
      * @var Twig
      */
-    private $renderer;
+    private Twig $renderer;
 
     public static string $pid_file = VAR_DIR . '/worker.pid';
 
@@ -44,7 +44,7 @@ abstract class AbstractTask extends AbstractComponent
     {
         parent::__construct($container);
 
-        // @var TaskService $taskService
+        /** @var TaskService $taskService  */
         $this->taskService = TaskService::getWithContainer($container);
         $this->entity = $entity;
         $this->renderer = $container->get('view');
@@ -59,7 +59,7 @@ abstract class AbstractTask extends AbstractComponent
      *
      * @return string
      */
-    protected function render($template, array $data = [])
+    protected function render(string $template, array $data = []): string
     {
         try {
             \RunTracy\Helpers\Profiler\Profiler::start('render (%s)', $template);
@@ -121,35 +121,35 @@ abstract class AbstractTask extends AbstractComponent
         }
     }
 
-    public function setStatusWork()
+    public function setStatusWork(): bool
     {
         $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_WORK);
 
         return true;
     }
 
-    public function setStatusDone($output = '')
+    public function setStatusDone($output = ''): bool
     {
         $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_DONE, 0, $output);
 
         return true;
     }
 
-    public function setStatusFail($output = '')
+    public function setStatusFail($output = ''): bool
     {
         $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_FAIL, 0, $output);
 
         return false;
     }
 
-    public function setStatusCancel($output = '')
+    public function setStatusCancel($output = ''): bool
     {
         $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_CANCEL, 0, $output);
 
         return false;
     }
 
-    public function setStatusDelete($output = '')
+    public function setStatusDelete($output = ''): bool
     {
         $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_DELETE, 0, $output);
 
@@ -160,6 +160,8 @@ abstract class AbstractTask extends AbstractComponent
      * @param null|string $status
      * @param int         $progress
      * @param string      $output
+     *
+     * @throws Service\Task\Exception\TaskNotFoundException
      */
     private function saveStateWriteLog($status = null, $progress = 0, $output = ''): void
     {
