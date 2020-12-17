@@ -4,6 +4,7 @@ namespace App\Domain;
 
 use App\Domain\Service\Parameter\ParameterService;
 use Doctrine\ORM\EntityManager;
+use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -53,7 +54,7 @@ abstract class AbstractComponent
      * @param null|string|string[] $key
      * @param mixed                $default
      *
-     * @return null|array|mixed|string
+     * @return null|array|Collection|string
      */
     protected function parameter($key = null, $default = null)
     {

@@ -49,6 +49,11 @@
                                 </a>
                             </li>
                             <li class="nav-item submenu">
+                                <a class="nav-link" data-toggle="pill" href="#variables" role="tab">
+                                    Переменные
+                                </a>
+                            </li>
+                            <li class="nav-item submenu">
                                 <a class="nav-link" data-toggle="pill" href="#plugins" role="tab">
                                     Плагины
                                 </a>
@@ -696,6 +701,55 @@
                                 } %}
                             </div>
 
+                            {# TAB: Variables #}
+                            <div class="tab-pane fade" id="variables" role="tabpanel">
+
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6">
+                                        <p>
+                                            В этом разделе настроек можно задать дополнительные глобальные переменные, которые
+                                            можно легко использовать в шаблоне.<br>
+                                            <b>Например</b>: переменную с именем <code>my_variable</code> можно вывести на странице с помощью следущего кода:
+                                            <code>&lbrace;&lbrace; parameter('var_my_variable') &rbrace;&rbrace;</code>
+                                        </p>
+
+
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Имя новой переменной',
+                                            'type': 'text',
+                                            'message': 'Допустимы только латинские буквы: <code>[A-Za-z]</code>',
+                                            'prefix': 'var_',
+                                            'args': {
+                                                'placeholder': 'my_variable',
+                                                'data': {'input': 'variable'}
+                                            }
+                                        } %}
+
+                                        <button type="button" class="btn btn-secondary float-right" data-click="add_variable">Добавить</button>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6">
+                                        {% for index,item in parameter %}
+                                            {% if item.key starts with 'var_' and item.value %}
+                                                {% include 'cup/field.twig' with {
+                                                    'label': item.key,
+                                                    'type': 'text',
+                                                    'name': index,
+                                                    'args': {
+                                                        'value': item.value
+                                                    }
+                                                } %}
+                                            {% endif %}
+                                        {% endfor %}
+
+                                        {% include 'cup/field.twig' with {
+                                            'label': '',
+                                            'type': 'hidden',
+                                            'name': 'var[]',
+                                        } %}
+                                    </div>
+                                </div>
+                            </div>
+
                             {# TAB: Plugins #}
                             <div class="tab-pane fade" id="plugins" role="tabpanel">
                                 <div class="row">
@@ -704,7 +758,7 @@
                                             <a class="nav-link active"  data-toggle="pill" href="#plugins-recaptcha">reCAPTCHA</a>
 
                                             {% for plugin in plugins %}
-                                                <a class="nav-link"     data-toggle="pill" href="#plugins-{{ plugin.getCredentials('name') }}">
+                                                <a class="nav-link" data-toggle="pill" href="#plugins-{{ plugin.getCredentials('name') }}">
                                                     {{ plugin.getCredentials('title') }}
                                                 </a>
                                             {% endfor %}
@@ -795,7 +849,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                     <div class="card-action">

@@ -4,6 +4,7 @@ $(() => {
     // toolbar
     let topbar_open = 0,
         topbar = $('.topbar-toggler');
+    
     topbar.on('click', function() {
         if (topbar_open === 1) {
             $('html').removeClass('topbar_open');
@@ -133,4 +134,28 @@ $(() => {
         fadeDelay: 1.0            // Point during the overlay's fade-in that the modal begins to fade in (.5 = 50%, 1.5 = 150%, etc.)
     };
     
+    // parameters add variables
+    {
+        let $hidden = $('[name="var[]"]').parents('[data-input]'),
+            $value = $('[data-input="variable"]');
+        
+        $('[data-click="add_variable"]').on('click', () => {
+            let $clone = $hidden.clone();
+            
+            if (!$value.val() || $('[name="var[' + $value.val() + ']"]').length) {
+                $value.parents('.form-group').addClass('has-error');
+                setTimeout(() => {
+                    $value.parents('.form-group').removeClass('has-error');
+                }, 2500);
+            } else {
+                $clone.find('div:first').text('var_' + $value.val());
+                $clone.find('input')
+                    .attr('type', 'text')
+                    .attr('name', 'var[' + $value.val() + ']');
+                
+                $clone.insertBefore($hidden);
+                $value.val('');
+            }
+        });
+    }
 });
