@@ -21,6 +21,18 @@ class OrderCreateAction extends CatalogAction
                 'external_id' => $this->request->getParam('external_id'),
             ]);
 
+            // notify to user
+            if ($order->getUserUuid() !== \Ramsey\Uuid\Uuid::NIL) {
+                $this->notificationService->create([
+                    'user_uuid' => $order->getUserUuid(),
+                    'title' => 'Ваш заказ: ' . $order->getSerial(),
+                    'message' => 'Для вас был добавлен заказ',
+                    'params' => [
+                        'order_uuid' => $order->getUuid(),
+                    ],
+                ]);
+            }
+
             switch (true) {
                 case $this->request->getParam('save', 'exit') === 'exit':
                     return $this->response->withRedirect('/cup/catalog/order');

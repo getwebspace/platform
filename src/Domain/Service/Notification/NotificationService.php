@@ -36,7 +36,7 @@ class NotificationService extends AbstractService
     public function create(array $data = []): Notification
     {
         $default = [
-            'user_uuid' => '',
+            'user_uuid' => \Ramsey\Uuid\Uuid::NIL,
             'title' => '',
             'message' => '',
             'params' => [],
