@@ -46,7 +46,7 @@ class OrderUpdateAction extends CatalogAction
                 return $this->respondWithTemplate('cup/catalog/order/form.twig', [
                     'order' => $order,
                     'products' => $products,
-                    'user' => $user,
+                    'item' => $user,
                 ]);
             }
         }

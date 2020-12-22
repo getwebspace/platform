@@ -50,9 +50,9 @@
                                             'name': 'delivery[client]',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="ФИО клиента"></i>',
                                             'args': {
-                                                'value': order.user_uuid and user ? user.getName() : order.delivery.client,
+                                                'value': order.user_uuid and item ? item.getName() : order.delivery.client,
                                                 'required': true,
-                                                'readonly': order.user_uuid and user ? true : false
+                                                'readonly': order.user_uuid and item ? true : false
                                             }
                                         } %}
                                     </div>
@@ -64,8 +64,8 @@
                                             'type': 'tel',
                                             'name': 'phone',
                                             'args': {
-                                                'value': order.user_uuid and user and user.phone ? user.phone : order.phone,
-                                                'readonly': order.user_uuid and user and user.phone ? true : false
+                                                'value': order.user_uuid and item and item.phone ? item.phone : order.phone,
+                                                'readonly': order.user_uuid and item and item.phone ? true : false
                                             }
                                         } %}
                                     </div>
@@ -75,8 +75,8 @@
                                             'type': 'email',
                                             'name': 'email',
                                             'args': {
-                                                'value': order.user_uuid and user and user.email ? user.email : order.email,
-                                                'readonly': order.user_uuid and user and user.email ? true : false
+                                                'value': order.user_uuid and item and item.email ? item.email : order.email,
+                                                'readonly': order.user_uuid and item and item.email ? true : false
                                             }
                                         } %}
                                     </div>
@@ -110,6 +110,15 @@
 
                             {# Tab: Состав заказа #}
                             <div class="tab-pane fade" id="list" role="tabpanel">
+                                <div class="d-flex align-items-center">
+                                    <button type="button" data-btn-modal-products class="btn btn-primary btn-round ml-auto">
+                                        <i class="fa fa-plus"></i>
+                                        Добавить товар
+                                    </button>
+                                </div>
+
+                                <div class="separator-dot"></div>
+
                                 <table data-table class="table table-striped table-hover" style="width: 100%;">
                                     <thead>
                                         <tr>
@@ -190,7 +199,7 @@
                                             'name': 'user_uuid',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
                                             'args': {
-                                                'value': order.user_uuid and user ? user.uuid : ''
+                                                'value': order.user_uuid and item ? item.uuid : ''
                                             }
                                         } %}
                                     </div>
