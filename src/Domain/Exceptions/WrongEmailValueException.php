@@ -2,11 +2,9 @@
 
 namespace App\Domain\Exceptions;
 
-use App\Domain\AbstractException;
-
-class WrongEmailValueException extends AbstractException
+class WrongEmailValueException extends HttpBadRequestException
 {
-    protected $title = 'Email is wrong';
+    protected string $title = 'Email is wrong';
 
-    protected $description = 'Email value is wrong';
+    protected string $description = 'Email value is wrong';
 }

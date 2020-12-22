@@ -2,11 +2,9 @@
 
 namespace App\Domain\Exceptions;
 
-use App\Domain\AbstractException;
-
-class WrongIpValueException extends AbstractException
+class WrongIpValueException extends HttpBadRequestException
 {
-    protected $title = 'Ip is wrong';
+    protected string $title = 'Ip is wrong';
 
-    protected $description = 'Ip value is wrong';
+    protected string $description = 'Ip value is wrong';
 }

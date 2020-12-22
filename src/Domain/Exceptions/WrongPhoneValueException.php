@@ -2,11 +2,9 @@
 
 namespace App\Domain\Exceptions;
 
-use App\Domain\AbstractException;
-
-class WrongPhoneValueException extends AbstractException
+class WrongPhoneValueException extends HttpBadRequestException
 {
-    protected $title = 'Phone is wrong';
+    protected string $title = 'Phone is wrong';
 
-    protected $description = 'Phone value format is wrong';
+    protected string $description = 'Phone value format is wrong';
 }

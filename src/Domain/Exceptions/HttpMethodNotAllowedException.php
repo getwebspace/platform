@@ -10,7 +10,7 @@ class HttpMethodNotAllowedException extends AbstractHttpException
 
     protected $message = 'Method Not Allowed.';
 
-    protected $title = '405 Method Not Allowed';
+    protected string $title = '405 Method Not Allowed';
 
-    protected $description = 'The request method is not supported for the requested resource.';
+    protected string $description = 'The request method is not supported for the requested resource.';
 }
