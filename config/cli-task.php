@@ -43,7 +43,7 @@ register_shutdown_function(function () use ($queue): void {
 
     sleep(1); // timeout
 
-    if ($queue) {
+    if ($queue->count()) {
         \App\Domain\AbstractTask::worker();
     }
 });
@@ -54,18 +54,26 @@ if ($queue->count()) {
     $action = $entity->getAction();
 
     try {
-        /** @var \App\Domain\AbstractTask $task */
-        $task = new $action($container, $entity);
+        if (class_exists($action)) {
+            /** @var \App\Domain\AbstractTask $task */
+            $task = new $action($container, $entity);
 
-        if ($entity->getStatus() === \App\Domain\Types\TaskStatusType::STATUS_QUEUE) {
-            $task->run();
-        } else {
-            // remove task by time
-            if ((new DateTime())->diff($entity->getDate())->i >= 30) {
-                $task->setStatusDelete();
+            if ($entity->getStatus() === \App\Domain\Types\TaskStatusType::STATUS_QUEUE) {
+                $task->run();
             } else {
-                sleep(30);
+                // remove task by time
+                if ((new DateTime())->diff($entity->getDate())->i >= 10) {
+                    $task->setStatusDelete('Removed by time');
+                } else {
+                    sleep(30);
+                }
             }
+        } else {
+            $taskService->update($entity, [
+                'status' => \App\Domain\Types\TaskStatusType::STATUS_DELETE,
+                'output' => 'Task class not found',
+            ]);
+            sleep(30);
         }
     } catch (Exception $e) {
         $logger->error('Task catch exception', [
