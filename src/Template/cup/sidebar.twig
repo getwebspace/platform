@@ -83,10 +83,10 @@
             $quickSidebar = $('.quick-sidebar'),
             $notifList = $quickSidebar.find('.notif-center'),
             $elNotifEmpty = $quickSidebar.find('[data-notif-empty]'),
-            $elNotifItem = $quickSidebar.find('[data-notif-item]').detach(),
+            $elNotifItem = $quickSidebar.find('[data-notif-item]').detach().removeAttr('data-notif-item'),
             $taskList = $quickSidebar.find('.list-group'),
             $elTaskEmpty = $quickSidebar.find('[data-task-empty]'),
-            $elTaskItem = $quickSidebar.find('[data-task-item]').detach();
+            $elTaskItem = $quickSidebar.find('[data-task-item]').detach().removeAttr('data-task-item');
 
         (function refresh() {
             $.post('/cup/refresh', data, (res) => {
@@ -101,7 +101,7 @@
                             $buf.find('.block').text(notification.title);
                             $buf.find('.time').text(moment(notification.date.date).format('DD.MM.YYYY HH:mm:ss'));
 
-                            $notifList.append($buf);
+                            $notifList.prepend($buf);
                             data.notifications.push(notification.uuid);
                         }
                     }
@@ -171,7 +171,7 @@
                 }
             });
 
-            setTimeout(refresh, 1000);
+            setTimeout(refresh, 3000);
         })();
     });
 </script>
