@@ -61,7 +61,9 @@ class NotificationServiceTest extends TestCase
     {
         $this->expectException(MissingUserUuidValueException::class);
 
-        $this->service->create([]);
+        $this->service->create([
+            'user_uuid' => null,
+        ]);
     }
 
     public function testCreateWithMissingTitleValue(): void
