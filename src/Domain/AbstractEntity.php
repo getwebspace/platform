@@ -214,7 +214,7 @@ abstract class AbstractEntity
             return $value;
         }
 
-        return Uuid::NIL;
+        return Uuid::fromString(Uuid::NIL);
     }
 
     /**
