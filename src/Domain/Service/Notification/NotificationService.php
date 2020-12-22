@@ -44,7 +44,7 @@ class NotificationService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        if (!$data['user_uuid']) {
+        if (blank($data['user_uuid'])) {
             throw new MissingUserUuidValueException();
         }
         if (!$data['title']) {
