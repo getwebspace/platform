@@ -139,6 +139,17 @@
                                                 'value': 'j-m-Y, H:i'
                                             }
                                         } %}
+
+                                        {% include 'cup/field.twig' with {
+                                            'label': 'Код языка сайта',
+                                            'description': 'Используется для значения атрибута <code>&lt;html lang="ru"&gt;</code><br>' ~
+                                            'Например: <code>ru</code>, <code>ua</code>, <code>en</code>',
+                                            'type': 'text',
+                                            'name': 'common[lang]',
+                                            'args': {
+                                                'value': 'ru'
+                                            }
+                                        } %}
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
                                         {% include 'cup/field.twig' with {
