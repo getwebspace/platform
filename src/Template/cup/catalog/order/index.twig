@@ -45,7 +45,7 @@
                                                 {{ item.serial }}
                                             {% endif %}
                                         </td>
-                                        <td>{{ item.user_uuid ? users.firstWhere('uuid', item.user_uuid).getName() : item.delivery.client }}</td>
+                                        <td>{{ item.user_uuid != NIL ? users.firstWhere('uuid', item.user_uuid).getName() : item.delivery.client }}</td>
                                         <td>
                                             <span class="badge badge-secondary">{{ item.status }}</span>
                                         </td>

@@ -18,13 +18,32 @@
                     <div class="card-header">
                         <div class="card-head-row">
                             <div class="card-title">{{ order.uuid ? 'Редактирование заказа ' ~ order.serial : 'Создание нового заказа' }}</div>
+
+                            <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active show" data-toggle="pill" href="#order" role="tab">
+                                        Заказ
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="pill" href="#list" role="tab">
+                                        Состав заказа
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="pill" href="#other" role="tab">
+                                        Дополнительно
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
+                        <div class="tab-content">
+                            {# Tab: Заказ #}
+                            <div class="tab-pane fade show active" id="order" role="tabpanel">
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Клиент',
                                             'type': 'text',
@@ -38,53 +57,8 @@
                                         } %}
                                     </div>
                                 </div>
-
                                 <div class="row">
-                                    <div class="col-md-12">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Адрес доставки',
-                                            'type': 'textarea',
-                                            'name': 'delivery[address]',
-                                            'args': {
-                                                'value': order.delivery.address,
-                                                'style': 'min-height: 131px;'
-                                            }
-                                        } %}
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Комментарий',
-                                            'type': 'textarea',
-                                            'name': 'comment',
-                                            'args': {
-                                                'value': order.comment,
-                                                'style': 'min-height: 131px;'
-                                            }
-                                        } %}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Дата создания',
-                                            'type': 'datetime',
-                                            'args': {
-                                                'value': order.date|df('Y-m-d\\TH:i'),
-                                                'placeholder': '20-01-2019',
-                                                'readonly': true
-                                            }
-                                        } %}
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Телефон',
                                             'type': 'tel',
@@ -95,10 +69,7 @@
                                             }
                                         } %}
                                     </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'E-Mail',
                                             'type': 'email',
@@ -112,7 +83,80 @@
                                 </div>
 
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Адрес доставки',
+                                            'type': 'textarea',
+                                            'name': 'delivery[address]',
+                                            'args': {
+                                                'value': order.delivery.address,
+                                                'style': 'min-height: 131px;'
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Комментарий',
+                                            'type': 'textarea',
+                                            'name': 'comment',
+                                            'args': {
+                                                'value': order.comment,
+                                                'style': 'min-height: 131px;'
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {# Tab: Состав заказа #}
+                            <div class="tab-pane fade" id="list" role="tabpanel">
+                                <table data-table class="table table-striped table-hover" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th class="no-sorting">Позиция</th>
+                                            <th width="15%" class="no-sorting">Цена</th>
+                                            <th width="15%" class="no-sorting">Количество</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for product in products %}
+                                            {% set count = order.list[product.uuid.toString()] %}
+                                            <tr>
+                                                <td>{{ product.title }}</td>
+                                                <td>{{ product.price|number_format(2, '.', ' ') }}</td>
+                                                <td>
+                                                    {% include 'cup/form.twig' with {
+                                                        'type': 'number',
+                                                        'name': 'list['~ product.uuid ~']',
+                                                        'args': {
+                                                            'value': count,
+                                                            'placeholder': '1',
+                                                            'step': 'any',
+                                                            'min': '0',
+                                                        }
+                                                    } %}
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {# Tab: Дополнительно #}
+                            <div class="tab-pane fade" id="other" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Дата создания',
+                                            'type': 'datetime',
+                                            'args': {
+                                                'value': order.date|df('Y-m-d\\TH:i'),
+                                                'placeholder': '20-01-2019',
+                                                'readonly': true
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Статус',
                                             'type': 'select',
@@ -123,12 +167,9 @@
                                             }
                                         } %}
                                     </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Доставка',
+                                            'label': 'Дата доставки',
                                             'type': 'datetime',
                                             'name': 'shipping',
                                             'args': {
@@ -138,93 +179,45 @@
                                         } %}
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
 
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-flex align-items-center">
-                            <div class="card-title">Состав заказа</div>
+                                <hr>
 
-                            <button type="button" data-btn-modal-products class="btn btn-primary btn-round ml-auto">
-                                <i class="fa fa-plus"></i>
-                                Добавить товар
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <table data-table class="table table-striped table-hover" style="width: 100%;">
-                            <thead>
-                            <tr>
-                                <th class="no-sorting">Позиция</th>
-                                <th width="15%" class="no-sorting">Цена</th>
-                                <th width="15%" class="no-sorting">Количество</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for product in products %}
-                                {% set count = order.list[product.uuid.toString()] %}
-                                <tr>
-                                    <td>{{ product.title }}</td>
-                                    <td>{{ product.price|number_format(2, '.', ' ') }}</td>
-                                    <td>
+                                <div class="row">
+                                    <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'type': 'number',
-                                            'name': 'list['~ product.uuid ~']',
+                                            'label': 'Идентификатор пользователя',
+                                            'type': 'text',
+                                            'name': 'user_uuid',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
                                             'args': {
-                                                'value': count,
-                                                'placeholder': '1',
-                                                'step': 'any',
-                                                'min': '0',
+                                                'value': order.user_uuid and user ? user.uuid : ''
                                             }
                                         } %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row justify-content-center">
-                            <div class="col-md-3">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Идентификатор пользователя',
-                                    'type': 'text',
-                                    'name': 'user_uuid',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
-                                    'args': {
-                                        'value': order.user_uuid ? user.uuid : ''
-                                    }
-                                } %}
-                            </div>
-
-                            <div class="col-md-3">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Внешний ID',
-                                    'type': 'text',
-                                    'name': 'external_id',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
-                                    'args': {
-                                        'value': order.external_id,
-                                    }
-                                } %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Внешний ID',
+                                            'type': 'text',
+                                            'name': 'external_id',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
+                                            'args': {
+                                                'value': order.external_id,
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-12">
+                                        {% include 'cup/form.twig' with {
+                                            'type': 'text',
+                                            'args': {
+                                                'value': order.system,
+                                                'readonly': true
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-
                     <div class="card-action">
                         {% include "cup/form-save.twig" %}
                     </div>
