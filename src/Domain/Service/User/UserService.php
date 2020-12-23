@@ -108,7 +108,7 @@ class UserService extends AbstractService
     public function read(array $data = [])
     {
         $default = [
-            'identifier' => null, // field for: username, email, email
+            'identifier' => null, // field for: username, email, phone
             'uuid' => null,
             'username' => null,
             'email' => null,
@@ -271,12 +271,16 @@ class UserService extends AbstractService
                     }
                 }
                 if ($data['phone'] !== null) {
-                    $found = $this->service->findOneByPhone($data['phone']);
-
-                    if ($found === null || $found === $entity) {
-                        $entity->setPhone($data['phone']);
+                    if (blank($data['phone'])) {
+                        $entity->setPhone();
                     } else {
-                        throw new PhoneAlreadyExistsException();
+                        $found = $this->service->findOneByPhone($data['phone']);
+
+                        if ($found === null || $found === $entity) {
+                            $entity->setPhone($data['phone']);
+                        } else {
+                            throw new PhoneAlreadyExistsException();
+                        }
                     }
                 }
                 if ($data['password'] !== null) {

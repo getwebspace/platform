@@ -89,7 +89,8 @@
                                             'type': 'textarea',
                                             'name': 'delivery[address]',
                                             'args': {
-                                                'value': order.delivery.address,
+                                                'value': order.user_uuid and item ? item.getAddress() : order.delivery.address,
+                                                'readonly': order.user_uuid and item ? true : false,
                                                 'style': 'min-height: 131px;'
                                             }
                                         } %}
@@ -217,9 +218,10 @@
                                     <div class="col-md-12">
                                         {% include 'cup/form.twig' with {
                                             'type': 'text',
+                                            'name': 'system',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
                                             'args': {
                                                 'value': order.system,
-                                                'readonly': true
                                             }
                                         } %}
                                     </div>

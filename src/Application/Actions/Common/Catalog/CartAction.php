@@ -22,7 +22,7 @@ class CartAction extends CatalogAction
                 'email' => $this->request->getParam('email'),
                 'comment' => $this->request->getParam('comment'),
                 'shipping' => $this->request->getParam('shipping'),
-                'system' => $this->request->getParam('system'),
+                'system' => $this->request->getParam('system', ''),
             ];
 
             /**

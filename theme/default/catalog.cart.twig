@@ -94,6 +94,7 @@
                                     'type': 'text',
                                     'name': 'delivery[client]',
                                     'args': {
+                                        'value': user.getName(),
                                         'required': true,
                                         'placeholder': 'Ваше имя *',
                                         'class': ['form-control'],
@@ -106,6 +107,7 @@
                                     'type': 'tel',
                                     'name': 'phone',
                                     'args': {
+                                        'value': user.getPhone(),
                                         'required': true,
                                         'placeholder': 'Ваш телефон *',
                                         'class': ['form-control'],
@@ -118,8 +120,8 @@
                                     'type': 'email',
                                     'name': 'email',
                                     'args': {
-                                        'required': true,
-                                        'placeholder': 'Ваш E-Mail *',
+                                        'value': user.getEmail(),
+                                        'placeholder': 'Ваш E-Mail',
                                         'class': ['form-control'],
                                         'data': {'catalog-cart-data': ''}
                                     }
@@ -144,6 +146,7 @@
                                     'type': 'textarea',
                                     'name': 'delivery[address]',
                                     'args': {
+                                        'value': user.getAddress(),
                                         'required': true,
                                         'placeholder': 'Адрес доставки.. *',
                                         'style': 'height: 105px; margin-bottom: 16px;',

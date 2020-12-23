@@ -300,7 +300,7 @@ abstract class AbstractEntity
      * Denied to write property
      *
      * @param string $name
-     * @param mixed $value
+     * @param mixed  $value
      *
      * @return mixed
      */

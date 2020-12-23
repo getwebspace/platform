@@ -105,16 +105,20 @@ class User extends AbstractEntity
     protected string $phone = '';
 
     /**
-     * @param string $phone
+     * @param null|string $phone
      *
      * @throws \App\Domain\Exceptions\WrongPhoneValueException
      *
      * @return $this
      */
-    public function setPhone(string $phone)
+    public function setPhone(string $phone = null)
     {
-        if ($this->checkStrLenMax($phone, 25) && $this->checkPhoneByValue($phone)) {
-            $this->phone = $phone;
+        if ($phone) {
+            if ($this->checkStrLenMax($phone, 25) && $this->checkPhoneByValue($phone)) {
+                $this->phone = $phone;
+            }
+        } else {
+            $this->phone = '';
         }
 
         return $this;

@@ -199,7 +199,11 @@ class OrderService extends AbstractService
                     $entity->setList($data['list']);
                 }
                 if ($data['phone'] !== null) {
-                    $entity->setPhone($data['phone']);
+                    if (blank($data['phone'])) {
+                        $entity->setPhone();
+                    } else {
+                        $entity->setPhone($data['phone']);
+                    }
                 }
                 if ($data['email'] !== null) {
                     $entity->setEmail($data['email']);

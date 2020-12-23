@@ -186,16 +186,20 @@ class Order extends AbstractEntity
     protected string $phone = '';
 
     /**
-     * @param string $phone
+     * @param null|string $phone
      *
      * @throws \App\Domain\Exceptions\WrongPhoneValueException
      *
      * @return $this
      */
-    public function setPhone(string $phone)
+    public function setPhone(string $phone = null)
     {
-        if ($this->checkStrLenMax($phone, 25) && $this->checkPhoneByValue($phone)) {
-            $this->phone = $phone;
+        if ($phone) {
+            if ($this->checkStrLenMax($phone, 25) && $this->checkPhoneByValue($phone)) {
+                $this->phone = $phone;
+            }
+        } else {
+            $this->phone = '';
         }
 
         return $this;
@@ -215,16 +219,19 @@ class Order extends AbstractEntity
     protected string $email = '';
 
     /**
-     * @param string $email
+     * @param null|string $email
      *
      * @throws \App\Domain\Exceptions\WrongEmailValueException
-     *
      * @return $this
      */
-    public function setEmail(string $email)
+    public function setEmail(string $email = null)
     {
-        if ($this->checkStrLenMax($email, 120) && $this->checkEmailByValue($email)) {
-            $this->email = $email;
+        if ($email) {
+            if ($this->checkStrLenMax($email, 120) && $this->checkEmailByValue($email)) {
+                $this->email = $email;
+            }
+        } else {
+            $this->email = '';
         }
 
         return $this;
