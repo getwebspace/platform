@@ -13,6 +13,7 @@ class AccessCheckerMiddleware extends AbstractMiddleware
         'api:', // todo when API will be updated check this
         'common:',
         'cup:login',
+        'cup:forbidden',
     ];
 
     /**
