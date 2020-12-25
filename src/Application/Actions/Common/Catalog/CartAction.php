@@ -26,7 +26,8 @@ class CartAction extends CatalogAction
             ];
 
             /**
-             * order user
+             * Order user
+             *
              * @var \App\Domain\Entities\User $user
              */
             $user = $this->request->getAttribute('user', false);
@@ -51,26 +52,14 @@ class CartAction extends CatalogAction
             if ($this->isRecaptchaChecked()) {
                 $order = $this->catalogOrderService->create($data);
 
-                // notify to admin
+                // notify
                 $this->notificationService->create([
                     'title' => 'Добавлен заказ: ' . $order->getSerial(),
-                    'message' => 'Поступил новый заказ, проверьте список заказов',
+                    'message' => 'Сформирован заказ',
                     'params' => [
                         'order_uuid' => $order->getUuid(),
                     ],
                 ]);
-
-                // notify to user
-                if ($user && $user->getLevel() === \App\Domain\Types\UserLevelType::LEVEL_USER) {
-                    $this->notificationService->create([
-                        'user_uuid' => $user->getUuid(),
-                        'title' => 'Ваш заказ: ' . $order->getSerial(),
-                        'message' => 'Кто-то, возможно вы, добавил заказ от вашего имени',
-                        'params' => [
-                            'order_uuid' => $order->getUuid(),
-                        ],
-                    ]);
-                }
 
                 $isNeedRunWorker = false;
 

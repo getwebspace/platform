@@ -186,9 +186,7 @@ abstract class AbstractPlugin extends AbstractComponent
 
         $this->navigation = true;
 
-        return $this->router
-            ->map(['get', 'post'], '/cup/plugin/' . static::NAME, $params['handler'])
-            ->add(new \App\Application\Middlewares\CupMiddleware($this->container));
+        return $this->router->map(['get', 'post'], '/cup/plugin/' . static::NAME, $params['handler']);
     }
 
     public function isNavigationItemEnabled(): bool

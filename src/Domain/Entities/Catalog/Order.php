@@ -222,6 +222,7 @@ class Order extends AbstractEntity
      * @param null|string $email
      *
      * @throws \App\Domain\Exceptions\WrongEmailValueException
+     *
      * @return $this
      */
     public function setEmail(string $email = null)

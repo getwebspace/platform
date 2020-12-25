@@ -28,7 +28,7 @@ class SystemPageAction extends AbstractAction
 
         // already exist user
         if (!$allow) {
-            if ($user !== false && $user->getLevel() === \App\Domain\Types\UserLevelType::LEVEL_ADMIN) {
+            if ($user !== false && ($user->getGroup() === null || in_array('cup:system', $user->getGroup()->getAccess(), true))) {
                 $allow = true;
             }
         }

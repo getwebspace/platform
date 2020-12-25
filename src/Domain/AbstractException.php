@@ -18,7 +18,7 @@ abstract class AbstractException extends Exception
     protected string $description = '';
 
     /**
-     * @param string|null    $message
+     * @param null|string    $message
      * @param null|Throwable $previous
      */
     public function __construct(?string $message = null, ?Throwable $previous = null)

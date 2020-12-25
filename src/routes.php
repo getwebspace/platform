@@ -15,39 +15,39 @@ $app
         // users
         $app->group('/user', function (App $app): void {
             $app->map(['get', 'post'], '/info', \App\Application\Actions\Api\User\Info::class)
-                ->setName('user:info:api');
+                ->setName('api:user:info');
 
             // users subscribers
             $app->group('/newsletter', function (App $app): void {
                 $app->map(['get', 'post'], '/subscribe', \App\Application\Actions\Api\User\Subscriber\SubscribeAction::class)
-                    ->setName('user:newsletter:subscribe:api');
+                    ->setName('api:user:newsletter:subscribe');
                 $app->map(['get', 'post'], '/{uuid}/unsubscribe', \App\Application\Actions\Api\User\Subscriber\UnsubscribeAction::class)
-                    ->setName('user:newsletter:unsubscribe:api');
+                    ->setName('api:user:newsletter:unsubscribe');
             });
         });
 
         // files
         $app->get('/file', \App\Application\Actions\Api\File\File::class)
-            ->setName('file:api');
+            ->setName('api:file');
 
         // publications
         $app->group('/publication', function (App $app): void {
             $app->get('', \App\Application\Actions\Api\Publication\Publication::class)
-                ->setName('publication:api');
+                ->setName('api:publication');
             $app->get('/category', \App\Application\Actions\Api\Publication\Category::class)
-                ->setName('publication:category:api');
+                ->setName('api:publication:category');
         });
 
         // catalog
         $app->group('/catalog', function (App $app): void {
             $app
                 ->get('/category', \App\Application\Actions\Api\Catalog\Category::class)
-                ->setName('catalog:category:api')
+                ->setName('api:catalog:category')
                 ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
 
             $app
                 ->get('/product', \App\Application\Actions\Api\Catalog\Product::class)
-                ->setName('catalog:product:api')
+                ->setName('api:catalog:product')
                 ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
         });
     })
@@ -59,6 +59,10 @@ $app
         // login cup
         $app->map(['get', 'post'], '/login', \App\Application\Actions\Cup\LoginPageAction::class)
             ->setName('cup:login');
+
+        // cup forbidden
+        $app->map(['get', 'post'], '/forbidden', \App\Application\Actions\Cup\ForbiddenPageAction::class)
+            ->setName('cup:forbidden');
 
         // installer
         $app->map(['get', 'post'], '/system', \App\Application\Actions\Cup\SystemPageAction::class)
@@ -80,13 +84,29 @@ $app
 
                 // users
                 $app->group('/user', function (App $app): void {
+                    // users group
+                    $app->group('/group', function (App $app): void {
+                        $app->get('', \App\Application\Actions\Cup\User\Group\ListAction::class)
+                            ->setName('cup:user:group:list');
+                        $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\User\Group\CreateAction::class)
+                            ->setName('cup:user:group:add');
+                        $app->map(['get', 'post'], '/{uuid}/edit', \App\Application\Actions\Cup\User\Group\UpdateAction::class)
+                            ->setName('cup:user:group:edit');
+                        $app->map(['get', 'post'], '/{uuid}/delete', \App\Application\Actions\Cup\User\Group\DeleteAction::class)
+                            ->setName('cup:user:group:delete');
+                    });
+
                     // users subscribers
                     $app->group('/subscriber', function (App $app): void {
-                        $app->get('', \App\Application\Actions\Cup\User\Subscriber\ListAction::class);
-                        $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\User\Subscriber\CreateAction::class);
-                        $app->map(['get', 'post'], '/{uuid}/delete', \App\Application\Actions\Cup\User\Subscriber\DeleteAction::class);
+                        $app->get('', \App\Application\Actions\Cup\User\Subscriber\ListAction::class)
+                            ->setName('cup:user:subscriber:list');
+                        $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\User\Subscriber\CreateAction::class)
+                            ->setName('cup:user:subscriber:add');
+                        $app->map(['get', 'post'], '/{uuid}/delete', \App\Application\Actions\Cup\User\Subscriber\DeleteAction::class)
+                            ->setName('cup:user:subscriber:delete');
                     });
-                    $app->map(['get', 'post'], '/newsletter', \App\Application\Actions\Cup\User\NewsLetter\CreateAction::class);
+                    $app->map(['get', 'post'], '/newsletter', \App\Application\Actions\Cup\User\NewsLetter\CreateAction::class)
+                        ->setName('cup:user:newsletter:list');
 
                     $app->map(['get', 'post'], '', \App\Application\Actions\Cup\User\UserListAction::class)
                         ->setName('cup:user:list');
@@ -222,8 +242,10 @@ $app
                 $app->group('/file', function (App $app): void {
                     // small text-editor api
                     $app->group('/image', function (App $app): void {
-                        $app->get('', \App\Application\Actions\Cup\File\Image\GetAction::class);
-                        $app->post('/delete', \App\Application\Actions\Cup\File\Image\DeleteAction::class);
+                        $app->get('', \App\Application\Actions\Cup\File\Image\GetAction::class)
+                            ->setName('cup:file:image:get');
+                        $app->post('/delete', \App\Application\Actions\Cup\File\Image\DeleteAction::class)
+                            ->setName('cup:file:image:delete');
                     });
 
                     $app->get('', \App\Application\Actions\Cup\File\FileListAction::class)
@@ -245,8 +267,7 @@ $app
                 // dev console
                 $app->post('/console', '\RunTracy\Controllers\RunTracyConsole:index')
                     ->setName('cup:console');
-            })
-            ->add(new \App\Application\Middlewares\CupMiddleware($app->getContainer()));
+            });
     })
     ->add(new \Slim\HttpCache\Cache('private', 0, true));
 
@@ -254,7 +275,7 @@ $app
 // main path
 $app
     ->get('/', \App\Application\Actions\Common\MainPageAction::class)
-    ->setName('main')
+    ->setName('common:main')
     ->add(
         ($_ENV['DEBUG'] ?? false) ?
             new \Slim\HttpCache\Cache('private', 0, false) :
@@ -266,20 +287,20 @@ $app
     ->group('/user', function (App $app): void {
         $app
             ->map(['get', 'post'], '/login', \App\Application\Actions\Common\User\UserLoginAction::class)
-            ->setName('user:login')
+            ->setName('common:user:login')
             ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
 
         $app
             ->map(['get', 'post'], '/register', \App\Application\Actions\Common\User\UserRegisterAction::class)
-            ->setName('user:register')
+            ->setName('common:user:register')
             ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
 
         $app->map(['get', 'post'], '/logout', \App\Application\Actions\Common\User\UserLogoutAction::class)
-            ->setName('user:logout');
+            ->setName('common:user:logout');
 
         $app
             ->map(['get', 'post'], '/profile', \App\Application\Actions\Common\User\UserProfileAction::class)
-            ->setName('user:profile')
+            ->setName('common:user:profile')
             ->add(\App\Application\Middlewares\IsEnabledMiddleware::class)
             ->add(function (Request $request, Response $response, $next) {
                 $user = $request->getAttribute('user', false);
@@ -300,17 +321,17 @@ $app
         $app
             ->group('/file', function (App $app): void {
                 $app->get('/get/{salt}/{hash}', \App\Application\Actions\Common\File\FileGetAction::class)
-                    ->setName('file:get');
+                    ->setName('common:file:get');
                 $app
                     ->post('/upload', \App\Application\Actions\Common\File\FileUploadAction::class)
-                    ->setName('file:upload')
+                    ->setName('common:file:upload')
                     ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
             });
 
         // form
         $app
             ->post('/form/{unique}', \App\Application\Actions\Common\FormAction::class)
-            ->setName('form')
+            ->setName('common:form')
             ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
 
         // catalog
@@ -322,39 +343,39 @@ $app
                 // view categories and products
                 $app
                     ->get("/{$pathCatalog}[/{args:.*}]", \App\Application\Actions\Common\Catalog\ListAction::class)
-                    ->setName('catalog:list')
+                    ->setName('common:catalog:list')
                     ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
 
                 // view cart
                 $app
                     ->map(['get', 'post'], '/cart', \App\Application\Actions\Common\Catalog\CartAction::class)
-                    ->setName('catalog:cart')
+                    ->setName('common:catalog:cart')
                     ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
 
                 // view order confirm
                 $app
                     ->get('/cart/done/{order}', \App\Application\Actions\Common\Catalog\CartCompleteAction::class)
-                    ->setName('catalog:cart:done')
+                    ->setName('common:catalog:cart:done')
                     ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
             });
 
         // guest book
         $app
             ->map(['get', 'post'], '/guestbook[/{page:[0-9]+}}]', \App\Application\Actions\Common\GuestBookAction::class)
-            ->setName('guestbook')
+            ->setName('common:guestbook')
             ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
 
         // xml files
         $app->get('/xml/{name}', \App\Application\Actions\Common\XMLFileAction::class)
-            ->setName('xml');
+            ->setName('common:xml');
 
         // publication rss
         $app->get('/rss/{channel:.*}', \App\Application\Actions\Common\PublicationRSS::class)
-            ->setName('rss');
+            ->setName('common:rss');
 
         // dynamic path handler
         $app->get('/{args:.*}', \App\Application\Actions\Common\DynamicPageAction::class)
-            ->setName('dynamic');
+            ->setName('common:dynamic');
     })
     ->add(
         ($_ENV['DEBUG'] ?? false) ?

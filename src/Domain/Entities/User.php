@@ -3,6 +3,7 @@
 namespace App\Domain\Entities;
 
 use App\Domain\AbstractEntity;
+use App\Domain\Entities\User\Group as UserGroup;
 use App\Domain\Entities\User\Session as UserSession;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -346,33 +347,39 @@ class User extends AbstractEntity
     }
 
     /**
-     * @var string
-     *
-     * @see \App\Domain\Types\UserLevelType::LIST
-     * @ORM\Column(type="UserLevelType", options={"default": \App\Domain\Types\UserLevelType::LEVEL_USER})
+     * @var string|uuid
+     * @ORM\Column(type="uuid", nullable=true, options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
-    protected string $level = \App\Domain\Types\UserLevelType::LEVEL_USER;
+    protected $group_uuid;
 
     /**
-     * @param string $level
-     *
-     * @return $this
+     * @var null|UserGroup
+     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\User\Group")
+     * @ORM\JoinColumn(name="group_uuid", referencedColumnName="uuid")
      */
-    public function setLevel(string $level)
+    protected ?UserGroup $group = null;
+
+    /**
+     * @param null|UserGroup $group
+     *
+     * @return User
+     */
+    public function setGroup(?UserGroup $group)
     {
-        if (in_array($level, \App\Domain\Types\UserLevelType::LIST, true)) {
-            $this->level = $level;
+        if ($group && is_a($group, UserGroup::class)) {
+            $this->group_uuid = $group->getUuid();
+            $this->group = $group;
         }
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return null|UserGroup
      */
-    public function getLevel()
+    public function getGroup(): ?UserGroup
     {
-        return $this->level;
+        return $this->group;
     }
 
     /**

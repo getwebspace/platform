@@ -16,6 +16,8 @@ class UserUpdateAction extends UserAction
             $user = $this->userService->read(['uuid' => $this->resolveArg('uuid')]);
 
             if ($user) {
+                $userGroups = $this->userGroupService->read();
+
                 if ($this->request->isPost()) {
                     try {
                         $this->userService->update($user, [
@@ -28,7 +30,7 @@ class UserUpdateAction extends UserAction
                             'allow_mail' => $this->request->getParam('allow_mail'),
                             'phone' => $this->request->getParam('phone'),
                             'password' => $this->request->getParam('password'),
-                            'level' => $this->request->getParam('level'),
+                            'group' => $userGroups->firstWhere('uuid', $this->request->getParam('group')),
                             'status' => $this->request->getParam('status'),
                         ]);
                         $user = $this->processEntityFiles($user);
@@ -41,14 +43,14 @@ class UserUpdateAction extends UserAction
                         }
                     } catch (UsernameAlreadyExistsException $e) {
                         $this->addError('username', $e->getMessage());
-                    } catch (WrongEmailValueException|EmailAlreadyExistsException $e) {
+                    } catch (WrongEmailValueException | EmailAlreadyExistsException $e) {
                         $this->addError('email', $e->getMessage());
-                    } catch (WrongPhoneValueException|PhoneAlreadyExistsException $e) {
+                    } catch (WrongPhoneValueException | PhoneAlreadyExistsException $e) {
                         $this->addError('phone', $e->getMessage());
                     }
                 }
 
-                return $this->respondWithTemplate('cup/user/form.twig', ['item' => $user]);
+                return $this->respondWithTemplate('cup/user/form.twig', ['item' => $user, 'groups' => $userGroups]);
             }
         }
 

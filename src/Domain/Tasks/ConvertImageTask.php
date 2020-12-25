@@ -24,6 +24,7 @@ class ConvertImageTask extends AbstractTask
     {
         if ($this->parameter('image_enable', 'no') === 'no') {
             $this->setStatusCancel();
+
             return;
         }
 

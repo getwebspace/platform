@@ -2,6 +2,8 @@
 
 namespace App\Application\Actions\Cup\User;
 
+use App\Domain\Exceptions\WrongEmailValueException;
+use App\Domain\Exceptions\WrongPhoneValueException;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
@@ -10,6 +12,8 @@ class UserCreateAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
+        $userGroups = $this->userGroupService->read();
+
         if ($this->request->isPost()) {
             try {
                 $user = $this->userService->create([
@@ -22,7 +26,7 @@ class UserCreateAction extends UserAction
                     'email' => $this->request->getParam('email'),
                     'allow_mail' => $this->request->getParam('allow_mail'),
                     'phone' => $this->request->getParam('phone'),
-                    'level' => $this->request->getParam('level'),
+                    'group' => $userGroups->firstWhere('uuid', $this->request->getParam('group')),
                 ]);
                 $user = $this->processEntityFiles($user);
 
@@ -34,13 +38,13 @@ class UserCreateAction extends UserAction
                 }
             } catch (UsernameAlreadyExistsException $e) {
                 $this->addError('username', $e->getMessage());
-            } catch (EmailAlreadyExistsException $e) {
+            } catch (WrongEmailValueException | EmailAlreadyExistsException $e) {
                 $this->addError('email', $e->getMessage());
-            } catch (PhoneAlreadyExistsException $e) {
+            } catch (WrongPhoneValueException | PhoneAlreadyExistsException $e) {
                 $this->addError('phone', $e->getMessage());
             }
         }
 
-        return $this->respondWithTemplate('cup/user/form.twig');
+        return $this->respondWithTemplate('cup/user/form.twig', ['groups' => $userGroups]);
     }
 }

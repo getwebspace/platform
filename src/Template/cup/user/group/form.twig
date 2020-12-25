@@ -1,0 +1,115 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">Группы пользователей</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="card-header">
+                        <div class="card-head-row">
+                            <div class="card-title">{{ item.uuid ? 'Редактирование группы ' ~ item.title : 'Создание новой группы' }}</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Название',
+                                    'type': 'text',
+                                    'name': 'title',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Краткое название группы"></i>',
+                                    'args': {
+                                        'value': item.title,
+                                        'required': true,
+                                        'placeholder': 'Журналисты',
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include 'cup/editor.twig' with {
+                                    'label': 'Текст страницы',
+                                    'name': 'description',
+                                    'args': {
+                                        'value': item.description
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Права доступа',
+                                    'type': 'select',
+                                    'name': 'access[]',
+                                    'message': [
+                                                   '<!-- button class="btn btn-outline-success btn-sm mr-1" type="button" data-access-click="common">Общие</button -->',
+                                                   '<button class="btn btn-outline-secondary btn-sm mr-1" type="button" data-access-click="cup">Панель управления</button>',
+                                                   '<!-- button class="btn btn-outline-info btn-sm mr-1" type="button" data-access-click="api">API</button -->',
+                                                   '<button class="btn btn-outline-danger btn-sm mr-1" type="button" data-access-click="none">Ничего</button>',
+                                               ]|join(''),
+                                    'args': {
+                                        'multiple': true,
+                                        'option': routes.combine(routes).all(),
+                                        'selected': item.access
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-action">
+                        {% include "cup/form-save.twig" %}
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+    {{ parent() }}
+
+    <script>
+        $(() => {
+            let $select = $('select[name="access[]"]'),
+                $options = $select.find('option');
+
+            $('[data-access-click]').on('click', (e) => {
+                let $btn = $(e.currentTarget),
+                    type = $btn.attr('data-access-click');
+
+                if (type === 'none') {
+                    $options.prop('selected', false);
+                } else {
+                    $options.each((i, el) => {
+                        let $buf = $(el);
+
+                        if ($buf.val().startsWith(type)) {
+                            $buf.prop('selected', !(+$buf.prop('selected')));
+                        }
+                    });
+                }
+
+                $select.trigger('change.select2');
+            });
+        })
+    </script>
+{% endblock %}

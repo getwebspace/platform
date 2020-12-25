@@ -54,7 +54,7 @@ class UserService extends AbstractService
             'additional' => '',
             'allow_mail' => true,
             'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
-            'level' => \App\Domain\Types\UserLevelType::LEVEL_USER,
+            'group' => null,
         ];
         $data = array_merge($default, $data);
 
@@ -85,7 +85,7 @@ class UserService extends AbstractService
             ->setAdditional($data['additional'])
             ->setAllowMail($data['allow_mail'])
             ->setStatus($data['status'])
-            ->setLevel($data['level'])
+            ->setGroup($data['group'])
             ->setRegister('now')
             ->setChange('now')
             ->setSession($session = (new UserSession)->setDate('now'));
@@ -247,7 +247,7 @@ class UserService extends AbstractService
                 'additional' => null,
                 'allow_mail' => null,
                 'status' => null,
-                'level' => null,
+                'group' => null,
             ];
             $data = array_merge($default, $data);
 
@@ -304,8 +304,8 @@ class UserService extends AbstractService
                 if ($data['status'] !== null) {
                     $entity->setStatus($data['status']);
                 }
-                if ($data['level'] !== null) {
-                    $entity->setLevel($data['level']);
+                if ($data['group'] !== null) {
+                    $entity->setGroup($data['group']);
                 }
 
                 $entity->setChange('now');

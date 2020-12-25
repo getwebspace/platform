@@ -3,8 +3,8 @@
 namespace App\Application\Actions\Api\User;
 
 use App\Domain\AbstractAction;
-use App\Domain\Service\User\UserService;
 use App\Domain\Service\User\SubscriberService as UserSubscriberService;
+use App\Domain\Service\User\UserService;
 use Psr\Container\ContainerInterface;
 
 abstract class UserAction extends AbstractAction
