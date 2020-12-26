@@ -135,7 +135,7 @@
                                 {% include 'cup/form.twig' with {
                                     'label': 'Группа',
                                     'type': 'select',
-                                    'name': 'group',
+                                    'name': 'group_uuid',
                                     'args': {
                                         'option': {(NIL): 'Без группы'}|merge(groups.pluck('title', 'uuid').all()),
                                         'selected': item.group_uuid

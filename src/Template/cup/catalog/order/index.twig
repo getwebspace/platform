@@ -39,11 +39,14 @@
                                 {% for item in orders %}
                                     <tr>
                                         <td data-order="{{ item.external_id ? item.external_id : item.date.getTimestamp() }}">
-                                            {% if item.external_id %}
-                                                {{ item.external_id }} ({{ item.serial }})
-                                            {% else %}
-                                                {{ item.serial }}
-                                            {% endif %}
+                                            <a href="/cart/done/{{ item.uuid }}" target="_blank">
+                                                {% if item.external_id %}
+                                                    {{ item.external_id }} ({{ item.serial }})
+                                                {% else %}
+                                                    {{ item.serial }}
+                                                {% endif %}
+                                                <i class="fas fa-external-link-alt"></i>
+                                            </a>
                                         </td>
                                         <td>{{ item.user_uuid != NIL ? users.firstWhere('uuid', item.user_uuid).getName() : item.delivery.client }}</td>
                                         <td>

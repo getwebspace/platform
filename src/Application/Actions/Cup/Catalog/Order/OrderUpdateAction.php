@@ -3,7 +3,6 @@
 namespace App\Application\Actions\Cup\Catalog\Order;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
-use App\Domain\Service\User\Exception\UserNotFoundException;
 
 class OrderUpdateAction extends CatalogAction
 {
@@ -14,10 +13,10 @@ class OrderUpdateAction extends CatalogAction
 
             if ($order) {
                 if ($this->request->isPost()) {
+                    $user_uuid = $this->request->getParam('user_uuid');
                     $order = $this->catalogOrderService->update($order, [
-                        'serial' => $order->serial,
+                        'user' => $user_uuid ? $this->userService->read(['uuid' => $user_uuid]) : '',
                         'delivery' => $this->request->getParam('delivery'),
-                        'user_uuid' => $this->request->getParam('user_uuid'),
                         'list' => (array) $this->request->getParam('list', []),
                         'phone' => $this->request->getParam('phone'),
                         'email' => $this->request->getParam('email'),
@@ -38,16 +37,9 @@ class OrderUpdateAction extends CatalogAction
 
                 $products = $this->catalogProductService->read(['uuid' => array_keys($order->getList())]);
 
-                try {
-                    $user = $this->userService->read(['uuid' => $order->getUserUuid()]);
-                } catch (UserNotFoundException $e) {
-                    $user = null;
-                }
-
                 return $this->respondWithTemplate('cup/catalog/order/form.twig', [
                     'order' => $order,
                     'products' => $products,
-                    'item' => $user,
                 ]);
             }
         }

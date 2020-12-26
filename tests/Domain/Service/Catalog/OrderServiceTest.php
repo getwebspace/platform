@@ -36,7 +36,6 @@ class OrderServiceTest extends TestCase
                 'client' => $this->getFaker()->word,
                 'address' => $this->getFaker()->text,
             ],
-            'user_uuid' => $this->getFaker()->uuid,
             'list' => [
                 $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
                 $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
@@ -56,7 +55,6 @@ class OrderServiceTest extends TestCase
         $order = $this->service->create($data);
         $this->assertInstanceOf(Order::class, $order);
         $this->assertEquals($data['delivery'], $order->getDelivery());
-        $this->assertSame($data['user_uuid'], $order->getUserUuid()->toString());
         $this->assertEquals($data['list'], $order->getList());
         $this->assertSame($data['phone'], $order->getPhone());
         $this->assertSame($data['email'], $order->getEmail());
@@ -73,7 +71,6 @@ class OrderServiceTest extends TestCase
         $o = $orderRepo->findOneByUuid($order->getUuid());
         $this->assertInstanceOf(Order::class, $o);
         $this->assertEquals($data['delivery'], $o->getDelivery());
-        $this->assertSame($data['user_uuid'], $order->getUserUuid()->toString());
         $this->assertEquals($data['list'], $o->getList());
         $this->assertSame($data['phone'], $o->getPhone());
         $this->assertSame($data['email'], $o->getEmail());
@@ -93,7 +90,6 @@ class OrderServiceTest extends TestCase
                 'client' => $this->getFaker()->word,
                 'address' => $this->getFaker()->text,
             ],
-            'user_uuid' => $this->getFaker()->uuid,
             'list' => [
                 $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
                 $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
@@ -123,7 +119,6 @@ class OrderServiceTest extends TestCase
                 'client' => $this->getFaker()->word,
                 'address' => $this->getFaker()->text,
             ],
-            'user_uuid' => $this->getFaker()->uuid,
             'list' => [
                 $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
                 $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
@@ -159,7 +154,6 @@ class OrderServiceTest extends TestCase
                 'client' => $this->getFaker()->word,
                 'address' => $this->getFaker()->text,
             ],
-            'user_uuid' => $this->getFaker()->uuid,
             'list' => [
                 $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
                 $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
@@ -181,7 +175,6 @@ class OrderServiceTest extends TestCase
                 'client' => $this->getFaker()->word,
                 'address' => $this->getFaker()->text,
             ],
-            'user_uuid' => $this->getFaker()->uuid,
             'list' => [
                 $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
                 $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
@@ -201,7 +194,6 @@ class OrderServiceTest extends TestCase
         $order = $this->service->update($order, $data);
         $this->assertInstanceOf(Order::class, $order);
         $this->assertEquals($data['delivery'], $order->getDelivery());
-        $this->assertSame($data['user_uuid'], $order->getUserUuid()->toString());
         $this->assertEquals($data['list'], $order->getList());
         $this->assertSame($data['phone'], $order->getPhone());
         $this->assertSame($data['email'], $order->getEmail());

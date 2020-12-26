@@ -354,7 +354,7 @@ $app
 
                 // view order confirm
                 $app
-                    ->get('/cart/done/{order}', \App\Application\Actions\Common\Catalog\CartCompleteAction::class)
+                    ->get('/cart/done/{order}', \App\Application\Actions\Common\Catalog\CartDoneAction::class)
                     ->setName('common:catalog:cart:done')
                     ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
             });

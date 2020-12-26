@@ -3,6 +3,7 @@
 namespace App\Domain\Entities\Catalog;
 
 use App\Domain\AbstractEntity;
+use App\Domain\Entities\User;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
@@ -61,29 +62,42 @@ class Order extends AbstractEntity
     }
 
     /**
-     * @var string|Uuid
-     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
+     * @var null|Uuid
+     * @ORM\Column(type="uuid", nullable=true, options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
-    protected $user_uuid = \Ramsey\Uuid\Uuid::NIL;
+    protected ?Uuid $user_uuid;
 
     /**
-     * @param string|Uuid $uuid
+     * @var null|User
+     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\User")
+     * @ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid")
+     */
+    protected ?User $user = null;
+
+    /**
+     * @param string|User $user
      *
      * @return $this
      */
-    public function setUserUuid($uuid)
+    public function setUser($user)
     {
-        $this->user_uuid = $this->getUuidByValue($uuid);
+        if (is_a($user, User::class)) {
+            $this->user_uuid = $user->getUuid();
+            $this->user = $user;
+        } else {
+            $this->user_uuid = null;
+            $this->user = null;
+        }
 
         return $this;
     }
 
     /**
-     * @return Uuid
+     * @return null|User
      */
-    public function getUserUuid(): Uuid
+    public function getUser(): ?User
     {
-        return $this->user_uuid;
+        return $this->user;
     }
 
     /**

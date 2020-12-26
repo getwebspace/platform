@@ -20,6 +20,7 @@ class UserUpdateAction extends UserAction
 
                 if ($this->request->isPost()) {
                     try {
+                        $group_uuid = $this->request->getParam('group_uuid');
                         $this->userService->update($user, [
                             'username' => $this->request->getParam('username'),
                             'firstname' => $this->request->getParam('firstname'),
@@ -30,7 +31,7 @@ class UserUpdateAction extends UserAction
                             'allow_mail' => $this->request->getParam('allow_mail'),
                             'phone' => $this->request->getParam('phone'),
                             'password' => $this->request->getParam('password'),
-                            'group' => $userGroups->firstWhere('uuid', $this->request->getParam('group')),
+                            'group' => $group_uuid ? $userGroups->firstWhere('uuid', $group_uuid) : '',
                             'status' => $this->request->getParam('status'),
                         ]);
                         $user = $this->processEntityFiles($user);

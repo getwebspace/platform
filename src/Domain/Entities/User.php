@@ -347,10 +347,10 @@ class User extends AbstractEntity
     }
 
     /**
-     * @var string|uuid
+     * @var null|Uuid
      * @ORM\Column(type="uuid", nullable=true, options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
-    protected $group_uuid;
+    protected ?Uuid $group_uuid;
 
     /**
      * @var null|UserGroup
@@ -360,15 +360,18 @@ class User extends AbstractEntity
     protected ?UserGroup $group = null;
 
     /**
-     * @param null|UserGroup $group
+     * @param string|UserGroup $group
      *
      * @return User
      */
-    public function setGroup(?UserGroup $group)
+    public function setGroup($group)
     {
-        if ($group && is_a($group, UserGroup::class)) {
+        if (is_a($group, UserGroup::class)) {
             $this->group_uuid = $group->getUuid();
             $this->group = $group;
+        } else {
+            $this->group_uuid = null;
+            $this->group = null;
         }
 
         return $this;

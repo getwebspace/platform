@@ -26,14 +26,14 @@ class CartAction extends CatalogAction
             ];
 
             /**
-             * Order user
+             * Current user will be added to new order
              *
              * @var \App\Domain\Entities\User $user
              */
             $user = $this->request->getAttribute('user', false);
 
             if ($user) {
-                $data['user_uuid'] = $user->getUuid();
+                $data['user'] = $user->getUuid();
             }
 
             // add to comment other posted fields
