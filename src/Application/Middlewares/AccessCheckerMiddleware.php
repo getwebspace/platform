@@ -12,7 +12,6 @@ class AccessCheckerMiddleware extends AbstractMiddleware
     public const PUBLIC = [
         'api:', // todo when API will be updated check this
         'common:',
-        'cup:system',
         'cup:login',
         'cup:forbidden',
     ];
@@ -28,9 +27,6 @@ class AccessCheckerMiddleware extends AbstractMiddleware
      */
     public function __invoke(Request $request, Response $response, callable $next): \Slim\Http\Response
     {
-        /** @var User $user */
-        $user = $request->getAttribute('user', false);
-
         /** @var \Slim\Interfaces\RouteInterface $route */
         $route = $request->getAttribute('route');
 
@@ -38,6 +34,9 @@ class AccessCheckerMiddleware extends AbstractMiddleware
         if (str_start_with($route->getName(), static::PUBLIC)) {
             return $next($request, $response);
         }
+
+        /** @var User $user */
+        $user = $request->getAttribute('user', false);
 
         if ($user) {
             // no group or access right

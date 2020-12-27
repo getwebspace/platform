@@ -32,7 +32,7 @@ class SystemPageAction extends AbstractAction
 
         // already exist user
         if (!$allow) {
-            if ($user !== false && ($user->getGroup() === null || in_array('cup:system', $user->getGroup()->getAccess(), true))) {
+            if ($user->getGroup() !== null && in_array('cup:system', $user->getGroup()->getAccess(), true)) {
                 $allow = true;
             }
         }
@@ -64,25 +64,25 @@ class SystemPageAction extends AbstractAction
 
                 // user
                 if ($userData = $this->request->getParam('user', [])) {
+                    $userGroupService = UserGroupService::getWithContainer($this->container);
                     $userService = UserService::getWithContainer($this->container);
 
+                    // create or read group
+                    try {
+                        $userData['group'] = $userGroupService->create([
+                            'title' => 'Администраторы',
+                            'access' => $this->getRoutes()->values()->all(),
+                        ]);
+                    } catch (TitleAlreadyExistsException $e) {
+                        $userData['group'] = $userGroupService->read([
+                            'title' => 'Администраторы',
+                        ]);
+                    }
+
+                    // create or update database
                     if ($user !== false) {
                         $userService->update($user, $userData);
                     } else {
-                        $userGroupService = UserGroupService::getWithContainer($this->container);
-
-                        // create or read group
-                        try {
-                            $userData['group'] = $userGroupService->create([
-                                'title' => 'Администраторы',
-                                'access' => $this->getRoutes()->values()->all(),
-                            ]);
-                        } catch (TitleAlreadyExistsException $e) {
-                            $userData['group'] = $userGroupService->read([
-                                'title' => 'Администраторы',
-                            ]);
-                        }
-
                         $userService->create($userData);
                     }
                 }
