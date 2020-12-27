@@ -49,7 +49,10 @@ class AuthorizationMiddleware extends AbstractMiddleware
         if ($data['uuid'] && Uuid::isValid($data['uuid']) && $data['session']) {
             try {
                 $userService = UserService::getWithContainer($this->container);
-                $user = $userService->read(['uuid' => $data['uuid']]);
+                $user = $userService->read([
+                    'uuid' => $data['uuid'],
+                    'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
+                ]);
 
                 if ($user) {
                     $hash = sha1(
