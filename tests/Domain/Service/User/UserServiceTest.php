@@ -3,7 +3,6 @@
 namespace tests\Domain\Service\User;
 
 use App\Domain\Entities\User;
-use App\Domain\Entities\User\Session as UserSession;
 use App\Domain\Repository\UserRepository;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
@@ -140,11 +139,9 @@ class UserServiceTest extends TestCase
         $user = (new User)
             ->setUsername($data['username'])
             ->setPassword($data['password'])
-            ->setRegister('now')->setChange('now')
-            ->setSession($session = (new UserSession)->setDate('now'));
+            ->setRegister('now')->setChange('now');
 
         $this->em->persist($user);
-        $this->em->persist($session);
         $this->em->flush();
 
         $this->service->create($data);
@@ -162,11 +159,9 @@ class UserServiceTest extends TestCase
         $user = (new User)
             ->setEmail($data['email'])
             ->setPassword($data['password'])
-            ->setRegister('now')->setChange('now')
-            ->setSession($session = (new UserSession)->setDate('now'));
+            ->setRegister('now')->setChange('now');
 
         $this->em->persist($user);
-        $this->em->persist($session);
         $this->em->flush();
 
         $this->service->create($data);
@@ -184,11 +179,9 @@ class UserServiceTest extends TestCase
         $user = (new User)
             ->setPhone($data['phone'])
             ->setPassword($data['password'])
-            ->setRegister('now')->setChange('now')
-            ->setSession($session = (new UserSession)->setDate('now'));
+            ->setRegister('now')->setChange('now');
 
         $this->em->persist($user);
-        $this->em->persist($session);
         $this->em->flush();
 
         $this->service->create($data);
