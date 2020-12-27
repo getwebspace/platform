@@ -9,7 +9,8 @@ class ListAction extends UserAction
     protected function action(): \Slim\Http\Response
     {
         return $this->respondWithTemplate('cup/user/group/index.twig', [
-            'list' => $this->userGroupService->read(),
+            'groups' => $this->userGroupService->read(),
+            'users' => $this->userService->read(['status' => \App\Domain\Types\UserStatusType::STATUS_WORK]),
         ]);
     }
 }

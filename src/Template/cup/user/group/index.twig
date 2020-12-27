@@ -16,7 +16,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
-                        <h4 class="card-title">Список групп пользователей ({{ list.count() }})</h4>
+                        <h4 class="card-title">Список групп пользователей ({{ groups.count() }})</h4>
                         <a href="/cup/user/group/add" class="btn btn-primary btn-round ml-auto">
                             <i class="fa fa-plus"></i>
                             Добавить группу
@@ -29,15 +29,18 @@
                             <thead>
                                 <tr>
                                     <th>Название</th>
-                                    <th width="30%">Права доступа</th>
+                                    <th width="10%">Пользователей</th>
+                                    <th width="20%">Права доступа</th>
                                     <th width="10%" class="text-center no-sorting"></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for group in list %}
+                                {% for group in groups %}
+                                    {% set users_in_group = users.where('group', group)|count %}
                                     <tr>
                                         <td>{{ group.title }}</td>
-                                        <td class="text-justify">
+                                        <td class="text-center">{{ users_in_group }}</td>
+                                        <td>
                                             <code>
                                                 {% if group.access %}
                                                     Прав доступно: {{ group.access|count }}
@@ -57,8 +60,8 @@
                                                     </li>
                                                     <li><div class="dropdown-divider"></div></li>
                                                     <li>
-                                                        <form action="/cup/user/group/{{ group.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить группу?');">
-                                                            <button type="submit" class="btn btn-link text-danger">
+                                                        <form action="/cup/user/group/{{ group.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить группу?');" {{ users_in_group ? 'data-toggle="tooltip" data-placement="left" title="Нельзя удалить группу, пока в ней есть пользователи"' }}>
+                                                            <button type="submit" class="btn btn-link text-danger" {{ users_in_group ? 'disabled' }}>
                                                                 <i class="fas fa-fw fa-trash-alt"></i> Удалить
                                                             </button>
                                                         </form>
