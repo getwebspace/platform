@@ -12,6 +12,7 @@ class AccessCheckerMiddleware extends AbstractMiddleware
     public const PUBLIC = [
         'api:', // todo when API will be updated check this
         'common:',
+        'cup:system',
         'cup:login',
         'cup:forbidden',
     ];
