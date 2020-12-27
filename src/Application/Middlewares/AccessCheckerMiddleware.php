@@ -41,7 +41,7 @@ class AccessCheckerMiddleware extends AbstractMiddleware
 
         if ($user) {
             // no group or access right
-            if ($user->getGroup() === null || in_array($route->getName(), $user->getGroup()->getAccess(), true)) {
+            if ($user->getGroup() !== null && in_array($route->getName(), $user->getGroup()->getAccess(), true)) {
                 return $next($request, $response);
             }
 

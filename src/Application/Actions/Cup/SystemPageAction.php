@@ -2,9 +2,13 @@
 
 namespace App\Application\Actions\Cup;
 
+use App\Application\Middlewares\AccessCheckerMiddleware;
 use App\Domain\AbstractAction;
 use App\Domain\Entities\User;
+use App\Domain\Service\User\Exception\TitleAlreadyExistsException;
+use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\UserService;
+use Illuminate\Support\Collection;
 
 class SystemPageAction extends AbstractAction
 {
@@ -61,11 +65,24 @@ class SystemPageAction extends AbstractAction
                 // user
                 if ($userData = $this->request->getParam('user', [])) {
                     $userService = UserService::getWithContainer($this->container);
-                    $userData['level'] = \App\Domain\Types\UserLevelType::LEVEL_ADMIN;
 
                     if ($user !== false) {
                         $userService->update($user, $userData);
                     } else {
+                        $userGroupService = UserGroupService::getWithContainer($this->container);
+
+                        // create or read group
+                        try {
+                            $userData['group'] = $userGroupService->create([
+                                'title' => 'Администраторы',
+                                'access' => $this->getRoutes()->values()->all(),
+                            ]);
+                        } catch (TitleAlreadyExistsException $e) {
+                            $userData['group'] = $userGroupService->read([
+                                'title' => 'Администраторы',
+                            ]);
+                        }
+
                         $userService->create($userData);
                     }
                 }
@@ -91,5 +108,16 @@ class SystemPageAction extends AbstractAction
         }
 
         return $this->response->withRedirect('/cup/login?redirect=/cup/system');
+    }
+
+    /**
+     * @return Collection
+     */
+    protected function getRoutes(): Collection
+    {
+        return collect($this->container->get('router')->getRoutes())
+            ->flatten()
+            ->map(fn($item) => $item->getName())
+            ->filter(fn($item) => !str_start_with($item, AccessCheckerMiddleware::PUBLIC));
     }
 }

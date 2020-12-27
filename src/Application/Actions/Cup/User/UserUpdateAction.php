@@ -31,7 +31,7 @@ class UserUpdateAction extends UserAction
                             'allow_mail' => $this->request->getParam('allow_mail'),
                             'phone' => $this->request->getParam('phone'),
                             'password' => $this->request->getParam('password'),
-                            'group' => $group_uuid ? $userGroups->firstWhere('uuid', $group_uuid) : '',
+                            'group' => $group_uuid !== \Ramsey\Uuid\Uuid::NIL ? $userGroups->firstWhere('uuid', $group_uuid) : '',
                             'status' => $this->request->getParam('status'),
                         ]);
                         $user = $this->processEntityFiles($user);

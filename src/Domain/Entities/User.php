@@ -442,11 +442,10 @@ class User extends AbstractEntity
     }
 
     /**
-     * @var UserSession
-     * @ORM\OneToOne(targetEntity="App\Domain\Entities\User\Session")
-     * @ORM\JoinColumn(name="uuid", referencedColumnName="uuid")
+     * @var null|UserSession
+     * @ORM\OneToOne(targetEntity="App\Domain\Entities\User\Session", mappedBy="user", orphanRemoval=true, fetch="EAGER")
      */
-    protected UserSession $session;
+    protected ?UserSession $session;
 
     /**
      * @param UserSession $session
@@ -461,10 +460,14 @@ class User extends AbstractEntity
     }
 
     /**
-     * @return UserSession
+     * @return null|UserSession
      */
     public function getSession()
     {
+        if (!$this->session) {
+            $this->session = (new UserSession)->setUser($this)->setDate('now');
+        }
+
         return $this->session;
     }
 

@@ -3,6 +3,7 @@
 namespace App\Domain\Entities\User;
 
 use App\Domain\AbstractEntity;
+use App\Domain\Entities\User;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
@@ -13,6 +14,27 @@ use Ramsey\Uuid\Uuid;
  */
 class Session extends AbstractEntity
 {
+    /**
+     * @var User
+     * @ORM\OneToOne(targetEntity="App\Domain\Entities\User", inversedBy="session")
+     * @ORM\JoinColumn(name="uuid", referencedColumnName="uuid")
+     */
+    protected User $user;
+
+    /**
+     * @param User $user
+     *
+     * @return $this
+     */
+    public function setUser(User $user)
+    {
+        if (is_a($user, User::class)) {
+            $this->user = $user;
+        }
+
+        return $this;
+    }
+
     /**
      * @var Uuid
      * @ORM\Id

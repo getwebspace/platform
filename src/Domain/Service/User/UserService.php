@@ -4,7 +4,6 @@ namespace App\Domain\Service\User;
 
 use App\Domain\AbstractService;
 use App\Domain\Entities\User;
-use App\Domain\Entities\User\Session as UserSession;
 use App\Domain\Exceptions\WrongEmailValueException;
 use App\Domain\Exceptions\WrongPhoneValueException;
 use App\Domain\Repository\UserRepository;
@@ -87,11 +86,9 @@ class UserService extends AbstractService
             ->setStatus($data['status'])
             ->setGroup($data['group'])
             ->setRegister('now')
-            ->setChange('now')
-            ->setSession($session = (new UserSession)->setDate('now'));
+            ->setChange('now');
 
         $this->entityManager->persist($user);
-        $this->entityManager->persist($session);
         $this->entityManager->flush();
 
         return $user;
@@ -194,12 +191,13 @@ class UserService extends AbstractService
 
                 // optional: update fields
                 if ($data['agent'] && $data['ip']) {
-                    $user
+                    $session = $user
                         ->getSession()
                         ->setDate('now')
                         ->setAgent($data['agent'])
                         ->setIp($data['ip']);
 
+                    $this->entityManager->persist($session);
                     $this->entityManager->flush();
                 }
 
