@@ -15,6 +15,23 @@ use Ramsey\Uuid\Uuid;
 class Session extends AbstractEntity
 {
     /**
+     * @var Uuid
+     * @ORM\Id
+     * @ORM\Column(type="uuid")
+     * @ORM\GeneratedValue(strategy="CUSTOM")
+     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
+     */
+    protected Uuid $uuid;
+
+    /**
+     * @return Uuid
+     */
+    public function getUuid(): Uuid
+    {
+        return $this->uuid;
+    }
+
+    /**
      * @var User
      * @ORM\OneToOne(targetEntity="App\Domain\Entities\User", inversedBy="session")
      * @ORM\JoinColumn(name="uuid", referencedColumnName="uuid")
@@ -30,26 +47,10 @@ class Session extends AbstractEntity
     {
         if (is_a($user, User::class)) {
             $this->user = $user;
+            $this->uuid = $user->getUuid();
         }
 
         return $this;
-    }
-
-    /**
-     * @var Uuid
-     * @ORM\Id
-     * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
-    protected Uuid $uuid;
-
-    /**
-     * @return Uuid
-     */
-    public function getUuid(): Uuid
-    {
-        return $this->uuid;
     }
 
     /**

@@ -455,6 +455,7 @@ class User extends AbstractEntity
     public function setSession(UserSession $session)
     {
         $this->session = $session;
+        $this->session->setUser($this);
 
         return $this;
     }
@@ -464,10 +465,6 @@ class User extends AbstractEntity
      */
     public function getSession()
     {
-        if (!$this->session) {
-            $this->session = (new UserSession)->setUser($this)->setDate('now');
-        }
-
         return $this->session;
     }
 
