@@ -445,7 +445,7 @@ class User extends AbstractEntity
      * @var null|UserSession
      * @ORM\OneToOne(targetEntity="App\Domain\Entities\User\Session", mappedBy="user", orphanRemoval=true, fetch="EAGER")
      */
-    protected ?UserSession $session;
+    protected ?UserSession $session = null;
 
     /**
      * @param UserSession $session

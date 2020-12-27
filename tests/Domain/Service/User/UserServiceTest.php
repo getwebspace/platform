@@ -200,7 +200,7 @@ class UserServiceTest extends TestCase
         $this->assertInstanceOf(User::class, $user);
         $this->assertSame($data['username'], $user->getUsername());
 
-        $user = $this->service->read($data);
+        $user = $this->service->read(array_merge($data, ['agent' => $this->getFaker()->userAgent, 'ip' => $this->getFaker()->ipv4]));
         $this->assertInstanceOf(User::class, $user);
         $this->assertSame($data['username'], $user->getUsername());
     }
@@ -218,7 +218,7 @@ class UserServiceTest extends TestCase
         $this->assertInstanceOf(User::class, $user);
         $this->assertSame($data['email'], $user->getEmail());
 
-        $user = $this->service->read($data);
+        $user = $this->service->read(array_merge($data, ['agent' => $this->getFaker()->userAgent, 'ip' => $this->getFaker()->ipv4]));
         $this->assertInstanceOf(User::class, $user);
         $this->assertSame($data['email'], $user->getEmail());
     }
@@ -236,7 +236,7 @@ class UserServiceTest extends TestCase
         $this->assertInstanceOf(User::class, $user);
         $this->assertSame($data['phone'], $user->getPhone());
 
-        $user = $this->service->read($data);
+        $user = $this->service->read(array_merge($data, ['agent' => $this->getFaker()->userAgent, 'ip' => $this->getFaker()->ipv4]));
         $this->assertInstanceOf(User::class, $user);
         $this->assertSame($data['phone'], $user->getPhone());
     }

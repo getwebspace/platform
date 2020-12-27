@@ -46,8 +46,8 @@ class Session extends AbstractEntity
     public function setUser(User $user)
     {
         if (is_a($user, User::class)) {
-            $this->user = $user;
             $this->uuid = $user->getUuid();
+            $this->user = $user;
         }
 
         return $this;
