@@ -5,6 +5,7 @@ namespace App\Domain\Service\Publication;
 use App\Domain\AbstractService;
 use App\Domain\Entities\Publication;
 use App\Domain\Repository\PublicationRepository;
+use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
 use App\Domain\Service\Publication\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Publication\Exception\MissingTitleValueException;
 use App\Domain\Service\Publication\Exception\PublicationNotFoundException;
@@ -63,12 +64,23 @@ class PublicationService extends AbstractService
         }
 
         $publication = (new Publication)
-            ->setAddress($data['address'])
             ->setTitle($data['title'])
+            ->setAddress($data['address'])
             ->setCategory($data['category'])
             ->setDate($data['date'])
             ->setContent($data['content'])
             ->setMeta($data['meta']);
+
+        // if address generation is enabled
+        if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
+            $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
+            $publicationCategory = $publicationCategoryService->read(['uuid' => $data['category']]);
+
+            // combine address category with product address
+            $publication->setAddress(
+                implode('/', [$publicationCategory->getAddress(), $publication->setAddress('')->getAddress()])
+            );
+        }
 
         $this->entityManager->persist($publication);
         $this->entityManager->flush();
