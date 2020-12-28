@@ -31,6 +31,7 @@ class MainPageAction extends AbstractAction
                     'branch' => ($_ENV['COMMIT_BRANCH'] ?? 'other'),
                     'commit' => ($_ENV['COMMIT_SHA'] ?? 'specific'),
                 ],
+                'whois' => $this->whois(),
                 'os' => @implode(' ', [php_uname('s'), php_uname('r'), php_uname('m')]),
                 'php' => PHP_VERSION,
                 'memory_limit' => ini_get('memory_limit'),
@@ -40,5 +41,42 @@ class MainPageAction extends AbstractAction
                 'max_file_uploads' => ini_get('max_file_uploads'),
             ],
         ]);
+    }
+
+    // generate and cache whois data
+    protected function whois()
+    {
+        \RunTracy\Helpers\Profiler\Profiler::start('whois');
+
+        $result = [];
+        $paramService = \App\Domain\Service\Parameter\ParameterService::getWithContainer($this->container);
+        $domain = $paramService->read(['key' => 'common_homepage'])->getValue();
+
+        if (mb_substr_count($domain, '.') === 1) {
+            $whois = $paramService->read(['key' => 'common_whois'], 'a:0:{}');
+            $whoisValue = unserialize($whois->getValue());
+
+            if (
+                !$whoisValue ||
+                $whoisValue['update']->diff(new \DateTime())->d >= 1 ||
+                mb_strpos($domain, $whoisValue['result']['domain']) === false
+            ) {
+                $domain = str_replace(['https', 'http', '://', '/'], '', $domain);
+
+                $defaults = [
+                    'update' => new \DateTime(),
+                    'result' => [],
+                ];
+                $whoisValue = array_merge($defaults, $whoisValue);
+                $whoisValue['result'] = \App\Application\Whois::query($domain);
+                $paramService->update($whois, ['key' => 'common_whois', 'value' => serialize($whoisValue)]);
+            }
+
+            $result = $whoisValue['result'];
+        }
+
+        \RunTracy\Helpers\Profiler\Profiler::finish('whois');
+        
+        return $result;
     }
 }
