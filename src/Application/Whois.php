@@ -297,14 +297,11 @@ class Whois
         }
 
         $tld = mb_substr($domain, mb_strrpos($domain, '.') + 1);
-
-        $data = [];
-
         $data = static::getWhoisResult($domain, $tld);
-
         if (mb_substr($data[0], 0, 3) === '++[') {
             return $data[0];
         }
+
         $whoisServerFromWhois = static::parse($data, $domain, 'Domain Name:', ['Whois Server' => 'whois_server'], true);
         if (!empty($whoisServerFromWhois['whois_server'][0])) {
             $data = static::getWhoisResult($domain, $tld, $whoisServerFromWhois['whois_server'][0]);
@@ -454,6 +451,7 @@ class Whois
             'pl' => 'DOMAIN NAME:',
             'de' => 'Domain:',
             'fr' => 'domain:',
+            'ru' => 'domain:',
             'eu' => 'Domain:',
             'us' => 'Domain Name:',
             'cn' => 'Domain Name:',
@@ -472,7 +470,7 @@ class Whois
             ['whois_server' => ['Whois Server', 'WHOIS SERVER', 'Registrar WHOIS Server']],
             ['created' => ['Creation Date', 'Created On', 'Registration Time', 'Domain Create Date', 'Domain Registration Date', 'Domain Name Commencement Date', 'created']],
             ['updated' => ['last-update', 'Updated Date', 'Domain Last Updated Date', 'last modified']],
-            ['expires' => ['Expiry Date', 'Expiration Date', 'Expiration Time', 'Domain Expiration Date', 'Registrar Registration Expiration Date', 'Record expires on', 'Registry Expiry Date', 'renewal date']],
+            ['expires' => ['Expiry Date', 'Expiration Date', 'Expiration Time', 'Domain Expiration Date', 'Registrar Registration Expiration Date', 'Record expires on', 'Registry Expiry Date', 'renewal date', 'paid-till']],
             ['status' => ['Status', 'status', 'Domain Status']],
         ];
 
@@ -617,10 +615,10 @@ class Whois
                     $parseResult[$needToAddCompletelyAddressArray]['completely_address'] = implode(', ', $parseResult[$needToAddCompletelyAddressArray]['address']);
                     /* WILL CITY & COUNTRY WILL BE INCLUDE IN FULL ADDRESS? */
 
-                    $allExtraInfomations = ["city", "country"];
-                    foreach($allExtraInfomations as $extraInfomation){
-                        if(!empty($parseResult[$needToAddCompletelyAddressArray][$extraInfomation])){
-                            $parseResult[$needToAddCompletelyAddressArray]["completely_address"] .= ", ".$parseResult[$needToAddCompletelyAddressArray][$extraInfomation];
+                    $allExtraInfomations = ['city', 'country'];
+                    foreach ($allExtraInfomations as $extraInfomation) {
+                        if (!empty($parseResult[$needToAddCompletelyAddressArray][$extraInfomation])) {
+                            $parseResult[$needToAddCompletelyAddressArray]["completely_address"] .= ", " . $parseResult[$needToAddCompletelyAddressArray][$extraInfomation];
                         }
                     }
                     $parseResult[$needToAddCompletelyAddressArray]['completely_address'] = ucwords(mb_strtolower($parseResult[$needToAddCompletelyAddressArray]['completely_address']));

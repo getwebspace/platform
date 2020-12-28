@@ -52,13 +52,13 @@ class MainPageAction extends AbstractAction
         $paramService = \App\Domain\Service\Parameter\ParameterService::getWithContainer($this->container);
         $domain = $paramService->read(['key' => 'common_homepage'])->getValue();
 
-        if (mb_substr_count($domain, '.') === 1) {
+        if (mb_substr_count($domain, '.') <= 2) {
             $whois = $paramService->read(['key' => 'common_whois'], 'a:0:{}');
             $whoisValue = unserialize($whois->getValue());
 
             if (
                 !$whoisValue ||
-                $whoisValue['update']->diff(new \DateTime())->d >= 1 ||
+                $whoisValue['update']->diff(new \DateTime())->d >= 10 ||
                 mb_strpos($domain, $whoisValue['result']['domain']) === false
             ) {
                 $domain = str_replace(['https', 'http', '://', '/'], '', $domain);
@@ -76,7 +76,7 @@ class MainPageAction extends AbstractAction
         }
 
         \RunTracy\Helpers\Profiler\Profiler::finish('whois');
-        
+
         return $result;
     }
 }
