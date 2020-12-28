@@ -57,7 +57,7 @@ class MainPageAction extends AbstractAction
             $whoisValue = unserialize($whois->getValue());
 
             if (
-                !$whoisValue ||
+                !$whoisValue['result'] || !is_array($whoisValue['result']) ||
                 $whoisValue['update']->diff(new \DateTime())->d >= 10 ||
                 mb_strpos($domain, $whoisValue['result']['domain']) === false
             ) {
@@ -72,7 +72,9 @@ class MainPageAction extends AbstractAction
                 $paramService->update($whois, ['key' => 'common_whois', 'value' => serialize($whoisValue)]);
             }
 
-            $result = $whoisValue['result'];
+            if (is_array($whoisValue['result'])) {
+                $result = $whoisValue['result'];
+            }
         }
 
         \RunTracy\Helpers\Profiler\Profiler::finish('whois');
