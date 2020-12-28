@@ -61,12 +61,10 @@ abstract class AbstractComponent
         static $parameters;
 
         if (!$parameters) {
-            if ($this->container) {
+            if (isset($this->container)) {
                 \RunTracy\Helpers\Profiler\Profiler::start('parameters');
                 $parameters = ParameterService::getWithContainer($this->container)->read();
                 \RunTracy\Helpers\Profiler\Profiler::finish('parameters');
-            } else {
-                throw new \RuntimeException('Container is null');
             }
         }
 
