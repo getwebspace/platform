@@ -443,7 +443,7 @@ class User extends AbstractEntity
 
     /**
      * @var null|UserSession
-     * @ORM\OneToOne(targetEntity="App\Domain\Entities\User\Session", mappedBy="user", orphanRemoval=true, fetch="EAGER")
+     * @ORM\OneToOne(targetEntity="App\Domain\Entities\User\Session", mappedBy="user", orphanRemoval=true)
      */
     protected ?UserSession $session = null;
 
