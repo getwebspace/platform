@@ -4,9 +4,9 @@
 
 {% block head %}
     {{ parent() }}
-    <meta name="description" content="{{ page.meta.description }}">
-    <meta name="keywords" content="{{ page.meta.keywords }}">
-    <link rel="alternate" type="application/rss+xml" title="{{ parameter('common_title') }}" href="{{ parameter('common_homepage') }}rss/{{ category.address }}">
+    <meta name="description" content="{{ category.meta.description }}">
+    <meta name="keywords" content="{{ category.meta.keywords }}">
+    <link rel="alternate" type="application/rss+xml" title="{{ parameter('common_title') }}" href="{{ parameter('common_homepage') }}{{ category.rss() }}">
 {% endblock %}
 
 {% block page %}
