@@ -10,8 +10,8 @@
             {% set field = loop.index %}
 
             {% for product in buf %}
-                {% if product.get('field' ~ field)|trim is not empty %}
-                    {% set variants = variants.push(product.get('field' ~ field)|trim) %}
+                {% if attribute(product, 'field' ~ field)|trim is not empty %}
+                    {% set variants = variants.push(attribute(product, 'field' ~ field)|trim) %}
                 {% endif %}
             {% endfor %}
 
