@@ -205,7 +205,7 @@ abstract class AbstractAction extends AbstractComponent
 
             // upload files
             /** @var \Psr\Http\Message\UploadedFileInterface[] $files */
-            if (($files = $this->request->getUploadedFiles()[$fields['upload']]) !== null) {
+            if (($files = ($this->request->getUploadedFiles()[$fields['upload']] ?? null)) !== null) {
                 if (!is_array($files)) {
                     $files = [$files]; // allow upload one file
                 }
