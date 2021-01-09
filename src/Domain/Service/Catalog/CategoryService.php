@@ -44,6 +44,7 @@ class CategoryService extends AbstractService
             'field1' => '',
             'field2' => '',
             'field3' => '',
+            'attributes' => [],
             'product' => [
                 'field_1' => '',
                 'field_2' => '',
@@ -88,6 +89,7 @@ class CategoryService extends AbstractService
             ->setField2($data['field2'])
             ->setField3($data['field3'])
             ->setProduct($data['product'])
+            ->setAttributes($data['attributes'])
             ->setStatus($data['status'])
             ->setPagination((int) $data['pagination'])
             ->setOrder((int) $data['order'])
@@ -214,6 +216,7 @@ class CategoryService extends AbstractService
                 'field1' => null,
                 'field2' => null,
                 'field3' => null,
+                'attributes' => null,
                 'product' => null,
                 'status' => null,
                 'pagination' => null,
@@ -261,6 +264,9 @@ class CategoryService extends AbstractService
                 }
                 if ($data['field3'] !== null) {
                     $entity->setField3($data['field3']);
+                }
+                if ($data['attributes'] !== null && count($data['attributes'])) {
+                    $entity->setAttributes($data['attributes']);
                 }
                 if ($data['product'] !== null) {
                     $entity->setProduct($data['product']);

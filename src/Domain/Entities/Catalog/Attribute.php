@@ -82,4 +82,18 @@ class Attribute extends AbstractEntity
     {
         return $this->type;
     }
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\ProductAttribute", mappedBy="attribute", orphanRemoval=true)
+     * @ORM\JoinColumn(name="uuid", referencedColumnName="attribute_uuid")
+     */
+    protected $productAttributes = [];
+
+    /**
+     * @return array
+     */
+    public function getProductAttributes()
+    {
+        return $this->productAttributes;
+    }
 }

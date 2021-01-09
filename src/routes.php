@@ -205,6 +205,18 @@ $app
                             ->setName('cup:catalog:product:list');
                     });
 
+                    // attribute
+                    $app->group('/attribute', function (App $app): void {
+                        $app->get('', \App\Application\Actions\Cup\Catalog\Attribute\AttributeListAction::class)
+                            ->setName('cup:catalog:order:list');
+                        $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\Catalog\Attribute\AttributeCreateAction::class)
+                            ->setName('cup:catalog:order:add');
+                        $app->map(['get', 'post'], '/{attribute}/edit', \App\Application\Actions\Cup\Catalog\Attribute\AttributeUpdateAction::class)
+                            ->setName('cup:catalog:order:edit');
+                        $app->map(['get', 'post'], '/{attribute}/delete', \App\Application\Actions\Cup\Catalog\Attribute\AttributeDeleteAction::class)
+                            ->setName('cup:catalog:order:delete');
+                    });
+
                     // order
                     $app->group('/order', function (App $app): void {
                         $app->get('', \App\Application\Actions\Cup\Catalog\Order\OrderListAction::class)

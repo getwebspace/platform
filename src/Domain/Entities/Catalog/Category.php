@@ -500,6 +500,51 @@ class Category extends AbstractEntity
     }
 
     /**
+     * @var array
+     * @ORM\ManyToMany(targetEntity="App\Domain\Entities\Catalog\Attribute")
+     * @ORM\JoinTable(name="catalog_category_attributes",
+     *     joinColumns={@ORM\JoinColumn(name="category_uuid", referencedColumnName="uuid")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="attribute_uuid", referencedColumnName="uuid")}
+     * )
+     */
+    protected $attributes = [];
+
+    /**
+     * @param array $attributes
+     *
+     * @return $this
+     */
+    public function setAttributes(array $attributes)
+    {
+        foreach ($this->attributes as $key => $attribute) {
+            unset($this->attributes[$key]);
+        }
+        foreach ($attributes as $attribute) {
+            $this->attributes[] = $attribute;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function hasAttributes()
+    {
+        return count($this->attributes);
+    }
+
+    /**
+     * @param false $raw
+     *
+     * @return array|Collection
+     */
+    public function getAttributes($raw = false)
+    {
+        return $raw ? $this->attributes : collect($this->attributes);
+    }
+
+    /**
      * @var mixed буфурное поле для обработки интеграций
      */
     public $buf;

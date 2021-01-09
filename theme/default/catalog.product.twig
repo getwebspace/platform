@@ -115,6 +115,10 @@
                                         {% if product.field4 %}<b>{{ category.product.field_4 }}</b>: {{ product.field4|raw }}<br/>{% endif %}
                                         {% if product.field5 %}<b>{{ category.product.field_5 }}</b>: {{ product.field5|raw }}<br/>{% endif %}
                                         {% if product.volume and product.unit %}<b>Цена за</b>: {{ product.getVolumeWithUnit() }}<br/>{% endif %}
+
+                                        {% for attribute in product.getAttributes() %}
+                                            <b>{{ attribute.title }}</b>: {{ attribute.value }}<br/>
+                                        {% endfor %}
                                     </p>
                                 </div>
                             </div>

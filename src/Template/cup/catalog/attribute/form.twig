@@ -1,0 +1,58 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">Атрибуты</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <form method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-head-row">
+                            <div class="card-title">{{ attribute.uuid ? 'Редактирование атрибута ' ~ attribute.title : 'Создание нового атрибута' }}</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Наименование',
+                                    'type': 'text',
+                                    'name': 'title',
+                                    'args': {
+                                        'value': attribute.title,
+                                        'required': true
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Тип',
+                                    'type': 'select',
+                                    'name': 'type',
+                                    'args': {
+                                        'option': {'string': 'Строка', 'integer': 'Целое', 'float': 'Дробное'},
+                                        'selected': attribute.type,
+                                        'required': true
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        {% include "cup/form-save.twig" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+

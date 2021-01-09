@@ -29,6 +29,16 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link" data-toggle="pill" href="#attributes" role="tab">
+                                        Атрибуты
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="pill" href="#fields" role="tab">
+                                        Поля
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link" data-toggle="pill" href="#other" role="tab">
                                         Дополнительно
                                     </a>
@@ -222,6 +232,125 @@
                                 <hr>
 
                                 <div class="row">
+                                    <div class="col-md-12">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Изображения',
+                                            'type': 'file',
+                                            'name': 'files[]',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Здесь можно выбрать несколько изображений"></i>',
+                                            'args': {
+                                                'class': ['d-block', 'btn', 'btn-sm', 'bg-grey2'],
+                                                'multiple': true,
+                                                'accept': 'image/*'
+                                            }
+                                        } %}
+
+                                        {% for file in item.getFiles() %}
+                                            <div class="p-2 d-inline-block m-2 bg-grey2 text-center rounded">
+                                                <a href="{{ file.getPublicPath() }}" target="_blank">
+                                                    <img class="rounded" height="100" src="{{ file.getPublicPath('small') }}" alt="preview" data-toggle="tooltip" data-placement="top" title="{{ file.getName() }}" />
+                                                </a>
+                                                <div class="pt-2">
+                                                    <div class="row">
+                                                        <div class="col-6">
+                                                            <span class="text-small">{{ file.getFileSize() }}</span>
+                                                        </div>
+                                                        <div class="col-6 text-right float-right">
+                                                            {% include 'cup/form.twig' with {
+                                                                'label': '<i class="fa fa-trash"></i>',
+                                                                'type': 'checkbox',
+                                                                'name': 'delete-file[]',
+                                                                'args': {
+                                                                    'value': file.uuid.toString()
+                                                                }
+                                                            } %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {# Tab: Атрибуты #}
+                            <div class="tab-pane fade" id="attributes" role="tabpanel">
+                                <div class="row">
+                                    {% for attribute in category.getAttributes() %}
+                                        <div class="col-md-4">
+                                            {% include 'cup/form.twig' with {
+                                                'label': attribute.title,
+                                                'type': attribute.type == 'string' ? 'text' : 'number',
+                                                'name': 'attributes[' ~ attribute.uuid ~ ']',
+                                                'postfix': '<i class="fas fa-certificate" data-toggle="tooltip" data-placement="top" title="Атрибут категории"></i>',
+                                                'args': {
+                                                    'value': item.hasAttributes() ? item.getAttributes().firstWhere('attribute_uuid', attribute.uuid).value : '',
+                                                }
+                                            } %}
+                                        </div>
+                                    {% endfor %}
+
+                                    <div class="col-md-4" style="display: none">
+                                        {% include 'cup/form.twig' with { 'label': 'template' } %}
+                                    </div>
+
+                                    {% for attribute in item.getAttributes().whereNotIn('attribute_uuid', category.getAttributes().pluck('uuid')) %}
+                                        {% if attribute.value %}
+                                            <div class="col-md-4">
+                                                {% include 'cup/form.twig' with {
+                                                    'label': attribute.title,
+                                                    'type': attribute.type == 'string' ? 'text' : 'number',
+                                                    'name': 'attributes[' ~ attribute.attribute_uuid ~ ']',
+                                                    'postfix': '<i class="fas fa-plus" data-toggle="tooltip" data-placement="top" title="Индивидуальный атрибут продукта"></i>',
+                                                    'args': {
+                                                        'value': attribute.value,
+                                                    }
+                                                } %}
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+
+                                <hr>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Атрибуты',
+                                            'type': 'select',
+                                            'message': '<p class="float-left">Укажите индивидуальные атрибуты для товара</p><button class="btn btn-xs btn-secondary float-right" type="button"><i class="fa fa-plus"></i> Добавить поле</button>',
+                                            'args': {
+                                                'option': attributes.pluck('title', 'uuid').all(),
+                                                'data': {'select': 'attributes'}
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', () => {
+                                        let $that = $('[id="attributes"]'),
+                                            $row = $that.find('div.row:first'),
+                                            $template = $that.find('div[style="display: none"]').show().detach(),
+                                            $select = $that.find('select');
+
+                                        $that.find('button').on('click', () => {
+                                            if ($row.find('[name="attributes[' + $select.val() + ']"]').length === 0) {
+                                                let $buf = $template.clone();
+
+                                                $buf.find('label').text($select.find(':selected').text());
+                                                $buf.find('input').attr('name', 'attributes[' + $select.val() + ']');
+
+                                                $buf.appendTo($row);
+                                            }
+                                        })
+                                    });
+                                </script>
+                            </div>
+
+                            {# Tab: Поля #}
+                            <div class="tab-pane fade" id="fields" role="tabpanel">
+                                <div class="row">
                                     <div class="col-md-4">
                                         {% include 'cup/form.twig' with {
                                             'label': category.product.field_1 ? category.product.field_1 : 'Поле 1',
@@ -280,49 +409,6 @@
                                                 'value': item.field5,
                                             }
                                         } %}
-                                    </div>
-                                </div>
-
-                                <hr>
-
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Изображения',
-                                            'type': 'file',
-                                            'name': 'files[]',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Здесь можно выбрать несколько изображений"></i>',
-                                            'args': {
-                                                'class': ['d-block', 'btn', 'btn-sm', 'bg-grey2'],
-                                                'multiple': true,
-                                                'accept': 'image/*'
-                                            }
-                                        } %}
-
-                                        {% for file in item.getFiles() %}
-                                            <div class="p-2 d-inline-block m-2 bg-grey2 text-center rounded">
-                                                <a href="{{ file.getPublicPath() }}" target="_blank">
-                                                    <img class="rounded" height="100" src="{{ file.getPublicPath('small') }}" alt="preview" data-toggle="tooltip" data-placement="top" title="{{ file.getName() }}" />
-                                                </a>
-                                                <div class="pt-2">
-                                                    <div class="row">
-                                                        <div class="col-6">
-                                                            <span class="text-small">{{ file.getFileSize() }}</span>
-                                                        </div>
-                                                        <div class="col-6 text-right float-right">
-                                                            {% include 'cup/form.twig' with {
-                                                                'label': '<i class="fa fa-trash"></i>',
-                                                                'type': 'checkbox',
-                                                                'name': 'delete-file[]',
-                                                                'args': {
-                                                                    'value': file.uuid.toString()
-                                                                }
-                                                            } %}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        {% endfor %}
                                     </div>
                                 </div>
                             </div>

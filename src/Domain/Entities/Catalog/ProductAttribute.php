@@ -9,7 +9,7 @@ use RuntimeException;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="catalog_product_attribute")
+ * @ORM\Table(name="catalog_product_attributes")
  */
 class ProductAttribute extends AbstractEntity
 {
@@ -37,6 +37,8 @@ class ProductAttribute extends AbstractEntity
 
     /**
      * @var Product
+     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Catalog\Product")
+     * @ORM\JoinColumn(name="product_uuid", referencedColumnName="uuid")
      */
     protected Product $product;
 
@@ -70,6 +72,8 @@ class ProductAttribute extends AbstractEntity
 
     /**
      * @var Attribute
+     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Catalog\Attribute")
+     * @ORM\JoinColumn(name="attribute_uuid", referencedColumnName="uuid")
      */
     protected Attribute $attribute;
 
@@ -80,9 +84,9 @@ class ProductAttribute extends AbstractEntity
      */
     public function setAttribute(Attribute $attribute)
     {
-        if (is_object($attribute) && is_a($attribute, Product::class)) {
-            $this->attribute = $attribute;
+        if (is_object($attribute) && is_a($attribute, Attribute::class)) {
             $this->attribute_uuid = $attribute->getUuid();
+            $this->attribute = $attribute;
         }
 
         return $this;
@@ -94,6 +98,22 @@ class ProductAttribute extends AbstractEntity
     public function getAttribute(): Attribute
     {
         return $this->attribute;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->attribute->getTitle();
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->attribute->getType();
     }
 
     /**

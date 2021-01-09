@@ -3,7 +3,10 @@
 namespace App\Application\Actions\Cup\Catalog\Product;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
+use App\Domain\Entities\Catalog\Product;
+use App\Domain\Entities\Catalog\ProductAttribute;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
+use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
 
@@ -41,6 +44,7 @@ class ProductCreateAction extends CatalogAction
                     'date' => $this->request->getParam('date'),
                     'external_id' => $this->request->getParam('external_id'),
                 ]);
+                $product = $this->processProductAttributes($this->request->getParam('attributes', []), $product);
                 $product = $this->processEntityFiles($product);
 
                 switch (true) {
@@ -49,20 +53,24 @@ class ProductCreateAction extends CatalogAction
                     default:
                         return $this->response->withRedirect('/cup/catalog/product/' . $product->getUuid() . '/edit');
                 }
-            } catch (TitleAlreadyExistsException|MissingTitleValueException $e) {
+            } catch (TitleAlreadyExistsException | MissingTitleValueException $e) {
                 $this->addError('title', $e->getMessage());
             } catch (AddressAlreadyExistsException $e) {
                 $this->addError('address', $e->getMessage());
+            } catch (AttributeNotFoundException $e) {
+                $this->addError('attributes', $e->getMessage());
             }
         }
 
         $categories = $this->catalogCategoryService->read([
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
         ]);
+        $attributes = $this->catalogAttributeService->read();
 
         return $this->respondWithTemplate('cup/catalog/product/form.twig', [
             'category' => $categories->firstWhere('uuid', $category),
             'categories' => $categories,
+            'attributes' => $attributes,
             'measure' => $this->getMeasure(),
         ]);
     }

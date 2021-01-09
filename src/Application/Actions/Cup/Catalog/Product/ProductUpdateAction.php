@@ -3,7 +3,10 @@
 namespace App\Application\Actions\Cup\Catalog\Product;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
+use App\Domain\Entities\Catalog\Product;
+use App\Domain\Entities\Catalog\ProductAttribute;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
+use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;
 use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
 
 class ProductUpdateAction extends CatalogAction
@@ -45,6 +48,7 @@ class ProductUpdateAction extends CatalogAction
                             'date' => $this->request->getParam('date'),
                             'external_id' => $this->request->getParam('external_id'),
                         ]);
+                        $product = $this->processProductAttributes($this->request->getParam('attributes', []), $product);
                         $product = $this->processEntityFiles($product);
 
                         switch (true) {
@@ -57,16 +61,20 @@ class ProductUpdateAction extends CatalogAction
                         $this->addError('title', $e->getMessage());
                     } catch (AddressAlreadyExistsException $e) {
                         $this->addError('address', $e->getMessage());
+                    } catch (AttributeNotFoundException $e) {
+                        $this->addError('attribute', $e->getMessage());
                     }
                 }
 
                 $categories = $this->catalogCategoryService->read([
                     'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
                 ]);
+                $attributes = $this->catalogAttributeService->read();
 
                 return $this->respondWithTemplate('cup/catalog/product/form.twig', [
                     'category' => $categories->firstWhere('uuid', $product->getCategory()),
                     'categories' => $categories,
+                    'attributes' => $attributes,
                     'measure' => $this->getMeasure(),
                     'item' => $product,
                 ]);

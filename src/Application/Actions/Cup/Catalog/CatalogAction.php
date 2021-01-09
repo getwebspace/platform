@@ -3,7 +3,11 @@
 namespace App\Application\Actions\Cup\Catalog;
 
 use App\Domain\AbstractAction;
+use App\Domain\Entities\Catalog\Product;
+use App\Domain\Entities\Catalog\ProductAttribute;
+use App\Domain\Service\Catalog\AttributeService as CatalogAttributeService;
 use App\Domain\Service\Catalog\CategoryService as CatalogCatalogService;
+use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\Notification\NotificationService;
@@ -29,6 +33,11 @@ abstract class CatalogAction extends AbstractAction
     protected CatalogProductService $catalogProductService;
 
     /**
+     * @var CatalogAttributeService
+     */
+    protected CatalogAttributeService $catalogAttributeService;
+
+    /**
      * @var CatalogOrderService
      */
     protected CatalogOrderService $catalogOrderService;
@@ -48,8 +57,36 @@ abstract class CatalogAction extends AbstractAction
         $this->userService = UserService::getWithContainer($container);
         $this->catalogCategoryService = CatalogCatalogService::getWithContainer($container);
         $this->catalogProductService = CatalogProductService::getWithContainer($container);
+        $this->catalogAttributeService = CatalogAttributeService::getWithContainer($container);
         $this->catalogOrderService = CatalogOrderService::getWithContainer($container);
         $this->notificationService = NotificationService::getWithContainer($container);
+    }
+
+    /**
+     * @param array   $attributes
+     * @param Product $product
+     *
+     * @throws AttributeNotFoundException
+     * @return Product
+     */
+    protected function processProductAttributes(array $attributes, Product $product)
+    {
+        foreach ($product->getAttributes() as $attribute) {
+            $this->entityManager->remove($attribute);
+        }
+
+        foreach ($attributes as $uuid => $value) {
+            if ($value) {
+                $attribute = (new ProductAttribute())
+                    ->setProduct($product)
+                    ->setAttribute($this->catalogAttributeService->read(['uuid' => $uuid]))
+                    ->setValue($value);
+
+                $this->entityManager->persist($attribute);
+            }
+        }
+
+        return $product;
     }
 
     /**

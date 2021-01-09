@@ -520,6 +520,30 @@ class Product extends AbstractEntity
     }
 
     /**
+     * @var array
+     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\ProductAttribute", mappedBy="product")
+     */
+    protected $attributes = [];
+
+    /**
+     * @return int
+     */
+    public function hasAttributes()
+    {
+        return count($this->attributes);
+    }
+
+    /**
+     * @param false $raw
+     *
+     * @return array|\Illuminate\Support\Collection
+     */
+    public function getAttributes($raw = false)
+    {
+        return $raw ? $this->attributes : collect($this->attributes);
+    }
+
+    /**
      * @ORM\Column(type="string", options={"default": ""})
      */
     protected string $country = '';
