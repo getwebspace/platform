@@ -31,4 +31,20 @@ class AttributeRepository extends AbstractRepository
 
         return $result;
     }
+
+    public function findOneByAddress(string $address): ?Attribute
+    {
+        $query = $this->createQueryBuilder('a')
+            ->andWhere('a.address = :address')->setParameter('address', $address, Types::STRING)
+            ->getQuery();
+
+        try {
+            $result = $query->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            $results = $query->getResult();
+            $result = array_shift($results);
+        }
+
+        return $result;
+    }
 }

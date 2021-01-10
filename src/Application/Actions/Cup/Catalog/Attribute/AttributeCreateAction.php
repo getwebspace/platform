@@ -14,6 +14,7 @@ class AttributeCreateAction extends CatalogAction
             try {
                 $attribute = $this->catalogAttributeService->create([
                     'title' => $this->request->getParam('title'),
+                    'address' => $this->request->getParam('address'),
                     'type' => $this->request->getParam('type'),
                 ]);
 

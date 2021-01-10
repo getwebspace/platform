@@ -20,6 +20,7 @@ class AttributeUpdateAction extends CatalogAction
                     try {
                         $attribute = $this->catalogAttributeService->update($attribute, [
                             'title' => $this->request->getParam('title'),
+                            'address' => $this->request->getParam('address'),
                             'type' => $this->request->getParam('type'),
                         ]);
 

@@ -35,6 +35,16 @@
                             </div>
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
+                                    'label': 'Адрес',
+                                    'type': 'text',
+                                    'name': 'address',
+                                    'args': {
+                                        'value': attribute.address
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
                                     'label': 'Тип',
                                     'type': 'select',
                                     'name': 'type',

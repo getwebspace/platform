@@ -57,6 +57,33 @@ class Attribute extends AbstractEntity
     }
 
     /**
+     * @ORM\Column(type="string", length=500, unique=true, options={"default": ""})
+     */
+    protected string $address = '';
+
+    /**
+     * @param string $address
+     *
+     * @return $this
+     */
+    public function setAddress(string $address)
+    {
+        if ($this->checkStrLenMax($address, 500)) {
+            $this->address = $this->getAddressByValue($address, $this->getTitle());
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress(): string
+    {
+        return $this->address;
+    }
+
+    /**
      * @ORM\Column(type="string", length=255, options={"default": "string"})
      */
     protected string $type = 'string';

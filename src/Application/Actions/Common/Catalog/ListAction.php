@@ -81,20 +81,50 @@ class ListAction extends CatalogAction
                         ->setParameter('field' . $i, str_escape($field), \Doctrine\DBAL\Types\Type::STRING);
                 }
             }
+            $attributes = [];
+            foreach ($this->request->getParams() as $key => $value) {
+                if (
+                    (
+                        !in_array($key, ['price', 'country', 'manufacturer', 'order'], true) &&
+                        !str_start_with($key, 'field')
+                    ) && $value
+                ) {
+                    $attributes[$key] = $value;
+                }
+            }
+            if ($attributes) {
+                $buf = ['address' => [], 'value' => []];
+                foreach ($attributes as $key => $value) {
+                    $buf['address'][] = $key;
+                    $buf['value'][] = $value;
+                }
+
+                $query
+                    ->join('p.attributes', 'ap')
+                    ->join('ap.attribute', 'a')
+                    ->andWhere('ap.value IN (:value)')
+                    ->andWhere('a.address IN (:address)')
+                    ->setParameter('value', $buf['value'])
+                    ->setParameter('address', $buf['address'])
+                    ->groupBy('p.uuid')
+                    ->having('(count(1) = 2)');
+
+                $params['attributes'] = $attributes;
+            }
             if (($price = $this->request->getParam('price', false)) !== false) {
                 $price = array_merge(['min' => 0, 'max' => 0], (array) $price);
 
                 if ($price['min']) {
-                    $params['price']['min'] = $price['min'];
+                    $params['price']['min'] = (float) $price['min'];
                     $query
                         ->andWhere('p.price >= :minPrice')
-                        ->setParameter('minPrice', (int) $price['min'], \Doctrine\DBAL\Types\Type::INTEGER);
+                        ->setParameter('minPrice', $params['price']['min'], \Doctrine\DBAL\Types\Type::INTEGER);
                 }
                 if ($price['max']) {
-                    $params['price']['max'] = $price['max'];
+                    $params['price']['max'] = (float) $price['max'];
                     $query
                         ->andWhere('p.price <= :maxPrice')
-                        ->setParameter('maxPrice', (int) $price['max'], \Doctrine\DBAL\Types\Type::INTEGER);
+                        ->setParameter('maxPrice', $params['price']['max'], \Doctrine\DBAL\Types\Type::INTEGER);
                 }
             }
             if (($country = $this->request->getParam('country', false)) !== false) {
@@ -108,13 +138,16 @@ class ListAction extends CatalogAction
                     ->setParameter('manufacturer', str_escape($manufacturer), \Doctrine\DBAL\Types\Type::STRING);
             }
             if (($order = $this->request->getParam('order', false)) !== false) {
-                $direction = $this->request->getParam('direction', 'asc');
+                $direction = mb_strtolower($this->request->getParam('direction', 'asc'));
+                $direction = in_array($direction, ['asc', 'desc'], true) ? $direction : 'ASC';
 
                 if (in_array($order, ['title', 'price', 'field1', 'field2', 'field3', 'field4', 'field5'], true)) {
-                    $query->addOrderBy('p.' . $order, in_array(mb_strtolower($direction), ['asc', 'desc'], true) ? $direction : 'ASC');
+                    $query->addOrderBy('p.' . $order, );
+                    $params['order_by'][$order] = $direction;
                 }
             } else {
                 $query->addOrderBy('p.title', 'ASC');
+                $params['order_by']['title'] = 'asc';
             }
 
             $filtered = collect(
@@ -125,7 +158,7 @@ class ListAction extends CatalogAction
                     ->getQuery()
                     ->getResult()
             );
-            $count = $query->select('count(p)')->setMaxResults(null)->setFirstResult(null)->getQuery()->getSingleScalarResult();
+            $count = +($filtered->count() !== 0 ? $query->select('count(p)')->setMaxResults(null)->setFirstResult(null)->getQuery()->getSingleScalarResult() : 0);
 
             return $this->respondWithTemplate($this->parameter('catalog_category_template', 'catalog.category.twig'), [
                 'categories' => $categories,
@@ -183,20 +216,50 @@ class ListAction extends CatalogAction
                         ->setParameter('field' . $i, str_escape($field), \Doctrine\DBAL\Types\Type::STRING);
                 }
             }
+            $attributes = [];
+            foreach ($this->request->getParams() as $key => $value) {
+                if (
+                    (
+                        !in_array($key, ['price', 'country', 'manufacturer', 'order'], true) &&
+                        !str_start_with($key, 'field')
+                    ) && $value
+                ) {
+                    $attributes[$key] = $value;
+                }
+            }
+            if ($attributes) {
+                $buf = ['address' => [], 'value' => []];
+                foreach ($attributes as $key => $value) {
+                    $buf['address'][] = $key;
+                    $buf['value'][] = $value;
+                }
+
+                $query
+                    ->join('p.attributes', 'ap')
+                    ->join('ap.attribute', 'a')
+                    ->andWhere('ap.value IN (:value)')
+                    ->andWhere('a.address IN (:address)')
+                    ->setParameter('value', $buf['value'])
+                    ->setParameter('address', $buf['address'])
+                    ->groupBy('p.uuid')
+                    ->having('(count(1) = 2)');
+
+                $params['attributes'] = $attributes;
+            }
             if (($price = $this->request->getParam('price', false)) !== false) {
                 $price = array_merge(['min' => 0, 'max' => 0], (array) $price);
 
                 if ($price['min']) {
-                    $params['price']['min'] = $price['min'];
+                    $params['price']['min'] = (float) $price['min'];
                     $query
                         ->andWhere('p.price >= :minPrice')
-                        ->setParameter('minPrice', (int) $price['min'], \Doctrine\DBAL\Types\Type::INTEGER);
+                        ->setParameter('minPrice', $params['price']['min'], \Doctrine\DBAL\Types\Type::INTEGER);
                 }
                 if ($price['max']) {
-                    $params['price']['max'] = $price['max'];
+                    $params['price']['max'] = (float) $price['max'];
                     $query
                         ->andWhere('p.price <= :maxPrice')
-                        ->setParameter('maxPrice', (int) $price['max'], \Doctrine\DBAL\Types\Type::INTEGER);
+                        ->setParameter('maxPrice', $params['price']['max'], \Doctrine\DBAL\Types\Type::INTEGER);
                 }
             }
             if (($country = $this->request->getParam('country', false)) !== false) {
@@ -210,13 +273,16 @@ class ListAction extends CatalogAction
                     ->setParameter('manufacturer', str_escape($manufacturer), \Doctrine\DBAL\Types\Type::STRING);
             }
             if (($order = $this->request->getParam('order', false)) !== false) {
-                $direction = $this->request->getParam('direction', 'asc');
+                $direction = mb_strtolower($this->request->getParam('direction', 'asc'));
+                $direction = in_array($direction, ['asc', 'desc'], true) ? $direction : 'ASC';
 
                 if (in_array($order, ['title', 'price', 'field1', 'field2', 'field3', 'field4', 'field5'], true)) {
-                    $query->addOrderBy('p.' . $order, in_array(mb_strtolower($direction), ['asc', 'desc'], true) ? $direction : 'ASC');
+                    $query->addOrderBy('p.' . $order, );
+                    $params['order_by'][$order] = $direction;
                 }
             } else {
                 $query->addOrderBy('p.title', 'ASC');
+                $params['order_by']['title'] = 'asc';
             }
 
             $filtered = collect(
@@ -227,7 +293,7 @@ class ListAction extends CatalogAction
                     ->getQuery()
                     ->getResult()
             );
-            $count = $query->select('count(p)')->setMaxResults(null)->setFirstResult(null)->getQuery()->getSingleScalarResult();
+            $count = +($filtered->count() !== 0 ? $query->select('count(p)')->setMaxResults(null)->setFirstResult(null)->getQuery()->getSingleScalarResult() : 0);
 
             return $this->respondWithTemplate($category->template['category'], [
                 'categories' => $categories,

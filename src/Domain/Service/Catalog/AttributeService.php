@@ -5,6 +5,7 @@ namespace App\Domain\Service\Catalog;
 use App\Domain\AbstractService;
 use App\Domain\Entities\Catalog\Attribute;
 use App\Domain\Repository\Catalog\AttributeRepository;
+use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
@@ -28,6 +29,7 @@ class AttributeService extends AbstractService
      *
      * @throws TitleAlreadyExistsException
      * @throws MissingTitleValueException
+     * @throws AddressAlreadyExistsException
      *
      * @return Attribute
      */
@@ -35,6 +37,7 @@ class AttributeService extends AbstractService
     {
         $default = [
             'title' => '',
+            'address' => '',
             'type' => '',
         ];
         $data = array_merge($default, $data);
@@ -45,9 +48,13 @@ class AttributeService extends AbstractService
         if (!$data['title']) {
             throw new MissingTitleValueException();
         }
+        if ($data['address'] && $this->service->findOneByAddress($data['address']) !== null) {
+            throw new AddressAlreadyExistsException();
+        }
 
         $attribute = (new Attribute)
             ->setTitle($data['title'])
+            ->setAddress($data['address'])
             ->setType($data['type']);
 
         $this->entityManager->persist($attribute);
@@ -110,6 +117,7 @@ class AttributeService extends AbstractService
      *
      * @throws TitleAlreadyExistsException
      * @throws AttributeNotFoundException
+     * @throws AddressAlreadyExistsException
      *
      * @return Attribute
      */
@@ -138,6 +146,15 @@ class AttributeService extends AbstractService
                         $entity->setTitle($data['title']);
                     } else {
                         throw new TitleAlreadyExistsException();
+                    }
+                }
+                if ($data['address'] !== null) {
+                    $found = $this->service->findOneByAddress($data['address']);
+
+                    if ($found === null || $found === $entity) {
+                        $entity->setAddress($data['address']);
+                    } else {
+                        throw new AddressAlreadyExistsException();
                     }
                 }
                 if ($data['type'] !== null) {
