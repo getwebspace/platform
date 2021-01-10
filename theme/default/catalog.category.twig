@@ -67,9 +67,21 @@
 
                 <div class="col-lg-9 order-1 order-lg-2 mb-5 mb-lg-0">
                     <div class="row">
-                        {% for product in products.filtered %}
-                            {% include 'catalog.category.product.twig' with {'categories':categories,'product':product} only %}
-                        {% endfor %}
+                        {% if products.filtered.count() %}
+                            {% for product in products.filtered %}
+                                {% include 'catalog.category.product.twig' with {'categories':categories,'product':product} only %}
+                            {% endfor %}
+                        {% else %}
+                            <div class="col-12 text-center">
+                                <h4>Здесь ничего нет</h4>
+                                <p>
+                                    Попробуйте <a href="{{ non_page_path() }}{{ page ? '/' ~ page : '' }}">убрать фильтры</a>
+                                    {% if category.parent != NIL %}
+                                        или вернуться в <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ categories.firstWhere('uuid', category.parent).address }}">категорию выше</a>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        {% endif %}
                     </div>
                     <div class="row justify-content-center">
                         <div class="col-6">
@@ -87,7 +99,8 @@
                         </div>
                     {% endif %}
 
-                    {% include 'catalog.category.filter.twig' with {'category': category, 'products': products} only %}
+                    {#{% include 'catalog.category.filter.twig' with {'category': category, 'products': products} only %}#}
+                    {% include 'catalog.category.attributes.twig' with {'category': category, 'products': products} only %}
                 </div>
             </div>
         </div>

@@ -142,7 +142,7 @@ class ListAction extends CatalogAction
                 $direction = in_array($direction, ['asc', 'desc'], true) ? $direction : 'ASC';
 
                 if (in_array($order, ['title', 'price', 'field1', 'field2', 'field3', 'field4', 'field5'], true)) {
-                    $query->addOrderBy('p.' . $order, );
+                    $query->addOrderBy('p.' . $order, $direction);
                     $params['order_by'][$order] = $direction;
                 }
             } else {
@@ -241,8 +241,11 @@ class ListAction extends CatalogAction
                     ->andWhere('a.address IN (:address)')
                     ->setParameter('value', $buf['value'])
                     ->setParameter('address', $buf['address'])
-                    ->groupBy('p.uuid')
-                    ->having('(count(1) = 2)');
+                    ->groupBy('p.uuid');
+
+                if (count($attributes) >= 2) {
+                    $query->having('(count(1) = 2)');
+                }
 
                 $params['attributes'] = $attributes;
             }
@@ -277,7 +280,7 @@ class ListAction extends CatalogAction
                 $direction = in_array($direction, ['asc', 'desc'], true) ? $direction : 'ASC';
 
                 if (in_array($order, ['title', 'price', 'field1', 'field2', 'field3', 'field4', 'field5'], true)) {
-                    $query->addOrderBy('p.' . $order, );
+                    $query->addOrderBy('p.' . $order,);
                     $params['order_by'][$order] = $direction;
                 }
             } else {

@@ -117,10 +117,10 @@ class Attribute extends AbstractEntity
     protected $productAttributes = [];
 
     /**
-     * @return array
+     * @return array|\Illuminate\Support\Collection
      */
-    public function getProductAttributes()
+    public function getProductAttributes($raw = false)
     {
-        return $this->productAttributes;
+        return $raw ? $this->productAttributes : collect($this->productAttributes);
     }
 }
