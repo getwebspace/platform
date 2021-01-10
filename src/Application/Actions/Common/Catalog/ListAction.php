@@ -102,12 +102,12 @@ class ListAction extends CatalogAction
                 $query
                     ->join('p.attributes', 'ap')
                     ->join('ap.attribute', 'a')
-                    ->andWhere('ap.value IN (:value)')
                     ->andWhere('a.address IN (:address)')
-                    ->setParameter('value', $buf['value'])
+                    ->andWhere('ap.value IN (:value)')
                     ->setParameter('address', $buf['address'])
+                    ->setParameter('value', $buf['value'])
                     ->groupBy('p.uuid')
-                    ->having('(count(1) = 2)');
+                    ->having('(count(distinct a.address) = ' . count($attributes) . ')');
 
                 $params['attributes'] = $attributes;
             }
@@ -158,7 +158,13 @@ class ListAction extends CatalogAction
                     ->getQuery()
                     ->getResult()
             );
-            $count = +($filtered->count() !== 0 ? $query->select('count(p)')->setMaxResults(null)->setFirstResult(null)->getQuery()->getSingleScalarResult() : 0);
+            $count = +$query
+                ->select('count(p)')
+                ->setMaxResults(null)
+                ->setFirstResult(null)
+                ->resetDQLParts(['groupBy', 'having'])
+                ->getQuery()
+                ->getSingleScalarResult();
 
             return $this->respondWithTemplate($this->parameter('catalog_category_template', 'catalog.category.twig'), [
                 'categories' => $categories,
@@ -237,15 +243,12 @@ class ListAction extends CatalogAction
                 $query
                     ->join('p.attributes', 'ap')
                     ->join('ap.attribute', 'a')
-                    ->andWhere('ap.value IN (:value)')
                     ->andWhere('a.address IN (:address)')
-                    ->setParameter('value', $buf['value'])
+                    ->andWhere('ap.value IN (:value)')
                     ->setParameter('address', $buf['address'])
-                    ->groupBy('p.uuid');
-
-                if (count($attributes) >= 2) {
-                    $query->having('(count(1) = 2)');
-                }
+                    ->setParameter('value', $buf['value'])
+                    ->groupBy('p.uuid')
+                    ->having('(count(distinct a.address) = ' . count($attributes) . ')');
 
                 $params['attributes'] = $attributes;
             }
@@ -296,7 +299,13 @@ class ListAction extends CatalogAction
                     ->getQuery()
                     ->getResult()
             );
-            $count = +($filtered->count() !== 0 ? $query->select('count(p)')->setMaxResults(null)->setFirstResult(null)->getQuery()->getSingleScalarResult() : 0);
+            $count = +$query
+                ->select('count(p)')
+                ->setMaxResults(null)
+                ->setFirstResult(null)
+                ->resetDQLParts(['groupBy', 'having'])
+                ->getQuery()
+                ->getSingleScalarResult();
 
             return $this->respondWithTemplate($category->template['category'], [
                 'categories' => $categories,
