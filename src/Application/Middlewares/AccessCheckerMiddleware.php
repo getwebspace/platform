@@ -13,6 +13,7 @@ class AccessCheckerMiddleware extends AbstractMiddleware
         'forbidden',
         'cup:login',
         'cup:forbidden',
+        'cup:system',
     ];
 
     /**

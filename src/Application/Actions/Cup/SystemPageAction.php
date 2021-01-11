@@ -93,18 +93,7 @@ class SystemPageAction extends AbstractAction
                 return $this->response->withRedirect('/cup/system');
             }
 
-            return $this->respondWithTemplate('cup/system/index.twig', [
-                'properties' => [
-                    'version' => ($_ENV['COMMIT_BRANCH'] ?? 'other') . ' (' . ($_ENV['COMMIT_SHA'] ?? 'specific') . ')',
-                    'os' => @implode(' ', [php_uname('s'), php_uname('r'), php_uname('m')]),
-                    'php' => PHP_VERSION,
-                    'memory_limit' => ini_get('memory_limit'),
-                    'disable_functions' => ini_get('disable_functions'),
-                    'disable_classes' => ini_get('disable_classes'),
-                    'upload_max_filesize' => ini_get('upload_max_filesize'),
-                    'max_file_uploads' => ini_get('max_file_uploads'),
-                ],
-            ]);
+            return $this->respondWithTemplate('cup/system/index.twig');
         }
 
         return $this->response->withRedirect('/cup/login?redirect=/cup/system');
