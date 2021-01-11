@@ -2,12 +2,10 @@
 
 namespace App\Application\Actions\Cup\User;
 
-use App\Application\Middlewares\AccessCheckerMiddleware;
 use App\Domain\AbstractAction;
 use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\SubscriberService as UserSubscriberService;
 use App\Domain\Service\User\UserService;
-use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 
 abstract class UserAction extends AbstractAction
@@ -37,16 +35,5 @@ abstract class UserAction extends AbstractAction
         $this->userService = UserService::getWithContainer($container);
         $this->userGroupService = UserGroupService::getWithContainer($container);
         $this->userSubscriberService = UserSubscriberService::getWithContainer($container);
-    }
-
-    /**
-     * @return Collection
-     */
-    protected function getRoutes(): Collection
-    {
-        return collect($this->container->get('router')->getRoutes())
-            ->flatten()
-            ->map(fn ($item) => $item->getName())
-            ->filter(fn ($item) => !str_start_with($item, AccessCheckerMiddleware::PUBLIC));
     }
 }

@@ -34,7 +34,10 @@ class UpdateAction extends UserAction
 
                 return $this->respondWithTemplate('cup/user/group/form.twig', [
                     'item' => $userGroup,
-                    'routes' => $this->getRoutes(),
+                    'routes' => [
+                        'all' => $this->getRoutes()->all(),
+                        'default' => $this->getRoutes()->filter(fn ($el) => str_start_with($el, ['api:', 'common:']))->all(),
+                    ],
                 ]);
             }
         }

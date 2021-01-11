@@ -134,6 +134,31 @@ $(() => {
         fadeDelay: 1.0            // Point during the overlay's fade-in that the modal begins to fade in (.5 = 50%, 1.5 = 150%, etc.)
     };
     
+    // parameters guest user && user group
+    {
+        let $select = $('select[name="access[]"], [name="user[access][]"]'),
+            $options = $select.find('option');
+    
+        $('[data-access-click]').on('click', (e) => {
+            let $btn = $(e.currentTarget),
+                type = $btn.attr('data-access-click');
+        
+            if (type === 'none') {
+                $options.prop('selected', false);
+            } else {
+                $options.each((i, el) => {
+                    let $buf = $(el);
+                
+                    if ($buf.val().startsWith(type)) {
+                        $buf.prop('selected', !(+$buf.prop('selected')));
+                    }
+                });
+            }
+        
+            $select.trigger('change.select2');
+        });
+    }
+    
     // parameters add variables
     {
         let $hidden = $('[name="var[]"]').parents('[data-input]'),

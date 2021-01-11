@@ -60,15 +60,15 @@
                                     'type': 'select',
                                     'name': 'access[]',
                                     'message': [
-                                                   '<!-- button class="btn btn-outline-success btn-sm mr-1" type="button" data-access-click="common">Общие</button -->',
-                                                   '<button class="btn btn-outline-secondary btn-sm mr-1" type="button" data-access-click="cup">Панель управления</button>',
-                                                   '<!-- button class="btn btn-outline-info btn-sm mr-1" type="button" data-access-click="api">API</button -->',
-                                                   '<button class="btn btn-outline-danger btn-sm mr-1" type="button" data-access-click="none">Ничего</button>',
-                                               ]|join(''),
+                                           '<button class="btn btn-outline-success btn-sm mr-1" type="button" data-access-click="common">Общие</button>',
+                                           '<button class="btn btn-outline-secondary btn-sm mr-1" type="button" data-access-click="cup">Панель управления</button>',
+                                           '<button class="btn btn-outline-info btn-sm mr-1" type="button" data-access-click="api">API</button>',
+                                           '<button class="btn btn-outline-danger btn-sm mr-1" type="button" data-access-click="none">Ничего</button>',
+                                       ]|join(''),
                                     'args': {
                                         'multiple': true,
-                                        'option': routes.combine(routes).all(),
-                                        'selected': item.access
+                                        'option': routes.all,
+                                        'selected': item.access ? item.access : (parameter('user_access', false) != false ? parameter('user_access', '')|split(',') : routes.default)
                                     }
                                 } %}
                             </div>
@@ -82,34 +82,4 @@
             </div>
         </div>
     </div>
-{% endblock %}
-
-{% block script %}
-    {{ parent() }}
-
-    <script>
-        $(() => {
-            let $select = $('select[name="access[]"]'),
-                $options = $select.find('option');
-
-            $('[data-access-click]').on('click', (e) => {
-                let $btn = $(e.currentTarget),
-                    type = $btn.attr('data-access-click');
-
-                if (type === 'none') {
-                    $options.prop('selected', false);
-                } else {
-                    $options.each((i, el) => {
-                        let $buf = $(el);
-
-                        if ($buf.val().startsWith(type)) {
-                            $buf.prop('selected', !(+$buf.prop('selected')));
-                        }
-                    });
-                }
-
-                $select.trigger('change.select2');
-            });
-        })
-    </script>
 {% endblock %}

@@ -329,6 +329,10 @@ $app
 // other
 $app
     ->group('', function (App $app) use ($container): void {
+        // forbidden
+        $app->map(['get', 'post'], '/forbidden', \App\Application\Actions\Common\ForbiddenPageAction::class)
+            ->setName('forbidden');
+
         // file
         $app
             ->group('/file', function (App $app): void {

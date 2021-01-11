@@ -18,7 +18,7 @@ class ParametersPageAction extends AbstractAction
                 foreach ($params as $key => $value) {
                     $data = [
                         'key' => $group . '_' . $key,
-                        'value' => $value,
+                        'value' => is_array($value) ? implode(',', $value) : $value,
                     ];
 
                     if (($parameter = $parameters->firstWhere('key', $data['key'])) !== null) {
@@ -32,6 +32,12 @@ class ParametersPageAction extends AbstractAction
             return $this->response->withRedirect($this->request->getQueryParam('return', '/cup/parameters'));
         }
 
-        return $this->respondWithTemplate('cup/parameters/index.twig', ['parameter' => $parameters]);
+        return $this->respondWithTemplate('cup/parameters/index.twig', [
+            'routes' => [
+                'all' => $this->getRoutes()->all(),
+                'guest' => $this->getRoutes()->filter(fn ($el) => str_start_with($el, ['api:', 'common:']))->all(),
+            ],
+            'parameter' => $parameters,
+        ]);
     }
 }

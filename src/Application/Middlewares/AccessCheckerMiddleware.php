@@ -10,8 +10,7 @@ use Slim\Http\Response;
 class AccessCheckerMiddleware extends AbstractMiddleware
 {
     public const PUBLIC = [
-        'api:', // todo when API will be updated check this
-        'common:',
+        'forbidden',
         'cup:login',
         'cup:forbidden',
     ];
@@ -39,14 +38,23 @@ class AccessCheckerMiddleware extends AbstractMiddleware
         $user = $request->getAttribute('user', false);
 
         if ($user) {
-            // no group or access right
-            if ($user->getGroup() !== null && in_array($route->getName(), $user->getGroup()->getAccess(), true)) {
-                return $next($request, $response);
-            }
+            $access = $user->getGroup()->getAccess();
+        } else {
+            $access = $this->parameter('user_access', false);
+            $access = $access === false ? [] : explode(',', $access);
+        }
 
+        if (
+            ($access === [] && str_start_with($route->getName(), 'common')) ||
+            in_array($route->getName(), $access, true)
+        ) {
+            return $next($request, $response);
+        }
+
+        if (str_start_with($route->getPattern(), '/cup')) {
             return $response->withHeader('Location', '/cup/forbidden')->withStatus(307);
         }
 
-        return $response->withHeader('Location', '/cup/login?redirect=' . $request->getUri()->getPath())->withStatus(307);
+        return $response->withHeader('Location', '/forbidden')->withStatus(307);
     }
 }

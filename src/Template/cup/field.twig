@@ -29,6 +29,16 @@
         {% endif %}
     {% endif %}
 
+    {% if args['force-value'] is not empty %}
+        {% if type in ['checkbox'] and args['force-value'] == 1 %}
+            {% set args = args|merge({'checked': true}) %}
+        {% elseif type in ['select'] %}
+            {% set args = args|merge({'selected': args['force-value']}) %}
+        {% else %}
+            {% set args = args|merge({'value': args['force-value']}) %}
+        {% endif %}
+    {% endif %}
+
     {% if args.method == 'null' %}
         {% if args.data is empty %}
             {% set args = args|merge({'data': {}}) %}
