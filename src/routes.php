@@ -208,13 +208,13 @@ $app
                     // attribute
                     $app->group('/attribute', function (App $app): void {
                         $app->get('', \App\Application\Actions\Cup\Catalog\Attribute\AttributeListAction::class)
-                            ->setName('cup:catalog:order:list');
+                            ->setName('cup:attribute:order:list');
                         $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\Catalog\Attribute\AttributeCreateAction::class)
-                            ->setName('cup:catalog:order:add');
+                            ->setName('cup:attribute:order:add');
                         $app->map(['get', 'post'], '/{attribute}/edit', \App\Application\Actions\Cup\Catalog\Attribute\AttributeUpdateAction::class)
-                            ->setName('cup:catalog:order:edit');
+                            ->setName('cup:attribute:order:edit');
                         $app->map(['get', 'post'], '/{attribute}/delete', \App\Application\Actions\Cup\Catalog\Attribute\AttributeDeleteAction::class)
-                            ->setName('cup:catalog:order:delete');
+                            ->setName('cup:attribute:order:delete');
                     });
 
                     // order

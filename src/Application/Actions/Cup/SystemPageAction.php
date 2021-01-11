@@ -117,7 +117,7 @@ class SystemPageAction extends AbstractAction
     {
         return collect($this->container->get('router')->getRoutes())
             ->flatten()
-            ->map(fn($item) => $item->getName())
-            ->filter(fn($item) => !str_start_with($item, AccessCheckerMiddleware::PUBLIC));
+            ->map(fn ($item) => $item->getName())
+            ->filter(fn ($item) => !str_start_with($item, AccessCheckerMiddleware::PUBLIC));
     }
 }

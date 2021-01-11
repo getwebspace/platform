@@ -118,6 +118,8 @@ class Attribute extends AbstractEntity
     protected $productAttributes = [];
 
     /**
+     * @param mixed $raw
+     *
      * @return array|\Illuminate\Support\Collection
      */
     public function getProductAttributes($raw = false)

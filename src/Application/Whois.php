@@ -618,7 +618,7 @@ class Whois
                     $allExtraInfomations = ['city', 'country'];
                     foreach ($allExtraInfomations as $extraInfomation) {
                         if (!empty($parseResult[$needToAddCompletelyAddressArray][$extraInfomation])) {
-                            $parseResult[$needToAddCompletelyAddressArray]["completely_address"] .= ", " . $parseResult[$needToAddCompletelyAddressArray][$extraInfomation];
+                            $parseResult[$needToAddCompletelyAddressArray]['completely_address'] .= ', ' . $parseResult[$needToAddCompletelyAddressArray][$extraInfomation];
                         }
                     }
                     $parseResult[$needToAddCompletelyAddressArray]['completely_address'] = ucwords(mb_strtolower($parseResult[$needToAddCompletelyAddressArray]['completely_address']));
