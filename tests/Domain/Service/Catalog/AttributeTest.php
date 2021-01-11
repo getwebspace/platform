@@ -52,7 +52,7 @@ class AttributeTest extends TestCase
     {
         // create test attributes
         $attr1 = $this->attributeService->create([
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\AttributeTypeType::LIST),
         ]);
         $attr2 = $this->attributeService->create([
@@ -102,7 +102,7 @@ class AttributeTest extends TestCase
     {
         // create test attributes
         $attr1 = $this->attributeService->create([
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\AttributeTypeType::LIST),
         ]);
         $attr2 = $this->attributeService->create([
