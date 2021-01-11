@@ -84,9 +84,10 @@ class Attribute extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="string", length=255, options={"default": "string"})
+     * @see \App\Domain\Types\Catalog\AttributeTypeType::LIST
+     * @ORM\Column(type="CatalogAttributeTypeType", options={"default": \App\Domain\Types\Catalog\AttributeTypeType::TYPE_STRING})
      */
-    protected string $type = 'string';
+    protected string $type = \App\Domain\Types\Catalog\AttributeTypeType::TYPE_STRING;
 
     /**
      * @param string $type
@@ -95,7 +96,7 @@ class Attribute extends AbstractEntity
      */
     public function setType(string $type)
     {
-        if ($this->checkStrLenMax($type, 255) && in_array($type, ['string', 'integer', 'float'], true)) {
+        if ($this->checkStrLenMax($type, 255) && in_array($type, \App\Domain\Types\Catalog\AttributeTypeType::LIST, true)) {
             $this->type = $type;
         }
 

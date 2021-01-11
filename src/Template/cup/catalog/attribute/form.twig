@@ -50,7 +50,7 @@
                                     'type': 'select',
                                     'name': 'type',
                                     'args': {
-                                        'option': {'string': 'Строка', 'integer': 'Целое', 'float': 'Дробное'},
+                                        'option': collect(reference('/App/Domain/Types/Catalog/AttributeTypeType::LIST')).combine(['Строка', 'Целое', 'Дробное']),
                                         'selected': attribute.type,
                                         'required': true
                                     }

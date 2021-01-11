@@ -75,6 +75,7 @@ class AttributeService extends AbstractService
         $default = [
             'uuid' => null,
             'title' => null,
+            'address' => null,
             'type' => null,
         ];
         $data = array_merge($default, static::$default_read, $data);
@@ -87,6 +88,9 @@ class AttributeService extends AbstractService
         if ($data['title'] !== null) {
             $criteria['title'] = $data['title'];
         }
+        if ($data['address'] !== null) {
+            $criteria['address'] = $data['address'];
+        }
         if ($data['type'] !== null) {
             $criteria['type'] = $data['type'];
         }
@@ -95,6 +99,7 @@ class AttributeService extends AbstractService
             switch (true) {
                 case !is_array($data['uuid']) && $data['uuid'] !== null:
                 case !is_array($data['title']) && $data['title'] !== null:
+                case !is_array($data['address']) && $data['address'] !== null:
                     $attribute = $this->service->findOneBy($criteria);
 
                     if (empty($attribute)) {

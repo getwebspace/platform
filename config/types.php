@@ -5,6 +5,7 @@ return [
     Ramsey\Uuid\Doctrine\UuidType::NAME => Ramsey\Uuid\Doctrine\UuidType::class,
 
     // custom
+    App\Domain\Types\Catalog\AttributeTypeType::NAME => App\Domain\Types\Catalog\AttributeTypeType::class,
     App\Domain\Types\Catalog\CategoryStatusType::NAME => App\Domain\Types\Catalog\CategoryStatusType::class,
     App\Domain\Types\Catalog\ProductStatusType::NAME => App\Domain\Types\Catalog\ProductStatusType::class,
     App\Domain\Types\Catalog\OrderStatusType::NAME => App\Domain\Types\Catalog\OrderStatusType::class,
