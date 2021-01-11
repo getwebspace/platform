@@ -37,7 +37,7 @@ class AccessCheckerMiddleware extends AbstractMiddleware
         /** @var User $user */
         $user = $request->getAttribute('user', false);
 
-        if ($user) {
+        if ($user && $user->getGroup()) {
             $access = $user->getGroup()->getAccess();
         } else {
             $access = $this->parameter('user_access', false);
@@ -51,10 +51,8 @@ class AccessCheckerMiddleware extends AbstractMiddleware
             return $next($request, $response);
         }
 
-        if (str_start_with($route->getPattern(), '/cup')) {
-            return $response->withHeader('Location', '/cup/forbidden')->withStatus(307);
-        }
-
-        return $response->withHeader('Location', '/forbidden')->withStatus(307);
+        return $response
+            ->withHeader('Location', str_start_with($route->getPattern(), '/cup') ? '/cup/forbidden' : '/forbidden')
+            ->withStatus(307);
     }
 }
