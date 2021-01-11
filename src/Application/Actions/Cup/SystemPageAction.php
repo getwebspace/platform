@@ -109,15 +109,4 @@ class SystemPageAction extends AbstractAction
 
         return $this->response->withRedirect('/cup/login?redirect=/cup/system');
     }
-
-    /**
-     * @return Collection
-     */
-    protected function getRoutes(): Collection
-    {
-        return collect($this->container->get('router')->getRoutes())
-            ->flatten()
-            ->map(fn ($item) => $item->getName())
-            ->filter(fn ($item) => !str_start_with($item, AccessCheckerMiddleware::PUBLIC));
-    }
 }
