@@ -3,12 +3,10 @@
 namespace App\Application\Actions\Cup\Catalog;
 
 use App\Domain\AbstractAction;
-use App\Domain\Entities\Catalog\Product;
-use App\Domain\Entities\Catalog\ProductAttribute;
 use App\Domain\Service\Catalog\AttributeService as CatalogAttributeService;
 use App\Domain\Service\Catalog\CategoryService as CatalogCatalogService;
-use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
+use App\Domain\Service\Catalog\ProductAttributeService as CatalogProductAttributeService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\Notification\NotificationService;
 use App\Domain\Service\User\UserService;
@@ -38,6 +36,11 @@ abstract class CatalogAction extends AbstractAction
     protected CatalogAttributeService $catalogAttributeService;
 
     /**
+     * @var CatalogProductAttributeService
+     */
+    protected CatalogProductAttributeService $catalogProductAttributeService;
+
+    /**
      * @var CatalogOrderService
      */
     protected CatalogOrderService $catalogOrderService;
@@ -55,38 +58,12 @@ abstract class CatalogAction extends AbstractAction
         parent::__construct($container);
 
         $this->userService = UserService::getWithContainer($container);
+        $this->catalogAttributeService = CatalogAttributeService::getWithContainer($container);
         $this->catalogCategoryService = CatalogCatalogService::getWithContainer($container);
         $this->catalogProductService = CatalogProductService::getWithContainer($container);
-        $this->catalogAttributeService = CatalogAttributeService::getWithContainer($container);
+        $this->catalogProductAttributeService = CatalogProductAttributeService::getWithContainer($container);
         $this->catalogOrderService = CatalogOrderService::getWithContainer($container);
         $this->notificationService = NotificationService::getWithContainer($container);
-    }
-
-    /**
-     * @param array   $attributes
-     * @param Product $product
-     *
-     * @throws AttributeNotFoundException
-     * @return Product
-     */
-    protected function processProductAttributes(array $attributes, Product $product)
-    {
-        foreach ($product->getAttributes() as $attribute) {
-            $this->entityManager->remove($attribute);
-        }
-
-        foreach ($attributes as $uuid => $value) {
-            if ($value) {
-                $attribute = (new ProductAttribute())
-                    ->setProduct($product)
-                    ->setAttribute($this->catalogAttributeService->read(['uuid' => $uuid]))
-                    ->setValue($value);
-
-                $this->entityManager->persist($attribute);
-            }
-        }
-
-        return $product;
     }
 
     /**

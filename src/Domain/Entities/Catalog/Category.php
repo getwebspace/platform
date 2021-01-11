@@ -343,7 +343,8 @@ class Category extends AbstractEntity
      * @var string
      *
      * @see \App\Domain\Types\UserStatusType::LIST
-     * @ORM\Column(type="CatalogCategoryStatusType", options={"default": \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK})
+     * @ORM\Column(type="CatalogCategoryStatusType", options={"default":
+     *                                               \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK})
      */
     protected string $status = \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK;
 
@@ -510,11 +511,11 @@ class Category extends AbstractEntity
     protected $attributes = [];
 
     /**
-     * @param array $attributes
+     * @param array|Collection $attributes
      *
      * @return $this
      */
-    public function setAttributes(array $attributes)
+    public function setAttributes($attributes = [])
     {
         foreach ($this->attributes as $key => $attribute) {
             unset($this->attributes[$key]);

@@ -3,8 +3,6 @@
 namespace App\Application\Actions\Cup\Catalog\Product;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
-use App\Domain\Entities\Catalog\Product;
-use App\Domain\Entities\Catalog\ProductAttribute;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
@@ -44,7 +42,10 @@ class ProductCreateAction extends CatalogAction
                     'date' => $this->request->getParam('date'),
                     'external_id' => $this->request->getParam('external_id'),
                 ]);
-                $product = $this->processProductAttributes($this->request->getParam('attributes', []), $product);
+                $this->catalogProductAttributeService->proccess(
+                    $this->request->getParam('attributes', []),
+                    $product
+                );
                 $product = $this->processEntityFiles($product);
 
                 switch (true) {
