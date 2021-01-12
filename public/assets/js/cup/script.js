@@ -183,4 +183,104 @@ $(() => {
             }
         });
     }
+    
+    // order form
+    {
+        $(() => {
+            let
+                $table = $('[data-table="order"]'),
+                table = $table.DataTable(),
+                $modal = $('[data-modal-products].modal'),
+                $category = $modal.find('[type="select"][name="category"]'),
+                $product = $modal.find('[type="select"][name="product"]'),
+                $option = $('<option>'),
+                $quantity = $modal.find('[type="number"]'),
+                $btnSuccess = $modal.find('button')
+            ;
+        
+            $table.find('tr [type="number"]').on('change', (e) => {
+                let $el = $(e.currentTarget);
+            
+                if ($el.val() <= 0) {
+                    $el.parents('tr').remove();
+                }
+            });
+        
+            $('[data-btn-modal-products]').click((e) => {
+                e.preventDefault();
+                this.blur();
+            
+                let handler = (e) => {
+                    $product
+                        .html('')
+                        .prop('disabled', true);
+                
+                    $.get('/api/catalog/product', {category: $(e.currentTarget).val()}, (res) => {
+                        if (res.length) {
+                            for (let item of res) {
+                                $product.append(
+                                    $option.clone().text(item.title).val(item.uuid).data('price', item.price)
+                                );
+                            }
+                        }
+                    
+                        $product
+                            .trigger('change.select2')
+                            .prop('disabled', false);
+                    });
+                };
+                $category.off('change', handler).on('change', handler);
+            
+                $.get('/api/catalog/category', (res) => {
+                    if (res.length) {
+                        (function renderTree(list, parent = '00000000-0000-0000-0000-000000000000', title = '') {
+                            let buf = 0;
+                        
+                            for (let item of list) {
+                                if (item.parent === parent) {
+                                    let $el = $option.clone().text((title + ' ' + item.title).trim()).val(item.uuid);
+                                
+                                    $category.append($el);
+                                
+                                    if (renderTree(list, item.uuid, (title + ' ' + item.title).trim()) !== 0) {
+                                        $el.remove();
+                                    }
+                                
+                                    buf++;
+                                }
+                            }
+                        
+                            return buf;
+                        })(res);
+                    
+                        $category.trigger('change').trigger('change.select2');
+                        $modal.modal();
+                    }
+                });
+            });
+        
+            $btnSuccess.on('click', () => {
+                if ($product.val() && $quantity.val() >= 1) {
+                    let $selected = $product.find(':selected'),
+                        $find = $('[name="list[' + $selected.attr('value') + ']"]');
+                    
+                    if ($find.length === 0) {
+                        let $input = $('<input class="form-control" type="number" placeholder="1" min="0" step="any">')
+                            .attr('name', 'list[' + $selected.attr('value') + ']')
+                            .val($quantity.val())
+                        ;
+                    
+                        table.row.add([$selected.text(), $selected.data('price'), $quantity.val()])
+                            .draw(true)
+                            .nodes().to$()
+                            .find('td:last-child').html($('<div class="form-group">').append($input));
+                    } else {
+                        $find.val(parseFloat($find.val()) + parseFloat($quantity.val()));
+                    }
+                
+                    $.modal.close();
+                }
+            });
+        });
+    }
 });
