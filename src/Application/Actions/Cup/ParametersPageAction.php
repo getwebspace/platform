@@ -4,6 +4,7 @@ namespace App\Application\Actions\Cup;
 
 use App\Domain\AbstractAction;
 use App\Domain\Service\Parameter\ParameterService;
+use App\Domain\Service\User\GroupService as UserGroupService;
 
 class ParametersPageAction extends AbstractAction
 {
@@ -37,6 +38,7 @@ class ParametersPageAction extends AbstractAction
                 'all' => $this->getRoutes()->all(),
                 'guest' => $this->getRoutes()->filter(fn ($el) => str_start_with($el, ['api:', 'common:']))->all(),
             ],
+            'groups' => UserGroupService::getWithContainer($this->container)->read(),
             'parameter' => $parameters,
         ]);
     }

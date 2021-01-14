@@ -138,7 +138,7 @@
                                     'name': 'group_uuid',
                                     'args': {
                                         'option': {(NIL): 'Без группы'}|merge(groups.pluck('title', 'uuid').all()),
-                                        'selected': item.group_uuid
+                                        'selected': item.group_uuid ?? parameter('user_group')
                                     }
                                 } %}
                             </div>

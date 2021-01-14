@@ -13,13 +13,15 @@ class UserRegisterAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $identifier = $this->parameter('user_login_type', 'username');
-
         if ($this->request->isPost()) {
             $data = [
-                'phone' => $this->request->getParam('phone'),
-                'email' => $this->request->getParam('email'),
-                'username' => $this->request->getParam('username'),
+                'firstname' => $this->request->getParam('firstname', ''),
+                'lastname' => $this->request->getParam('lastname', ''),
+                'username' => $this->request->getParam('username', ''),
+                'email' => $this->request->getParam('email', ''),
+                'phone' => $this->request->getParam('phone', ''),
+                'address' => $this->request->getParam('address', ''),
+                'additional' => $this->request->getParam('additional', ''),
                 'password' => $this->request->getParam('password'),
                 'password_again' => $this->request->getParam('password_again'),
             ];
@@ -27,14 +29,24 @@ class UserRegisterAction extends UserAction
             if ($this->isRecaptchaChecked()) {
                 if ($data['password'] === $data['password_again']) {
                     try {
+                        $groupUuid = $this->parameter('user_group', null);
                         $this->userService->create([
-                            $identifier => $data[$identifier],
+                            'firstname' => $data['firstname'],
+                            'lastname' => $data['lastname'],
+                            'username' => $data['username'],
+                            'email' => $data['email'],
+                            'phone' => $data['phone'],
+                            'address' => $data['address'],
+                            'additional' => $data['additional'],
                             'password' => $data['password'],
+                            'group' => $groupUuid ? $this->userGroupService->read(['uuid' => $groupUuid]) : null,
                         ]);
 
                         return $this->response->withRedirect('/user/login');
                     } catch (MissingUniqueValueException $e) {
-                        $this->addError($identifier, $e->getMessage());
+                        $this->addError('email', $e->getMessage());
+                        $this->addError('username', $e->getMessage());
+                        $this->addError('phone', $e->getMessage());
                     } catch (UsernameAlreadyExistsException $e) {
                         $this->addError('username', $e->getMessage());
                     } catch (WrongEmailValueException|EmailAlreadyExistsException $e) {

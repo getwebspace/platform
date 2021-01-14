@@ -4,6 +4,7 @@ namespace App\Application\Actions\Common\User;
 
 use App\Domain\AbstractAction;
 use App\Domain\Service\User\UserService;
+use App\Domain\Service\User\GroupService as UserGroupService;
 use Psr\Container\ContainerInterface;
 
 abstract class UserAction extends AbstractAction
@@ -14,6 +15,11 @@ abstract class UserAction extends AbstractAction
     protected UserService $userService;
 
     /**
+     * @var UserGroupService
+     */
+    protected UserGroupService $userGroupService;
+
+    /**
      * {@inheritdoc}
      */
     public function __construct(ContainerInterface $container)
@@ -21,5 +27,6 @@ abstract class UserAction extends AbstractAction
         parent::__construct($container);
 
         $this->userService = UserService::getWithContainer($container);
+        $this->userGroupService = UserGroupService::getWithContainer($container);
     }
 }
