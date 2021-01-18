@@ -169,7 +169,8 @@
                                             'label': 'Атрибуты',
                                             'type': 'select',
                                             'name': 'attributes[]',
-                                            'message': 'Укажите индивидуальные атрибуты для категории',
+                                            'message': 'Укажите индивидуальные атрибуты для категории' ~
+                                                       '<a href="/cup/catalog/attribute/add" class="btn btn-xs btn-info mr-1 float-right" onclick="return confirm(\'Вы действительно хотите перейти на другую страницу?\');"><i class="fa fa-plus"></i> Добавить атрибут</a>',
                                             'args': {
                                                 'multiple': true,
                                                 'option': attributes.pluck('title', 'uuid').all(),
