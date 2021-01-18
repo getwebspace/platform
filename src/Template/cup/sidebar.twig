@@ -78,7 +78,12 @@
         let
             data = {
                 notifications: [],
-                tasks: {},
+                tasks: {
+                    '25f6d940-6611-4aca-a376-c4e097431ce2': {
+                        status: 'done',
+                        progress: 0,
+                    }
+                },
             },
             $quickSidebar = $('.quick-sidebar'),
             $notifList = $quickSidebar.find('.notif-center'),
@@ -107,7 +112,7 @@
                     }
 
                     // task
-                    if (res.task && (res.task.new.length || res.task.update.length)) {
+                    if (res.task && (res.task.new.length || res.task.update.length || res.task.delete.length)) {
                         $elTaskEmpty.hide();
 
                         function renderTask(task, $buf) {
@@ -166,6 +171,12 @@
                         for (let task of res.task.update) {
                             renderTask(task, $taskList.find('[data-task-uuid="' + task.uuid + '"]'));
                             data.tasks[task.uuid] = {status: task.status, progress: task.progress};
+                        }
+
+                        // delete
+                        for (let uuid of res.task.delete) {
+                            $taskList.find('[data-task-uuid="' + uuid + '"]').remove();
+                            delete data.tasks[uuid];
                         }
                     }
                 }
