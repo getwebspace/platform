@@ -409,6 +409,11 @@
 
                     if (index >= 0) {
                         this.cart[index].quantity += this.cart[index].quantity_step || 1;
+
+                        if (this.cart[index].quantity <= 0) {
+                            this.cartRemoveItemById(index);
+                        }
+
                         this._triggerEvent('cart:update', this.cart[index]);
                         this._saveCartData();
                     }
@@ -421,7 +426,7 @@
                     if (index >= 0) {
                         this.cart[index].quantity -= this.cart[index].quantity_step || 1;
 
-                        if (this.cart[index].quantity === 0) {
+                        if (this.cart[index].quantity <= 0) {
                             this.cartRemoveItemById(index);
                         }
 
@@ -437,7 +442,7 @@
                     if (index >= 0) {
                         this.cart[index].quantity = +count;
 
-                        if (this.cart[index].quantity === 0) {
+                        if (this.cart[index].quantity <= 0) {
                             this.cartRemoveItemById(index);
                         }
 
