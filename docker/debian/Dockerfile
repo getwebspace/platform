@@ -23,6 +23,7 @@ RUN set -x \
     && apt-get install --no-install-recommends -y \
         nginx \
         git \
+        unzip \
         supervisor \
         libfreetype6-dev \
         libjpeg62-turbo-dev \

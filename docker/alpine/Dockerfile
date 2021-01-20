@@ -19,6 +19,7 @@ RUN set -x \
     && apk add --no-cache --virtual .build-deps libstdc++ make \
     && apk add --no-cache \
         git \
+        unzip \
         libzip-dev \
         libjpeg-turbo-dev \
         libpng-dev \
