@@ -266,7 +266,7 @@ $app
                         ->setName('cup:file:delete');
                 });
 
-                // редактор шаблонов
+                // template editor
                 $app->group('/editor', function (App $app): void {
                     $app->map(['get', 'post'], '[/{file:.*}]', \App\Application\Actions\Cup\EditorPageAction::class)
                         ->setName('cup:editor');

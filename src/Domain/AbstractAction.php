@@ -250,7 +250,7 @@ abstract class AbstractAction extends AbstractComponent
                     $task->execute(['uuid' => $uuids]);
 
                     // run worker
-                    \App\Domain\AbstractTask::worker();
+                    \App\Domain\AbstractTask::worker($task);
                 }
             }
 
@@ -309,7 +309,7 @@ abstract class AbstractAction extends AbstractComponent
                 $task->execute(['uuid' => $uuids]);
 
                 // run worker
-                \App\Domain\AbstractTask::worker();
+                \App\Domain\AbstractTask::worker($task);
             }
         }
 

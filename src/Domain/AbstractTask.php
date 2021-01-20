@@ -28,16 +28,50 @@ abstract class AbstractTask extends AbstractComponent
      */
     private Twig $renderer;
 
-    public static string $pid_file = VAR_DIR . '/worker.pid';
+    /**
+     * Start background worker
+     *
+     * @param mixed $action
+     */
+    public static function worker($action = ''): void
+    {
+        if (is_object($action)) {
+            $action = get_class($action);
+        }
+
+        @exec('php ' . BIN_DIR . '/task_worker.php ' . addslashes($action) . ' > /dev/null 2>&1 &');
+    }
 
     /**
-     * Запускает исполнение воркера задач
+     * Before start work write self PID to file
+     *
+     * @param string $action
      */
-    public static function worker(): void
+    public static function workerCreatePidFile(string $action = ''): void
     {
-        if (!file_exists(static::$pid_file)) {
-            @exec('php ' . CONFIG_DIR . '/cli-task.php > /dev/null 2>&1 &');
-        }
+        file_put_contents(VAR_DIR . '/' . ($action ? strtolower($action) . '.' : '') . 'worker.pid', getmypid());
+    }
+
+    /**
+     * Before start work write self PID to file
+     *
+     * @param string $action
+     *
+     * @return bool
+     */
+    public static function workerHasPidFile(string $action = ''): bool
+    {
+        return file_exists(VAR_DIR . '/' . ($action ? strtolower($action) . '.' : '') . 'worker.pid');
+    }
+
+    /**
+     * After work remove PID file
+     *
+     * @param string $action
+     */
+    public static function workerRemovePidFile(string $action = ''): void
+    {
+        @unlink(VAR_DIR . '/' . ($action ? strtolower($action) . '.' : '') . 'worker.pid');
     }
 
     public function __construct(ContainerInterface $container, Task $entity = null)

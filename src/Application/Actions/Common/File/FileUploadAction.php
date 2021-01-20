@@ -36,7 +36,7 @@ class FileUploadAction extends FileAction
                     $task->execute(['uuid' => $uuids]);
 
                     // run worker
-                    \App\Domain\AbstractTask::worker();
+                    \App\Domain\AbstractTask::worker($task);
                 }
             }
 

@@ -2,6 +2,7 @@
 
 // path const
 define('BASE_DIR',          realpath(__DIR__ . '/..'));
+define('BIN_DIR',           realpath(__DIR__ . '/../bin'));
 define('CONFIG_DIR',        realpath(__DIR__ . '/../config'));
 define('PLUGIN_DIR',        realpath(__DIR__ . '/../plugin'));
 define('PUBLIC_DIR',        realpath(__DIR__ . '/../public'));

@@ -17,7 +17,7 @@ class CreateAction extends UserAction
             ]);
 
             // run worker
-            \App\Domain\AbstractTask::worker();
+            \App\Domain\AbstractTask::worker($task);
 
             return $this->response->withRedirect('/cup/user/newsletter');
         }
