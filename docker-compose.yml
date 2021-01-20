@@ -22,7 +22,7 @@ services:
             - ./theme:/var/container/theme:rw
             - ./var:/var/container/var:rw
             - ./var/upload:/var/container/public/uploads:rw
-            - ./vendor:/var/container/vendor:ro
+            - ./vendor:/var/container/vendor:rw
             - ./.php_cs.dist:/var/container/.php_cs.dist:ro
             - ./composer.json:/var/container/composer.json:rw
             - ./composer.lock:/var/container/composer.lock:rw
