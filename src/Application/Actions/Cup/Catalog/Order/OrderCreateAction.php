@@ -24,7 +24,7 @@ class OrderCreateAction extends CatalogAction
             ]);
 
             // notify to user
-            if ($user_uuid) {
+            if ($user_uuid && $this->parameter('notification_is_enabled', 'yes') === 'yes') {
                 $this->notificationService->create([
                     'user_uuid' => $user_uuid,
                     'title' => 'Добавлен заказ: ' . $order->getSerial(),

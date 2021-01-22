@@ -52,14 +52,27 @@ class CartAction extends CatalogAction
             if ($this->isRecaptchaChecked()) {
                 $order = $this->catalogOrderService->create($data);
 
-                // notify
-                $this->notificationService->create([
-                    'title' => 'Добавлен заказ: ' . $order->getSerial(),
-                    'message' => 'Сформирован заказ',
-                    'params' => [
-                        'order_uuid' => $order->getUuid(),
-                    ],
-                ]);
+                // notify to user
+                if ($user && $this->parameter('notification_is_enabled', 'yes') === 'yes') {
+                    $this->notificationService->create([
+                        'title' => 'Добавлен заказ: ' . $order->getSerial(),
+                        'message' => 'Сформирован заказ',
+                        'params' => [
+                            'order_uuid' => $order->getUuid(),
+                        ],
+                    ]);
+
+                    if ($data['user']) {
+                        $this->notificationService->create([
+                            'user_uuid' => $data['user'],
+                            'title' => 'Добавлен заказ: ' . $order->getSerial(),
+                            'message' => 'Сформирован заказ',
+                            'params' => [
+                                'order_uuid' => $order->getUuid(),
+                            ],
+                        ]);
+                    }
+                }
 
                 $isNeedRunWorker = false;
 

@@ -4,44 +4,47 @@
     </a>
     <div class="quick-sidebar-wrapper">
         <ul class="nav nav-tabs nav-line nav-color-secondary" role="tablist">
+            {% if parameter('notification_is_enabled', 'yes') == 'yes' %}
+                <li class="nav-item">
+                    <a class="nav-link active show" data-toggle="tab" href="#notif">
+                        <i class="fa fa-bell"></i>
+                    </a>
+                </li>
+            {% endif %}
             <li class="nav-item">
-                <a class="nav-link active show" data-toggle="tab" href="#notif">
-                    <i class="fa fa-bell"></i>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#task">
+                <a class="nav-link {{ parameter('notification_is_enabled', 'yes') == 'no' ? 'active show' : '' }}" data-toggle="tab" href="#task">
                     <i class="fas fa-tasks"></i>
                 </a>
             </li>
         </ul>
 
         <div class="tab-content mt-3">
-
-            {# TAB: Notifications #}
-            <div class="tab-chat tab-pane fade show active" id="notif">
-                <div class="quick-wrapper notif-box">
-                    <div class="quick-scroll scrollbar-outer">
-                        <div class="quick-content notif-center">
-                            <div data-notif-empty>
-                                <div class="text-center my-3">
-                                    Уведомлений пока нет
+            {% if parameter('notification_is_enabled', 'yes') == 'yes' %}
+                {# TAB: Notifications #}
+                <div class="tab-chat tab-pane fade show active" id="notif">
+                    <div class="quick-wrapper notif-box">
+                        <div class="quick-scroll scrollbar-outer">
+                            <div class="quick-content notif-center">
+                                <div data-notif-empty>
+                                    <div class="text-center my-3">
+                                        Уведомлений пока нет
+                                    </div>
                                 </div>
+
+                                <a href="#" data-notif-item>
+                                    <div class="notif-content">
+                                        <span class="block"></span>
+                                        <span class="time"></span>
+                                    </div>
+                                </a>
                             </div>
-
-                            <a href="#" data-notif-item>
-                                <div class="notif-content">
-                                    <span class="block"></span>
-                                    <span class="time"></span>
-                                </div>
-                            </a>
                         </div>
                     </div>
                 </div>
-            </div>
+            {% endif %}
 
             {# TAB: Tasks #}
-            <div class="tab-chat tab-pane fade" id="task">
+            <div class="tab-chat tab-pane fade {{ parameter('notification_is_enabled', 'yes') == 'no' ? 'show active' : '' }}" id="task">
                 <div class="quick-wrapper">
                     <div class="quick-scroll scrollbar-outer">
                         <div class="quick-content">
@@ -78,12 +81,7 @@
         let
             data = {
                 notifications: [],
-                tasks: {
-                    '25f6d940-6611-4aca-a376-c4e097431ce2': {
-                        status: 'done',
-                        progress: 0,
-                    }
-                },
+                tasks: {},
             },
             $quickSidebar = $('.quick-sidebar'),
             $notifList = $quickSidebar.find('.notif-center'),

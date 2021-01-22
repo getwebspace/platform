@@ -19,11 +19,17 @@
                                     'type': 'email',
                                     'name': 'email'
                                 } %}
-                            {% else %}
+                            {% elseif identifier == 'login' %}
                                 {% include 'cup/form.twig' with {
                                     'label': 'Логин',
                                     'type': 'text',
                                     'name': 'username'
+                                } %}
+                            {% else %}
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Телефон',
+                                    'type': 'text',
+                                    'name': 'phone'
                                 } %}
                             {% endif %}
 
