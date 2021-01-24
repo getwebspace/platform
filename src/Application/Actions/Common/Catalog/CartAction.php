@@ -33,7 +33,7 @@ class CartAction extends CatalogAction
             $user = $this->request->getAttribute('user', false);
 
             if ($user) {
-                $data['user'] = $user->getUuid();
+                $data['user'] = $user;
             }
 
             // add to comment other posted fields
