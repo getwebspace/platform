@@ -326,7 +326,23 @@ $app
     })
     ->add(new \Slim\HttpCache\Cache('private', 0, true));
 
-// other
+// other PRIVATE section
+$app
+    ->group('', function (App $app) use ($container): void {
+        $app
+            ->map(['get', 'post'], '/cart', \App\Application\Actions\Common\Catalog\CartAction::class)
+            ->setName('common:catalog:cart')
+            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+
+        // view order confirm
+        $app
+            ->get('/cart/done/{order}', \App\Application\Actions\Common\Catalog\CartDoneAction::class)
+            ->setName('common:catalog:cart:done')
+            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+    })
+    ->add(new \Slim\HttpCache\Cache('private', 0, true));
+
+// other PUBLIC section
 $app
     ->group('', function (App $app) use ($container): void {
         // forbidden
@@ -360,18 +376,6 @@ $app
                 $app
                     ->get("/{$pathCatalog}[/{args:.*}]", \App\Application\Actions\Common\Catalog\ListAction::class)
                     ->setName('common:catalog:list')
-                    ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-
-                // view cart
-                $app
-                    ->map(['get', 'post'], '/cart', \App\Application\Actions\Common\Catalog\CartAction::class)
-                    ->setName('common:catalog:cart')
-                    ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-
-                // view order confirm
-                $app
-                    ->get('/cart/done/{order}', \App\Application\Actions\Common\Catalog\CartDoneAction::class)
-                    ->setName('common:catalog:cart:done')
                     ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
             });
 
