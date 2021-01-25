@@ -42,7 +42,7 @@ class RefreshAction extends AbstractAction
             }
         }
         foreach ($exists as $uuid => $props) {
-            if (!$tasks[$uuid]) {
+            if (!isset($tasks[$uuid])) {
                 $output['delete'][] = $uuid;
             }
         }
