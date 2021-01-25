@@ -40,54 +40,56 @@
                     <!-- Navbar Header -->
                     <nav class="navbar navbar-header navbar-expand-lg" data-background-color="blue2">
                         <div class="container-fluid">
-                            <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
-                                {% for plugin in plugins %}
-                                    {% for param in plugin.getToolbarItem() %}
-                                        {% if param.twig %}
-                                            {% include param.twig %}
-                                        {% elseif param.html %}
-                                            {{ param.html|raw }}
-                                        {% endif %}
+                            {% if user %}
+                                <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
+                                    {% for plugin in plugins %}
+                                        {% for param in plugin.getToolbarItem() %}
+                                            {% if param.twig %}
+                                                {% include param.twig %}
+                                            {% elseif param.html %}
+                                                {{ param.html|raw }}
+                                            {% endif %}
+                                        {% endfor %}
                                     {% endfor %}
-                                {% endfor %}
 
-                                <li class="nav-item submenu">
-                                    <a href="#" class="nav-link quick-sidebar-toggler">
-                                        <i class="fa fa-th"></i>
-                                    </a>
-                                </li>
+                                    <li class="nav-item submenu">
+                                        <a href="#" class="nav-link quick-sidebar-toggler">
+                                            <i class="fa fa-th"></i>
+                                        </a>
+                                    </li>
 
-                                <li class="nav-item">
-                                    <a class="nav-link" href="/" target="_blank">
-                                        <i class="fas fa-globe"></i>
-                                    </a>
-                                </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/" target="_blank">
+                                            <i class="fas fa-globe"></i>
+                                        </a>
+                                    </li>
 
-                                <li class="nav-item dropdown hidden-caret">
-                                    <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
-                                        <div class="avatar-sm">
-                                            <img src="{{ user.avatar(40) }}" alt="{{ user.firstname }}" class="avatar-img rounded-circle">
-                                        </div>
-                                    </a>
-                                    <ul class="dropdown-menu dropdown-user animated fadeIn">
-                                        <div class="dropdown-user-scroll scrollbar-outer">
-                                            <li>
-                                                <div class="user-box">
-                                                    <div class="avatar-lg"><img src="{{ user.avatar(60) }}" alt="image profile" class="avatar-img rounded"></div>
-                                                    <div class="u-text">
-                                                        <h4>{{ user.getName('short') }}</h4>
-                                                        <p class="text-muted">{{ user.email }}</p>
+                                    <li class="nav-item dropdown hidden-caret">
+                                        <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
+                                            <div class="avatar-sm">
+                                                <img src="{{ user.avatar(40) }}" alt="{{ user.firstname }}" class="avatar-img rounded-circle">
+                                            </div>
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-user animated fadeIn">
+                                            <div class="dropdown-user-scroll scrollbar-outer">
+                                                <li>
+                                                    <div class="user-box">
+                                                        <div class="avatar-lg"><img src="{{ user.avatar(60) }}" alt="image profile" class="avatar-img rounded"></div>
+                                                        <div class="u-text">
+                                                            <h4>{{ user.getName('short') }}</h4>
+                                                            <p class="text-muted">{{ user.email }}</p>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="dropdown-divider"></div>
-                                                <a class="dropdown-item" href="/user/logout">Выход</a>
-                                            </li>
-                                        </div>
-                                    </ul>
-                                </li>
-                            </ul>
+                                                </li>
+                                                <li>
+                                                    <div class="dropdown-divider"></div>
+                                                    <a class="dropdown-item" href="/user/logout">Выход</a>
+                                                </li>
+                                            </div>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            {% endif %}
                         </div>
                     </nav>
                     <!-- End Navbar -->
