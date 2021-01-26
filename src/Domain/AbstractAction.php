@@ -395,11 +395,35 @@ abstract class AbstractAction extends AbstractComponent
      * @param array  $data
      *
      * @throws HttpBadRequestException
+     * @return Response
+     */
+    protected function respond(string $template, array $data = []): Response
+    {
+        $format = $this->request->getParam('format', 'html');
+        $accept = explode(',', $this->request->getHeaderLine('HTTP_ACCEPT'));
+
+        switch (true) {
+            case $format === 'json':
+            case in_array('application/json', $accept):
+                return $this->respondWithJson($data);
+
+            case $format === 'html':
+            case in_array('text/html', $accept):
+            default:
+                return $this->respondWithTemplate($template, $data);
+        }
+    }
+
+    /**
+     * @param string $template
+     * @param array  $data
+     *
+     * @throws HttpBadRequestException
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      *
      * @return Response
      */
-    protected function respondWithTemplate($template, array $data = []): Response
+    protected function respondWithTemplate(string $template, array $data = []): Response
     {
         try {
             $this->response->getBody()->write(

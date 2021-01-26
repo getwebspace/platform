@@ -1,0 +1,80 @@
+<?php declare(strict_types=1);
+
+namespace App\Application\Actions\Common;
+
+use App\Domain\AbstractAction;
+use App\Domain\AbstractService;
+use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
+use App\Domain\Service\Catalog\ProductService as CatalogProductService;
+use App\Domain\Service\Page\PageService;
+use App\Domain\Service\Publication\PublicationService;
+
+class SearchAction extends AbstractAction
+{
+    protected function action(): \Slim\Http\Response
+    {
+        $count = 0;
+        $result = [];
+
+        $query = str_escape($this->request->getParam('query', $this->request->getParam('q', '')));
+        if ($query && !$this->request->getParam('query_strong', $this->request->getParam('qs'))) {
+            $query = '%' . $query . '%';
+        }
+
+        if ($query) {
+            $entities = [
+                'page' => PageService::getWithContainer($this->container),
+                'publication' => PublicationService::getWithContainer($this->container),
+                'catalog_category' => CatalogCategoryService::getWithContainer($this->container),
+                'catalog_product' => CatalogProductService::getWithContainer($this->container),
+            ];
+
+            foreach ($entities as $type => $service) {
+                /** @var AbstractService $service */
+                $qb = $service->createQueryBuilder('e');
+
+                if (!str_start_with($query, '%')) {
+                    $qb->andWhere('e.title = :title');
+                } else {
+                    $qb->andWhere('e.title LIKE :title');
+                }
+                $qb->setParameter('title', $query, \Doctrine\DBAL\Types\Type::STRING);
+
+                if (($buf = $qb->getQuery()->getResult()) !== []) {
+                    foreach ($buf as $index => $entity) {
+                        $result[$type][$index] = array_intersect_key(
+                            $entity->toArray(),
+                            array_flip(['title', 'description', 'content', 'address', 'price', 'volume', 'unit', 'meta'])
+                        );
+
+                        if (method_exists($entity, 'hasFiles')) {
+                            $files = [];
+
+                            /** @var \App\Domain\Entities\File $file */
+                            foreach ($entity->getFiles() as $file) {
+                                $files[] = [
+                                    'full' => $file->getPublicPath('full'),
+                                    'middle' => $file->getPublicPath('middle'),
+                                    'small' => $file->getPublicPath('small'),
+                                ];
+                            }
+
+                            $result[$type][$index]['files'] = $files;
+                        }
+
+                        if (str_start_with($type, 'catalog_')) {
+                            $result[$type][$index]['address'] = $this->parameter('catalog_address', 'catalog') . '/' . $result[$type][$index]['address'];
+                        }
+                    }
+
+                    $count += count($result[$type]);
+                }
+            }
+        }
+
+        return $this->respond($this->parameter('search_template', 'search.twig'), [
+            'count' => $count,
+            'result' => $result,
+        ]);
+    }
+}

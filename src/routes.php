@@ -330,6 +330,11 @@ $app
 $app
     ->group('', function (App $app) use ($container): void {
         $app
+            ->map(['get', 'post'], '/search', \App\Application\Actions\Common\SearchAction::class)
+            ->setName('common:search')
+            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+
+        $app
             ->map(['get', 'post'], '/cart', \App\Application\Actions\Common\Catalog\CartAction::class)
             ->setName('common:catalog:cart')
             ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
