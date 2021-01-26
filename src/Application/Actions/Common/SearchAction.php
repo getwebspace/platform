@@ -13,13 +13,14 @@ class SearchAction extends AbstractAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $count = 0;
-        $result = [];
-
-        $query = str_escape($this->request->getParam('query', $this->request->getParam('q', '')));
+        $query = trim(str_escape($this->request->getParam('query', $this->request->getParam('q', ''))));
         if ($query && !$this->request->getParam('query_strong', $this->request->getParam('qs'))) {
             $query = '%' . $query . '%';
         }
+        $limit = (int) $this->request->getParam('limit', 10);
+
+        $count = 0;
+        $result = [];
 
         if ($query) {
             $entities = [
@@ -38,7 +39,8 @@ class SearchAction extends AbstractAction
                 } else {
                     $qb->andWhere('e.title LIKE :title');
                 }
-                $qb->setParameter('title', $query, \Doctrine\DBAL\Types\Type::STRING);
+                $qb->setParameter('title', $query, \Doctrine\DBAL\Types\Type::STRING)
+                   ->setMaxResults($limit);
 
                 if (($buf = $qb->getQuery()->getResult()) !== []) {
                     foreach ($buf as $index => $entity) {
