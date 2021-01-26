@@ -44,6 +44,7 @@ class ProductUpdateAction extends CatalogAction
                             'tags' => $this->request->getParam('tags'),
                             'order' => $this->request->getParam('order'),
                             'date' => $this->request->getParam('date'),
+                            'meta' => $this->request->getParam('meta'),
                             'external_id' => $this->request->getParam('external_id'),
                         ]);
                         $this->catalogProductAttributeService->proccess(
