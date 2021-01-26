@@ -34,58 +34,60 @@
                     </div>
                 </div>
 
-                {% if count %}
-                    <div class="row mt-3">
-                        {% for type, list in result %}
-                            <div class="col-12 col-md-8 offset-md-2">
-                                <h5>
-                                    {% if type == 'page' %}
-                                        Страницы
-                                    {% elseif type == 'publication' %}
-                                        Публикации
-                                    {% elseif type == 'catalog_category' %}
-                                        Категории товаров
-                                    {% elseif type == 'catalog_product' %}
-                                        Товары в каталоге
-                                    {% endif %}
+                {% if (_request.q or _request.query) %}
+                    {% if count %}
+                        <div class="row mt-3">
+                            {% for type, list in result %}
+                                <div class="col-12 col-md-8 offset-md-2">
+                                    <h5>
+                                        {% if type == 'page' %}
+                                            Страницы
+                                        {% elseif type == 'publication' %}
+                                            Публикации
+                                        {% elseif type == 'catalog_category' %}
+                                            Категории товаров
+                                        {% elseif type == 'catalog_product' %}
+                                            Товары в каталоге
+                                        {% endif %}
 
-                                    ({{ list|count }})
-                                </h5>
+                                        ({{ list|count }})
+                                    </h5>
 
-                                {% for item in list %}
-                                    <div class="row my-3">
-                                        <div class="col-1">
-                                            <a href="/{{ item.address }}">
-                                                {% include 'mixin/img.twig' with {
-                                                    'src': item.files ? item.files[0].middle : '/assets/img/no_image.png',
-                                                    'title': item.title,
-                                                    'alt': item.title,
-                                                    'style': 'display:block; float: left; margin: 0 auto; height: 50px; width: 50px; object-fit: cover; object-position: center center;'
-                                                } only %}
-                                            </a>
+                                    {% for item in list %}
+                                        <div class="row my-3">
+                                            <div class="col-1">
+                                                <a href="/{{ item.address }}">
+                                                    {% include 'mixin/img.twig' with {
+                                                        'src': item.files ? item.files[0].middle : '/assets/img/no_image.png',
+                                                        'title': item.title,
+                                                        'alt': item.title,
+                                                        'style': 'display:block; float: left; margin: 0 auto; height: 50px; width: 50px; object-fit: cover; object-position: center center;'
+                                                    } only %}
+                                                </a>
+                                            </div>
+                                            <div class="col-11">
+                                                <a href="/{{ item.address }}">{{ item.title }}</a>
+
+                                                {% if item.description or item.content or item.content.short or item.meta.description %}
+                                                    <p class="text-justify mb-0">{{ (item.content.short ?: item.content ?: item.description ?: item.meta.description)|striptags|truncate(250)|raw }}</p>
+                                                {% endif %}
+                                                {% if item.price %}
+                                                    <p class="font-weight-bold">{{ item.price|format_number({fraction_digit: 2}) }}</p>
+                                                {% endif %}
+                                            </div>
                                         </div>
-                                        <div class="col-11">
-                                            <a href="/{{ item.address }}">{{ item.title }}</a>
-
-                                            {% if item.description or item.content or item.content.short or item.meta.description %}
-                                                <p class="text-justify mb-0">{{ (item.content.short ?: item.content ?: item.description ?: item.meta.description)|striptags|truncate(250)|raw }}</p>
-                                            {% endif %}
-                                            {% if item.price %}
-                                                <p class="font-weight-bold">{{ item.price|format_number({fraction_digit: 2}) }}</p>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="row mt-5">
-                        <div class="col-12 text-center">
-                            <h4>Ничего нет</h4>
-                            <p>Попробуйте изменить запрос</p>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
                         </div>
-                    </div>
+                    {% else %}
+                        <div class="row mt-5">
+                            <div class="col-12 text-center">
+                                <h4>Ничего нет</h4>
+                                <p>Попробуйте изменить запрос</p>
+                            </div>
+                        </div>
+                    {% endif %}
                 {% endif %}
             </form>
         </div>
