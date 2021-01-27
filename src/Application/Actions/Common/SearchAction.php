@@ -8,6 +8,8 @@ use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\Page\PageService;
 use App\Domain\Service\Publication\PublicationService;
+use App\Domain\Types\Catalog\CategoryStatusType;
+use App\Domain\Types\Catalog\ProductStatusType;
 
 class SearchAction extends AbstractAction
 {
@@ -39,8 +41,19 @@ class SearchAction extends AbstractAction
                 } else {
                     $qb->andWhere('e.title LIKE :title');
                 }
-                $qb->setParameter('title', $query, \Doctrine\DBAL\Types\Type::STRING)
-                   ->setMaxResults($limit);
+
+                $qb->setParameter('title', $query, \Doctrine\DBAL\Types\Type::STRING);
+
+                switch (true) {
+                    case $type === 'catalog_category':
+                        $qb->andWhere('e.status = :status')->setParameter('status', CategoryStatusType::STATUS_WORK);
+                        break;
+                    case $type === 'catalog_product':
+                        $qb->andWhere('e.status = :status')->setParameter('status', ProductStatusType::STATUS_WORK);
+                        break;
+                }
+
+                $qb->setMaxResults($limit);
 
                 if (($buf = $qb->getQuery()->getResult()) !== []) {
                     foreach ($buf as $index => $entity) {
