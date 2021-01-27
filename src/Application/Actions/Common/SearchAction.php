@@ -47,6 +47,7 @@ class SearchAction extends AbstractAction
                         $result[$type][$index] = array_intersect_key(
                             $entity->toArray(),
                             array_flip([
+                                'uuid', 'category',
                                 'title', 'description', 'content',
                                 'address', 'price', 'volume',
                                 'unit', 'meta', 'external_id',
