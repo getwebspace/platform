@@ -36,24 +36,24 @@
 
         {% if prefix is not empty or postfix is not empty %}
             <div class="input-group">
-                {% if prefix is not empty %}<span class="input-group-addon">{{ prefix }}</span>{% endif %}
-            {% endif %}
+            {% if prefix is not empty %}<span class="input-group-addon">{{ prefix }}</span>{% endif %}
+        {% endif %}
 
-            {{ form( type, name, { 'class': ['form-control'] } | merge(args) ) }}
+        {{ form( type, name, { 'class': ['form-control'] } | merge(args) ) }}
 
-            {# LABEL FOR CHECKBOX OR RADIO #}
-            {% if label is not empty and type in ['checkbox', 'radio'] %}
-                <label for="{{ type }}-{{ name }}" class="placeholder">
-                    <b>{{ label }}</b>
+        {# LABEL FOR CHECKBOX OR RADIO #}
+        {% if label is not empty and type in ['checkbox', 'radio'] %}
+            <label for="{{ type }}-{{ name }}" class="placeholder">
+                <b>{{ label }}</b>
 
-                    {% if args.required is not empty %}
-                        <i class="text-danger">*</i>
-                    {% endif %}
-                </label>
-            {% endif %}
+                {% if args.required is not empty %}
+                    <i class="text-danger">*</i>
+                {% endif %}
+            </label>
+        {% endif %}
 
-            {% if prefix is not empty or postfix is not empty %}
-                {% if postfix is not empty %}<span class="input-group-addon">{{ postfix }}</span>{% endif %}
+        {% if prefix is not empty or postfix is not empty %}
+            {% if postfix is not empty %}<span class="input-group-addon">{{ postfix }}</span>{% endif %}
             </div>
         {% endif %}
 
