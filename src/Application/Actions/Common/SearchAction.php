@@ -46,7 +46,11 @@ class SearchAction extends AbstractAction
                     foreach ($buf as $index => $entity) {
                         $result[$type][$index] = array_intersect_key(
                             $entity->toArray(),
-                            array_flip(['title', 'description', 'content', 'address', 'price', 'volume', 'unit', 'meta'])
+                            array_flip([
+                                'title', 'description', 'content',
+                                'address', 'price', 'volume',
+                                'unit', 'meta', 'external_id',
+                            ])
                         );
 
                         if (method_exists($entity, 'hasFiles')) {
