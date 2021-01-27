@@ -17,7 +17,7 @@ class SearchAction extends AbstractAction
         if ($query && !$this->request->getParam('query_strong', $this->request->getParam('qs'))) {
             $query = '%' . $query . '%';
         }
-        $limit = (int) $this->request->getParam('limit', 10);
+        $limit = (int) $this->request->getParam('limit', $this->parameter('search_limit', 10));
 
         $count = 0;
         $result = [];

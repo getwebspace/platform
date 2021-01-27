@@ -34,6 +34,7 @@ class ParametersPageAction extends AbstractAction
         }
 
         return $this->respondWithTemplate('cup/parameters/index.twig', [
+            'timezone' => collect(\DateTimeZone::listIdentifiers())->mapWithKeys(fn ($item) => [$item => $item]),
             'routes' => [
                 'all' => $this->getRoutes()->all(),
                 'guest' => $this->getRoutes()->filter(fn ($el) => str_start_with($el, ['api:', 'common:']))->all(),

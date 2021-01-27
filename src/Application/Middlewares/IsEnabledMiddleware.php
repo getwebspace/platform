@@ -27,6 +27,8 @@ class IsEnabledMiddleware extends AbstractMiddleware
             return $next($request, $response);
         }
 
-        return $response->withAddedHeader('Location', '/')->withStatus(301);
+        return $response
+            ->withHeader('Location', str_start_with($route->getPattern(), '/cup') ? '/cup/forbidden' : '/forbidden')
+            ->withStatus(307);
     }
 }

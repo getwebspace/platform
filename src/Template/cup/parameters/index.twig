@@ -33,11 +33,6 @@
                                     Каталог
                                 </a>
                             </li>
-                            <li>
-                                <a class="nav-link" data-toggle="pill" href="#other-guestbook" role="tab">
-                                    Гостевая книга
-                                </a>
-                            </li>
                             <li class="nav-item submenu">
                                 <a class="nav-link" data-toggle="pill" href="#plugins" role="tab">
                                     Плагины
@@ -60,8 +55,11 @@
                                         <div class="nav flex-column nav-pills nav-secondary">
                                             <a class="nav-link active"  data-toggle="pill" href="#other-common">Основные</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-mail">Почта</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#other-image">Изображения</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#other-file">Файлы и изображения</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-notification">Уведомления</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#other-form">Формы</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#other-search">Поиск</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#other-guestbook">Гостевая книга</a>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-7 col-md-8 mt-5 mt-sm-0">
@@ -123,11 +121,11 @@
                                                 {% include 'cup/field.twig' with {
                                                     'label': 'Часовой пояс',
                                                     'description': 'Список поддерживаемых временных зон можно посмотреть <a href="https://www.php.net/manual/ru/timezones.php" target="_blank">тут</a>',
-                                                    'type': 'text',
+                                                    'type': 'select',
                                                     'name': 'common[timezone]',
                                                     'args': {
-                                                        'placeholder': 'Europe/Kiev',
-                                                        'value': 'Europe/Kiev'
+                                                        'option': timezone,
+                                                        'selected': 'Europe/Kiev'
                                                     }
                                                 } %}
 
@@ -156,81 +154,12 @@
                                                 <hr>
 
                                                 {% include 'cup/field.twig' with {
-                                                    'label': 'Включить пользователей',
-                                                    'description': 'Позволяет пользователям регистрироваться на сайте',
-                                                    'type': 'select',
-                                                    'name': 'user[is_enabled]',
-                                                    'args': {
-                                                        'option': {'yes':'Да', 'no':'Нет'},
-                                                        'selected': 'yes'
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'Включить каталог',
-                                                    'description': 'Возможность управлять категориями, товарами и заказами',
-                                                    'type': 'select',
-                                                    'name': 'catalog[is_enabled]',
-                                                    'args': {
-                                                        'option': {'yes':'Да', 'no':'Нет'},
-                                                        'selected': 'yes'
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'Включить формы',
-                                                    'description': 'Возможность делать формы для получения заполненных анкет от клиентов',
-                                                    'type': 'select',
-                                                    'name': 'form[is_enabled]',
-                                                    'args': {
-                                                        'option': {'yes':'Да', 'no':'Нет'},
-                                                        'selected': 'yes'
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'Включить гостевую книгу',
-                                                    'description': 'Позволяет пользователям оставлять отзывы о сайте',
-                                                    'type': 'select',
-                                                    'name': 'guestbook[is_enabled]',
-                                                    'args': {
-                                                        'option': {'yes':'Да', 'no':'Нет'},
-                                                        'selected': 'yes'
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'Включить загрузку файлов',
-                                                    'description': 'Позволяет пользователям загружать файлы на сайт',
-                                                    'type': 'select',
-                                                    'name': 'file[is_enabled]',
-                                                    'args': {
-                                                        'option': {'yes':'Да', 'no':'Нет'},
-                                                        'selected': 'yes'
-                                                    }
-                                                } %}
-
-                                                <hr>
-
-                                                {% include 'cup/field.twig' with {
                                                     'label': 'Автоматически генерировать адреса',
                                                     'description': 'Адреса некоторых сущностей будут автоматически включать адрес категории',
                                                     'type': 'select',
                                                     'name': 'common[auto_generate_address]',
                                                     'args': {
                                                         'option': {'yes':'Да', 'no':'Нет'}
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/field.twig' with {
-                                                    'label': 'Период отображение уведомлений',
-                                                    'description': 'Укажите количество часов за которые отображать уведомления',
-                                                    'postfix': 'часов',
-                                                    'type': 'number',
-                                                    'name': 'common[notification_period]',
-                                                    'args': {
-                                                        'placeholder': '24',
-                                                        'value': '24'
                                                     }
                                                 } %}
                                             </div>
@@ -306,8 +235,21 @@
                                                 } %}
                                             </div>
 
-                                            {# TAB: Other Image #}
-                                            <div class="tab-pane fade" id="other-image">
+                                            {# TAB: Other Files and Image #}
+                                            <div class="tab-pane fade" id="other-file">
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Включить загрузку файлов',
+                                                    'description': 'Позволяет пользователям загружать файлы на сайт',
+                                                    'type': 'select',
+                                                    'name': 'file[is_enabled]',
+                                                    'args': {
+                                                        'option': {'yes':'Да', 'no':'Нет'},
+                                                        'selected': 'yes'
+                                                    }
+                                                } %}
+
+                                                <hr>
+
                                                 {% include 'cup/field.twig' with {
                                                     'label': 'Разрешить конвертацию загруженных изображений',
                                                     'description': 'Будет разрешена загрузка картинок на сервер',
@@ -364,6 +306,107 @@
                                                         'selected': 'yes'
                                                     }
                                                 } %}
+
+                                                <hr>
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Период отображение уведомлений',
+                                                    'description': 'Укажите количество часов за которые отображать уведомления',
+                                                    'postfix': 'часов',
+                                                    'type': 'number',
+                                                    'name': 'common[notification_period]',
+                                                    'args': {
+                                                        'placeholder': '24',
+                                                        'value': '24'
+                                                    }
+                                                } %}
+                                            </div>
+
+                                            {# TAB: Other Form #}
+                                            <div class="tab-pane fade" id="other-form">
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Включить формы',
+                                                    'description': 'Возможность делать формы для получения заполненных анкет от клиентов',
+                                                    'type': 'select',
+                                                    'name': 'form[is_enabled]',
+                                                    'args': {
+                                                        'option': {'yes':'Да', 'no':'Нет'},
+                                                        'selected': 'yes'
+                                                    }
+                                                } %}
+                                            </div>
+
+                                            {# TAB: Other Search #}
+                                            <div class="tab-pane fade" id="other-search">
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Включить поиск',
+                                                    'description': '',
+                                                    'type': 'select',
+                                                    'name': 'search[is_enabled]',
+                                                    'args': {
+                                                        'option': {'yes':'Да', 'no':'Нет'},
+                                                        'selected': 'yes'
+                                                    }
+                                                } %}
+
+                                                <hr>
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Шаблон страницы поиска',
+                                                    'type': 'text',
+                                                    'name': 'search[template]',
+                                                    'args': {
+                                                        'placeholder': 'search.twig',
+                                                        'value': 'search.twig'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Количество результатов',
+                                                    'description': 'Максимальное количество результатов при поиске',
+                                                    'type': 'number',
+                                                    'name': 'search[limit]',
+                                                    'args': {
+                                                        'placeholder': '10',
+                                                        'value': '10'
+                                                    }
+                                                } %}
+                                            </div>
+
+                                            {# TAB: Guestbook #}
+                                            <div class="tab-pane fade" id="other-guestbook">
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Включить гостевую книгу',
+                                                    'description': 'Позволяет пользователям оставлять отзывы о сайте',
+                                                    'type': 'select',
+                                                    'name': 'guestbook[is_enabled]',
+                                                    'args': {
+                                                        'option': {'yes':'Да', 'no':'Нет'},
+                                                        'selected': 'yes'
+                                                    }
+                                                } %}
+
+                                                <hr>
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Шаблон раздела',
+                                                    'type': 'text',
+                                                    'name': 'guestbook[template]',
+                                                    'args': {
+                                                        'placeholder': 'guestbook.twig',
+                                                        'value': 'guestbook.twig'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Количество товаров на страницу',
+                                                    'type': 'number',
+                                                    'name': 'guestbook[pagination]',
+                                                    'args': {
+                                                        'placeholder': '10',
+                                                        'value': '10'
+                                                    }
+                                                } %}
                                             </div>
 
                                         </div>
@@ -373,6 +416,17 @@
 
                             {# TAB: User #}
                             <div class="tab-pane fade" id="other-user" role="tabpanel">
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Включить пользователей',
+                                    'description': 'Позволяет пользователям регистрироваться на сайте',
+                                    'type': 'select',
+                                    'name': 'user[is_enabled]',
+                                    'args': {
+                                        'option': {'yes':'Да', 'no':'Нет'},
+                                        'selected': 'yes'
+                                    }
+                                } %}
+
                                 {% include 'cup/field.twig' with {
                                     'label': 'Метод авторизации на сайте',
                                     'description': 'Вы можете выбрать, каким способом будет производиться авторизация пользователей на сайте. Доступно два варианта, либо с использованием своего логина или с использованием E-mail',
@@ -469,6 +523,17 @@
 
                                             {# TAB: Catalog General #}
                                             <div class="tab-pane fade show active" id="catalog-general">
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Включить каталог',
+                                                    'description': 'Возможность управлять категориями, товарами и заказами',
+                                                    'type': 'select',
+                                                    'name': 'catalog[is_enabled]',
+                                                    'args': {
+                                                        'option': {'yes':'Да', 'no':'Нет'},
+                                                        'selected': 'yes'
+                                                    }
+                                                } %}
+
                                                 {% include 'cup/field.twig' with {
                                                     'label': 'Адрес раздела',
                                                     'type': 'text',
@@ -736,29 +801,6 @@
                                     </div>
                                 </div>
 
-                            </div>
-
-                            {# TAB: Guestbook #}
-                            <div class="tab-pane fade" id="other-guestbook" role="tabpanel">
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Шаблон раздела',
-                                    'type': 'text',
-                                    'name': 'guestbook[template]',
-                                    'args': {
-                                        'placeholder': 'guestbook.twig',
-                                        'value': 'guestbook.twig'
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Количество товаров на страницу',
-                                    'type': 'number',
-                                    'name': 'guestbook[pagination]',
-                                    'args': {
-                                        'placeholder': '10',
-                                        'value': '10'
-                                    }
-                                } %}
                             </div>
 
                             {# TAB: Plugins #}
