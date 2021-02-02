@@ -42,6 +42,8 @@
                         <div class="container-fluid">
                             {% if user %}
                                 <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
+                                    {% include 'cup/donate.twig' %}
+
                                     {% for plugin in plugins %}
                                         {% for param in plugin.getToolbarItem() %}
                                             {% if param.twig %}
@@ -116,7 +118,6 @@
                                             <h5 class="text-white op-7 mb-2">Добро пожаловать в панель управления сайтом</h5>
                                         </div>
                                         <div class="ml-md-auto py-2 py-md-0">
-                                            {% include 'cup/donate.twig' %}
                                             {#<a href="#" class="btn btn-white btn-border btn-round mr-2">Manage</a>
                                             <a href="#" class="btn btn-secondary btn-round">Add Customer</a>#}
                                         </div>
