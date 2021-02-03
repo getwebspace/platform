@@ -24,7 +24,9 @@ $app->add(function (Request $request, Response $response, $next) {
     $path = $request->getUri()->getPath();
 
     if ($path !== '/' && str_end_with($path, '/')) {
-        return $response->withRedirect(rtrim($path, '/'));
+        $query = $request->getUri()->getQuery();
+
+        return $response->withRedirect(rtrim($path, '/') . ($query ? '?' . $query : ''));
     }
 
     return $next($request, $response);
