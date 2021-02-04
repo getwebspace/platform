@@ -50,7 +50,7 @@ class CategoryUpdateAction extends CatalogAction
                             default:
                                 return $this->response->withRedirect('/cup/catalog/category/' . $category->getUuid() . '/edit');
                         }
-                    } catch (TitleAlreadyExistsException | MissingTitleValueException $e) {
+                    } catch (MissingTitleValueException $e) {
                         $this->addError('title', $e->getMessage());
                     } catch (AddressAlreadyExistsException $e) {
                         $this->addError('address', $e->getMessage());

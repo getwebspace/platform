@@ -104,6 +104,10 @@ class ProductService extends AbstractService
             ->setExternalId($data['external_id'])
             ->setExport($data['export']);
 
+        if (!$data['address'] && $this->service->findOneByAddress($product->getAddress()) !== null) {
+            throw new AddressAlreadyExistsException();
+        }
+
         $this->entityManager->persist($product);
         $this->entityManager->flush();
 

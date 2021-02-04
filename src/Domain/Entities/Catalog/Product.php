@@ -9,16 +9,20 @@ use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="catalog_product", indexes={
- *     @ORM\Index(name="catalog_product_address_idx", columns={"address"}),
- *     @ORM\Index(name="catalog_product_category_idx", columns={"category"}),
- *     @ORM\Index(name="catalog_product_price_idx", columns={"price", "priceFirst", "priceWholesale"}),
- *     @ORM\Index(name="catalog_product_volume_idx", columns={"volume", "unit"}),
- *     @ORM\Index(name="catalog_product_stock_idx", columns={"stock"}),
- *     @ORM\Index(name="catalog_product_manufacturer_idx", columns={"manufacturer"}),
- *     @ORM\Index(name="catalog_product_country_idx", columns={"country"}),
- *     @ORM\Index(name="catalog_product_order_idx", columns={"order"})
- * })
+ * @ORM\Table(name="catalog_product",
+ *     indexes={
+ *         @ORM\Index(name="catalog_product_address_idx", columns={"address"}),
+ *         @ORM\Index(name="catalog_product_category_idx", columns={"category"}),
+ *         @ORM\Index(name="catalog_product_price_idx", columns={"price", "priceFirst", "priceWholesale"}),
+ *         @ORM\Index(name="catalog_product_volume_idx", columns={"volume", "unit"}),
+ *         @ORM\Index(name="catalog_product_manufacturer_idx", columns={"manufacturer"}),
+ *         @ORM\Index(name="catalog_product_country_idx", columns={"country"}),
+ *         @ORM\Index(name="catalog_product_order_idx", columns={"order"})
+ *     },
+ *     uniqueConstraints={
+ *         @ORM\UniqueConstraint(name="catalog_product_unique", columns={"category", "address"})
+ *     }
+ * )
  */
 class Product extends AbstractEntity
 {
@@ -148,7 +152,7 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="string", length=1000, unique=true, options={"default": ""})
+     * @ORM\Column(type="string", length=1000, options={"default": ""})
      */
     protected string $address = '';
 

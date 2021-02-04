@@ -93,6 +93,10 @@ class CategoryService extends AbstractService
             ->setExternalId($data['external_id'])
             ->setExport($data['export']);
 
+        if (!$data['address'] && $this->service->findOneByAddress($category->getAddress()) !== null) {
+            throw new AddressAlreadyExistsException();
+        }
+
         $this->entityManager->persist($category);
         $this->entityManager->flush();
 

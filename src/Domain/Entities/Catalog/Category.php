@@ -9,11 +9,16 @@ use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="catalog_category", indexes={
- *     @ORM\Index(name="catalog_category_address_idx", columns={"address"}),
- *     @ORM\Index(name="catalog_category_parent_idx", columns={"parent"}),
- *     @ORM\Index(name="catalog_category_order_idx", columns={"order"})
- * })
+ * @ORM\Table(name="catalog_category",
+ *     indexes={
+ *         @ORM\Index(name="catalog_category_address_idx", columns={"address"}),
+ *         @ORM\Index(name="catalog_category_parent_idx", columns={"parent"}),
+ *         @ORM\Index(name="catalog_category_order_idx", columns={"order"})
+ *     },
+ *     uniqueConstraints={
+ *         @ORM\UniqueConstraint(name="catalog_category_unique", columns={"parent", "address"})
+ *     }
+ * )
  */
 class Category extends AbstractEntity
 {
