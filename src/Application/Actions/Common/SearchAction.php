@@ -47,9 +47,11 @@ class SearchAction extends AbstractAction
                 switch (true) {
                     case $type === 'catalog_category':
                         $qb->andWhere('e.status = :status')->setParameter('status', CategoryStatusType::STATUS_WORK);
+
                         break;
                     case $type === 'catalog_product':
                         $qb->andWhere('e.status = :status')->setParameter('status', ProductStatusType::STATUS_WORK);
+
                         break;
                 }
 

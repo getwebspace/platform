@@ -2,13 +2,11 @@
 
 namespace App\Application\Actions\Cup;
 
-use App\Application\Middlewares\AccessCheckerMiddleware;
 use App\Domain\AbstractAction;
 use App\Domain\Entities\User;
 use App\Domain\Service\User\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\UserService;
-use Illuminate\Support\Collection;
 
 class SystemPageAction extends AbstractAction
 {

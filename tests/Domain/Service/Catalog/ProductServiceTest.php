@@ -7,7 +7,6 @@ use App\Domain\Repository\Catalog\ProductRepository;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\ProductNotFoundException;
-use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\Catalog\ProductService;
 use Doctrine\ORM\EntityManager;
 use Illuminate\Support\Collection;

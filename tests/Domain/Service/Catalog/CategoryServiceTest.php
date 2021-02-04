@@ -8,7 +8,6 @@ use App\Domain\Service\Catalog\CategoryService;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\CategoryNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
-use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
 use Doctrine\ORM\EntityManager;
 use Illuminate\Support\Collection;
 use tests\TestCase;

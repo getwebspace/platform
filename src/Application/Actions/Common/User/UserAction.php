@@ -3,8 +3,8 @@
 namespace App\Application\Actions\Common\User;
 
 use App\Domain\AbstractAction;
-use App\Domain\Service\User\UserService;
 use App\Domain\Service\User\GroupService as UserGroupService;
+use App\Domain\Service\User\UserService;
 use Psr\Container\ContainerInterface;
 
 abstract class UserAction extends AbstractAction

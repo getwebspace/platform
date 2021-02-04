@@ -395,6 +395,7 @@ abstract class AbstractAction extends AbstractComponent
      * @param array  $data
      *
      * @throws HttpBadRequestException
+     *
      * @return Response
      */
     protected function respond(string $template, array $data = []): Response
@@ -404,11 +405,11 @@ abstract class AbstractAction extends AbstractComponent
 
         switch (true) {
             case $format === 'json':
-            case in_array('application/json', $accept):
+            case in_array('application/json', $accept, true):
                 return $this->respondWithJson($data);
 
             case $format === 'html':
-            case in_array('text/html', $accept):
+            case in_array('text/html', $accept, true):
             default:
                 return $this->respondWithTemplate($template, $data);
         }

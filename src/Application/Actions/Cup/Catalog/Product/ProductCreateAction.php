@@ -6,7 +6,6 @@ use App\Application\Actions\Cup\Catalog\CatalogAction;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
-use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
 
 class ProductCreateAction extends CatalogAction
 {
