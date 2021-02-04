@@ -121,7 +121,7 @@ class Category extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="string", length=1000, unique=true, options={"default": ""})
+     * @ORM\Column(type="string", length=1000, options={"default": ""})
      */
     protected string $address = '';
 

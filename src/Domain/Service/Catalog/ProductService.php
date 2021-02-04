@@ -5,6 +5,7 @@ namespace App\Domain\Service\Catalog;
 use App\Domain\AbstractService;
 use App\Domain\Entities\Catalog\Product;
 use App\Domain\Repository\Catalog\ProductRepository;
+use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\ProductNotFoundException;
@@ -71,9 +72,6 @@ class ProductService extends AbstractService
         if (!$data['title']) {
             throw new MissingTitleValueException();
         }
-        if ($data['address'] && $this->service->findOneByAddress($data['address']) !== null) {
-            throw new AddressAlreadyExistsException();
-        }
 
         $product = (new Product)
             ->setCategory($data['category'])
@@ -104,7 +102,18 @@ class ProductService extends AbstractService
             ->setExternalId($data['external_id'])
             ->setExport($data['export']);
 
-        if (!$data['address'] && $this->service->findOneByAddress($product->getAddress()) !== null) {
+        // if address generation is enabled
+        if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && Uuid::isValid($data['category'])) {
+            $catalogCategoryService = CatalogCategoryService::getWithContainer($this->container);
+            $catalogCategory = $catalogCategoryService->read(['uuid' => $data['category']]);
+
+            // combine address category with product address
+            $product->setAddress(
+                implode('/', [$catalogCategory->getAddress(), $product->setAddress('')->getAddress()])
+            );
+        }
+
+        if ($this->service->findOneBy(['category' => $product->getCategory(), 'address' => $product->getAddress()]) !== null) {
             throw new AddressAlreadyExistsException();
         }
 

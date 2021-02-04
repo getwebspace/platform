@@ -70,9 +70,6 @@ class CategoryService extends AbstractService
         if (!$data['title']) {
             throw new MissingTitleValueException();
         }
-        if ($data['address'] && $this->service->findOneByAddress($data['address']) !== null) {
-            throw new AddressAlreadyExistsException();
-        }
 
         $category = (new Category)
             ->setParent($data['parent'])
@@ -93,7 +90,17 @@ class CategoryService extends AbstractService
             ->setExternalId($data['external_id'])
             ->setExport($data['export']);
 
-        if (!$data['address'] && $this->service->findOneByAddress($category->getAddress()) !== null) {
+        // if address generation is enabled
+        if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && Uuid::isValid($data['parent']) && $data['parent'] !== Uuid::NIL) {
+            $parent = $this->read(['uuid' => $data['parent']]);
+
+            // combine address category with product address
+            $category->setAddress(
+                implode('/', [$parent->getAddress(), $category->setAddress('')->getAddress()])
+            );
+        }
+
+        if ($this->service->findOneBy(['parent' => $category->getParent(), 'address' => $category->getAddress()]) !== null) {
             throw new AddressAlreadyExistsException();
         }
 

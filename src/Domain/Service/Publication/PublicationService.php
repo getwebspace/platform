@@ -76,7 +76,7 @@ class PublicationService extends AbstractService
             $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
             $publicationCategory = $publicationCategoryService->read(['uuid' => $data['category']]);
 
-            // combine address category with product address
+            // combine address category with publication address
             $publication->setAddress(
                 implode('/', [$publicationCategory->getAddress(), $publication->setAddress('')->getAddress()])
             );
