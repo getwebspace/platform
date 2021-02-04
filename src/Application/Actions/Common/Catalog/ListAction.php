@@ -146,11 +146,11 @@ class ListAction extends CatalogAction
 
                 if (in_array($order, ['title', 'price', 'field1', 'field2', 'field3', 'field4', 'field5'], true)) {
                     $query->addOrderBy('p.' . $order, $direction);
-                    $params['order_by'][$order] = $direction;
+                    $params['order'][$order] = $direction;
                 }
             } else {
                 $query->addOrderBy('p.title', 'ASC');
-                $params['order_by']['title'] = 'asc';
+                $params['order']['title'] = 'asc';
             }
 
             $filtered = collect(
@@ -290,11 +290,11 @@ class ListAction extends CatalogAction
 
                 if (in_array($order, ['title', 'price', 'field1', 'field2', 'field3', 'field4', 'field5'], true)) {
                     $query->addOrderBy('p.' . $order,);
-                    $params['order_by'][$order] = $direction;
+                    $params['order'][$order] = $direction;
                 }
             } else {
                 $query->addOrderBy('p.title', 'ASC');
-                $params['order_by']['title'] = 'asc';
+                $params['order']['title'] = 'asc';
             }
 
             $filtered = collect(
