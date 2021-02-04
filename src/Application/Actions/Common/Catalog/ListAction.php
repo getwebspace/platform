@@ -68,7 +68,6 @@ class ListAction extends CatalogAction
             $query = $qb
                 ->from(\App\Domain\Entities\Catalog\Product::class, 'p')
                 ->where('p.status = :status')
-                ->orderBy('p.order', 'ASC')
                 ->setParameter('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK, \App\Domain\Types\Catalog\ProductStatusType::NAME);
 
             $products = collect($query->select('p')->getQuery()->getResult());
@@ -145,17 +144,18 @@ class ListAction extends CatalogAction
                 $direction = in_array($direction, ['asc', 'desc'], true) ? $direction : 'ASC';
 
                 if (in_array($order, ['title', 'price', 'field1', 'field2', 'field3', 'field4', 'field5'], true)) {
-                    $query->addOrderBy('p.' . $order, $direction);
+                    $query->orderBy('p.' . $order, $direction);
                     $params['order'][$order] = $direction;
                 }
             } else {
-                $query->addOrderBy('p.title', 'ASC');
+                $query->orderBy('p.title', 'ASC');
                 $params['order']['title'] = 'asc';
             }
 
             $filtered = collect(
                 $query
                     ->select('p')
+                    ->addOrderBy('p.order', 'ASC')
                     ->setMaxResults($pagination)
                     ->setFirstResult($params['offset'] * $pagination)
                     ->getQuery()
@@ -211,7 +211,6 @@ class ListAction extends CatalogAction
                 ->from(\App\Domain\Entities\Catalog\Product::class, 'p')
                 ->where('p.status = :status')
                 ->andWhere('p.category IN (:category)')
-                ->orderBy('p.order', 'ASC')
                 ->setParameter('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK, \App\Domain\Types\Catalog\ProductStatusType::NAME)
                 ->setParameter('category', $categoryUUIDs);
 
@@ -289,17 +288,18 @@ class ListAction extends CatalogAction
                 $direction = in_array($direction, ['asc', 'desc'], true) ? $direction : 'ASC';
 
                 if (in_array($order, ['title', 'price', 'field1', 'field2', 'field3', 'field4', 'field5'], true)) {
-                    $query->addOrderBy('p.' . $order, $direction);
+                    $query->orderBy('p.' . $order, $direction);
                     $params['order'][$order] = $direction;
                 }
             } else {
-                $query->addOrderBy('p.title', 'ASC');
+                $query->orderBy('p.title', 'ASC');
                 $params['order']['title'] = 'asc';
             }
 
             $filtered = collect(
                 $query
                     ->select('p')
+                    ->addOrderBy('p.order', 'ASC')
                     ->setMaxResults($category->pagination)
                     ->setFirstResult($params['offset'] * $category->pagination)
                     ->getQuery()
