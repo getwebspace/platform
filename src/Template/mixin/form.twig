@@ -18,7 +18,7 @@
         {% set args = {} %}
     {% endif %}
     {% set error = '' %}
-    {% if _error[name] is same as(false) or _error[name] is not empty %}
+    {% if name in _error|keys %}
         {% set error = 'has-error' %}
     {% endif %}
 
