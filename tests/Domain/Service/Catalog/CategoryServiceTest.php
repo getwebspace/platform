@@ -114,25 +114,6 @@ class CategoryServiceTest extends TestCase
         $this->service->create();
     }
 
-    public function testCreateWithTitleExistent(): void
-    {
-        $this->expectException(TitleAlreadyExistsException::class);
-
-        $data = [
-            'title' => $this->getFaker()->title,
-            'address' => 'some-custom-address',
-        ];
-
-        $category = (new Category())
-            ->setTitle($data['title'])
-            ->setAddress($data['address']);
-
-        $this->em->persist($category);
-        $this->em->flush();
-
-        $this->service->create($data);
-    }
-
     public function testCreateWithAddressExistent(): void
     {
         $this->expectException(AddressAlreadyExistsException::class);

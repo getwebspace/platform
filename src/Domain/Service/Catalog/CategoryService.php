@@ -8,7 +8,6 @@ use App\Domain\Repository\Catalog\CategoryRepository;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\CategoryNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
-use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
 
@@ -27,7 +26,6 @@ class CategoryService extends AbstractService
     /**
      * @param array $data
      *
-     * @throws TitleAlreadyExistsException
      * @throws MissingTitleValueException
      * @throws AddressAlreadyExistsException
      *
@@ -69,9 +67,6 @@ class CategoryService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        if ($data['title'] && $this->service->findOneByTitle($data['title']) !== null) {
-            throw new TitleAlreadyExistsException();
-        }
         if (!$data['title']) {
             throw new MissingTitleValueException();
         }
@@ -190,7 +185,6 @@ class CategoryService extends AbstractService
      * @param Category|string|Uuid $entity
      * @param array                $data
      *
-     * @throws TitleAlreadyExistsException
      * @throws AddressAlreadyExistsException
      * @throws CategoryNotFoundException
      *
@@ -236,13 +230,7 @@ class CategoryService extends AbstractService
                     $entity->setChildren($data['children']);
                 }
                 if ($data['title'] !== null) {
-                    $found = $this->service->findOneByTitle($data['title']);
-
-                    if ($found === null || $found === $entity) {
-                        $entity->setTitle($data['title']);
-                    } else {
-                        throw new TitleAlreadyExistsException();
-                    }
+                    $entity->setTitle($data['title']);
                 }
                 if ($data['description'] !== null) {
                     $entity->setDescription($data['description']);

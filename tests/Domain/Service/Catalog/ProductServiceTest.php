@@ -138,27 +138,6 @@ class ProductServiceTest extends TestCase
         $this->service->create();
     }
 
-    public function testCreateWithTitleExistent(): void
-    {
-        $this->expectException(TitleAlreadyExistsException::class);
-
-        $data = [
-            'title' => $this->getFaker()->title,
-            'address' => 'some-custom-address',
-            'date' => 'now',
-        ];
-
-        $product = (new Product())
-            ->setTitle($data['title'])
-            ->setAddress($data['address'])
-            ->setDate($data['date']);
-
-        $this->em->persist($product);
-        $this->em->flush();
-
-        $this->service->create($data);
-    }
-
     public function testCreateWithAddressExistent(): void
     {
         $this->expectException(AddressAlreadyExistsException::class);
