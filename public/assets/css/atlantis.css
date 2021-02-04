@@ -6247,6 +6247,7 @@ label.error {
     box-shadow: 0 1px 11px rgba(0, 0, 0, 0.15) !important;
     padding-bottom: 8px;
     margin-top: 3px;
+    min-width: 230px;
 }
 
 /*     Notification dropdown    */
