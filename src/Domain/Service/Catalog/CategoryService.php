@@ -92,12 +92,16 @@ class CategoryService extends AbstractService
 
         // if address generation is enabled
         if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && Uuid::isValid($data['parent']) && $data['parent'] !== Uuid::NIL) {
-            $parent = $this->read(['uuid' => $data['parent']]);
+            try {
+                $parent = $this->read(['uuid' => $data['parent']]);
 
-            // combine address category with product address
-            $category->setAddress(
-                implode('/', [$parent->getAddress(), $category->setAddress('')->getAddress()])
-            );
+                // combine address category with product address
+                $category->setAddress(
+                    implode('/', [$parent->getAddress(), $category->setAddress('')->getAddress()])
+                );
+            } catch (CategoryNotFoundException $e) {
+                // nothing
+            }
         }
 
         if ($this->service->findOneBy(['parent' => $category->getParent(), 'address' => $category->getAddress()]) !== null) {
