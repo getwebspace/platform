@@ -289,7 +289,7 @@ class ListAction extends CatalogAction
                 $direction = in_array($direction, ['asc', 'desc'], true) ? $direction : 'ASC';
 
                 if (in_array($order, ['title', 'price', 'field1', 'field2', 'field3', 'field4', 'field5'], true)) {
-                    $query->addOrderBy('p.' . $order,);
+                    $query->addOrderBy('p.' . $order, $direction);
                     $params['order'][$order] = $direction;
                 }
             } else {
