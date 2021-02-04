@@ -32,7 +32,7 @@ class SystemPageAction extends AbstractAction
 
         // already exist user
         if (!$allow) {
-            if ($user->getGroup() !== null && in_array('cup:system', $user->getGroup()->getAccess(), true)) {
+            if ($user->getGroup() !== null && in_array('cup:main', $user->getGroup()->getAccess(), true)) {
                 $allow = true;
             }
         }
