@@ -96,7 +96,10 @@ class ListAction extends CatalogAction
                 $buf = ['address' => [], 'value' => []];
                 foreach ($attributes as $key => $value) {
                     $buf['address'][] = $key;
-                    $buf['value'][] = $value;
+
+                    foreach ((array) $value as $val) {
+                        $buf['value'][] = $val;
+                    }
                 }
 
                 $query
@@ -237,7 +240,10 @@ class ListAction extends CatalogAction
                 $buf = ['address' => [], 'value' => []];
                 foreach ($attributes as $key => $value) {
                     $buf['address'][] = $key;
-                    $buf['value'][] = $value;
+
+                    foreach ((array) $value as $val) {
+                        $buf['value'][] = $val;
+                    }
                 }
 
                 $query
