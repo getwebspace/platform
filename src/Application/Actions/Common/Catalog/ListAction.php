@@ -85,7 +85,7 @@ class ListAction extends CatalogAction
             foreach ($this->request->getParams() as $key => $value) {
                 if (
                     (
-                        !in_array($key, ['price', 'country', 'manufacturer', 'order'], true) &&
+                        !in_array($key, ['price', 'country', 'manufacturer', 'order', 'direction'], true) &&
                         !str_start_with($key, 'field')
                     ) && $value
                 ) {
@@ -229,7 +229,7 @@ class ListAction extends CatalogAction
             foreach ($this->request->getParams() as $key => $value) {
                 if (
                     (
-                        !in_array($key, ['price', 'country', 'manufacturer', 'order'], true) &&
+                        !in_array($key, ['price', 'country', 'manufacturer', 'order', 'direction'], true) &&
                         !str_start_with($key, 'field')
                     ) && $value
                 ) {
