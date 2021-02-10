@@ -58,6 +58,7 @@ class ProductService extends AbstractService
             'country' => '',
             'manufacturer' => '',
             'tags' => [],
+            'relation' => [],
             'order' => 1,
             'date' => 'now',
             'meta' => [
@@ -97,6 +98,7 @@ class ProductService extends AbstractService
             ->setCountry($data['country'])
             ->setManufacturer($data['manufacturer'])
             ->setTags($data['tags'])
+            ->setRelations($data['relation'])
             ->setOrder((int) $data['order'])
             ->setDate($data['date'])
             ->setMeta($data['meta'])
@@ -267,6 +269,7 @@ class ProductService extends AbstractService
                 'country' => null,
                 'manufacturer' => null,
                 'tags' => null,
+                'relation' => null,
                 'order' => null,
                 'date' => null,
                 'meta' => null,
@@ -347,6 +350,9 @@ class ProductService extends AbstractService
                 }
                 if ($data['tags'] !== null) {
                     $entity->setTags($data['tags']);
+                }
+                if ($data['relation'] !== null) {
+                    $entity->setRelations($data['relation']);
                 }
                 if ($data['order'] !== null) {
                     $entity->setOrder((int) $data['order']);

@@ -630,6 +630,33 @@ class Product extends AbstractEntity
     }
 
     /**
+     * @var array
+     * @ORM\ManyToMany(targetEntity="App\Domain\Entities\Catalog\Product")
+     * @ORM\JoinTable(name="catalog_product_related",
+     *     joinColumns={@ORM\JoinColumn(name="product1_uuid", referencedColumnName="uuid")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="product2_uuid", referencedColumnName="uuid")}
+     * )
+     */
+    protected $relation = [];
+
+    public function setRelations(array $products): Product
+    {
+        $this->relation = $products;
+
+        return $this;
+    }
+
+    public function getRelations($raw = false)
+    {
+        return $raw ? $this->relation : collect($this->relation);
+    }
+
+    public function hasRelations()
+    {
+        return count($this->relation);
+    }
+
+    /**
      * @ORM\Column(name="`order`", type="integer", options={"default": 1})
      */
     protected int $order = 1;

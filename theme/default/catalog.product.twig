@@ -123,6 +123,38 @@
                                 </div>
                             </div>
                         </div>
+
+                        {% if product.hasRelations() %}
+                            <div class="panel">
+                                <div class="panel-header" id="headingTwo">
+                                    <button class="panel-link" data-toggle="collapse" data-target="#collapse4" aria-expanded="false" aria-controls="collapse2">Сопутствующие товары</button>
+                                </div>
+                                <div id="collapse4" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            {% for related in product.getRelations() %}
+                                                <div class="col-4">
+                                                    <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ related.address }}">
+                                                        {% include 'mixin/img.twig' with {
+                                                            'src': related.hasFiles() ? related.getFiles().first().getPublicPath('middle') : '/assets/img/no_image.png',
+                                                            'class': 'product-big-img',
+                                                            'title': related.title,
+                                                            'alt': related.title,
+                                                            'style': 'display:block; height: auto; width: 100%; object-fit: contain; object-position: center center;'
+                                                        } only %}
+                                                    </a>
+
+                                                    <h2 class="p-title">
+                                                        <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ related.address }}">{{ related.title }}</a>
+                                                    </h2>
+                                                    <h3 class="p-price">{{ related.price }}</h3>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

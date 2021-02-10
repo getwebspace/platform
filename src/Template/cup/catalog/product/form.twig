@@ -29,6 +29,11 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link" data-toggle="pill" href="#related" role="tab">
+                                        Сопутствующие
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link" data-toggle="pill" href="#attributes" role="tab">
                                         Атрибуты
                                     </a>
@@ -273,80 +278,115 @@
                                 </div>
                             </div>
 
-                            {# Tab: Атрибуты #}
-                            <div class="tab-pane fade" id="attributes" role="tabpanel">
+                            {# Tab: Сопутствующие #}
+                            <div class="tab-pane fade" id="related" role="tabpanel">
                                 <div class="row">
-                                    {% for attribute in category.getAttributes() %}
-                                        <div class="col-md-4">
-                                            {% include 'cup/form.twig' with {
-                                                'label': attribute.title,
-                                                'type': attribute.type == 'string' ? 'text' : 'number',
-                                                'name': 'attributes[' ~ attribute.uuid ~ ']',
-                                                'postfix': '<i class="fas fa-certificate" data-toggle="tooltip" data-placement="top" title="Атрибут категории"></i>',
-                                                'args': {
-                                                    'value': item.hasAttributes() ? item.getAttributes().firstWhere('attribute_uuid', attribute.uuid).value : '',
-                                                }
-                                            } %}
-                                        </div>
-                                    {% endfor %}
+                                    <div class="col-12 col-md-5 mb-3">
+                                        <small class="form-text text-muted">
+                                            <p>
+                                                <b>Сопутствующие товары</b> - это те товары, которые покупатель
+                                                использует вместе с уже купленным товаром, которые помогают им
+                                                пользоваться, дополняют его, устраняют последствия от использования
+                                                товара, являются его сменными деталями, расходными материалами и т.п.
+                                            </p>
+                                        </small>
 
-                                    <div class="col-md-4" style="display: none">
-                                        {% include 'cup/form.twig' with { 'label': 'template' } %}
+                                        <button type="button" data-btn-related-modal-products class="btn btn-secondary">
+                                            <i class="fa fa-plus"></i>
+                                            Добавить товар
+                                        </button>
                                     </div>
 
-                                    {% for attribute in item.getAttributes().whereNotIn('attribute_uuid', category.getAttributes().pluck('uuid')) %}
-                                        {% if attribute.value %}
+                                    <div class="col-12 col-md-7">
+                                        <ul class="list-group list-group-bordered">
+                                            <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" style="display: none!important;">
+                                                <a href="/cup/catalog/product/%UUID%/edit" target="_blank">{{ related.title }}</a>
+                                                {% include 'cup/form.twig' with { 'type': 'hidden', 'name': 'relation[]' } %}
+                                                <button type="button" class="btn btn-danger btn-sm">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </li>
+
+                                            {% for related in item.getRelations() %}
+                                                <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                                    <a href="/cup/catalog/product/{{ related.uuid }}/edit" target="_blank">{{ related.title }}</a>
+                                                    {% include 'cup/form.twig' with {
+                                                        'type': 'hidden',
+                                                        'name': 'relation[]',
+                                                        'args': {
+                                                            'value': related.uuid.toString()
+                                                        }
+                                                    } %}
+                                                    <button type="button" class="btn btn-danger btn-sm">
+                                                        <i class="fa fa-trash"></i>
+                                                    </button>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {# Tab: Атрибуты #}
+                            <div class="tab-pane fade" id="attributes" role="tabpanel">
+                                {% if category.hasAttributes() %}
+                                    <div class="row">
+                                        {% for attribute in category.getAttributes() %}
                                             <div class="col-md-4">
                                                 {% include 'cup/form.twig' with {
                                                     'label': attribute.title,
                                                     'type': attribute.type == 'string' ? 'text' : 'number',
-                                                    'name': 'attributes[' ~ attribute.attribute_uuid ~ ']',
+                                                    'name': 'attributes[' ~ attribute.uuid ~ ']',
+                                                    'postfix': '<i class="fas fa-certificate" data-toggle="tooltip" data-placement="top" title="Атрибут категории"></i>',
                                                     'args': {
-                                                        'value': attribute.value,
+                                                        'value': item.hasAttributes() ? item.getAttributes().firstWhere('attribute_uuid', attribute.uuid).value : '',
                                                     }
                                                 } %}
                                             </div>
-                                        {% endif %}
-                                    {% endfor %}
-                                </div>
+                                        {% endfor %}
+                                    </div>
 
-                                <hr>
+                                    <hr>
+                                {% endif %}
 
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Атрибуты',
                                             'type': 'select',
                                             'message': '<p class="float-left">Укажите индивидуальные атрибуты для товара</p>'~
-                                                       '<button class="btn btn-xs btn-secondary float-right" type="button">Добавить поле</button>' ~
-                                                       '<a href="/cup/catalog/attribute/add" class="btn btn-xs btn-info mr-1 float-right" onclick="return confirm(\'Вы действительно хотите перейти на другую страницу?\');"><i class="fa fa-plus"></i> Добавить атрибут</a>' ,
+                                            '<button class="btn btn-xs btn-secondary float-right" type="button">Добавить поле</button>' ~
+                                            '<a href="/cup/catalog/attribute/add" class="btn btn-xs btn-info mr-1 float-right" onclick="return confirm(\'Вы действительно хотите перейти на другую страницу?\');"><i class="fa fa-plus"></i> Добавить атрибут</a>' ,
                                             'args': {
                                                 'option': attributes.pluck('title', 'uuid').all(),
                                                 'data': {'select': 'attributes'}
                                             }
                                         } %}
                                     </div>
+
+                                    <div class="col-12 col-md-6">
+                                        <div class="row">
+                                            <div class="col-12 col-md-6" style="display: none">
+                                                {% include 'cup/form.twig' with { 'label': 'template' } %}
+                                            </div>
+
+                                            {% for attribute in item.getAttributes().whereNotIn('attribute_uuid', category.getAttributes().pluck('uuid')) %}
+                                                {% if attribute.value %}
+                                                    <div class="col-12 col-md-6">
+                                                        {% include 'cup/form.twig' with {
+                                                            'label': attribute.title,
+                                                            'type': attribute.type == 'string' ? 'text' : 'number',
+                                                            'name': 'attributes[' ~ attribute.attribute_uuid ~ ']',
+                                                            'args': {
+                                                                'value': attribute.value,
+                                                            }
+                                                        } %}
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
                                 </div>
-
-                                <script>
-                                    document.addEventListener('DOMContentLoaded', () => {
-                                        let $that = $('[id="attributes"]'),
-                                            $row = $that.find('div.row:first'),
-                                            $template = $that.find('div[style="display: none"]').show().detach(),
-                                            $select = $that.find('select');
-
-                                        $that.find('button').on('click', () => {
-                                            if ($row.find('[name="attributes[' + $select.val() + ']"]').length === 0) {
-                                                let $buf = $template.clone();
-
-                                                $buf.find('label').text($select.find(':selected').text());
-                                                $buf.find('input').attr('name', 'attributes[' + $select.val() + ']');
-
-                                                $buf.appendTo($row);
-                                            }
-                                        })
-                                    });
-                                </script>
                             </div>
 
                             {# Tab: Поля #}
@@ -534,5 +574,34 @@
             </div>
         </div>
     </div>
-{% endblock %}
 
+    <div data-related-modal-products class="modal">
+        <div class="row">
+            <div class="col-12">
+                {% include 'cup/form.twig' with {
+                    'label': 'Категория',
+                    'name': 'category',
+                    'type': 'select',
+                    'args': {
+                        'data': {'search': 5, 'placeholder': 'Выберете категорию', 'allow-clear': true},
+                    }
+                } %}
+            </div>
+            <div class="col-12">
+                {% include 'cup/form.twig' with {
+                    'label': 'Товар',
+                    'name': 'product',
+                    'type': 'select',
+                    'args': {
+                        'data': {'search': 5, 'placeholder': 'Выберете товар'}
+                    }
+                } %}
+            </div>
+            <div class="col-12">
+                <div class="text-right" style="margin-top: 37px;">
+                    <button type="button" class="btn btn-outline-info">Добавить товар</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

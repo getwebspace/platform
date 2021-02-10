@@ -15,6 +15,7 @@ class ProductCreateAction extends CatalogAction
 
         if ($this->request->isPost()) {
             try {
+                $relation = $this->catalogProductService->read(['uuid' => (array) $this->request->getParam('relation', [])]);
                 $product = $this->catalogProductService->create([
                     'category' => $this->request->getParam('category'),
                     'title' => $this->request->getParam('title'),
@@ -37,6 +38,7 @@ class ProductCreateAction extends CatalogAction
                     'country' => $this->request->getParam('country'),
                     'manufacturer' => $this->request->getParam('manufacturer'),
                     'tags' => $this->request->getParam('tags'),
+                    'relation' => $relation->toArray(),
                     'order' => $this->request->getParam('order'),
                     'date' => $this->request->getParam('date'),
                     'meta' => $this->request->getParam('meta'),
