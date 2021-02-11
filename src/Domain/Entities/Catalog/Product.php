@@ -631,20 +631,9 @@ class Product extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\ManyToMany(targetEntity="App\Domain\Entities\Catalog\Product")
-     * @ORM\JoinTable(name="catalog_product_related",
-     *     joinColumns={@ORM\JoinColumn(name="product1_uuid", referencedColumnName="uuid")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="product2_uuid", referencedColumnName="uuid")}
-     * )
+     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\ProductRelation", mappedBy="product")
      */
     protected $relation = [];
-
-    public function setRelations(array $products): Product
-    {
-        $this->relation = $products;
-
-        return $this;
-    }
 
     public function getRelations($raw = false)
     {

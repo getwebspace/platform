@@ -211,6 +211,7 @@ $(() => {
             $category = $modal.find('[type="select"][name="category"]'),
             $product = $modal.find('[type="select"][name="product"]'),
             $option = $('<option>'),
+            $quantity = $modal.find('[type="number"]'),
             $btnSuccess = $modal.find('button'),
             $template = $that.find('.list-group [style="display: none!important;"]').show().detach()
         ;
@@ -274,10 +275,10 @@ $(() => {
         });
     
         $btnSuccess.on('click', () => {
-            if ($product.val()) {
+            if ($product.val() && $quantity.val() >= 1) {
                 let $selected = $product.find(':selected'),
-                    $find = $('[name="relation[]"][value="' + $selected.attr('value') + '"]');
-            
+                    $find = $('[name="relation[' + $selected.attr('value') + ']"]');
+                
                 if ($find.length === 0) {
                     let $buf = $template.clone(),
                         $a = $buf.find('a'),
@@ -285,9 +286,12 @@ $(() => {
                 
                     $a.attr('href', $a.attr('href').replace('%UUID%', $selected.val()));
                     $a.text($selected.text());
-                    $input.val($selected.val());
+                    $input.attr('name', 'relation[' + $selected.attr('value') + ']');
+                    $input.val($quantity.val());
                 
                     $buf.appendTo($that.find('ul.list-group'));
+                } else {
+                    $find.val(parseFloat($find.val()) + parseFloat($quantity.val()));
                 }
             
                 $.modal.close();

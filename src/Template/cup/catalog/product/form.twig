@@ -301,25 +301,27 @@
                                         <ul class="list-group list-group-bordered">
                                             <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" style="display: none!important;">
                                                 <a href="/cup/catalog/product/%UUID%/edit" target="_blank">{{ related.title }}</a>
-                                                {% include 'cup/form.twig' with { 'type': 'hidden', 'name': 'relation[]' } %}
-                                                <button type="button" class="btn btn-danger btn-sm">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
+                                                {% include 'cup/form.twig' with {
+                                                    'type': 'number',
+                                                    'name': 'relation[]',
+                                                    'postfix_btn': '<button type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>',
+                                                    'args': { 'min': 1, 'placeholder': 1 }
+                                                } %}
                                             </li>
 
-                                            {% for related in item.getRelations() %}
+                                            {% for relation in item.getRelations() %}
                                                 <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                                                    <a href="/cup/catalog/product/{{ related.uuid }}/edit" target="_blank">{{ related.title }}</a>
+                                                    <a href="/cup/catalog/product/{{ relation.related.uuid }}/edit" target="_blank">{{ relation.related.title }}</a>
                                                     {% include 'cup/form.twig' with {
-                                                        'type': 'hidden',
-                                                        'name': 'relation[]',
+                                                        'type': 'number',
+                                                        'name': 'relation['~ relation.related.uuid ~']',
+                                                        'postfix_btn': '<button type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>',
                                                         'args': {
-                                                            'value': related.uuid.toString()
+                                                            'value': relation.count,
+                                                            'min': 1,
+                                                            'placeholder': 1,
                                                         }
                                                     } %}
-                                                    <button type="button" class="btn btn-danger btn-sm">
-                                                        <i class="fa fa-trash"></i>
-                                                    </button>
                                                 </li>
                                             {% endfor %}
                                         </ul>
@@ -597,7 +599,19 @@
                     }
                 } %}
             </div>
-            <div class="col-12">
+            <div class="col-6">
+                {% include 'cup/form.twig' with {
+                    'label': 'Количество',
+                    'type': 'number',
+                    'args': {
+                        'value': '1',
+                        'placeholder': '1',
+                        'step': 'any',
+                        'min': '0',
+                    }
+                } %}
+            </div>
+            <div class="col-6">
                 <div class="text-right" style="margin-top: 37px;">
                     <button type="button" class="btn btn-outline-info">Добавить товар</button>
                 </div>

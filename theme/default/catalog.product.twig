@@ -132,22 +132,22 @@
                                 <div id="collapse4" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
                                     <div class="panel-body">
                                         <div class="row">
-                                            {% for related in product.getRelations() %}
+                                            {% for relative in product.getRelations() %}
                                                 <div class="col-4">
-                                                    <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ related.address }}">
+                                                    <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ relative.related.address }}">
                                                         {% include 'mixin/img.twig' with {
-                                                            'src': related.hasFiles() ? related.getFiles().first().getPublicPath('middle') : '/assets/img/no_image.png',
+                                                            'src': relative.related.hasFiles() ? relative.related.getFiles().first().getPublicPath('middle') : '/assets/img/no_image.png',
                                                             'class': 'product-big-img',
-                                                            'title': related.title,
-                                                            'alt': related.title,
+                                                            'title': relative.related.title,
+                                                            'alt': relative.related.title,
                                                             'style': 'display:block; height: auto; width: 100%; object-fit: contain; object-position: center center;'
                                                         } only %}
                                                     </a>
 
                                                     <h2 class="p-title">
-                                                        <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ related.address }}">{{ related.title }}</a>
+                                                        <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ relative.related.address }}">{{ relative.related.title }}</a>
                                                     </h2>
-                                                    <h3 class="p-price">{{ related.price }}</h3>
+                                                    <h4 class="p-price">{{ relative.related.price }} * {{ relative.count }} = {{ relative.related.price * relative.count }}</h4>
                                                 </div>
                                             {% endfor %}
                                         </div>
