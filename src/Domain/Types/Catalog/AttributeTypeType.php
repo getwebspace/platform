@@ -11,10 +11,12 @@ class AttributeTypeType extends AbstractEnumType
     public const TYPE_STRING = 'string';
     public const TYPE_INTEGER = 'integer';
     public const TYPE_FLOAT = 'float';
+    public const TYPE_BOOLEAN = 'boolean';
 
     public const LIST = [
         self::TYPE_STRING,
         self::TYPE_INTEGER,
         self::TYPE_FLOAT,
+        self::TYPE_BOOLEAN,
     ];
 }

@@ -333,8 +333,8 @@
                             <div class="tab-pane fade" id="attributes" role="tabpanel">
                                 {% if category.hasAttributes() %}
                                     <div class="row">
-                                        {% for attribute in category.getAttributes() %}
-                                            <div class="col-md-4">
+                                        {% for attribute in category.getAttributes().where('type', '!=', 'boolean') %}
+                                            <div class="col-12 col-sm-6 col-md-4">
                                                 {% include 'cup/form.twig' with {
                                                     'label': attribute.title,
                                                     'type': attribute.type == 'string' ? 'text' : 'number',
@@ -344,6 +344,22 @@
                                                         'value': item.hasAttributes() ? item.getAttributes().firstWhere('attribute_uuid', attribute.uuid).value : '',
                                                     }
                                                 } %}
+                                            </div>
+                                        {% endfor %}
+
+                                        {% for attribute in category.getAttributes().where('type', '==', 'boolean') %}
+                                            <div class="col-12 col-sm-6 col-md-4">
+                                                <div data-input="" class="form-group ">
+                                                    <label class="placeholder">
+                                                        <b>{{ attribute.title }}</b>
+                                                    </label>
+                                                    <div class="input-group">
+                                                        <label class="selectgroup-item">
+                                                            <input type="checkbox" name="attributes[{{ attribute.uuid }}]" value="1" class="selectgroup-input" {{ item.getAttributes().firstWhere('attribute_uuid', attribute.uuid).value ? 'checked' }} >
+                                                            <span class="selectgroup-button" style="height: 42px;">Да</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
                                             </div>
                                         {% endfor %}
                                     </div>
@@ -360,7 +376,7 @@
                                             '<button class="btn btn-xs btn-secondary float-right" type="button">Добавить поле</button>' ~
                                             '<a href="/cup/catalog/attribute/add" class="btn btn-xs btn-info mr-1 float-right" onclick="return confirm(\'Вы действительно хотите перейти на другую страницу?\');"><i class="fa fa-plus"></i> Добавить атрибут</a>' ,
                                             'args': {
-                                                'option': attributes.pluck('title', 'uuid').all(),
+                                                'option': attributes.where('type', '!=', 'boolean').pluck('title', 'uuid').all(),
                                                 'data': {'select': 'attributes'}
                                             }
                                         } %}
@@ -374,16 +390,18 @@
 
                                             {% for attribute in item.getAttributes().whereNotIn('attribute_uuid', category.getAttributes().pluck('uuid')) %}
                                                 {% if attribute.value %}
-                                                    <div class="col-12 col-md-6">
-                                                        {% include 'cup/form.twig' with {
-                                                            'label': attribute.title,
-                                                            'type': attribute.type == 'string' ? 'text' : 'number',
-                                                            'name': 'attributes[' ~ attribute.attribute_uuid ~ ']',
-                                                            'args': {
-                                                                'value': attribute.value,
-                                                            }
-                                                        } %}
-                                                    </div>
+                                                    {% if attribute.type != 'boolean' %}
+                                                        <div class="col-12 col-md-6">
+                                                            {% include 'cup/form.twig' with {
+                                                                'label': attribute.title,
+                                                                'type': attribute.type == 'string' ? 'text' : 'number',
+                                                                'name': 'attributes[' ~ attribute.attribute_uuid ~ ']',
+                                                                'args': {
+                                                                    'value': attribute.value,
+                                                                }
+                                                            } %}
+                                                        </div>
+                                                    {% endif %}
                                                 {% endif %}
                                             {% endfor %}
                                         </div>
