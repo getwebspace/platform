@@ -220,7 +220,7 @@ $(() => {
             e.preventDefault();
             this.blur();
         
-            $category.off('change').on('change', (e) => {
+            $category.html('').off('change').on('change', (e) => {
                 $product
                     .html('')
                     .prop('disabled', true);
@@ -324,7 +324,7 @@ $(() => {
             e.preventDefault();
             this.blur();
         
-            $category.off('change').on('change', (e) => {
+            $category.html('').off('change').on('change', (e) => {
                 $product
                     .html('')
                     .prop('disabled', true);
