@@ -1,0 +1,69 @@
+<li class="nav-item">
+    <a href="#" class="nav-link" data-click="alert-donate">
+        <i class="fa fa-donate"></i>
+    </a>
+</li>
+
+{% htmlcompress %}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            $('[data-click="alert-donate"]').on('click', () => {
+                Swal.fire({
+                    closeOnEsc: true,
+                    closeOnClickOutside: true,
+                    title: `Поддержите разработку<br>WebSpace Engine`,
+                    html: `
+                        <p class="text-justify">
+                            WSE является программным продуктом с <b>открытым исходным кодом</b>, распространяемым по лицензии MIT
+                            полностью <b>бесплатно</b>.
+                            Однако, стабильная поддержка проекта и разработка новых возможностей
+                            требует усилий, невозможных без должной финансовой поддержки.
+                        </p>
+
+                        <p class="text-justify">
+                            Мы принимаем пожертвования следующими способами:
+                        </p>
+                        <div id="donate" class="mt-2">
+                            <div class="row">
+                                <div class="col-12 col-md-6">
+                                    <a href="https://yoomoney.ru/to/410011144467012" target="_blank" class="btn btn-link">
+                                        <img src="/assets/img/iomoney.png" style="height: 30px;" alt="yoomoney">
+                                    </a>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#donate-bitcoin-cash">
+                                        <svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><circle fill="#8DC451" cx="19" cy="19" r="19"></circle><path d="M24.5 16.72c.37-.76.48-1.64.25-2.52-.75-2.76-2.84-3.98-5.58-3.25l-.89-3.32a.23.23 0 0 0-.28-.16l-1.32.35a.23.23 0 0 0-.16.27l.9 3.33-1.76.47-.9-3.32a.23.23 0 0 0-.27-.16l-1.32.35a.23.23 0 0 0-.16.28l.9 3.32-3.74 1a.23.23 0 0 0-.16.29l.35 1.32c.04.12.16.2.28.17l.22-.06c.97-.26 1.97.32 2.23 1.3l1.9 7.08c.25.93-.25 1.87-1.13 2.2a.23.23 0 0 0-.14.21l.02 1.43c0 .07.04.13.1.18.05.04.12.05.19.04l3.67-.99.9 3.33c.03.12.15.19.27.15l1.31-.35c.12-.03.2-.16.16-.28l-.88-3.32 1.75-.47.9 3.33c.03.12.15.19.27.15l1.32-.35c.12-.03.19-.16.16-.28l-.9-3.32.88-.24c2.75-.73 3.95-2.83 3.2-5.6a3.63 3.63 0 0 0-2.54-2.56zm-8.13-2.17l2.63-.7c.97-.26 1.97.32 2.23 1.3.27.97-.3 1.98-1.28 2.24l-2.63.7-.95-3.54zm5.88 7.91l-3.5.94-.96-3.54 3.51-.94c.97-.26 1.97.32 2.24 1.3.26.98-.32 1.98-1.29 2.24z" fill="#FFF"></path></g></svg>
+                                    </button>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#donate-dogecoin">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 2000" width="38" height="38"><g fill="#c2a633"><path d="M1024 659H881.12v281.69h224.79v117.94H881.12v281.67H1031c38.51 0 316.16 4.35 315.73-327.72S1077.44 659 1024 659z"/><path d="M1000 0C447.71 0 0 447.71 0 1000s447.71 1000 1000 1000 1000-447.71 1000-1000S1552.29 0 1000 0zm39.29 1540.1H677.14v-481.46H549.48V940.7h127.65V459.21h310.82c73.53 0 560.56-15.27 560.56 549.48 0 574.09-509.21 531.41-509.21 531.41z"/></g></svg>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="accordion-group">
+                                <div class="collapse" id="donate-bitcoin-cash" data-parent="#donate">
+                                    <p class="p-0 m-0">
+                                        <b>Адрес Bitcoin Cash:</b><br>
+                                        <b>14FXuP69k5T2FsUTHNK8t1TcSaFyqpi9y5</b><br>
+                                        {{ qr_code('14FXuP69k5T2FsUTHNK8t1TcSaFyqpi9y5') }}
+                                    </p>
+                                </div>
+                                <div class="collapse" id="donate-dogecoin" data-parent="#donate">
+                                    <p class="p-0 m-0">
+                                        <b>Адрес Dogecoin:</b><br>
+                                        <b>D5JR4DQVgH2TtBWNhrT6xTn7iDaZyTWSkj</b><br>
+                                        {{ qr_code('D5JR4DQVgH2TtBWNhrT6xTn7iDaZyTWSkj') }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    `,
+                    showCancelButton: true,
+                    showConfirmButton: false,
+                    cancelButtonText: 'Закрыть',
+                });
+            });
+        });
+    </script>
+{% endhtmlcompress %}

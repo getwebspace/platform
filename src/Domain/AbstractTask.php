@@ -19,32 +19,66 @@ abstract class AbstractTask extends AbstractComponent
     private TaskService $taskService;
 
     /**
-     * @var Task
+     * @var null|Task
      */
     private ?Task $entity;
 
     /**
      * @var Twig
      */
-    private $renderer;
-
-    public static string $pid_file = VAR_DIR . '/worker.pid';
+    private Twig $renderer;
 
     /**
-     * Запускает исполнение воркера задач
+     * Start background worker
+     *
+     * @param mixed $action
      */
-    public static function worker(): void
+    public static function worker($action = ''): void
     {
-        if (!file_exists(static::$pid_file)) {
-            @exec('php ' . CONFIG_DIR . '/cli-task.php > /dev/null 2>&1 &');
+        if (is_object($action)) {
+            $action = get_class($action);
         }
+
+        @exec('php ' . BIN_DIR . '/task_worker.php ' . addslashes($action) . ' > /dev/null 2>&1 &');
+    }
+
+    /**
+     * Before start work write self PID to file
+     *
+     * @param string $action
+     */
+    public static function workerCreatePidFile(string $action = ''): void
+    {
+        file_put_contents(VAR_DIR . '/' . ($action ? mb_strtolower($action) . '.' : '') . 'worker.pid', getmypid());
+    }
+
+    /**
+     * Before start work write self PID to file
+     *
+     * @param string $action
+     *
+     * @return bool
+     */
+    public static function workerHasPidFile(string $action = ''): bool
+    {
+        return file_exists(VAR_DIR . '/' . ($action ? mb_strtolower($action) . '.' : '') . 'worker.pid');
+    }
+
+    /**
+     * After work remove PID file
+     *
+     * @param string $action
+     */
+    public static function workerRemovePidFile(string $action = ''): void
+    {
+        @unlink(VAR_DIR . '/' . ($action ? mb_strtolower($action) . '.' : '') . 'worker.pid');
     }
 
     public function __construct(ContainerInterface $container, Task $entity = null)
     {
         parent::__construct($container);
 
-        // @var TaskService $taskService
+        /** @var TaskService $taskService */
         $this->taskService = TaskService::getWithContainer($container);
         $this->entity = $entity;
         $this->renderer = $container->get('view');
@@ -59,7 +93,7 @@ abstract class AbstractTask extends AbstractComponent
      *
      * @return string
      */
-    protected function render($template, array $data = [])
+    protected function render(string $template, array $data = []): string
     {
         try {
             \RunTracy\Helpers\Profiler\Profiler::start('render (%s)', $template);
@@ -121,35 +155,35 @@ abstract class AbstractTask extends AbstractComponent
         }
     }
 
-    public function setStatusWork()
+    public function setStatusWork(): bool
     {
         $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_WORK);
 
         return true;
     }
 
-    public function setStatusDone($output = '')
+    public function setStatusDone($output = ''): bool
     {
         $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_DONE, 0, $output);
 
         return true;
     }
 
-    public function setStatusFail($output = '')
+    public function setStatusFail($output = ''): bool
     {
         $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_FAIL, 0, $output);
 
         return false;
     }
 
-    public function setStatusCancel($output = '')
+    public function setStatusCancel($output = ''): bool
     {
         $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_CANCEL, 0, $output);
 
         return false;
     }
 
-    public function setStatusDelete($output = '')
+    public function setStatusDelete($output = ''): bool
     {
         $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_DELETE, 0, $output);
 
@@ -160,6 +194,8 @@ abstract class AbstractTask extends AbstractComponent
      * @param null|string $status
      * @param int         $progress
      * @param string      $output
+     *
+     * @throws Service\Task\Exception\TaskNotFoundException
      */
     private function saveStateWriteLog($status = null, $progress = 0, $output = ''): void
     {

@@ -49,9 +49,12 @@ class AuthorizationMiddleware extends AbstractMiddleware
         if ($data['uuid'] && Uuid::isValid($data['uuid']) && $data['session']) {
             try {
                 $userService = UserService::getWithContainer($this->container);
-                $user = $userService->read(['uuid' => $data['uuid']]);
+                $user = $userService->read([
+                    'uuid' => $data['uuid'],
+                    'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
+                ]);
 
-                if ($user) {
+                if ($user && $user->getSession()) {
                     $hash = sha1(
                         'salt:' . ($this->container->get('secret')['salt'] ?? '') . ';' .
                         'uuid:' . $user->getUuid()->toString() . ';' .
@@ -63,8 +66,10 @@ class AuthorizationMiddleware extends AbstractMiddleware
                     if ($data['session'] === $hash) {
                         $request = $request->withAttribute('user', $user);
                     }
+                } else {
+                    throw new \RuntimeException();
                 }
-            } catch (UserNotFoundException $e) {
+            } catch (\RuntimeException | UserNotFoundException $e) {
                 // clear cookie
                 setcookie('uuid', '-1', time(), '/');
                 setcookie('session', '-1', time(), '/');

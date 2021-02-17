@@ -3,6 +3,7 @@
 namespace App\Domain\Entities\Catalog;
 
 use App\Domain\AbstractEntity;
+use App\Domain\Entities\User;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
@@ -36,7 +37,7 @@ class Order extends AbstractEntity
      * @var string
      * @ORM\Column(type="string", length=7, options={"default": ""})
      */
-    public string $serial = '';
+    protected string $serial = '';
 
     /**
      * @param int|string $serial
@@ -61,29 +62,42 @@ class Order extends AbstractEntity
     }
 
     /**
-     * @var string|Uuid
-     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
+     * @var null|Uuid
+     * @ORM\Column(type="uuid", nullable=true, options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
-    protected $user_uuid = \Ramsey\Uuid\Uuid::NIL;
+    protected ?Uuid $user_uuid;
 
     /**
-     * @param string|Uuid $uuid
+     * @var null|User
+     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\User")
+     * @ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid")
+     */
+    protected ?User $user = null;
+
+    /**
+     * @param string|User $user
      *
      * @return $this
      */
-    public function setUserUuid($uuid)
+    public function setUser($user)
     {
-        $this->user_uuid = $this->getUuidByValue($uuid);
+        if (is_a($user, User::class)) {
+            $this->user_uuid = $user->getUuid();
+            $this->user = $user;
+        } else {
+            $this->user_uuid = null;
+            $this->user = null;
+        }
 
         return $this;
     }
 
     /**
-     * @return Uuid
+     * @return null|User
      */
-    public function getUserUuid(): Uuid
+    public function getUser(): ?User
     {
-        return $this->user_uuid;
+        return $this->user;
     }
 
     /**
@@ -186,16 +200,20 @@ class Order extends AbstractEntity
     protected string $phone = '';
 
     /**
-     * @param string $phone
+     * @param null|string $phone
      *
      * @throws \App\Domain\Exceptions\WrongPhoneValueException
      *
      * @return $this
      */
-    public function setPhone(string $phone)
+    public function setPhone(string $phone = null)
     {
-        if ($this->checkStrLenMax($phone, 25) && $this->checkPhoneByValue($phone)) {
-            $this->phone = $phone;
+        if ($phone) {
+            if ($this->checkStrLenMax($phone, 25) && $this->checkPhoneByValue($phone)) {
+                $this->phone = $phone;
+            }
+        } else {
+            $this->phone = '';
         }
 
         return $this;
@@ -215,16 +233,20 @@ class Order extends AbstractEntity
     protected string $email = '';
 
     /**
-     * @param string $email
+     * @param null|string $email
      *
      * @throws \App\Domain\Exceptions\WrongEmailValueException
      *
      * @return $this
      */
-    public function setEmail(string $email)
+    public function setEmail(string $email = null)
     {
-        if ($this->checkStrLenMax($email, 120) && $this->checkEmailByValue($email)) {
-            $this->email = $email;
+        if ($email) {
+            if ($this->checkStrLenMax($email, 120) && $this->checkEmailByValue($email)) {
+                $this->email = $email;
+            }
+        } else {
+            $this->email = '';
         }
 
         return $this;

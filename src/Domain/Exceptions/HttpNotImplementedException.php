@@ -10,7 +10,7 @@ class HttpNotImplementedException extends AbstractHttpException
 
     protected $message = 'Not Implemented.';
 
-    protected $title = '403 Not Implemented';
+    protected string $title = '403 Not Implemented';
 
-    protected $description = 'The server either does not recognize the request method, or it lacks the ability to fulfil the request.';
+    protected string $description = 'The server either does not recognize the request method, or it lacks the ability to fulfil the request.';
 }

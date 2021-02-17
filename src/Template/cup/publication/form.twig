@@ -76,7 +76,7 @@
                                             'label': 'Категория',
                                             'type': 'select',
                                             'name': 'category',
-                                            'message': '<a href="/cup/publication/category/add" class="btn btn-xs btn-info float-right"><i class="fa fa-plus"></i> Добавить категорию</a>',
+                                            'message': '<a href="/cup/publication/category/add" class="btn btn-xs btn-info float-right" onclick="return confirm(\'Вы действительно хотите перейти на другую страницу?\');"><i class="fa fa-plus"></i> Добавить категорию</a>',
                                             'args': {
                                                 'required': true,
                                                 'option': list.pluck('title', 'uuid').all(),

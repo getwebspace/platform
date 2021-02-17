@@ -47,16 +47,28 @@ abstract class AbstractService extends AbstractComponent
      *
      * @return \Doctrine\ORM\QueryBuilder
      */
-    public function createQueryBuilder($alias, $indexBy = null)
+    public function createQueryBuilder($alias, $indexBy = null): \Doctrine\ORM\QueryBuilder
     {
         return $this->service->createQueryBuilder($alias, $indexBy);
+    }
+
+    /**
+     * @param string $sql
+     *
+     * @throws \Doctrine\DBAL\Exception
+     *
+     * @return \Doctrine\DBAL\Statement
+     */
+    public function query(string $sql): \Doctrine\DBAL\Statement
+    {
+        return $this->entityManager->getConnection()->prepare($sql);
     }
 
     abstract public function create(array $data = []);
 
     abstract public function read(array $data = []);
 
-    public function count(array $criteria = [])
+    public function count(array $criteria = []): int
     {
         return $this->service->count($criteria);
     }
@@ -73,7 +85,7 @@ abstract class AbstractService extends AbstractComponent
      *
      * @return AbstractEntity
      */
-    public function write(AbstractEntity $entity)
+    public function write(AbstractEntity $entity): AbstractEntity
     {
         $this->entityManager->flush($entity);
 

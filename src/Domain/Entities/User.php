@@ -3,6 +3,7 @@
 namespace App\Domain\Entities;
 
 use App\Domain\AbstractEntity;
+use App\Domain\Entities\User\Group as UserGroup;
 use App\Domain\Entities\User\Session as UserSession;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -105,16 +106,20 @@ class User extends AbstractEntity
     protected string $phone = '';
 
     /**
-     * @param string $phone
+     * @param null|string $phone
      *
      * @throws \App\Domain\Exceptions\WrongPhoneValueException
      *
      * @return $this
      */
-    public function setPhone(string $phone)
+    public function setPhone(string $phone = null)
     {
-        if ($this->checkStrLenMax($phone, 25) && $this->checkPhoneByValue($phone)) {
-            $this->phone = $phone;
+        if ($phone) {
+            if ($this->checkStrLenMax($phone, 25) && $this->checkPhoneByValue($phone)) {
+                $this->phone = $phone;
+            }
+        } else {
+            $this->phone = '';
         }
 
         return $this;
@@ -342,33 +347,42 @@ class User extends AbstractEntity
     }
 
     /**
-     * @var string
-     *
-     * @see \App\Domain\Types\UserLevelType::LIST
-     * @ORM\Column(type="UserLevelType", options={"default": \App\Domain\Types\UserLevelType::LEVEL_USER})
+     * @var null|Uuid
+     * @ORM\Column(type="uuid", nullable=true, options={"default": NULL})
      */
-    protected string $level = \App\Domain\Types\UserLevelType::LEVEL_USER;
+    protected ?Uuid $group_uuid;
 
     /**
-     * @param string $level
-     *
-     * @return $this
+     * @var null|UserGroup
+     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\User\Group")
+     * @ORM\JoinColumn(name="group_uuid", referencedColumnName="uuid")
      */
-    public function setLevel(string $level)
+    protected ?UserGroup $group = null;
+
+    /**
+     * @param string|UserGroup $group
+     *
+     * @return User
+     */
+    public function setGroup($group)
     {
-        if (in_array($level, \App\Domain\Types\UserLevelType::LIST, true)) {
-            $this->level = $level;
+        if (is_a($group, UserGroup::class)) {
+            $this->group_uuid = $group->getUuid();
+            $this->group = $group;
+        } else {
+            $this->group_uuid = null;
+            $this->group = null;
         }
 
         return $this;
     }
 
     /**
-     * @return string
+     * @return null|UserGroup
      */
-    public function getLevel()
+    public function getGroup(): ?UserGroup
     {
-        return $this->level;
+        return $this->group;
     }
 
     /**
@@ -428,11 +442,10 @@ class User extends AbstractEntity
     }
 
     /**
-     * @var UserSession
-     * @ORM\OneToOne(targetEntity="App\Domain\Entities\User\Session")
-     * @ORM\JoinColumn(name="uuid", referencedColumnName="uuid")
+     * @var null|UserSession
+     * @ORM\OneToOne(targetEntity="App\Domain\Entities\User\Session", mappedBy="user", orphanRemoval=true)
      */
-    protected UserSession $session;
+    protected ?UserSession $session = null;
 
     /**
      * @param UserSession $session
@@ -442,12 +455,13 @@ class User extends AbstractEntity
     public function setSession(UserSession $session)
     {
         $this->session = $session;
+        $this->session->setUser($this);
 
         return $this;
     }
 
     /**
-     * @return UserSession
+     * @return null|UserSession
      */
     public function getSession()
     {
@@ -546,5 +560,18 @@ class User extends AbstractEntity
     public function hasFiles()
     {
         return count($this->files);
+    }
+
+    /**
+     * Return model as array
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        $buf = parent::toArray();
+        $buf['session'] = $this->session->toArray();
+
+        return $buf;
     }
 }

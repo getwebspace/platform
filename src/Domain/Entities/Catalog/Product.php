@@ -9,16 +9,20 @@ use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="catalog_product", indexes={
- *     @ORM\Index(name="catalog_product_address_idx", columns={"address"}),
- *     @ORM\Index(name="catalog_product_category_idx", columns={"category"}),
- *     @ORM\Index(name="catalog_product_price_idx", columns={"price", "priceFirst", "priceWholesale"}),
- *     @ORM\Index(name="catalog_product_volume_idx", columns={"volume", "unit"}),
- *     @ORM\Index(name="catalog_product_stock_idx", columns={"stock"}),
- *     @ORM\Index(name="catalog_product_manufacturer_idx", columns={"manufacturer"}),
- *     @ORM\Index(name="catalog_product_country_idx", columns={"country"}),
- *     @ORM\Index(name="catalog_product_order_idx", columns={"order"})
- * })
+ * @ORM\Table(name="catalog_product",
+ *     indexes={
+ *         @ORM\Index(name="catalog_product_address_idx", columns={"address"}),
+ *         @ORM\Index(name="catalog_product_category_idx", columns={"category"}),
+ *         @ORM\Index(name="catalog_product_price_idx", columns={"price", "priceFirst", "priceWholesale"}),
+ *         @ORM\Index(name="catalog_product_volume_idx", columns={"volume", "unit"}),
+ *         @ORM\Index(name="catalog_product_manufacturer_idx", columns={"manufacturer"}),
+ *         @ORM\Index(name="catalog_product_country_idx", columns={"country"}),
+ *         @ORM\Index(name="catalog_product_order_idx", columns={"order"})
+ *     },
+ *     uniqueConstraints={
+ *         @ORM\UniqueConstraint(name="catalog_product_unique", columns={"category", "address"})
+ *     }
+ * )
  */
 class Product extends AbstractEntity
 {
@@ -148,7 +152,7 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="string", length=1000, unique=true, options={"default": ""})
+     * @ORM\Column(type="string", length=1000, options={"default": ""})
      */
     protected string $address = '';
 
@@ -231,9 +235,9 @@ class Product extends AbstractEntity
     /**
      * // себестоимость
      *
-     * @ORM\Column(type="decimal", scale=2, precision=10, options={"default": 0})
+     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
      */
-    protected float $priceFirst = .0;
+    protected float $priceFirst = .00;
 
     /**
      * @param float $value
@@ -256,9 +260,9 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="decimal", scale=2, precision=10, options={"default": 0})
+     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
      */
-    protected float $price = .0;
+    protected float $price = .00;
 
     /**
      * @param float $value
@@ -283,9 +287,9 @@ class Product extends AbstractEntity
     /**
      * // оптовая цена
      *
-     * @ORM\Column(type="decimal", scale=2, precision=10, options={"default": 0})
+     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
      */
-    protected float $priceWholesale = .0;
+    protected float $priceWholesale = .00;
 
     /**
      * @param float $value
@@ -308,9 +312,9 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="decimal", scale=2, precision=10, options={"default": 1})
+     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 1.0})
      */
-    protected float $volume = 1.0;
+    protected float $volume = 1.00;
 
     /**
      * @param float $value
@@ -362,7 +366,7 @@ class Product extends AbstractEntity
     /**
      * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
      */
-    protected float $stock = 0;
+    protected float $stock = .00;
 
     /**
      * @param float $value
@@ -520,6 +524,30 @@ class Product extends AbstractEntity
     }
 
     /**
+     * @var array
+     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\ProductAttribute", mappedBy="product")
+     */
+    protected $attributes = [];
+
+    /**
+     * @return int
+     */
+    public function hasAttributes()
+    {
+        return count($this->attributes);
+    }
+
+    /**
+     * @param false $raw
+     *
+     * @return array|\Illuminate\Support\Collection
+     */
+    public function getAttributes($raw = false)
+    {
+        return $raw ? $this->attributes : collect($this->attributes);
+    }
+
+    /**
      * @ORM\Column(type="string", options={"default": ""})
      */
     protected string $country = '';
@@ -599,6 +627,22 @@ class Product extends AbstractEntity
     public function getTags(): array
     {
         return $this->tags;
+    }
+
+    /**
+     * @var array
+     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\ProductRelation", mappedBy="product")
+     */
+    protected $relation = [];
+
+    public function getRelations($raw = false)
+    {
+        return $raw ? $this->relation : collect($this->relation);
+    }
+
+    public function hasRelations()
+    {
+        return count($this->relation);
     }
 
     /**

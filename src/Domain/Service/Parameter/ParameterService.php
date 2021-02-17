@@ -70,6 +70,7 @@ class ParameterService extends AbstractService
 
                     if (empty($parameter)) {
                         $parameter = (new Parameter())->setKey($data['key'])->setValue($fallback);
+                        $this->entityManager->persist($parameter);
                     }
 
                     return $parameter;

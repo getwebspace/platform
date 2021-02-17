@@ -8,6 +8,11 @@ use Ramsey\Uuid\Uuid;
 
 abstract class AbstractRepository extends EntityRepository
 {
+    /**
+     * @param string|Uuid $uuid
+     *
+     * @return null|int|mixed|string
+     */
     public function findOneByUuid($uuid)
     {
         if (Uuid::isValid((string) $uuid)) {

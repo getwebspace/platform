@@ -9,11 +9,16 @@ use Ramsey\Uuid\Uuid;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="catalog_category", indexes={
- *     @ORM\Index(name="catalog_category_address_idx", columns={"address"}),
- *     @ORM\Index(name="catalog_category_parent_idx", columns={"parent"}),
- *     @ORM\Index(name="catalog_category_order_idx", columns={"order"})
- * })
+ * @ORM\Table(name="catalog_category",
+ *     indexes={
+ *         @ORM\Index(name="catalog_category_address_idx", columns={"address"}),
+ *         @ORM\Index(name="catalog_category_parent_idx", columns={"parent"}),
+ *         @ORM\Index(name="catalog_category_order_idx", columns={"order"})
+ *     },
+ *     uniqueConstraints={
+ *         @ORM\UniqueConstraint(name="catalog_category_unique", columns={"parent", "address"})
+ *     }
+ * )
  */
 class Category extends AbstractEntity
 {
@@ -116,7 +121,7 @@ class Category extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="string", length=1000, unique=true, options={"default": ""})
+     * @ORM\Column(type="string", length=1000, options={"default": ""})
      */
     protected string $address = '';
 
@@ -497,6 +502,51 @@ class Category extends AbstractEntity
     public function getExport(): string
     {
         return $this->export;
+    }
+
+    /**
+     * @var array
+     * @ORM\ManyToMany(targetEntity="App\Domain\Entities\Catalog\Attribute")
+     * @ORM\JoinTable(name="catalog_category_attributes",
+     *     joinColumns={@ORM\JoinColumn(name="category_uuid", referencedColumnName="uuid")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="attribute_uuid", referencedColumnName="uuid")}
+     * )
+     */
+    protected $attributes = [];
+
+    /**
+     * @param array|Collection $attributes
+     *
+     * @return $this
+     */
+    public function setAttributes($attributes = [])
+    {
+        foreach ($this->attributes as $key => $attribute) {
+            unset($this->attributes[$key]);
+        }
+        foreach ($attributes as $attribute) {
+            $this->attributes[] = $attribute;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function hasAttributes()
+    {
+        return count($this->attributes);
+    }
+
+    /**
+     * @param false $raw
+     *
+     * @return array|Collection
+     */
+    public function getAttributes($raw = false)
+    {
+        return $raw ? $this->attributes : collect($this->attributes);
     }
 
     /**

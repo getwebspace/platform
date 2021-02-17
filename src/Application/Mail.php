@@ -25,6 +25,8 @@ class Mail
             'smtp_secure' => '',
             'smtp_host' => '',
             'smtp_port' => '',
+            'smtp_timeout' => 30,
+            'smtp_options' => [],
 
             'subject' => 'WebSpaceEngine | Default subject',
             'to' => '', // string|array(address=>name)
@@ -33,12 +35,17 @@ class Mail
             'body' => '',
             'isHtml' => false,
             'attachments' => [],
+
             'auto_send' => true,
         ];
         $data = array_merge($default, $data);
 
         $mail = new PHPMailer(false);
 
+        $mail->Debugoutput = 'error_log';
+        $mail->Timeout = $data['smtp_timeout'];
+        $mail->SMTPDebug = (int) ($_ENV['DEBUG'] ?? 0);
+        $mail->SMTPOptions = $data['smtp_options'];
         $mail->isSMTP();
         $mail->set('CharSet', 'utf-8');
 

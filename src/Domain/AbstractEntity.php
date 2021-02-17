@@ -41,7 +41,7 @@ abstract class AbstractEntity
      *
      * @return bool
      */
-    protected function checkStrLenBetween(string $value, int $min = 0, int $max = INF)
+    protected function checkStrLenBetween(string $value, int $min = 0, int $max = INF): bool
     {
         if (!is_scalar($value)) {
             return false;
@@ -57,7 +57,7 @@ abstract class AbstractEntity
      *
      * @return bool
      */
-    protected function checkStrLenMax(string $value, int $max = INF)
+    protected function checkStrLenMax(string $value, int $max = INF): bool
     {
         if (!is_scalar($value)) {
             return false;
@@ -72,7 +72,7 @@ abstract class AbstractEntity
      *
      * @return bool
      */
-    protected function checkStrLenMin(string $value, int $min = 0)
+    protected function checkStrLenMin(string $value, int $min = 0): bool
     {
         if (!is_scalar($value)) {
             return false;
@@ -86,9 +86,9 @@ abstract class AbstractEntity
      *
      * @throws WrongEmailValueException
      *
-     * @return string
+     * @return bool
      */
-    protected function checkEmailByValue(string $value)
+    protected function checkEmailByValue(string $value): bool
     {
         if ($value) {
             if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
@@ -108,7 +108,7 @@ abstract class AbstractEntity
      *
      * @return bool
      */
-    protected function checkPhoneByValue(string &$value)
+    protected function checkPhoneByValue(string &$value): bool
     {
         if ($value) {
             $value = str_replace([' ', '-', '.', '(', ')'], '', $value);
@@ -134,7 +134,7 @@ abstract class AbstractEntity
      *
      * @return bool
      */
-    protected function getBooleanByValue($value)
+    protected function getBooleanByValue($value): bool
     {
         if (is_string($value) || is_int($value) || is_bool($value)) {
             switch (true) {
@@ -154,9 +154,9 @@ abstract class AbstractEntity
      *
      * @throws WrongIpValueException
      *
-     * @return string
+     * @return bool
      */
-    protected function getIpByValue(string $value)
+    protected function getIpByValue(string $value): bool
     {
         if (filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6)) {
             return true;
@@ -170,7 +170,7 @@ abstract class AbstractEntity
      *
      * @return string
      */
-    protected function getPasswordHashByValue(string $value)
+    protected function getPasswordHashByValue(string $value): string
     {
         return crypta_hash($value, ($_ENV['SALT'] ?? 'Li8.1Ej2-<Cid3[bE'));
     }
@@ -182,7 +182,7 @@ abstract class AbstractEntity
      *
      * @return DateTime
      */
-    protected function getDateTimeByValue($value)
+    protected function getDateTimeByValue($value): DateTime
     {
         switch (true) {
             case is_string($value):
@@ -199,6 +199,11 @@ abstract class AbstractEntity
         return new DateTime('now');
     }
 
+    /**
+     * @param $value
+     *
+     * @return \Ramsey\Uuid\UuidInterface|string
+     */
     protected function getUuidByValue($value)
     {
         if (Uuid::isValid((string) $value)) {
@@ -209,7 +214,7 @@ abstract class AbstractEntity
             return $value;
         }
 
-        return Uuid::NIL;
+        return Uuid::fromString(Uuid::NIL);
     }
 
     /**
@@ -238,7 +243,7 @@ abstract class AbstractEntity
     /**
      * @return AbstractEntity
      */
-    public function clone()
+    public function clone(): self
     {
         return clone $this;
     }
@@ -250,7 +255,7 @@ abstract class AbstractEntity
      */
     public function toArray(): array
     {
-        return get_object_vars($this);
+        return array_except(get_object_vars($this), ['__initializer__', '__cloner__', '__isInitialized__']);
     }
 
     /**
@@ -258,24 +263,29 @@ abstract class AbstractEntity
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return json_encode($this->toArray(), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     }
 
-    public function __isset($name)
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function __isset(string $name): bool
     {
         return property_exists($this, $name);
     }
 
     /**
-     * Доступ на чтение параметра
+     * Access to read property
      *
-     * @param $name
+     * @param string $name
      *
      * @return mixed
      */
-    public function __get($name)
+    public function __get(string $name)
     {
         if (property_exists($this, $name)) {
             return $this->$name;
@@ -287,14 +297,14 @@ abstract class AbstractEntity
     }
 
     /**
-     * Запрет на изменение
+     * Denied to write property
      *
-     * @param $name
-     * @param $value
+     * @param string $name
+     * @param mixed  $value
      *
      * @return mixed
      */
-    public function __set($name, $value)
+    public function __set(string $name, $value)
     {
         throw new BadMethodCallException(
             sprintf("You cannot change value '%s' = '%s' by this way in class '%s'.", $name, $value, get_class($this))

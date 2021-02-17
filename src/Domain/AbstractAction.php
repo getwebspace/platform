@@ -10,6 +10,7 @@ use App\Domain\Exceptions\HttpMethodNotAllowedException;
 use App\Domain\Exceptions\HttpNotFoundException;
 use App\Domain\Exceptions\HttpNotImplementedException;
 use App\Domain\Service\File\FileService;
+use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;
@@ -35,22 +36,22 @@ abstract class AbstractAction extends AbstractComponent
     /**
      * @var Request
      */
-    protected $request;
+    protected Request $request;
 
     /**
      * @var Response
      */
-    protected $response;
+    protected Response $response;
 
     /**
      * @var array
      */
-    protected $args;
+    protected array $args;
 
     /**
      * @var array
      */
-    private $error = [];
+    private array $error = [];
 
     /**
      * @param ContainerInterface $container
@@ -63,10 +64,27 @@ abstract class AbstractAction extends AbstractComponent
     }
 
     /**
+     * @return Collection
+     */
+    protected function getRoutes(): Collection
+    {
+        static $routes;
+
+        if (!$routes) {
+            $routes = collect($this->container->get('router')->getRoutes())
+                ->flatten()
+                ->map(fn ($item) => $item->getName())
+                ->filter(fn ($item) => !str_start_with($item, \App\Application\Middlewares\AccessCheckerMiddleware::PUBLIC));
+        }
+
+        return $routes->combine($routes);
+    }
+
+    /**
      * @param string $field
      * @param string $reason
      */
-    protected function addError($field, $reason = ''): void
+    protected function addError(string $field, string $reason = ''): void
     {
         $this->error[$field] = $reason;
     }
@@ -117,7 +135,7 @@ abstract class AbstractAction extends AbstractComponent
      *
      * @return Response
      */
-    public function __invoke(Request $request, Response $response, $args): Response
+    public function __invoke(Request $request, Response $response, array $args): Response
     {
         \RunTracy\Helpers\Profiler\Profiler::start('route');
 
@@ -205,7 +223,7 @@ abstract class AbstractAction extends AbstractComponent
 
             // upload files
             /** @var \Psr\Http\Message\UploadedFileInterface[] $files */
-            if (($files = $this->request->getUploadedFiles()[$fields['upload']]) !== null) {
+            if (($files = ($this->request->getUploadedFiles()[$fields['upload']] ?? null)) !== null) {
                 if (!is_array($files)) {
                     $files = [$files]; // allow upload one file
                 }
@@ -232,7 +250,7 @@ abstract class AbstractAction extends AbstractComponent
                     $task->execute(['uuid' => $uuids]);
 
                     // run worker
-                    \App\Domain\AbstractTask::worker();
+                    \App\Domain\AbstractTask::worker($task);
                 }
             }
 
@@ -256,7 +274,7 @@ abstract class AbstractAction extends AbstractComponent
      *
      * @return File[]
      */
-    protected function getUploadedFiles(string $field = 'files')
+    protected function getUploadedFiles(string $field = 'files'): array
     {
         $result = [];
 
@@ -291,7 +309,7 @@ abstract class AbstractAction extends AbstractComponent
                 $task->execute(['uuid' => $uuids]);
 
                 // run worker
-                \App\Domain\AbstractTask::worker();
+                \App\Domain\AbstractTask::worker($task);
             }
         }
 
@@ -299,38 +317,9 @@ abstract class AbstractAction extends AbstractComponent
     }
 
     /**
-     * Upload image files
-     *
-     * @param string $field
-     *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
-     *
-     * @return array
-     *
-     * @deprecated
-     */
-    protected function handlerFileUpload(string $field = 'files')
-    {
-        return [];
-    }
-
-    /**
-     * Upload image files
-     *
-     * @param string $field
-     *
-     * @return array
-     *
-     * @deprecated
-     */
-    protected function handlerFileRemove(string $field = 'delete-file')
-    {
-        return [];
-    }
-
-    /**
      * Return recaptcha status if is enabled
+     *
+     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      *
      * @return bool
      */
@@ -373,7 +362,7 @@ abstract class AbstractAction extends AbstractComponent
      *
      * @return string
      */
-    protected function render($template, array $data = [])
+    protected function render($template, array $data = []): string
     {
         try {
             \RunTracy\Helpers\Profiler\Profiler::start('render (%s)', $template);
@@ -406,15 +395,44 @@ abstract class AbstractAction extends AbstractComponent
      * @param array  $data
      *
      * @throws HttpBadRequestException
+     *
+     * @return Response
+     */
+    protected function respond(string $template, array $data = []): Response
+    {
+        $format = $this->request->getParam('format', 'html');
+        $accept = explode(',', $this->request->getHeaderLine('HTTP_ACCEPT'));
+
+        switch (true) {
+            case $format === 'json':
+            case in_array('application/json', $accept, true):
+                return $this->respondWithJson($data);
+
+            case $format === 'html':
+            case in_array('text/html', $accept, true):
+            default:
+                return $this->respondWithTemplate($template, $data);
+        }
+    }
+
+    /**
+     * @param string $template
+     * @param array  $data
+     *
+     * @throws HttpBadRequestException
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      *
      * @return Response
      */
-    protected function respondWithTemplate($template, array $data = [])
+    protected function respondWithTemplate(string $template, array $data = []): Response
     {
-        $this->response->getBody()->write(
-            $this->render($template, $data)
-        );
+        try {
+            $this->response->getBody()->write(
+                $this->render($template, $data)
+            );
+        } catch (\Exception $e) {
+            return $this->respondWithTemplate('p400.twig', ['exception' => $e])->withStatus(400);
+        }
 
         return $this->response;
     }

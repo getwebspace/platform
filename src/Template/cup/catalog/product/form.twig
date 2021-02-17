@@ -29,6 +29,21 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link" data-toggle="pill" href="#related" role="tab">
+                                        Сопутствующие
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="pill" href="#attributes" role="tab">
+                                        Атрибуты
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="pill" href="#fields" role="tab">
+                                        Поля
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link" data-toggle="pill" href="#other" role="tab">
                                         Дополнительно
                                     </a>
@@ -59,7 +74,7 @@
                                             'label': 'Категория',
                                             'type': 'select',
                                             'name': 'category',
-                                            'message': '<a href="/cup/catalog/category/add" class="btn btn-xs btn-info float-right"><i class="fa fa-plus"></i> Добавить категорию</a>',
+                                            'message': '<a href="/cup/catalog/category/add" class="btn btn-xs btn-info float-right" onclick="return confirm(\'Вы действительно хотите перейти на другую страницу?\');"><i class="fa fa-plus"></i> Добавить категорию</a>',
                                             'args': {
                                                 'option': categories.pluck('title', 'uuid').all(),
                                                 'selected': item.category ?? category.uuid
@@ -222,6 +237,181 @@
                                 <hr>
 
                                 <div class="row">
+                                    <div class="col-md-12">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Изображения',
+                                            'type': 'file',
+                                            'name': 'files[]',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Здесь можно выбрать несколько изображений"></i>',
+                                            'args': {
+                                                'class': ['d-block', 'btn', 'btn-sm', 'bg-grey2'],
+                                                'multiple': true,
+                                                'accept': 'image/*'
+                                            }
+                                        } %}
+
+                                        {% for file in item.getFiles() %}
+                                            <div class="p-2 d-inline-block m-2 bg-grey2 text-center rounded">
+                                                <a href="{{ file.getPublicPath() }}" target="_blank">
+                                                    <img class="rounded" height="100" src="{{ file.getPublicPath('small') }}" alt="preview" data-toggle="tooltip" data-placement="top" title="{{ file.getName() }}" />
+                                                </a>
+                                                <div class="pt-2">
+                                                    <div class="row">
+                                                        <div class="col-6">
+                                                            <span class="text-small">{{ file.getFileSize() }}</span>
+                                                        </div>
+                                                        <div class="col-6 text-right float-right">
+                                                            {% include 'cup/form.twig' with {
+                                                                'label': '<i class="fa fa-trash"></i>',
+                                                                'type': 'checkbox',
+                                                                'name': 'delete-file[]',
+                                                                'args': {
+                                                                    'value': file.uuid.toString()
+                                                                }
+                                                            } %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {# Tab: Сопутствующие #}
+                            <div class="tab-pane fade" id="related" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-12 col-md-6 mb-3">
+                                        <small class="form-text text-muted">
+                                            <p>
+                                                <b>Сопутствующие товары</b> - это те товары, которые покупатель
+                                                использует вместе с уже купленным товаром, которые помогают им
+                                                пользоваться, дополняют его, устраняют последствия от использования
+                                                товара, являются его сменными деталями, расходными материалами и т.п.
+                                            </p>
+                                        </small>
+
+                                        <button type="button" data-btn-related-modal-products class="btn btn-secondary">
+                                            <i class="fa fa-plus"></i>
+                                            Добавить товар
+                                        </button>
+                                    </div>
+
+                                    <div class="col-12 col-md-6">
+                                        <ul class="list-group list-group-bordered">
+                                            <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" style="display: none!important;">
+                                                <a href="/cup/catalog/product/%UUID%/edit" target="_blank">{{ related.title }}</a>
+                                                {% include 'cup/form.twig' with {
+                                                    'type': 'number',
+                                                    'name': 'relation[]',
+                                                    'postfix_btn': '<button type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>',
+                                                    'args': { 'min': 1, 'placeholder': 1 }
+                                                } %}
+                                            </li>
+
+                                            {% for relation in item.getRelations() %}
+                                                <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                                    <a href="/cup/catalog/product/{{ relation.related.uuid }}/edit" target="_blank">{{ relation.related.title }}</a>
+                                                    {% include 'cup/form.twig' with {
+                                                        'type': 'number',
+                                                        'name': 'relation['~ relation.related.uuid ~']',
+                                                        'postfix_btn': '<button type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>',
+                                                        'args': {
+                                                            'value': relation.count,
+                                                            'min': 1,
+                                                            'placeholder': 1,
+                                                        }
+                                                    } %}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {# Tab: Атрибуты #}
+                            <div class="tab-pane fade" id="attributes" role="tabpanel">
+                                {% if category.hasAttributes() %}
+                                    <div class="row">
+                                        {% for attribute in category.getAttributes().where('type', '!=', 'boolean') %}
+                                            <div class="col-12 col-sm-6 col-md-4">
+                                                {% include 'cup/form.twig' with {
+                                                    'label': attribute.title,
+                                                    'type': attribute.type == 'string' ? 'text' : 'number',
+                                                    'name': 'attributes[' ~ attribute.uuid ~ ']',
+                                                    'postfix': '<i class="fas fa-certificate" data-toggle="tooltip" data-placement="top" title="Атрибут категории"></i>',
+                                                    'args': {
+                                                        'value': item.hasAttributes() ? item.getAttributes().firstWhere('attribute_uuid', attribute.uuid).value : '',
+                                                    }
+                                                } %}
+                                            </div>
+                                        {% endfor %}
+
+                                        {% for attribute in category.getAttributes().where('type', '==', 'boolean') %}
+                                            <div class="col-12 col-sm-6 col-md-4">
+                                                <div data-input="" class="form-group ">
+                                                    <label class="placeholder">
+                                                        <b>{{ attribute.title }}</b>
+                                                    </label>
+                                                    <div class="input-group">
+                                                        <label class="selectgroup-item">
+                                                            <input type="checkbox" name="attributes[{{ attribute.uuid }}]" value="1" class="selectgroup-input" {{ item.getAttributes().firstWhere('attribute_uuid', attribute.uuid).value ? 'checked' }} >
+                                                            <span class="selectgroup-button" style="height: 42px;">Да</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+
+                                    <hr>
+                                {% endif %}
+
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Атрибуты',
+                                            'type': 'select',
+                                            'message': '<p class="float-left">Укажите индивидуальные атрибуты для товара</p>'~
+                                            '<button class="btn btn-xs btn-secondary float-right" type="button">Добавить поле</button>' ~
+                                            '<a href="/cup/catalog/attribute/add" class="btn btn-xs btn-info mr-1 float-right" onclick="return confirm(\'Вы действительно хотите перейти на другую страницу?\');"><i class="fa fa-plus"></i> Добавить атрибут</a>' ,
+                                            'args': {
+                                                'option': attributes.where('type', '!=', 'boolean').pluck('title', 'uuid').all(),
+                                                'data': {'select': 'attributes'}
+                                            }
+                                        } %}
+                                    </div>
+
+                                    <div class="col-12 col-md-6">
+                                        <div class="row">
+                                            <div class="col-12 col-md-6" style="display: none">
+                                                {% include 'cup/form.twig' with { 'label': 'template' } %}
+                                            </div>
+
+                                            {% for attribute in item.getAttributes().whereNotIn('attribute_uuid', category.getAttributes().pluck('uuid')) %}
+                                                {% if attribute.value %}
+                                                    {% if attribute.type != 'boolean' %}
+                                                        <div class="col-12 col-md-6">
+                                                            {% include 'cup/form.twig' with {
+                                                                'label': attribute.title,
+                                                                'type': attribute.type == 'string' ? 'text' : 'number',
+                                                                'name': 'attributes[' ~ attribute.attribute_uuid ~ ']',
+                                                                'args': {
+                                                                    'value': attribute.value,
+                                                                }
+                                                            } %}
+                                                        </div>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {# Tab: Поля #}
+                            <div class="tab-pane fade" id="fields" role="tabpanel">
+                                <div class="row">
                                     <div class="col-md-4">
                                         {% include 'cup/form.twig' with {
                                             'label': category.product.field_1 ? category.product.field_1 : 'Поле 1',
@@ -280,49 +470,6 @@
                                                 'value': item.field5,
                                             }
                                         } %}
-                                    </div>
-                                </div>
-
-                                <hr>
-
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Изображения',
-                                            'type': 'file',
-                                            'name': 'files[]',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Здесь можно выбрать несколько изображений"></i>',
-                                            'args': {
-                                                'class': ['d-block', 'btn', 'btn-sm', 'bg-grey2'],
-                                                'multiple': true,
-                                                'accept': 'image/*'
-                                            }
-                                        } %}
-
-                                        {% for file in item.getFiles() %}
-                                            <div class="p-2 d-inline-block m-2 bg-grey2 text-center rounded">
-                                                <a href="{{ file.getPublicPath() }}" target="_blank">
-                                                    <img class="rounded" height="100" src="{{ file.getPublicPath('small') }}" alt="preview" data-toggle="tooltip" data-placement="top" title="{{ file.getName() }}" />
-                                                </a>
-                                                <div class="pt-2">
-                                                    <div class="row">
-                                                        <div class="col-6">
-                                                            <span class="text-small">{{ file.getFileSize() }}</span>
-                                                        </div>
-                                                        <div class="col-6 text-right float-right">
-                                                            {% include 'cup/form.twig' with {
-                                                                'label': '<i class="fa fa-trash"></i>',
-                                                                'type': 'checkbox',
-                                                                'name': 'delete-file[]',
-                                                                'args': {
-                                                                    'value': file.uuid.toString()
-                                                                }
-                                                            } %}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        {% endfor %}
                                     </div>
                                 </div>
                             </div>
@@ -447,5 +594,46 @@
             </div>
         </div>
     </div>
-{% endblock %}
 
+    <div data-related-modal-products class="modal">
+        <div class="row">
+            <div class="col-12">
+                {% include 'cup/form.twig' with {
+                    'label': 'Категория',
+                    'name': 'category',
+                    'type': 'select',
+                    'args': {
+                        'data': {'search': 5, 'placeholder': 'Выберете категорию', 'allow-clear': true},
+                    }
+                } %}
+            </div>
+            <div class="col-12">
+                {% include 'cup/form.twig' with {
+                    'label': 'Товар',
+                    'name': 'product',
+                    'type': 'select',
+                    'args': {
+                        'data': {'search': 5, 'placeholder': 'Выберете товар'}
+                    }
+                } %}
+            </div>
+            <div class="col-6">
+                {% include 'cup/form.twig' with {
+                    'label': 'Количество',
+                    'type': 'number',
+                    'args': {
+                        'value': '1',
+                        'placeholder': '1',
+                        'step': 'any',
+                        'min': '0',
+                    }
+                } %}
+            </div>
+            <div class="col-6">
+                <div class="text-right" style="margin-top: 37px;">
+                    <button type="button" class="btn btn-outline-info">Добавить товар</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

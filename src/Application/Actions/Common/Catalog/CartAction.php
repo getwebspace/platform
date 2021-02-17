@@ -22,12 +22,18 @@ class CartAction extends CatalogAction
                 'email' => $this->request->getParam('email'),
                 'comment' => $this->request->getParam('comment'),
                 'shipping' => $this->request->getParam('shipping'),
+                'system' => $this->request->getParam('system', ''),
             ];
 
-            // order user
-            if (($user = $this->request->getAttribute('user', false)) !== false) {
-                // @var \App\Domain\Entities\User $user
-                $data['user_uuid'] = $user->uuid;
+            /**
+             * Current user will be added to new order
+             *
+             * @var \App\Domain\Entities\User $user
+             */
+            $user = $this->request->getAttribute('user', false);
+
+            if ($user) {
+                $data['user'] = $user;
             }
 
             // add to comment other posted fields
@@ -36,7 +42,7 @@ class CartAction extends CatalogAction
 
                 foreach ($this->request->getParams() as $key => $value) {
                     if (!in_array($key, array_merge(array_keys($data), ['recaptcha']), true) && $value) {
-                        $data['comment'] .= '; ' . $key . ' ' . $value . PHP_EOL;
+                        $data['comment'][] = $key . ' ' . $value;
                     }
                 }
 
@@ -45,6 +51,28 @@ class CartAction extends CatalogAction
 
             if ($this->isRecaptchaChecked()) {
                 $order = $this->catalogOrderService->create($data);
+
+                // notify to user
+                if ($user && $this->parameter('notification_is_enabled', 'yes') === 'yes') {
+                    $this->notificationService->create([
+                        'title' => 'Добавлен заказ: ' . $order->getSerial(),
+                        'message' => 'Сформирован заказ',
+                        'params' => [
+                            'order_uuid' => $order->getUuid(),
+                        ],
+                    ]);
+
+                    if ($data['user']) {
+                        $this->notificationService->create([
+                            'user_uuid' => $data['user'],
+                            'title' => 'Добавлен заказ: ' . $order->getSerial(),
+                            'message' => 'Сформирован заказ',
+                            'params' => [
+                                'order_uuid' => $order->getUuid(),
+                            ],
+                        ]);
+                    }
+                }
 
                 $isNeedRunWorker = false;
 
@@ -86,7 +114,7 @@ class CartAction extends CatalogAction
 
                 // run worker
                 if ($isNeedRunWorker) {
-                    \App\Domain\AbstractTask::worker();
+                    \App\Domain\AbstractTask::worker('\App\Domain\Tasks\SendMailTask');
                 }
 
                 if (

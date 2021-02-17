@@ -39,25 +39,20 @@
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table data-table class="display table table-striped table-hover" >
+                        <table data-table class="table table-striped table-hover" style="width: 100%;">
                             <thead>
                                 <tr>
                                     <th class="d-none">#</th>
-                                    <th width="20%">Наименование</th>
-                                    <th width="15%">Категория</th>
-                                    <th>Артикул</th>
-                                    <th>Цена</th>
-                                    <th width="10%">{{ category.product.field_1 ?? 'Поле 1' }}</th>
-                                    <th width="10%">{{ category.product.field_2 ?? 'Поле 2' }}</th>
-                                    <th width="10%">{{ category.product.field_3 ?? 'Поле 3' }}</th>
-                                    {#<th width="8%" class="text-center"><i class="fas fa-boxes" data-toggle="tooltip" data-placement="top" title="Объем упаковки"></i></th>
-                                    <th width="8%" class="text-center"><i class="fas fa-warehouse" data-toggle="tooltip" data-placement="top" title="Количество на складе"></i></th>#}
+                                    <th>Наименование</th>
+                                    <th width="10%">Цена</th>
+                                    <th width="7%" class="text-center"><i class="fas fa-boxes" data-toggle="tooltip" data-placement="top" title="Объем упаковки"></i></th>
+                                    <th width="7%" class="text-center"><i class="fas fa-warehouse" data-toggle="tooltip" data-placement="top" title="Количество на складе"></i></th>
+                                    <th width="10%">Артикул</th>
                                     <th width="10%" class="text-center no-sorting"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for item in products %}
-                                    {% set buf = categories.firstWhere('uuid', item.category) %}
                                     <tr>
                                         <td class="text-center d-none">{{ item.order }}</td>
                                         <td>
@@ -66,25 +61,20 @@
                                                 <i class="fas fa-external-link-alt"></i>
                                             </a>
                                         </td>
-                                        <td>
-                                            <a href="/cup/catalog/product/{{ buf.uuid }}">
-                                                {{ buf.title }}
-                                            </a>
-                                        </td>
+                                        <td class="text-right" data-order="{{ item.price }}">{{ item.price|number_format(2, '.', ' ') }}</td>
+                                        <td class="text-center" data-order="{{ item.volume }}">{{ item.getVolumeWithUnit() }}</td>
+                                        <td class="text-center" data-order="{{ item.stock }}">{{ item.stock|format_number({fraction_digit: 2}) }}</td>
                                         <td>
                                             {% if item.vendorcode %}
                                                 <div>{{ item.vendorcode }}</div>
                                             {% endif %}
                                             {% if item.barcode %}
-                                                <div><i class="fas fa-barcode d-inline pr-1"></i>{{ item.barcode }}</div>
+                                                <div class="text-nowrap">
+                                                    <i class="fas fa-barcode d-inline pr-1" data-toggle="tooltip" data-placement="right" title="Штрих код"></i>
+                                                    {{ item.barcode }}
+                                                </div>
                                             {% endif %}
                                         </td>
-                                        <td>{{ item.price|number_format(2, '.', ' ') }}</td>
-                                        <td>{{ item.field1 }}</td>
-                                        <td>{{ item.field2 }}</td>
-                                        <td>{{ item.field3 }}</td>
-                                        {#<td class="text-center">{{ item.getVolumeWithUnit() }}</td>
-                                        <td class="text-center">{{ item.stock|format_number({fraction_digit: 2}) }}</td>#}
                                         <td class="text-center">
                                             <div class="btn-group dropdown">
                                                 <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
@@ -92,13 +82,13 @@
                                                 </button>
                                                 <ul class="dropdown-menu" role="menu">
                                                     <li>
-                                                        <a href="/cup/catalog/product/{{ item.uuid }}/edit" class="btn btn-link"><i class="fas fa-edit"></i> Изменить</a>
+                                                        <a href="/cup/catalog/product/{{ item.uuid }}/edit" class="btn btn-link"><i class="fas fa-fw fa-edit"></i> Изменить</a>
                                                     </li>
                                                     <li><div class="dropdown-divider"></div></li>
                                                     <li>
                                                         <form action="/cup/catalog/product/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить публикацию?');">
                                                             <button type="submit" class="btn btn-link text-danger">
-                                                                <i class="fas fa-trash-alt"></i> Удалить
+                                                                <i class="fas fa-fw fa-trash-alt"></i> Удалить
                                                             </button>
                                                         </form>
                                                     </li>

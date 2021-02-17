@@ -68,7 +68,6 @@ class ListAction extends CatalogAction
             $query = $qb
                 ->from(\App\Domain\Entities\Catalog\Product::class, 'p')
                 ->where('p.status = :status')
-                ->orderBy('p.order', 'ASC')
                 ->setParameter('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK, \App\Domain\Types\Catalog\ProductStatusType::NAME);
 
             $products = collect($query->select('p')->getQuery()->getResult());
@@ -81,20 +80,53 @@ class ListAction extends CatalogAction
                         ->setParameter('field' . $i, str_escape($field), \Doctrine\DBAL\Types\Type::STRING);
                 }
             }
+            $attributes = [];
+            foreach ($this->request->getParams() as $key => $value) {
+                if (
+                    (
+                        !in_array($key, ['price', 'country', 'manufacturer', 'order', 'direction'], true) &&
+                        !str_start_with($key, 'field')
+                    ) && $value
+                ) {
+                    $attributes[$key] = $value;
+                }
+            }
+            if ($attributes) {
+                $buf = ['address' => [], 'value' => []];
+                foreach ($attributes as $key => $value) {
+                    $buf['address'][] = $key;
+
+                    foreach ((array) $value as $val) {
+                        $buf['value'][] = $val;
+                    }
+                }
+
+                $query
+                    ->join('p.attributes', 'ap')
+                    ->join('ap.attribute', 'a')
+                    ->andWhere('a.address IN (:address)')
+                    ->andWhere('ap.value IN (:value)')
+                    ->setParameter('address', $buf['address'])
+                    ->setParameter('value', $buf['value'])
+                    ->groupBy('p.uuid')
+                    ->having('(count(distinct a.address) = ' . count($attributes) . ')');
+
+                $params['attributes'] = $attributes;
+            }
             if (($price = $this->request->getParam('price', false)) !== false) {
                 $price = array_merge(['min' => 0, 'max' => 0], (array) $price);
 
                 if ($price['min']) {
-                    $params['price']['min'] = $price['min'];
+                    $params['price']['min'] = (float) $price['min'];
                     $query
                         ->andWhere('p.price >= :minPrice')
-                        ->setParameter('minPrice', (int) $price['min'], \Doctrine\DBAL\Types\Type::INTEGER);
+                        ->setParameter('minPrice', $params['price']['min'], \Doctrine\DBAL\Types\Type::INTEGER);
                 }
                 if ($price['max']) {
-                    $params['price']['max'] = $price['max'];
+                    $params['price']['max'] = (float) $price['max'];
                     $query
                         ->andWhere('p.price <= :maxPrice')
-                        ->setParameter('maxPrice', (int) $price['max'], \Doctrine\DBAL\Types\Type::INTEGER);
+                        ->setParameter('maxPrice', $params['price']['max'], \Doctrine\DBAL\Types\Type::INTEGER);
                 }
             }
             if (($country = $this->request->getParam('country', false)) !== false) {
@@ -108,24 +140,34 @@ class ListAction extends CatalogAction
                     ->setParameter('manufacturer', str_escape($manufacturer), \Doctrine\DBAL\Types\Type::STRING);
             }
             if (($order = $this->request->getParam('order', false)) !== false) {
-                $direction = $this->request->getParam('direction', 'asc');
+                $direction = mb_strtolower($this->request->getParam('direction', 'asc'));
+                $direction = in_array($direction, ['asc', 'desc'], true) ? $direction : 'ASC';
 
                 if (in_array($order, ['title', 'price', 'field1', 'field2', 'field3', 'field4', 'field5'], true)) {
-                    $query->addOrderBy('p.' . $order, in_array(mb_strtolower($direction), ['asc', 'desc'], true) ? $direction : 'ASC');
+                    $query->orderBy('p.' . $order, $direction);
+                    $params['order'][$order] = $direction;
                 }
             } else {
-                $query->addOrderBy('p.title', 'ASC');
+                $query->orderBy('p.title', 'ASC');
+                $params['order']['title'] = 'asc';
             }
 
             $filtered = collect(
                 $query
                     ->select('p')
+                    ->addOrderBy('p.order', 'ASC')
                     ->setMaxResults($pagination)
                     ->setFirstResult($params['offset'] * $pagination)
                     ->getQuery()
                     ->getResult()
             );
-            $count = $query->select('count(p)')->setMaxResults(null)->setFirstResult(null)->getQuery()->getSingleScalarResult();
+            $count = +$query
+                ->select('count(p)')
+                ->setMaxResults(null)
+                ->setFirstResult(null)
+                ->resetDQLParts(['groupBy', 'having'])
+                ->getQuery()
+                ->getSingleScalarResult();
 
             return $this->respondWithTemplate($this->parameter('catalog_category_template', 'catalog.category.twig'), [
                 'categories' => $categories,
@@ -169,7 +211,6 @@ class ListAction extends CatalogAction
                 ->from(\App\Domain\Entities\Catalog\Product::class, 'p')
                 ->where('p.status = :status')
                 ->andWhere('p.category IN (:category)')
-                ->orderBy('p.order', 'ASC')
                 ->setParameter('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK, \App\Domain\Types\Catalog\ProductStatusType::NAME)
                 ->setParameter('category', $categoryUUIDs);
 
@@ -183,20 +224,53 @@ class ListAction extends CatalogAction
                         ->setParameter('field' . $i, str_escape($field), \Doctrine\DBAL\Types\Type::STRING);
                 }
             }
+            $attributes = [];
+            foreach ($this->request->getParams() as $key => $value) {
+                if (
+                    (
+                        !in_array($key, ['price', 'country', 'manufacturer', 'order', 'direction'], true) &&
+                        !str_start_with($key, 'field')
+                    ) && $value
+                ) {
+                    $attributes[$key] = $value;
+                }
+            }
+            if ($attributes) {
+                $buf = ['address' => [], 'value' => []];
+                foreach ($attributes as $key => $value) {
+                    $buf['address'][] = $key;
+
+                    foreach ((array) $value as $val) {
+                        $buf['value'][] = $val;
+                    }
+                }
+
+                $query
+                    ->join('p.attributes', 'ap')
+                    ->join('ap.attribute', 'a')
+                    ->andWhere('a.address IN (:address)')
+                    ->andWhere('ap.value IN (:value)')
+                    ->setParameter('address', $buf['address'])
+                    ->setParameter('value', $buf['value'])
+                    ->groupBy('p.uuid')
+                    ->having('(count(distinct a.address) = ' . count($attributes) . ')');
+
+                $params['attributes'] = $attributes;
+            }
             if (($price = $this->request->getParam('price', false)) !== false) {
                 $price = array_merge(['min' => 0, 'max' => 0], (array) $price);
 
                 if ($price['min']) {
-                    $params['price']['min'] = $price['min'];
+                    $params['price']['min'] = (float) $price['min'];
                     $query
                         ->andWhere('p.price >= :minPrice')
-                        ->setParameter('minPrice', (int) $price['min'], \Doctrine\DBAL\Types\Type::INTEGER);
+                        ->setParameter('minPrice', $params['price']['min'], \Doctrine\DBAL\Types\Type::INTEGER);
                 }
                 if ($price['max']) {
-                    $params['price']['max'] = $price['max'];
+                    $params['price']['max'] = (float) $price['max'];
                     $query
                         ->andWhere('p.price <= :maxPrice')
-                        ->setParameter('maxPrice', (int) $price['max'], \Doctrine\DBAL\Types\Type::INTEGER);
+                        ->setParameter('maxPrice', $params['price']['max'], \Doctrine\DBAL\Types\Type::INTEGER);
                 }
             }
             if (($country = $this->request->getParam('country', false)) !== false) {
@@ -210,24 +284,34 @@ class ListAction extends CatalogAction
                     ->setParameter('manufacturer', str_escape($manufacturer), \Doctrine\DBAL\Types\Type::STRING);
             }
             if (($order = $this->request->getParam('order', false)) !== false) {
-                $direction = $this->request->getParam('direction', 'asc');
+                $direction = mb_strtolower($this->request->getParam('direction', 'asc'));
+                $direction = in_array($direction, ['asc', 'desc'], true) ? $direction : 'ASC';
 
                 if (in_array($order, ['title', 'price', 'field1', 'field2', 'field3', 'field4', 'field5'], true)) {
-                    $query->addOrderBy('p.' . $order, in_array(mb_strtolower($direction), ['asc', 'desc'], true) ? $direction : 'ASC');
+                    $query->orderBy('p.' . $order, $direction);
+                    $params['order'][$order] = $direction;
                 }
             } else {
-                $query->addOrderBy('p.title', 'ASC');
+                $query->orderBy('p.title', 'ASC');
+                $params['order']['title'] = 'asc';
             }
 
             $filtered = collect(
                 $query
                     ->select('p')
+                    ->addOrderBy('p.order', 'ASC')
                     ->setMaxResults($category->pagination)
                     ->setFirstResult($params['offset'] * $category->pagination)
                     ->getQuery()
                     ->getResult()
             );
-            $count = $query->select('count(p)')->setMaxResults(null)->setFirstResult(null)->getQuery()->getSingleScalarResult();
+            $count = +$query
+                ->select('count(p)')
+                ->setMaxResults(null)
+                ->setFirstResult(null)
+                ->resetDQLParts(['groupBy', 'having'])
+                ->getQuery()
+                ->getSingleScalarResult();
 
             return $this->respondWithTemplate($category->template['category'], [
                 'categories' => $categories,

@@ -45,12 +45,13 @@ class UserListAction extends UserAction
 
         foreach ($criteria as $criterion => $value) {
             if (is_array($value)) {
-                $query->andWhere("u.{$criterion} IN ('" . implode("', '", $value) . "')");
-            } elseif (mb_strpos($value, '%') === false) {
-                $query->andWhere("u.{$criterion} = '{$value}'");
+                $query->andWhere("u.{$criterion} IN (:{$criterion})");
+            } elseif (!str_start_with($value, '%')) {
+                $query->andWhere("u.{$criterion} = :{$criterion}");
             } else {
-                $query->andWhere("u.{$criterion} LIKE '{$value}'");
+                $query->andWhere("u.{$criterion} LIKE :{$criterion}");
             }
+            $query->setParameter($criterion, $value);
         }
 
         foreach ($orderBy as $field => $direction) {

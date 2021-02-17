@@ -89,9 +89,9 @@
                                     'type': 'textarea',
                                     'name': 'origin',
                                     'args': {
-                                        'value': item.origin ? item.origin|join('\n') : full_url_for('main'),
+                                        'value': item.origin ? item.origin|join('\n') : full_url_for('common:main'),
                                         'required': true,
-                                        'placeholder': full_url_for('main'),
+                                        'placeholder': full_url_for('common:main'),
                                         'style': 'min-height: 150px;'
                                     }
                                 } %}

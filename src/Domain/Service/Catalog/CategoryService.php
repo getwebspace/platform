@@ -8,7 +8,6 @@ use App\Domain\Repository\Catalog\CategoryRepository;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\CategoryNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
-use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
 
@@ -27,7 +26,6 @@ class CategoryService extends AbstractService
     /**
      * @param array $data
      *
-     * @throws TitleAlreadyExistsException
      * @throws MissingTitleValueException
      * @throws AddressAlreadyExistsException
      *
@@ -44,6 +42,7 @@ class CategoryService extends AbstractService
             'field1' => '',
             'field2' => '',
             'field3' => '',
+            'attributes' => [],
             'product' => [
                 'field_1' => '',
                 'field_2' => '',
@@ -68,14 +67,8 @@ class CategoryService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        if ($data['title'] && $this->service->findOneByTitle($data['title']) !== null) {
-            throw new TitleAlreadyExistsException();
-        }
         if (!$data['title']) {
             throw new MissingTitleValueException();
-        }
-        if ($data['address'] && $this->service->findOneByAddress($data['address']) !== null) {
-            throw new AddressAlreadyExistsException();
         }
 
         $category = (new Category)
@@ -88,6 +81,7 @@ class CategoryService extends AbstractService
             ->setField2($data['field2'])
             ->setField3($data['field3'])
             ->setProduct($data['product'])
+            ->setAttributes($data['attributes'])
             ->setStatus($data['status'])
             ->setPagination((int) $data['pagination'])
             ->setOrder((int) $data['order'])
@@ -95,6 +89,24 @@ class CategoryService extends AbstractService
             ->setTemplate($data['template'])
             ->setExternalId($data['external_id'])
             ->setExport($data['export']);
+
+        // if address generation is enabled
+        if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && Uuid::isValid($data['parent']) && $data['parent'] !== Uuid::NIL) {
+            try {
+                $parent = $this->read(['uuid' => $data['parent']]);
+
+                // combine address category with product address
+                $category->setAddress(
+                    implode('/', [$parent->getAddress(), $category->setAddress('')->getAddress()])
+                );
+            } catch (CategoryNotFoundException $e) {
+                // nothing
+            }
+        }
+
+        if ($this->service->findOneBy(['parent' => $category->getParent(), 'address' => $category->getAddress()]) !== null) {
+            throw new AddressAlreadyExistsException();
+        }
 
         $this->entityManager->persist($category);
         $this->entityManager->flush();
@@ -188,7 +200,6 @@ class CategoryService extends AbstractService
      * @param Category|string|Uuid $entity
      * @param array                $data
      *
-     * @throws TitleAlreadyExistsException
      * @throws AddressAlreadyExistsException
      * @throws CategoryNotFoundException
      *
@@ -214,6 +225,7 @@ class CategoryService extends AbstractService
                 'field1' => null,
                 'field2' => null,
                 'field3' => null,
+                'attributes' => null,
                 'product' => null,
                 'status' => null,
                 'pagination' => null,
@@ -233,13 +245,7 @@ class CategoryService extends AbstractService
                     $entity->setChildren($data['children']);
                 }
                 if ($data['title'] !== null) {
-                    $found = $this->service->findOneByTitle($data['title']);
-
-                    if ($found === null || $found === $entity) {
-                        $entity->setTitle($data['title']);
-                    } else {
-                        throw new TitleAlreadyExistsException();
-                    }
+                    $entity->setTitle($data['title']);
                 }
                 if ($data['description'] !== null) {
                     $entity->setDescription($data['description']);
@@ -261,6 +267,9 @@ class CategoryService extends AbstractService
                 }
                 if ($data['field3'] !== null) {
                     $entity->setField3($data['field3']);
+                }
+                if ($data['attributes'] !== null && count($data['attributes'])) {
+                    $entity->setAttributes($data['attributes']);
                 }
                 if ($data['product'] !== null) {
                     $entity->setProduct($data['product']);

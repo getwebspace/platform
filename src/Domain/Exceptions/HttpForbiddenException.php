@@ -10,7 +10,7 @@ class HttpForbiddenException extends AbstractHttpException
 
     protected $message = 'Forbidden.';
 
-    protected $title = '403 Forbidden';
+    protected string $title = '403 Forbidden';
 
-    protected $description = 'The request contained valid data and was understood by the server, but the server is refusing action.';
+    protected string $description = 'The request contained valid data and was understood by the server, but the server is refusing action.';
 }

@@ -22,12 +22,12 @@ abstract class AbstractPlugin extends AbstractComponent
     /**
      * @var \Slim\Router
      */
-    private $router;
+    private \Slim\Router $router;
 
     /**
      * @var Twig
      */
-    private $renderer;
+    private Twig $renderer;
 
     /**
      * @var string
@@ -91,14 +91,14 @@ abstract class AbstractPlugin extends AbstractComponent
         return $credentials;
     }
 
-    protected function setTemplateFolder($path): void
+    protected function setTemplateFolder(string $path): void
     {
         if (realpath($path) !== false) {
             $this->renderer->getLoader()->addPath($path);
         }
     }
 
-    public function getTemplateFolder()
+    public function getTemplateFolder(): string
     {
         return $this->templateFolder;
     }
@@ -115,7 +115,7 @@ abstract class AbstractPlugin extends AbstractComponent
     /**
      * @return array
      */
-    public function getRoute()
+    public function getRoute(): array
     {
         return $this->handledRoutes;
     }
@@ -151,7 +151,7 @@ abstract class AbstractPlugin extends AbstractComponent
         $this->settingsField[$params['name']] = $params;
     }
 
-    public function getSettingsFields()
+    public function getSettingsFields(): array
     {
         return $this->settingsField;
     }
@@ -167,7 +167,7 @@ abstract class AbstractPlugin extends AbstractComponent
         $this->toolbars[] = $params;
     }
 
-    public function getToolbarItem()
+    public function getToolbarItem(): array
     {
         return $this->toolbars;
     }
@@ -186,12 +186,10 @@ abstract class AbstractPlugin extends AbstractComponent
 
         $this->navigation = true;
 
-        return $this->router
-            ->map(['get', 'post'], '/cup/plugin/' . static::NAME, $params['handler'])
-            ->add(new \App\Application\Middlewares\CupMiddleware($this->container));
+        return $this->router->map(['get', 'post'], '/cup/plugin/' . static::NAME, $params['handler']);
     }
 
-    public function isNavigationItemEnabled()
+    public function isNavigationItemEnabled(): bool
     {
         return $this->navigation;
     }
@@ -259,7 +257,7 @@ abstract class AbstractPlugin extends AbstractComponent
      *
      * @return string
      */
-    protected function render($template, array $data = [])
+    protected function render($template, array $data = []): string
     {
         try {
             \RunTracy\Helpers\Profiler\Profiler::start('plugin render (%s)', $template);

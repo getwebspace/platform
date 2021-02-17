@@ -1,0 +1,28 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">Доступ запрещен</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body text-center">
+                    <b>В данный момент у вас нет доступа к запрашиваемой странице!</b>
+                    <p class="mt-1">
+                        Если вы уверены, что адрес набран правильно:<br>
+                        &mdash; проверьте права доступа;<br>
+                        &mdash; свяжитесь с администратором.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

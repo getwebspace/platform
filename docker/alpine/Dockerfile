@@ -19,6 +19,7 @@ RUN set -x \
     && apk add --no-cache --virtual .build-deps libstdc++ make \
     && apk add --no-cache \
         git \
+        unzip \
         libzip-dev \
         libjpeg-turbo-dev \
         libpng-dev \
@@ -50,6 +51,7 @@ COPY composer.lock ${PLATFORM_HOME}/composer.lock
 RUN composer install ${NO_DEV} --no-suggest --no-progress
 
 # Copy platform
+ADD bin ${PLATFORM_HOME}/bin
 ADD config ${PLATFORM_HOME}/config
 ADD plugin ${PLATFORM_HOME}/plugin
 ADD public ${PLATFORM_HOME}/public

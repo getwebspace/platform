@@ -18,7 +18,7 @@ class TaskRunAction extends AbstractAction
                 $task->execute($this->request->getParam('params', []));
 
                 // run worker
-                \App\Domain\AbstractTask::worker();
+                \App\Domain\AbstractTask::worker($task);
 
                 $this->response = $this->response->withAddedHeader('Location', '/cup')->withStatus(301);
             }

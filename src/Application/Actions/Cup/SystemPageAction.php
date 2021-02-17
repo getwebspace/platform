@@ -4,6 +4,8 @@ namespace App\Application\Actions\Cup;
 
 use App\Domain\AbstractAction;
 use App\Domain\Entities\User;
+use App\Domain\Service\User\Exception\TitleAlreadyExistsException;
+use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\UserService;
 
 class SystemPageAction extends AbstractAction
@@ -28,7 +30,7 @@ class SystemPageAction extends AbstractAction
 
         // already exist user
         if (!$allow) {
-            if ($user !== false && $user->getLevel() === \App\Domain\Types\UserLevelType::LEVEL_ADMIN) {
+            if ($user->getGroup() !== null && in_array('cup:main', $user->getGroup()->getAccess(), true)) {
                 $allow = true;
             }
         }
@@ -60,9 +62,22 @@ class SystemPageAction extends AbstractAction
 
                 // user
                 if ($userData = $this->request->getParam('user', [])) {
+                    $userGroupService = UserGroupService::getWithContainer($this->container);
                     $userService = UserService::getWithContainer($this->container);
-                    $userData['level'] = \App\Domain\Types\UserLevelType::LEVEL_ADMIN;
 
+                    // create or read group
+                    try {
+                        $userData['group'] = $userGroupService->create([
+                            'title' => 'Администраторы',
+                            'access' => $this->getRoutes()->values()->all(),
+                        ]);
+                    } catch (TitleAlreadyExistsException $e) {
+                        $userData['group'] = $userGroupService->read([
+                            'title' => 'Администраторы',
+                        ]);
+                    }
+
+                    // create or update database
                     if ($user !== false) {
                         $userService->update($user, $userData);
                     } else {
@@ -76,18 +91,7 @@ class SystemPageAction extends AbstractAction
                 return $this->response->withRedirect('/cup/system');
             }
 
-            return $this->respondWithTemplate('cup/system/index.twig', [
-                'properties' => [
-                    'version' => ($_ENV['COMMIT_BRANCH'] ?? 'other') . ' (' . ($_ENV['COMMIT_SHA'] ?? 'specific') . ')',
-                    'os' => @implode(' ', [php_uname('s'), php_uname('r'), php_uname('m')]),
-                    'php' => PHP_VERSION,
-                    'memory_limit' => ini_get('memory_limit'),
-                    'disable_functions' => ini_get('disable_functions'),
-                    'disable_classes' => ini_get('disable_classes'),
-                    'upload_max_filesize' => ini_get('upload_max_filesize'),
-                    'max_file_uploads' => ini_get('max_file_uploads'),
-                ],
-            ]);
+            return $this->respondWithTemplate('cup/system/index.twig');
         }
 
         return $this->response->withRedirect('/cup/login?redirect=/cup/system');

@@ -4,7 +4,8 @@ namespace App\Application\Actions\Cup\Catalog\Product;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
-use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
+use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;
+use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 
 class ProductUpdateAction extends CatalogAction
 {
@@ -43,8 +44,16 @@ class ProductUpdateAction extends CatalogAction
                             'tags' => $this->request->getParam('tags'),
                             'order' => $this->request->getParam('order'),
                             'date' => $this->request->getParam('date'),
+                            'meta' => $this->request->getParam('meta'),
                             'external_id' => $this->request->getParam('external_id'),
                         ]);
+                        $this->catalogProductAttributeService->proccess(
+                            $this->request->getParam('attributes', []),
+                            $product
+                        );
+                        $this->catalogProductRelationService->proccess(
+                            $this->request->getParam('relation', []), $product
+                        );
                         $product = $this->processEntityFiles($product);
 
                         switch (true) {
@@ -53,20 +62,24 @@ class ProductUpdateAction extends CatalogAction
                             default:
                                 return $this->response->withRedirect('/cup/catalog/product/' . $product->getUuid() . '/edit');
                         }
-                    } catch (TitleAlreadyExistsException $e) {
+                    } catch (MissingTitleValueException $e) {
                         $this->addError('title', $e->getMessage());
                     } catch (AddressAlreadyExistsException $e) {
                         $this->addError('address', $e->getMessage());
+                    } catch (AttributeNotFoundException $e) {
+                        $this->addError('attribute', $e->getMessage());
                     }
                 }
 
                 $categories = $this->catalogCategoryService->read([
                     'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
                 ]);
+                $attributes = $this->catalogAttributeService->read();
 
                 return $this->respondWithTemplate('cup/catalog/product/form.twig', [
                     'category' => $categories->firstWhere('uuid', $product->getCategory()),
                     'categories' => $categories,
+                    'attributes' => $attributes,
                     'measure' => $this->getMeasure(),
                     'item' => $product,
                 ]);

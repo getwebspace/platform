@@ -135,10 +135,10 @@
                                 {% include 'cup/form.twig' with {
                                     'label': 'Группа',
                                     'type': 'select',
-                                    'name': 'level',
+                                    'name': 'group_uuid',
                                     'args': {
-                                        'option': reference('/App/Domain/Types/UserLevelType::LIST'),
-                                        'selected': item.level
+                                        'option': {(NIL): 'Без группы'}|merge(groups.pluck('title', 'uuid').all()),
+                                        'selected': item.group_uuid ?? parameter('user_group')
                                     }
                                 } %}
                             </div>

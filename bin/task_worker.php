@@ -1,16 +1,19 @@
+#!/usr/local/bin/php
 <?php declare(strict_types=1);
 
 ini_set('memory_limit', '-1'); // fix memory usage
 
 require __DIR__ . '/../src/bootstrap.php';
 
+$action = $_SERVER['argv'][1] ?? null;
+
 // exit if another worker works
-if (file_exists(\App\Domain\AbstractTask::$pid_file)) {
+if (\App\Domain\AbstractTask::workerHasPidFile($action)) {
     exit;
 }
 
 // before work write self PID to file
-file_put_contents(\App\Domain\AbstractTask::$pid_file, getmypid());
+\App\Domain\AbstractTask::workerCreatePidFile($action);
 
 /**
  * @var \Slim\App $app
@@ -27,6 +30,7 @@ $taskService = \App\Domain\Service\Task\TaskService::getWithContainer($container
 
 /** @var \Illuminate\Support\Collection $queue */
 $queue = $taskService->read([
+    'action' => $action,
     'status' => [
         \App\Domain\Types\TaskStatusType::STATUS_QUEUE,
         \App\Domain\Types\TaskStatusType::STATUS_WORK,
@@ -38,13 +42,14 @@ $queue = $taskService->read([
 ]);
 
 // rerun worker
-register_shutdown_function(function () use ($queue): void {
-    @unlink(\App\Domain\AbstractTask::$pid_file);
-
+register_shutdown_function(function () use ($queue, $action): void {
     sleep(1); // timeout
 
-    if ($queue) {
-        \App\Domain\AbstractTask::worker();
+    // after work remove PID file
+    \App\Domain\AbstractTask::workerRemovePidFile($action);
+
+    if ($queue->count()) {
+        \App\Domain\AbstractTask::worker($_SERVER['argv'][1] ?? '');
     }
 });
 
@@ -54,18 +59,25 @@ if ($queue->count()) {
     $action = $entity->getAction();
 
     try {
-        /** @var \App\Domain\AbstractTask $task */
-        $task = new $action($container, $entity);
+        if (class_exists($action)) {
+            /** @var \App\Domain\AbstractTask $task */
+            $task = new $action($container, $entity);
 
-        if ($entity->getStatus() === \App\Domain\Types\TaskStatusType::STATUS_QUEUE) {
-            $task->run();
-        } else {
-            // remove task by time
-            if ((new DateTime())->diff($entity->getDate())->i >= 30) {
-                $task->setStatusDelete();
+            if ($entity->getStatus() === \App\Domain\Types\TaskStatusType::STATUS_QUEUE) {
+                $task->run();
             } else {
-                sleep(30);
+                // remove task by time
+                if ((new DateTime())->diff($entity->getDate())->i >= 10) {
+                    $task->setStatusDelete('Removed by time');
+                } else {
+                    sleep(30);
+                }
             }
+        } else {
+            $taskService->update($entity, [
+                'status' => \App\Domain\Types\TaskStatusType::STATUS_DELETE,
+                'output' => 'Task class not found',
+            ]);
         }
     } catch (Exception $e) {
         $logger->error('Task catch exception', [

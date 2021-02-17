@@ -7,7 +7,6 @@ use App\Domain\Repository\Catalog\ProductRepository;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\ProductNotFoundException;
-use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\Catalog\ProductService;
 use Doctrine\ORM\EntityManager;
 use Illuminate\Support\Collection;
@@ -136,27 +135,6 @@ class ProductServiceTest extends TestCase
         $this->expectException(MissingTitleValueException::class);
 
         $this->service->create();
-    }
-
-    public function testCreateWithTitleExistent(): void
-    {
-        $this->expectException(TitleAlreadyExistsException::class);
-
-        $data = [
-            'title' => $this->getFaker()->title,
-            'address' => 'some-custom-address',
-            'date' => 'now',
-        ];
-
-        $product = (new Product())
-            ->setTitle($data['title'])
-            ->setAddress($data['address'])
-            ->setDate($data['date']);
-
-        $this->em->persist($product);
-        $this->em->flush();
-
-        $this->service->create($data);
     }
 
     public function testCreateWithAddressExistent(): void

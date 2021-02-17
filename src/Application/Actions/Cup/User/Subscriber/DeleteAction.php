@@ -18,8 +18,6 @@ class DeleteAction extends UserAction
                 } catch (UserNotFoundException $e) {
                     // ignore
                 }
-
-                return $this->response->withStatus(202);
             }
         }
 

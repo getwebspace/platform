@@ -3,6 +3,7 @@
 namespace App\Application\Actions\Cup\User;
 
 use App\Domain\AbstractAction;
+use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\SubscriberService as UserSubscriberService;
 use App\Domain\Service\User\UserService;
 use Psr\Container\ContainerInterface;
@@ -13,6 +14,11 @@ abstract class UserAction extends AbstractAction
      * @var UserService
      */
     protected UserService $userService;
+
+    /**
+     * @var UserGroupService
+     */
+    protected UserGroupService $userGroupService;
 
     /**
      * @var UserSubscriberService
@@ -27,7 +33,7 @@ abstract class UserAction extends AbstractAction
         parent::__construct($container);
 
         $this->userService = UserService::getWithContainer($container);
-        $this->userSubscriberService = UserSubscriberService::getWithContainer($container);
+        $this->userGroupService = UserGroupService::getWithContainer($container);
         $this->userSubscriberService = UserSubscriberService::getWithContainer($container);
     }
 }

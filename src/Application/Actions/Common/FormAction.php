@@ -120,7 +120,7 @@ class FormAction extends AbstractAction
                 ]);
 
                 // run worker
-                \App\Domain\AbstractTask::worker();
+                \App\Domain\AbstractTask::worker($task);
 
                 return $this->respondWithJson(['status' => 'ok']);
             }

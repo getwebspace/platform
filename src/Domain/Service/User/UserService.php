@@ -54,7 +54,7 @@ class UserService extends AbstractService
             'additional' => '',
             'allow_mail' => true,
             'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
-            'level' => \App\Domain\Types\UserLevelType::LEVEL_USER,
+            'group' => null,
         ];
         $data = array_merge($default, $data);
 
@@ -85,13 +85,11 @@ class UserService extends AbstractService
             ->setAdditional($data['additional'])
             ->setAllowMail($data['allow_mail'])
             ->setStatus($data['status'])
-            ->setLevel($data['level'])
+            ->setGroup($data['group'])
             ->setRegister('now')
-            ->setChange('now')
-            ->setSession($session = (new UserSession)->setDate('now'));
+            ->setChange('now');
 
         $this->entityManager->persist($user);
-        $this->entityManager->persist($session);
         $this->entityManager->flush();
 
         return $user;
@@ -108,7 +106,7 @@ class UserService extends AbstractService
     public function read(array $data = [])
     {
         $default = [
-            'identifier' => null, // field for: username, email, email
+            'identifier' => null, // field for: username, email, phone
             'uuid' => null,
             'username' => null,
             'email' => null,
@@ -194,11 +192,21 @@ class UserService extends AbstractService
 
                 // optional: update fields
                 if ($data['agent'] && $data['ip']) {
-                    $user
-                        ->getSession()
-                        ->setDate('now')
-                        ->setAgent($data['agent'])
-                        ->setIp($data['ip']);
+                    $session = $user->getSession();
+
+                    // if is first user auth
+                    if (!$session) {
+                        $session = (new UserSession)->setDate('now');
+                        $this->entityManager->persist($session);
+                    }
+
+                    // update session
+                    $user->setSession(
+                        $session
+                            ->setDate('now')
+                            ->setAgent($data['agent'])
+                            ->setIp($data['ip'])
+                    );
 
                     $this->entityManager->flush();
                 }
@@ -247,7 +255,7 @@ class UserService extends AbstractService
                 'additional' => null,
                 'allow_mail' => null,
                 'status' => null,
-                'level' => null,
+                'group' => null,
             ];
             $data = array_merge($default, $data);
 
@@ -271,12 +279,16 @@ class UserService extends AbstractService
                     }
                 }
                 if ($data['phone'] !== null) {
-                    $found = $this->service->findOneByPhone($data['phone']);
-
-                    if ($found === null || $found === $entity) {
-                        $entity->setPhone($data['phone']);
+                    if (blank($data['phone'])) {
+                        $entity->setPhone();
                     } else {
-                        throw new PhoneAlreadyExistsException();
+                        $found = $this->service->findOneByPhone($data['phone']);
+
+                        if ($found === null || $found === $entity) {
+                            $entity->setPhone($data['phone']);
+                        } else {
+                            throw new PhoneAlreadyExistsException();
+                        }
                     }
                 }
                 if ($data['password'] !== null) {
@@ -300,8 +312,8 @@ class UserService extends AbstractService
                 if ($data['status'] !== null) {
                     $entity->setStatus($data['status']);
                 }
-                if ($data['level'] !== null) {
-                    $entity->setLevel($data['level']);
+                if ($data['group'] !== null) {
+                    $entity->setGroup($data['group']);
                 }
 
                 $entity->setChange('now');

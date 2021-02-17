@@ -23,18 +23,8 @@
                                     Общие
                                 </a>
                             </li>
-                            <li class="nav-item submenu">
-                                <a class="nav-link" data-toggle="pill" href="#image" role="tab">
-                                    Изображения
-                                </a>
-                            </li>
-                            <li class="nav-item submenu">
-                                <a class="nav-link" data-toggle="pill" href="#mail" role="tab">
-                                    Почта
-                                </a>
-                            </li>
-                            <li class="nav-item submenu">
-                                <a class="nav-link" data-toggle="pill" href="#user" role="tab">
+                            <li>
+                                <a class="nav-link" data-toggle="pill" href="#other-user" role="tab">
                                     Пользователи
                                 </a>
                             </li>
@@ -44,13 +34,13 @@
                                 </a>
                             </li>
                             <li class="nav-item submenu">
-                                <a class="nav-link" data-toggle="pill" href="#guestbook" role="tab">
-                                    Гостевая книга
+                                <a class="nav-link" data-toggle="pill" href="#plugins" role="tab">
+                                    Плагины
                                 </a>
                             </li>
                             <li class="nav-item submenu">
-                                <a class="nav-link" data-toggle="pill" href="#plugins" role="tab">
-                                    Плагины
+                                <a class="nav-link" data-toggle="pill" href="#variables" role="tab">
+                                    Переменные
                                 </a>
                             </li>
                         </ul>
@@ -59,291 +49,390 @@
                         <div class="tab-content">
 
                             {# TAB: Common #}
-                            <div class="tab-pane fade active show" id="common" role="tabpanel">
+                            <div class="tab-pane fade show active" id="common" role="tabpanel">
                                 <div class="row">
-                                    <div class="col-xs-12 col-sm-6">
-                                        {% include 'cup/field.twig' with {
-                                            'label': 'Название сайта',
-                                            'description': 'например: "Моя домашняя страница"',
-                                            'type': 'text',
-                                            'name': 'common[title]',
-                                        } %}
-
-                                        {% include 'cup/field.twig' with {
-                                            'label': 'Домашняя страница сайта',
-                                            'description': 'Укажите адрес главной страницы вашего сайта, включая слеш в конце. Например: http://yoursite.com/',
-                                            'type': 'text',
-                                            'name': 'common[homepage]',
-                                        } %}
-
-                                        {% include 'cup/field.twig' with {
-                                            'label': 'Описание (Description) сайта',
-                                            'description': 'Краткое описание, не более 200 символов',
-                                            'type': 'text',
-                                            'name': 'common[description]',
-                                        } %}
-
-                                        {% include 'cup/field.twig' with {
-                                            'label': 'Ключевые (Keywords) слова',
-                                            'description': 'Через запятую',
-                                            'type': 'textarea',
-                                            'name': 'common[keywords]',
-                                        } %}
-
-                                        {% include 'cup/field.twig' with {
-                                            'label': 'Тема оформления сайта',
-                                            'description': 'По-умолчанию: "default"',
-                                            'type': 'text',
-                                            'name': 'common[theme]',
-                                            'args': {
-                                                'placeholder': 'default',
-                                                'value': 'default'
-                                            }
-                                        } %}
-
-                                        {% include 'cup/field.twig' with {
-                                            'label': 'Шаблон главной страницы',
-                                            'type': 'text',
-                                            'name': 'common[template]',
-                                            'args': {
-                                                'placeholder': 'main.twig',
-                                                'value': 'main.twig'
-                                            }
-                                        } %}
-
-                                        <hr>
-
-                                        {% include 'cup/field.twig' with {
-                                            'label': 'Часовой пояс',
-                                            'description': 'Список поддерживаемых временных зон можно посмотреть <a href="https://www.php.net/manual/ru/timezones.php" target="_blank">тут</a>',
-                                            'type': 'text',
-                                            'name': 'common[timezone]',
-                                            'args': {
-                                                'placeholder': 'Europe/Kiev',
-                                                'value': 'Europe/Kiev'
-                                            }
-                                        } %}
-
-                                        {% include 'cup/field.twig' with {
-                                            'label': 'Формат времени',
-                                            'description': '',
-                                            'type': 'text',
-                                            'name': 'common[date_format]',
-                                            'args': {
-                                                'placeholder': 'j-m-Y, H:i',
-                                                'value': 'j-m-Y, H:i'
-                                            }
-                                        } %}
+                                    <div class="col-xs-12 col-sm-5 col-md-4">
+                                        <div class="nav flex-column nav-pills nav-secondary">
+                                            <a class="nav-link active"  data-toggle="pill" href="#other-common">Основные</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#other-mail">Почта</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#other-file">Файлы и изображения</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#other-notification">Уведомления</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#other-form">Формы</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#other-search">Поиск</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#other-guestbook">Гостевая книга</a>
+                                        </div>
                                     </div>
-                                    <div class="col-xs-12 col-sm-6">
-                                        {% include 'cup/field.twig' with {
-                                            'label': 'Включить пользователей',
-                                            'description': 'Позволяет пользователям регистрироваться на сайте',
-                                            'type': 'select',
-                                            'name': 'user[is_enabled]',
-                                            'args': {
-                                                'option': {'yes':'Да', 'no':'Нет'},
-                                                'selected': 'yes'
-                                            }
-                                        } %}
+                                    <div class="col-xs-12 col-sm-7 col-md-8 mt-5 mt-sm-0">
+                                        <div class="tab-content">
 
-                                        {% include 'cup/field.twig' with {
-                                            'label': 'Включить каталог',
-                                            'description': 'Возможность управлять категориями, товарами и заказами',
-                                            'type': 'select',
-                                            'name': 'catalog[is_enabled]',
-                                            'args': {
-                                                'option': {'yes':'Да', 'no':'Нет'},
-                                                'selected': 'yes'
-                                            }
-                                        } %}
+                                            {# TAB: Common #}
+                                            <div class="tab-pane fade active show" id="other-common">
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Название сайта',
+                                                    'description': 'например: "Моя домашняя страница"',
+                                                    'type': 'text',
+                                                    'name': 'common[title]',
+                                                } %}
 
-                                        {% include 'cup/field.twig' with {
-                                            'label': 'Включить формы',
-                                            'description': 'Возможность делать формы для получения заполненных анкет от клиентов',
-                                            'type': 'select',
-                                            'name': 'form[is_enabled]',
-                                            'args': {
-                                                'option': {'yes':'Да', 'no':'Нет'},
-                                                'selected': 'yes'
-                                            }
-                                        } %}
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Домашняя страница сайта',
+                                                    'description': 'Укажите адрес главной страницы вашего сайта, включая слеш в конце. Например: http://yoursite.com/',
+                                                    'type': 'text',
+                                                    'name': 'common[homepage]',
+                                                } %}
 
-                                        {% include 'cup/field.twig' with {
-                                            'label': 'Включить гостевую книгу',
-                                            'description': 'Позволяет пользователям оставлять отзывы о сайте',
-                                            'type': 'select',
-                                            'name': 'guestbook[is_enabled]',
-                                            'args': {
-                                                'option': {'yes':'Да', 'no':'Нет'},
-                                                'selected': 'yes'
-                                            }
-                                        } %}
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Описание (Description) сайта',
+                                                    'description': 'Краткое описание, не более 200 символов',
+                                                    'type': 'text',
+                                                    'name': 'common[description]',
+                                                } %}
 
-                                        {% include 'cup/field.twig' with {
-                                            'label': 'Включить загрузку файлов',
-                                            'description': 'Позволяет пользователям загружать файлы на сайт',
-                                            'type': 'select',
-                                            'name': 'file[is_enabled]',
-                                            'args': {
-                                                'option': {'yes':'Да', 'no':'Нет'},
-                                                'selected': 'yes'
-                                            }
-                                        } %}
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Ключевые (Keywords) слова',
+                                                    'description': 'Через запятую',
+                                                    'type': 'textarea',
+                                                    'name': 'common[keywords]',
+                                                } %}
 
-                                        <hr>
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Тема оформления сайта',
+                                                    'description': 'По-умолчанию: "default"',
+                                                    'type': 'text',
+                                                    'name': 'common[theme]',
+                                                    'args': {
+                                                        'placeholder': 'default',
+                                                        'value': 'default'
+                                                    }
+                                                } %}
 
-                                        {% include 'cup/field.twig' with {
-                                            'label': 'Автоматически генерировать адреса',
-                                            'description': 'Адреса некоторых сущностей будут автоматически включать адрес категории',
-                                            'type': 'select',
-                                            'name': 'common[auto_generate_address]',
-                                            'args': {
-                                                'option': {'yes':'Да', 'no':'Нет'}
-                                            }
-                                        } %}
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Шаблон главной страницы',
+                                                    'type': 'text',
+                                                    'name': 'common[template]',
+                                                    'args': {
+                                                        'placeholder': 'main.twig',
+                                                        'value': 'main.twig'
+                                                    }
+                                                } %}
 
-                                        {% include 'cup/field.twig' with {
-                                            'label': 'Период отображение уведомлений',
-                                            'description': 'Укажите количество часов за которые отображать уведомления',
-                                            'postfix': 'часов',
-                                            'type': 'number',
-                                            'name': 'common[notification_period]',
-                                            'args': {
-                                                'placeholder': '24',
-                                                'value': '24'
-                                            }
-                                        } %}
+                                                <hr>
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Часовой пояс',
+                                                    'type': 'select',
+                                                    'name': 'common[timezone]',
+                                                    'args': {
+                                                        'option': timezone,
+                                                        'selected': 'Europe/Kiev'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Формат времени',
+                                                    'description': '',
+                                                    'type': 'text',
+                                                    'name': 'common[date_format]',
+                                                    'args': {
+                                                        'placeholder': 'j-m-Y, H:i',
+                                                        'value': 'j-m-Y, H:i'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Код языка сайта',
+                                                    'description': 'Используется для значения атрибута <code>&lt;html lang="ru"&gt;</code><br>' ~
+                                                    'Например: <code>ru</code>, <code>ua</code>, <code>en</code>',
+                                                    'type': 'text',
+                                                    'name': 'common[lang]',
+                                                    'args': {
+                                                        'value': 'ru'
+                                                    }
+                                                } %}
+
+                                                <hr>
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Автоматически генерировать адреса',
+                                                    'description': 'Адреса некоторых сущностей будут автоматически включать адрес категории',
+                                                    'type': 'select',
+                                                    'name': 'common[auto_generate_address]',
+                                                    'args': {
+                                                        'option': {'yes':'Да', 'no':'Нет'}
+                                                    }
+                                                } %}
+                                            </div>
+
+                                            {# TAB: Other Mail #}
+                                            <div class="tab-pane fade" id="other-mail">
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Системный E-Mail адрес',
+                                                    'description': 'От данного адреса будут отправляться сообщения сайта, например уведомления пользователей, рассылки, подтверждения и т.д. Примечание: некоторые бесплатные почтовые сервисы, например yandex.ru, требуют, чтобы в качестве E-Mail адреса отправителя был указан именно адрес, зарегистрированный на их почтовом сервисе',
+                                                    'type': 'text',
+                                                    'name': 'smtp[from]',
+                                                    'args': {
+                                                        'placeholder': 'my.site@company.com'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Имя отправителя',
+                                                    'description': 'Данное имя будет прикреплено к письму в качетве имени отправителя',
+                                                    'type': 'text',
+                                                    'name': 'smtp[from_name]',
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Заголовок при отправке писем',
+                                                    'description': 'При отправке писем с сайта вы можете указать заголовок, который будет добавляться к почте отправителя. Например, вы можете там указать краткое название вашего сайта',
+                                                    'type': 'text',
+                                                    'name': 'smtp[subject]',
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Хост SMTP сервера',
+                                                    'description': 'Обычно — localhost',
+                                                    'type': 'text',
+                                                    'name': 'smtp[host]',
+                                                    'args': {
+                                                        'placeholder': 'smtp.yandex.ru'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Порт SMTP сервера',
+                                                    'description': 'Обычно — 25',
+                                                    'type': 'select',
+                                                    'name': 'smtp[port]',
+                                                    'args': {
+                                                        'option': {'25':25, '587':587, '465':465}
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Использовать защищенный протокол для отправки писем через SMTP сервер',
+                                                    'description': 'Выберите протокол шифрования при отправке писем с использованием SMTP сервера',
+                                                    'type': 'select',
+                                                    'name': 'smtp[secure]',
+                                                    'args': {
+                                                        'option': {'':'Нет', 'ssl':'SSL', 'tls':'TLS'}
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'SMTP имя пользователя',
+                                                    'description': 'Не требуется в большинстве случаев, когда используется "localhost"',
+                                                    'type': 'text',
+                                                    'name': 'smtp[login]',
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'SMTP пароль',
+                                                    'description': 'Не требуется в большинстве случаев, когда используется "localhost"',
+                                                    'type': 'text',
+                                                    'name': 'smtp[pass]',
+                                                } %}
+                                            </div>
+
+                                            {# TAB: Other Files and Image #}
+                                            <div class="tab-pane fade" id="other-file">
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Включить загрузку файлов',
+                                                    'description': 'Позволяет пользователям загружать файлы на сайт',
+                                                    'type': 'select',
+                                                    'name': 'file[is_enabled]',
+                                                    'args': {
+                                                        'option': {'yes':'Да', 'no':'Нет'},
+                                                        'selected': 'yes'
+                                                    }
+                                                } %}
+
+                                                <hr>
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Разрешить конвертацию загруженных изображений',
+                                                    'description': 'Будет разрешена загрузка картинок на сервер',
+                                                    'type': 'select',
+                                                    'name': 'image[enable]',
+                                                    'args': {
+                                                        'option': {'yes':'Да', 'no':'Нет'}
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Размер маленькой превью копии загруженного изображения',
+                                                    'description': 'Вы можете указать 0, если не хотите создавать превью копии загружаемых картинок на сервер',
+                                                    'type': 'number',
+                                                    'name': 'image[convert_size_small]',
+                                                    'args': {
+                                                        'placeholder': '200',
+                                                        'value': '200'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Размер средней копии загруженного изображения',
+                                                    'description': 'Вы можете указать 0, если не хотите создавать превью копии загружаемых картинок на сервер',
+                                                    'type': 'number',
+                                                    'name': 'image[convert_size_middle]',
+                                                    'args': {
+                                                        'placeholder': '450',
+                                                        'value': '450'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Исполняемый файл ImageMagick',
+                                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
+                                                    'type': 'text',
+                                                    'name': 'image[convert_bin]',
+                                                    'args': {
+                                                        'placeholder': '/usr/bin/convert',
+                                                        'value': '/usr/bin/convert'
+                                                    }
+                                                } %}
+                                            </div>
+
+                                            {# TAB: Other Notification #}
+                                            <div class="tab-pane fade" id="other-notification">
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Включить уведомления',
+                                                    'description': '',
+                                                    'type': 'select',
+                                                    'name': 'notification[is_enabled]',
+                                                    'args': {
+                                                        'option': {'yes':'Да', 'no':'Нет'},
+                                                        'selected': 'yes'
+                                                    }
+                                                } %}
+
+                                                <hr>
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Период отображение уведомлений',
+                                                    'description': 'Укажите количество часов за которые отображать уведомления',
+                                                    'postfix': 'часов',
+                                                    'type': 'number',
+                                                    'name': 'common[notification_period]',
+                                                    'args': {
+                                                        'placeholder': '24',
+                                                        'value': '24'
+                                                    }
+                                                } %}
+                                            </div>
+
+                                            {# TAB: Other Form #}
+                                            <div class="tab-pane fade" id="other-form">
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Включить формы',
+                                                    'description': 'Возможность делать формы для получения заполненных анкет от клиентов',
+                                                    'type': 'select',
+                                                    'name': 'form[is_enabled]',
+                                                    'args': {
+                                                        'option': {'yes':'Да', 'no':'Нет'},
+                                                        'selected': 'yes'
+                                                    }
+                                                } %}
+                                            </div>
+
+                                            {# TAB: Other Search #}
+                                            <div class="tab-pane fade" id="other-search">
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Включить поиск',
+                                                    'description': '',
+                                                    'type': 'select',
+                                                    'name': 'search[is_enabled]',
+                                                    'args': {
+                                                        'option': {'yes':'Да', 'no':'Нет'},
+                                                        'selected': 'yes'
+                                                    }
+                                                } %}
+
+                                                <hr>
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Шаблон страницы поиска',
+                                                    'type': 'text',
+                                                    'name': 'search[template]',
+                                                    'args': {
+                                                        'placeholder': 'search.twig',
+                                                        'value': 'search.twig'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Количество результатов',
+                                                    'description': 'Максимальное количество результатов при поиске',
+                                                    'type': 'number',
+                                                    'name': 'search[limit]',
+                                                    'args': {
+                                                        'placeholder': '10',
+                                                        'value': '10'
+                                                    }
+                                                } %}
+                                            </div>
+
+                                            {# TAB: Guestbook #}
+                                            <div class="tab-pane fade" id="other-guestbook">
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Включить гостевую книгу',
+                                                    'description': 'Позволяет пользователям оставлять отзывы о сайте',
+                                                    'type': 'select',
+                                                    'name': 'guestbook[is_enabled]',
+                                                    'args': {
+                                                        'option': {'yes':'Да', 'no':'Нет'},
+                                                        'selected': 'yes'
+                                                    }
+                                                } %}
+
+                                                <hr>
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Шаблон раздела',
+                                                    'type': 'text',
+                                                    'name': 'guestbook[template]',
+                                                    'args': {
+                                                        'placeholder': 'guestbook.twig',
+                                                        'value': 'guestbook.twig'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Количество товаров на страницу',
+                                                    'type': 'number',
+                                                    'name': 'guestbook[pagination]',
+                                                    'args': {
+                                                        'placeholder': '10',
+                                                        'value': '10'
+                                                    }
+                                                } %}
+                                            </div>
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            {# TAB: Image #}
-                            <div class="tab-pane fade" id="image" role="tabpanel">
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Разрешить конвертацию загруженных изображений',
-                                    'description': 'Будет разрешена загрузка картинок на сервер',
-                                    'type': 'select',
-                                    'name': 'image[enable]',
-                                    'args': {
-                                        'option': {'yes':'Да', 'no':'Нет'}
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Размер маленькой превью копии загруженного изображения',
-                                    'description': 'Вы можете указать 0, если не хотите создавать превью копии загружаемых картинок на сервер',
-                                    'type': 'number',
-                                    'name': 'image[convert_size_small]',
-                                    'args': {
-                                        'placeholder': '200',
-                                        'value': '200'
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Размер средней копии загруженного изображения',
-                                    'description': 'Вы можете указать 0, если не хотите создавать превью копии загружаемых картинок на сервер',
-                                    'type': 'number',
-                                    'name': 'image[convert_size_middle]',
-                                    'args': {
-                                        'placeholder': '450',
-                                        'value': '450'
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Исполняемый файл ImageMagick',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
-                                    'type': 'text',
-                                    'name': 'image[convert_bin]',
-                                    'args': {
-                                        'placeholder': '/usr/bin/convert',
-                                        'value': '/usr/bin/convert'
-                                    }
-                                } %}
-                            </div>
-
-                            {# TAB: Mail #}
-                            <div class="tab-pane fade" id="mail" role="tabpanel">
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Системный E-Mail адрес',
-                                    'description': 'От данного адреса будут отправляться сообщения сайта, например уведомления пользователей, рассылки, подтверждения и т.д. Примечание: некоторые бесплатные почтовые сервисы, например yandex.ru, требуют, чтобы в качестве E-Mail адреса отправителя был указан именно адрес, зарегистрированный на их почтовом сервисе',
-                                    'type': 'text',
-                                    'name': 'smtp[from]',
-                                    'args': {
-                                        'placeholder': 'my.site@company.com'
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Имя отправителя',
-                                    'description': 'Данное имя будет прикреплено к письму в качетве имени отправителя',
-                                    'type': 'text',
-                                    'name': 'smtp[from_name]',
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Заголовок при отправке писем',
-                                    'description': 'При отправке писем с сайта вы можете указать заголовок, который будет добавляться к почте отправителя. Например, вы можете там указать краткое название вашего сайта',
-                                    'type': 'text',
-                                    'name': 'smtp[subject]',
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Хост SMTP сервера',
-                                    'description': 'Обычно — localhost',
-                                    'type': 'text',
-                                    'name': 'smtp[host]',
-                                    'args': {
-                                        'placeholder': 'smtp.yandex.ru'
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Порт SMTP сервера',
-                                    'description': 'Обычно — 25',
-                                    'type': 'select',
-                                    'name': 'smtp[port]',
-                                    'args': {
-                                        'option': {'25':25, '587':587, '465':465}
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Использовать защищенный протокол для отправки писем через SMTP сервер',
-                                    'description': 'Выберите протокол шифрования при отправке писем с использованием SMTP сервера',
-                                    'type': 'select',
-                                    'name': 'smtp[secure]',
-                                    'args': {
-                                        'option': {'':'Нет', 'ssl':'SSL', 'tls':'TLS'}
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': 'SMTP имя пользователя',
-                                    'description': 'Не требуется в большинстве случаев, когда используется "localhost"',
-                                    'type': 'text',
-                                    'name': 'smtp[login]',
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': 'SMTP пароль',
-                                    'description': 'Не требуется в большинстве случаев, когда используется "localhost"',
-                                    'type': 'text',
-                                    'name': 'smtp[pass]',
-                                } %}
-                            </div>
-
                             {# TAB: User #}
-                            <div class="tab-pane fade" id="user" role="tabpanel">
+                            <div class="tab-pane fade" id="other-user" role="tabpanel">
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Включить пользователей',
+                                    'description': 'Позволяет пользователям регистрироваться на сайте',
+                                    'type': 'select',
+                                    'name': 'user[is_enabled]',
+                                    'args': {
+                                        'option': {'yes':'Да', 'no':'Нет'},
+                                        'selected': 'yes'
+                                    }
+                                } %}
+
                                 {% include 'cup/field.twig' with {
                                     'label': 'Метод авторизации на сайте',
                                     'description': 'Вы можете выбрать, каким способом будет производиться авторизация пользователей на сайте. Доступно два варианта, либо с использованием своего логина или с использованием E-mail',
                                     'type': 'select',
                                     'name': 'user[login_type]',
                                     'args': {
-                                        'option': {'username':'Логин', 'email':'E-Mail'}
+                                        'option': {'username':'Логин', 'email':'E-Mail', 'phone':'Телефон'}
                                     }
                                 } %}
 
@@ -386,6 +475,35 @@
                                         'value': 'user.profile.twig'
                                     }
                                 } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Группа пользователя (по-умолчанию)',
+                                    'type': 'select',
+                                    'name': 'user[group]',
+                                    'description': 'Новый пользователь будет автоматически добавляться в выбранную группу',
+                                    'args': {
+                                        'option': {'': '---'}|merge(groups.pluck('title', 'uuid').all())
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Права доступа (по-умолчанию)',
+                                    'type': 'select',
+                                    'name': 'user[access][]',
+                                    'description': [
+                                        'Указанные права доступа так же будут применены для незарегистрированного пользователя<br>',
+                                        '<button class="btn btn-outline-success btn-sm mr-1" type="button" data-access-click="common">Общие</button>',
+                                        '<button class="btn btn-outline-secondary btn-sm mr-1" type="button" data-access-click="cup">Панель управления</button>',
+                                        '<button class="btn btn-outline-info btn-sm mr-1" type="button" data-access-click="api">API</button>',
+                                        '<button class="btn btn-outline-danger btn-sm mr-1" type="button" data-access-click="none">Ничего</button>',
+                                    ]|join(''),
+                                    'args': {
+                                        'multiple': true,
+                                        'option': routes.all,
+                                        'selected': routes.guest,
+                                        'force-value': parameter['user[access]'].value ? parameter['user[access]'].value|split(',') : null
+                                    }
+                                } %}
                             </div>
 
                             {# TAB: Catalog #}
@@ -404,6 +522,17 @@
 
                                             {# TAB: Catalog General #}
                                             <div class="tab-pane fade show active" id="catalog-general">
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Включить каталог',
+                                                    'description': 'Возможность управлять категориями, товарами и заказами',
+                                                    'type': 'select',
+                                                    'name': 'catalog[is_enabled]',
+                                                    'args': {
+                                                        'option': {'yes':'Да', 'no':'Нет'},
+                                                        'selected': 'yes'
+                                                    }
+                                                } %}
+
                                                 {% include 'cup/field.twig' with {
                                                     'label': 'Адрес раздела',
                                                     'type': 'text',
@@ -673,29 +802,6 @@
 
                             </div>
 
-                            {# TAB: Guestbook #}
-                            <div class="tab-pane fade" id="guestbook" role="tabpanel">
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Шаблон раздела',
-                                    'type': 'text',
-                                    'name': 'guestbook[template]',
-                                    'args': {
-                                        'placeholder': 'guestbook.twig',
-                                        'value': 'guestbook.twig'
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Количество товаров на страницу',
-                                    'type': 'number',
-                                    'name': 'guestbook[pagination]',
-                                    'args': {
-                                        'placeholder': '10',
-                                        'value': '10'
-                                    }
-                                } %}
-                            </div>
-
                             {# TAB: Plugins #}
                             <div class="tab-pane fade" id="plugins" role="tabpanel">
                                 <div class="row">
@@ -704,7 +810,7 @@
                                             <a class="nav-link active"  data-toggle="pill" href="#plugins-recaptcha">reCAPTCHA</a>
 
                                             {% for plugin in plugins %}
-                                                <a class="nav-link"     data-toggle="pill" href="#plugins-{{ plugin.getCredentials('name') }}">
+                                                <a class="nav-link" data-toggle="pill" href="#plugins-{{ plugin.getCredentials('name') }}">
                                                     {{ plugin.getCredentials('title') }}
                                                 </a>
                                             {% endfor %}
@@ -796,6 +902,54 @@
                                 </div>
                             </div>
 
+                            {# TAB: Variables #}
+                            <div class="tab-pane fade" id="variables" role="tabpanel">
+
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-6">
+                                        <p>
+                                            В этом разделе настроек можно задать дополнительные глобальные переменные, которые
+                                            можно легко использовать в шаблоне.<br>
+                                            <b>Например</b>: переменную с именем <code>my_variable</code> можно вывести на странице с помощью следущего кода:
+                                            <code>&lbrace;&lbrace; parameter('var_my_variable') &rbrace;&rbrace;</code>
+                                        </p>
+
+
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Имя новой переменной',
+                                            'type': 'text',
+                                            'message': 'Допустимы только латинские буквы: <code>[A-Za-z]</code>',
+                                            'prefix': 'var_',
+                                            'args': {
+                                                'placeholder': 'my_variable',
+                                                'data': {'input': 'variable'}
+                                            }
+                                        } %}
+
+                                        <button type="button" class="btn btn-secondary float-right" data-click="add_variable">Добавить</button>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-6">
+                                        {% for index,item in parameter %}
+                                            {% if item.key starts with 'var_' and item.value %}
+                                                {% include 'cup/field.twig' with {
+                                                    'label': '<code>' ~ item.key ~ '</code>',
+                                                    'type': 'text',
+                                                    'name': index,
+                                                    'args': {
+                                                        'value': item.value
+                                                    }
+                                                } %}
+                                            {% endif %}
+                                        {% endfor %}
+
+                                        {% include 'cup/field.twig' with {
+                                            'label': '',
+                                            'type': 'hidden',
+                                            'name': 'var[]',
+                                        } %}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="card-action">

@@ -59,6 +59,14 @@ class Category extends AbstractEntity
     }
 
     /**
+     * @return string
+     */
+    public function rss(): string
+    {
+        return implode('/', ['rss', $this->address]);
+    }
+
+    /**
      * @ORM\Column(type="string", length=255, options={"default": ""})
      */
     protected string $title = '';

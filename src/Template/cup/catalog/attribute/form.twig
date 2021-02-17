@@ -1,0 +1,70 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">Атрибуты</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <form method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-head-row">
+                            <div class="card-title">{{ attribute.uuid ? 'Редактирование атрибута ' ~ attribute.title : 'Создание нового атрибута' }}</div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Наименование',
+                                    'type': 'text',
+                                    'name': 'title',
+                                    'args': {
+                                        'value': attribute.title,
+                                        'required': true
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Адрес',
+                                    'type': 'text',
+                                    'name': 'address',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Название атрибута. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов"></i>',
+                                    'args': {
+                                        'value': attribute.address
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Тип',
+                                    'type': 'select',
+                                    'name': 'type',
+                                    'message': '<b>Внимание</b>: тип "Булево" может быть добавлен только к категории.',
+                                    'args': {
+                                        'option': collect(reference('/App/Domain/Types/Catalog/AttributeTypeType::LIST')).combine(['Строка', 'Целое', 'Дробное', 'Булево']),
+                                        'selected': attribute.type,
+                                        'required': true
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        {% include "cup/form-save.twig" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+

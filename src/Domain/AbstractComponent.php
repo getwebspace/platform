@@ -4,25 +4,26 @@ namespace App\Domain;
 
 use App\Domain\Service\Parameter\ParameterService;
 use Doctrine\ORM\EntityManager;
+use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
 abstract class AbstractComponent
 {
     /**
-     * @var ContainerInterface
+     * @var null|ContainerInterface
      */
-    protected ContainerInterface $container;
+    protected ?ContainerInterface $container = null;
 
     /**
-     * @var EntityManager
+     * @var null|EntityManager
      */
-    protected EntityManager $entityManager;
+    protected ?EntityManager $entityManager = null;
 
     /**
-     * @var LoggerInterface
+     * @var null|LoggerInterface
      */
-    protected LoggerInterface $logger;
+    protected ?LoggerInterface $logger = null;
 
     /**
      * @param null|ContainerInterface $container
@@ -53,7 +54,7 @@ abstract class AbstractComponent
      * @param null|string|string[] $key
      * @param mixed                $default
      *
-     * @return null|array|mixed|string
+     * @return null|array|Collection|string
      */
     protected function parameter($key = null, $default = null)
     {
@@ -64,8 +65,6 @@ abstract class AbstractComponent
                 \RunTracy\Helpers\Profiler\Profiler::start('parameters');
                 $parameters = ParameterService::getWithContainer($this->container)->read();
                 \RunTracy\Helpers\Profiler\Profiler::finish('parameters');
-            } else {
-                throw new \RuntimeException('Container is null');
             }
         }
 

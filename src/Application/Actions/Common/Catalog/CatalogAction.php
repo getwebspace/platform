@@ -6,6 +6,7 @@ use App\Domain\AbstractAction;
 use App\Domain\Service\Catalog\CategoryService as CatalogCatalogService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
+use App\Domain\Service\Notification\NotificationService;
 use App\Domain\Service\User\UserService;
 use Psr\Container\ContainerInterface;
 
@@ -32,6 +33,11 @@ abstract class CatalogAction extends AbstractAction
     protected CatalogOrderService $catalogOrderService;
 
     /**
+     * @var NotificationService
+     */
+    protected NotificationService $notificationService;
+
+    /**
      * {@inheritdoc}
      */
     public function __construct(ContainerInterface $container)
@@ -42,5 +48,6 @@ abstract class CatalogAction extends AbstractAction
         $this->catalogCategoryService = CatalogCatalogService::getWithContainer($container);
         $this->catalogProductService = CatalogProductService::getWithContainer($container);
         $this->catalogOrderService = CatalogOrderService::getWithContainer($container);
+        $this->notificationService = NotificationService::getWithContainer($container);
     }
 }

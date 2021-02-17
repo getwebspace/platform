@@ -14,5 +14,5 @@ abstract class AbstractMiddleware extends AbstractComponent
      *
      * @return Response
      */
-    abstract public function __invoke(Request $request, Response $response, $next): \Slim\Http\Response;
+    abstract public function __invoke(Request $request, Response $response, callable $next): \Slim\Http\Response;
 }

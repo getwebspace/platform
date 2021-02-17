@@ -8,7 +8,7 @@
             {{ user.getName('short')?? user.username }}
         </a>
 
-        {% if user.level == 'admin' %}
+        {% if user.group and 'cup:main' in user.group.access %}
             или
             <a href="/cup" target="_blank">
                 <i class="flaticon-settings"></i>

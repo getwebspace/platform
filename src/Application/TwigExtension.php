@@ -69,7 +69,6 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('parameter', [$this, 'parameter']),
             new TwigFunction('pre', [$this, 'pre']),
             new TwigFunction('dump', [$this, 'dump']),
-            new TwigFunction('dumpe', [$this, 'dumpe']),
             new TwigFunction('count', [$this, 'count']),
             new TwigFunction('df', [$this, 'df']),
             new TwigFunction('collect', [$this, 'collect']),
@@ -644,10 +643,10 @@ class TwigExtension extends AbstractExtension
 
                 $_SESSION['catalog_product_view'] = $list;
 
-                return true;
+                return;
         }
 
-        return null;
+        return;
     }
 
     // fetch order

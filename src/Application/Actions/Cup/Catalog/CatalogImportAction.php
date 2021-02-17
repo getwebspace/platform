@@ -22,7 +22,7 @@ class CatalogImportAction extends CatalogAction
                     $this->entityManager->flush();
 
                     // run worker
-                    \App\Domain\AbstractTask::worker();
+                    \App\Domain\AbstractTask::worker($task);
                 }
             }
         }

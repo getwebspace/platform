@@ -4,6 +4,7 @@ namespace App\Domain\Service\Catalog;
 
 use App\Domain\AbstractService;
 use App\Domain\Entities\Catalog\Order;
+use App\Domain\Entities\User;
 use App\Domain\Repository\Catalog\OrderRepository;
 use App\Domain\Service\Catalog\Exception\OrderNotFoundException;
 use Illuminate\Support\Collection;
@@ -35,7 +36,7 @@ class OrderService extends AbstractService
                 'client' => '',
                 'address' => '',
             ],
-            'user_uuid' => \Ramsey\Uuid\Uuid::NIL,
+            'user' => null,
             'list' => [
                 // 'uuid' => 'count',
             ],
@@ -53,7 +54,7 @@ class OrderService extends AbstractService
 
         $order = (new Order)
             ->setDelivery($data['delivery'])
-            ->setUserUuid($data['user_uuid'])
+            ->setUser($data['user'])
             ->setList($data['list'])
             ->setPhone($data['phone'])
             ->setEmail($data['email'])
@@ -95,6 +96,7 @@ class OrderService extends AbstractService
     {
         $default = [
             'uuid' => null,
+            'user' => null,
             'user_uuid' => null,
             'serial' => null,
             'phone' => null,
@@ -109,6 +111,9 @@ class OrderService extends AbstractService
 
         if ($data['uuid'] !== null) {
             $criteria['uuid'] = $data['uuid'];
+        }
+        if ($data['user'] !== null && is_a($data['user'], User::class)) {
+            $criteria['user_uuid'] = $data['user']->getUuid();
         }
         if ($data['user_uuid'] !== null) {
             $criteria['user_uuid'] = $data['user_uuid'];
@@ -174,7 +179,7 @@ class OrderService extends AbstractService
         if (is_object($entity) && is_a($entity, Order::class)) {
             $default = [
                 'delivery' => null,
-                'user_uuid' => null,
+                'user' => null,
                 'list' => null,
                 'phone' => null,
                 'email' => null,
@@ -192,14 +197,18 @@ class OrderService extends AbstractService
                 if ($data['delivery'] !== null) {
                     $entity->setDelivery($data['delivery']);
                 }
-                if ($data['user_uuid'] !== null) {
-                    $entity->setUserUuid($data['user_uuid']);
+                if ($data['user'] !== null) {
+                    $entity->setUser($data['user']);
                 }
                 if ($data['list'] !== null) {
                     $entity->setList($data['list']);
                 }
                 if ($data['phone'] !== null) {
-                    $entity->setPhone($data['phone']);
+                    if (blank($data['phone'])) {
+                        $entity->setPhone();
+                    } else {
+                        $entity->setPhone($data['phone']);
+                    }
                 }
                 if ($data['email'] !== null) {
                     $entity->setEmail($data['email']);

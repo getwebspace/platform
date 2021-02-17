@@ -23,6 +23,7 @@ RUN set -x \
     && apt-get install --no-install-recommends -y \
         nginx \
         git \
+        unzip \
         supervisor \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
@@ -63,6 +64,7 @@ COPY composer.lock ${PLATFORM_HOME}/composer.lock
 RUN composer install ${NO_DEV} --no-suggest --no-progress
 
 # Copy platform
+ADD bin ${PLATFORM_HOME}/bin
 ADD config ${PLATFORM_HOME}/config
 ADD plugin ${PLATFORM_HOME}/plugin
 ADD public ${PLATFORM_HOME}/public

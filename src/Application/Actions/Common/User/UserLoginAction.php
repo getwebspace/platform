@@ -31,6 +31,7 @@ class UserLoginAction extends UserAction
                         'password' => $data['password'],
                         'agent' => $data['agent'],
                         'ip' => $data['ip'],
+                        'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
                     ]);
 
                     setcookie('uuid', $user->getUuid()->toString(), time() + \App\Domain\References\Date::YEAR, '/');

@@ -4,6 +4,7 @@ $(() => {
     // toolbar
     let topbar_open = 0,
         topbar = $('.topbar-toggler');
+    
     topbar.on('click', function() {
         if (topbar_open === 1) {
             $('html').removeClass('topbar_open');
@@ -133,4 +134,265 @@ $(() => {
         fadeDelay: 1.0            // Point during the overlay's fade-in that the modal begins to fade in (.5 = 50%, 1.5 = 150%, etc.)
     };
     
+    // parameters guest user && user group
+    {
+        let $select = $('select[name="access[]"], [name="user[access][]"]'),
+            $options = $select.find('option');
+    
+        $('[data-access-click]').on('click', (e) => {
+            let $btn = $(e.currentTarget),
+                type = $btn.attr('data-access-click');
+        
+            if (type === 'none') {
+                $options.prop('selected', false);
+            } else {
+                $options.each((i, el) => {
+                    let $buf = $(el);
+                
+                    if ($buf.val().startsWith(type)) {
+                        $buf.prop('selected', !(+$buf.prop('selected')));
+                    }
+                });
+            }
+        
+            $select.trigger('change.select2');
+        });
+    }
+    
+    // parameters add variables
+    {
+        let $hidden = $('[name="var[]"]').parents('[data-input]'),
+            $value = $('[data-input="variable"]');
+        
+        $('[data-click="add_variable"]').on('click', () => {
+            let $clone = $hidden.clone();
+            
+            if (!$value.val() || $('[name="var[' + $value.val() + ']"]').length) {
+                $value.parents('.form-group').addClass('has-error');
+                setTimeout(() => {
+                    $value.parents('.form-group').removeClass('has-error');
+                }, 2500);
+            } else {
+                $clone.find('div:first').text('var_' + $value.val());
+                $clone.find('input')
+                    .attr('type', 'text')
+                    .attr('name', 'var[' + $value.val() + ']');
+                
+                $clone.insertBefore($hidden);
+                $value.val('');
+            }
+        });
+    }
+    
+    // product attribute
+    {
+        let $that = $('[id="attributes"]'),
+            $row = $that.find('div.col-12.col-md-7 .row'),
+            $template = $that.find('div[style="display: none"]').show().detach(),
+            $select = $that.find('select');
+    
+        $that.find('button').on('click', () => {
+            if ($row.find('[name="attributes[' + $select.val() + ']"]').length === 0) {
+                let $buf = $template.clone();
+            
+                $buf.find('label').text($select.find(':selected').text());
+                $buf.find('input').attr('name', 'attributes[' + $select.val() + ']');
+            
+                $buf.appendTo($row);
+            }
+        });
+    }
+    
+    // product relation
+    {
+        let
+            $that = $('[id="related"]'),
+            $modal = $('[data-related-modal-products].modal'),
+            $category = $modal.find('[type="select"][name="category"]'),
+            $product = $modal.find('[type="select"][name="product"]'),
+            $option = $('<option>'),
+            $quantity = $modal.find('[type="number"]'),
+            $btnSuccess = $modal.find('button'),
+            $template = $that.find('.list-group [style="display: none!important;"]').show().detach()
+        ;
+    
+        $that.find('[data-btn-related-modal-products]').click((e) => {
+            e.preventDefault();
+            this.blur();
+        
+            $category.html('').off('change').on('change', (e) => {
+                $product
+                    .html('')
+                    .prop('disabled', true);
+    
+                $.get('/api/catalog/product', {category: $(e.currentTarget).val()}, (res) => {
+                    if (res.length) {
+                        for (let item of res) {
+                            $product.append(
+                                $option.clone().text(item.title).val(item.uuid).data('price', item.price)
+                            );
+                        }
+                    }
+        
+                    $product
+                        .trigger('change.select2')
+                        .prop('disabled', false);
+                });
+            });
+        
+            $.get('/api/catalog/category', (res) => {
+                if (res.length) {
+                    (function renderTree(list, parent = '00000000-0000-0000-0000-000000000000', title = '') {
+                        let buf = 0;
+                    
+                        for (let item of list) {
+                            if (item.parent === parent) {
+                                let $el = $option.clone().text((title + ' ' + item.title).trim()).val(item.uuid);
+                            
+                                $category.append($el);
+                            
+                                if (renderTree(list, item.uuid, (title + ' ' + item.title).trim()) !== 0) {
+                                    $el.remove();
+                                }
+                            
+                                buf++;
+                            }
+                        }
+                    
+                        return buf;
+                    })(res);
+                
+                    $category.trigger('change').trigger('change.select2');
+                    $modal.modal();
+                }
+            });
+        });
+        
+        $that.find('ul.list-group button').on('click', (e) => {
+            e.preventDefault();
+            
+            $(e.currentTarget).parents('li').remove();
+        });
+    
+        $btnSuccess.on('click', () => {
+            if ($product.val() && $quantity.val() >= 1) {
+                let $selected = $product.find(':selected'),
+                    $find = $('[name="relation[' + $selected.attr('value') + ']"]');
+                
+                if ($find.length === 0) {
+                    let $buf = $template.clone(),
+                        $a = $buf.find('a'),
+                        $input = $buf.find('[name="relation[]"]');
+                
+                    $a.attr('href', $a.attr('href').replace('%UUID%', $selected.val()));
+                    $a.text($selected.text());
+                    $input.attr('name', 'relation[' + $selected.attr('value') + ']');
+                    $input.val($quantity.val());
+                
+                    $buf.appendTo($that.find('ul.list-group'));
+                } else {
+                    $find.val(parseFloat($find.val()) + parseFloat($quantity.val()));
+                }
+            
+                $.modal.close();
+            }
+        });
+    }
+    
+    // order form
+    {
+        let
+            $table = $('[data-table="order"]'),
+            table = $table.DataTable(),
+            $modal = $('[data-order-modal-products].modal'),
+            $category = $modal.find('[type="select"][name="category"]'),
+            $product = $modal.find('[type="select"][name="product"]'),
+            $option = $('<option>'),
+            $quantity = $modal.find('[type="number"]'),
+            $btnSuccess = $modal.find('button')
+        ;
+    
+        $table.find('tr [type="number"]').on('change', (e) => {
+            let $el = $(e.currentTarget);
+        
+            if ($el.val() <= 0) {
+                $el.parents('tr').remove();
+            }
+        });
+    
+        $('[data-btn-order-modal-products]').click((e) => {
+            e.preventDefault();
+            this.blur();
+        
+            $category.html('').off('change').on('change', (e) => {
+                $product
+                    .html('')
+                    .prop('disabled', true);
+    
+                $.get('/api/catalog/product', {category: $(e.currentTarget).val()}, (res) => {
+                    if (res.length) {
+                        for (let item of res) {
+                            $product.append(
+                                $option.clone().text(item.title).val(item.uuid).data('price', item.price)
+                            );
+                        }
+                    }
+        
+                    $product
+                        .trigger('change.select2')
+                        .prop('disabled', false);
+                });
+            });
+        
+            $.get('/api/catalog/category', (res) => {
+                if (res.length) {
+                    (function renderTree(list, parent = '00000000-0000-0000-0000-000000000000', title = '') {
+                        let buf = 0;
+                    
+                        for (let item of list) {
+                            if (item.parent === parent) {
+                                let $el = $option.clone().text((title + ' ' + item.title).trim()).val(item.uuid);
+                            
+                                $category.append($el);
+                            
+                                if (renderTree(list, item.uuid, (title + ' ' + item.title).trim()) !== 0) {
+                                    $el.remove();
+                                }
+                            
+                                buf++;
+                            }
+                        }
+                    
+                        return buf;
+                    })(res);
+                
+                    $category.trigger('change').trigger('change.select2');
+                    $modal.modal();
+                }
+            });
+        });
+    
+        $btnSuccess.on('click', () => {
+            if ($product.val() && $quantity.val() >= 1) {
+                let $selected = $product.find(':selected'),
+                    $find = $('[name="list[' + $selected.attr('value') + ']"]');
+            
+                if ($find.length === 0) {
+                    let $input = $('<input class="form-control" type="number" placeholder="1" min="0" step="any">')
+                        .attr('name', 'list[' + $selected.attr('value') + ']')
+                        .val($quantity.val())
+                    ;
+                
+                    table.row.add([$selected.text(), $selected.data('price'), $quantity.val()])
+                        .draw(true)
+                        .nodes().to$()
+                        .find('td:last-child').html($('<div class="form-group">').append($input));
+                } else {
+                    $find.val(parseFloat($find.val()) + parseFloat($quantity.val()));
+                }
+            
+                $.modal.close();
+            }
+        });
+    }
 });
