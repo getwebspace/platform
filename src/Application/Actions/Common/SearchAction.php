@@ -39,7 +39,7 @@ class SearchAction extends AbstractAction
                 if (!str_start_with($query, '%')) {
                     $qb->andWhere('e.title = :title');
                 } else {
-                    $qb->andWhere('e.title LIKE :title');
+                    $qb->andWhere('LOWER(e.title) LIKE LOWER(:title)');
                 }
 
                 $qb->setParameter('title', $query, \Doctrine\DBAL\Types\Type::STRING);
