@@ -13,6 +13,9 @@ if (PHP_SAPI === 'cli-server') {
     $_SERVER['SCRIPT_NAME'] = '';
 }
 
+// Start session
+session_start();
+
 // Include global const's
 require __DIR__ . '/../src/bootstrap.php';
 
