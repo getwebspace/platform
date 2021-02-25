@@ -642,8 +642,6 @@ class TwigExtension extends AbstractExtension
                 }
 
                 $_SESSION['catalog_product_view'] = $list;
-
-                return;
         }
 
         return;
