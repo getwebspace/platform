@@ -28,32 +28,41 @@ class ConvertImageTask extends AbstractTask
             return;
         }
 
+        $convert_size = $this->parameter('image_convert_min_size', 100000);
+        $command = $this->parameter('image_convert_bin', '/usr/bin/convert');
+        $params = [
+            '-quality 70%',
+            '-filter Lanczos',
+            '-gaussian-blur 0.05',
+            '-sampling-factor 4:2:0',
+            '-colorspace RGB',
+            '-interlace Plane',
+            '-strip',
+            '-depth 8',
+            '-в',
+            '-background white',
+            '-alpha remove',
+            '-alpha off',
+        ];
+        if (($arg = $this->parameter('image_convert_args', false)) !== false) {
+            $params = [$arg];
+        }
+        $params[] = '-set comment "Converted in WebSpace Engine CMS"';
+
         $fileService = FileService::getWithContainer($this->container);
 
         foreach ((array) $args['uuid'] as $index => $uuid) {
             try {
                 $file = $fileService->read(['uuid' => $uuid]);
 
+                if ($file->getSize() < $convert_size) {
+                    $this->logger->info('Task: skip file via min size');
+                    continue;
+                }
+
                 if (str_start_with($file->getType(), 'image/')) {
                     $folder = $file->getDir('');
                     $original = $file->getInternalPath();
-
-                    $command = $this->parameter('image_convert_bin', '/usr/bin/convert');
-                    $params = [
-                        '-quality 70%',
-                        '-filter Lanczos',
-                        '-gaussian-blur 0.05',
-                        '-sampling-factor 4:2:0',
-                        '-colorspace RGB',
-                        '-interlace Plane',
-                        '-strip',
-                        '-depth 8',
-                        '-в',
-                        '-background white',
-                        '-alpha remove',
-                        '-alpha off',
-                        '-set comment "Converted in WebSpace Engine CMS"',
-                    ];
 
                     foreach (
                         [

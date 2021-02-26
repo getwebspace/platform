@@ -260,8 +260,21 @@
                                                 } %}
 
                                                 {% include 'cup/field.twig' with {
+                                                    'label': 'Минимальный размер файла',
+                                                    'description': 'Файлы меньшего размера не будут подвергаться конвертации',
+                                                    'postfix': 'b',
+                                                    'type': 'number',
+                                                    'name': 'image[convert_min_size]',
+                                                    'args': {
+                                                        'placeholder': '100000',
+                                                        'value': '100000'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
                                                     'label': 'Размер маленькой превью копии загруженного изображения',
                                                     'description': 'Вы можете указать 0, если не хотите создавать превью копии загружаемых картинок на сервер',
+                                                    'postfix': 'px',
                                                     'type': 'number',
                                                     'name': 'image[convert_size_small]',
                                                     'args': {
@@ -273,6 +286,7 @@
                                                 {% include 'cup/field.twig' with {
                                                     'label': 'Размер средней копии загруженного изображения',
                                                     'description': 'Вы можете указать 0, если не хотите создавать превью копии загружаемых картинок на сервер',
+                                                    'postfix': 'px',
                                                     'type': 'number',
                                                     'name': 'image[convert_size_middle]',
                                                     'args': {
@@ -289,6 +303,31 @@
                                                     'args': {
                                                         'placeholder': '/usr/bin/convert',
                                                         'value': '/usr/bin/convert'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Параметры ImageMagick',
+                                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
+                                                    'type': 'textarea',
+                                                    'name': 'image[convert_args]',
+                                                    'args': {
+                                                        'placeholder': '...',
+                                                        'value': [
+                                                            '-quality 70%',
+                                                            '-filter Lanczos',
+                                                            '-gaussian-blur 0.05',
+                                                            '-sampling-factor 4:2:0',
+                                                            '-colorspace RGB',
+                                                            '-interlace Plane',
+                                                            '-strip',
+                                                            '-depth 8',
+                                                            '-в',
+                                                            '-background white',
+                                                            '-alpha remove',
+                                                            '-alpha off'
+                                                        ]|join('\n'),
+                                                        'style': 'min-height: 150px;'
                                                     }
                                                 } %}
                                             </div>
