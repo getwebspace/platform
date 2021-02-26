@@ -99,6 +99,9 @@ class CatalogExportAction extends CatalogAction
                     $row++;
                 }
 
+                // product attributes
+                $attributes = $model->getAttributes();
+
                 foreach ($fields as $index => $field) {
                     if (trim($field)) {
                         $cell = $sheet->getCell($this->getCellCoordinate($index + $offset['cols'], $row + 1 + $offset['rows']));
@@ -164,7 +167,42 @@ class CatalogExportAction extends CatalogAction
                                 break;
 
                             default:
-                                $cell->setValue($model->$field);
+                                // other field
+                                if (isset($model->$field)) {
+                                    // simple field value
+                                    $cell->setValue($model->$field);
+
+                                } elseif (!$attributes->isEmpty()) {
+                                    /** @var \App\Domain\Entities\Catalog\ProductAttribute $attribute */
+                                    $attribute = $attributes->filter(fn($el) => $el->getAddress() === $field)->first();
+
+                                    if ($attribute) {
+                                        switch ($attribute->getType()) {
+                                            case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_STRING:
+                                                $cell->setValue($attribute->getValue());
+
+                                                break;
+
+                                            case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_INTEGER:
+                                                $cell
+                                                    ->setValue($attribute->getValue())
+                                                    ->getStyle()
+                                                    ->getNumberFormat()
+                                                    ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_00);
+
+                                                break;
+
+                                            case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_FLOAT:
+                                                $cell
+                                                    ->setValue($attribute->getValue())
+                                                    ->getStyle()
+                                                    ->getNumberFormat()
+                                                    ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED2);
+
+                                                break;
+                                        }
+                                    }
+                                }
 
                                 break;
                         }

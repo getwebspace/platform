@@ -29,6 +29,7 @@
                             <thead>
                                 <tr>
                                     <th>Наименование</th>
+                                    <th width="20%">Адрес</th>
                                     <th width="10%" class="text-center no-sorting"></th>
                                 </tr>
                             </thead>
@@ -36,6 +37,15 @@
                                 {% for item in attributes %}
                                     <tr>
                                         <td>{{ item.title }}</td>
+                                        <td>
+                                            {% include 'cup/form.twig' with {
+                                                'type': 'text',
+                                                'args': {
+                                                    'value': item.address,
+                                                    'readonly': true
+                                                }
+                                            } %}
+                                        </td>
                                         <td class="text-center">
                                             <div class="btn-group">
                                                 <div class="btn-group dropdown">

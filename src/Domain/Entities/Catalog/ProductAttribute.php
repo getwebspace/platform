@@ -3,6 +3,7 @@
 namespace App\Domain\Entities\Catalog;
 
 use App\Domain\AbstractEntity;
+use BadMethodCallException;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use RuntimeException;
@@ -114,6 +115,14 @@ class ProductAttribute extends AbstractEntity
     public function getType()
     {
         return $this->attribute->getType();
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->attribute->getAddress();
     }
 
     /**

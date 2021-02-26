@@ -3,6 +3,7 @@
 namespace App\Application\Actions\Cup;
 
 use App\Domain\AbstractAction;
+use App\Domain\Service\Catalog\AttributeService as CatalogAttributeService;
 use App\Domain\Service\Parameter\ParameterService;
 use App\Domain\Service\User\GroupService as UserGroupService;
 
@@ -40,6 +41,7 @@ class ParametersPageAction extends AbstractAction
                 'guest' => $this->getRoutes()->filter(fn ($el) => str_start_with($el, ['api:', 'common:']))->all(),
             ],
             'groups' => UserGroupService::getWithContainer($this->container)->read(),
+            'attributes' => CatalogAttributeService::getWithContainer($this->container)->read(),
             'parameter' => $parameters,
         ]);
     }

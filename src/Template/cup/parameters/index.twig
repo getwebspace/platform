@@ -759,7 +759,7 @@
 
                                                 {% include 'cup/field.twig' with {
                                                     'label': 'Порядок колонок <b>Экспорта</b>',
-                                                    'description': 'Возможные колонки: <i>' ~ reference('/App/Domain/References/Catalog::EXPORT_FIELDS')|join(', ') ~ '</i><br>',
+                                                    'description': 'Возможные колонки: <i>' ~ reference('/App/Domain/References/Catalog::EXPORT_FIELDS')|merge(attributes.pluck('address'))|join(', ') ~ '</i><br>',
                                                     'message': 'Алиас каждой колонки с новой строки',
                                                     'type': 'textarea',
                                                     'name': 'catalog[export_columns]',
