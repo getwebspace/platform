@@ -235,6 +235,8 @@ class PageService extends AbstractService
                 foreach ($files as $file) {
                     try {
                         $fileService->delete($file);
+                    } catch (\Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException $e) {
+                        // nothing, file not found
                     } catch (\App\Domain\Service\File\Exception\FileNotFoundException $e) {
                         // nothing, file not found
                     }
