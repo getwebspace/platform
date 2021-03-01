@@ -54,7 +54,7 @@ class ImportTask extends AbstractTask
                 'category' => $this->parameter('catalog_category_template', 'catalog.category.twig'),
                 'product' => $this->parameter('catalog_product_template', 'catalog.product.twig'),
             ];
-            $attributes = $catalogAttributeService->read();
+            $attributes = $catalogAttributeService->read()->whereNotIn('type', \App\Domain\Types\Catalog\AttributeTypeType::TYPE_BOOLEAN);
 
             $now = new \DateTime();
             $category = null;

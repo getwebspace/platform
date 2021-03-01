@@ -746,7 +746,7 @@
 
                                                 {% include 'cup/field.twig' with {
                                                     'label': 'Порядок колонок <b>Импорта</b>',
-                                                    'description': 'Возможные колонки: <i>' ~ reference('/App/Domain/References/Catalog::IMPORT_FIELDS')|join(', ') ~ '</i><br>' ~
+                                                    'description': 'Возможные колонки: <i>' ~ reference('/App/Domain/References/Catalog::IMPORT_FIELDS')|merge(attributes.pluck('address'))|join(', ') ~ '</i><br>' ~
                                                                    'Пропустить колонку: <i>empty</i>',
                                                     'message': 'Алиас каждой колонки с новой строки',
                                                     'type': 'textarea',

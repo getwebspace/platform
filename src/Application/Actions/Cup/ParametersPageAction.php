@@ -41,7 +41,7 @@ class ParametersPageAction extends AbstractAction
                 'guest' => $this->getRoutes()->filter(fn ($el) => str_start_with($el, ['api:', 'common:']))->all(),
             ],
             'groups' => UserGroupService::getWithContainer($this->container)->read(),
-            'attributes' => CatalogAttributeService::getWithContainer($this->container)->read(),
+            'attributes' => CatalogAttributeService::getWithContainer($this->container)->read()->whereNotIn('type', \App\Domain\Types\Catalog\AttributeTypeType::TYPE_BOOLEAN),
             'parameter' => $parameters,
         ]);
     }
