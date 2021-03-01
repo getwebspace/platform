@@ -3,7 +3,6 @@
 namespace App\Domain\Entities\Catalog;
 
 use App\Domain\AbstractEntity;
-use BadMethodCallException;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use RuntimeException;
@@ -137,8 +136,19 @@ class ProductAttribute extends AbstractEntity
      */
     public function setValue($value)
     {
-        if ($this->checkStrLenMax($value, 1000)) {
-            $this->value = $value;
+        switch ($this->attribute->getType()) {
+            case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_STRING:
+                if ($this->checkStrLenMax($value, 1000)) {
+                    $this->value = mb_strtolower($value);
+                }
+
+                break;
+
+            case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_INTEGER:
+            case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_FLOAT:
+                $this->value = $value;
+
+                break;
         }
 
         return $this;
@@ -150,13 +160,13 @@ class ProductAttribute extends AbstractEntity
     public function getValue()
     {
         switch ($this->attribute->getType()) {
-            case 'string':
+            case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_STRING:
                 return (string) $this->value;
 
-            case 'integer':
+            case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_INTEGER:
                 return intval($this->value);
 
-            case 'float':
+            case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_FLOAT:
                 return floatval($this->value);
         }
 

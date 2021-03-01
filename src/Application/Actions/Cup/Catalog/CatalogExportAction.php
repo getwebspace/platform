@@ -60,7 +60,7 @@ class CatalogExportAction extends CatalogAction
 
                     break;
 
-                    false:
+                false:
                 case false:
                     $products = $this->catalogProductService->read([
                         'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,

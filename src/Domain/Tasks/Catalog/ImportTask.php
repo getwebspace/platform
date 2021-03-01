@@ -8,7 +8,6 @@ use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\CategoryNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\ProductNotFoundException;
-use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\File\Exception\FileNotFoundException;
 use App\Domain\Service\File\FileService;
@@ -60,7 +59,7 @@ class ImportTask extends AbstractTask
                         if ($action === 'insert') {
                             try {
                                 $this->logger->info('Search category', ['title' => $item]);
-                                $category = $catalogCategoryService->read(['title' => $item]);
+                                $category = $catalogCategoryService->read(['title' => $item['title']])->first();
                             } catch (CategoryNotFoundException $e) {
                                 $this->logger->info('Create category', ['title' => $item]);
 
@@ -72,7 +71,7 @@ class ImportTask extends AbstractTask
                                         'template' => $template,
                                         'export' => 'excel',
                                     ]);
-                                } catch (TitleAlreadyExistsException|MissingTitleValueException $e) {
+                                } catch (MissingTitleValueException $e) {
                                     $this->logger->warning('Category wrong title value');
                                 } catch (AddressAlreadyExistsException $e) {
                                     $this->logger->warning('Category wrong address value');
@@ -88,8 +87,8 @@ class ImportTask extends AbstractTask
                         $product = null;
                         $data = $item['data'] ?? [];
 
-                        if (isset($data[$key_field])) {
-                            try {
+                        try {
+                            if (!empty($data[$key_field])) {
                                 $this->logger->info('Search product', [$key_field => '' . $data[$key_field]['formatted'], 'item' => $data]);
                                 $product = $catalogProductService
                                     ->read([
@@ -101,22 +100,27 @@ class ImportTask extends AbstractTask
                                         ],
                                     ])
                                     ->first();
-                            } catch (ProductNotFoundException $e) {
-                                if ($action === 'insert') {
-                                    $this->logger->info('Create product', [$key_field => $data[$key_field]]);
+                            } else {
+                                throw new ProductNotFoundException();
+                            }
+                        } catch (ProductNotFoundException $e) {
+                            if ($action === 'insert') {
+                                $this->logger->info('Create product', [$key_field => @$data[$key_field]]);
 
-                                    try {
-                                        $create = [];
-                                        foreach ($data as $key => $value) {
-                                            if (
-                                                $key !== 'empty' &&
-                                                in_array($key, \App\Domain\References\Catalog::IMPORT_FIELDS, true) &&
-                                                !in_array($value, \App\Domain\References\Catalog::IMPORT_FIELDS, true) &&
-                                                ($value === null) === false
-                                            ) {
-                                                $create[$key] = $value['raw'];
-                                            }
+                                try {
+                                    $create = [];
+                                    foreach ($data as $key => $value) {
+                                        if (
+                                            $key !== 'empty' &&
+                                            in_array($key, \App\Domain\References\Catalog::IMPORT_FIELDS, true) &&
+                                            !in_array($value, \App\Domain\References\Catalog::IMPORT_FIELDS, true) &&
+                                            ($value === null) === false
+                                        ) {
+                                            $create[$key] = $value['raw'];
                                         }
+                                    }
+
+                                    if ($create) {
                                         $product = $catalogProductService->create(
                                             array_merge(
                                                 $create,
@@ -127,31 +131,31 @@ class ImportTask extends AbstractTask
                                                 ]
                                             )
                                         );
-                                    } catch (MissingTitleValueException|TitleAlreadyExistsException $e) {
-                                        $this->logger->warning('Product wrong title value');
-                                    } catch (AddressAlreadyExistsException $e) {
-                                        $this->logger->warning('Product wrong address value');
                                     }
-
-                                    continue 2;
+                                } catch (MissingTitleValueException $e) {
+                                    $this->logger->warning('Product wrong title value');
+                                } catch (AddressAlreadyExistsException $e) {
+                                    $this->logger->warning('Product wrong address value');
                                 }
-                            } finally {
-                                if ($product) {
-                                    $this->logger->info('Update product data', [$key_field => $data[$key_field]['formatted']]);
 
-                                    $update = ['date' => $now];
-                                    foreach ($data as $key => $value) {
-                                        if (
-                                            $key !== 'empty' &&
-                                            in_array($key, \App\Domain\References\Catalog::IMPORT_FIELDS, true) &&
-                                            !in_array($value, \App\Domain\References\Catalog::IMPORT_FIELDS, true) &&
-                                            ($value === null) === false
-                                        ) {
-                                            $update[$key] = $value['raw'];
-                                        }
+                                continue 2;
+                            }
+                        } finally {
+                            if ($product) {
+                                $this->logger->info('Update product data', [$key_field => @$data[$key_field]['formatted']]);
+
+                                $update = ['date' => $now];
+                                foreach ($data as $key => $value) {
+                                    if (
+                                        $key !== 'empty' &&
+                                        in_array($key, \App\Domain\References\Catalog::IMPORT_FIELDS, true) &&
+                                        !in_array($value, \App\Domain\References\Catalog::IMPORT_FIELDS, true) &&
+                                        ($value === null) === false
+                                    ) {
+                                        $update[$key] = $value['raw'];
                                     }
-                                    $catalogProductService->update($product, $update);
                                 }
+                                $catalogProductService->update($product, $update);
                             }
                         }
 
@@ -196,7 +200,7 @@ class ImportTask extends AbstractTask
         if ($fields) {
             $fields = array_map('trim', explode(PHP_EOL, $fields));
             $offset = [
-                'rows' => max(1, +$this->parameter('catalog_import_export_offset_rows', 1)),
+                'rows' => max(0, +$this->parameter('catalog_import_export_offset_rows', 0)),
                 'cols' => max(0, +$this->parameter('catalog_import_export_offset_cols', 0)),
             ];
 
@@ -222,7 +226,7 @@ class ImportTask extends AbstractTask
 
                     $value = trim((string) $cell->getValue());
 
-                    if ($value) {
+                    if (!blank($value)) {
                         if ($column !== 'empty') {
                             $buf[$fields[$column]] = [
                                 'raw' => $value,
@@ -234,16 +238,19 @@ class ImportTask extends AbstractTask
                     }
                 }
 
-                switch ($count) {
-                    case 1:
-                        $output[] = ['type' => 'category', 'title' => array_first($buf)];
+                if ($buf) {
+                    switch ($count) {
+                        case 1:
+                            $output[] = ['type' => 'category', 'title' => array_first($buf)];
 
-                        break;
+                            break;
 
-                    case count($fields):
-                        $output[] = ['type' => 'product', 'data' => $buf];
+                        case count($fields):
+                        default:
+                            $output[] = ['type' => 'product', 'data' => $buf];
 
-                        break;
+                            break;
+                    }
                 }
             }
 

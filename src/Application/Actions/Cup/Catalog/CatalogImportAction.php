@@ -19,8 +19,6 @@ class CatalogImportAction extends CatalogAction
                     $task = new \App\Domain\Tasks\Catalog\ImportTask($this->container);
                     $task->execute(['file' => $file->getUuid()->toString()]);
 
-                    $this->entityManager->flush();
-
                     // run worker
                     \App\Domain\AbstractTask::worker($task);
                 }

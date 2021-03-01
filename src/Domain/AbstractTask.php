@@ -191,6 +191,14 @@ abstract class AbstractTask extends AbstractComponent
     }
 
     /**
+     * @return string
+     */
+    public function getStatus(): string
+    {
+        return $this->entity->getStatus();
+    }
+
+    /**
      * @param null|string $status
      * @param int         $progress
      * @param string      $output
