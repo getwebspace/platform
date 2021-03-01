@@ -3,14 +3,17 @@
 namespace App\Domain\Tasks\Catalog;
 
 use App\Domain\AbstractTask;
+use App\Domain\Service\Catalog\AttributeService as CatalogAttributeService;
 use App\Domain\Service\Catalog\CategoryService as CatalogCatalogService;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\CategoryNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\ProductNotFoundException;
+use App\Domain\Service\Catalog\ProductAttributeService as CatalogProductAttributeService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\File\Exception\FileNotFoundException;
 use App\Domain\Service\File\FileService;
+use Illuminate\Support\Collection;
 
 class ImportTask extends AbstractTask
 {
@@ -38,8 +41,11 @@ class ImportTask extends AbstractTask
 
         $catalogCategoryService = CatalogCatalogService::getWithContainer($this->container);
         $catalogProductService = CatalogProductService::getWithContainer($this->container);
+        $catalogAttributeService = CatalogAttributeService::getWithContainer($this->container);
+        $catalogProductAttributeService = CatalogProductAttributeService::getWithContainer($this->container);
 
         // parse excel file
+        /** @var Collection $data */
         if (($data = $this->getParsedExcelData($file->getInternalPath())) !== []) {
             $action = $this->parameter('catalog_import_action', 'update');
             $key_field = $this->parameter('catalog_import_key', 'vendorcode');
@@ -48,6 +54,7 @@ class ImportTask extends AbstractTask
                 'category' => $this->parameter('catalog_category_template', 'catalog.category.twig'),
                 'product' => $this->parameter('catalog_product_template', 'catalog.product.twig'),
             ];
+            $attributes = $catalogAttributeService->read();
 
             $now = new \DateTime();
             $category = null;
@@ -131,6 +138,11 @@ class ImportTask extends AbstractTask
                                                 ]
                                             )
                                         );
+
+                                        $catalogProductAttributeService->proccess(
+                                            $product,
+                                            $data->intersectByKeys($attributes->pluck('title', 'address'))->map(fn($el) => $el['raw'])->all()
+                                        );
                                     }
                                 } catch (MissingTitleValueException $e) {
                                     $this->logger->warning('Product wrong title value');
@@ -156,6 +168,10 @@ class ImportTask extends AbstractTask
                                     }
                                 }
                                 $catalogProductService->update($product, $update);
+                                $catalogProductAttributeService->proccess(
+                                    $product,
+                                    $data->intersectByKeys($attributes->pluck('title', 'address'))->map(fn($el) => $el['raw'])->all()
+                                );
                             }
                         }
 
@@ -213,7 +229,7 @@ class ImportTask extends AbstractTask
                 }
 
                 $count = 0;
-                $buf = [];
+                $buf = collect();
                 foreach ($row->getCellIterator() as $column => $cell) {
                     $column = $this->getCellIndex($column) - $offset['cols'];
 

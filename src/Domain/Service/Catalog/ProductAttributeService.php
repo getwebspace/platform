@@ -22,17 +22,17 @@ class ProductAttributeService extends AbstractService
         $this->catalogAttributeService = $this->entityManager->getRepository(Attribute::class);
     }
 
-    public function proccess(array $attributes, Product $product)
+    public function proccess(Product $product, array $attributes): Product
     {
         foreach ($product->getAttributes() as $attribute) {
             $this->delete($attribute);
         }
 
-        foreach ($attributes as $uuid => $value) {
+        foreach ($attributes as $unique => $value) {
             if ($value) {
                 $this->create([
                     'product' => $product,
-                    'attribute' => $this->catalogAttributeService->findOneByUuid($uuid),
+                    'attribute' => Uuid::isValid($unique) ? $this->catalogAttributeService->findOneByUuid($unique) : $this->catalogAttributeService->findOneByAddress($unique),
                     'value' => $value,
                 ]);
             }

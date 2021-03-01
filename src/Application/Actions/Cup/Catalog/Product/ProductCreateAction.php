@@ -43,11 +43,11 @@ class ProductCreateAction extends CatalogAction
                     'external_id' => $this->request->getParam('external_id'),
                 ]);
                 $this->catalogProductAttributeService->proccess(
-                    $this->request->getParam('attributes', []),
-                    $product
+                    $product,
+                    $this->request->getParam('attributes', [])
                 );
                 $this->catalogProductRelationService->proccess(
-                    $this->request->getParam('relation', []), $product
+                    $product, $this->request->getParam('relation', [])
                 );
                 $product = $this->processEntityFiles($product);
 

@@ -118,10 +118,10 @@ class AttributeTest extends TestCase
         $this->assertInstanceOf(Product::class, $product);
 
         // set attributes to product
-        $this->productAttributeService->proccess([
+        $this->productAttributeService->proccess($product, [
             $attr1->getUuid()->toString() => $this->getFaker()->word,
             $attr2->getUuid()->toString() => $this->getFaker()->word,
-        ], $product);
+        ]);
 
         // to do add few asserts
     }
