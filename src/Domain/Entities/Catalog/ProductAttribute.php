@@ -150,7 +150,7 @@ class ProductAttribute extends AbstractEntity
      *
      * @return $this
      */
-    public function setValue($value): ProductAttribute
+    public function setValue($value): self
     {
         switch ($this->attribute->getType()) {
             case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_STRING:
@@ -220,9 +220,9 @@ class ProductAttribute extends AbstractEntity
     }
 
     /**
-     * @ORM\PostLoad()
+     * @ORM\PostLoad
      */
-    public function _populate_fields()
+    public function _populate_fields(): void
     {
         $this->title = $this->attribute->getTitle();
         $this->type = $this->attribute->getType();

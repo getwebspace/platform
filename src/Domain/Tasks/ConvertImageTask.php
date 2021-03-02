@@ -57,6 +57,7 @@ class ConvertImageTask extends AbstractTask
 
                 if ($file->getSize() < $convert_size) {
                     $this->logger->info('Task: skip file via min size');
+
                     continue;
                 }
 

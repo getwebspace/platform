@@ -171,10 +171,9 @@ class CatalogExportAction extends CatalogAction
                                 if (isset($model->$field)) {
                                     // simple field value
                                     $cell->setValue($model->$field);
-
                                 } elseif (!$attributes->isEmpty()) {
                                     /** @var \App\Domain\Entities\Catalog\ProductAttribute $attribute */
-                                    $attribute = $attributes->filter(fn($el) => $el->getAddress() === $field)->first();
+                                    $attribute = $attributes->filter(fn ($el) => $el->getAddress() === $field)->first();
 
                                     if ($attribute) {
                                         switch ($attribute->getType()) {
