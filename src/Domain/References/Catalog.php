@@ -17,5 +17,5 @@ class Catalog
         'order',
     ];
 
-    public const EXPORT_FIELDS = ['date'] + self::IMPORT_FIELDS;
+    public const EXPORT_FIELDS = self::IMPORT_FIELDS;
 }

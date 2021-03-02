@@ -26,7 +26,7 @@ class CatalogExportAction extends CatalogAction
             $alphabet = range('A', 'Z');
         }
 
-        return $alphabet[$index] . ($row + 1);
+        return \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($index) . ($row + 1);
     }
 
     protected function action(): \Slim\Http\Response
