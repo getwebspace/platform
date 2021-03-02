@@ -250,7 +250,7 @@
                                             }
                                         } %}
 
-                                        {% for file in item.getFiles() %}
+                                        {% for file in item.getFiles().sortBy('date') %}
                                             <div class="p-2 d-inline-block m-2 bg-grey2 text-center rounded">
                                                 <a href="{{ file.getPublicPath() }}" target="_blank">
                                                     <img class="rounded" height="100" src="{{ file.getPublicPath('small') }}" alt="preview" data-toggle="tooltip" data-placement="top" title="{{ file.getName() }}" />

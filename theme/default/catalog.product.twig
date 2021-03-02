@@ -53,7 +53,7 @@
                     </div>
                     <div class="product-thumbs" tabindex="1" style="overflow: hidden; outline: none;">
                         <div class="product-thumbs-track">
-                            {% for index, file in product.getFiles() %}
+                            {% for index, file in product.getFiles().sortBy('date') %}
                                 <div class="pt {{ index == 0 ? 'active' : '' }}" data-imgbigurl="{{ file.getPublicPath() }}">
                                     {% include 'mixin/img.twig' with {
                                         'src': file.getPublicPath('small'),

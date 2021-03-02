@@ -27,7 +27,7 @@
                     <iframe srcdoc="{{ item.message|raw }}" frameborder="0" style="width: 100%; min-height: 350px; overflow-y: scroll"></iframe>
 
                     <div class="row">
-                        {% for file in item.getFiles() %}
+                        {% for file in item.getFiles().sortBy('date') %}
                             <div class="col-sm-6 col-md-3">
                                 <a href="{{ file.getPublicPath() }}" class="d-block card card-stats card-round" target="_blank">
                                     <div class="card-body ">
