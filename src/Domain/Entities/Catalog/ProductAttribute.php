@@ -192,6 +192,34 @@ class ProductAttribute extends AbstractEntity
     }
 
     /**
+     * Return other values current attribute
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getOtherValues(): \Illuminate\Support\Collection
+    {
+        return $this->attribute
+            ->getProductAttributes()
+            ->unique('value')
+            ->whereNotIn('value', $this->value)
+            ->pluck('value');
+    }
+
+    /**
+     * Return other Products with current attribute value
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getOtherProducts(): \Illuminate\Support\Collection
+    {
+        return $this->attribute
+            ->getProductAttributes()
+            ->where('value', $this->value)
+            ->whereNotIn('product.uuid', $this->product->getUuid())
+            ->pluck('product');
+    }
+
+    /**
      * @ORM\PostLoad()
      */
     public function _populate_fields()

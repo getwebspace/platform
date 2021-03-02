@@ -126,4 +126,9 @@ class Attribute extends AbstractEntity
     {
         return $raw ? $this->productAttributes : collect($this->productAttributes);
     }
+
+    public function getValues(): \Illuminate\Support\Collection
+    {
+        return $this->getProductAttributes()->unique('value')->pluck('value');
+    }
 }
