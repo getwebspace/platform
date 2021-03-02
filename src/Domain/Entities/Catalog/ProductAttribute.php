@@ -10,6 +10,7 @@ use RuntimeException;
 /**
  * @ORM\Entity
  * @ORM\Table(name="catalog_product_attributes")
+ * @ORM\HasLifecycleCallbacks
  */
 class ProductAttribute extends AbstractEntity
 {
@@ -101,27 +102,42 @@ class ProductAttribute extends AbstractEntity
     }
 
     /**
-     * @return string
+     * @var string
      */
-    public function getTitle()
-    {
-        return $this->attribute->getTitle();
-    }
+    protected string $title = '';
 
     /**
      * @return string
      */
-    public function getType()
+    public function getTitle(): string
     {
-        return $this->attribute->getType();
+        return $this->title;
     }
+
+    /**
+     * @var string
+     */
+    protected string $type = '';
 
     /**
      * @return string
      */
-    public function getAddress()
+    public function getType(): string
     {
-        return $this->attribute->getAddress();
+        return $this->type;
+    }
+
+    /**
+     * @var string
+     */
+    protected string $address = '';
+
+    /**
+     * @return string
+     */
+    public function getAddress(): string
+    {
+        return $this->address;
     }
 
     /**
@@ -134,7 +150,7 @@ class ProductAttribute extends AbstractEntity
      *
      * @return $this
      */
-    public function setValue($value)
+    public function setValue($value): ProductAttribute
     {
         switch ($this->attribute->getType()) {
             case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_STRING:
@@ -173,5 +189,15 @@ class ProductAttribute extends AbstractEntity
         }
 
         throw new RuntimeException('Wrong attribute type');
+    }
+
+    /**
+     * @ORM\PostLoad()
+     */
+    public function _populate_fields()
+    {
+        $this->title = $this->attribute->getTitle();
+        $this->type = $this->attribute->getType();
+        $this->address = $this->attribute->getAddress();
     }
 }
