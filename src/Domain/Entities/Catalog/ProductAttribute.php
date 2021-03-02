@@ -144,6 +144,7 @@ class ProductAttribute extends AbstractEntity
 
                 break;
 
+            case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_BOOLEAN:
             case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_INTEGER:
             case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_FLOAT:
                 $this->value = $value;
@@ -163,6 +164,7 @@ class ProductAttribute extends AbstractEntity
             case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_STRING:
                 return (string) $this->value;
 
+            case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_BOOLEAN:
             case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_INTEGER:
                 return intval($this->value);
 
