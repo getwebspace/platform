@@ -152,6 +152,11 @@ class Attribute extends AbstractEntity
     public function getValuesWithCounts(\Illuminate\Support\Collection $categories = null): \Illuminate\Support\Collection
     {
         $buf = $this->getProductAttributes();
+
+        if ($categories) {
+            $buf = $buf->whereIn('product.category', $categories->pluck('uuid'));
+        }
+
         $result = collect();
 
         foreach ($this->getValues($categories) as $value) {
