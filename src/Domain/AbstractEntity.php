@@ -7,7 +7,6 @@ use App\Domain\Exceptions\WrongIpValueException;
 use App\Domain\Exceptions\WrongPhoneValueException;
 use BadMethodCallException;
 use DateTime;
-use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
 
 abstract class AbstractEntity

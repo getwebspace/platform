@@ -68,7 +68,6 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('reference', [$this, 'reference']),
             new TwigFunction('parameter', [$this, 'parameter']),
             new TwigFunction('pre', [$this, 'pre']),
-            new TwigFunction('dump', [$this, 'dump']),
             new TwigFunction('count', [$this, 'count']),
             new TwigFunction('df', [$this, 'df']),
             new TwigFunction('collect', [$this, 'collect']),
@@ -213,17 +212,9 @@ class TwigExtension extends AbstractExtension
      */
     public function pre(...$args): void
     {
-        call_user_func_array('pre', $args);
-    }
-
-    /**
-     * New debug function
-     *
-     * @param mixed ...$args
-     */
-    public function dump(...$args): void
-    {
-        call_user_func_array('dump', $args);
+        foreach ($args as $obj) {
+            dump(is_array($obj) || is_object($obj) ? array_serialize($obj) : $obj);
+        }
     }
 
     /**

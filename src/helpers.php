@@ -423,6 +423,8 @@ if (!function_exists('from_service_to_array')) {
             case is_a($object, AbstractEntity::class):
                 return [$object];
         }
+
+        return [];
     }
 }
 
