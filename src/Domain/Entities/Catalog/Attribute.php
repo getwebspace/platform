@@ -165,4 +165,14 @@ class Attribute extends AbstractEntity
 
         return $result;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'title' => $this->title,
+            'type' => $this->type,
+            'address' => $this->address,
+            'values' => $this->getValues(),
+        ];
+    }
 }
