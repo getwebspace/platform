@@ -127,8 +127,14 @@ class Attribute extends AbstractEntity
         return $raw ? $this->productAttributes : collect($this->productAttributes);
     }
 
-    public function getValues(): \Illuminate\Support\Collection
+    public function getValues(\Illuminate\Support\Collection $categories = null): \Illuminate\Support\Collection
     {
-        return $this->getProductAttributes()->unique('value')->pluck('value');
+        $buf = $this->getProductAttributes();
+
+        if ($categories) {
+            $buf = $buf->whereIn('product.category', $categories->pluck('uuid'));
+        }
+
+        return $buf->unique('value')->pluck('value');
     }
 }
