@@ -7,6 +7,7 @@ use App\Domain\Exceptions\WrongIpValueException;
 use App\Domain\Exceptions\WrongPhoneValueException;
 use BadMethodCallException;
 use DateTime;
+use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
 
 abstract class AbstractEntity
@@ -255,7 +256,7 @@ abstract class AbstractEntity
      */
     public function toArray(): array
     {
-        return array_except(get_object_vars($this), ['__initializer__', '__cloner__', '__isInitialized__']);
+        return array_serialize(array_except(get_object_vars($this), ['__initializer__', '__cloner__', '__isInitialized__']));
     }
 
     /**
@@ -265,7 +266,7 @@ abstract class AbstractEntity
      */
     public function __toString(): string
     {
-        return json_encode($this->toArray(), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+        return json_encode($this->toArray(), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT, 2048);
     }
 
     /**

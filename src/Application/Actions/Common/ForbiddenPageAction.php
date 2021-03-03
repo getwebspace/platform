@@ -8,6 +8,6 @@ class ForbiddenPageAction extends UserAction
 {
     protected function action(): \Slim\Http\Response
     {
-        return $this->respondWithTemplate('p403.twig')->withStatus(403);
+        return $this->respond('p403.twig')->withStatus(403);
     }
 }

@@ -66,7 +66,7 @@ class GuestBookAction extends AbstractAction
             return $model;
         });
 
-        return $this->respondWithTemplate($this->parameter('guestbook_template', 'guestbook.twig'), [
+        return $this->respond($this->parameter('guestbook_template', 'guestbook.twig'), [
             'messages' => $list,
             'pagination' => [
                 'count' => $guestBookService->count(['status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK]),

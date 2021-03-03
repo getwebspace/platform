@@ -109,4 +109,13 @@ class Group extends AbstractEntity
     {
         return $this->access;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'uuid' => $this->getUuid(),
+            'title' => $this->getTitle(),
+            'access' => $this->getAccess(),
+        ];
+    }
 }

@@ -129,6 +129,6 @@ class CartAction extends CatalogAction
             $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
         }
 
-        return $this->respondWithTemplate($this->parameter('catalog_cart_template', 'catalog.cart.twig'));
+        return $this->respond($this->parameter('catalog_cart_template', 'catalog.cart.twig'));
     }
 }

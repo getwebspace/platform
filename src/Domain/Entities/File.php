@@ -389,4 +389,19 @@ class File extends AbstractEntity
 
         return $buf[$uuid][$size];
     }
+
+    public function toArray(): array
+    {
+        $result = [
+            'name' => $this->getFileName(),
+            'size' => $this->getSize(),
+            'path' => [],
+        ];
+
+        foreach (['full', 'middle', 'small'] as $size) {
+            $result['path'][$size] = $this->getPublicPath($size);
+        }
+
+        return $result;
+    }
 }

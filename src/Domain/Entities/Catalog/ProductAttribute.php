@@ -219,6 +219,16 @@ class ProductAttribute extends AbstractEntity
             ->pluck('product');
     }
 
+    public function toArray(): array
+    {
+        return [
+            'title' => $this->title,
+            'type' => $this->type,
+            'address' => $this->address,
+            'value' => $this->value,
+        ];
+    }
+
     /**
      * @ORM\PostLoad
      */

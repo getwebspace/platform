@@ -60,6 +60,6 @@ class UserRegisterAction extends UserAction
             $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
         }
 
-        return $this->respondWithTemplate($this->parameter('user_register_template', 'user.register.twig'));
+        return $this->respond($this->parameter('user_register_template', 'user.register.twig'));
     }
 }

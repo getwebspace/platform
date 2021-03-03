@@ -29,7 +29,7 @@ class DynamicPageAction extends AbstractAction
         try {
             // site pages
             if (($page = $pageService->read(['address' => $path])) !== null) {
-                return $this->respondWithTemplate($page->getTemplate(), ['page' => $page]);
+                return $this->respond($page->getTemplate(), ['page' => $page]);
             }
         } catch (PageNotFoundException $e) {
             // ignore
@@ -41,7 +41,7 @@ class DynamicPageAction extends AbstractAction
         if ($categories->count() && ($category = $categories->firstWhere('address', $path)) !== null) {
             $childrenCategories = $category->getNested($categories)->pluck('uuid')->all();
 
-            return $this->respondWithTemplate($category->template['list'], [
+            return $this->respond($category->template['list'], [
                 'categories' => $categories->where('public', true),
                 'category' => $category,
                 'publications' => $publicationService->read([
@@ -64,7 +64,7 @@ class DynamicPageAction extends AbstractAction
                 $category = $categories->firstWhere('uuid', $publication->getCategory()->toString());
 
                 if ($category) {
-                    return $this->respondWithTemplate($category->template['full'], [
+                    return $this->respond($category->template['full'], [
                         'categories' => $categories->where('public', true),
                         'category' => $category,
                         'publication' => $publication,
@@ -75,6 +75,6 @@ class DynamicPageAction extends AbstractAction
             // ignore
         }
 
-        return $this->respondWithTemplate('p404.twig')->withStatus(404);
+        return $this->respond('p404.twig')->withStatus(404);
     }
 }

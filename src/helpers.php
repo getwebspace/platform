@@ -425,3 +425,45 @@ if (!function_exists('from_service_to_array')) {
         }
     }
 }
+
+if (!function_exists('array_serialize')) {
+    /**
+     * @param array|Collection $array
+     *
+     * @return array
+     */
+    function array_serialize($array)
+    {
+        foreach ($array as $key => $item) {
+            switch (true) {
+                case is_array($item):
+                case is_a($item, Collection::class):
+                    $array[$key] = array_serialize($item);
+
+                    break;
+
+                case is_a($item, \Ramsey\Uuid\Uuid::class):
+                    $array[$key] = (string) $item;
+
+                    break;
+
+                case is_a($item, \Doctrine\ORM\PersistentCollection::class):
+                    $array[$key] = array_serialize($item->toArray());
+
+                    break;
+
+                case is_a($item, AbstractEntity::class):
+                    $array[$key] = $item->toArray();
+
+                    break;
+
+                case is_a($item, \DateTime::class):
+                    $array[$key] = $item->format(\App\Domain\References\Date::DATETIME);
+
+                    break;
+            }
+        }
+
+        return $array;
+    }
+}

@@ -148,4 +148,12 @@ class Session extends AbstractEntity
             'date:' . $this->getDate()->getTimestamp()
         );
     }
+
+    public function toArray(): array
+    {
+        return [
+            'ip' => $this->getIp(),
+            'date' => $this->getDate()->format(\App\Domain\References\Date::DATETIME),
+        ];
+    }
 }

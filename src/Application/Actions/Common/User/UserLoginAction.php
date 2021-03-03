@@ -48,6 +48,6 @@ class UserLoginAction extends UserAction
             $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
         }
 
-        return $this->respondWithTemplate($this->parameter('user_login_template', 'user.login.twig'), ['identifier' => $identifier]);
+        return $this->respond($this->parameter('user_login_template', 'user.login.twig'), ['identifier' => $identifier]);
     }
 }

@@ -1,7 +1,7 @@
 <div class="up-item">
     <i class="flaticon-profile"></i>
 
-    {% if user is empty %}
+    {% if user == false %}
         <a href="/user/login">Вход</a> или <a href="/user/register">Регистрация</a>
     {% else %}
         <a href="/user/profile" style="text-decoration: underline;">

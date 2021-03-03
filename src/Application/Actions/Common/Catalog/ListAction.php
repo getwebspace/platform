@@ -34,7 +34,7 @@ class ListAction extends CatalogAction
             }
         } catch (CategoryNotFoundException $e) {
             // 404
-            return $this->respondWithTemplate('p404.twig')->withStatus(404);
+            return $this->respond('p404.twig')->withStatus(404);
         }
 
         // Product
@@ -44,11 +44,11 @@ class ListAction extends CatalogAction
             }
         } catch (ProductNotFoundException $e) {
             // 404
-            return $this->respondWithTemplate('p404.twig')->withStatus(404);
+            return $this->respond('p404.twig')->withStatus(404);
         }
 
         // 404
-        return $this->respondWithTemplate('p404.twig')->withStatus(404);
+        return $this->respond('p404.twig')->withStatus(404);
     }
 
     /**
@@ -169,7 +169,7 @@ class ListAction extends CatalogAction
                 ->getQuery()
                 ->getSingleScalarResult();
 
-            return $this->respondWithTemplate($this->parameter('catalog_category_template', 'catalog.category.twig'), [
+            return $this->respond($this->parameter('catalog_category_template', 'catalog.category.twig'), [
                 'categories' => $categories,
                 'products' => [
                     'all' => $products,
@@ -313,7 +313,7 @@ class ListAction extends CatalogAction
                 ->getQuery()
                 ->getSingleScalarResult();
 
-            return $this->respondWithTemplate($category->template['category'], [
+            return $this->respond($category->template['category'], [
                 'categories' => $categories,
                 'category' => $category,
                 'products' => [
@@ -351,7 +351,7 @@ class ListAction extends CatalogAction
         if ($product) {
             $category = $categories->firstWhere('uuid', $product->getCategory());
 
-            return $this->respondWithTemplate($category->template['product'], [
+            return $this->respond($category->template['product'], [
                 'categories' => $categories,
                 'category' => $category,
                 'product' => $product,

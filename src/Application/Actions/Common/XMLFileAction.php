@@ -20,6 +20,6 @@ class XMLFileAction extends AbstractAction
             }
         }
 
-        return $this->respondWithTemplate('p404.twig')->withStatus(404);
+        return $this->respond('p404.twig')->withStatus(404);
     }
 }

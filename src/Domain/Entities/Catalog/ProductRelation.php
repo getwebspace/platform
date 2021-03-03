@@ -123,4 +123,14 @@ class ProductRelation extends AbstractEntity
     {
         return $this->count;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'uuid' => $this->related->getUuid(),
+            'title' => $this->related->getTitle(),
+            'address' => $this->related->getAddress(),
+            'price' => $this->related->getPrice(),
+        ];
+    }
 }
