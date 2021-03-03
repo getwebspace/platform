@@ -612,7 +612,7 @@ class Category extends AbstractEntity
     /**
      * @param Collection $categories
      *
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     public function getNested(Collection &$categories)
     {

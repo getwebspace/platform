@@ -127,6 +127,17 @@ class Attribute extends AbstractEntity
         return $raw ? $this->productAttributes : collect($this->productAttributes);
     }
 
+    public function getProducts(\Illuminate\Support\Collection $categories = null): \Illuminate\Support\Collection
+    {
+        $buf = $this->getProductAttributes();
+
+        if ($categories) {
+            $buf = $buf->whereIn('product.category', $categories->pluck('uuid'));
+        }
+
+        return $buf->pluck('product');
+    }
+
     public function getValues(\Illuminate\Support\Collection $categories = null): \Illuminate\Support\Collection
     {
         $buf = $this->getProductAttributes();
@@ -136,5 +147,17 @@ class Attribute extends AbstractEntity
         }
 
         return $buf->unique('value')->pluck('value');
+    }
+
+    public function getValuesWithCounts(\Illuminate\Support\Collection $categories = null): \Illuminate\Support\Collection
+    {
+        $buf = $this->getProductAttributes();
+        $result = collect();
+
+        foreach ($this->getValues($categories) as $value) {
+            $result[$value] = $buf->where('value', $value)->count();
+        }
+
+        return $result;
     }
 }
