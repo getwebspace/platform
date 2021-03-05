@@ -9,6 +9,7 @@ use App\Domain\Exceptions\HttpForbiddenException;
 use App\Domain\Exceptions\HttpMethodNotAllowedException;
 use App\Domain\Exceptions\HttpNotFoundException;
 use App\Domain\Exceptions\HttpNotImplementedException;
+use App\Domain\Service\File\FileRelationService;
 use App\Domain\Service\File\FileService;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
@@ -73,8 +74,8 @@ abstract class AbstractAction extends AbstractComponent
         if (!$routes) {
             $routes = collect($this->container->get('router')->getRoutes())
                 ->flatten()
-                ->map(fn($item) => $item->getName())
-                ->filter(fn($item) => !str_start_with($item, \App\Application\Middlewares\AccessCheckerMiddleware::PUBLIC));
+                ->map(fn ($item) => $item->getName())
+                ->filter(fn ($item) => !str_start_with($item, \App\Application\Middlewares\AccessCheckerMiddleware::PUBLIC));
         }
 
         return $routes->combine($routes);
@@ -204,64 +205,47 @@ abstract class AbstractAction extends AbstractComponent
      * For add or remove files for AbstractEntity with files
      *
      * @param AbstractEntity $entity
-     * @param string[]       $fields
+     * @param string         $field
      *
      * @return AbstractEntity
      */
-    protected function processEntityFiles(AbstractEntity $entity, array $fields = []): AbstractEntity
+    protected function processEntityFiles(AbstractEntity $entity, string $field = 'files'): AbstractEntity
     {
-        if (
-            $this->parameter('file_is_enabled', 'no') === 'yes' &&
-            method_exists($entity, 'addFile') && method_exists($entity, 'getFiles') && method_exists($entity, 'removeFiles')
-        ) {
-            $default = [
-                'upload' => 'files',
-                'delete' => 'delete-file',
-            ];
-            $fields = array_merge($default, $fields);
-            $fileService = FileService::getWithContainer($this->container);
+        $fileRelationService = FileRelationService::getWithContainer($this->container);
 
-            // upload files
-            /** @var \Psr\Http\Message\UploadedFileInterface[] $files */
-            if (($files = ($this->request->getUploadedFiles()[$fields['upload']] ?? null)) !== null) {
-                if (!is_array($files)) {
-                    $files = [$files]; // allow upload one file
-                }
+        // new
+        if (($uploaded = $this->getUploadedFiles($field)) !== []) {
+            foreach ($uploaded as $index => $file) {
+                $fileRelationService->create([
+                    'entity' => $entity,
+                    'file' => $file,
+                    'order' => $index + 1,
+                ]);
+            }
+        }
 
-                $uuids = [];
-                foreach ($files as $el) {
-                    if (!$el->getError()) {
-                        $file = $fileService->createFromPath($el->file, $el->getClientFilename());
+        // update
+        if (($files = $this->request->getParam($field)) !== null) {
+            foreach ($files as $uuid => $data) {
+                $default = [
+                    'order' => null,
+                    'comment' => null,
+                    'delete' => null,
+                ];
+                $data = array_merge($default, $data);
 
-                        if (!$entity->getFiles()->firstWhere('uuid', $file->getUuid())) {
-                            $entity->addFile($file);
+                $relation = $entity->getFiles()->firstWhere('uuid', $uuid);
 
-                            // is image
-                            if (str_start_with($file->getType(), 'image/')) {
-                                $uuids[] = $file->getUuid();
-                            }
-                        }
+                if ($relation) {
+                    if ($data['delete'] !== null) {
+                        $fileRelationService->delete($relation);
+
+                        continue;
                     }
-                }
 
-                if ($uuids) {
-                    // add task convert
-                    $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
-                    $task->execute(['uuid' => $uuids]);
-
-                    // run worker
-                    \App\Domain\AbstractTask::worker($task);
+                    $fileRelationService->update($relation, $data);
                 }
             }
-
-            // remove files
-            if (($files = $this->request->getParam($fields['delete'])) !== null) {
-                $entity->removeFiles(
-                    $fileService->read(['uuid' => is_array($files) ? $files : [$files]])->toArray()
-                );
-            }
-
-            $fileService->write($entity);
         }
 
         return $entity;
@@ -276,7 +260,7 @@ abstract class AbstractAction extends AbstractComponent
      */
     protected function getUploadedFiles(string $field = 'files'): array
     {
-        $result = [];
+        $uploaded = [];
 
         if ($this->parameter('file_is_enabled', 'no') === 'yes') {
             $fileService = FileService::getWithContainer($this->container);
@@ -288,32 +272,32 @@ abstract class AbstractAction extends AbstractComponent
                 $files = [$files]; // allow upload one file
             }
 
-            $uuids = [];
+            $image_uuids = [];
 
             foreach ($files as $file) {
                 if (!$file->getError()) {
                     if (($model = $fileService->createFromPath($file->file, $file->getClientFilename())) !== null) {
-                        $result[] = $model;
+                        $uploaded[] = $model;
 
                         // is image
                         if (str_start_with('image/', $model->getType())) {
-                            $uuids[] = $model->getUuid();
+                            $image_uuids[] = $model->getUuid();
                         }
                     }
                 }
             }
 
-            if ($uuids) {
+            if ($image_uuids) {
                 // add task convert
                 $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
-                $task->execute(['uuid' => $uuids]);
+                $task->execute(['uuid' => $image_uuids]);
 
                 // run worker
                 \App\Domain\AbstractTask::worker($task);
             }
         }
 
-        return $result;
+        return $uploaded;
     }
 
     /**
@@ -374,6 +358,7 @@ abstract class AbstractAction extends AbstractComponent
                     '_error' => \Alksily\Support\Form::$globalError = $this->error,
                     'user' => $this->request->getAttribute('user', false),
                     'plugins' => $this->container->get('plugin')->get(),
+                    'sha' => ($_ENV['COMMIT_SHA'] ?? 'specific'),
                 ],
                 $data
             );

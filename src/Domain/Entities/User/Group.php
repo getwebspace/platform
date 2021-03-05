@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Domain\Repository\User\GroupRepository")
  * @ORM\Table(name="user_group")
  */
 class Group extends AbstractEntity

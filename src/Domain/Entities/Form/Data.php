@@ -3,17 +3,19 @@
 namespace App\Domain\Entities\Form;
 
 use App\Domain\AbstractEntity;
-use App\Domain\Entities\File;
+use App\Domain\Traits\FileTrait;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Domain\Repository\Form\DataRepository")
  * @ORM\Table(name="form_data")
  */
 class Data extends AbstractEntity
 {
+    use FileTrait;
+
     /**
      * @var Uuid
      * @ORM\Id
@@ -112,95 +114,8 @@ class Data extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\ManyToMany(targetEntity="App\Domain\Entities\File")
-     * @ORM\JoinTable(name="form_data_files",
-     *     joinColumns={@ORM\JoinColumn(name="data_uuid", referencedColumnName="uuid")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")}
-     * )
+     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\FormDataFileRelation", mappedBy="form_data")
+     * @ORM\OrderBy({"order": "ASC"})
      */
     protected $files = [];
-
-    /**
-     * @param File $file
-     *
-     * @return $this
-     */
-    public function addFile(\App\Domain\Entities\File $file)
-    {
-        $this->files[] = $file;
-
-        return $this;
-    }
-
-    /**
-     * @param array $files
-     *
-     * @return $this
-     */
-    public function addFiles(array $files)
-    {
-        foreach ($files as $file) {
-            $this->addFile($file);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param File $file
-     *
-     * @return $this
-     */
-    public function removeFile(\App\Domain\Entities\File $file): void
-    {
-        foreach ($this->files as $key => $value) {
-            if ($file === $value) {
-                unset($this->files[$key]);
-            }
-        }
-    }
-
-    /**
-     * @param array $files
-     *
-     * @return $this
-     */
-    public function removeFiles(array $files)
-    {
-        foreach ($files as $file) {
-            $this->removeFile($file);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function clearFiles()
-    {
-        foreach ($this->files as $key => $file) {
-            unset($this->files[$key]);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param bool $raw
-     *
-     * @return array|\Illuminate\Support\Collection
-     */
-    public function getFiles($raw = false)
-    {
-        return $raw ? $this->files : collect($this->files);
-    }
-
-    /**
-     * @return int
-     */
-    public function hasFiles()
-    {
-        return count($this->files);
-    }
 }

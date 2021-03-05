@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Domain\Repository\Catalog\AttributeRepository")
  * @ORM\Table(name="catalog_attribute")
  */
 class Attribute extends AbstractEntity

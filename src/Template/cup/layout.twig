@@ -3,15 +3,15 @@
 {% block title %}ЦУП CMS{% endblock %}
 
 {% block head %}
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.13.0/css/all.css">
-    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/assets/css/datatables.min.css">
-    <link rel="stylesheet" href="/assets/js/plugin/jquery.modal/jquery.modal.min.css">
-    <link rel="stylesheet" href="/assets/js/plugin/codemirror/lib/codemirror.css">
-    <link rel="stylesheet" href="/assets/js/plugin/codemirror/theme/darcula.css">
-    <link rel="stylesheet" href="/assets/js/plugin/froala/froala_editor.pkgd.css">
-    <link rel="stylesheet" href="/assets/js/plugin/froala/froala_style.css">
-    <link rel="stylesheet" href="/assets/css/atlantis.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.2/css/all.css">
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css?v={{ sha }}">
+    <link rel="stylesheet" href="/assets/css/datatables.min.css?v={{ sha }}">
+    <link rel="stylesheet" href="/assets/js/plugin/jquery.modal/jquery.modal.min.css?v={{ sha }}">
+    <link rel="stylesheet" href="/assets/js/plugin/codemirror/lib/codemirror.css?v={{ sha }}">
+    <link rel="stylesheet" href="/assets/js/plugin/codemirror/theme/darcula.css?v={{ sha }}">
+    <link rel="stylesheet" href="/assets/js/plugin/froala/froala_editor.pkgd.css?v={{ sha }}">
+    <link rel="stylesheet" href="/assets/js/plugin/froala/froala_style.css?v={{ sha }}">
+    <link rel="stylesheet" href="/assets/css/atlantis.css?v={{ sha }}">
 {% endblock %}
 
 {% block body %}
@@ -329,7 +329,7 @@
                                                                         <th width="50%">Версия движка:</th>
                                                                         <td width="50%" class="text-center">
                                                                             {{ properties.version.branch }}
-                                                                            (<a href="https://github.com/0x12f/platform/tree/{{ properties.version.commit }}" target="_blank">source</a>)
+                                                                            (<a href="https://github.com/0x12f/platform/tree/{{ properties.sha }}" target="_blank">source</a>)
                                                                         </td>
                                                                     </tr>
                                                                     <tr>
@@ -441,34 +441,34 @@
         {% endblock %}
     </body>
 
-    <script src="/assets/js/core/jquery.3.2.1.min.js"></script>
-    <script src="/assets/js/core/popper.min.js"></script>
-    <script src="/assets/js/core/tooltip.min.js"></script>
-    <script src="/assets/js/core/bootstrap.min.js"></script>
-    <script src="/assets/js/core/moment.min.js"></script>
-    <script src="/assets/js/core/moment-with-locales.min.js"></script>
+    <script src="/assets/js/core/jquery.3.2.1.min.js?v={{ sha }}"></script>
+    <script src="/assets/js/core/popper.min.js?v={{ sha }}"></script>
+    <script src="/assets/js/core/tooltip.min.js?v={{ sha }}"></script>
+    <script src="/assets/js/core/bootstrap.min.js?v={{ sha }}"></script>
+    <script src="/assets/js/core/moment.min.js?v={{ sha }}"></script>
+    <script src="/assets/js/core/moment-with-locales.min.js?v={{ sha }}"></script>
 
-    <script src="/assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
-    <script src="/assets/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
-    <script src="/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
-    <script src="/assets/js/plugin/datatables/datatables.min.js"></script>
-    <script src="/assets/js/plugin/jquery.modal/jquery.modal.min.js"></script>
-    <script src="/assets/js/plugin/sweetalert/sweetalert2.all.min.js"></script>
-    <script src="/assets/js/plugin/select2/select2.full.min.js"></script>
-    <script src="/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
-    <script src="/assets/js/plugin/codemirror/lib/codemirror.js"></script>
-    <script src="/assets/js/plugin/codemirror/addon/mode/overlay.js"></script>
-    <script src="/assets/js/plugin/codemirror/addon/selection/selection-pointer.js"></script>
-    <script src="/assets/js/plugin/codemirror/mode/css/css.js"></script>
-    <script src="/assets/js/plugin/codemirror/mode/xml/xml.js"></script>
-    <script src="/assets/js/plugin/codemirror/mode/javascript/javascript.js"></script>
-    <script src="/assets/js/plugin/codemirror/mode/vbscript/vbscript.js"></script>
-    <script src="/assets/js/plugin/codemirror/mode/htmlmixed/htmlmixed.js"></script>
-    <script src="/assets/js/plugin/codemirror/mode/twig/twig.js"></script>
-    <script src="/assets/js/plugin/froala/froala_editor.pkgd.js"></script>
-    <script src="/assets/js/plugin/froala/ru.js"></script>
+    <script src="/assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js?v={{ sha }}"></script>
+    <script src="/assets/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js?v={{ sha }}"></script>
+    <script src="/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js?v={{ sha }}"></script>
+    <script src="/assets/js/plugin/datatables/datatables.min.js?v={{ sha }}"></script>
+    <script src="/assets/js/plugin/jquery.modal/jquery.modal.min.js?v={{ sha }}"></script>
+    <script src="/assets/js/plugin/sweetalert/sweetalert2.all.min.js?v={{ sha }}"></script>
+    <script src="/assets/js/plugin/select2/select2.full.min.js?v={{ sha }}"></script>
+    <script src="/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js?v={{ sha }}"></script>
+    <script src="/assets/js/plugin/codemirror/lib/codemirror.js?v={{ sha }}"></script>
+    <script src="/assets/js/plugin/codemirror/addon/mode/overlay.js?v={{ sha }}"></script>
+    <script src="/assets/js/plugin/codemirror/addon/selection/selection-pointer.js?v={{ sha }}"></script>
+    <script src="/assets/js/plugin/codemirror/mode/css/css.js?v={{ sha }}"></script>
+    <script src="/assets/js/plugin/codemirror/mode/xml/xml.js?v={{ sha }}"></script>
+    <script src="/assets/js/plugin/codemirror/mode/javascript/javascript.js?v={{ sha }}"></script>
+    <script src="/assets/js/plugin/codemirror/mode/vbscript/vbscript.js?v={{ sha }}"></script>
+    <script src="/assets/js/plugin/codemirror/mode/htmlmixed/htmlmixed.js?v={{ sha }}"></script>
+    <script src="/assets/js/plugin/codemirror/mode/twig/twig.js?v={{ sha }}"></script>
+    <script src="/assets/js/plugin/froala/froala_editor.pkgd.js?v={{ sha }}"></script>
+    <script src="/assets/js/plugin/froala/ru.js?v={{ sha }}"></script>
 
-    <script src="/assets/js/cup/script.js"></script>
+    <script src="/assets/js/cup/script.js?v={{ sha }}"></script>
 
     {% block script '' %}
 {% endblock %}

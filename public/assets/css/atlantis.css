@@ -19518,3 +19518,30 @@ body[data-background-color="dark"] .board {
 .blocker {
     z-index: 10;
 }
+
+/* data-fileimage */
+[data-fileimage] [data-input] {
+    padding: 0;
+    margin: 0;
+}
+
+[data-fileimage] [data-input] [type="checkbox"] + label {
+    margin-left: 20px;
+}
+
+[data-fileimage] [data-input] [type="number"] {
+    height: 0.8rem!important;
+    width: 1.8rem!important;
+    padding: 8px;
+    border: #adb5bd solid 1px;
+    -moz-appearance: textfield;
+    text-align: center;
+    margin: 0 auto;
+    font-size: 9px;
+}
+
+[data-fileimage] [data-input] [type="number"]::-webkit-outer-spin-button,
+[data-fileimage] [data-input] [type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

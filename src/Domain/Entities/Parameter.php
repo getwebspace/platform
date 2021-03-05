@@ -6,7 +6,7 @@ use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Domain\Repository\ParameterRepository")
  * @ORM\Table(name="params")
  */
 class Parameter extends AbstractEntity

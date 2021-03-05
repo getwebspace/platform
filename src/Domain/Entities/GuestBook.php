@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Domain\Repository\GuestBookRepository")
  * @ORM\Table(name="guestbook")
  */
 class GuestBook extends AbstractEntity

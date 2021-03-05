@@ -3,16 +3,19 @@
 namespace App\Domain\Entities\Publication;
 
 use App\Domain\AbstractEntity;
+use App\Domain\Traits\FileTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Domain\Repository\Publication\CategoryRepository")
  * @ORM\Table(name="publication_category")
  */
 class Category extends AbstractEntity
 {
+    use FileTrait;
+
     /**
      * @var Uuid
      * @ORM\Id
@@ -344,58 +347,10 @@ class Category extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\ManyToMany(targetEntity="App\Domain\Entities\File")
-     * @ORM\JoinTable(name="publication_category_files",
-     *     joinColumns={@ORM\JoinColumn(name="category_uuid", referencedColumnName="uuid")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")}
-     * )
+     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\PublicationCategoryFileRelation", mappedBy="publication_category")
+     * @ORM\OrderBy({"order": "ASC"})
      */
     protected $files = [];
-
-    public function addFile(\App\Domain\Entities\File $file): void
-    {
-        $this->files[] = $file;
-    }
-
-    public function addFiles(array $files): void
-    {
-        foreach ($files as $file) {
-            $this->addFile($file);
-        }
-    }
-
-    public function removeFile(\App\Domain\Entities\File $file): void
-    {
-        foreach ($this->files as $key => $value) {
-            if ($file === $value) {
-                unset($this->files[$key]);
-            }
-        }
-    }
-
-    public function removeFiles(array $files): void
-    {
-        foreach ($files as $file) {
-            $this->removeFile($file);
-        }
-    }
-
-    public function clearFiles(): void
-    {
-        foreach ($this->files as $key => $file) {
-            unset($this->files[$key]);
-        }
-    }
-
-    public function getFiles($raw = false)
-    {
-        return $raw ? $this->files : collect($this->files);
-    }
-
-    public function hasFiles()
-    {
-        return count($this->files);
-    }
 
     /**
      * @param Collection $categories

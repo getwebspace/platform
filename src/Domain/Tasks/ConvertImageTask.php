@@ -76,6 +76,8 @@ class ConvertImageTask extends AbstractTask
 
                             if (!file_exists($path)) {
                                 mkdir($path, 0777, true);
+                            } else {
+                                $this->logger->info('Task: skip file via exists');
                             }
 
                             $buf = array_merge($params, ['-resize x' . $pixels . '\>']);

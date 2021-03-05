@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Domain\Repository\Catalog\MeasureRepository")
  * @ORM\Table(name="catalog_measure")
  */
 class Measure extends AbstractEntity

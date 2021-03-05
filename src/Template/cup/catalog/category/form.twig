@@ -119,46 +119,7 @@
 
                                 <hr>
 
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Изображения',
-                                            'type': 'file',
-                                            'name': 'files[]',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Здесь можно выбрать несколько изображений"></i>',
-                                            'args': {
-                                                'class': ['d-block', 'btn', 'btn-sm', 'bg-grey2'],
-                                                'multiple': true,
-                                                'accept': 'image/*'
-                                            }
-                                        } %}
-
-                                        {% for file in category.getFiles().sortBy('date') %}
-                                            <div class="p-2 d-inline-block m-2 bg-grey2 text-center rounded">
-                                                <a href="{{ file.getPublicPath() }}" target="_blank">
-                                                    <img class="rounded" height="100" src="{{ file.getPublicPath('small') }}" alt="preview" data-toggle="tooltip" data-placement="top" title="{{ file.getName() }}" />
-                                                </a>
-                                                <div class="pt-2">
-                                                    <div class="row">
-                                                        <div class="col-6">
-                                                            <span class="text-small">{{ file.getFileSize() }}</span>
-                                                        </div>
-                                                        <div class="col-6 text-right float-right">
-                                                            {% include 'cup/form.twig' with {
-                                                                'label': '<i class="fa fa-trash"></i>',
-                                                                'type': 'checkbox',
-                                                                'name': 'delete-file[]',
-                                                                'args': {
-                                                                    'value': file.uuid.toString()
-                                                                }
-                                                            } %}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                </div>
+                                {% include 'cup/form-image.twig' with { 'entity': category } %}
                             </div>
 
                             {# Tab: Атрибуты #}

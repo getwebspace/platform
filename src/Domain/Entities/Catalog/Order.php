@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="App\Domain\Repository\Catalog\OrderRepository")
  * @ORM\Table(name="catalog_order", indexes={
  *     @ORM\Index(name="catalog_order_status_idx", columns={"status"}),
  * })

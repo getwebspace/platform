@@ -17,9 +17,15 @@ class FileService extends AbstractService
      */
     protected $service;
 
+    /**
+     * @var FileRelationService
+     */
+    protected $serviceFileRelation;
+
     protected function init(): void
     {
         $this->service = $this->entityManager->getRepository(File::class);
+        $this->serviceFileRelation = FileRelationService::getWithEntityManager($this->entityManager);
     }
 
     /**
@@ -316,6 +322,12 @@ class FileService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, File::class)) {
+            $relations = $this->serviceFileRelation->read(['file_uuid' => $entity->getUuid()]);
+
+            foreach ($relations as $relation) {
+                $this->serviceFileRelation->delete($relation);
+            }
+
             @exec('rm -rf ' . $entity->getDir());
 
             $this->entityManager->remove($entity);
