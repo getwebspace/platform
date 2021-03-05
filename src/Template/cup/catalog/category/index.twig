@@ -36,48 +36,36 @@
                                     <th class="d-none">#</th>
                                     <th>Наименование</th>
                                     <th width="15%">Категория</th>
-                                    <th width="10%" class="text-center no-sorting"></th>
+                                    <th width="15%" class="text-center no-sorting"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for category in categories.where('parent', category ? category.uuid : NIL) %}
                                     <tr>
                                         <td class="text-center d-none">{{ category.order }}</td>
-                                        <td>
-                                            <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ category.address }}" target="_blank">
-                                                {{ category.title }}
-                                                <i class="fas fa-external-link-alt"></i>
-                                            </a>
-                                        </td>
+                                        <td>{{ category.title }}</td>
                                         <td>{{ categories.where('uuid', category.parent).first().title ?? '&mdash;' }}</td>
                                         <td class="text-center">
-                                            <div class="btn-group dropdown">
-                                                <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                                                    <i class="fas fa-bars"></i>
-                                                </button>
-                                                <ul class="dropdown-menu" role="menu">
-                                                    <li>
-                                                        <a href="/cup/catalog/category/{{ category.uuid }}" class="btn btn-link"><i class="fas fa-fw fa-sitemap"></i> Вложенные категории</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="/cup/catalog/product/{{ category.uuid }}" class="btn btn-link"><i class="fas fa-fw fa-eye"></i> Номенклатура</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="/cup/catalog/data/export?category={{ category.uuid }}" class="btn btn-link"><i class="fas fa-fw fa-file-export"></i> Экспорт продуктов</a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="/cup/catalog/category/{{ category.uuid }}/edit" class="btn btn-link"><i class="fas fa-fw fa-edit"></i> Изменить</a>
-                                                    </li>
-                                                    <li><div class="dropdown-divider"></div></li>
-                                                    <li>
-                                                        <form action="/cup/catalog/category/{{ category.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить категорию?');">
-                                                            <button type="submit" class="btn btn-link text-danger">
-                                                                <i class="fas fa-fw fa-trash-alt"></i> Удалить
-                                                            </button>
-                                                        </form>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                            <form action="/cup/catalog/category/{{ category.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить категорию?');">
+                                                <div class="btn-group">
+                                                    <a href="/cup/catalog/category/{{ category.uuid }}" class="btn btn-sm btn-info">
+                                                        <i class="fas fa-fw fa-sitemap"></i>
+                                                        <span class="d-none d-md-inline-block">Подкатегории</span>
+                                                    </a>
+                                                    <a href="/cup/catalog/category/{{ category.uuid }}" class="btn btn-sm btn-info">
+                                                        <i class="fas fa-fw fa-eye"></i>
+                                                        <span class="d-none d-md-inline-block">Номенклатура</span>
+                                                    </a>
+                                                    <a href="/cup/catalog/category/{{ category.uuid }}/edit" class="btn btn-sm btn-info">
+                                                        <i class="fas fa-fw fa-edit"></i>
+                                                        <span class="d-none d-md-inline-block">Изменить</span>
+                                                    </a>
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                        <i class="fas fa-fw fa-trash-alt"></i>
+                                                        <span class="d-none d-md-inline-block">Удалить</span>
+                                                    </button>
+                                                </div>
+                                            </form>
                                         </td>
                                     </tr>
                                 {% endfor %}

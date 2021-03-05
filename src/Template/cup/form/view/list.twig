@@ -37,26 +37,22 @@
                                 {% for item in list %}
                                     <tr>
                                         <td data-order="{{ item.date.getTimestamp() }}">
-                                            <a href="/cup/form/{{ form.uuid }}/view/{{ item.uuid }}" class="d-block">
-                                                {{ item.date|df('d.m.Y H:i:s') }}
-                                            </a>
+                                            {{ item.date|df('d.m.Y H:i:s') }}
                                         </td>
                                         <td>{{ item.uuid }}</td>
                                         <td class="text-center">
-                                            <div class="btn-group dropdown">
-                                                <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                                                    <i class="fas fa-bars"></i>
-                                                </button>
-                                                <ul class="dropdown-menu" role="menu">
-                                                    <li>
-                                                        <form action="/cup/form/{{ form.uuid }}/view/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить запись?');">
-                                                            <button type="submit" class="btn btn-link text-danger">
-                                                                <i class="fas fa-fw fa-trash-alt"></i> Удалить
-                                                            </button>
-                                                        </form>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                            <form action="/cup/form/{{ form.uuid }}/view/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить запись?');">
+                                                <div class="btn-group">
+                                                    <a href="/cup/form/{{ form.uuid }}/view/{{ item.uuid }}" class="btn btn-sm btn-info">
+                                                        <i class="fas fa-fw fa-eye"></i>
+                                                        <span class="d-none d-md-inline-block">Посмотреть</span>
+                                                    </a>
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                        <i class="fas fa-fw fa-trash-alt"></i>
+                                                        <span class="d-none d-md-inline-block">Удалить</span>
+                                                    </button>
+                                                </div>
+                                            </form>
                                         </td>
                                     </tr>
                                 {% endfor %}

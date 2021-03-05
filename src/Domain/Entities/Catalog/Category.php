@@ -509,10 +509,10 @@ class Category extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\ManyToMany(targetEntity="App\Domain\Entities\Catalog\Attribute")
+     * @ORM\ManyToMany(targetEntity="App\Domain\Entities\Catalog\Attribute", cascade={"remove"})
      * @ORM\JoinTable(name="catalog_category_attributes",
-     *     joinColumns={@ORM\JoinColumn(name="category_uuid", referencedColumnName="uuid")},
-     *     inverseJoinColumns={@ORM\JoinColumn(name="attribute_uuid", referencedColumnName="uuid")}
+     *     joinColumns={@ORM\JoinColumn(name="category_uuid", referencedColumnName="uuid", onDelete="CASCADE")},
+     *     inverseJoinColumns={@ORM\JoinColumn(name="attribute_uuid", referencedColumnName="uuid", onDelete="CASCADE")}
      * )
      */
     protected $attributes = [];
@@ -559,7 +559,7 @@ class Category extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\CatalogCategoryFileRelation", mappedBy="catalog_category")
+     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\CatalogCategoryFileRelation", mappedBy="catalog_category", orphanRemoval=true)
      * @ORM\OrderBy({"order": "ASC"})
      */
     protected $files = [];

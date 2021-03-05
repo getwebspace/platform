@@ -528,7 +528,7 @@ class Product extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\ProductAttribute", mappedBy="product")
+     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\ProductAttribute", mappedBy="product", orphanRemoval=true)
      */
     protected $attributes = [];
 
@@ -634,7 +634,7 @@ class Product extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\ProductRelation", mappedBy="product")
+     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\ProductRelation", mappedBy="product", orphanRemoval=true)
      */
     protected $relation = [];
 
@@ -646,6 +646,22 @@ class Product extends AbstractEntity
     public function hasRelations()
     {
         return count($this->relation);
+    }
+
+    /**
+     * @var array
+     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\ProductRelation", mappedBy="related", orphanRemoval=true)
+     */
+    protected $related = [];
+
+    public function getRelated($raw = false)
+    {
+        return $raw ? $this->related : collect($this->related);
+    }
+
+    public function hasRelated()
+    {
+        return count($this->related);
     }
 
     /**
@@ -831,7 +847,7 @@ class Product extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\CatalogProductFileRelation", mappedBy="catalog_product")
+     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\CatalogProductFileRelation", mappedBy="catalog_product", orphanRemoval=true)
      * @ORM\OrderBy({"order": "ASC"})
      */
     protected $files = [];

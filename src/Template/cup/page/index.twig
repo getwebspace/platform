@@ -31,18 +31,13 @@
                                     <th>Заголовок</th>
                                     <th width="25%">Ссылка</th>
                                     <th width="15%">Дата публикации</th>
-                                    <th width="10%" class="text-center no-sorting"></th>
+                                    <th width="15%" class="text-center no-sorting"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for item in list %}
                                     <tr>
-                                        <td>
-                                            <a href="/{{ item.address }}" target="_blank">
-                                                {{ item.title }}
-                                                <i class="fas fa-external-link-alt"></i>
-                                            </a>
-                                        </td>
+                                        <td>{{ item.title }}</td>
                                         <td>
                                             {% include 'cup/form.twig' with {
                                                 'type': 'text',
@@ -54,25 +49,18 @@
                                         </td>
                                         <td data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i') }}</td>
                                         <td class="text-center">
-                                            <div class="btn-group dropdown">
-                                                <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                                                    <i class="fas fa-bars"></i>
-                                                </button>
-                                                <ul class="dropdown-menu" role="menu">
-                                                    <li>
-                                                        <a href="/cup/page/{{ item.uuid }}/edit" class="btn btn-link"><i class="fas fa-fw fa-edit"></i> Изменить</a>
-                                                    </li>
-                                                    <li><div class="dropdown-divider"></div></li>
-                                                    <li>
-                                                        <form action="/cup/page/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить страницу?');">
-                                                            <button type="submit" class="btn btn-link text-danger">
-                                                                <i class="fas fa-fw fa-trash-alt"></i> Удалить
-                                                            </button>
-                                                        </form>
-                                                    </li>
-                                                </ul>
-
-                                            </div>
+                                            <form action="/cup/page/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить страницу?');">
+                                                <div class="btn-group">
+                                                    <a href="/cup/page/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
+                                                        <i class="fas fa-fw fa-edit"></i>
+                                                        <span class="d-none d-md-inline-block">Изменить</span>
+                                                    </a>
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                        <i class="fas fa-fw fa-trash-alt"></i>
+                                                        <span class="d-none d-md-inline-block">Удалить</span>
+                                                    </button>
+                                                </div>
+                                            </form>
                                         </td>
                                     </tr>
                                 {% endfor %}

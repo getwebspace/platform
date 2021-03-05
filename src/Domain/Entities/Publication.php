@@ -232,7 +232,7 @@ class Publication extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\PublicationFileRelation", mappedBy="publication")
+     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\PublicationFileRelation", mappedBy="publication", orphanRemoval=true)
      * @ORM\OrderBy({"order": "ASC"})
      */
     protected $files = [];

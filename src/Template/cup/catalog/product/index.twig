@@ -48,19 +48,14 @@
                                     <th width="7%" class="text-center"><i class="fas fa-boxes" data-toggle="tooltip" data-placement="top" title="Объем упаковки"></i></th>
                                     <th width="7%" class="text-center"><i class="fas fa-warehouse" data-toggle="tooltip" data-placement="top" title="Количество на складе"></i></th>
                                     <th width="10%">Артикул</th>
-                                    <th width="10%" class="text-center no-sorting"></th>
+                                    <th width="15%" class="text-center no-sorting"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for item in products %}
                                     <tr>
                                         <td class="text-center d-none">{{ item.order }}</td>
-                                        <td>
-                                            <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ item.address }}" target="_blank">
-                                                {{ item.title }}
-                                                <i class="fas fa-external-link-alt"></i>
-                                            </a>
-                                        </td>
+                                        <td>{{ item.title }}</td>
                                         <td class="text-right" data-order="{{ item.price }}">{{ item.price|number_format(2, '.', ' ') }}</td>
                                         <td class="text-center" data-order="{{ item.volume }}">{{ item.getVolumeWithUnit() }}</td>
                                         <td class="text-center" data-order="{{ item.stock }}">{{ item.stock|format_number({fraction_digit: 2}) }}</td>
@@ -76,24 +71,18 @@
                                             {% endif %}
                                         </td>
                                         <td class="text-center">
-                                            <div class="btn-group dropdown">
-                                                <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                                                    <i class="fas fa-bars"></i>
-                                                </button>
-                                                <ul class="dropdown-menu" role="menu">
-                                                    <li>
-                                                        <a href="/cup/catalog/product/{{ item.uuid }}/edit" class="btn btn-link"><i class="fas fa-fw fa-edit"></i> Изменить</a>
-                                                    </li>
-                                                    <li><div class="dropdown-divider"></div></li>
-                                                    <li>
-                                                        <form action="/cup/catalog/product/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить публикацию?');">
-                                                            <button type="submit" class="btn btn-link text-danger">
-                                                                <i class="fas fa-fw fa-trash-alt"></i> Удалить
-                                                            </button>
-                                                        </form>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                            <form action="/cup/catalog/product/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить продукт?');">
+                                                <div class="btn-group">
+                                                    <a href="/cup/catalog/product/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
+                                                        <i class="fas fa-fw fa-edit"></i>
+                                                        <span class="d-none d-md-inline-block">Изменить</span>
+                                                    </a>
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                        <i class="fas fa-fw fa-trash-alt"></i>
+                                                        <span class="d-none d-md-inline-block">Удалить</span>
+                                                    </button>
+                                                </div>
+                                            </form>
                                         </td>
                                     </tr>
                                 {% endfor %}

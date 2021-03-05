@@ -43,21 +43,14 @@
                                         <td>{{ item.getFileSize() }}</td>
                                         <td data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i:s') }}</td>
                                         <td class="text-center">
-                                            <div class="btn-group dropdown">
-                                                <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                                                    <i class="fas fa-bars"></i>
-                                                </button>
-                                                <ul class="dropdown-menu" role="menu">
-                                                    <li>
-                                                        <form action="/cup/file/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить файл?');">
-                                                            <button type="submit" class="btn btn-link text-danger">
-                                                                <i class="fas fa-fw fa-trash-alt"></i> Удалить
-                                                            </button>
-                                                        </form>
-                                                    </li>
-                                                </ul>
-
-                                            </div>
+                                            <form action="/cup/file/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить файл?');">
+                                                <div class="btn-group">
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                        <i class="fas fa-fw fa-trash-alt"></i>
+                                                        <span class="d-none d-md-inline-block">Удалить</span>
+                                                    </button>
+                                                </div>
+                                            </form>
                                         </td>
                                     </tr>
                                 {% endfor %}

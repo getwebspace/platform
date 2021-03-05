@@ -112,6 +112,21 @@ class Attribute extends AbstractEntity
     }
 
     /**
+     * @ORM\ManyToMany(targetEntity="App\Domain\Entities\Catalog\Category", mappedBy="attributes")
+     */
+    protected $categories = [];
+
+    /**
+     * @param mixed $raw
+     *
+     * @return array|\Illuminate\Support\Collection
+     */
+    public function getCategories($raw = false)
+    {
+        return $raw ? $this->categories : collect($this->categories);
+    }
+
+    /**
      * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\ProductAttribute", mappedBy="attribute", orphanRemoval=true)
      * @ORM\JoinColumn(name="uuid", referencedColumnName="attribute_uuid")
      */

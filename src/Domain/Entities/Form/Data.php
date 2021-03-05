@@ -114,7 +114,7 @@ class Data extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\FormDataFileRelation", mappedBy="form_data")
+     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\FormDataFileRelation", mappedBy="form_data", orphanRemoval=true)
      * @ORM\OrderBy({"order": "ASC"})
      */
     protected $files = [];

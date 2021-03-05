@@ -32,21 +32,18 @@
                                     <th>Клиент</th>
                                     <th width="10%">Статус</th>
                                     <th width="15%">Дата добавления</th>
-                                    <th width="10%" class="text-center no-sorting"></th>
+                                    <th width="15%" class="text-center no-sorting"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for item in orders %}
                                     <tr>
                                         <td data-order="{{ item.external_id ? item.external_id : item.date.getTimestamp() }}">
-                                            <a href="/cart/done/{{ item.uuid }}" target="_blank">
-                                                {% if item.external_id %}
-                                                    {{ item.external_id }} ({{ item.serial }})
-                                                {% else %}
-                                                    {{ item.serial }}
-                                                {% endif %}
-                                                <i class="fas fa-external-link-alt"></i>
-                                            </a>
+                                            {% if item.external_id %}
+                                                {{ item.external_id }} ({{ item.serial }})
+                                            {% else %}
+                                                {{ item.serial }}
+                                            {% endif %}
                                         </td>
                                         <td>{{ item.user and item.user.getName() ? item.user.getName() : item.delivery.client }}</td>
                                         <td>
@@ -54,28 +51,18 @@
                                         </td>
                                         <td data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i') }}</td>
                                         <td class="text-center">
-                                            <div class="btn-group">
-                                                <div class="btn-group dropdown">
-                                                    <button class="btn btn-info btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                                                        <i class="fas fa-bars"></i>
+                                            <form action="/cup/catalog/order/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить заказ?');">
+                                                <div class="btn-group">
+                                                    <a href="/cup/catalog/order/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
+                                                        <i class="fas fa-fw fa-edit"></i>
+                                                        <span class="d-none d-md-inline-block">Изменить</span>
+                                                    </a>
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                        <i class="fas fa-fw fa-trash-alt"></i>
+                                                        <span class="d-none d-md-inline-block">Удалить</span>
                                                     </button>
-                                                    <ul class="dropdown-menu" role="menu">
-                                                        <li>
-                                                            <a href="/cup/catalog/order/{{ item.uuid }}/edit" class="btn btn-link"><i class="fas fa-edit"></i>Изменить</a>
-                                                        </li>
-                                                        <li>
-                                                            <div class="dropdown-divider"></div>
-                                                        </li>
-                                                        <li>
-                                                            <form action="/cup/catalog/order/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить заказ?');">
-                                                                <button type="submit" class="btn btn-link text-danger">
-                                                                    <i class="fas fa-fw fa-trash-alt"></i> Удалить
-                                                                </button>
-                                                            </form>
-                                                        </li>
-                                                    </ul>
                                                 </div>
-                                            </div>
+                                            </form>
                                         </td>
                                     </tr>
                                 {% endfor %}

@@ -347,7 +347,7 @@ class Category extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\PublicationCategoryFileRelation", mappedBy="publication_category")
+     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\PublicationCategoryFileRelation", mappedBy="publication_category", orphanRemoval=true)
      * @ORM\OrderBy({"order": "ASC"})
      */
     protected $files = [];

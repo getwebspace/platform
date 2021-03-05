@@ -238,7 +238,7 @@ class Page extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\PageFileRelation", mappedBy="page")
+     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\PageFileRelation", mappedBy="page", orphanRemoval=true)
      * @ORM\OrderBy({"order": "ASC"})
      */
     protected $files = [];
