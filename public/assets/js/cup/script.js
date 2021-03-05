@@ -187,7 +187,7 @@ $(() => {
     // product attribute
     {
         let $that = $('[id="attributes"]'),
-            $row = $that.find('div.col-12.col-md-7 .row'),
+            $row = $that.find('div.col-12.col-md-6 .row'),
             $template = $that.find('div[style="display: none"]').show().detach(),
             $select = $that.find('select');
     

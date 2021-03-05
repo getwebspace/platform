@@ -334,8 +334,8 @@
                                             'label': 'Атрибуты',
                                             'type': 'select',
                                             'message': '<p class="float-left">Укажите индивидуальные атрибуты для товара</p>'~
-                                            '<button class="btn btn-xs btn-secondary float-right" type="button">Добавить поле</button>' ~
-                                            '<a href="/cup/catalog/attribute/add" class="btn btn-xs btn-info mr-1 float-right" onclick="return confirm(\'Вы действительно хотите перейти на другую страницу?\');"><i class="fa fa-plus"></i> Добавить атрибут</a>' ,
+                                                       '<button class="btn btn-xs btn-secondary float-right" type="button">Добавить поле</button>' ~
+                                                       '<a href="/cup/catalog/attribute/add" class="btn btn-xs btn-info mr-1 float-right" onclick="return confirm(\'Вы действительно хотите перейти на другую страницу?\');"><i class="fa fa-plus"></i> Добавить атрибут</a>' ,
                                             'args': {
                                                 'option': attributes.where('type', '!=', 'boolean').pluck('title', 'uuid').all(),
                                                 'data': {'select': 'attributes'}
