@@ -161,13 +161,13 @@ class ListAction extends CatalogAction
                     ->getQuery()
                     ->getResult()
             );
-            $count = +$query
-                ->select('count(p)')
-                ->setMaxResults(null)
-                ->setFirstResult(null)
-                ->resetDQLParts(['groupBy', 'having'])
-                ->getQuery()
-                ->getSingleScalarResult();
+
+            $count = +$this->entityManager->createQueryBuilder()
+                ->select('COUNT(x)')
+                ->from(\App\Domain\Entities\Catalog\Product::class, 'x')
+                ->where($qb->expr()->in('x.uuid', $query->getDQL()))
+                ->setParameters($query->getParameters())
+                ->getQuery()->getSingleScalarResult();
 
             return $this->respond($this->parameter('catalog_category_template', 'catalog.category.twig'), [
                 'categories' => $categories,
@@ -305,13 +305,13 @@ class ListAction extends CatalogAction
                     ->getQuery()
                     ->getResult()
             );
-            $count = +$query
-                ->select('count(p)')
-                ->setMaxResults(null)
-                ->setFirstResult(null)
-                ->resetDQLParts(['groupBy', 'having'])
-                ->getQuery()
-                ->getSingleScalarResult();
+
+            $count = +$this->entityManager->createQueryBuilder()
+                ->select('COUNT(x)')
+                ->from(\App\Domain\Entities\Catalog\Product::class, 'x')
+                ->where($qb->expr()->in('x.uuid', $query->getDQL()))
+                ->setParameters($query->getParameters())
+                ->getQuery()->getSingleScalarResult();
 
             return $this->respond($category->template['category'], [
                 'categories' => $categories,
