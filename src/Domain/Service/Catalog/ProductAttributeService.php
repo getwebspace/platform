@@ -22,19 +22,39 @@ class ProductAttributeService extends AbstractService
         $this->catalogAttributeService = $this->entityManager->getRepository(Attribute::class);
     }
 
-    public function proccess(Product $product, array $attributes): Product
+    public function proccess(Product $product, array $attributes, bool $update_only = false): Product
     {
-        foreach ($product->getAttributes() as $attribute) {
-            $this->delete($attribute);
-        }
+        if ($update_only === false) {
+            foreach ($product->getAttributes() as $attribute) {
+                $this->delete($attribute);
+            }
 
-        foreach ($attributes as $unique => $value) {
-            if ($value) {
-                $this->create([
-                    'product' => $product,
-                    'attribute' => Uuid::isValid($unique) ? $this->catalogAttributeService->findOneByUuid($unique) : $this->catalogAttributeService->findOneByAddress($unique),
-                    'value' => $value,
-                ]);
+            foreach ($attributes as $unique => $value) {
+                if ($value) {
+                    $this->create([
+                        'product' => $product,
+                        'attribute' => Uuid::isValid($unique) ? $this->catalogAttributeService->findOneByUuid($unique) : $this->catalogAttributeService->findOneByAddress($unique),
+                        'value' => $value,
+                    ]);
+                }
+            }
+        } else {
+            foreach ($attributes as $unique => $value) {
+                if ($value) {
+                    $attribute = $product->getAttributes()->firstWhere('address', $unique) ?? $product->getAttributes()->firstWhere('address', $unique) ?? null;
+
+                    if ($attribute) {
+                        $this->update($attribute, [
+                            'value' => $value,
+                        ]);
+                    } else {
+                        $this->create([
+                            'product' => $product,
+                            'attribute' => Uuid::isValid($unique) ? $this->catalogAttributeService->findOneByUuid($unique) : $this->catalogAttributeService->findOneByAddress($unique),
+                            'value' => $value,
+                        ]);
+                    }
+                }
             }
         }
 
@@ -74,10 +94,47 @@ class ProductAttributeService extends AbstractService
     /**
      * @param       $entity
      * @param array $data
+     *
+     * @throws AttributeNotFoundException
+     *
+     * @return ProductAttribute
      */
-    public function update($entity, array $data = []): void
+    public function update($entity, array $data = []): ProductAttribute
     {
-        throw new \RuntimeException('Unused method');
+        switch (true) {
+            case is_string($entity) && Uuid::isValid($entity):
+            case is_object($entity) && is_a($entity, Uuid::class):
+                $entity = $this->service->findOneByUuid((string) $entity);
+
+                break;
+        }
+
+        if (is_object($entity) && is_a($entity, ProductAttribute::class)) {
+            $default = [
+                'product' => null,
+                'attribute' => null,
+                'value' => null,
+            ];
+            $data = array_merge($default, $data);
+
+            if ($data !== $default) {
+                if ($data['product'] !== null) {
+                    $entity->setProduct($data['product']);
+                }
+                if ($data['attribute'] !== null) {
+                    $entity->setAttribute($data['attribute']);
+                }
+                if ($data['value'] !== null) {
+                    $entity->setValue($data['value']);
+                }
+
+                $this->entityManager->flush();
+            }
+
+            return $entity;
+        }
+
+        throw new AttributeNotFoundException();
     }
 
     /**

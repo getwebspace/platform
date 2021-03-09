@@ -754,7 +754,7 @@
                                                     'name': 'catalog[import_columns]',
                                                     'args': {
                                                         'style': 'height: 200px!important;',
-                                                        'placeholder': ['title', 'description', 'vendorcode', 'price', 'manufacturer', 'external_id']|join("\n"),
+                                                        'value': reference('/App/Domain/References/Catalog::IMPORT_EXPORT_FIELDS_DEFAULT')|join("\n"),
                                                     },
                                                 } %}
 
@@ -766,7 +766,7 @@
                                                     'name': 'catalog[export_columns]',
                                                     'args': {
                                                         'style': 'height: 200px!important;',
-                                                        'placeholder': ['title', 'description', 'vendorcode', 'price', 'manufacturer', 'external_id']|join("\n"),
+                                                        'value': reference('/App/Domain/References/Catalog::IMPORT_EXPORT_FIELDS_DEFAULT')|join("\n"),
                                                     },
                                                 } %}
                                             </div>

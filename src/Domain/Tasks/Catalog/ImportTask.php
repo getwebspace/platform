@@ -141,7 +141,8 @@ class ImportTask extends AbstractTask
 
                                         $catalogProductAttributeService->proccess(
                                             $product,
-                                            $data->intersectByKeys($attributes->pluck('title', 'address'))->map(fn ($el) => $el['raw'])->all()
+                                            $data->intersectByKeys($attributes->pluck('title', 'address'))->map(fn($el) => $el['raw'])->all(),
+                                            true
                                         );
                                     }
                                 } catch (MissingTitleValueException $e) {
@@ -167,10 +168,14 @@ class ImportTask extends AbstractTask
                                         $update[$key] = $value['raw'];
                                     }
                                 }
+                                if ($category) {
+                                    $update['category'] = $category->getUuid();
+                                }
                                 $catalogProductService->update($product, $update);
                                 $catalogProductAttributeService->proccess(
                                     $product,
-                                    $data->intersectByKeys($attributes->pluck('title', 'address'))->map(fn ($el) => $el['raw'])->all()
+                                    $data->intersectByKeys($attributes->pluck('title', 'address'))->map(fn($el) => $el['raw'])->all(),
+                                    true
                                 );
                             }
                         }
@@ -211,7 +216,7 @@ class ImportTask extends AbstractTask
      */
     protected function getParsedExcelData($path = '')
     {
-        $fields = trim($this->parameter('catalog_import_columns', ''));
+        $fields = trim($this->parameter('catalog_import_columns', \App\Domain\References\Catalog::IMPORT_EXPORT_FIELDS_DEFAULT));
 
         if ($fields) {
             $fields = array_map('trim', explode(PHP_EOL, $fields));
@@ -230,6 +235,7 @@ class ImportTask extends AbstractTask
 
                 $count = 0;
                 $buf = collect();
+
                 foreach ($row->getCellIterator() as $column => $cell) {
                     $column = $this->getCellIndex($column) - $offset['cols'];
 

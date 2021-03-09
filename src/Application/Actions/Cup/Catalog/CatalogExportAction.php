@@ -26,13 +26,13 @@ class CatalogExportAction extends CatalogAction
             $alphabet = range('A', 'Z');
         }
 
-        return \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($index) . ($row + 1);
+        return \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($index + 1) . ($row + 1);
     }
 
     protected function action(): \Slim\Http\Response
     {
         // Fields
-        $fields = trim($this->parameter('catalog_export_columns', ''));
+        $fields = trim($this->parameter('catalog_export_columns', \App\Domain\References\Catalog::IMPORT_EXPORT_FIELDS_DEFAULT));
 
         if ($fields) {
             $fields = array_map('trim', explode(PHP_EOL, $fields));
@@ -60,7 +60,7 @@ class CatalogExportAction extends CatalogAction
 
                     break;
 
-                false:
+                     false:
                 case false:
                     $products = $this->catalogProductService->read([
                         'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
@@ -93,7 +93,16 @@ class CatalogExportAction extends CatalogAction
                     // get header cell
                     $sheet
                         ->getCell($this->getCellCoordinate(0 + $offset['cols'], $row + 1 + $offset['rows']))
-                        ->setValue($categories->firstWhere('uuid', $model->getCategory())->title ?? 'Без категории');
+                        ->setValue($categories->firstWhere('uuid', $model->getCategory())->title ?? 'Без категории')
+                        ->getStyle()
+                        ->getAlignment()
+                        ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+                    $sheet->mergeCells(
+                        $this->getCellCoordinate(0 + $offset['cols'], $row + 1 + $offset['rows']) .
+                        ':' .
+                        $this->getCellCoordinate(count($fields) - 1 + $offset['cols'], $row + 1 + $offset['rows'])
+                    );
 
                     $lastCategory = $model->getCategory()->toString();
                     $row++;
@@ -113,6 +122,11 @@ class CatalogExportAction extends CatalogAction
                             ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
 
                         switch ($field) {
+                            case 'uuid':
+                                $cell->setValue($model->getUuid()->toString());
+
+                                break;
+
                             case 'category':
                                 $cell->setValue($categories->firstWhere('uuid', $model->getCategory())->title ?? 'Без категории');
 
@@ -148,12 +162,20 @@ class CatalogExportAction extends CatalogAction
 
                             case 'volume':
                             case 'stock':
-                            case 'order':
                                 $cell
                                     ->setValue($model->$field)
                                     ->getStyle()
                                     ->getNumberFormat()
                                     ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_00);
+
+                                break;
+
+                            case 'order':
+                                $cell
+                                    ->setValue($model->$field)
+                                    ->getStyle()
+                                    ->getNumberFormat()
+                                    ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER);
 
                                 break;
 
@@ -167,13 +189,16 @@ class CatalogExportAction extends CatalogAction
                                 break;
 
                             default:
-                                // other field
+                                // entity field value
                                 if (isset($model->$field)) {
-                                    // simple field value
                                     $cell->setValue($model->$field);
-                                } elseif (!$attributes->isEmpty()) {
+                                    continue 2;
+                                }
+
+                                // find attribute value
+                                if (!$attributes->isEmpty()) {
                                     /** @var \App\Domain\Entities\Catalog\ProductAttribute $attribute */
-                                    $attribute = $attributes->filter(fn ($el) => $el->getAddress() === $field)->first();
+                                    $attribute = $attributes->firstWhere('address', $field);
 
                                     if ($attribute) {
                                         switch ($attribute->getType()) {
@@ -201,7 +226,11 @@ class CatalogExportAction extends CatalogAction
                                                 break;
                                         }
                                     }
+
+                                    continue 2;
                                 }
+
+                                $cell->setValue('');
 
                                 break;
                         }
@@ -214,7 +243,7 @@ class CatalogExportAction extends CatalogAction
             return $this->response
                 ->withAddedHeader('Content-type', 'application/vnd.ms-excel')
                 ->withAddedHeader('Content-Disposition', 'attachment; filename="export ' . date(\App\Domain\References\Date::DATETIME) . '.xls"')
-                ->write(\PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xls')->save('php://output'));
+                ->write(\PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx')->save('php://output'));
         }
 
         return $this->response->withAddedHeader('Location', $_SERVER['HTTP_REFERER'] ?? '/cup/catalog/product')->withStatus(301);
