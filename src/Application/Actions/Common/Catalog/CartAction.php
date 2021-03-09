@@ -91,7 +91,7 @@ class CartAction extends CatalogAction
                         'body' => $this->render($tpl, ['order' => $order, 'products' => $products]),
                         'isHtml' => true,
                     ]);
-                    $isNeedRunWorker = true;
+                    $isNeedRunWorker = $task;
                 }
 
                 // mail to client
@@ -109,12 +109,12 @@ class CartAction extends CatalogAction
                         'body' => $this->render($tpl, ['order' => $order, 'products' => $products]),
                         'isHtml' => true,
                     ]);
-                    $isNeedRunWorker = true;
+                    $isNeedRunWorker = $task;
                 }
 
                 // run worker
                 if ($isNeedRunWorker) {
-                    \App\Domain\AbstractTask::worker('\App\Domain\Tasks\SendMailTask');
+                    \App\Domain\AbstractTask::worker($isNeedRunWorker);
                 }
 
                 if (
