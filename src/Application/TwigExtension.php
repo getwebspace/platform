@@ -296,7 +296,7 @@ class TwigExtension extends AbstractExtension
             $query[$key] = $value;
         }
 
-        return $query ? '?' . http_build_query($query) : '';
+        return $query ? '?' . rawurldecode(http_build_query($query)) : '';
     }
 
     public function is_current_page_number($number)
