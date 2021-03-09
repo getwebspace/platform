@@ -28,7 +28,7 @@ class CartDoneAction extends CatalogAction
                     ]);
                 }
             } catch (OrderNotFoundException $e) {
-                // skip, redirect to cart
+                return $this->respond('p404.twig')->withStatus(404);
             }
         }
 
