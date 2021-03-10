@@ -246,18 +246,16 @@ class ImportTask extends AbstractTask
                         break;
                     }
 
-                    $value = trim((string) $cell->getValue());
+                    if ($column !== 'empty') {
+                        $value = trim((string) $cell->getValue());
 
-                    if (!blank($value)) {
-                        if ($column !== 'empty') {
-                            $buf[$fields[$column]] = [
-                                'raw' => $value,
-                                'formatted' => (string) $cell->getFormattedValue(),
-                                'trimmed' => trim((string) $cell->getFormattedValue()),
-                            ];
-                        }
-                        $count++;
+                        $buf[$fields[$column]] = [
+                            'raw' => $value,
+                            'formatted' => (string) $cell->getFormattedValue(),
+                            'trimmed' => trim((string) $cell->getFormattedValue()),
+                        ];
                     }
+                    $count++;
                 }
 
                 if ($buf) {

@@ -40,20 +40,18 @@ class ProductAttributeService extends AbstractService
             }
         } else {
             foreach ($attributes as $unique => $value) {
-                if ($value) {
-                    $attribute = $product->getAttributes()->firstWhere('address', $unique) ?? $product->getAttributes()->firstWhere('address', $unique) ?? null;
+                $attribute = $product->getAttributes()->firstWhere('address', $unique) ?? $product->getAttributes()->firstWhere('uuid', $unique) ?? null;
 
-                    if ($attribute) {
-                        $this->update($attribute, [
-                            'value' => $value,
-                        ]);
-                    } else {
-                        $this->create([
-                            'product' => $product,
-                            'attribute' => Uuid::isValid($unique) ? $this->catalogAttributeService->findOneByUuid($unique) : $this->catalogAttributeService->findOneByAddress($unique),
-                            'value' => $value,
-                        ]);
-                    }
+                if ($attribute) {
+                    $this->update($attribute, [
+                        'value' => $value,
+                    ]);
+                } else {
+                    $this->create([
+                        'product' => $product,
+                        'attribute' => Uuid::isValid($unique) ? $this->catalogAttributeService->findOneByUuid($unique) : $this->catalogAttributeService->findOneByAddress($unique),
+                        'value' => $value,
+                    ]);
                 }
             }
         }
