@@ -57,11 +57,7 @@ class GuestBookAction extends AbstractAction
             'offset' => $pagination * $offset,
         ])->map(function ($model) {
             /** @var $model GuestBook */
-            $email = explode('@', $model->getEmail());
-            $name = implode('@', array_slice($email, 0, count($email) - 1));
-            $len = (int) floor(mb_strlen($name) / 2);
-
-            $model->setEmail(mb_substr($name, 0, $len) . str_repeat('*', $len) . '@' . end($email));
+            $model->setEmail(str_mask_email($model->getEmail()));
 
             return $model;
         });

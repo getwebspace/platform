@@ -12,44 +12,10 @@ use Slim\Http\Response;
 // API section
 $app
     ->group('/api', function (App $app): void {
-        // users
-        $app->group('/user', function (App $app): void {
-            $app->map(['get', 'post'], '/info', \App\Application\Actions\Api\User\Info::class)
-                ->setName('api:user:info');
-
-            // users subscribers
-            $app->group('/newsletter', function (App $app): void {
-                $app->map(['get', 'post'], '/subscribe', \App\Application\Actions\Api\User\Subscriber\SubscribeAction::class)
-                    ->setName('api:user:newsletter:subscribe');
-                $app->map(['get', 'post'], '/{uuid}/unsubscribe', \App\Application\Actions\Api\User\Subscriber\UnsubscribeAction::class)
-                    ->setName('api:user:newsletter:unsubscribe');
-            });
-        });
-
-        // files
-        $app->get('/file', \App\Application\Actions\Api\File\File::class)
-            ->setName('api:file');
-
-        // publications
-        $app->group('/publication', function (App $app): void {
-            $app->get('', \App\Application\Actions\Api\Publication\Publication::class)
-                ->setName('api:publication');
-            $app->get('/category', \App\Application\Actions\Api\Publication\Category::class)
-                ->setName('api:publication:category');
-        });
-
-        // catalog
-        $app->group('/catalog', function (App $app): void {
-            $app
-                ->get('/category', \App\Application\Actions\Api\Catalog\Category::class)
-                ->setName('api:catalog:category')
-                ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-
-            $app
-                ->get('/product', \App\Application\Actions\Api\Catalog\Product::class)
-                ->setName('api:catalog:product')
-                ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-        });
+        // Entity getter
+        $app->map(['get', 'post'], '/{args:.*}', \App\Application\Actions\Api\EntityAction::class)
+            ->setName('api:entity')
+            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
     })
     ->add(new \Slim\HttpCache\Cache('public', 0));
 
