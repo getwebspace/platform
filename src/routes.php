@@ -12,6 +12,11 @@ use Slim\Http\Response;
 // API section
 $app
     ->group('/api', function (App $app): void {
+        // Commerce ML integration
+        $app->map(['get', 'post'], '/cml', \App\Application\Actions\Api\CommerceMLAction::class)
+            ->setName('api:cml')
+            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+
         // Entity getter
         $app->map(['get', 'post'], '/{args:.*}', \App\Application\Actions\Api\EntityAction::class)
             ->setName('api:entity')

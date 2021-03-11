@@ -876,6 +876,7 @@
                                     <div class="col-xs-12 col-sm-5 col-md-4">
                                         <div class="nav flex-column nav-pills nav-secondary">
                                             <a class="nav-link active"  data-toggle="pill" href="#plugins-recaptcha">reCAPTCHA</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#plugins-cml">Сommerce ML</a>
 
                                             {% for plugin in plugins %}
                                                 <a class="nav-link" data-toggle="pill" href="#plugins-{{ plugin.getCredentials('name') }}">
@@ -899,6 +900,8 @@
                                                     }
                                                 } %}
 
+                                                <hr/>
+
                                                 {% include 'cup/field.twig' with {
                                                     'label': 'Публичный ключ сервиса reCAPTCHA',
                                                     'description': 'Этот ключ будет использован в HTML-коде сайта на устройства пользователей',
@@ -916,6 +919,43 @@
                                                     'name': 'integration[recaptcha_private]',
                                                     'args': {
                                                         'placeholder': '6Le_gY8UAAAAAAx1_Lv3aKo-L1QnxE2QWhOHCgxS'
+                                                    }
+                                                } %}
+                                            </div>
+
+                                            {# TAB: Plugin Сommerce ML #}
+                                            <div class="tab-pane fade" id="plugins-cml">
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Включение и выключение Сommerce ML',
+                                                    'type': 'select',
+                                                    'name': 'cml[is_enabled]',
+                                                    'args': {
+                                                        'option': {'yes':'Да', 'no':'Нет'},
+                                                        'selected': 'no'
+                                                    }
+                                                } %}
+
+                                                <hr/>
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Имя пользователя',
+                                                    'description': 'Для авторизации по протоколу Сommerce ML',
+                                                    'type': 'text',
+                                                    'name': 'cml[login]',
+                                                    'args': {
+                                                        'placeholder': 'Administrator',
+                                                        'value': 'Administrator',
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Пароль',
+                                                    'description': '',
+                                                    'type': 'text',
+                                                    'name': 'cml[password]',
+                                                    'args': {
+                                                        'placeholder': 'Пароль пользователя',
+                                                        'force-value': parameter['cml[password]'].value ? parameter['cml[password]'].value : random(),
                                                     }
                                                 } %}
                                             </div>
