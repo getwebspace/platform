@@ -301,6 +301,39 @@ abstract class AbstractAction extends AbstractComponent
     }
 
     /**
+     * For upload file from POST body
+     *
+     * @param string $filename
+     *
+     * @return File|null
+     */
+    protected function getFileFromBody($filename = ''): ?File
+    {
+        $uploaded = null;
+        $tmp_path = UPLOAD_DIR . '/' . uniqid();
+
+        if ($filename && file_put_contents($tmp_path, $this->request->getBody()->getContents()) !== false) {
+            $fileService = FileService::getWithContainer($this->container);
+
+            if (($model = $fileService->createFromPath($tmp_path, $filename)) !== null) {
+                $uploaded = $model;
+
+                // is image
+                if (str_start_with('image/', $model->getType())) {
+                    // add task convert
+                    $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
+                    $task->execute(['uuid' => [$model->getUuid()]]);
+
+                    // run worker
+                    \App\Domain\AbstractTask::worker($task);
+                }
+            }
+        }
+
+        return $uploaded;
+    }
+
+    /**
      * Return recaptcha status if is enabled
      *
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException

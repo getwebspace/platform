@@ -3,7 +3,6 @@
 namespace App\Application\Actions\Api;
 
 use Alksily\Support\Crypta;
-use Slim\Http\Response;
 
 class CommerceMLAction extends ActionApi
 {
@@ -31,10 +30,12 @@ class CommerceMLAction extends ActionApi
                             return $this->respondWithText(['zip=yes', 'file_limit=' . self::MAX_FILE_SIZE]);
 
                         case 'file':
-                            $path = UPLOAD_DIR . '/' . $this->request->getParam('filename', 'import.xml');
-                            file_put_contents($path, $this->request->getBody()->getContents());
+                            if (($file = $this->getFileFromBody($this->request->getParam('filename', 'import.xml'))) !== null) {
 
-                            return $this->respondWithText('success');
+                                return $this->respondWithText('success');
+                            }
+
+                            return $this->respondWithText('failed');
                     }
 
                     break;
@@ -74,15 +75,5 @@ class CommerceMLAction extends ActionApi
         }
 
         return false;
-    }
-
-    // response with text line by line
-    protected function respondWithText($output = ''): Response
-    {
-        if (is_array($output)) {
-            $output = implode("\n", $output);
-        }
-
-        return $this->response->withHeader('Content-Type', 'text/plain')->write($output);
     }
 }
