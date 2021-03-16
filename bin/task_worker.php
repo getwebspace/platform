@@ -8,7 +8,7 @@ require __DIR__ . '/../src/bootstrap.php';
 $action = $_SERVER['argv'][1] ?? null;
 
 // exit if another worker works
-if (\App\Domain\AbstractTask::workerHasPidFile($action)) {
+if ($action && \App\Domain\AbstractTask::workerHasPidFile($action)) {
     exit;
 }
 
