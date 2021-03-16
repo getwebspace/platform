@@ -95,7 +95,7 @@ class ImportTask extends AbstractTask
                         $data = $item['data'] ?? [];
 
                         try {
-                            if (!empty($data[$key_field])) {
+                            if (!empty($data[$key_field]['trimmed'])) {
                                 $this->logger->info('Search product', [$key_field => '' . $data[$key_field]['formatted'], 'item' => $data]);
                                 $product = $catalogProductService
                                     ->read([
