@@ -15,7 +15,6 @@ class Catalog
 
     public const IMPORT_FIELDS = [
         'uuid', 'external_id',
-        'category',
         'title', 'description', 'extra',
         'address',
         'barcode', 'vendorcode',
@@ -28,7 +27,6 @@ class Catalog
 
     public const EXPORT_FIELDS = [
         'uuid', 'external_id',
-        'category',
         'title', 'description', 'extra',
         'address',
         'barcode', 'vendorcode',
