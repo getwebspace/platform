@@ -27,15 +27,22 @@ class CommerceMLAction extends ActionApi
                             return $this->respondWithText(['success', self::COOKIE_NAME, $this->getCookieValue()]);
 
                         case 'init':
-                            return $this->respondWithText(['zip=yes', 'file_limit=' . self::MAX_FILE_SIZE]);
+                            return $this->respondWithText(['zip=no', 'file_limit=' . self::MAX_FILE_SIZE]);
 
                         case 'file':
                             if (($file = $this->getFileFromBody($this->request->getParam('filename', 'import.xml'))) !== null) {
-
                                 return $this->respondWithText('success');
                             }
 
                             return $this->respondWithText('failed');
+
+                        case 'import':
+                            // выполнение задачи
+
+                            return $this->respondWithText('success');
+
+                        case 'complete':
+                            return $this->respondWithText('success');
                     }
 
                     break;
