@@ -293,11 +293,13 @@ class File extends AbstractEntity
     }
 
     /**
+     * @param string $mode
+     *
      * @return bool|resource
      */
-    public function getResource()
+    public function getResource($mode = 'rb')
     {
-        return fopen($this->getInternalPath(), 'rb');
+        return fopen($this->getInternalPath(), $mode);
     }
 
     /**
