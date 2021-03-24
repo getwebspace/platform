@@ -386,12 +386,12 @@ abstract class AbstractAction extends AbstractComponent
 
             $data = array_merge(
                 [
+                    'sha' => substr($_ENV['COMMIT_SHA'] ?? 'specific', 3, 6),
                     'NIL' => \Ramsey\Uuid\Uuid::NIL,
                     '_request' => &$_REQUEST,
                     '_error' => \Alksily\Support\Form::$globalError = $this->error,
-                    'user' => $this->request->getAttribute('user', false),
                     'plugins' => $this->container->get('plugin')->get(),
-                    'sha' => ($_ENV['COMMIT_SHA'] ?? 'specific'),
+                    'user' => $this->request->getAttribute('user', false),
                 ],
                 $data
             );
