@@ -85,14 +85,16 @@ class SendNewsLetterMailTask extends AbstractTask
                         }
                     }
 
-                    $this->setProgress($i, $count);
-                    sleep(10);
+                    if ($i < $count) {
+                        $this->setProgress($i, $count);
+                        sleep(10);
+                    }
                 }
 
                 $this->setStatusDone();
             }
+        } else {
+            $this->setStatusFail();
         }
-
-        $this->setStatusFail();
     }
 }
