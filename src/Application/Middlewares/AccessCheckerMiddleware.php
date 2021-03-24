@@ -11,7 +11,6 @@ class AccessCheckerMiddleware extends AbstractMiddleware
 {
     public const PUBLIC = [
         'forbidden',
-        'api:cml',
         'api:entity',
         'cup:login',
         'cup:forbidden',

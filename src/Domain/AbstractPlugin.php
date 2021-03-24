@@ -136,6 +136,7 @@ abstract class AbstractPlugin extends AbstractComponent
                 'disabled' => false,
                 'readonly' => false,
                 'value' => null,
+                'force-value' => null,
                 'placeholder' => '',
                 'options' => [],
                 'selected' => null,
