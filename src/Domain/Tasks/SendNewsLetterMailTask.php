@@ -9,6 +9,8 @@ use App\Domain\Service\User\UserService;
 
 class SendNewsLetterMailTask extends AbstractTask
 {
+    public const TITLE = 'Рассылка писем';
+
     public function execute(array $params = []): \App\Domain\Entities\Task
     {
         $default = [
@@ -23,7 +25,7 @@ class SendNewsLetterMailTask extends AbstractTask
         return parent::execute($params);
     }
 
-    protected function action(array $args = [])
+    protected function action(array $args = []): void
     {
         $args = array_merge(
             $this->parameter(
@@ -67,7 +69,7 @@ class SendNewsLetterMailTask extends AbstractTask
             }
 
             if (isset($list)) {
-                $perPage = 10;
+                $perPage = 5;
                 $count = ceil($list->count() / $perPage);
 
                 for ($i = 0; $i < $count; $i++) {
@@ -83,10 +85,11 @@ class SendNewsLetterMailTask extends AbstractTask
                         }
                     }
 
+                    $this->setProgress($i, $count);
                     sleep(10);
                 }
 
-                return $this->setStatusDone();
+                $this->setStatusDone();
             }
         }
 
