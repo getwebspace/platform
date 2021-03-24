@@ -20,12 +20,6 @@ class CatalogExportAction extends CatalogAction
 
     protected function getCellCoordinate($index, $row = 1)
     {
-        static $alphabet;
-
-        if (!$alphabet) {
-            $alphabet = range('A', 'Z');
-        }
-
         return \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($index + 1) . ($row + 1);
     }
 

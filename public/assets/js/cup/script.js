@@ -220,14 +220,14 @@ $(() => {
             e.preventDefault();
             this.blur();
         
-            $category.html('').off('change').on('change', (e) => {
+            let handler = (e) => {
                 $product
                     .html('')
                     .prop('disabled', true);
     
                 $.get('/api/catalog/product', {category: $(e.currentTarget).val()}, (res) => {
-                    if (res.length) {
-                        for (let item of res) {
+                    if (res.status === 200) {
+                        for (let item of res.data) {
                             $product.append(
                                 $option.clone().text(item.title).val(item.uuid).data('price', item.price)
                             );
@@ -238,10 +238,11 @@ $(() => {
                         .trigger('change.select2')
                         .prop('disabled', false);
                 });
-            });
+            };
+            $category.html('').off('change', handler).on('change', handler);
         
             $.get('/api/catalog/category', (res) => {
-                if (res.length) {
+                if (res.status === 200) {
                     (function renderTree(list, parent = '00000000-0000-0000-0000-000000000000', title = '') {
                         let buf = 0;
                     
@@ -260,7 +261,7 @@ $(() => {
                         }
                     
                         return buf;
-                    })(res);
+                    })(res.data);
                 
                     $category.trigger('change').trigger('change.select2');
                     $modal.modal();
@@ -324,14 +325,14 @@ $(() => {
             e.preventDefault();
             this.blur();
         
-            $category.html('').off('change').on('change', (e) => {
+            let handler = (e) => {
                 $product
                     .html('')
                     .prop('disabled', true);
     
                 $.get('/api/catalog/product', {category: $(e.currentTarget).val()}, (res) => {
-                    if (res.length) {
-                        for (let item of res) {
+                    if (res.status === 200) {
+                        for (let item of res.data) {
                             $product.append(
                                 $option.clone().text(item.title).val(item.uuid).data('price', item.price)
                             );
@@ -342,30 +343,31 @@ $(() => {
                         .trigger('change.select2')
                         .prop('disabled', false);
                 });
-            });
+            };
+            $category.html('').off('change', handler).on('change', handler);
         
             $.get('/api/catalog/category', (res) => {
-                if (res.length) {
+                if (res.status === 200) {
                     (function renderTree(list, parent = '00000000-0000-0000-0000-000000000000', title = '') {
                         let buf = 0;
-                    
+        
                         for (let item of list) {
                             if (item.parent === parent) {
                                 let $el = $option.clone().text((title + ' ' + item.title).trim()).val(item.uuid);
-                            
+                
                                 $category.append($el);
-                            
+                
                                 if (renderTree(list, item.uuid, (title + ' ' + item.title).trim()) !== 0) {
                                     $el.remove();
                                 }
-                            
+                
                                 buf++;
                             }
                         }
-                    
+        
                         return buf;
-                    })(res);
-                
+                    })(res.data);
+    
                     $category.trigger('change').trigger('change.select2');
                     $modal.modal();
                 }

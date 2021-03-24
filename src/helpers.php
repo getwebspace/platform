@@ -379,6 +379,28 @@ if (!function_exists('str_translate')) {
     }
 }
 
+if (!function_exists('str_mask_email')) {
+    /**
+     * Mask email
+     *
+     * @param string $email
+     *
+     * @return string
+     */
+    function str_mask_email(string $email): string
+    {
+        if ($email) {
+            $email = explode('@', $email);
+            $name = implode('@', array_slice($email, 0, count($email) - 1));
+            $len = (int) floor(mb_strlen($name) / 2);
+
+            return mb_substr($name, 0, $len) . str_repeat('*', $len) . '@' . end($email);
+        }
+
+        return '';
+    }
+}
+
 if (!function_exists('blank')) {
     /**
      * Determine if the given value is "blank".

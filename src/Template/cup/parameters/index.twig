@@ -60,6 +60,7 @@
                                             <a class="nav-link"         data-toggle="pill" href="#other-form">Формы</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-search">Поиск</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-guestbook">Гостевая книга</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#other-api">API</a>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-7 col-md-8 mt-5 mt-sm-0">
@@ -444,6 +445,33 @@
                                                     'args': {
                                                         'placeholder': '10',
                                                         'value': '10'
+                                                    }
+                                                } %}
+                                            </div>
+
+                                            {# TAB: API #}
+                                            <div class="tab-pane fade" id="other-api">
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Включить доступ к API',
+                                                    'description': 'Позволяет программно получать данные с сайта',
+                                                    'type': 'select',
+                                                    'name': 'entity[is_enabled]',
+                                                    'args': {
+                                                        'option': {'yes':'Да', 'no':'Нет'},
+                                                        'selected': 'yes'
+                                                    }
+                                                } %}
+
+                                                <hr>
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Доступ к API',
+                                                    'description': 'Разграничивает права доступа',
+                                                    'type': 'select',
+                                                    'name': 'entity[access]',
+                                                    'args': {
+                                                        'option': {'all':'Все', 'user':'Только пользователи'},
+                                                        'selected': 'user'
                                                     }
                                                 } %}
                                             </div>
@@ -870,6 +898,8 @@
                                                         'option': {'off':'Выключена', 'on':'Включена'}
                                                     }
                                                 } %}
+
+                                                <hr/>
 
                                                 {% include 'cup/field.twig' with {
                                                     'label': 'Публичный ключ сервиса reCAPTCHA',

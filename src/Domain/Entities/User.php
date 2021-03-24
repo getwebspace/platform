@@ -486,7 +486,10 @@ class User extends AbstractEntity
     public function toArray(): array
     {
         $buf = parent::toArray();
-        $buf['session'] = $this->session->toArray();
+
+        if ($this->session) {
+            $buf['session'] = $this->session->toArray();
+        }
 
         return $buf;
     }

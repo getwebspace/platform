@@ -301,6 +301,39 @@ abstract class AbstractAction extends AbstractComponent
     }
 
     /**
+     * For upload file from POST body
+     *
+     * @param string $filename
+     *
+     * @return File|null
+     */
+    protected function getFileFromBody($filename = ''): ?File
+    {
+        $uploaded = null;
+        $tmp_path = UPLOAD_DIR . '/' . uniqid();
+
+        if ($filename && file_put_contents($tmp_path, $this->request->getBody()->getContents()) !== false) {
+            $fileService = FileService::getWithContainer($this->container);
+
+            if (($model = $fileService->createFromPath($tmp_path, $filename)) !== null) {
+                $uploaded = $model;
+
+                // is image
+                if (str_start_with('image/', $model->getType())) {
+                    // add task convert
+                    $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
+                    $task->execute(['uuid' => [$model->getUuid()]]);
+
+                    // run worker
+                    \App\Domain\AbstractTask::worker($task);
+                }
+            }
+        }
+
+        return $uploaded;
+    }
+
+    /**
      * Return recaptcha status if is enabled
      *
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
@@ -393,6 +426,10 @@ abstract class AbstractAction extends AbstractComponent
             case in_array('application/json', $accept, true):
                 return $this->respondWithJson($data);
 
+            case $format === 'text':
+            case in_array('text/plain', $accept, true):
+                return $this->respondWithText($data);
+
             case $format === 'html':
             case in_array('text/html', $accept, true):
             default:
@@ -430,8 +467,21 @@ abstract class AbstractAction extends AbstractComponent
     protected function respondWithJson(array $array = []): Response
     {
         $json = json_encode(array_serialize($array), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        $this->response->getBody()->write($json);
 
-        return $this->response->withHeader('Content-Type', 'application/json');
+        return $this->response->withHeader('Content-Type', 'application/json')->write($json);
+    }
+
+    /**
+     * @param string|array $output
+     *
+     * @return Response
+     */
+    protected function respondWithText($output = ''): Response
+    {
+        if (is_array($output)) {
+            $output = implode("\n", $output);
+        }
+
+        return $this->response->withHeader('Content-Type', 'text/plain')->write($output);
     }
 }
