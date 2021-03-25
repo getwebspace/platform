@@ -20,14 +20,14 @@ use Slim\Views\Twig;
 abstract class AbstractAction extends AbstractComponent
 {
     // 40X
-    protected const BAD_REQUEST = 'BAD_REQUEST';
-    protected const NOT_ALLOWED = 'NOT_ALLOWED';
-    protected const RESOURCE_NOT_FOUND = 'RESOURCE_NOT_FOUND';
-    protected const SERVER_ERROR = 'SERVER_ERROR';
-    protected const UNAUTHENTICATED = 'UNAUTHENTICATED';
+    private const BAD_REQUEST = 'BAD_REQUEST';
+    private const NOT_ALLOWED = 'NOT_ALLOWED';
+    private const RESOURCE_NOT_FOUND = 'RESOURCE_NOT_FOUND';
+    private const SERVER_ERROR = 'SERVER_ERROR';
+    private const UNAUTHENTICATED = 'UNAUTHENTICATED';
 
     // 50X
-    protected const NOT_IMPLEMENTED = 'NOT_IMPLEMENTED';
+    private const NOT_IMPLEMENTED = 'NOT_IMPLEMENTED';
 
     /**
      * @var Twig
