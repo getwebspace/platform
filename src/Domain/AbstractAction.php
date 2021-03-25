@@ -478,8 +478,8 @@ abstract class AbstractAction extends AbstractComponent
      */
     protected function respondWithText($output = ''): Response
     {
-        if (is_array($output)) {
-            $output = implode("\n", $output);
+        if (is_array($output) || is_a($output, Collection::class)) {
+            $output = json_encode(array_serialize($output), JSON_UNESCAPED_UNICODE);
         }
 
         return $this->response->withHeader('Content-Type', 'text/plain')->write($output);
