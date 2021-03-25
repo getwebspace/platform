@@ -48,8 +48,8 @@ abstract class AbstractComponent
     }
 
     /**
-     * Возвращает значение параметра по переданному ключу
-     * Если передан массив ключей, возвращает массив найденных ключей и их значения
+     * Returns the value of the parameter by the passed key
+     * If an array of keys is passed, returns an array of found keys and their values
      *
      * @param null|string|string[] $key
      * @param mixed                $default

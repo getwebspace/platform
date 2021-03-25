@@ -51,6 +51,7 @@ class EntityAction extends ActionApi
         switch (ltrim($this->resolveArg('args'), '/')) {
             case 'catalog/category':
                 $service = CatalogCatalogService::getWithContainer($this->container);
+
                 try {
                     $result = $service->read(
                         array_merge(
@@ -61,10 +62,12 @@ class EntityAction extends ActionApi
                 } catch (CatalogCategoryNotFoundException $e) {
                     $status = 404;
                 }
+
                 break;
 
             case 'catalog/product':
                 $service = CatalogProductService::getWithContainer($this->container);
+
                 try {
                     $result = $service->read(
                         array_merge(
@@ -75,78 +78,95 @@ class EntityAction extends ActionApi
                 } catch (ProductNotFoundException $e) {
                     $status = 404;
                 }
+
                 break;
 
             case 'catalog/order':
                 $service = CatalogOrderService::getWithContainer($this->container);
+
                 try {
                     $result = $service->read($params);
                 } catch (OrderNotFoundException $e) {
                     $status = 404;
                 }
+
                 break;
 
             case 'file':
                 $service = FileService::getWithContainer($this->container);
+
                 try {
                     $result = $service->read($params);
                 } catch (FileNotFoundException $e) {
                     $status = 404;
                 }
+
                 break;
 
             case 'guestbook':
                 $service = GuestBookService::getWithContainer($this->container);
+
                 try {
                     $result = $service->read($params);
                 } catch (EntryNotFoundException $e) {
                     $status = 404;
                 }
+
                 break;
 
             case 'page':
                 $service = PageService::getWithContainer($this->container);
+
                 try {
                     $result = $service->read($params);
                 } catch (PageNotFoundException $e) {
                     $status = 404;
                 }
+
                 break;
 
             case 'publication':
                 $service = PublicationService::getWithContainer($this->container);
+
                 try {
                     $result = $service->read($params);
                 } catch (PublicationNotFoundException $e) {
                     $status = 404;
                 }
+
                 break;
 
             case 'publication/category':
                 $service = PublicationCategoryService::getWithContainer($this->container);
+
                 try {
                     $result = $service->read($params);
                 } catch (PublicationCategoryNotFoundException $e) {
                     $status = 404;
                 }
+
                 break;
 
             case 'user':
                 $service = UserService::getWithContainer($this->container);
+
                 try {
                     $result = $service->read($params);
                 } catch (UserNotFoundException $e) {
                     $status = 404;
                 }
+
                 break;
 
             case 'user/group':
                 $service = UserGroupService::getWithContainer($this->container);
+
                 try {
                     $result = $service->read($params);
                 } catch (UserGroupNotFoundException $e) {
                     $status = 404;
                 }
+
                 break;
         }
 

@@ -186,6 +186,7 @@ class CatalogExportAction extends CatalogAction
                                 // entity field value
                                 if (isset($model->$field)) {
                                     $cell->setValue($model->$field);
+
                                     continue 2;
                                 }
 

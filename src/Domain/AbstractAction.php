@@ -99,7 +99,7 @@ abstract class AbstractAction extends AbstractComponent
     }
 
     /**
-     * Производит отправку письма
+     * Produces sending E-Mail
      *
      * @param array $data
      *
@@ -305,7 +305,7 @@ abstract class AbstractAction extends AbstractComponent
      *
      * @param string $filename
      *
-     * @return File|null
+     * @return null|File
      */
     protected function getFileFromBody($filename = ''): ?File
     {
@@ -386,7 +386,7 @@ abstract class AbstractAction extends AbstractComponent
 
             $data = array_merge(
                 [
-                    'sha' => substr($_ENV['COMMIT_SHA'] ?? 'specific', 3, 6),
+                    'sha' => mb_substr($_ENV['COMMIT_SHA'] ?? 'specific', 3, 6),
                     'NIL' => \Ramsey\Uuid\Uuid::NIL,
                     '_request' => &$_REQUEST,
                     '_error' => \Alksily\Support\Form::$globalError = $this->error,
@@ -472,7 +472,7 @@ abstract class AbstractAction extends AbstractComponent
     }
 
     /**
-     * @param string|array $output
+     * @param array|string $output
      *
      * @return Response
      */

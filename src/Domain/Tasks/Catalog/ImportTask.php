@@ -141,7 +141,7 @@ class ImportTask extends AbstractTask
 
                                         $catalogProductAttributeService->proccess(
                                             $product,
-                                            $data->intersectByKeys($attributes->pluck('title', 'address'))->map(fn($el) => $el['raw'])->all(),
+                                            $data->intersectByKeys($attributes->pluck('title', 'address'))->map(fn ($el) => $el['raw'])->all(),
                                             true
                                         );
                                     }
@@ -174,7 +174,7 @@ class ImportTask extends AbstractTask
                                 $catalogProductService->update($product, $update);
                                 $catalogProductAttributeService->proccess(
                                     $product,
-                                    $data->intersectByKeys($attributes->pluck('title', 'address'))->map(fn($el) => $el['raw'])->all(),
+                                    $data->intersectByKeys($attributes->pluck('title', 'address'))->map(fn ($el) => $el['raw'])->all(),
                                     true
                                 );
                             }
