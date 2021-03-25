@@ -424,7 +424,10 @@ abstract class AbstractAction extends AbstractComponent
         switch (true) {
             case $format === 'json':
             case in_array('application/json', $accept, true):
-                return $this->respondWithJson($data);
+                return $this->respondWithJson([
+                    'params' => $this->request->getParams(),
+                    'data' => $data,
+                ]);
 
             case $format === 'text':
             case in_array('text/plain', $accept, true):
