@@ -91,6 +91,13 @@ abstract class AbstractPlugin extends AbstractComponent
         return $credentials;
     }
 
+    /**
+     * Register specific twig templates path
+     *
+     * @param string $path
+     *
+     * @throws \Twig\Error\LoaderError
+     */
     protected function setTemplateFolder(string $path): void
     {
         if (realpath($path) !== false) {
@@ -115,16 +122,26 @@ abstract class AbstractPlugin extends AbstractComponent
     /**
      * @return array
      */
-    public function getRoute(): array
+    public function getHandledRoute(): array
     {
         return $this->handledRoutes;
     }
 
+    /**
+     * Register twig specific extension
+     *
+     * @param $extension
+     */
     protected function addTwigExtension($extension): void
     {
         $this->renderer->addExtension(new $extension($this->container));
     }
 
+    /**
+     * Add plugin setting field
+     *
+     * @param array $params
+     */
     protected function addSettingsField($params = []): void
     {
         $default = [
@@ -157,6 +174,11 @@ abstract class AbstractPlugin extends AbstractComponent
         return $this->settingsField;
     }
 
+    /**
+     * Add toolbar button
+     *
+     * @param array $params
+     */
     protected function addToolbarItem($params = []): void
     {
         $default = [
@@ -173,6 +195,13 @@ abstract class AbstractPlugin extends AbstractComponent
         return $this->toolbars;
     }
 
+    /**
+     * Add sidebar menu point
+     *
+     * @param array $params route handler
+     *
+     * @return \Slim\Interfaces\RouteInterface|\Slim\Route
+     */
     protected function enableNavigationItem($params = [])
     {
         $default = [
@@ -222,7 +251,7 @@ abstract class AbstractPlugin extends AbstractComponent
     }
 
     /**
-     * Функция выполнится ДО обработки выбранной группы роутов
+     * The function will be executed BEFORE processing the selected group of routes
      *
      * @param Request  $request
      * @param Response $response
@@ -236,7 +265,7 @@ abstract class AbstractPlugin extends AbstractComponent
     }
 
     /**
-     * Функция выполнится ПОСЛЕ обработки выбранной группы роутов
+     * The function will be executed AFTER processing the selected group of routes
      *
      * @param Request  $request
      * @param Response $response
