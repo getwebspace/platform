@@ -11,10 +11,10 @@ use Slim\Views\Twig;
 
 abstract class AbstractPlugin extends AbstractComponent
 {
-    public const NAME          = '';
-    public const TITLE         = '';
+    public const NAME          = 'UntitledPlugin';
+    public const TITLE         = 'Untitled plugin';
     public const DESCRIPTION   = '';
-    public const AUTHOR        = '';
+    public const AUTHOR        = 'Undefined author';
     public const AUTHOR_EMAIL  = '';
     public const AUTHOR_SITE   = '';
     public const VERSION       = '1.0';
