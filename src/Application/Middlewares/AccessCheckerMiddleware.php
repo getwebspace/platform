@@ -53,8 +53,16 @@ class AccessCheckerMiddleware extends AbstractMiddleware
             return $next($request, $response);
         }
 
-        return $response
-            ->withHeader('Location', str_start_with($route->getPattern(), '/cup') ? '/cup/forbidden' : '/forbidden')
-            ->withStatus(307);
+        $redirect = '/forbidden';
+
+        if (str_start_with($route->getPattern(), '/cup')) {
+            $redirect = '/cup/forbidden';
+
+            if (!$user) {
+                $redirect = '/cup/login';
+            }
+        }
+
+        return $response->withHeader('Location', $redirect)->withStatus(307);
     }
 }
