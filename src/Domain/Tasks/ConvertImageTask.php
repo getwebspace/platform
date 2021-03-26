@@ -54,49 +54,48 @@ class ConvertImageTask extends AbstractTask
         foreach ((array) $args['uuid'] as $index => $uuid) {
             try {
                 $file = $fileService->read(['uuid' => $uuid]);
+                $this->logger->info('Task: prepare convert', ['file' => $file->getFileName(), 'salt' => $file->getSalt()]);
 
-                if ($file->getSize() < $convert_size) {
-                    $this->logger->info('Task: skip file via min size');
+                if ($file->getSize() >= $convert_size) {
+                    if (str_start_with($file->getType(), 'image/')) {
+                        $folder = $file->getDir('');
+                        $original = $file->getInternalPath();
 
-                    continue;
-                }
+                        foreach (
+                            [
+                                'middle' => $this->parameter('image_convert_size_middle', 450),
+                                'small' => $this->parameter('image_convert_size_small', 200),
+                            ] as $size => $pixels
+                        ) {
+                            if ($pixels > 0) {
+                                $path = $folder . '/' . $size;
 
-                if (str_start_with($file->getType(), 'image/')) {
-                    $folder = $file->getDir('');
-                    $original = $file->getInternalPath();
+                                if (!file_exists($path . '/' . $file->getName() . '.jpg')) {
+                                    $buf = array_merge($params, ['-resize x' . $pixels . '\>']);
+                                    $this->logger->info('Task: convert image', ['size' => $size, 'params' => $buf]);
 
-                    foreach (
-                        [
-                            'middle' => $this->parameter('image_convert_size_middle', 450),
-                            'small' => $this->parameter('image_convert_size_small', 200),
-                        ] as $size => $pixels
-                    ) {
-                        if ($pixels > 0) {
-                            $path = $folder . '/' . $size;
-
-                            if (!file_exists($path)) {
-                                mkdir($path, 0777, true);
-                            } else {
-                                $this->logger->info('Task: skip file via exists');
+                                    @mkdir($path, 0777, true);
+                                    @exec($command . " '" . $original . "' " . implode(' ', $buf) . " '" . $path . '/' . $file->getName() . ".jpg'");
+                                } else {
+                                    $this->logger->info('Task: skip, converted file already exists');
+                                }
                             }
-
-                            $buf = array_merge($params, ['-resize x' . $pixels . '\>']);
-                            @exec($command . " '" . $original . "' " . implode(' ', $buf) . " '" . $path . '/' . $file->getName() . ".jpg'");
-                            $this->logger->info('Task: convert image', ['size' => $size, 'salt' => $file->getSalt(), 'params' => $buf]);
                         }
+
+                        @exec($command . " '" . $original . "' " . implode(' ', $params) . " '" . $folder . '/' . $file->getName() . ".jpg'");
+                        $this->logger->info('Task: convert image', ['size' => 'original', 'salt' => $file->getSalt(), 'params' => $params]);
+
+                        // set file type and ext
+                        if ($file->getExt() !== 'jpg') {
+                            $file->setExt('jpg');
+                            $file->setType('image/jpeg; charset=binary');
+                        }
+
+                        // update file size
+                        $file->setSize(+filesize($folder . '/' . $file->getName() . '.jpg'));
                     }
-
-                    @exec($command . " '" . $original . "' " . implode(' ', $params) . " '" . $folder . '/' . $file->getName() . ".jpg'");
-                    $this->logger->info('Task: convert image', ['size' => 'original', 'salt' => $file->getSalt(), 'params' => $params]);
-
-                    // set file type and ext
-                    if ($file->getExt() !== 'jpg') {
-                        $file->setExt('jpg');
-                        $file->setType('image/jpeg; charset=binary');
-                    }
-
-                    // update file size
-                    $file->setSize(+filesize($folder . '/' . $file->getName() . '.jpg'));
+                } else {
+                    $this->logger->info('Task: convert skipped, small file size');
                 }
             } catch (FileNotFoundException $e) {
                 $this->logger->alert('Task: file not found');
