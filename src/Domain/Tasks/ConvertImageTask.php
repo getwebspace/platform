@@ -45,7 +45,7 @@ class ConvertImageTask extends AbstractTask
             '-alpha off',
         ];
         if (($arg = $this->parameter('image_convert_args', false)) !== false) {
-            $params = [$arg];
+            $params = array_map('trim', explode(PHP_EOL, $arg));
         }
         $params[] = '-set comment "Converted in WebSpace Engine CMS"';
 
@@ -83,7 +83,7 @@ class ConvertImageTask extends AbstractTask
                         }
 
                         @exec($command . " '" . $original . "' " . implode(' ', $params) . " '" . $folder . '/' . $file->getName() . ".jpg'");
-                        $this->logger->info('Task: convert image', ['size' => 'original', 'salt' => $file->getSalt(), 'params' => $params]);
+                        $this->logger->info('Task: convert image', ['size' => 'original', 'params' => $params]);
 
                         // set file type and ext
                         if ($file->getExt() !== 'jpg') {
