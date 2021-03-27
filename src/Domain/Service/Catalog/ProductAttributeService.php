@@ -43,9 +43,7 @@ class ProductAttributeService extends AbstractService
                 $attribute = $product->getAttributes()->firstWhere('address', $unique) ?? $product->getAttributes()->firstWhere('uuid', $unique) ?? null;
 
                 if ($attribute) {
-                    $this->update($attribute, [
-                        'value' => $value,
-                    ]);
+                    $this->update($attribute, ['value' => $value]);
                 } else {
                     $this->create([
                         'product' => $product,

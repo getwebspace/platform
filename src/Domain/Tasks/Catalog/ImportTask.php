@@ -66,7 +66,16 @@ class ImportTask extends AbstractTask
                         if ($action === 'insert') {
                             try {
                                 $this->logger->info('Search category', ['title' => $item]);
-                                $category = $catalogCategoryService->read(['title' => $item['title']])->first();
+                                $category = $catalogCategoryService
+                                    ->read([
+                                        'title' => [
+                                            '' . $item['raw'],
+                                            '' . $item['formatted'],
+                                            '' . $item['trimmed'],
+                                            floatval($item['raw']),
+                                        ],
+                                    ])
+                                    ->first();
                             } catch (CategoryNotFoundException $e) {
                                 $this->logger->info('Create category', ['title' => $item]);
 
@@ -92,7 +101,7 @@ class ImportTask extends AbstractTask
 
                     case 'product':
                         $product = null;
-                        $data = $item['data'] ?? [];
+                        $data = collect($item['data'] ?? []);
 
                         try {
                             if (!empty($data[$key_field]['trimmed'])) {
@@ -112,7 +121,7 @@ class ImportTask extends AbstractTask
                             }
                         } catch (ProductNotFoundException $e) {
                             if ($action === 'insert') {
-                                $this->logger->info('Create product', [$key_field => @$data[$key_field]]);
+                                $this->logger->info('Create product', $data->toArray());
 
                                 try {
                                     $create = [];
@@ -141,17 +150,17 @@ class ImportTask extends AbstractTask
 
                                         $catalogProductAttributeService->proccess(
                                             $product,
-                                            $data->intersectByKeys($attributes->pluck('title', 'address'))->map(fn($el) => $el['raw'])->all(),
+                                            $data->intersectByKeys($attributes->pluck('title', 'address'))->map(fn ($el) => $el['raw'])->all(),
                                             true
                                         );
+
+                                        $product = null;
                                     }
                                 } catch (MissingTitleValueException $e) {
                                     $this->logger->warning('Product wrong title value');
                                 } catch (AddressAlreadyExistsException $e) {
                                     $this->logger->warning('Product wrong address value');
                                 }
-
-                                continue 2;
                             }
                         } finally {
                             if ($product) {
@@ -174,7 +183,7 @@ class ImportTask extends AbstractTask
                                 $catalogProductService->update($product, $update);
                                 $catalogProductAttributeService->proccess(
                                     $product,
-                                    $data->intersectByKeys($attributes->pluck('title', 'address'))->map(fn($el) => $el['raw'])->all(),
+                                    $data->intersectByKeys($attributes->pluck('title', 'address'))->map(fn ($el) => $el['raw'])->all(),
                                     true
                                 );
                             }
@@ -233,44 +242,47 @@ class ImportTask extends AbstractTask
                     continue;
                 }
 
-                $count = 0;
-                $buf = collect();
+                $empty = true;
+                $buf = [
+                    'type' => 'product',
+                    'data' => [],
+                ];
 
                 foreach ($row->getCellIterator() as $column => $cell) {
-                    $column = $this->getCellIndex($column) - $offset['cols'];
+                    $value = trim((string) $cell->getValue());
 
-                    if ($column < 0) {
-                        continue;
-                    }
-                    if ($column >= count($fields)) {
-                        break;
-                    }
-
-                    if ($column !== 'empty') {
-                        $value = trim((string) $cell->getValue());
-
-                        $buf[$fields[$column]] = [
+                    if ($this->isMergedCell($row->getWorksheet(), $cell)) {
+                        $output[] = [
+                            'type' => 'category',
                             'raw' => $value,
                             'formatted' => (string) $cell->getFormattedValue(),
                             'trimmed' => trim((string) $cell->getFormattedValue()),
                         ];
+
+                        break;
+                    } else {
+                        $column = $this->getCellIndex($column) - $offset['cols'];
+                        $empty = $empty === true && $cell->getValue() === null;
+
+                        if ($column < 0) {
+                            continue;
+                        }
+                        if ($column >= count($fields)) {
+                            break;
+                        }
+
+                        if ($column !== 'empty') {
+                            $buf['data'][$fields[$column]] = [
+                                'raw' => $value,
+                                'formatted' => (string) $cell->getFormattedValue(),
+                                'trimmed' => trim((string) $cell->getFormattedValue()),
+                            ];
+                        }
                     }
-                    $count++;
                 }
 
-                if ($buf) {
-                    switch ($count) {
-                        case 1:
-                            $output[] = ['type' => 'category', 'title' => array_first($buf)];
-
-                            break;
-
-                        case count($fields):
-                        default:
-                            $output[] = ['type' => 'product', 'data' => $buf];
-
-                            break;
-                    }
+                if (!$empty) {
+                    $output[] = $buf;
                 }
             }
 
@@ -278,5 +290,24 @@ class ImportTask extends AbstractTask
         }
 
         return [];
+    }
+
+    /**
+     * Check cell is merged or not
+     *
+     * @param $sheet
+     * @param $cell
+     *
+     * @return bool
+     */
+    protected function isMergedCell($sheet, $cell): bool
+    {
+        foreach ($sheet->getMergeCells() as $cells) {
+            if ($cell->isInRange($cells)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

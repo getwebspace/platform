@@ -20,14 +20,14 @@ use Slim\Views\Twig;
 abstract class AbstractAction extends AbstractComponent
 {
     // 40X
-    protected const BAD_REQUEST = 'BAD_REQUEST';
-    protected const NOT_ALLOWED = 'NOT_ALLOWED';
-    protected const RESOURCE_NOT_FOUND = 'RESOURCE_NOT_FOUND';
-    protected const SERVER_ERROR = 'SERVER_ERROR';
-    protected const UNAUTHENTICATED = 'UNAUTHENTICATED';
+    private const BAD_REQUEST = 'BAD_REQUEST';
+    private const NOT_ALLOWED = 'NOT_ALLOWED';
+    private const RESOURCE_NOT_FOUND = 'RESOURCE_NOT_FOUND';
+    private const SERVER_ERROR = 'SERVER_ERROR';
+    private const UNAUTHENTICATED = 'UNAUTHENTICATED';
 
     // 50X
-    protected const NOT_IMPLEMENTED = 'NOT_IMPLEMENTED';
+    private const NOT_IMPLEMENTED = 'NOT_IMPLEMENTED';
 
     /**
      * @var Twig
@@ -99,7 +99,7 @@ abstract class AbstractAction extends AbstractComponent
     }
 
     /**
-     * Производит отправку письма
+     * Produces sending E-Mail
      *
      * @param array $data
      *
@@ -305,7 +305,7 @@ abstract class AbstractAction extends AbstractComponent
      *
      * @param string $filename
      *
-     * @return File|null
+     * @return null|File
      */
     protected function getFileFromBody($filename = ''): ?File
     {
@@ -386,12 +386,12 @@ abstract class AbstractAction extends AbstractComponent
 
             $data = array_merge(
                 [
+                    'sha' => mb_substr($_ENV['COMMIT_SHA'] ?? 'specific', 3, 6),
                     'NIL' => \Ramsey\Uuid\Uuid::NIL,
                     '_request' => &$_REQUEST,
                     '_error' => \Alksily\Support\Form::$globalError = $this->error,
-                    'user' => $this->request->getAttribute('user', false),
                     'plugins' => $this->container->get('plugin')->get(),
-                    'sha' => ($_ENV['COMMIT_SHA'] ?? 'specific'),
+                    'user' => $this->request->getAttribute('user', false),
                 ],
                 $data
             );
@@ -424,7 +424,10 @@ abstract class AbstractAction extends AbstractComponent
         switch (true) {
             case $format === 'json':
             case in_array('application/json', $accept, true):
-                return $this->respondWithJson($data);
+                return $this->respondWithJson([
+                    'params' => $this->request->getParams(),
+                    'data' => $data,
+                ]);
 
             case $format === 'text':
             case in_array('text/plain', $accept, true):
@@ -472,14 +475,14 @@ abstract class AbstractAction extends AbstractComponent
     }
 
     /**
-     * @param string|array $output
+     * @param array|string $output
      *
      * @return Response
      */
     protected function respondWithText($output = ''): Response
     {
-        if (is_array($output)) {
-            $output = implode("\n", $output);
+        if (is_array($output) || is_a($output, Collection::class)) {
+            $output = json_encode(array_serialize($output), JSON_UNESCAPED_UNICODE);
         }
 
         return $this->response->withHeader('Content-Type', 'text/plain')->write($output);

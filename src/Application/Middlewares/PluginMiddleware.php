@@ -34,7 +34,7 @@ class PluginMiddleware extends AbstractMiddleware
 
             /** @var AbstractPlugin $plugin */
             foreach ($plugins as $plugin) {
-                if ($routeName && str_start_with($routeName, $plugin->getRoute())) {
+                if ($routeName && str_start_with($routeName, $plugin->getHandledRoute())) {
                     \RunTracy\Helpers\Profiler\Profiler::start('plugin (%s)', $plugin->getCredentials('name'));
                     $response = $plugin->before($request, $response, $route->getName());
                     \RunTracy\Helpers\Profiler\Profiler::finish('plugin (%s)', $plugin->getCredentials('name'));
@@ -45,7 +45,7 @@ class PluginMiddleware extends AbstractMiddleware
 
             /** @var AbstractPlugin $plugin */
             foreach ($plugins as $plugin) {
-                if ($routeName && str_start_with($routeName, $plugin->getRoute())) {
+                if ($routeName && str_start_with($routeName, $plugin->getHandledRoute())) {
                     \RunTracy\Helpers\Profiler\Profiler::start('plugin (%s)', $plugin->getCredentials('name'));
                     $response = $plugin->after($request, $response, $route->getName());
                     \RunTracy\Helpers\Profiler\Profiler::finish('plugin (%s)', $plugin->getCredentials('name'));
