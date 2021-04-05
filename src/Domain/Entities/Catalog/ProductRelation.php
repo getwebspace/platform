@@ -131,6 +131,7 @@ class ProductRelation extends AbstractEntity
             'title' => $this->related->getTitle(),
             'address' => $this->related->getAddress(),
             'price' => $this->related->getPrice(),
+            'count' => $this->getCount(),
         ];
     }
 }
