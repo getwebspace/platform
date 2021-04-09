@@ -40,7 +40,8 @@
                     <!-- Navbar Header -->
                     <nav class="navbar navbar-header navbar-expand-lg" data-background-color="blue2">
                         <div class="container-fluid">
-                            {% if user %}
+
+                            {% if user and ('cup:main' in user.group.access) %}
                                 <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
                                     {% for plugin in plugins %}
                                         {% for param in plugin.getToolbarItem() %}

@@ -6,7 +6,7 @@
         </a>
     </li>
 
-    {% if user %}
+    {% if user and ('cup:main' in user.group.access) %}
         <li class="nav-section">
             <span class="sidebar-mini-icon">
                 <i class="fa fa-ellipsis-h"></i>
