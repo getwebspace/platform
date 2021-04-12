@@ -64,8 +64,9 @@ class SearchAction extends AbstractAction
                             array_flip([
                                 'uuid', 'category',
                                 'title', 'description', 'content',
-                                'address', 'price', 'volume',
-                                'unit', 'meta', 'external_id',
+                                'address',
+                                'priceFirst', 'price', 'priceWholesale',
+                                'volume', 'unit', 'meta', 'external_id',
                             ])
                         );
 
