@@ -45,10 +45,10 @@ class Catalog
 
     // list of order by
     public const ORDER_BY = [
-        self::ORDER_BY_DATE,
+        self::ORDER_BY_TITLE,
         self::ORDER_BY_PRICE,
         self::ORDER_BY_STOCK,
-        self::ORDER_BY_TITLE,
+        self::ORDER_BY_DATE,
     ];
 
     // possible order directions
