@@ -122,7 +122,7 @@
                                     'type': 'select',
                                     'name': 'sort[by]',
                                     'args': {
-                                        'option': reference('/App/Domain/References/Publication::ORDER_BY'),
+                                        'option': collect(reference('/App/Domain/References/Publication::ORDER_BY')).combine(['Заголовок', 'Дата']),
                                         'selected': item.sort['by']
                                     }
                                 } %}
@@ -133,7 +133,7 @@
                                     'type': 'select',
                                     'name': 'sort[direction]',
                                     'args': {
-                                        'option': reference('/App/Domain/References/Publication::ORDER_DIRECTION'),
+                                        'option': collect(reference('/App/Domain/References/Publication::ORDER_DIRECTION')).combine(['По возрастанию', 'По убыванию']),
                                         'selected': item.sort['direction']
                                     }
                                 } %}

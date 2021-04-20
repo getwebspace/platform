@@ -149,7 +149,7 @@
                                         'type': 'select',
                                         'name': 'status',
                                         'args': {
-                                            'option': reference('/App/Domain/Types/UserStatusType::LIST'),
+                                            'option': collect(reference('/App/Domain/Types/UserStatusType::LIST')).combine(['Активный', 'Заблокирован', 'Удалён']),
                                             'selected': item.status
                                         }
                                     } %}

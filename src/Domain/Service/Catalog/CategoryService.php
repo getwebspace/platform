@@ -53,6 +53,10 @@ class CategoryService extends AbstractService
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
             'pagination' => 10,
             'order' => 1,
+            'sort' => [
+                'by' => '',
+                'direction' => '',
+            ],
             'meta' => [
                 'title' => '',
                 'description' => '',
@@ -85,6 +89,7 @@ class CategoryService extends AbstractService
             ->setStatus($data['status'])
             ->setPagination((int) $data['pagination'])
             ->setOrder((int) $data['order'])
+            ->setSort($data['sort'])
             ->setMeta($data['meta'])
             ->setTemplate($data['template'])
             ->setExternalId($data['external_id'])
@@ -230,6 +235,7 @@ class CategoryService extends AbstractService
                 'status' => null,
                 'pagination' => null,
                 'order' => null,
+                'sort' => null,
                 'meta' => null,
                 'template' => null,
                 'external_id' => null,
@@ -282,6 +288,9 @@ class CategoryService extends AbstractService
                 }
                 if ($data['order'] !== null) {
                     $entity->setOrder((int) $data['order']);
+                }
+                if ($data['sort'] !== null) {
+                    $entity->setSort($data['sort']);
                 }
                 if ($data['meta'] !== null) {
                     $entity->setMeta($data['meta']);

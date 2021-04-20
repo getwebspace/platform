@@ -59,7 +59,7 @@ class ListAction extends CatalogAction
      *
      * @return Response
      */
-    protected function prepareMain(array &$params, &$categories)
+    protected function prepareMain(array $params, $categories): ?Response
     {
         if ($params['address'] === '') {
             $pagination = $this->parameter('catalog_category_pagination', 10);
@@ -196,10 +196,10 @@ class ListAction extends CatalogAction
      *
      * @return Response
      */
-    protected function prepareCategory(array &$params, &$categories)
+    protected function prepareCategory(array $params, Collection $categories): ?Response
     {
         /**
-         * @var \App\Domain\Entities\Catalog\Category
+         * @var \App\Domain\Entities\Catalog\Category $category
          */
         $category = $categories->firstWhere('address', $params['address']);
 
@@ -292,16 +292,23 @@ class ListAction extends CatalogAction
                     $params['order'][$order] = $direction;
                 }
             } else {
-                $query->orderBy('p.title', 'ASC');
-                $params['order']['title'] = 'asc';
+                $sortBy = $category->getSort();
+
+                if ($sortBy['by'] && $sortBy['direction']) {
+                    $query->orderBy('p.' . $sortBy['by'], $sortBy['direction']);
+                    $params['order'][$sortBy['by']] = mb_strtolower($sortBy['direction']);
+                } else {
+                    $query->orderBy('p.title', 'ASC');
+                    $params['order']['title'] = 'asc';
+                }
             }
 
             $filtered = collect(
                 $query
                     ->select('p')
                     ->addOrderBy('p.order', 'ASC')
-                    ->setMaxResults($category->pagination)
-                    ->setFirstResult($params['offset'] * $category->pagination)
+                    ->setMaxResults($category->getPagination())
+                    ->setFirstResult($params['offset'] * $category->getPagination())
                     ->getQuery()
                     ->getResult()
             );
@@ -313,7 +320,7 @@ class ListAction extends CatalogAction
                 ->setParameters($query->getParameters())
                 ->getQuery()->getSingleScalarResult();
 
-            return $this->respond($category->template['category'], [
+            return $this->respond($category->getTemplate()['category'], [
                 'categories' => $categories,
                 'category' => $category,
                 'products' => [
@@ -324,7 +331,7 @@ class ListAction extends CatalogAction
                 ],
                 'pagination' => [
                     'count' => $count,
-                    'page' => $category->pagination,
+                    'page' => $category->getPagination(),
                     'offset' => $params['offset'],
                 ],
             ]);
@@ -341,8 +348,11 @@ class ListAction extends CatalogAction
      *
      * @return Response
      */
-    protected function prepareProduct(array &$params, &$categories)
+    protected function prepareProduct(array $params, Collection $categories): ?Response
     {
+        /**
+         * @var \App\Domain\Entities\Catalog\Product $product
+         */
         $product = $this->catalogProductService->read([
             'address' => $params['address'],
             'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
@@ -365,7 +375,7 @@ class ListAction extends CatalogAction
     /**
      * @return array
      */
-    protected function parsePath()
+    protected function parsePath(): array
     {
         $pathCatalog = $this->parameter('catalog_address', 'catalog');
         $parts = explode('/', ltrim(str_replace("/{$pathCatalog}", '', $this->request->getUri()->getPath()), '/'));
