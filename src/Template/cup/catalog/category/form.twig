@@ -115,6 +115,29 @@
                                             }
                                         } %}
                                     </div>
+
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Критерий сортировки',
+                                            'type': 'select',
+                                            'name': 'sort[by]',
+                                            'args': {
+                                                'option': collect(reference('/App/Domain/References/Catalog::ORDER_BY')).combine(['Заголовок', 'Цена', 'Наличие', 'Дата']),
+                                                'selected': category.sort['by']
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Порядок сортировки',
+                                            'type': 'select',
+                                            'name': 'sort[direction]',
+                                            'args': {
+                                                'option': collect(reference('/App/Domain/References/Catalog::ORDER_DIRECTION')).combine(['По убыванию', 'По возрастанию']),
+                                                'selected': category.sort['direction']
+                                            }
+                                        } %}
+                                    </div>
                                 </div>
 
                                 <hr>

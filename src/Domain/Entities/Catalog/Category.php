@@ -381,6 +381,44 @@ class Category extends AbstractEntity
      * @var array
      * @ORM\Column(type="array")
      */
+    protected array $sort = [
+        'by' => \App\Domain\References\Catalog::ORDER_BY_DATE,
+        'direction' => \App\Domain\References\Catalog::ORDER_DIRECTION_ASC,
+    ];
+
+    /**
+     * @param array $data
+     *
+     * @return $this
+     */
+    public function setSort(array $data)
+    {
+        $default = [
+            'by' => \App\Domain\References\Catalog::ORDER_BY_DATE,
+            'direction' => \App\Domain\References\Catalog::ORDER_DIRECTION_ASC,
+        ];
+        $data = array_merge($default, $data);
+
+        $this->sort = [
+            'by' => $data['by'],
+            'direction' => $data['direction'],
+        ];
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSort(): array
+    {
+        return $this->sort;
+    }
+
+    /**
+     * @var array
+     * @ORM\Column(type="array")
+     */
     protected array $meta = [
         'title' => '',
         'description' => '',

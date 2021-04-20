@@ -52,6 +52,10 @@ class CategoryServiceTest extends TestCase
             'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\CategoryStatusType::LIST),
             'pagination' => $this->getFaker()->numberBetween(10, 100),
             'order' => $this->getFaker()->numberBetween(1, 10),
+            'sort' => [
+                'by' => $this->getFaker()->randomElement(\App\Domain\References\Catalog::ORDER_BY),
+                'direction' => $this->getFaker()->randomElement(\App\Domain\References\Catalog::ORDER_DIRECTION),
+            ],
             'meta' => [
                 'title' => $this->getFaker()->title,
                 'description' => $this->getFaker()->text,
@@ -79,6 +83,7 @@ class CategoryServiceTest extends TestCase
         $this->assertSame($data['status'], $category->getStatus());
         $this->assertSame($data['pagination'], $category->getPagination());
         $this->assertSame($data['order'], $category->getOrder());
+        $this->assertEquals($data['sort'], $category->getSort());
         $this->assertEquals($data['meta'], $category->getMeta());
         $this->assertEquals($data['template'], $category->getTemplate());
         $this->assertSame($data['external_id'], $category->getExternalId());
@@ -100,6 +105,7 @@ class CategoryServiceTest extends TestCase
         $this->assertSame($data['status'], $c->getStatus());
         $this->assertSame($data['pagination'], $c->getPagination());
         $this->assertSame($data['order'], $c->getOrder());
+        $this->assertEquals($data['sort'], $c->getSort());
         $this->assertEquals($data['meta'], $c->getMeta());
         $this->assertEquals($data['template'], $c->getTemplate());
         $this->assertSame($data['external_id'], $c->getExternalId());
@@ -189,6 +195,10 @@ class CategoryServiceTest extends TestCase
             'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\CategoryStatusType::LIST),
             'pagination' => $this->getFaker()->numberBetween(10, 100),
             'order' => $this->getFaker()->numberBetween(1, 10),
+            'sort' => [
+                'by' => $this->getFaker()->randomElement(\App\Domain\References\Catalog::ORDER_BY),
+                'direction' => $this->getFaker()->randomElement(\App\Domain\References\Catalog::ORDER_DIRECTION),
+            ],
             'meta' => [
                 'title' => $this->getFaker()->title,
                 'description' => $this->getFaker()->text,
@@ -221,6 +231,10 @@ class CategoryServiceTest extends TestCase
             'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\CategoryStatusType::LIST),
             'pagination' => $this->getFaker()->numberBetween(10, 100),
             'order' => $this->getFaker()->numberBetween(1, 10),
+            'sort' => [
+                'by' => $this->getFaker()->randomElement(\App\Domain\References\Catalog::ORDER_BY),
+                'direction' => $this->getFaker()->randomElement(\App\Domain\References\Catalog::ORDER_DIRECTION),
+            ],
             'meta' => [
                 'title' => $this->getFaker()->title,
                 'description' => $this->getFaker()->text,
@@ -248,6 +262,7 @@ class CategoryServiceTest extends TestCase
         $this->assertSame($data['status'], $category->getStatus());
         $this->assertSame($data['pagination'], $category->getPagination());
         $this->assertSame($data['order'], $category->getOrder());
+        $this->assertEquals($data['sort'], $category->getSort());
         $this->assertEquals($data['meta'], $category->getMeta());
         $this->assertEquals($data['template'], $category->getTemplate());
         $this->assertSame($data['external_id'], $category->getExternalId());
