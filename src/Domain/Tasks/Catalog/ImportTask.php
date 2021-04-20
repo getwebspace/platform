@@ -260,24 +260,24 @@ class ImportTask extends AbstractTask
                         ];
 
                         break;
-                    } else {
-                        $column = $this->getCellIndex($column) - $offset['cols'];
-                        $empty = $empty === true && $cell->getValue() === null;
+                    }
 
-                        if ($column < 0) {
-                            continue;
-                        }
-                        if ($column >= count($fields)) {
-                            break;
-                        }
+                    $column = $this->getCellIndex($column) - $offset['cols'];
+                    $empty = $empty === true && $cell->getValue() === null;
 
-                        if ($column !== 'empty') {
-                            $buf['data'][$fields[$column]] = [
-                                'raw' => $value,
-                                'formatted' => (string) $cell->getFormattedValue(),
-                                'trimmed' => trim((string) $cell->getFormattedValue()),
-                            ];
-                        }
+                    if ($column < 0) {
+                        continue;
+                    }
+                    if ($column >= count($fields)) {
+                        break;
+                    }
+
+                    if ($column !== 'empty') {
+                        $buf['data'][$fields[$column]] = [
+                            'raw' => $value,
+                            'formatted' => (string) $cell->getFormattedValue(),
+                            'trimmed' => trim((string) $cell->getFormattedValue()),
+                        ];
                     }
                 }
 
