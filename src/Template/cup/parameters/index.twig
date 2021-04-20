@@ -657,6 +657,28 @@
                                                 } %}
 
                                                 {% include 'cup/field.twig' with {
+                                                    'label': 'Критерий сортировки товаров',
+                                                    'description': 'Значение по-умолчанию',
+                                                    'type': 'select',
+                                                    'name': 'catalog[sort_by]',
+                                                    'args': {
+                                                        'option': collect(reference('/App/Domain/References/Catalog::ORDER_BY')).combine(['Заголовок', 'Цена', 'Наличие', 'Дата']),
+                                                        'selected': 'title'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Порядок сортировки товаров',
+                                                    'description': 'Значение по-умолчанию',
+                                                    'type': 'select',
+                                                    'name': 'catalog[sort_direction]',
+                                                    'args': {
+                                                        'option': collect(reference('/App/Domain/References/Catalog::ORDER_DIRECTION')).combine(['По возрастанию', 'По убыванию']),
+                                                        'selected': 'asc'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
                                                     'label': 'Количество товаров на страницу',
                                                     'description': 'Значение по-умолчанию, так же это значение будет использовано для ограничения количества товаров на главной странице',
                                                     'type': 'number',

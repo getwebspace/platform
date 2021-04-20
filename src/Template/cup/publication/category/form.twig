@@ -122,7 +122,7 @@
                                     'type': 'select',
                                     'name': 'sort[by]',
                                     'args': {
-                                        'option': collect(reference('/App/Domain/References/Publication::ORDER_BY')).combine(['Заголовок', 'Дата']),
+                                        'option': collect(reference('/App/Domain/References/Publication::ORDER_BY')).combine(['Дата', 'Заголовок']),
                                         'selected': item.sort['by']
                                     }
                                 } %}

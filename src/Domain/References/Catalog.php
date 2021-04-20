@@ -57,7 +57,7 @@ class Catalog
 
     // list of order directions
     public const ORDER_DIRECTION = [
-        self::ORDER_DIRECTION_DESC,
         self::ORDER_DIRECTION_ASC,
+        self::ORDER_DIRECTION_DESC,
     ];
 }
