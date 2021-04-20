@@ -123,7 +123,7 @@
                                             'name': 'sort[by]',
                                             'args': {
                                                 'option': collect(reference('/App/Domain/References/Catalog::ORDER_BY')).combine(['Заголовок', 'Цена', 'Наличие', 'Дата']),
-                                                'selected': category.sort['by']
+                                                'selected': category.sort['by'] ?? parameter('catalog_sort_by', 'title')
                                             }
                                         } %}
                                     </div>
@@ -133,8 +133,8 @@
                                             'type': 'select',
                                             'name': 'sort[direction]',
                                             'args': {
-                                                'option': collect(reference('/App/Domain/References/Catalog::ORDER_DIRECTION')).combine(['По убыванию', 'По возрастанию']),
-                                                'selected': category.sort['direction']
+                                                'option': collect(reference('/App/Domain/References/Catalog::ORDER_DIRECTION')).combine(['По возрастанию', 'По убыванию']),
+                                                'selected': category.sort['direction'] ?? parameter('catalog_sort_direction', 'asc')
                                             }
                                         } %}
                                     </div>
