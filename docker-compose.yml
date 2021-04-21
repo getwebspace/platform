@@ -13,12 +13,12 @@ services:
           # - SIMPLE_PHONE_CHECK=1
           # - DATABASE=mysql://user:secret@localhost/mydb
         volumes:
-            - ./bin:/var/container/bin:rw
-            - ./config:/var/container/config:rw
+            - ./bin:/var/container/bin:ro
+            - ./config:/var/container/config:ro
             - ./plugin:/var/container/plugin:rw
             - ./public:/var/container/public:rw
-            - ./src:/var/container/src:rw
-            - ./tests:/var/container/tests:rw
+            - ./src:/var/container/src:ro
+            - ./tests:/var/container/tests:ro
             - ./theme:/var/container/theme:rw
             - ./var:/var/container/var:rw
             - ./var/upload:/var/container/public/uploads:rw

@@ -491,3 +491,52 @@ if (!function_exists('array_serialize')) {
         return $array;
     }
 }
+
+if (!function_exists('sys_self_check_health')) {
+    function sys_self_check_health(): array
+    {
+        $fileaccess = [
+            BASE_DIR        => 755,
+            BIN_DIR         => 755,
+            CONFIG_DIR      => 755,
+            PLUGIN_DIR      => 777,
+            PUBLIC_DIR      => 755,
+            UPLOAD_DIR      => 777,
+            SRC_DIR         => 755,
+            VIEW_DIR        => 755,
+            VIEW_ERROR_DIR  => 755,
+            THEME_DIR       => 777,
+            VAR_DIR         => 777,
+            CACHE_DIR       => 777,
+            LOG_DIR         => 777,
+            VENDOR_DIR      => 755,
+        ];
+
+        foreach ($fileaccess as $folder => $value) {
+            $chmod_value = @decoct(@fileperms($folder)) % 1000;
+
+            if ($chmod_value === $value) {
+                $fileaccess[$folder] = true;
+            }
+        }
+
+        return [
+            'php' => version_compare(phpversion(), '7.4', '>='),
+            'extensions' => [
+                'pdo' => extension_loaded('pdo'),
+                // 'pdo_mysql' => extension_loaded('pdo_mysql'),
+                // 'pdo_pgsql' => extension_loaded('pdo_pgsql'),
+                // 'sqlite3' => extension_loaded('sqlite3'),
+                'curl' => extension_loaded('curl'),
+                'json' => extension_loaded('json'),
+                'mbstring' => extension_loaded('mbstring'),
+                'gd' => extension_loaded('gd'),
+                'imagick' => extension_loaded('imagick'),
+                'xml' => extension_loaded('xml'),
+                'yaml' => extension_loaded('yaml'),
+                'zip' => extension_loaded('zip'),
+            ],
+            'folders' => $fileaccess,
+        ];
+    }
+}

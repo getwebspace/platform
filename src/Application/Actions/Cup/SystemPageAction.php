@@ -91,7 +91,9 @@ class SystemPageAction extends AbstractAction
                 return $this->response->withRedirect('/cup/system');
             }
 
-            return $this->respondWithTemplate('cup/system/index.twig');
+            return $this->respondWithTemplate('cup/system/index.twig', [
+                'health' => sys_self_check_health()
+            ]);
         }
 
         return $this->response->withRedirect('/cup/login?redirect=/cup/system');
