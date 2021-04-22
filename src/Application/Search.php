@@ -92,7 +92,7 @@ class Search
                 }
 
                 $text = str_replace(['a', 'e', 'i', 'o', 'u', 'y'], '', $text);
-                $text = str_replace(['а', 'е', 'и', 'о', 'у', 'ы', 'э', 'ю', 'я'], '', $text);
+                $text = str_replace(['а', 'е', 'ё', 'и', 'о', 'у', 'ы', 'э', 'ю', 'я', 'ь', 'ъ'], '', $text);
                 $text = explode(' ', $text);
 
                 foreach ($text as $i => &$word) {
