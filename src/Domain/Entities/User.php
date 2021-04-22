@@ -100,6 +100,10 @@ class User extends AbstractEntity
      */
     public function avatar(int $size = 40)
     {
+        if ($this->hasFiles()) {
+            return $this->getFiles()->first()->getPublicPath();
+        }
+
         return 'https://www.gravatar.com/avatar/' . md5(mb_strtolower(trim($this->email))) . '?s=' . $size;
     }
 
@@ -470,7 +474,7 @@ class User extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\PageFileRelation", mappedBy="page", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\UserFileRelation", mappedBy="user", orphanRemoval=true)
      * @ORM\OrderBy({"order": "ASC"})
      */
     protected $files = [];
