@@ -14,7 +14,7 @@ if (!function_exists('array_add')) {
      *
      * @return array
      */
-    function array_add($array, $key, $value)
+    function array_add(array $array, string $key, $value): array
     {
         return Arr::add($array, $key, $value);
     }
@@ -28,7 +28,7 @@ if (!function_exists('array_collapse')) {
      *
      * @return array
      */
-    function array_collapse($array)
+    function array_collapse(array $array): array
     {
         return Arr::collapse($array);
     }
@@ -42,7 +42,7 @@ if (!function_exists('array_divide')) {
      *
      * @return array
      */
-    function array_divide($array)
+    function array_divide(array $array): array
     {
         return Arr::divide($array);
     }
@@ -57,7 +57,7 @@ if (!function_exists('array_dot')) {
      *
      * @return array
      */
-    function array_dot($array, $prepend = '')
+    function array_dot(array $array, $prepend = ''): array
     {
         return Arr::dot($array, $prepend);
     }
@@ -72,7 +72,7 @@ if (!function_exists('array_except')) {
      *
      * @return array
      */
-    function array_except($array, $keys)
+    function array_except(array $array, $keys): array
     {
         return Arr::except($array, $keys);
     }
@@ -88,7 +88,7 @@ if (!function_exists('array_first')) {
      *
      * @return mixed
      */
-    function array_first($array, callable $callback = null, $default = null)
+    function array_first(array $array, callable $callback = null, $default = null)
     {
         return Arr::first($array, $callback, $default);
     }
@@ -103,7 +103,7 @@ if (!function_exists('array_flatten')) {
      *
      * @return array
      */
-    function array_flatten($array, $depth = INF)
+    function array_flatten(array $array, $depth = INF): array
     {
         return Arr::flatten($array, $depth);
     }
@@ -116,7 +116,7 @@ if (!function_exists('array_forget')) {
      * @param array        $array
      * @param array|string $keys
      */
-    function array_forget(&$array, $keys): void
+    function array_forget(array &$array, $keys): void
     {
         Arr::forget($array, $keys);
     }
@@ -132,7 +132,7 @@ if (!function_exists('array_get')) {
      *
      * @return mixed
      */
-    function array_get($array, $key, $default = null)
+    function array_get($array, string $key, $default = null)
     {
         return Arr::get($array, $key, $default);
     }
@@ -147,7 +147,7 @@ if (!function_exists('array_has')) {
      *
      * @return bool
      */
-    function array_has($array, $keys)
+    function array_has($array, $keys): bool
     {
         return Arr::has($array, $keys);
     }
@@ -163,7 +163,7 @@ if (!function_exists('array_last')) {
      *
      * @return mixed
      */
-    function array_last($array, callable $callback = null, $default = null)
+    function array_last(array $array, callable $callback = null, $default = null)
     {
         return Arr::last($array, $callback, $default);
     }
@@ -178,7 +178,7 @@ if (!function_exists('array_only')) {
      *
      * @return array
      */
-    function array_only($array, $keys)
+    function array_only(array $array, $keys): array
     {
         return Arr::only($array, $keys);
     }
@@ -194,7 +194,7 @@ if (!function_exists('array_pluck')) {
      *
      * @return array
      */
-    function array_pluck($array, $value, $key = null)
+    function array_pluck(array $array, $value, $key = null): array
     {
         return Arr::pluck($array, $value, $key);
     }
@@ -210,7 +210,7 @@ if (!function_exists('array_prepend')) {
      *
      * @return array
      */
-    function array_prepend($array, $value, $key = null)
+    function array_prepend(array $array, $value, $key = null): array
     {
         return Arr::prepend($array, $value, $key);
     }
@@ -226,7 +226,7 @@ if (!function_exists('array_pull')) {
      *
      * @return mixed
      */
-    function array_pull(&$array, $key, $default = null)
+    function array_pull(array &$array, string $key, $default = null)
     {
         return Arr::pull($array, $key, $default);
     }
@@ -241,7 +241,7 @@ if (!function_exists('array_random')) {
      *
      * @return mixed
      */
-    function array_random($array, $num = null)
+    function array_random(array $array, $num = null)
     {
         return Arr::random($array, $num);
     }
@@ -259,7 +259,7 @@ if (!function_exists('array_set')) {
      *
      * @return array
      */
-    function array_set(&$array, $key, $value)
+    function array_set(array &$array, string $key, $value): array
     {
         return Arr::set($array, $key, $value);
     }
@@ -274,7 +274,7 @@ if (!function_exists('array_sort')) {
      *
      * @return array
      */
-    function array_sort($array, $callback = null)
+    function array_sort(array $array, $callback = null): array
     {
         return Arr::sort($array, $callback);
     }
@@ -288,7 +288,7 @@ if (!function_exists('array_sort_recursive')) {
      *
      * @return array
      */
-    function array_sort_recursive($array)
+    function array_sort_recursive(array $array): array
     {
         return Arr::sortRecursive($array);
     }
@@ -303,7 +303,7 @@ if (!function_exists('array_where')) {
      *
      * @return array
      */
-    function array_where($array, callable $callback)
+    function array_where(array $array, callable $callback): array
     {
         return Arr::where($array, $callback);
     }
@@ -318,7 +318,7 @@ if (!function_exists('str_start_with')) {
      *
      * @return bool
      */
-    function str_start_with($haystack, $needles)
+    function str_start_with(string $haystack, $needles): bool
     {
         foreach ((array) $needles as $needle) {
             if ($needle !== '' && mb_substr($haystack, 0, mb_strlen($needle)) === (string) $needle) {
@@ -339,7 +339,7 @@ if (!function_exists('str_end_with')) {
      *
      * @return bool
      */
-    function str_end_with($haystack, $needles)
+    function str_end_with(string $haystack, $needles): bool
     {
         foreach ((array) $needles as $needle) {
             if (mb_substr($haystack, -mb_strlen($needle)) === (string) $needle) {
@@ -358,9 +358,9 @@ if (!function_exists('str_translate')) {
      * @param string $input
      * @param bool   $back
      *
-     * @return mixed
+     * @return array|string|string[]
      */
-    function str_translate($input, $back = false)
+    function str_translate(string $input, bool $back = false)
     {
         $russian = [
             'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У',
@@ -409,7 +409,7 @@ if (!function_exists('blank')) {
      *
      * @return bool
      */
-    function blank($value)
+    function blank($value): bool
     {
         if (is_null($value)) {
             return true;
@@ -436,7 +436,7 @@ if (!function_exists('from_service_to_array')) {
      *
      * @return array
      */
-    function from_service_to_array($object)
+    function from_service_to_array($object): array
     {
         switch (true) {
             case is_a($object, Collection::class):
@@ -495,28 +495,28 @@ if (!function_exists('array_serialize')) {
 if (!function_exists('sys_self_check_health')) {
     function sys_self_check_health(): array
     {
-        $fileaccess = [
-            BASE_DIR        => 755,
-            BIN_DIR         => 755,
-            CONFIG_DIR      => 755,
-            PLUGIN_DIR      => 777,
-            PUBLIC_DIR      => 755,
-            UPLOAD_DIR      => 777,
-            SRC_DIR         => 755,
-            VIEW_DIR        => 755,
-            VIEW_ERROR_DIR  => 755,
-            THEME_DIR       => 777,
-            VAR_DIR         => 777,
-            CACHE_DIR       => 777,
-            LOG_DIR         => 777,
-            VENDOR_DIR      => 755,
+        $fileAccess = [
+            BASE_DIR => 755,
+            BIN_DIR => 755,
+            CONFIG_DIR => 755,
+            PLUGIN_DIR => 777,
+            PUBLIC_DIR => 755,
+            UPLOAD_DIR => 777,
+            SRC_DIR => 755,
+            VIEW_DIR => 755,
+            VIEW_ERROR_DIR => 755,
+            THEME_DIR => 777,
+            VAR_DIR => 777,
+            CACHE_DIR => 777,
+            LOG_DIR => 777,
+            VENDOR_DIR => 755,
         ];
 
-        foreach ($fileaccess as $folder => $value) {
+        foreach ($fileAccess as $folder => $value) {
             $chmod_value = @decoct(@fileperms($folder)) % 1000;
 
             if ($chmod_value === $value) {
-                $fileaccess[$folder] = true;
+                $fileAccess[$folder] = true;
             }
         }
 
@@ -536,7 +536,7 @@ if (!function_exists('sys_self_check_health')) {
                 'yaml' => extension_loaded('yaml'),
                 'zip' => extension_loaded('zip'),
             ],
-            'folders' => $fileaccess,
+            'folders' => $fileAccess,
         ];
     }
 }
