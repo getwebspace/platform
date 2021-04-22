@@ -119,7 +119,7 @@ class SearchAction extends AbstractAction
     private function advanced(string $query)
     {
         if ($query && !$this->request->getParam('query_strong', $this->request->getParam('qs'))) {
-            $query = $query . '*';
+            $query = implode(' ', array_map(fn($word) => (mb_strlen($word) > 3 ? $word . '*' : $word), explode(' ', $query)));
         }
         $limit = (int) $this->request->getParam('limit', $this->parameter('search_limit', 10));
 

@@ -26,14 +26,18 @@ class Search
         $index = explode(PHP_EOL, file_get_contents(self::CACHE_FILE));
 
         $results = [];
+
+        // sort words
+        usort($query_words, fn($word) => str_start_with($word, ['-', '+']) ? 1 : -1);
+
         foreach ($index as $line) {
-            $wordcount = 0;
-            $mustfound = 1;
-            $mustntfound = 1;
+            $wordCount = 0;
+            $mustFound = 1;
+            $mustNtFound = 1;
 
             foreach ($query_words as $word) {
                 // case '*'
-                if (mb_stristr($word, '*')) {
+                if (mb_stristr($word, '*') && str_end_with($word, '*')) {
                     $search = str_replace('*', '', $word);
                 } else {
                     $search = ' ' . $word . ' ';
@@ -42,22 +46,28 @@ class Search
                 // case '+'
                 if (mb_stristr($search, '+')) {
                     $search = str_replace('+', '', $search);
-                    $mustntfound++;
+
+                    if (str_start_with($word, '+')) {
+                        $mustNtFound++;
+                    }
                 }
 
                 // case '-'
                 if (mb_stristr($search, '-')) {
                     $search = str_replace('-', '', $search);
-                    $mustntfound = 0;
+
+                    if (str_start_with($word, '-')) {
+                        $mustNtFound = 0;
+                    }
                 }
 
                 if (mb_stristr($line, $search)) {
-                    $wordcount++;
-                    $wordcount = $wordcount * $mustntfound;
+                    $wordCount++;
+                    $wordCount = $wordCount * $mustNtFound;
                 }
             }
 
-            if ($wordcount >= $mustfound) {
+            if ($wordCount >= $mustFound) {
                 $buf = explode(':', $line);
                 $results[$buf[0]][] = $buf[1];
             }
