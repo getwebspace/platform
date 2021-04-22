@@ -111,14 +111,12 @@ class Search
                     }
                 }
 
-                $text = array_unique($text);
-                $text = implode(' ', $text);
-                $text = trim($text);
-
-                $index[] = rtrim($text);
+                $index = array_merge($index, $text);
             }
         }
 
-        return implode(' | ', $index);
+        $index = array_unique($index);
+
+        return trim(implode(' ', $index));
     }
 }
