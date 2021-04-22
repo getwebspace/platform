@@ -66,6 +66,8 @@ class SearchIndexTask extends AbstractTask
         }
 
         file_put_contents(Search::CACHE_FILE, implode(PHP_EOL, $index));
+
+        $this->setStatusDone((string) count($index));
     }
 
     protected function implode(array $array): string
