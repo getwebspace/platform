@@ -43,6 +43,10 @@
 
                             {% if user and ('cup:main' in user.group.access) %}
                                 <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
+                                    <li class="nav-item submenu">
+                                        {% include 'cup/donate.twig' %}
+                                    </li>
+
                                     {% for plugin in plugins %}
                                         {% for param in plugin.getToolbarItem() %}
                                             {% if param.twig %}
@@ -134,9 +138,7 @@
                                                 <div class="d-flex align-items-center">
                                                     <h4 class="card-title">Быстрый переход</h4>
 
-                                                    <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto">
-                                                        {% include 'cup/donate.twig' %}
-                                                    </ul>
+                                                    <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto"></ul>
                                                 </div>
                                             </div>
                                             <div class="card-body">
