@@ -14,7 +14,7 @@
     <div class="row">
         <div class="col-md-8">
             <div class="card">
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     <div class="card-header">
                         <div class="card-head-row">
                             <div class="card-title">{{ item ? 'Редактирование пользователя ' ~ item.username : 'Добавление пользователя' }}</div>
@@ -156,6 +156,10 @@
                                 {% endif %}
                             </div>
                         </div>
+
+                        <hr>
+
+                        {% include 'cup/form-image.twig' with { 'entity': item, 'multiple': false } %}
                     </div>
 
                     <div class="card-action">

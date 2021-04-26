@@ -52,7 +52,11 @@ class OrderService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
+        // get last order
+        $lastOrder = $this->service->findOneBy([], ['date' => 'desc']);
+
         $order = (new Order)
+            ->setSerial($lastOrder ? ((int) $lastOrder->getSerial()) + 1 : 1)
             ->setDelivery($data['delivery'])
             ->setUser($data['user'])
             ->setList($data['list'])
@@ -65,19 +69,6 @@ class OrderService extends AbstractService
             ->setExternalId($data['external_id'])
             ->setExport($data['export'])
             ->setSystem($data['system']);
-
-        // set serial value
-        if (isset($_ENV['SIMPLE_ORDER_SERIAL']) && $_ENV['SIMPLE_ORDER_SERIAL']) {
-            $lastOrder = $this->service->findOneBy([], ['date' => 'desc']);
-
-            $order->setSerial(
-                $lastOrder ? ((int) $lastOrder->getSerial()) + 1 : 1
-            );
-        } else {
-            $order->setSerial(
-                mb_strtoupper(mb_substr(bin2hex(random_bytes(10 + self::SERIAL_LENGTH)), 0, self::SERIAL_LENGTH))
-            );
-        }
 
         $this->entityManager->persist($order);
         $this->entityManager->flush();

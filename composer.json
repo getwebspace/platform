@@ -34,8 +34,7 @@
         "monolog/monolog": "^1.25.5",
         "runcmf/runtracy": "^0.2.10",
         "nochso/html-compress-twig": "^2.0.1",
-        "illuminate/collections": "^8.17.2",
-        "a-gallyamov/commerceml2": "^1.1"
+        "illuminate/collections": "^8.17.2"
     },
     "require-dev": {
         "fzaninotto/faker": "@stable",

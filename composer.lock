@@ -4,42 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7eb2658dede75066ec6ccb2d7dc955f4",
+    "content-hash": "6c3d19746560295cdddc06be43ca7b00",
     "packages": [
-        {
-            "name": "a-gallyamov/commerceml2",
-            "version": "1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/a-gallyamov/commerceml2.git",
-                "reference": "c0cf50512956c7106f35593623e1a1bb955beebb"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/a-gallyamov/commerceml2/zipball/c0cf50512956c7106f35593623e1a1bb955beebb",
-                "reference": "c0cf50512956c7106f35593623e1a1bb955beebb",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "A_Gallyamov\\CommerceML\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "homepage": "https://github.com/a-gallyamov/commerceml2",
-            "support": {
-                "issues": "https://github.com/a-gallyamov/commerceml2/issues",
-                "source": "https://github.com/a-gallyamov/commerceml2/tree/1.1"
-            },
-            "time": "2019-06-17T14:28:18+00:00"
-        },
         {
             "name": "alksily/support",
             "version": "1.2.1",
