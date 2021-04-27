@@ -513,10 +513,12 @@ if (!function_exists('sys_self_check_health')) {
         ];
 
         foreach ($fileAccess as $folder => $value) {
-            $chmod_value = @decoct(@fileperms($folder)) % 1000;
+            if (realpath($folder)) {
+                $chmod_value = @decoct(@fileperms($folder)) % 1000;
 
-            if ($chmod_value === $value) {
-                $fileAccess[$folder] = true;
+                if ($chmod_value === $value) {
+                    $fileAccess[$folder] = true;
+                }
             }
         }
 
