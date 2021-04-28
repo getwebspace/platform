@@ -8,7 +8,10 @@ class OrderListAction extends CatalogAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $list = $this->catalogOrderService->read();
+        $list = $this->catalogOrderService->read([
+            'limit' => 1000,
+            'order' => ['date' => 'desc'],
+        ]);
 
         return $this->respondWithTemplate('cup/catalog/order/index.twig', [
             'orders' => $list,
