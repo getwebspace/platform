@@ -470,9 +470,25 @@
                                                     'type': 'select',
                                                     'name': 'entity[access]',
                                                     'args': {
-                                                        'option': {'all':'Все', 'user':'Только пользователи'},
+                                                        'option': {'all':'Все', 'key':'Только ключи', 'user':'Пользователи и ключи'},
                                                         'selected': 'user'
                                                     }
+                                                } %}
+
+                                                <hr>
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Ключи доступа к API',
+                                                    'description': [
+                                                            'Возможность вносить изменения по API есть только при наличии ключа<br>',
+                                                            '<button class="btn btn-outline-info btn-sm mr-1" type="button" data-entity-click="add">Добавить новый</button>',
+                                                        ]|join(''),
+                                                    'message': 'Каждый ключ с новой строки',
+                                                    'type': 'textarea',
+                                                    'name': 'entity[keys]',
+                                                    'args': {
+                                                        'style': 'height: 100px!important;'
+                                                    },
                                                 } %}
                                             </div>
 

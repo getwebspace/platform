@@ -2,6 +2,7 @@
 
 namespace App\Application\Actions\Api;
 
+use App\Domain\AbstractException;
 use App\Domain\Service\Catalog\CategoryService as CatalogCatalogService;
 use App\Domain\Service\Catalog\Exception\CategoryNotFoundException as CatalogCategoryNotFoundException;
 use App\Domain\Service\Catalog\Exception\OrderNotFoundException;
@@ -30,161 +31,198 @@ class EntityAction extends ActionApi
     {
         $status = 200;
         $params = [
+            'entity' => null,
+            'key' => null,
             'order' => [],
             'limit' => 1000,
             'offset' => 0,
         ];
         $params = array_merge($params, $this->request->getQueryParams());
-
-        // check access
-        if ($this->parameter('entity_access', 'user') === 'user' && $this->request->getAttribute('user') === null) {
-            return $this->respondWithJson([
-                'status' => 403,
-                'params' => $params,
-                'data' => [],
-            ]);
-        }
-
-        $service = null;
+        $params['entity'] = ltrim($this->resolveArg('args'), '/');
         $result = [];
 
-        switch (ltrim($this->resolveArg('args'), '/')) {
-            case 'catalog/category':
-                $service = CatalogCatalogService::getWithContainer($this->container);
-
-                try {
-                    $result = $service->read(
-                        array_merge(
-                            ['status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK],
-                            $params
-                        )
-                    );
-                } catch (CatalogCategoryNotFoundException $e) {
-                    $status = 404;
-                }
-
-                break;
-
-            case 'catalog/product':
-                $service = CatalogProductService::getWithContainer($this->container);
-
-                try {
-                    $result = $service->read(
-                        array_merge(
-                            ['status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK],
-                            $params
-                        )
-                    );
-                } catch (ProductNotFoundException $e) {
-                    $status = 404;
-                }
-
-                break;
-
-            case 'catalog/order':
-                $service = CatalogOrderService::getWithContainer($this->container);
-
-                try {
-                    $result = $service->read($params);
-                } catch (OrderNotFoundException $e) {
-                    $status = 404;
-                }
-
-                break;
-
-            case 'file':
-                $service = FileService::getWithContainer($this->container);
-
-                try {
-                    $result = $service->read($params);
-                } catch (FileNotFoundException $e) {
-                    $status = 404;
-                }
-
-                break;
-
-            case 'guestbook':
-                $service = GuestBookService::getWithContainer($this->container);
-
-                try {
-                    $result = $service->read($params);
-                } catch (EntryNotFoundException $e) {
-                    $status = 404;
-                }
-
-                break;
-
-            case 'page':
-                $service = PageService::getWithContainer($this->container);
-
-                try {
-                    $result = $service->read($params);
-                } catch (PageNotFoundException $e) {
-                    $status = 404;
-                }
-
-                break;
-
-            case 'publication':
-                $service = PublicationService::getWithContainer($this->container);
-
-                try {
-                    $result = $service->read($params);
-                } catch (PublicationNotFoundException $e) {
-                    $status = 404;
-                }
-
-                break;
-
-            case 'publication/category':
-                $service = PublicationCategoryService::getWithContainer($this->container);
-
-                try {
-                    $result = $service->read($params);
-                } catch (PublicationCategoryNotFoundException $e) {
-                    $status = 404;
-                }
-
+        // check access
+        switch ($this->parameter('entity_access', 'user')) {
+            case 'all':
+                // allow access for all
                 break;
 
             case 'user':
-                $service = UserService::getWithContainer($this->container);
+                if (($user = $this->request->getAttribute('user')) !== null) {
+                    $params['key'] = $user->getUuid()->toString();
 
-                try {
-                    $result = $service->read($params);
-                } catch (UserNotFoundException $e) {
-                    $status = 404;
+                    break;
                 }
+                // no break
 
-                break;
-
-            case 'user/group':
-                $service = UserGroupService::getWithContainer($this->container);
-
-                try {
-                    $result = $service->read($params);
-                } catch (UserGroupNotFoundException $e) {
-                    $status = 404;
+            case 'key':
+                if (($key = $this->request->getParam('key')) !== null) {
+                    if (in_array($key, explode(PHP_EOL, $this->parameter('entity_keys', '')), true)) {
+                        break;
+                    }
                 }
+                // no break
 
-                break;
+            default:
+                $status = 401;
         }
 
-        // update section
-        // !! unsecure !!
-        /*if ($this->request->isPost()) {
-            if ($result && $status === 200) {
-                if (!is_array($result) && !is_a($result, Collection::class)) {
-                    $result = [$result];
-                }
+        if ($status === 200) {
+            $service = null;
 
-                foreach ($result as &$item) {
-                    $item = $service->update($item, $this->request->getParams());
-                }
-            } else {
-                $result = $service->create($this->request->getParams());
+            // read section
+            switch ($params['entity']) {
+                case 'catalog/category':
+                    $service = CatalogCatalogService::getWithContainer($this->container);
+
+                    try {
+                        $result = $service->read(
+                            array_merge(
+                                ['status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK],
+                                $params
+                            )
+                        );
+                    } catch (CatalogCategoryNotFoundException $e) {
+                        $status = 404;
+                    }
+
+                    break;
+
+                case 'catalog/product':
+                    $service = CatalogProductService::getWithContainer($this->container);
+
+                    try {
+                        $result = $service->read(
+                            array_merge(
+                                ['status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK],
+                                $params
+                            )
+                        );
+                    } catch (ProductNotFoundException $e) {
+                        $status = 404;
+                    }
+
+                    break;
+
+                case 'catalog/order':
+                    $service = CatalogOrderService::getWithContainer($this->container);
+
+                    try {
+                        $result = $service->read($params);
+                    } catch (OrderNotFoundException $e) {
+                        $status = 404;
+                    }
+
+                    break;
+
+                case 'file':
+                    $service = FileService::getWithContainer($this->container);
+
+                    try {
+                        $result = $service->read($params);
+                    } catch (FileNotFoundException $e) {
+                        $status = 404;
+                    }
+
+                    break;
+
+                case 'guestbook':
+                    $service = GuestBookService::getWithContainer($this->container);
+
+                    try {
+                        $result = $service->read($params);
+                    } catch (EntryNotFoundException $e) {
+                        $status = 404;
+                    }
+
+                    break;
+
+                case 'page':
+                    $service = PageService::getWithContainer($this->container);
+
+                    try {
+                        $result = $service->read($params);
+                    } catch (PageNotFoundException $e) {
+                        $status = 404;
+                    }
+
+                    break;
+
+                case 'publication':
+                    $service = PublicationService::getWithContainer($this->container);
+
+                    try {
+                        $result = $service->read($params);
+                    } catch (PublicationNotFoundException $e) {
+                        $status = 404;
+                    }
+
+                    break;
+
+                case 'publication/category':
+                    $service = PublicationCategoryService::getWithContainer($this->container);
+
+                    try {
+                        $result = $service->read($params);
+                    } catch (PublicationCategoryNotFoundException $e) {
+                        $status = 404;
+                    }
+
+                    break;
+
+                case 'user':
+                    $service = UserService::getWithContainer($this->container);
+
+                    try {
+                        $result = $service->read($params);
+                    } catch (UserNotFoundException $e) {
+                        $status = 404;
+                    }
+
+                    break;
+
+                case 'user/group':
+                    $service = UserGroupService::getWithContainer($this->container);
+
+                    try {
+                        $result = $service->read($params);
+                    } catch (UserGroupNotFoundException $e) {
+                        $status = 404;
+                    }
+
+                    break;
             }
-        }*/
+
+            // update section
+            if ($this->parameter('entity_access', 'user') === 'key' && $this->request->isPost()) {
+                try {
+                    switch ($status) {
+                        case 200:
+                            if ($result) {
+                                if (!is_array($result) && !is_a($result, Collection::class)) {
+                                    $result = [$result];
+                                }
+
+                                foreach ($result as $index => $item) {
+                                    $result[$index] = $service->update($item, $this->request->getParams());
+                                }
+                            }
+
+                            break;
+
+                        case 404:
+                            $result = $service->create($this->request->getParams());
+
+                            break;
+                    }
+
+                    $this->logger->notice('Update entity via API', $params);
+                } catch (AbstractException $exception) {
+                    $status = 500;
+                    $result = $exception->getTitle();
+                }
+            }
+        }
 
         return $this->respondWithJson([
             'status' => $status,

@@ -159,6 +159,29 @@ $(() => {
         });
     }
     
+    // parameters add new entity key (API key)
+    {
+        $('[data-entity-click="add"]').on('click', (e) => {
+            function key() {
+                let d = new Date().getTime();
+        
+                return 'xxxx-xyyx-xxxx-yxxy'.replace(/[xy]/g, (c) => {
+                    let r = (d + Math.random() * 16) % 16 | 0;
+                    
+                    d = Math.floor(d / 16);
+            
+                    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+                });
+            }
+            
+            
+            let $keys = $('[name="entity[keys]"]'),
+                value = $keys.val();
+    
+            $keys.val((value ? value + "\n" : '') + key());
+        })
+    }
+    
     // parameters add variables
     {
         let $hidden = $('[name="var[]"]').parents('[data-input]'),
