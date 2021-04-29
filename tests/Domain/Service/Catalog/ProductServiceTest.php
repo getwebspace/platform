@@ -36,6 +36,7 @@ class ProductServiceTest extends TestCase
         $data = [
             'category' => $this->getFaker()->uuid,
             'title' => $this->getFaker()->title,
+            'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductTypeType::LIST),
             'description' => $this->getFaker()->text(100),
             'extra' => $this->getFaker()->text(100),
             'address' => $this->getFaker()->word,
@@ -71,6 +72,7 @@ class ProductServiceTest extends TestCase
         $this->assertInstanceOf(Product::class, $product);
         $this->assertSame($data['category'], $product->getCategory()->toString());
         $this->assertSame($data['title'], $product->getTitle());
+        $this->assertSame($data['type'], $product->getType());
         $this->assertSame($data['description'], $product->getDescription());
         $this->assertSame($data['extra'], $product->getExtra());
         $this->assertSame($data['address'], $product->getAddress());
@@ -103,6 +105,7 @@ class ProductServiceTest extends TestCase
         $this->assertInstanceOf(Product::class, $p);
         $this->assertSame($data['category'], $p->getCategory()->toString());
         $this->assertSame($data['title'], $p->getTitle());
+        $this->assertSame($data['type'], $p->getType());
         $this->assertSame($data['description'], $p->getDescription());
         $this->assertSame($data['extra'], $p->getExtra());
         $this->assertSame($data['address'], $p->getAddress());
@@ -199,6 +202,7 @@ class ProductServiceTest extends TestCase
         $product = $this->service->create([
             'category' => $this->getFaker()->uuid,
             'title' => $this->getFaker()->title,
+            'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductTypeType::LIST),
             'description' => $this->getFaker()->text(100),
             'extra' => $this->getFaker()->text(100),
             'address' => $this->getFaker()->word,
@@ -233,6 +237,7 @@ class ProductServiceTest extends TestCase
         $data = [
             'category' => $this->getFaker()->uuid,
             'title' => $this->getFaker()->title,
+            'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductTypeType::LIST),
             'description' => $this->getFaker()->text(100),
             'extra' => $this->getFaker()->text(100),
             'address' => $this->getFaker()->word,
@@ -268,6 +273,7 @@ class ProductServiceTest extends TestCase
         $this->assertInstanceOf(Product::class, $product);
         $this->assertSame($data['category'], $product->getCategory()->toString());
         $this->assertSame($data['title'], $product->getTitle());
+        $this->assertSame($data['type'], $product->getType());
         $this->assertSame($data['description'], $product->getDescription());
         $this->assertSame($data['extra'], $product->getExtra());
         $this->assertSame($data['address'], $product->getAddress());

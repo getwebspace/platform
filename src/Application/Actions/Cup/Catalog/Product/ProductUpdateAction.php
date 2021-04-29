@@ -23,6 +23,7 @@ class ProductUpdateAction extends CatalogAction
                         $product = $this->catalogProductService->update($product, [
                             'category' => $this->request->getParam('category'),
                             'title' => $this->request->getParam('title'),
+                            'type' => $this->request->getParam('type'),
                             'description' => $this->request->getParam('description'),
                             'extra' => $this->request->getParam('extra'),
                             'address' => $this->request->getParam('address'),

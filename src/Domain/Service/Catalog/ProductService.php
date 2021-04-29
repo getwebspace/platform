@@ -38,6 +38,7 @@ class ProductService extends AbstractService
         $default = [
             'category' => \Ramsey\Uuid\Uuid::NIL,
             'title' => '',
+            'type' => \App\Domain\Types\Catalog\ProductTypeType::TYPE_PRODUCT,
             'description' => '',
             'extra' => '',
             'address' => '',
@@ -77,6 +78,7 @@ class ProductService extends AbstractService
         $product = (new Product)
             ->setCategory($data['category'])
             ->setTitle($data['title'])
+            ->setType($data['type'])
             ->setDescription($data['description'])
             ->setExtra($data['extra'])
             ->setAddress($data['address'])
@@ -141,6 +143,7 @@ class ProductService extends AbstractService
             'uuid' => null,
             'category' => null,
             'title' => null,
+            'type' => null,
             'address' => null,
             'vendorcode' => null,
             'barcode' => null,
@@ -165,6 +168,9 @@ class ProductService extends AbstractService
         }
         if ($data['title'] !== null) {
             $criteria['title'] = $data['title'];
+        }
+        if ($data['type'] !== null) {
+            $criteria['type'] = $data['type'];
         }
         if ($data['address'] !== null) {
             $criteria['address'] = $data['address'];
@@ -247,6 +253,7 @@ class ProductService extends AbstractService
             $default = [
                 'category' => null,
                 'title' => null,
+                'type' => null,
                 'description' => null,
                 'extra' => null,
                 'address' => null,
@@ -281,6 +288,9 @@ class ProductService extends AbstractService
                 }
                 if ($data['title'] !== null) {
                     $entity->setTitle($data['title']);
+                }
+                if ($data['type'] !== null) {
+                    $entity->setType($data['type']);
                 }
                 if ($data['description'] !== null) {
                     $entity->setDescription($data['description']);
