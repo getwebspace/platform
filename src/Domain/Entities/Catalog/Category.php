@@ -399,10 +399,12 @@ class Category extends AbstractEntity
         ];
         $data = array_merge($default, $data);
 
-        $this->sort = [
-            'by' => $data['by'],
-            'direction' => $data['direction'],
-        ];
+        if (in_array($data['by'], \App\Domain\References\Catalog::ORDER_BY, true)) {
+            $this->sort['by'] = $data['by'];
+        }
+        if (in_array($data['direction'], \App\Domain\References\Catalog::ORDER_DIRECTION, true)) {
+            $this->sort['direction'] = $data['direction'];
+        }
 
         return $this;
     }
