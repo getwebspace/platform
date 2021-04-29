@@ -29,7 +29,7 @@ class EditorPageAction extends AbstractAction
             $absolute_path = $theme_dir . '/' . $path;
             $content = $this->request->getParam('content');
 
-            // удаление файла
+            // delete file
             if ($this->request->getParam('save', 'exit') === 'delete' && file_exists($absolute_path)) {
                 unlink($absolute_path);
 

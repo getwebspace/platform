@@ -882,8 +882,6 @@ class Product extends AbstractEntity
     protected $files = [];
 
     /**
-     * Вернет габариты товара
-     *
      * @return string
      */
     public function getVolumeWithUnit()

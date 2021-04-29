@@ -479,7 +479,7 @@ class TwigExtension extends AbstractExtension
 
     // catalog functions
 
-    // получение списка категорий товаров
+    // fetch categories list
     public function catalog_category()
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_category');

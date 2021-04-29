@@ -45,7 +45,7 @@ class SendNewsLetterMailTask extends AbstractTask
             $userService = UserService::getWithContainer($this->container);
             $userSubscriberService = UserSubscriberService::getWithContainer($this->container);
 
-            // список адресов
+            // address list select
             switch ($args['type']) {
                 case 'all':
                     $list = collect()
