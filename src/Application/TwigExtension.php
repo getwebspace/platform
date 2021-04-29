@@ -3,7 +3,7 @@
 namespace App\Application;
 
 use App\Domain\AbstractExtension;
-use App\Domain\Service\Catalog\CategoryService as CatalogCatalogService;
+use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\File\FileService;
@@ -487,7 +487,7 @@ class TwigExtension extends AbstractExtension
         static $buf;
 
         if (!$buf) {
-            $catalogCategoryService = CatalogCatalogService::getWithContainer($this->container);
+            $catalogCategoryService = CatalogCategoryService::getWithContainer($this->container);
             $buf = $catalogCategoryService->read([
                 'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
             ]);

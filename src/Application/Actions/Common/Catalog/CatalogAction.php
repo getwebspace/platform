@@ -3,7 +3,7 @@
 namespace App\Application\Actions\Common\Catalog;
 
 use App\Domain\AbstractAction;
-use App\Domain\Service\Catalog\CategoryService as CatalogCatalogService;
+use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\Notification\NotificationService;
@@ -18,9 +18,9 @@ abstract class CatalogAction extends AbstractAction
     protected UserService $userService;
 
     /**
-     * @var CatalogCatalogService
+     * @var CatalogCategoryService
      */
-    protected CatalogCatalogService $catalogCategoryService;
+    protected CatalogCategoryService $catalogCategoryService;
 
     /**
      * @var CatalogProductService
@@ -45,7 +45,7 @@ abstract class CatalogAction extends AbstractAction
         parent::__construct($container);
 
         $this->userService = UserService::getWithContainer($container);
-        $this->catalogCategoryService = CatalogCatalogService::getWithContainer($container);
+        $this->catalogCategoryService = CatalogCategoryService::getWithContainer($container);
         $this->catalogProductService = CatalogProductService::getWithContainer($container);
         $this->catalogOrderService = CatalogOrderService::getWithContainer($container);
         $this->notificationService = NotificationService::getWithContainer($container);

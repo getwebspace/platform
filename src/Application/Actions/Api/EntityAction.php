@@ -3,7 +3,7 @@
 namespace App\Application\Actions\Api;
 
 use App\Domain\AbstractException;
-use App\Domain\Service\Catalog\CategoryService as CatalogCatalogService;
+use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\Exception\CategoryNotFoundException as CatalogCategoryNotFoundException;
 use App\Domain\Service\Catalog\Exception\OrderNotFoundException;
 use App\Domain\Service\Catalog\Exception\ProductNotFoundException;
@@ -73,7 +73,7 @@ class EntityAction extends ActionApi
             // read section
             switch ($params['entity']) {
                 case 'catalog/category':
-                    $service = CatalogCatalogService::getWithContainer($this->container);
+                    $service = CatalogCategoryService::getWithContainer($this->container);
 
                     try {
                         $result = $service->read(
