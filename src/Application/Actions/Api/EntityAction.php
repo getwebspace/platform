@@ -206,12 +206,14 @@ class EntityAction extends ActionApi
                                 foreach ($result as $index => $item) {
                                     $result[$index] = $service->update($item, $this->request->getParams());
                                 }
+                                $status = 202;
                             }
 
                             break;
 
                         case 404:
                             $result = $service->create($this->request->getParams());
+                            $status = 201;
 
                             break;
                     }
