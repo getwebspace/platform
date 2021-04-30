@@ -207,6 +207,7 @@ class TwigExtension extends AbstractExtension
      * old debug function
      *
      * @deprecated
+     * @tracySkipLocation
      *
      * @param mixed ...$args
      */
