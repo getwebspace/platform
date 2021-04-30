@@ -59,7 +59,7 @@ class ListAction extends CatalogAction
      *
      * @return Response
      */
-    protected function prepareMain(array $params, $categories): ?Response
+    protected function prepareMain(array $params, Collection $categories): ?Response
     {
         if ($params['address'] === '') {
             $pagination = $this->parameter('catalog_category_pagination', 10);
