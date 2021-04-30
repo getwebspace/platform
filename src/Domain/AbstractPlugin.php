@@ -30,11 +30,6 @@ abstract class AbstractPlugin extends AbstractComponent
     private Twig $renderer;
 
     /**
-     * @var string
-     */
-    private string $templateFolder;
-
-    /**
      * @var array
      */
     private array $handledRoutes = [];
@@ -103,11 +98,6 @@ abstract class AbstractPlugin extends AbstractComponent
         if (realpath($path) !== false) {
             $this->renderer->getLoader()->addPath($path);
         }
-    }
-
-    public function getTemplateFolder(): string
-    {
-        return $this->templateFolder;
     }
 
     /**
