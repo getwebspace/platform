@@ -11,6 +11,7 @@ use App\Domain\Service\Publication\Exception\MissingTitleValueException;
 use App\Domain\Service\Publication\Exception\PublicationNotFoundException;
 use App\Domain\Service\Publication\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\Publication\PublicationService;
+use App\Domain\Service\User\UserService;
 use DateTime;
 use Doctrine\ORM\EntityManager;
 use tests\TestCase;
@@ -32,11 +33,17 @@ class PublicationServiceTest extends TestCase
      */
     protected $category;
 
+    /**
+     * @var UserService
+     */
+    protected $userService;
+
     public function setUp(): void
     {
         parent::setUp();
         $this->em = $this->getEntityManager();
         $this->service = PublicationService::getWithEntityManager($this->em);
+        $this->userService = UserService::getWithEntityManager($this->em);
 
         $this->category = (PublicationCategoryService::getWithEntityManager($this->em))->create([
             'title' => $this->getFaker()->title,
@@ -48,6 +55,11 @@ class PublicationServiceTest extends TestCase
     public function testCreateSuccess(): void
     {
         $data = [
+            'user' => $this->userService->create([
+                'username' => $this->getFaker()->userName,
+                'password' => $this->getFaker()->password,
+                'email' => $this->getFaker()->email,
+            ]),
             'title' => $this->getFaker()->title,
             'address' => 'publication-custom-address',
             'category' => $this->category->getUuid(),
@@ -65,6 +77,7 @@ class PublicationServiceTest extends TestCase
 
         $publication = $this->service->create($data);
         $this->assertInstanceOf(Publication::class, $publication);
+        $this->assertSame($data['user'], $publication->getUser());
         $this->assertSame($data['title'], $publication->getTitle());
         $this->assertSame($data['address'], $publication->getAddress());
         $this->assertSame($data['content'], $publication->getContent());
@@ -74,6 +87,7 @@ class PublicationServiceTest extends TestCase
         $publicationRepo = $this->em->getRepository(Publication::class);
         $p = $publicationRepo->findOneByTitle($data['title']);
         $this->assertInstanceOf(Publication::class, $p);
+        $this->assertSame($data['user'], $p->getUser());
         $this->assertSame($data['title'], $p->getTitle());
         $this->assertSame($data['address'], $p->getAddress());
         $this->assertSame($data['content'], $p->getContent());
@@ -178,6 +192,11 @@ class PublicationServiceTest extends TestCase
     public function testUpdate(): void
     {
         $publication = $this->service->create([
+            'user' => $this->userService->create([
+                'username' => $this->getFaker()->userName,
+                'password' => $this->getFaker()->password,
+                'email' => $this->getFaker()->email,
+            ]),
             'title' => $this->getFaker()->title,
             'address' => 'publication-custom-address',
             'category' => $this->category->getUuid(),
@@ -194,6 +213,11 @@ class PublicationServiceTest extends TestCase
         ]);
 
         $data = [
+            'user' => $this->userService->create([
+                'username' => $this->getFaker()->userName,
+                'password' => $this->getFaker()->password,
+                'email' => $this->getFaker()->email,
+            ]),
             'title' => $this->getFaker()->title,
             'address' => 'publication-custom-address',
             'category' => $this->category->getUuid(),
@@ -210,6 +234,7 @@ class PublicationServiceTest extends TestCase
 
         $publication = $this->service->update($publication, $data);
         $this->assertInstanceOf(Publication::class, $publication);
+        $this->assertSame($data['user'], $publication->getUser());
         $this->assertSame($data['title'], $publication->getTitle());
         $this->assertSame($data['address'], $publication->getAddress());
         $this->assertSame($data['category'], $publication->getCategory());

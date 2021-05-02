@@ -34,6 +34,45 @@ class Publication extends AbstractEntity
     }
 
     /**
+     * @var null|Uuid
+     * @ORM\Column(type="uuid", nullable=true, options={"default": \Ramsey\Uuid\Uuid::NIL})
+     */
+    protected ?Uuid $user_uuid;
+
+    /**
+     * @var null|User
+     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\User")
+     * @ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid")
+     */
+    protected ?User $user = null;
+
+    /**
+     * @param string|User $user
+     *
+     * @return $this
+     */
+    public function setUser($user)
+    {
+        if (is_a($user, User::class)) {
+            $this->user_uuid = $user->getUuid();
+            $this->user = $user;
+        } else {
+            $this->user_uuid = null;
+            $this->user = null;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return null|User
+     */
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    /**
      * @var string
      * @ORM\Column(type="string", length=1000, unique=true, options={"default": ""})
      */

@@ -16,6 +16,7 @@ class PublicationUpdateAction extends PublicationAction
                 if ($this->request->isPost()) {
                     try {
                         $publication = $this->publicationService->update($publication, [
+                            'user' => $this->request->getAttribute('user'),
                             'title' => $this->request->getParam('title'),
                             'address' => $this->request->getParam('address'),
                             'date' => $this->request->getParam('date'),
