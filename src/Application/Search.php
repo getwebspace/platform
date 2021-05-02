@@ -28,7 +28,7 @@ class Search
         $results = [];
 
         // sort words
-        usort($query_words, fn($word) => str_start_with($word, ['-', '+']) ? 1 : -1);
+        usort($query_words, fn ($word) => str_start_with($word, ['-', '+']) ? 1 : -1);
 
         foreach ($index as $line) {
             $wordCount = 0;

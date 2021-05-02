@@ -102,7 +102,6 @@ class Product extends AbstractEntity
     /**
      * @see \App\Domain\Types\ProductTypeType::LIST
      * @ORM\Column(type="CatalogProductTypeType", options={"default": \App\Domain\Types\Catalog\ProductTypeType::TYPE_PRODUCT})
-     *
      */
     protected string $type = \App\Domain\Types\Catalog\ProductTypeType::TYPE_PRODUCT;
 
