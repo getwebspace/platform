@@ -20,7 +20,7 @@ final class Version20210502115441 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE publication ADD user_uuid CHAR(36) DEFAULT \'00000000-0000-0000-0000-000000000000\' COMMENT \'(DC2Type:uuid)\'');
+        $this->addSql('ALTER TABLE publication ADD user_uuid CHAR(36) DEFAULT NULL COMMENT \'(DC2Type:uuid)\'');
         $this->addSql('ALTER TABLE publication ADD CONSTRAINT FK_AF3C6779ABFE1C6F FOREIGN KEY (user_uuid) REFERENCES user (uuid)');
         $this->addSql('CREATE INDEX IDX_AF3C6779ABFE1C6F ON publication (user_uuid)');
     }
