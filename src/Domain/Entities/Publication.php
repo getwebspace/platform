@@ -35,7 +35,7 @@ class Publication extends AbstractEntity
 
     /**
      * @var null|Uuid
-     * @ORM\Column(type="uuid", nullable=true, options={"default": \Ramsey\Uuid\Uuid::NIL})
+     * @ORM\Column(type="uuid", nullable=true, options={"default": null})
      */
     protected ?Uuid $user_uuid;
 
