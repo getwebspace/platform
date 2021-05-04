@@ -320,6 +320,19 @@ $app
         $app->map(['get', 'post'], '/forbidden', \App\Application\Actions\Common\ForbiddenPageAction::class)
             ->setName('forbidden');
 
+        // publication
+        $app
+            ->group('', function (App $app) use ($container): void {
+                $publicationCategoryService = \App\Domain\Service\Publication\CategoryService::getWithContainer($container);
+                $categoryPath = $publicationCategoryService->read()->pluck('address')->implode('|');
+
+                // view categories and products
+                $app
+                    ->get("/{category:{$categoryPath}}[/{args:.*}]", \App\Application\Actions\Common\Publication\ListAction::class)
+                    ->setName('common:publication:list')
+                    ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+            });
+
         // file
         $app
             ->group('/file', function (App $app): void {
@@ -364,9 +377,9 @@ $app
         $app->get('/rss/{channel:.*}', \App\Application\Actions\Common\PublicationRSS::class)
             ->setName('common:rss');
 
-        // dynamic path handler
-        $app->get('/{args:.*}', \App\Application\Actions\Common\DynamicPageAction::class)
-            ->setName('common:dynamic');
+        // page
+        $app->get('/{args:.*}', \App\Application\Actions\Common\PageAction::class)
+            ->setName('common:page');
     })
     ->add(
         ($_ENV['DEBUG'] ?? false) ?
