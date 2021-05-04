@@ -1,1 +1,95 @@
-{% htmlcompress %}    <div id="cookie" class="hidden">        <h3>Про использование cookies</h3>        <p>            Продолжая просматривать этот сайт выподтверждаете, что соглашаетесь на использование файлов cookie.        </p>        <div class="row">            <div class="offset-6 col-6">                <button class="btn btn-primary">Соглашаюсь</button>            </div>        </div>    </div>    <style id="cookie_styles">        #cookie {            font-family: 'Lato', sans-serif;            position: fixed;            width: 100%;            max-width: 320px;            padding: 10px;            bottom: 80px;            left: 0;            right: 0;            z-index: 1000;            background-color: #fff;            color: #333;            box-shadow: 0 4px 40px rgba(0, 0, 0, 0.2);            border-radius: 0 calc(.25rem - 1px) calc(.25rem - 1px) 0;        }        #cookie.hidden {            visibility: hidden;        }        #cookie h3 {            line-height: 1.4;            font-size: 1.1625rem;        }        #cookie p {            font-size: 14px;            line-height: 1.82;            margin-bottom: 1rem;            word-break: break-word;        }        #cookie .btn {            padding: .65rem 1.4rem;            font-size: 14px;            line-height: normal;            opacity: 1;            border-radius: 3px;            display: inline-block;            font-weight: 400;            color: #212529;            text-align: center;            vertical-align: middle;            -webkit-user-select: none;            -moz-user-select: none;            -ms-user-select: none;            user-select: none;            background-color: transparent;            border: 1px solid transparent;            transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;        }        #cookie .btn-primary {            color: #fff;            background: #1572e8 !important;            border-color: #1572e8 !important;        }        #cookie .btn-link {            border: 0 !important;            background: transparent !important;            font-weight: 400;            color: #007bff;            text-decoration: none;        }    </style>    <script id="cookie_script">        let cookie = window.localStorage.getItem('cookie');        if (cookie === null) {            let $cookie = $('#cookie');            $cookie.find('.btn-primary').on('click', () => {                window.localStorage.setItem('cookie', true);                $cookie.addClass('hidden');            });            setTimeout(() => $cookie.removeClass('hidden'), 3000);        }    </script>{% endhtmlcompress %}
+{% htmlcompress %}
+    <div id="cookie" class="hidden">
+        <h3>Про использование cookies</h3>
+        <p>
+            Продолжая просматривать этот сайт выподтверждаете, что соглашаетесь на использование файлов cookie.
+        </p>
+
+        <div class="row">
+            <div class="offset-6 col-6">
+                <button class="btn btn-primary">Соглашаюсь</button>
+            </div>
+        </div>
+    </div>
+    <style id="cookie_styles">
+        #cookie {
+            font-family: 'Lato', sans-serif;
+            position: fixed;
+            width: 100%;
+            max-width: 320px;
+            padding: 10px;
+            bottom: 80px;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background-color: #fff;
+            color: #333;
+            box-shadow: 0 4px 40px rgba(0, 0, 0, 0.2);
+            border-radius: 0 calc(.25rem - 1px) calc(.25rem - 1px) 0;
+        }
+
+        #cookie.hidden {
+            visibility: hidden;
+        }
+
+        #cookie h3 {
+            line-height: 1.4;
+            font-size: 1.1625rem;
+        }
+
+        #cookie p {
+            font-size: 14px;
+            line-height: 1.82;
+            margin-bottom: 1rem;
+            word-break: break-word;
+        }
+
+        #cookie .btn {
+            padding: .65rem 1.4rem;
+            font-size: 14px;
+            line-height: normal;
+            opacity: 1;
+            border-radius: 3px;
+            display: inline-block;
+            font-weight: 400;
+            color: #212529;
+            text-align: center;
+            vertical-align: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            background-color: transparent;
+            border: 1px solid transparent;
+            transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+
+        #cookie .btn-primary {
+            color: #fff;
+            background: #1572e8 !important;
+            border-color: #1572e8 !important;
+        }
+
+        #cookie .btn-link {
+            border: 0 !important;
+            background: transparent !important;
+            font-weight: 400;
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+    <script id="cookie_script">
+        let cookie = window.localStorage.getItem('cookie');
+
+        if (cookie === null) {
+            let $cookie = $('#cookie');
+
+            $cookie.find('.btn-primary').on('click', () => {
+                window.localStorage.setItem('cookie', true);
+                $cookie.addClass('hidden');
+            });
+
+            setTimeout(() => $cookie.removeClass('hidden'), 3000);
+        }
+    </script>
+{% endhtmlcompress %}

@@ -239,7 +239,7 @@ class TwigExtension extends AbstractExtension
      *
      * @return string
      */
-    public function df($obj = 'now', $format = null, $timezone = '')
+    public function df($obj = 'now', string $format = null, string $timezone = '')
     {
         if (is_string($obj) || is_numeric($obj)) {
             $obj = new DateTime($obj);
@@ -250,8 +250,8 @@ class TwigExtension extends AbstractExtension
         }
 
         return $obj
-            ->setTimezone(new DateTimeZone($timezone ? $timezone : $this->parameter('common_timezone', 'UTC')))
-            ->format($format ? $format : $this->parameter('common_date_format', 'j-m-Y, H:i'));
+            ->setTimezone(new DateTimeZone($timezone ?: $this->parameter('common_timezone', 'UTC')))
+            ->format($format ?: $this->parameter('common_date_format', 'j-m-Y, H:i'));
     }
 
     public function collect(array $array = [])
