@@ -17,7 +17,6 @@ use Ramsey\Uuid\Uuid;
 class Order extends AbstractEntity
 {
     /**
-     * @var Uuid
      * @ORM\Id
      * @ORM\Column(type="uuid")
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -25,16 +24,12 @@ class Order extends AbstractEntity
      */
     protected Uuid $uuid;
 
-    /**
-     * @return Uuid
-     */
     public function getUuid(): Uuid
     {
         return $this->uuid;
     }
 
     /**
-     * @var string
      * @ORM\Column(type="string", length=7, options={"default": ""})
      */
     protected string $serial = '';
@@ -53,22 +48,17 @@ class Order extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getSerial(): string
     {
         return $this->serial;
     }
 
     /**
-     * @var null|Uuid
      * @ORM\Column(type="uuid", nullable=true, options={"default": null})
      */
     protected ?Uuid $user_uuid;
 
     /**
-     * @var null|User
      * @ORM\ManyToOne(targetEntity="App\Domain\Entities\User")
      * @ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid")
      */
@@ -92,16 +82,12 @@ class Order extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return null|User
-     */
     public function getUser(): ?User
     {
         return $this->user;
     }
 
     /**
-     * @var array
      * @ORM\Column(type="array")
      */
     protected array $delivery = [
@@ -110,8 +96,6 @@ class Order extends AbstractEntity
     ];
 
     /**
-     * @param array $data
-     *
      * @return $this
      */
     public function setDelivery(array $data)
@@ -130,16 +114,12 @@ class Order extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getDelivery(): array
     {
         return $this->delivery;
     }
 
     /**
-     * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     protected DateTime $shipping;
@@ -167,14 +147,11 @@ class Order extends AbstractEntity
     }
 
     /**
-     * @var string
      * @ORM\Column(type="string", options={"default": ""})
      */
     protected string $comment;
 
     /**
-     * @param string $comment
-     *
      * @return $this
      */
     public function setComment(string $comment)
@@ -186,9 +163,6 @@ class Order extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getComment(): string
     {
         return $this->comment;
@@ -200,8 +174,6 @@ class Order extends AbstractEntity
     protected string $phone = '';
 
     /**
-     * @param null|string $phone
-     *
      * @throws \App\Domain\Exceptions\WrongPhoneValueException
      *
      * @return $this
@@ -219,9 +191,6 @@ class Order extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getPhone(): string
     {
         return $this->phone;
@@ -233,8 +202,6 @@ class Order extends AbstractEntity
     protected string $email = '';
 
     /**
-     * @param null|string $email
-     *
      * @throws \App\Domain\Exceptions\WrongEmailValueException
      *
      * @return $this
@@ -252,16 +219,12 @@ class Order extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getEmail(): string
     {
         return $this->email;
     }
 
     /**
-     * @var array
      * @ORM\Column(name="`list`", type="array")
      */
     protected array $list = [
@@ -269,8 +232,6 @@ class Order extends AbstractEntity
     ];
 
     /**
-     * @param array $list
-     *
      * @return $this
      */
     public function setList(array $list)
@@ -280,25 +241,18 @@ class Order extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getList(): array
     {
         return $this->list;
     }
 
     /**
-     * @var string
-     *
      * @see \App\Domain\Types\OrderStatusType::LIST
      * @ORM\Column(type="CatalogOrderStatusType", options={"default": \App\Domain\Types\Catalog\OrderStatusType::STATUS_NEW})
      */
     protected string $status = \App\Domain\Types\Catalog\OrderStatusType::STATUS_NEW;
 
     /**
-     * @param string $status
-     *
      * @return $this
      */
     public function setStatus(string $status)
@@ -319,7 +273,6 @@ class Order extends AbstractEntity
     }
 
     /**
-     * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     protected DateTime $date;
@@ -352,8 +305,6 @@ class Order extends AbstractEntity
     protected string $external_id = '';
 
     /**
-     * @param string $external_id
-     *
      * @return $this
      */
     public function setExternalId(string $external_id)
@@ -365,9 +316,6 @@ class Order extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getExternalId(): string
     {
         return $this->external_id;
@@ -379,8 +327,6 @@ class Order extends AbstractEntity
     protected string $export = 'manual';
 
     /**
-     * @param string $export
-     *
      * @return $this
      */
     public function setExport(string $export)
@@ -390,9 +336,6 @@ class Order extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getExport(): string
     {
         return $this->export;
@@ -404,8 +347,6 @@ class Order extends AbstractEntity
     protected string $system = '';
 
     /**
-     * @param string $system
-     *
      * @return $this
      */
     public function setSystem(string $system)
@@ -415,9 +356,6 @@ class Order extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getSystem(): string
     {
         return $this->system;

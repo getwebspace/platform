@@ -25,13 +25,9 @@ class AttributeService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws TitleAlreadyExistsException
      * @throws MissingTitleValueException
      * @throws AddressAlreadyExistsException
-     *
-     * @return Attribute
      */
     public function create(array $data = []): Attribute
     {
@@ -52,7 +48,7 @@ class AttributeService extends AbstractService
             throw new AddressAlreadyExistsException();
         }
 
-        $attribute = (new Attribute)
+        $attribute = (new Attribute())
             ->setTitle($data['title'])
             ->setAddress($data['address'])
             ->setType($data['type']);
@@ -64,8 +60,6 @@ class AttributeService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws AttributeNotFoundException
      *
      * @return Attribute|Collection
@@ -118,13 +112,10 @@ class AttributeService extends AbstractService
 
     /**
      * @param Attribute|string|Uuid $entity
-     * @param array                 $data
      *
      * @throws TitleAlreadyExistsException
      * @throws AttributeNotFoundException
      * @throws AddressAlreadyExistsException
-     *
-     * @return Attribute
      */
     public function update($entity, array $data = []): Attribute
     {
@@ -179,8 +170,6 @@ class AttributeService extends AbstractService
      * @param Attribute|string|Uuid $entity
      *
      * @throws AttributeNotFoundException
-     *
-     * @return bool
      */
     public function delete($entity): bool
     {

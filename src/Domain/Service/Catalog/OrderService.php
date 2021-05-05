@@ -24,11 +24,6 @@ class OrderService extends AbstractService
         $this->service = $this->entityManager->getRepository(Order::class);
     }
 
-    /**
-     * @param array $data
-     *
-     * @return Order
-     */
     public function create(array $data = []): Order
     {
         $default = [
@@ -55,7 +50,7 @@ class OrderService extends AbstractService
         // get last order
         $lastOrder = $this->service->findOneBy([], ['date' => 'desc']);
 
-        $order = (new Order)
+        $order = (new Order())
             ->setSerial($lastOrder ? ((int) $lastOrder->getSerial()) + 1 : 1)
             ->setDelivery($data['delivery'])
             ->setUser($data['user'])
@@ -77,8 +72,6 @@ class OrderService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws OrderNotFoundException
      *
      * @return Collection|Order
@@ -151,11 +144,8 @@ class OrderService extends AbstractService
 
     /**
      * @param Order|string|Uuid $entity
-     * @param array             $data
      *
      * @throws OrderNotFoundException
-     *
-     * @return Order
      */
     public function update($entity, array $data = []): Order
     {
@@ -239,8 +229,6 @@ class OrderService extends AbstractService
      * @param Order|string|Uuid $entity
      *
      * @throws OrderNotFoundException
-     *
-     * @return bool
      */
     public function delete($entity): bool
     {

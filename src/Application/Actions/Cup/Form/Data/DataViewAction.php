@@ -9,8 +9,8 @@ class DataViewAction extends FormAction
     protected function action(): \Slim\Http\Response
     {
         if (
-            $this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid')) &&
-            $this->resolveArg('data') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('data'))
+            $this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))
+            && $this->resolveArg('data') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('data'))
         ) {
             $data = $this->formDataService->read([
                 'uuid' => $this->resolveArg('data'),

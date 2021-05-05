@@ -26,13 +26,9 @@ class PublicationService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws TitleAlreadyExistsException
      * @throws MissingTitleValueException
      * @throws AddressAlreadyExistsException
-     *
-     * @return Publication
      */
     public function create(array $data = []): Publication
     {
@@ -64,7 +60,7 @@ class PublicationService extends AbstractService
             throw new AddressAlreadyExistsException();
         }
 
-        $publication = (new Publication)
+        $publication = (new Publication())
             ->setUser($data['user'])
             ->setTitle($data['title'])
             ->setAddress($data['address'])
@@ -91,8 +87,6 @@ class PublicationService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws PublicationNotFoundException
      *
      * @return Collection|Publication
@@ -149,13 +143,10 @@ class PublicationService extends AbstractService
 
     /**
      * @param Publication|string|Uuid $entity
-     * @param array                   $data
      *
      * @throws PublicationNotFoundException
      * @throws TitleAlreadyExistsException
      * @throws AddressAlreadyExistsException
-     *
-     * @return Publication
      */
     public function update($entity, array $data = []): Publication
     {
@@ -227,8 +218,6 @@ class PublicationService extends AbstractService
      * @param Publication|string|Uuid $entity
      *
      * @throws PublicationNotFoundException
-     *
-     * @return bool
      */
     public function delete($entity): bool
     {

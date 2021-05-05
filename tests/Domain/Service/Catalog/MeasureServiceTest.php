@@ -11,6 +11,10 @@ use App\Domain\Service\Catalog\MeasureService;
 use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class MeasureServiceTest extends TestCase
 {
     /**

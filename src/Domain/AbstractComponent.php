@@ -10,26 +10,12 @@ use Psr\Log\LoggerInterface;
 
 abstract class AbstractComponent
 {
-    /**
-     * @var null|ContainerInterface
-     */
     protected ?ContainerInterface $container = null;
 
-    /**
-     * @var null|EntityManager
-     */
     protected ?EntityManager $entityManager = null;
 
-    /**
-     * @var null|LoggerInterface
-     */
     protected ?LoggerInterface $logger = null;
 
-    /**
-     * @param null|ContainerInterface $container
-     * @param null|EntityManager      $entityManager
-     * @param null|LoggerInterface    $logger
-     */
     public function __construct(ContainerInterface $container = null, EntityManager $entityManager = null, LoggerInterface $logger = null)
     {
         if ($container) {

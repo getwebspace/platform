@@ -7,20 +7,10 @@ use Throwable;
 
 abstract class AbstractException extends Exception
 {
-    /**
-     * @var string
-     */
     protected string $title = '';
 
-    /**
-     * @var string
-     */
     protected string $description = '';
 
-    /**
-     * @param null|string    $message
-     * @param null|Throwable $previous
-     */
     public function __construct(?string $message = null, ?Throwable $previous = null)
     {
         if ($message !== null) {
@@ -30,9 +20,6 @@ abstract class AbstractException extends Exception
         parent::__construct($this->message, $this->code, $previous);
     }
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         if ($this->title) {
@@ -42,11 +29,6 @@ abstract class AbstractException extends Exception
         return $this->getDescription();
     }
 
-    /**
-     * @param string $title
-     *
-     * @return self
-     */
     public function setTitle(string $title): self
     {
         $this->title = $title;
@@ -54,9 +36,6 @@ abstract class AbstractException extends Exception
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getDescription(): string
     {
         if ($this->description) {
@@ -66,11 +45,6 @@ abstract class AbstractException extends Exception
         return $this->getMessage();
     }
 
-    /**
-     * @param string $description
-     *
-     * @return self
-     */
     public function setDescription(string $description): self
     {
         $this->description = $description;

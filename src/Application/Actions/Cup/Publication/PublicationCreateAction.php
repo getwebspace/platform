@@ -27,10 +27,11 @@ class PublicationCreateAction extends PublicationAction
                 switch (true) {
                     case $this->request->getParam('save', 'exit') === 'exit':
                         return $this->response->withAddedHeader('Location', '/cup/publication')->withStatus(301);
+
                     default:
                         return $this->response->withAddedHeader('Location', '/cup/publication/' . $publication->getUuid() . '/edit')->withStatus(301);
                 }
-            } catch (MissingTitleValueException|TitleAlreadyExistsException $e) {
+            } catch (MissingTitleValueException | TitleAlreadyExistsException $e) {
                 $this->addError('title', $e->getMessage());
             } catch (AddressAlreadyExistsException $e) {
                 $this->addError('address', $e->getMessage());

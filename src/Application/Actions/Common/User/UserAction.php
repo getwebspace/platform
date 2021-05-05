@@ -9,14 +9,8 @@ use Psr\Container\ContainerInterface;
 
 abstract class UserAction extends AbstractAction
 {
-    /**
-     * @var UserService
-     */
     protected UserService $userService;
 
-    /**
-     * @var UserGroupService
-     */
     protected UserGroupService $userGroupService;
 
     /**

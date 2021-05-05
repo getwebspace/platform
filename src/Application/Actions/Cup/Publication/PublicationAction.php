@@ -9,14 +9,8 @@ use Psr\Container\ContainerInterface;
 
 abstract class PublicationAction extends AbstractAction
 {
-    /**
-     * @var PublicationCategoryService
-     */
     protected PublicationCategoryService $publicationCategoryService;
 
-    /**
-     * @var PublicationService
-     */
     protected PublicationService $publicationService;
 
     /**

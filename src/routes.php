@@ -294,7 +294,7 @@ $app
 
 // other PRIVATE section
 $app
-    ->group('', function (App $app) use ($container): void {
+    ->group('', function (App $app): void {
         $app
             ->map(['get', 'post'], '/search', \App\Application\Actions\Common\SearchAction::class)
             ->setName('common:search')

@@ -29,9 +29,6 @@ class FileService extends AbstractService
     }
 
     /**
-     * @param string      $path
-     * @param null|string $name_with_ext
-     *
      * @return null|File
      */
     public function createFromPath(string $path, string $name_with_ext = null)
@@ -49,6 +46,7 @@ class FileService extends AbstractService
                 }
 
                 break;
+
             default:
                 if (file_exists($path)) {
                     $saved = true;
@@ -129,11 +127,7 @@ class FileService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws FileAlreadyExistsException
-     *
-     * @return File
      */
     public function create(array $data = []): File
     {
@@ -152,7 +146,7 @@ class FileService extends AbstractService
             throw new FileAlreadyExistsException();
         }
 
-        $file = (new File)
+        $file = (new File())
             ->setName($data['name'])
             ->setExt($data['ext'])
             ->setType($data['type'])
@@ -168,8 +162,6 @@ class FileService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws FileNotFoundException
      *
      * @return Collection|File
@@ -238,11 +230,8 @@ class FileService extends AbstractService
 
     /**
      * @param File|string|Uuid $entity
-     * @param array            $data
      *
      * @throws FileNotFoundException
-     *
-     * @return File
      */
     public function update($entity, array $data = []): File
     {
@@ -308,8 +297,6 @@ class FileService extends AbstractService
      * @param File|string|Uuid $entity
      *
      * @throws FileNotFoundException
-     *
-     * @return bool
      */
     public function delete($entity): bool
     {

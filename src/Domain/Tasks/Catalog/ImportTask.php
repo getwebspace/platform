@@ -127,10 +127,10 @@ class ImportTask extends AbstractTask
                                     $create = [];
                                     foreach ($data as $key => $value) {
                                         if (
-                                            $key !== 'empty' &&
-                                            in_array($key, \App\Domain\References\Catalog::IMPORT_FIELDS, true) &&
-                                            !in_array($value, \App\Domain\References\Catalog::IMPORT_FIELDS, true) &&
-                                            ($value === null) === false
+                                            $key !== 'empty'
+                                            && in_array($key, \App\Domain\References\Catalog::IMPORT_FIELDS, true)
+                                            && !in_array($value, \App\Domain\References\Catalog::IMPORT_FIELDS, true)
+                                            && ($value === null) === false
                                         ) {
                                             $create[$key] = $value['raw'];
                                         }
@@ -169,10 +169,10 @@ class ImportTask extends AbstractTask
                                 $update = ['date' => $now];
                                 foreach ($data as $key => $value) {
                                     if (
-                                        $key !== 'empty' &&
-                                        in_array($key, \App\Domain\References\Catalog::IMPORT_FIELDS, true) &&
-                                        !in_array($value, \App\Domain\References\Catalog::IMPORT_FIELDS, true) &&
-                                        ($value === null) === false
+                                        $key !== 'empty'
+                                        && in_array($key, \App\Domain\References\Catalog::IMPORT_FIELDS, true)
+                                        && !in_array($value, \App\Domain\References\Catalog::IMPORT_FIELDS, true)
+                                        && ($value === null) === false
                                     ) {
                                         $update[$key] = $value['raw'];
                                     }
@@ -297,8 +297,6 @@ class ImportTask extends AbstractTask
      *
      * @param $sheet
      * @param $cell
-     *
-     * @return bool
      */
     protected function isMergedCell($sheet, $cell): bool
     {

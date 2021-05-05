@@ -13,7 +13,6 @@ use Ramsey\Uuid\Uuid;
 class ProductRelation extends AbstractEntity
 {
     /**
-     * @var Uuid
      * @ORM\Id
      * @ORM\Column(type="uuid")
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -21,9 +20,6 @@ class ProductRelation extends AbstractEntity
      */
     protected Uuid $uuid;
 
-    /**
-     * @return Uuid
-     */
     public function getUuid(): Uuid
     {
         return $this->uuid;
@@ -35,15 +31,12 @@ class ProductRelation extends AbstractEntity
     protected Uuid $product_uuid;
 
     /**
-     * @var Product
      * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Catalog\Product")
      * @ORM\JoinColumn(name="product_uuid", referencedColumnName="uuid")
      */
     protected Product $product;
 
     /**
-     * @param Product $product
-     *
      * @return $this
      */
     public function setProduct(Product $product)
@@ -56,9 +49,6 @@ class ProductRelation extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return Product
-     */
     public function getProduct(): Product
     {
         return $this->product;
@@ -70,15 +60,12 @@ class ProductRelation extends AbstractEntity
     protected Uuid $related_uuid;
 
     /**
-     * @var Product
      * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Catalog\Product")
      * @ORM\JoinColumn(name="related_uuid", referencedColumnName="uuid")
      */
     protected Product $related;
 
     /**
-     * @param Product $product
-     *
      * @return $this
      */
     public function setRelated(Product $product)
@@ -91,9 +78,6 @@ class ProductRelation extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return Product
-     */
     public function getRelated(): Product
     {
         return $this->related;
@@ -105,8 +89,6 @@ class ProductRelation extends AbstractEntity
     public float $count = 1;
 
     /**
-     * @param float $count
-     *
      * @return $this
      */
     public function setCount(float $count)

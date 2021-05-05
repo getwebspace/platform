@@ -27,6 +27,7 @@ class FormUpdateAction extends FormAction
                         switch (true) {
                             case $this->request->getParam('save', 'exit') === 'exit':
                                 return $this->response->withRedirect('/cup/form');
+
                             default:
                                 return $this->response->withRedirect('/cup/form/' . $form->getUuid() . '/edit');
                         }

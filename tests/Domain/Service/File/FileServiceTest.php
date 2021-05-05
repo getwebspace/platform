@@ -8,6 +8,10 @@ use App\Domain\Service\File\FileService;
 use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class FileServiceTest extends TestCase
 {
     /**

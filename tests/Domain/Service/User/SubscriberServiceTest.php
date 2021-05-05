@@ -11,6 +11,10 @@ use App\Domain\Service\User\SubscriberService as UserSubscriberService;
 use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class SubscriberServiceTest extends TestCase
 {
     /**
@@ -64,7 +68,7 @@ class SubscriberServiceTest extends TestCase
             'date' => $this->getFaker()->dateTime,
         ];
 
-        $userSubscriber = (new UserSubscriber)
+        $userSubscriber = (new UserSubscriber())
             ->setEmail($data['email'])
             ->setDate($data['date']);
 

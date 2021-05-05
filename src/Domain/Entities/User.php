@@ -19,7 +19,6 @@ class User extends AbstractEntity
     use FileTrait;
 
     /**
-     * @var Uuid
      * @ORM\Id
      * @ORM\Column(type="uuid")
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -27,9 +26,6 @@ class User extends AbstractEntity
      */
     protected Uuid $uuid;
 
-    /**
-     * @return Uuid
-     */
     public function getUuid(): Uuid
     {
         return $this->uuid;
@@ -41,8 +37,6 @@ class User extends AbstractEntity
     protected string $username = '';
 
     /**
-     * @param string $username
-     *
      * @return $this
      */
     public function setUsername(string $username)
@@ -54,9 +48,6 @@ class User extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getUsername(): string
     {
         return $this->username;
@@ -68,8 +59,6 @@ class User extends AbstractEntity
     protected string $email = '';
 
     /**
-     * @param string $email
-     *
      * @throws \App\Domain\Exceptions\WrongEmailValueException
      *
      * @return $this
@@ -83,9 +72,6 @@ class User extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getEmail(): string
     {
         return $this->email;
@@ -93,8 +79,6 @@ class User extends AbstractEntity
 
     /**
      * Gravatar
-     *
-     * @param int $size
      *
      * @return string
      */
@@ -113,8 +97,6 @@ class User extends AbstractEntity
     protected string $phone = '';
 
     /**
-     * @param null|string $phone
-     *
      * @throws \App\Domain\Exceptions\WrongPhoneValueException
      *
      * @return $this
@@ -132,9 +114,6 @@ class User extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getPhone(): string
     {
         return $this->phone;
@@ -146,8 +125,6 @@ class User extends AbstractEntity
     protected string $password = '';
 
     /**
-     * @param string $password
-     *
      * @return $this
      */
     public function setPassword(string $password)
@@ -159,9 +136,6 @@ class User extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getPassword(): string
     {
         return $this->password;
@@ -173,8 +147,6 @@ class User extends AbstractEntity
     protected string $firstname = '';
 
     /**
-     * @param string $firstname
-     *
      * @return $this
      */
     public function setFirstname(string $firstname)
@@ -186,9 +158,6 @@ class User extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getFirstname(): string
     {
         return $this->firstname;
@@ -200,8 +169,6 @@ class User extends AbstractEntity
     protected string $lastname = '';
 
     /**
-     * @param string $lastname
-     *
      * @return $this
      */
     public function setLastname(string $lastname)
@@ -213,17 +180,12 @@ class User extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getLastname(): string
     {
         return $this->lastname;
     }
 
     /**
-     * @param string $type
-     *
      * @return string
      */
     public function getName(string $type = 'full')
@@ -247,8 +209,6 @@ class User extends AbstractEntity
     protected string $address = '';
 
     /**
-     * @param string $address
-     *
      * @return $this
      */
     public function setAddress(string $address)
@@ -260,9 +220,6 @@ class User extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAddress(): string
     {
         return $this->address;
@@ -274,8 +231,6 @@ class User extends AbstractEntity
     protected string $additional = '';
 
     /**
-     * @param string $additional
-     *
      * @return $this
      */
     public function setAdditional(string $additional)
@@ -287,9 +242,6 @@ class User extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAdditional(): string
     {
         return $this->additional;
@@ -321,16 +273,12 @@ class User extends AbstractEntity
     }
 
     /**
-     * @var string
-     *
      * @see \App\Domain\Types\UserStatusType::LIST
      * @ORM\Column(type="UserStatusType", options={"default": \App\Domain\Types\UserStatusType::STATUS_WORK})
      */
     protected string $status = \App\Domain\Types\UserStatusType::STATUS_WORK;
 
     /**
-     * @param string $status
-     *
      * @return $this
      */
     public function setStatus(string $status)
@@ -351,13 +299,11 @@ class User extends AbstractEntity
     }
 
     /**
-     * @var null|Uuid
      * @ORM\Column(type="uuid", nullable=true, options={"default": NULL})
      */
     protected ?Uuid $group_uuid;
 
     /**
-     * @var null|UserGroup
      * @ORM\ManyToOne(targetEntity="App\Domain\Entities\User\Group")
      * @ORM\JoinColumn(name="group_uuid", referencedColumnName="uuid")
      */
@@ -381,16 +327,12 @@ class User extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return null|UserGroup
-     */
     public function getGroup(): ?UserGroup
     {
         return $this->group;
     }
 
     /**
-     * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     protected DateTime $register;
@@ -418,7 +360,6 @@ class User extends AbstractEntity
     }
 
     /**
-     * @var DateTime
      * @ORM\Column(name="`change`", type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     protected DateTime $change;
@@ -446,14 +387,11 @@ class User extends AbstractEntity
     }
 
     /**
-     * @var null|UserSession
      * @ORM\OneToOne(targetEntity="App\Domain\Entities\User\Session", mappedBy="user", orphanRemoval=true)
      */
     protected ?UserSession $session = null;
 
     /**
-     * @param UserSession $session
-     *
      * @return $this
      */
     public function setSession(UserSession $session)
@@ -481,8 +419,6 @@ class User extends AbstractEntity
 
     /**
      * Return model as array
-     *
-     * @return array
      */
     public function toArray(): array
     {

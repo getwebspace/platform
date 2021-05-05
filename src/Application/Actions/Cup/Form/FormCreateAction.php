@@ -24,10 +24,11 @@ class FormCreateAction extends FormAction
                 switch (true) {
                     case $this->request->getParam('save', 'exit') === 'exit':
                         return $this->response->withRedirect('/cup/form');
+
                     default:
                         return $this->response->withRedirect('/cup/form/' . $form->getUuid() . '/edit');
                 }
-            } catch (MissingTitleValueException|TitleAlreadyExistsException $e) {
+            } catch (MissingTitleValueException | TitleAlreadyExistsException $e) {
                 $this->addError('title', $e->getMessage());
             } catch (AddressAlreadyExistsException $e) {
                 $this->addError('address', $e->getMessage());

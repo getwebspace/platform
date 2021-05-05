@@ -25,13 +25,9 @@ class PageService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws TitleAlreadyExistsException
      * @throws MissingTitleValueException
      * @throws AddressAlreadyExistsException
-     *
-     * @return Page
      */
     public function create(array $data = []): Page
     {
@@ -60,7 +56,7 @@ class PageService extends AbstractService
             throw new AddressAlreadyExistsException();
         }
 
-        $page = (new Page)
+        $page = (new Page())
             ->setTitle($data['title'])
             ->setAddress($data['address'])
             ->setContent($data['content'])
@@ -76,8 +72,6 @@ class PageService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws PageNotFoundException
      *
      * @return Collection|Page
@@ -134,13 +128,10 @@ class PageService extends AbstractService
 
     /**
      * @param Page|string|Uuid $entity
-     * @param array            $data
      *
      * @throws TitleAlreadyExistsException
      * @throws AddressAlreadyExistsException
      * @throws PageNotFoundException
-     *
-     * @return Page
      */
     public function update($entity, array $data = []): Page
     {
@@ -212,8 +203,6 @@ class PageService extends AbstractService
      * @param Page|string|Uuid $entity
      *
      * @throws PageNotFoundException
-     *
-     * @return bool
      */
     public function delete($entity): bool
     {

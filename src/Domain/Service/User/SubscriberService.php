@@ -25,12 +25,8 @@ class SubscriberService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws EmailAlreadyExistsException
      * @throws WrongEmailValueException
-     *
-     * @return UserSubscriber
      */
     public function create(array $data = []): UserSubscriber
     {
@@ -47,7 +43,7 @@ class SubscriberService extends AbstractService
             throw new MissingUniqueValueException();
         }
 
-        $userSubscriber = (new UserSubscriber)
+        $userSubscriber = (new UserSubscriber())
             ->setEmail($data['email'])
             ->setDate($data['date']);
 
@@ -58,8 +54,6 @@ class SubscriberService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws UserNotFoundException
      *
      * @return Collection|UserSubscriber
@@ -107,7 +101,6 @@ class SubscriberService extends AbstractService
 
     /**
      * @param string|UserSubscriber|Uuid $entity
-     * @param array                      $data
      *
      * @throws EmailAlreadyExistsException
      * @throws UserNotFoundException
@@ -157,8 +150,6 @@ class SubscriberService extends AbstractService
      * @param $entity
      *
      * @throws UserNotFoundException
-     *
-     * @return bool
      */
     public function delete($entity): bool
     {

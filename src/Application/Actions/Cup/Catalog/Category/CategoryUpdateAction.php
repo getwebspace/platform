@@ -47,6 +47,7 @@ class CategoryUpdateAction extends CatalogAction
                         switch (true) {
                             case $this->request->getParam('save', 'exit') === 'exit':
                                 return $this->response->withRedirect('/cup/catalog/category');
+
                             default:
                                 return $this->response->withRedirect('/cup/catalog/category/' . $category->getUuid() . '/edit');
                         }

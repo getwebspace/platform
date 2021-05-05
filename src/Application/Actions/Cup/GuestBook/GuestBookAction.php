@@ -8,9 +8,6 @@ use Psr\Container\ContainerInterface;
 
 abstract class GuestBookAction extends AbstractAction
 {
-    /**
-     * @var GuestBookService
-     */
     protected GuestBookService $guestBookService;
 
     /**

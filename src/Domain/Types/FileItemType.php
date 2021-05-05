@@ -16,7 +16,7 @@ class FileItemType extends AbstractEnumType
     public const ITEM_FORM_DATA = 'form_data';
     public const ITEM_THEME = 'theme';
 
-    public const LIST                  = [
+    public const LIST = [
         self::ITEM_USER_UPLOAD,
         self::ITEM_PAGE,
         self::ITEM_PUBLICATION,

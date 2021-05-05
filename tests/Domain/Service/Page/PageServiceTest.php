@@ -12,6 +12,10 @@ use App\Domain\Service\Page\PageService;
 use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class PageServiceTest extends TestCase
 {
     /**
@@ -81,7 +85,7 @@ class PageServiceTest extends TestCase
             'content' => $this->getFaker()->text,
         ];
 
-        $page = (new Page)
+        $page = (new Page())
             ->setTitle($data['title'])
             ->setContent($data['content'])
             ->setDate('now');
@@ -102,7 +106,7 @@ class PageServiceTest extends TestCase
             'content' => $this->getFaker()->text,
         ];
 
-        $page = (new Page)
+        $page = (new Page())
             ->setTitle($data['title'])
             ->setAddress($data['address'])
             ->setContent($data['content'])

@@ -12,6 +12,10 @@ use Doctrine\ORM\EntityManager;
 use Illuminate\Support\Collection;
 use tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class ProductServiceTest extends TestCase
 {
     /**
@@ -150,7 +154,7 @@ class ProductServiceTest extends TestCase
             'date' => 'now',
         ];
 
-        $product = (new Product)
+        $product = (new Product())
             ->setTitle($data['title'] . '-miss')
             ->setAddress($data['address'])
             ->setDate($data['date']);

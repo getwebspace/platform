@@ -30,6 +30,7 @@ class PublicationUpdateAction extends PublicationAction
                         switch (true) {
                             case $this->request->getParam('save', 'exit') === 'exit':
                                 return $this->response->withAddedHeader('Location', '/cup/publication')->withStatus(301);
+
                             default:
                                 return $this->response->withAddedHeader('Location', '/cup/publication/' . $publication->getUuid() . '/edit')->withStatus(301);
                         }

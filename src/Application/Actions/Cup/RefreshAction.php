@@ -31,10 +31,10 @@ class RefreshAction extends AbstractAction
                 $output['new'][] = array_except($task->toArray(), ['params', 'output']);
             } else {
                 if (
-                    in_array($task->getUuid()->toString(), array_keys($exists), true) &&
-                    (
-                        $task->getStatus() !== $exists[$task->getUuid()->toString()]['status'] ||
-                        (int) $task->getProgress() !== (int) $exists[$task->getUuid()->toString()]['progress']
+                    in_array($task->getUuid()->toString(), array_keys($exists), true)
+                    && (
+                        $task->getStatus() !== $exists[$task->getUuid()->toString()]['status']
+                        || (int) $task->getProgress() !== (int) $exists[$task->getUuid()->toString()]['progress']
                     )
                 ) {
                     $output['update'][] = array_except($task->toArray(), ['params', 'output']);

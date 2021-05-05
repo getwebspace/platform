@@ -12,6 +12,10 @@ use App\Domain\Service\GuestBook\GuestBookService;
 use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class GuestBookServiceTest extends TestCase
 {
     /**

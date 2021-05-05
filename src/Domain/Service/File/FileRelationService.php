@@ -21,11 +21,6 @@ class FileRelationService extends AbstractService
         $this->service = $this->entityManager->getRepository(FileRelation::class);
     }
 
-    /**
-     * @param array $data
-     *
-     * @return null|FileRelation
-     */
     public function create(array $data = []): ?FileRelation
     {
         $default = [
@@ -41,37 +36,37 @@ class FileRelationService extends AbstractService
         // type discriminator
         switch (true) {
             case is_a($data['entity'], \App\Domain\Entities\Catalog\Product::class):
-                $fileRelation = new \App\Domain\Entities\File\CatalogProductFileRelation;
+                $fileRelation = new \App\Domain\Entities\File\CatalogProductFileRelation();
 
                 break;
 
             case is_a($data['entity'], \App\Domain\Entities\Catalog\Category::class):
-                $fileRelation = new \App\Domain\Entities\File\CatalogCategoryFileRelation;
+                $fileRelation = new \App\Domain\Entities\File\CatalogCategoryFileRelation();
 
                 break;
 
             case is_a($data['entity'], \App\Domain\Entities\Form\Data::class):
-                $fileRelation = new \App\Domain\Entities\File\FormDataFileRelation;
+                $fileRelation = new \App\Domain\Entities\File\FormDataFileRelation();
 
                 break;
 
             case is_a($data['entity'], \App\Domain\Entities\Page::class):
-                $fileRelation = new \App\Domain\Entities\File\PageFileRelation;
+                $fileRelation = new \App\Domain\Entities\File\PageFileRelation();
 
                 break;
 
             case is_a($data['entity'], \App\Domain\Entities\Publication::class):
-                $fileRelation = new \App\Domain\Entities\File\PublicationFileRelation;
+                $fileRelation = new \App\Domain\Entities\File\PublicationFileRelation();
 
                 break;
 
             case is_a($data['entity'], \App\Domain\Entities\Publication\Category::class):
-                $fileRelation = new \App\Domain\Entities\File\PublicationCategoryFileRelation;
+                $fileRelation = new \App\Domain\Entities\File\PublicationCategoryFileRelation();
 
                 break;
 
             case is_a($data['entity'], \App\Domain\Entities\User::class):
-                $fileRelation = new \App\Domain\Entities\File\UserFileRelation;
+                $fileRelation = new \App\Domain\Entities\File\UserFileRelation();
 
                 break;
         }
@@ -93,8 +88,6 @@ class FileRelationService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws RelationNotFoundException
      *
      * @return Collection|FileRelation
@@ -141,11 +134,8 @@ class FileRelationService extends AbstractService
 
     /**
      * @param FileRelation|string|Uuid $entity
-     * @param array                    $data
      *
      * @throws RelationNotFoundException
-     *
-     * @return FileRelation
      */
     public function update($entity, array $data = []): FileRelation
     {
@@ -193,8 +183,6 @@ class FileRelationService extends AbstractService
      * @param FileRelation|string|Uuid $entity
      *
      * @throws RelationNotFoundException
-     *
-     * @return bool
      */
     public function delete($entity): bool
     {

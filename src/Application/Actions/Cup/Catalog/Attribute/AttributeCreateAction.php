@@ -21,6 +21,7 @@ class AttributeCreateAction extends CatalogAction
                 switch (true) {
                     case $this->request->getParam('save', 'exit') === 'exit':
                         return $this->response->withRedirect('/cup/catalog/attribute');
+
                     default:
                         return $this->response->withRedirect('/cup/catalog/attribute/' . $attribute->getUuid() . '/edit');
                 }

@@ -13,7 +13,6 @@ use Ramsey\Uuid\Uuid;
 class Attribute extends AbstractEntity
 {
     /**
-     * @var Uuid
      * @ORM\Id
      * @ORM\Column(type="uuid")
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -21,9 +20,6 @@ class Attribute extends AbstractEntity
      */
     protected Uuid $uuid;
 
-    /**
-     * @return Uuid
-     */
     public function getUuid(): Uuid
     {
         return $this->uuid;
@@ -35,8 +31,6 @@ class Attribute extends AbstractEntity
     protected string $title = '';
 
     /**
-     * @param string $title
-     *
      * @return $this
      */
     public function setTitle(string $title)
@@ -48,9 +42,6 @@ class Attribute extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->title;
@@ -62,8 +53,6 @@ class Attribute extends AbstractEntity
     protected string $address = '';
 
     /**
-     * @param string $address
-     *
      * @return $this
      */
     public function setAddress(string $address)
@@ -75,9 +64,6 @@ class Attribute extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAddress(): string
     {
         return $this->address;
@@ -90,8 +76,6 @@ class Attribute extends AbstractEntity
     protected string $type = \App\Domain\Types\Catalog\AttributeTypeType::TYPE_STRING;
 
     /**
-     * @param string $type
-     *
      * @return $this
      */
     public function setType(string $type)
@@ -103,9 +87,6 @@ class Attribute extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getType(): string
     {
         return $this->type;

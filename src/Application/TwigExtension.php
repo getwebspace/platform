@@ -232,8 +232,6 @@ class TwigExtension extends AbstractExtension
      * Date format function
      *
      * @param DateTime|string $obj
-     * @param null|string     $format
-     * @param string          $timezone
      *
      * @throws Exception
      *
@@ -408,6 +406,7 @@ class TwigExtension extends AbstractExtension
                             }
 
                             break;
+
                         case 'category':
                             if (is_object($value) && is_a($value, \App\Domain\Entities\Publication\Category::class)) {
                                 $criteria['category'][] = $value->getUuid();
@@ -418,6 +417,7 @@ class TwigExtension extends AbstractExtension
                             }
 
                             break;
+
                         case 'address':
                             $criteria['address'][] = $value;
                     }
@@ -462,7 +462,7 @@ class TwigExtension extends AbstractExtension
                     'offset' => $offset,
                 ])
                 ->map(function ($model) {
-                    /** @var $model \App\Domain\Entities\GuestBook */
+                    /** @var \App\Domain\Entities\GuestBook $model */
                     $email = explode('@', $model->getEmail());
                     $name = implode('@', array_slice($email, 0, count($email) - 1));
                     $len = (int) floor(mb_strlen($name) / 2);

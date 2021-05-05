@@ -12,6 +12,10 @@ use App\Domain\Service\Publication\Exception\TitleAlreadyExistsException;
 use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class CategoryServiceTest extends TestCase
 {
     /**
@@ -99,7 +103,7 @@ class CategoryServiceTest extends TestCase
             'description' => $this->getFaker()->text(255),
         ];
 
-        $publicationCategory = (new PublicationCategory)
+        $publicationCategory = (new PublicationCategory())
             ->setTitle($data['title'])
             ->setDescription($data['description']);
 
@@ -119,7 +123,7 @@ class CategoryServiceTest extends TestCase
             'description' => $this->getFaker()->text(255),
         ];
 
-        $publicationCategory = (new PublicationCategory)
+        $publicationCategory = (new PublicationCategory())
             ->setTitle($data['title'] . '-miss')
             ->setAddress($data['address'])
             ->setDescription($data['description']);

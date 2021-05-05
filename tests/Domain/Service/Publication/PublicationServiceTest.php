@@ -16,6 +16,10 @@ use DateTime;
 use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class PublicationServiceTest extends TestCase
 {
     /**
@@ -114,7 +118,7 @@ class PublicationServiceTest extends TestCase
             ],
         ];
 
-        $publication = (new Publication)
+        $publication = (new Publication())
             ->setTitle($data['title'])
             ->setCategory($data['category'])
             ->setContent($data['content'])
@@ -140,7 +144,7 @@ class PublicationServiceTest extends TestCase
             ],
         ];
 
-        $publication = (new Publication)
+        $publication = (new Publication())
             ->setTitle($data['title'] . '-miss')
             ->setAddress($data['address'])
             ->setCategory($data['category'])

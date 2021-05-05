@@ -24,6 +24,7 @@ class UpdateAction extends UserAction
                         switch (true) {
                             case $this->request->getParam('save', 'exit') === 'exit':
                                 return $this->response->withRedirect('/cup/user/group');
+
                             default:
                                 return $this->response->withRedirect('/cup/user/group/' . $userGroup->getUuid() . '/edit');
                         }

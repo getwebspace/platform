@@ -66,8 +66,8 @@ class FormAction extends AbstractAction
 
                 // prepare mail body
                 if (
-                    $form->getTemplate() &&
-                    $form->getTemplate() !== '<p><br></p>'
+                    $form->getTemplate()
+                    && $form->getTemplate() !== '<p><br></p>'
                 ) {
                     $body = $this->renderer->fetchFromString($form->getTemplate(), $data);
                 } else {

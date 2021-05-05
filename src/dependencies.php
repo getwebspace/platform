@@ -36,8 +36,7 @@ $container[\Doctrine\ORM\EntityManager::class] = function (ContainerInterface $c
 
 // plugins
 $container['plugin'] = function (ContainerInterface $c) {
-    return new class {
-        /** @var Collection */
+    return new class() {
         private Collection $plugins;
 
         final public function __construct()
@@ -47,8 +46,6 @@ $container['plugin'] = function (ContainerInterface $c) {
 
         /**
          * Register plugin
-         *
-         * @param \App\Domain\AbstractPlugin $plugin
          *
          * @return array|mixed|string
          */

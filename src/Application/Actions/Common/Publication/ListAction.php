@@ -62,8 +62,6 @@ class ListAction extends AbstractAction
 
     /**
      * @throws HttpBadRequestException
-     *
-     * @return array
      */
     protected function parsePath(): array
     {

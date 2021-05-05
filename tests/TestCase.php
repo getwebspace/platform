@@ -4,9 +4,6 @@ namespace tests;
 
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
-    /**
-     * @return array
-     */
     private function getTypes(): array
     {
         static $types;
@@ -22,8 +19,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\Tools\ToolsException
-     *
-     * @return \Doctrine\ORM\EntityManager
      */
     protected function getEntityManager(): \Doctrine\ORM\EntityManager
     {

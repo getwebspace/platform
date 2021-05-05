@@ -72,7 +72,7 @@ class SendNewsLetterMailTask extends AbstractTask
                 $perPage = 5;
                 $count = ceil($list->count() / $perPage);
 
-                for ($i = 0; $i < $count; $i++) {
+                for ($i = 0; $i < $count; ++$i) {
                     foreach ($list->forPage($i, $perPage) as $email) {
                         $mail = Mail::send(array_merge($args, ['to' => $email]));
 

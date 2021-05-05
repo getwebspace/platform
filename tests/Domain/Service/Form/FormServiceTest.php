@@ -12,6 +12,10 @@ use App\Domain\Service\Form\FormService;
 use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class FormServiceTest extends TestCase
 {
     /**
@@ -80,7 +84,7 @@ class FormServiceTest extends TestCase
             'template' => $this->getFaker()->word,
         ];
 
-        $form = (new Form)
+        $form = (new Form())
             ->setTitle($data['title'])
             ->setAddress($data['address'])
             ->setTemplate($data['template']);
@@ -101,7 +105,7 @@ class FormServiceTest extends TestCase
             'template' => $this->getFaker()->word,
         ];
 
-        $form = (new Form)
+        $form = (new Form())
             ->setTitle($data['title'] . '-miss')
             ->setAddress($data['address'])
             ->setTemplate($data['template']);

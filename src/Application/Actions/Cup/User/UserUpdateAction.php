@@ -39,6 +39,7 @@ class UserUpdateAction extends UserAction
                         switch (true) {
                             case $this->request->getParam('save', 'exit') === 'exit':
                                 return $this->response->withRedirect('/cup/user');
+
                             default:
                                 return $this->response->withRedirect('/cup/user/' . $user->getUuid() . '/edit');
                         }

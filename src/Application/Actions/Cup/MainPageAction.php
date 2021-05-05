@@ -57,9 +57,9 @@ class MainPageAction extends AbstractAction
             $whoisValue = unserialize($whois->getValue());
 
             if (
-                !isset($whoisValue['result']) || !is_array($whoisValue['result']) ||
-                $whoisValue['update']->diff(new \DateTime())->d >= 10 ||
-                mb_strpos($domain, $whoisValue['result']['domain']) === false
+                !isset($whoisValue['result']) || !is_array($whoisValue['result'])
+                || $whoisValue['update']->diff(new \DateTime())->d >= 10
+                || mb_strpos($domain, $whoisValue['result']['domain']) === false
             ) {
                 $domain = str_replace(['https', 'http', '://', '/'], '', $domain);
 

@@ -12,29 +12,14 @@ use Psr\Container\ContainerInterface;
 
 abstract class CatalogAction extends AbstractAction
 {
-    /**
-     * @var UserService
-     */
     protected UserService $userService;
 
-    /**
-     * @var CatalogCategoryService
-     */
     protected CatalogCategoryService $catalogCategoryService;
 
-    /**
-     * @var CatalogProductService
-     */
     protected CatalogProductService $catalogProductService;
 
-    /**
-     * @var CatalogOrderService
-     */
     protected CatalogOrderService $catalogOrderService;
 
-    /**
-     * @var NotificationService
-     */
     protected NotificationService $notificationService;
 
     /**

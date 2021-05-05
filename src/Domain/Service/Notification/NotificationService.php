@@ -25,13 +25,9 @@ class NotificationService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws MissingUserUuidValueException
      * @throws MissingTitleValueException
      * @throws MissingMessageValueException
-     *
-     * @return Notification
      */
     public function create(array $data = []): Notification
     {
@@ -54,7 +50,7 @@ class NotificationService extends AbstractService
             throw new MissingMessageValueException();
         }
 
-        $file = (new Notification)
+        $file = (new Notification())
             ->setUserUuid($data['user_uuid'])
             ->setTitle($data['title'])
             ->setMessage($data['message'])
@@ -68,8 +64,6 @@ class NotificationService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws NotificationNotFoundException
      *
      * @return Collection|Notification
@@ -112,11 +106,8 @@ class NotificationService extends AbstractService
 
     /**
      * @param Notification|string|Uuid $entity
-     * @param array                    $data
      *
      * @throws NotificationNotFoundException
-     *
-     * @return Notification
      */
     public function update($entity, array $data = []): Notification
     {
@@ -168,8 +159,6 @@ class NotificationService extends AbstractService
      * @param Notification|string|Uuid $entity
      *
      * @throws NotificationNotFoundException
-     *
-     * @return bool
      */
     public function delete($entity): bool
     {

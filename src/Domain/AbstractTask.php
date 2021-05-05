@@ -13,19 +13,10 @@ abstract class AbstractTask extends AbstractComponent
 {
     public const TITLE = '';
 
-    /**
-     * @var TaskService
-     */
     private TaskService $taskService;
 
-    /**
-     * @var null|Task
-     */
     private ?Task $entity;
 
-    /**
-     * @var Twig
-     */
     private Twig $renderer;
 
     /**
@@ -44,8 +35,6 @@ abstract class AbstractTask extends AbstractComponent
 
     /**
      * Before start work write self PID to file
-     *
-     * @param string $action
      */
     public static function workerCreatePidFile(string $action = ''): void
     {
@@ -54,10 +43,6 @@ abstract class AbstractTask extends AbstractComponent
 
     /**
      * Before start work write self PID to file
-     *
-     * @param string $action
-     *
-     * @return bool
      */
     public static function workerHasPidFile(string $action = ''): bool
     {
@@ -66,8 +51,6 @@ abstract class AbstractTask extends AbstractComponent
 
     /**
      * After work remove PID file
-     *
-     * @param string $action
      */
     public static function workerRemovePidFile(string $action = ''): void
     {
@@ -85,13 +68,8 @@ abstract class AbstractTask extends AbstractComponent
     }
 
     /**
-     * @param string $template
-     * @param array  $data
-     *
      * @throws HttpBadRequestException
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
-     *
-     * @return string
      */
     protected function render(string $template, array $data = []): string
     {
@@ -112,12 +90,8 @@ abstract class AbstractTask extends AbstractComponent
     }
 
     /**
-     * @param array $params
-     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Exception
-     *
-     * @return \App\Domain\Entities\Task
      */
     public function execute(array $params = []): \App\Domain\Entities\Task
     {
@@ -190,9 +164,6 @@ abstract class AbstractTask extends AbstractComponent
         return false;
     }
 
-    /**
-     * @return string
-     */
     public function getStatus(): string
     {
         return $this->entity->getStatus();

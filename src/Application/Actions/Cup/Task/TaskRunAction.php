@@ -10,8 +10,8 @@ class TaskRunAction extends AbstractAction
     {
         if ($this->request->isPost()) {
             if (
-                ($name = $this->request->getParam('task', null)) !== null &&
-                class_exists($name)
+                ($name = $this->request->getParam('task', null)) !== null
+                && class_exists($name)
             ) {
                 /** @var \App\Domain\AbstractTask $task */
                 $task = new $name($this->container);

@@ -25,13 +25,9 @@ class CategoryService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws TitleAlreadyExistsException
      * @throws MissingTitleValueException
      * @throws AddressAlreadyExistsException
-     *
-     * @return PublicationCategory
      */
     public function create(array $data = []): PublicationCategory
     {
@@ -70,7 +66,7 @@ class CategoryService extends AbstractService
             throw new AddressAlreadyExistsException();
         }
 
-        $publicationCategory = (new PublicationCategory)
+        $publicationCategory = (new PublicationCategory())
             ->setTitle($data['title'])
             ->setAddress($data['address'])
             ->setDescription($data['description'])
@@ -89,8 +85,6 @@ class CategoryService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws CategoryNotFoundException
      *
      * @return Collection|PublicationCategory
@@ -143,13 +137,10 @@ class CategoryService extends AbstractService
 
     /**
      * @param PublicationCategory|string|Uuid $entity
-     * @param array                           $data
      *
      * @throws TitleAlreadyExistsException
      * @throws AddressAlreadyExistsException
      * @throws CategoryNotFoundException
-     *
-     * @return PublicationCategory
      */
     public function update($entity, array $data = []): PublicationCategory
     {
@@ -233,8 +224,6 @@ class CategoryService extends AbstractService
      * @param PublicationCategory|string|Uuid $entity
      *
      * @throws CategoryNotFoundException
-     *
-     * @return bool
      */
     public function delete($entity): bool
     {

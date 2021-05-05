@@ -14,7 +14,6 @@ use Ramsey\Uuid\Uuid;
 class File extends AbstractEntity
 {
     /**
-     * @var Uuid
      * @ORM\Id
      * @ORM\Column(type="uuid")
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -22,9 +21,6 @@ class File extends AbstractEntity
      */
     protected Uuid $uuid;
 
-    /**
-     * @return Uuid
-     */
     public function getUuid(): Uuid
     {
         return $this->uuid;
@@ -36,8 +32,6 @@ class File extends AbstractEntity
     protected string $name = '';
 
     /**
-     * @param string $name
-     *
      * @return $this
      */
     public function setName(string $name)
@@ -49,9 +43,6 @@ class File extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
@@ -63,8 +54,6 @@ class File extends AbstractEntity
     protected string $ext = '';
 
     /**
-     * @param string $ext
-     *
      * @return $this
      */
     public function setExt(string $ext)
@@ -76,9 +65,6 @@ class File extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getExt(): string
     {
         return $this->ext;
@@ -90,8 +76,6 @@ class File extends AbstractEntity
     protected string $type = '';
 
     /**
-     * @param string $type
-     *
      * @return $this
      */
     public function setType(string $type)
@@ -103,9 +87,6 @@ class File extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getType(): string
     {
         return $this->type;
@@ -117,8 +98,6 @@ class File extends AbstractEntity
     protected int $size = 0;
 
     /**
-     * @param int $size
-     *
      * @return $this
      */
     public function setSize(int $size)
@@ -142,8 +121,6 @@ class File extends AbstractEntity
     protected string $salt = '';
 
     /**
-     * @param string $salt
-     *
      * @return $this
      */
     public function setSalt(string $salt)
@@ -155,9 +132,6 @@ class File extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getSalt(): string
     {
         return $this->salt;
@@ -169,8 +143,6 @@ class File extends AbstractEntity
     protected string $hash = '';
 
     /**
-     * @param string $hash
-     *
      * @return $this
      */
     public function setHash(string $hash)
@@ -182,9 +154,6 @@ class File extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getHash(): string
     {
         return $this->hash;
@@ -207,16 +176,12 @@ class File extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function getPrivate(): bool
     {
         return $this->private;
     }
 
     /**
-     * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     protected DateTime $date;
@@ -249,8 +214,6 @@ class File extends AbstractEntity
      * @param $path
      *
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
-     *
-     * @return array
      */
     public static function info($path): array
     {
@@ -287,9 +250,8 @@ class File extends AbstractEntity
         $name = str_replace(' ', '_', $name);
         $name = str_replace($replacements, '', $name);
         $name = str_translate($name);
-        $name = mb_strtolower($name);
 
-        return $name;
+        return mb_strtolower($name);
     }
 
     /**
@@ -324,10 +286,6 @@ class File extends AbstractEntity
 
     /**
      * Valid size correct and check exist file
-     *
-     * @param string $size
-     *
-     * @return bool
      */
     protected function isValidSizeAndFileExists(string $size): bool
     {
@@ -364,8 +322,6 @@ class File extends AbstractEntity
 
     /**
      * Return public path with salt and hash
-     *
-     * @param string $size
      *
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      *

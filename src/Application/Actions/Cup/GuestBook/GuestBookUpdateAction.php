@@ -23,6 +23,7 @@ class GuestBookUpdateAction extends GuestBookAction
                     switch (true) {
                         case $this->request->getParam('save', 'exit') === 'exit':
                             return $this->response->withRedirect('/cup/guestbook');
+
                         default:
                             return $this->response->withRedirect('/cup/guestbook/' . $entry->getUuid() . '/edit');
                     }

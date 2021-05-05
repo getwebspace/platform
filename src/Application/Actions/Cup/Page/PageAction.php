@@ -8,9 +8,6 @@ use Psr\Container\ContainerInterface;
 
 abstract class PageAction extends AbstractAction
 {
-    /**
-     * @var PageService
-     */
     protected PageService $pageService;
 
     /**

@@ -22,11 +22,7 @@ class ParameterService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws ParameterAlreadyExistsException
-     *
-     * @return Parameter
      */
     public function create(array $data = []): Parameter
     {
@@ -40,7 +36,7 @@ class ParameterService extends AbstractService
             throw new ParameterAlreadyExistsException();
         }
 
-        $parameter = (new Parameter)
+        $parameter = (new Parameter())
             ->setKey($data['key'])
             ->setValue($data['value']);
 
@@ -51,7 +47,6 @@ class ParameterService extends AbstractService
     }
 
     /**
-     * @param array $data
      * @param mixed $fallback
      *
      * @return Collection|Parameter
@@ -89,9 +84,6 @@ class ParameterService extends AbstractService
 
     /**
      * @param Parameter|string $entity
-     * @param array            $data
-     *
-     * @return Parameter
      */
     public function update($entity, array $data = []): Parameter
     {
@@ -136,8 +128,6 @@ class ParameterService extends AbstractService
      * @param Parameter|string $entity
      *
      * @throws ParameterNotFoundException
-     *
-     * @return bool
      */
     public function delete($entity): bool
     {

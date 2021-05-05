@@ -26,12 +26,8 @@ class ProductService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws MissingTitleValueException
      * @throws AddressAlreadyExistsException
-     *
-     * @return Product
      */
     public function create(array $data = []): Product
     {
@@ -75,7 +71,7 @@ class ProductService extends AbstractService
             throw new MissingTitleValueException();
         }
 
-        $product = (new Product)
+        $product = (new Product())
             ->setCategory($data['category'])
             ->setTitle($data['title'])
             ->setType($data['type'])
@@ -131,8 +127,6 @@ class ProductService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws ProductNotFoundException
      *
      * @return Collection|Product
@@ -232,12 +226,9 @@ class ProductService extends AbstractService
 
     /**
      * @param Product|string|Uuid $entity
-     * @param array               $data
      *
      * @throws AddressAlreadyExistsException
      * @throws ProductNotFoundException
-     *
-     * @return Product
      */
     public function update($entity, array $data = []): Product
     {
@@ -387,8 +378,6 @@ class ProductService extends AbstractService
      * @param Product|string|Uuid $entity
      *
      * @throws ProductNotFoundException
-     *
-     * @return bool
      */
     public function delete($entity): bool
     {

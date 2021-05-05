@@ -12,6 +12,10 @@ use Doctrine\ORM\EntityManager;
 use Illuminate\Support\Collection;
 use tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class CategoryServiceTest extends TestCase
 {
     /**
@@ -128,7 +132,7 @@ class CategoryServiceTest extends TestCase
             'address' => 'some-custom-address',
         ];
 
-        $category = (new Category)
+        $category = (new Category())
             ->setTitle($data['title'] . '-miss')
             ->setAddress($data['address']);
 

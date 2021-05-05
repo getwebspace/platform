@@ -9,14 +9,8 @@ use Psr\Container\ContainerInterface;
 
 class PublicationRSS extends AbstractAction
 {
-    /**
-     * @var PublicationCategoryService
-     */
     protected PublicationCategoryService $publicationCategoryService;
 
-    /**
-     * @var PublicationService
-     */
     protected PublicationService $publicationService;
 
     /**
@@ -35,8 +29,8 @@ class PublicationRSS extends AbstractAction
         $feed = new \Bhaktaraz\RSSGenerator\Feed();
 
         if (
-            ($url = $this->parameter('common_homepage', false)) !== false &&
-            ($channel = $this->resolveArg('channel'))
+            ($url = $this->parameter('common_homepage', false)) !== false
+            && ($channel = $this->resolveArg('channel'))
         ) {
             $category = $this->publicationCategoryService->read(['address' => str_escape($channel)]);
 

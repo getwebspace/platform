@@ -33,6 +33,7 @@ class CategoryUpdateAction extends PublicationAction
                         switch (true) {
                             case $this->request->getParam('save', 'exit') === 'exit':
                                 return $this->response->withAddedHeader('Location', '/cup/publication/category')->withStatus(301);
+
                             default:
                                 return $this->response->withAddedHeader('Location', '/cup/publication/category/' . $publicationCategory->getUuid() . '/edit')->withStatus(301);
                         }

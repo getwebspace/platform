@@ -11,6 +11,10 @@ use App\Domain\Service\Catalog\ProductService;
 use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class AttributeTest extends TestCase
 {
     /**

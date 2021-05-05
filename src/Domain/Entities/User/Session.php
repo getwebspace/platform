@@ -15,7 +15,6 @@ use Ramsey\Uuid\Uuid;
 class Session extends AbstractEntity
 {
     /**
-     * @var Uuid
      * @ORM\Id
      * @ORM\Column(type="uuid")
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -23,24 +22,18 @@ class Session extends AbstractEntity
      */
     protected Uuid $uuid;
 
-    /**
-     * @return Uuid
-     */
     public function getUuid(): Uuid
     {
         return $this->uuid;
     }
 
     /**
-     * @var User
      * @ORM\OneToOne(targetEntity="App\Domain\Entities\User", inversedBy="session")
      * @ORM\JoinColumn(name="uuid", referencedColumnName="uuid")
      */
     protected User $user;
 
     /**
-     * @param User $user
-     *
      * @return $this
      */
     public function setUser(User $user)
@@ -87,9 +80,6 @@ class Session extends AbstractEntity
      */
     protected string $agent = '';
 
-    /**
-     * @param string $agent
-     */
     public function setAgent(string $agent)
     {
         if ($this->checkStrLenMax($agent, 256)) {
@@ -108,7 +98,6 @@ class Session extends AbstractEntity
     }
 
     /**
-     * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     protected DateTime $date;
