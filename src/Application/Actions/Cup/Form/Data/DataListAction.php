@@ -12,7 +12,10 @@ class DataListAction extends FormAction
             $form = $this->formService->read(['uuid' => $this->resolveArg('uuid')]);
 
             if ($form) {
-                $list = $this->formDataService->read(['form_uuid' => $form->getUuid()]);
+                $list = $this->formDataService->read([
+                    'form_uuid' => $form->getUuid(),
+                    'limit' => 1000,
+                ]);
 
                 return $this->respondWithTemplate('cup/form/view/list.twig', [
                     'form' => $form,
