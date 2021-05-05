@@ -12,11 +12,11 @@
     <script>
         window.catalog = {
             events: {
-                'on:cart:add': (data) => {
-                    Swal.fire('Товар добавлен', data.title + ' (x' + data.quantity + ') теперь в корзине.', 'success');
+                'on:cart:add': (new_item) => {
+                    Swal.fire('Товар добавлен', new_item.title + ' (x' + new_item.quantity + ') теперь в корзине.', 'success');
                 },
-                'on:cart:update': (data) => {
-                    Swal.fire('Товар обновлен', data.title + ' (x' + data.quantity + ')', 'success');
+                'on:cart:update': (updated_item) => {
+                    Swal.fire('Товар обновлен', updated_item.title + ' (x' + updated_item.quantity + ')', 'success');
                 }
             }
         }

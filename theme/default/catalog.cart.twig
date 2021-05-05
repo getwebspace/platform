@@ -10,17 +10,14 @@
                 count_precision: 3,
             },
             events: {
-                'on:ready': (data, cart, obj) => {
-                    $('[data-cart-not-empty]').toggle(!!obj.cartCount());
-                    $('[data-cart-empty]').toggle(!obj.cartCount());
+                'on:ready': (cart) => {
+                    $('[data-cart-not-empty]').toggle(cart.length !== 0);
+                    $('[data-cart-empty]').toggle(cart.length === 0);
                 },
-                'on:cart:update': (data, cart, obj) => {
-                    $('[data-cart-not-empty]').toggle(!!obj.cartCount());
-                    $('[data-cart-empty]').toggle(!obj.cartCount());
+                'on:cart:update': (updated_item, cart) => {
+                    $('[data-cart-not-empty]').toggle(cart.length !== 0);
+                    $('[data-cart-empty]').toggle(cart.length === 0);
                 },
-                'on:cart:add': (data) => {
-                    Swal.fire('Корзина обновлена', data.title + ' (x' + data.quantity + ') теперь в корзине.', 'success');
-                }
             }
         }
     </script>
@@ -29,6 +26,7 @@
         [data-catalog-cart] [data-attr="quantity"] input {
             text-align: center;
         }
+
         [data-catalog-cart] [data-attr="increment"] button,
         [data-catalog-cart] [data-attr="decrement"] button,
         [data-catalog-cart] [data-attr="remove"] button {
@@ -49,6 +47,7 @@
         [data-catalog-cart] td {
             vertical-align: middle;
         }
+
         [data-catalog-cart] img {
             width: 70px;
             height: 70px;
@@ -77,7 +76,8 @@
             <div class="row pt-5 pb-5" style="display: none" data-cart-empty>
                 <div class="col-md-12 text-center">
                     <h3 class="pb-3">Ваша корзина еще пуста, почему?</h3>
-                    <p>Посомотрите наш <a href="/{{ parameter('catalog_address', 'catalog') }}">каталог</a>, может быть вам что-то понравится!</p>
+                    <p>Посомотрите наш <a href="/{{ parameter('catalog_address', 'catalog') }}">каталог</a>, может быть
+                        вам что-то понравится!</p>
                 </div>
             </div>
 
@@ -159,7 +159,8 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6 order-1 order-md-0">
-                            <button class="site-btn" data-catalog-cart-checkout style="margin-bottom: 16px;">Отправить</button>
+                            <button class="site-btn" data-catalog-cart-checkout style="margin-bottom: 16px;">Отправить
+                            </button>
                         </div>
                         <div class="col-md-6 order-0 order-md-1">
                             <div>

@@ -6,8 +6,8 @@
     <script>
         window.catalog = {
             events: {
-                'on:ready': (data, cart, obj) => {
-                    obj.cartRemoveAllProducts();
+                'on:ready': (cart) => {
+                    window.catalog.cartRemoveAll();
                 }
             }
         }
