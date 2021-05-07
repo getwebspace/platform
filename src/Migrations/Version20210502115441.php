@@ -14,7 +14,7 @@ final class Version20210502115441 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Add publication user_uuid field';
     }
 
     public function up(Schema $schema): void
