@@ -5,7 +5,7 @@ services:
         build:
             context: .
             dockerfile: docker/debian/Dockerfile
-        image: 0x12f/platform:dev
+        image: getwebspace/platform:dev
         environment:
             - DEBUG=1
           # - SALT=Please-Change-Me

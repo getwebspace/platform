@@ -1,6 +1,6 @@
 The MIT License
 
-Copyright (c) 2011-2021 Aleksey Ilyin (0x12f.com)
+Copyright (c) 2011-2021 Aleksey Ilyin (getwebspace.org)
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
