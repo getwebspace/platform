@@ -324,13 +324,16 @@ $app
         $app
             ->group('', function (App $app) use ($container): void {
                 $publicationCategoryService = \App\Domain\Service\Publication\CategoryService::getWithContainer($container);
-                $categoryPath = $publicationCategoryService->read()->pluck('address')->implode('|');
 
-                // view categories and products
-                $app
-                    ->get("/{category:{$categoryPath}}[/{args:.*}]", \App\Application\Actions\Common\Publication\ListAction::class)
-                    ->setName('common:publication:list')
-                    ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+                if (($categories = $publicationCategoryService->read()) !== null) {
+                    $categoryPath = $categories->pluck('address')->implode('|');
+
+                    // view categories and products
+                    $app
+                        ->get("/{category:{$categoryPath}}[/{args:.*}]", \App\Application\Actions\Common\Publication\ListAction::class)
+                        ->setName('common:publication:list')
+                        ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+                }
             });
 
         // file
