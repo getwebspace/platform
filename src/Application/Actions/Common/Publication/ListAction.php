@@ -18,11 +18,11 @@ class ListAction extends AbstractAction
         try {
             $params = $this->parsePath();
             $categories = $publicationCategoryService->read();
-            $category = $categories->firstWhere('address', $params['category']);
 
             switch ($params['address']) {
                 // publication category
                 case '':
+                    $category = $categories->firstWhere('address', $params['category']);
                     $childrenCategories = $category->getNested($categories)->pluck('uuid')->all();
 
                     return $this->respond($category->template['list'], [
@@ -45,6 +45,7 @@ class ListAction extends AbstractAction
                 default:
                     try {
                         $publication = $publicationService->read(['address' => $params['address']]);
+                        $category = $categories->firstWhere('uuid', $publication->getCategory());
 
                         return $this->respond($category->template['full'], [
                             'categories' => $categories->where('public', true),
