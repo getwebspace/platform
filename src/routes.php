@@ -139,6 +139,8 @@ $app
                             ->setName('cup:form:view:list');
                         $app->map(['get', 'post'], '/{data}', \App\Application\Actions\Cup\Form\Data\DataViewAction::class)
                             ->setName('cup:form:view:data');
+                        $app->map(['get', 'post'], '/{data}/preview', \App\Application\Actions\Cup\Form\Data\DataPreviewAction::class)
+                            ->setName('cup:form:view:preview');
                         $app->map(['get', 'post'], '/{data}/delete', \App\Application\Actions\Cup\Form\Data\DataDeleteAction::class)
                             ->setName('cup:form:view:delete');
                     });
