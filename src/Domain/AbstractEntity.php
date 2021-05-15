@@ -9,7 +9,7 @@ use BadMethodCallException;
 use DateTime;
 use Ramsey\Uuid\Uuid;
 
-abstract class AbstractEntity
+abstract class AbstractEntity extends AbstractComponent
 {
     /**
      * @param string[] $args
@@ -141,19 +141,30 @@ abstract class AbstractEntity
      */
     protected function getDateTimeByValue($value): DateTime
     {
+        date_default_timezone_set($this->parameter('common_timezone', 'UTC'));
+
         switch (true) {
             case is_string($value):
             case is_numeric($value):
-                return new DateTime($value);
+                $value = new DateTime($value);
 
-            case is_null($value):
-                return new DateTime('now');
+                break;
 
             case is_a($value, DateTime::class):
-                return clone $value;
+                $value = clone $value;
+
+                break;
+
+            case is_null($value):
+            default:
+                $value = new DateTime('now');
         }
 
-        return new DateTime('now');
+        if ($value->getTimezone()->getName() !== 'UTC') {
+            $value->setTimeZone(new \DateTimeZone('UTC'));
+        }
+
+        return $value;
     }
 
     /**

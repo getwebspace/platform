@@ -47,6 +47,13 @@ abstract class AbstractComponent
         static $parameters;
 
         if (!$parameters) {
+            if (!$this->container) {
+                global $app;
+
+                if ($app) {
+                    $this->container = $app->getContainer();
+                }
+            }
             if ($this->container) {
                 \RunTracy\Helpers\Profiler\Profiler::start('parameters');
                 $parameters = ParameterService::getWithContainer($this->container)->read();

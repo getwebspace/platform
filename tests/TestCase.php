@@ -25,6 +25,9 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         static $em;
 
         if (!$em) {
+            // default timezone
+            date_default_timezone_set('UTC');
+
             // include vars
             require_once __DIR__ . '/../config/vars.php';
 
