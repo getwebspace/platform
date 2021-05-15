@@ -320,16 +320,6 @@
                                                                 <p class="text-muted text-center">Здесь собрана техническая информация о движке и сервере</p>
 
                                                                 <table class="table table-properties">
-                                                                    {% if properties.whois %}
-                                                                        <tr>
-                                                                            <th width="50%">Домен:</th>
-                                                                            <td width="50%" class="text-center">
-                                                                                <b class="text-nowrap">{{ properties.whois.domain }}</b>
-                                                                                продлен до
-                                                                                <b class="text-nowrap">{{ properties.whois.expires_parsed_string|df('d.m.Y') }}</b>
-                                                                            </td>
-                                                                        </tr>
-                                                                    {% endif %}
                                                                     <tr>
                                                                         <th width="50%">Версия движка:</th>
                                                                         <td width="50%" class="text-center">
