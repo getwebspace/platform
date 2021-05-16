@@ -23,11 +23,7 @@ class DataService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws MissingMessageValueException
-     *
-     * @return FromData
      */
     public function create(array $data = []): FromData
     {
@@ -42,7 +38,7 @@ class DataService extends AbstractService
             throw new MissingMessageValueException();
         }
 
-        $form = (new FromData)
+        $form = (new FromData())
             ->setFormUuid($data['form_uuid'])
             ->setMessage($data['message'])
             ->setDate($data['date']);
@@ -54,8 +50,6 @@ class DataService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws FormDataNotFoundException
      *
      * @return Collection|FromData
@@ -98,11 +92,8 @@ class DataService extends AbstractService
 
     /**
      * @param FromData|string|Uuid $entity
-     * @param array                $data
      *
      * @throws FormDataNotFoundException
-     *
-     * @return FromData
      */
     public function update($entity, array $data = []): FromData
     {
@@ -146,8 +137,6 @@ class DataService extends AbstractService
      * @param FromData|string|Uuid $entity
      *
      * @throws FormDataNotFoundException
-     *
-     * @return bool
      */
     public function delete($entity): bool
     {

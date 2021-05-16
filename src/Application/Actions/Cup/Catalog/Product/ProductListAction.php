@@ -12,8 +12,8 @@ class ProductListAction extends CatalogAction
 
         if (!empty($this->args['category'])) {
             if (
-                $this->resolveArg('category') !== \Ramsey\Uuid\Uuid::NIL &&
-                \Ramsey\Uuid\Uuid::isValid($this->resolveArg('category'))
+                $this->resolveArg('category') !== \Ramsey\Uuid\Uuid::NIL
+                && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('category'))
             ) {
                 /** @var \App\Domain\Entities\Catalog\Category $category */
                 $category = $this->catalogCategoryService->read([

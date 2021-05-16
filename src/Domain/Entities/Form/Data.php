@@ -17,7 +17,6 @@ class Data extends AbstractEntity
     use FileTrait;
 
     /**
-     * @var Uuid
      * @ORM\Id
      * @ORM\Column(type="uuid")
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -25,9 +24,6 @@ class Data extends AbstractEntity
      */
     protected Uuid $uuid;
 
-    /**
-     * @return Uuid
-     */
     public function getUuid(): Uuid
     {
         return $this->uuid;
@@ -51,9 +47,6 @@ class Data extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return Uuid
-     */
     public function getFormUuid(): Uuid
     {
         return $this->form_uuid;
@@ -65,8 +58,6 @@ class Data extends AbstractEntity
     protected string $message = '';
 
     /**
-     * @param string $message
-     *
      * @return $this
      */
     public function setMessage(string $message)
@@ -76,16 +67,12 @@ class Data extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getMessage(): string
     {
         return $this->message;
     }
 
     /**
-     * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     protected DateTime $date;

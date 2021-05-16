@@ -10,13 +10,9 @@ use Slim\Http\Response;
 class PluginMiddleware extends AbstractMiddleware
 {
     /**
-     * @param Request  $request
-     * @param Response $response
      * @param callable $next
      *
      * @throws \Exception
-     *
-     * @return Response
      */
     public function __invoke(Request $request, Response $response, $next): \Slim\Http\Response
     {

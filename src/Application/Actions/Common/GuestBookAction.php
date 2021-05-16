@@ -56,7 +56,7 @@ class GuestBookAction extends AbstractAction
             'limit' => $pagination,
             'offset' => $pagination * $offset,
         ])->map(function ($model) {
-            /** @var $model GuestBook */
+            /** @var GuestBook $model */
             $model->setEmail(str_mask_email($model->getEmail()));
 
             return $model;

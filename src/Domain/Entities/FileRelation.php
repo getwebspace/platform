@@ -25,7 +25,6 @@ use Ramsey\Uuid\Uuid;
 class FileRelation extends AbstractEntity
 {
     /**
-     * @var Uuid
      * @ORM\Id
      * @ORM\Column(type="uuid")
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -33,9 +32,6 @@ class FileRelation extends AbstractEntity
      */
     protected Uuid $uuid;
 
-    /**
-     * @return Uuid
-     */
     public function getUuid(): Uuid
     {
         return $this->uuid;
@@ -49,8 +45,6 @@ class FileRelation extends AbstractEntity
     protected AbstractEntity $entity;
 
     /**
-     * @param AbstractEntity $entity
-     *
      * @return $this
      */
     public function setEntity(AbstractEntity $entity)
@@ -74,15 +68,12 @@ class FileRelation extends AbstractEntity
     protected Uuid $file_uuid;
 
     /**
-     * @var File
      * @ORM\ManyToOne(targetEntity="App\Domain\Entities\File")
      * @ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")
      */
     protected File $file;
 
     /**
-     * @param File $file
-     *
      * @return $this
      */
     public function setFile(File $file)
@@ -95,9 +86,6 @@ class FileRelation extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return File
-     */
     public function getFile(): File
     {
         return $this->file;
@@ -109,8 +97,6 @@ class FileRelation extends AbstractEntity
     public int $order = 1;
 
     /**
-     * @param int $order
-     *
      * @return $this
      */
     public function setOrder(int $order)
@@ -122,9 +108,6 @@ class FileRelation extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getOrder(): int
     {
         return $this->order;
@@ -136,8 +119,6 @@ class FileRelation extends AbstractEntity
     public string $comment = '';
 
     /**
-     * @param string $value
-     *
      * @return $this
      */
     public function setComment(string $value)
@@ -149,9 +130,6 @@ class FileRelation extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getComment(): string
     {
         return $this->comment;
@@ -169,7 +147,7 @@ class FileRelation extends AbstractEntity
     public function __call($name, $arguments)
     {
         if (method_exists($this->file, $name)) {
-            return $this->file->$name(...$arguments);
+            return $this->file->{$name}(...$arguments);
         }
 
         return null;

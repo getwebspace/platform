@@ -30,7 +30,6 @@ class Product extends AbstractEntity
     use FileTrait;
 
     /**
-     * @var Uuid
      * @ORM\Id
      * @ORM\Column(type="uuid")
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -38,9 +37,6 @@ class Product extends AbstractEntity
      */
     protected Uuid $uuid;
 
-    /**
-     * @return Uuid
-     */
     public function getUuid(): Uuid
     {
         return $this->uuid;
@@ -64,9 +60,6 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return Uuid
-     */
     public function getCategory(): Uuid
     {
         return $this->category;
@@ -78,8 +71,6 @@ class Product extends AbstractEntity
     protected string $title = '';
 
     /**
-     * @param string $title
-     *
      * @return $this
      */
     public function setTitle(string $title)
@@ -91,23 +82,40 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->title;
     }
 
     /**
-     * @var string
+     * @see \App\Domain\Types\ProductTypeType::LIST
+     * @ORM\Column(type="CatalogProductTypeType", options={"default": \App\Domain\Types\Catalog\ProductTypeType::TYPE_PRODUCT})
+     */
+    protected string $type = \App\Domain\Types\Catalog\ProductTypeType::TYPE_PRODUCT;
+
+    /**
+     * @return $this
+     */
+    public function setType(string $type)
+    {
+        if (in_array($type, \App\Domain\Types\Catalog\ProductTypeType::LIST, true)) {
+            $this->type = $type;
+        }
+
+        return $this;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    /**
      * @ORM\Column(type="text", length=10000, options={"default": ""})
      */
     protected string $description = '';
 
     /**
-     * @param string $description
-     *
      * @return $this
      */
     public function setDescription(string $description)
@@ -119,9 +127,6 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getDescription(): string
     {
         return $this->description;
@@ -133,8 +138,6 @@ class Product extends AbstractEntity
     protected string $extra = '';
 
     /**
-     * @param string $extra
-     *
      * @return $this
      */
     public function setExtra(string $extra)
@@ -146,9 +149,6 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getExtra(): string
     {
         return $this->extra;
@@ -160,8 +160,6 @@ class Product extends AbstractEntity
     protected string $address = '';
 
     /**
-     * @param string $address
-     *
      * @return $this
      */
     public function setAddress(string $address)
@@ -173,9 +171,6 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAddress(): string
     {
         return $this->address;
@@ -187,8 +182,6 @@ class Product extends AbstractEntity
     protected string $vendorcode = '';
 
     /**
-     * @param string $value
-     *
      * @return $this
      */
     public function setVendorCode(string $value)
@@ -214,8 +207,6 @@ class Product extends AbstractEntity
     protected string $barcode = '';
 
     /**
-     * @param string $value
-     *
      * @return $this
      */
     public function setBarCode(string $value)
@@ -243,8 +234,6 @@ class Product extends AbstractEntity
     protected float $priceFirst = .00;
 
     /**
-     * @param float $value
-     *
      * @return $this
      */
     public function setPriceFirst(float $value)
@@ -254,9 +243,6 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return float
-     */
     public function getPriceFirst(): float
     {
         return $this->priceFirst;
@@ -268,8 +254,6 @@ class Product extends AbstractEntity
     protected float $price = .00;
 
     /**
-     * @param float $value
-     *
      * @return $this
      */
     public function setPrice(float $value)
@@ -279,9 +263,6 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return float
-     */
     public function getPrice(): float
     {
         return $this->price;
@@ -295,8 +276,6 @@ class Product extends AbstractEntity
     protected float $priceWholesale = .00;
 
     /**
-     * @param float $value
-     *
      * @return $this
      */
     public function setPriceWholesale(float $value)
@@ -306,9 +285,6 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return float
-     */
     public function getPriceWholesale(): float
     {
         return $this->priceWholesale;
@@ -320,8 +296,6 @@ class Product extends AbstractEntity
     protected float $volume = 1.00;
 
     /**
-     * @param float $value
-     *
      * @return $this
      */
     public function setVolume(float $value)
@@ -331,9 +305,6 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return float
-     */
     public function getVolume(): float
     {
         return $this->volume;
@@ -345,8 +316,6 @@ class Product extends AbstractEntity
     protected string $unit = 'kg';
 
     /**
-     * @param string $value
-     *
      * @return $this
      */
     public function setUnit(string $value)
@@ -358,9 +327,6 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getUnit(): string
     {
         return $this->unit;
@@ -372,8 +338,6 @@ class Product extends AbstractEntity
     protected float $stock = .00;
 
     /**
-     * @param float $value
-     *
      * @return $this
      */
     public function setStock(float $value)
@@ -383,9 +347,6 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return float
-     */
     public function getStock(): float
     {
         return $this->stock;
@@ -397,8 +358,6 @@ class Product extends AbstractEntity
     protected string $field1 = '';
 
     /**
-     * @param string $value
-     *
      * @return $this
      */
     public function setField1(string $value)
@@ -410,9 +369,6 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getField1(): string
     {
         return $this->field1;
@@ -424,8 +380,6 @@ class Product extends AbstractEntity
     protected string $field2 = '';
 
     /**
-     * @param string $value
-     *
      * @return $this
      */
     public function setField2(string $value)
@@ -437,9 +391,6 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getField2(): string
     {
         return $this->field2;
@@ -451,8 +402,6 @@ class Product extends AbstractEntity
     protected string $field3 = '';
 
     /**
-     * @param string $value
-     *
      * @return $this
      */
     public function setField3(string $value)
@@ -464,9 +413,6 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getField3(): string
     {
         return $this->field3;
@@ -478,8 +424,6 @@ class Product extends AbstractEntity
     protected string $field4 = '';
 
     /**
-     * @param string $value
-     *
      * @return $this
      */
     public function setField4(string $value)
@@ -491,9 +435,6 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getField4(): string
     {
         return $this->field4;
@@ -505,8 +446,6 @@ class Product extends AbstractEntity
     protected string $field5 = '';
 
     /**
-     * @param string $value
-     *
      * @return $this
      */
     public function setField5(string $value)
@@ -518,9 +457,6 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getField5(): string
     {
         return $this->field5;
@@ -556,8 +492,6 @@ class Product extends AbstractEntity
     protected string $country = '';
 
     /**
-     * @param string $value
-     *
      * @return $this
      */
     public function setCountry(string $value)
@@ -569,9 +503,6 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getCountry(): string
     {
         return $this->country;
@@ -583,8 +514,6 @@ class Product extends AbstractEntity
     protected string $manufacturer = '';
 
     /**
-     * @param string $value
-     *
      * @return $this
      */
     public function setManufacturer(string $value)
@@ -596,9 +525,6 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getManufacturer(): string
     {
         return $this->manufacturer;
@@ -624,9 +550,6 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getTags(): array
     {
         return $this->tags;
@@ -670,8 +593,6 @@ class Product extends AbstractEntity
     protected int $order = 1;
 
     /**
-     * @param int $order
-     *
      * @return $this
      */
     public function setOrder(int $order)
@@ -681,25 +602,18 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getOrder(): int
     {
         return $this->order;
     }
 
     /**
-     * @var string
-     *
      * @see \App\Domain\Types\ProductStatusType::LIST
      * @ORM\Column(type="CatalogProductStatusType", options={"default": \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK})
      */
     protected string $status = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
 
     /**
-     * @param string $status
-     *
      * @return $this
      */
     public function setStatus(string $status)
@@ -720,7 +634,6 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     protected DateTime $date;
@@ -748,7 +661,6 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @var array
      * @ORM\Column(type="array")
      */
     protected array $meta = [
@@ -758,8 +670,6 @@ class Product extends AbstractEntity
     ];
 
     /**
-     * @param array $data
-     *
      * @return $this
      */
     public function setMeta(array $data)
@@ -780,9 +690,6 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getMeta(): array
     {
         return $this->meta;
@@ -794,8 +701,6 @@ class Product extends AbstractEntity
     protected string $external_id = '';
 
     /**
-     * @param string $external_id
-     *
      * @return $this
      */
     public function setExternalId(string $external_id)
@@ -807,9 +712,6 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getExternalId(): string
     {
         return $this->external_id;
@@ -821,8 +723,6 @@ class Product extends AbstractEntity
     protected string $export = 'manual';
 
     /**
-     * @param string $export
-     *
      * @return Product
      */
     public function setExport(string $export)
@@ -832,9 +732,6 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getExport(): string
     {
         return $this->export;
@@ -853,8 +750,6 @@ class Product extends AbstractEntity
     protected $files = [];
 
     /**
-     * Вернет габариты товара
-     *
      * @return string
      */
     public function getVolumeWithUnit()

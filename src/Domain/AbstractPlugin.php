@@ -11,52 +11,26 @@ use Slim\Views\Twig;
 
 abstract class AbstractPlugin extends AbstractComponent
 {
-    public const NAME          = 'UntitledPlugin';
-    public const TITLE         = 'Untitled plugin';
-    public const DESCRIPTION   = '';
-    public const AUTHOR        = 'Undefined author';
-    public const AUTHOR_EMAIL  = '';
-    public const AUTHOR_SITE   = '';
-    public const VERSION       = '1.0';
+    public const NAME = 'UntitledPlugin';
+    public const TITLE = 'Untitled plugin';
+    public const DESCRIPTION = '';
+    public const AUTHOR = 'Undefined author';
+    public const AUTHOR_EMAIL = '';
+    public const AUTHOR_SITE = '';
+    public const VERSION = '1.0';
 
-    /**
-     * @var \Slim\Router
-     */
     private \Slim\Router $router;
 
-    /**
-     * @var Twig
-     */
     private Twig $renderer;
 
-    /**
-     * @var string
-     */
-    private string $templateFolder;
-
-    /**
-     * @var array
-     */
     private array $handledRoutes = [];
 
-    /**
-     * @var array
-     */
     private array $settingsField = [];
 
-    /**
-     * @var array
-     */
     private array $toolbars = [];
 
-    /**
-     * @var bool
-     */
     public bool $routes = false;
 
-    /**
-     * @var bool
-     */
     public bool $navigation = false;
 
     public function __construct(ContainerInterface $container)
@@ -94,8 +68,6 @@ abstract class AbstractPlugin extends AbstractComponent
     /**
      * Register specific twig templates path
      *
-     * @param string $path
-     *
      * @throws \Twig\Error\LoaderError
      */
     protected function setTemplateFolder(string $path): void
@@ -103,11 +75,6 @@ abstract class AbstractPlugin extends AbstractComponent
         if (realpath($path) !== false) {
             $this->renderer->getLoader()->addPath($path);
         }
-    }
-
-    public function getTemplateFolder(): string
-    {
-        return $this->templateFolder;
     }
 
     /**
@@ -119,9 +86,6 @@ abstract class AbstractPlugin extends AbstractComponent
         $this->handledRoutes = array_merge($this->handledRoutes, $name);
     }
 
-    /**
-     * @return array
-     */
     public function getHandledRoute(): array
     {
         return $this->handledRoutes;
@@ -225,8 +189,6 @@ abstract class AbstractPlugin extends AbstractComponent
     }
 
     /**
-     * @param array $params
-     *
      * @return \Slim\Interfaces\RouteInterface|\Slim\Route
      */
     protected function map(array $params)
@@ -252,12 +214,6 @@ abstract class AbstractPlugin extends AbstractComponent
 
     /**
      * The function will be executed BEFORE processing the selected group of routes
-     *
-     * @param Request  $request
-     * @param Response $response
-     * @param string   $routeName
-     *
-     * @return Response
      */
     public function before(Request $request, Response $response, string $routeName): Response
     {
@@ -266,12 +222,6 @@ abstract class AbstractPlugin extends AbstractComponent
 
     /**
      * The function will be executed AFTER processing the selected group of routes
-     *
-     * @param Request  $request
-     * @param Response $response
-     * @param string   $routeName
-     *
-     * @return Response
      */
     public function after(Request $request, Response $response, string $routeName): Response
     {
@@ -280,12 +230,9 @@ abstract class AbstractPlugin extends AbstractComponent
 
     /**
      * @param string $template
-     * @param array  $data
      *
      * @throws HttpBadRequestException
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
-     *
-     * @return string
      */
     protected function render($template, array $data = []): string
     {

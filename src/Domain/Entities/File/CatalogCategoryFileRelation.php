@@ -13,7 +13,6 @@ use Doctrine\ORM\Mapping as ORM;
 class CatalogCategoryFileRelation extends FileRelation
 {
     /**
-     * @var CatalogCategory
      * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Catalog\Category", inversedBy="files")
      * @ORM\JoinColumn(name="entity_uuid", referencedColumnName="uuid", nullable=true)
      */

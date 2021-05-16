@@ -10,6 +10,10 @@ use App\Domain\Service\Form\Exception\MissingMessageValueException;
 use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class FormDataServiceTest extends TestCase
 {
     /**

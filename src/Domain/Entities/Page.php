@@ -17,7 +17,6 @@ class Page extends AbstractEntity
     use FileTrait;
 
     /**
-     * @var Uuid
      * @ORM\Id
      * @ORM\Column(type="uuid")
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -25,9 +24,6 @@ class Page extends AbstractEntity
      */
     protected Uuid $uuid;
 
-    /**
-     * @return Uuid
-     */
     public function getUuid(): Uuid
     {
         return $this->uuid;
@@ -39,8 +35,6 @@ class Page extends AbstractEntity
     protected string $title = '';
 
     /**
-     * @param string $title
-     *
      * @return $this
      */
     public function setTitle(string $title)
@@ -52,9 +46,6 @@ class Page extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->title;
@@ -66,8 +57,6 @@ class Page extends AbstractEntity
     protected string $address = '';
 
     /**
-     * @param string $address
-     *
      * @return $this
      */
     public function setAddress(string $address)
@@ -79,16 +68,12 @@ class Page extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAddress(): string
     {
         return $this->address;
     }
 
     /**
-     * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     protected DateTime $date;
@@ -121,8 +106,6 @@ class Page extends AbstractEntity
     protected string $content = '';
 
     /**
-     * @param string $content
-     *
      * @return $this
      */
     public function setContent(string $content)
@@ -132,25 +115,18 @@ class Page extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getContent(): string
     {
         return $this->content;
     }
 
     /**
-     * @var string
-     *
      * @see \App\Domain\Types\PageTypeType::LIST
      * @ORM\Column(type="PageTypeType")
      */
     protected string $type = \App\Domain\Types\PageTypeType::TYPE_HTML;
 
     /**
-     * @param string $type
-     *
      * @return $this
      */
     public function setType(string $type)
@@ -171,7 +147,6 @@ class Page extends AbstractEntity
     }
 
     /**
-     * @var array
      * @ORM\Column(type="array")
      */
     protected array $meta = [
@@ -181,8 +156,6 @@ class Page extends AbstractEntity
     ];
 
     /**
-     * @param array $data
-     *
      * @return $this
      */
     public function setMeta(array $data)
@@ -203,9 +176,6 @@ class Page extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getMeta(): array
     {
         return $this->meta;
@@ -217,8 +187,6 @@ class Page extends AbstractEntity
     protected string $template = '';
 
     /**
-     * @param string $template
-     *
      * @return $this
      */
     public function setTemplate(string $template)
@@ -228,9 +196,6 @@ class Page extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTemplate(): string
     {
         return $this->template;

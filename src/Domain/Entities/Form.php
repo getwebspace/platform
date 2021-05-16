@@ -13,7 +13,6 @@ use Ramsey\Uuid\Uuid;
 class Form extends AbstractEntity
 {
     /**
-     * @var Uuid
      * @ORM\Id
      * @ORM\Column(type="uuid")
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -21,9 +20,6 @@ class Form extends AbstractEntity
      */
     protected Uuid $uuid;
 
-    /**
-     * @return Uuid
-     */
     public function getUuid(): Uuid
     {
         return $this->uuid;
@@ -35,8 +31,6 @@ class Form extends AbstractEntity
     protected string $title = '';
 
     /**
-     * @param string $title
-     *
      * @return $this
      */
     public function setTitle(string $title)
@@ -48,9 +42,6 @@ class Form extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->title;
@@ -62,8 +53,6 @@ class Form extends AbstractEntity
     protected string $address = '';
 
     /**
-     * @param string $address
-     *
      * @return $this
      */
     public function setAddress(string $address)
@@ -75,9 +64,6 @@ class Form extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAddress(): string
     {
         return $this->address;
@@ -89,8 +75,6 @@ class Form extends AbstractEntity
     protected string $template = '';
 
     /**
-     * @param string $template
-     *
      * @return $this
      */
     public function setTemplate(string $template)
@@ -100,9 +84,6 @@ class Form extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTemplate(): string
     {
         return $this->template;
@@ -134,7 +115,6 @@ class Form extends AbstractEntity
     }
 
     /**
-     * @var array
      * @ORM\Column(type="array")
      */
     protected array $origin = [];
@@ -151,16 +131,12 @@ class Form extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getOrigin(): array
     {
         return $this->origin;
     }
 
     /**
-     * @var array
      * @ORM\Column(type="array")
      */
     protected array $mailto = [];
@@ -177,9 +153,6 @@ class Form extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getMailto(): array
     {
         return $this->mailto;

@@ -12,8 +12,8 @@ class CategoryListAction extends CatalogAction
 
         if (!empty($this->args['parent'])) {
             if (
-                $this->resolveArg('parent') !== \Ramsey\Uuid\Uuid::NIL &&
-                \Ramsey\Uuid\Uuid::isValid($this->resolveArg('parent'))
+                $this->resolveArg('parent') !== \Ramsey\Uuid\Uuid::NIL
+                && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('parent'))
             ) {
                 /** @var \App\Domain\Entities\Catalog\Category $category */
                 $category = $this->catalogCategoryService->read([

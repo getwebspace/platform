@@ -9,14 +9,12 @@ use BadMethodCallException;
 use DateTime;
 use Ramsey\Uuid\Uuid;
 
-abstract class AbstractEntity
+abstract class AbstractEntity extends AbstractComponent
 {
     /**
      * @param string[] $args
      *
      * @throws \Exception
-     *
-     * @return string
      */
     protected function getAddressByValue(string ...$args): string
     {
@@ -25,22 +23,14 @@ abstract class AbstractEntity
                 $str = mb_strtolower($str);
                 $str = str_translate($str);
                 $str = trim($str);
-                $str = preg_replace(['/\s/', '/[^a-z0-9\-\/]/'], ['-', ''], $str);
 
-                return $str;
+                return preg_replace(['/\s/', '/[^a-z0-9\-\/]/'], ['-', ''], $str);
             }
         }
 
         return Uuid::uuid4()->toString();
     }
 
-    /**
-     * @param string $value
-     * @param int    $min
-     * @param int    $max
-     *
-     * @return bool
-     */
     protected function checkStrLenBetween(string $value, int $min = 0, int $max = INF): bool
     {
         if (!is_scalar($value)) {
@@ -51,12 +41,6 @@ abstract class AbstractEntity
         return $len >= $min && $len <= $max;
     }
 
-    /**
-     * @param string $value
-     * @param int    $max
-     *
-     * @return bool
-     */
     protected function checkStrLenMax(string $value, int $max = INF): bool
     {
         if (!is_scalar($value)) {
@@ -66,12 +50,6 @@ abstract class AbstractEntity
         return mb_strlen($value) <= $max;
     }
 
-    /**
-     * @param string $value
-     * @param int    $min
-     *
-     * @return bool
-     */
     protected function checkStrLenMin(string $value, int $min = 0): bool
     {
         if (!is_scalar($value)) {
@@ -82,11 +60,7 @@ abstract class AbstractEntity
     }
 
     /**
-     * @param string $value
-     *
      * @throws WrongEmailValueException
-     *
-     * @return bool
      */
     protected function checkEmailByValue(string $value): bool
     {
@@ -102,11 +76,7 @@ abstract class AbstractEntity
     }
 
     /**
-     * @param string $value
-     *
      * @throws WrongPhoneValueException
-     *
-     * @return bool
      */
     protected function checkPhoneByValue(string &$value): bool
     {
@@ -131,8 +101,6 @@ abstract class AbstractEntity
 
     /**
      * @param $value
-     *
-     * @return bool
      */
     protected function getBooleanByValue($value): bool
     {
@@ -150,11 +118,7 @@ abstract class AbstractEntity
     }
 
     /**
-     * @param string $value
-     *
      * @throws WrongIpValueException
-     *
-     * @return bool
      */
     protected function getIpByValue(string $value): bool
     {
@@ -165,11 +129,6 @@ abstract class AbstractEntity
         throw new WrongIpValueException();
     }
 
-    /**
-     * @param string $value
-     *
-     * @return string
-     */
     protected function getPasswordHashByValue(string $value): string
     {
         return crypta_hash($value, ($_ENV['SALT'] ?? 'Li8.1Ej2-<Cid3[bE'));
@@ -179,24 +138,33 @@ abstract class AbstractEntity
      * @param $value
      *
      * @throws \Exception
-     *
-     * @return DateTime
      */
     protected function getDateTimeByValue($value): DateTime
     {
+        date_default_timezone_set($this->parameter('common_timezone', 'UTC'));
+
         switch (true) {
             case is_string($value):
             case is_numeric($value):
-                return new DateTime($value);
+                $value = new DateTime($value);
 
-            case is_null($value):
-                return new DateTime('now');
+                break;
 
             case is_a($value, DateTime::class):
-                return clone $value;
+                $value = clone $value;
+
+                break;
+
+            case is_null($value):
+            default:
+                $value = new DateTime('now');
         }
 
-        return new DateTime('now');
+        if ($value->getTimezone()->getName() !== 'UTC') {
+            $value->setTimeZone(new \DateTimeZone('UTC'));
+        }
+
+        return $value;
     }
 
     /**
@@ -218,9 +186,7 @@ abstract class AbstractEntity
     }
 
     /**
-     * @param string       $delimiter
      * @param array|string $string
-     * @param null|int     $limit
      *
      * @return array|false|string[]
      */
@@ -250,8 +216,6 @@ abstract class AbstractEntity
 
     /**
      * Return model as array
-     *
-     * @return array
      */
     public function toArray(): array
     {
@@ -260,19 +224,12 @@ abstract class AbstractEntity
 
     /**
      * Return model as string
-     *
-     * @return string
      */
     public function __toString(): string
     {
         return json_encode($this->toArray(), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT, 2048);
     }
 
-    /**
-     * @param string $name
-     *
-     * @return bool
-     */
     public function __isset(string $name): bool
     {
         return property_exists($this, $name);
@@ -281,14 +238,12 @@ abstract class AbstractEntity
     /**
      * Access to read property
      *
-     * @param string $name
-     *
      * @return mixed
      */
     public function __get(string $name)
     {
         if (property_exists($this, $name)) {
-            return $this->$name;
+            return $this->{$name};
         }
 
         throw new BadMethodCallException(
@@ -299,7 +254,6 @@ abstract class AbstractEntity
     /**
      * Denied to write property
      *
-     * @param string $name
      * @param mixed  $value
      *
      * @return mixed

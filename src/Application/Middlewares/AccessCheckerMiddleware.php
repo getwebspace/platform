@@ -18,13 +18,7 @@ class AccessCheckerMiddleware extends AbstractMiddleware
     ];
 
     /**
-     * @param Request  $request
-     * @param Response $response
-     * @param callable $next
-     *
      * @throws \Exception
-     *
-     * @return Response
      */
     public function __invoke(Request $request, Response $response, callable $next): \Slim\Http\Response
     {
@@ -47,8 +41,8 @@ class AccessCheckerMiddleware extends AbstractMiddleware
         }
 
         if (
-            ($access === [] && str_start_with($route->getName(), 'common')) ||
-            in_array($route->getName(), $access, true)
+            ($access === [] && str_start_with($route->getName(), 'common'))
+            || in_array($route->getName(), $access, true)
         ) {
             return $next($request, $response);
         }

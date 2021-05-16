@@ -9,8 +9,6 @@ class Mail
     /**
      * Send E-Mail
      *
-     * @param array $data
-     *
      * @throws \PHPMailer\PHPMailer\Exception
      *
      * @return PHPMailer

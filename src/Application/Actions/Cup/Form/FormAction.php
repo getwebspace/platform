@@ -9,14 +9,8 @@ use Psr\Container\ContainerInterface;
 
 abstract class FormAction extends AbstractAction
 {
-    /**
-     * @var FormService
-     */
     protected FormService $formService;
 
-    /**
-     * @var FormDataService
-     */
     protected FormDataService $formDataService;
 
     /**

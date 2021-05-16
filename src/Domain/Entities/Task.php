@@ -14,7 +14,6 @@ use Ramsey\Uuid\Uuid;
 class Task extends AbstractEntity
 {
     /**
-     * @var Uuid
      * @ORM\Id
      * @ORM\Column(type="uuid")
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -22,9 +21,6 @@ class Task extends AbstractEntity
      */
     protected Uuid $uuid;
 
-    /**
-     * @return Uuid
-     */
     public function getUuid(): Uuid
     {
         return $this->uuid;
@@ -36,8 +32,6 @@ class Task extends AbstractEntity
     protected string $title = '';
 
     /**
-     * @param string $title
-     *
      * @return $this
      */
     public function setTitle(string $title)
@@ -49,9 +43,6 @@ class Task extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         if ($this->title) {
@@ -69,8 +60,6 @@ class Task extends AbstractEntity
     protected string $action = '';
 
     /**
-     * @param string $action
-     *
      * @return $this
      */
     public function setAction(string $action)
@@ -80,23 +69,17 @@ class Task extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAction(): string
     {
         return $this->action;
     }
 
     /**
-     * @var float
      * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
      */
     protected float $progress = .00;
 
     /**
-     * @param float $progress
-     *
      * @return $this
      */
     public function setProgress(float $progress)
@@ -106,25 +89,18 @@ class Task extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return float
-     */
     public function getProgress(): float
     {
         return $this->progress;
     }
 
     /**
-     * @var string
-     *
      * @see \App\Domain\Types\TaskStatusType::LIST
      * @ORM\Column(type="TaskStatusType", options={"default": \App\Domain\Types\TaskStatusType::STATUS_QUEUE})
      */
     public string $status = \App\Domain\Types\TaskStatusType::STATUS_QUEUE;
 
     /**
-     * @param string $status
-     *
      * @return $this
      */
     public function setStatus(string $status)
@@ -145,14 +121,11 @@ class Task extends AbstractEntity
     }
 
     /**
-     * @var array
      * @ORM\Column(type="array")
      */
     protected array $params = [];
 
     /**
-     * @param array $params
-     *
      * @return $this
      */
     public function setParams(array $params)
@@ -162,23 +135,17 @@ class Task extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getParams(): array
     {
         return $this->params;
     }
 
     /**
-     * @var string
      * @ORM\Column(type="string", length=1000, options={"default": ""})
      */
     protected string $output = '';
 
     /**
-     * @param string $output
-     *
      * @return $this
      */
     public function setOutput(string $output)
@@ -188,16 +155,12 @@ class Task extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getOutput(): string
     {
         return $this->output;
     }
 
     /**
-     * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     protected DateTime $date;

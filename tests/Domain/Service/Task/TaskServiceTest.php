@@ -11,6 +11,10 @@ use App\Domain\Service\Task\TaskService;
 use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class TaskServiceTest extends TestCase
 {
     /**

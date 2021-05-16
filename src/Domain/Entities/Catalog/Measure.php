@@ -13,7 +13,6 @@ use Ramsey\Uuid\Uuid;
 class Measure extends AbstractEntity
 {
     /**
-     * @var Uuid
      * @ORM\Id
      * @ORM\Column(type="uuid")
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -21,9 +20,6 @@ class Measure extends AbstractEntity
      */
     protected Uuid $uuid;
 
-    /**
-     * @return Uuid
-     */
     public function getUuid(): Uuid
     {
         return $this->uuid;
@@ -35,8 +31,6 @@ class Measure extends AbstractEntity
     protected string $title = '';
 
     /**
-     * @param string $title
-     *
      * @return $this
      */
     public function setTitle(string $title)
@@ -48,9 +42,6 @@ class Measure extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->title;
@@ -62,8 +53,6 @@ class Measure extends AbstractEntity
     protected string $contraction = '';
 
     /**
-     * @param string $contraction
-     *
      * @return $this
      */
     public function setContraction(string $contraction)
@@ -75,9 +64,6 @@ class Measure extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getContraction(): string
     {
         return $this->contraction;
@@ -89,8 +75,6 @@ class Measure extends AbstractEntity
     public float $value = 1.00;
 
     /**
-     * @param float $value
-     *
      * @return $this
      */
     public function setValue(float $value)
@@ -100,9 +84,6 @@ class Measure extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return float
-     */
     public function getValue(): float
     {
         return $this->value;

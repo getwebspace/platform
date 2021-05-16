@@ -13,7 +13,6 @@ use Doctrine\ORM\Mapping as ORM;
 class PublicationCategoryFileRelation extends FileRelation
 {
     /**
-     * @var PublicationCategory
      * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Publication\Category", inversedBy="files")
      * @ORM\JoinColumn(name="entity_uuid", referencedColumnName="uuid", nullable=true)
      */

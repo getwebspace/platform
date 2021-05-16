@@ -44,8 +44,6 @@ class ProductRelationService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @return ProductRelation
      */
     public function create(array $data = [])
@@ -75,7 +73,6 @@ class ProductRelationService extends AbstractService
 
     /**
      * @param       $entity
-     * @param array $data
      */
     public function update($entity, array $data = []): void
     {

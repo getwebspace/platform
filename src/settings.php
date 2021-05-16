@@ -1,8 +1,5 @@
 <?php declare(strict_types=1);
 
-// timezone default
-date_default_timezone_set('UTC');
-
 $settings = [
     // Secret salt
     'secret' => [

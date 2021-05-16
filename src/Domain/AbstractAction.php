@@ -34,29 +34,14 @@ abstract class AbstractAction extends AbstractComponent
      */
     protected $renderer;
 
-    /**
-     * @var Request
-     */
     protected Request $request;
 
-    /**
-     * @var Response
-     */
     protected Response $response;
 
-    /**
-     * @var array
-     */
     protected array $args;
 
-    /**
-     * @var array
-     */
     private array $error = [];
 
-    /**
-     * @param ContainerInterface $container
-     */
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);
@@ -64,9 +49,6 @@ abstract class AbstractAction extends AbstractComponent
         $this->renderer = $container->get('view');
     }
 
-    /**
-     * @return Collection
-     */
     protected function getRoutes(): Collection
     {
         static $routes;
@@ -81,18 +63,11 @@ abstract class AbstractAction extends AbstractComponent
         return $routes->combine($routes);
     }
 
-    /**
-     * @param string $field
-     * @param string $reason
-     */
     protected function addError(string $field, string $reason = ''): void
     {
         $this->error[$field] = $reason;
     }
 
-    /**
-     * @param array $check
-     */
     protected function addErrorFromCheck(array $check): void
     {
         $this->error = array_merge($this->error, $check);
@@ -100,8 +75,6 @@ abstract class AbstractAction extends AbstractComponent
 
     /**
      * Produces sending E-Mail
-     *
-     * @param array $data
      *
      * @throws \PHPMailer\PHPMailer\Exception
      *
@@ -129,13 +102,6 @@ abstract class AbstractAction extends AbstractComponent
         return false;
     }
 
-    /**
-     * @param Request  $request
-     * @param Response $response
-     * @param array    $args
-     *
-     * @return Response
-     */
     public function __invoke(Request $request, Response $response, array $args): Response
     {
         \RunTracy\Helpers\Profiler\Profiler::start('route');
@@ -180,14 +146,9 @@ abstract class AbstractAction extends AbstractComponent
         return $result;
     }
 
-    /**
-     * @return Response
-     */
     abstract protected function action(): \Slim\Http\Response;
 
     /**
-     * @param string $name
-     *
      * @throws HttpBadRequestException
      *
      * @return mixed
@@ -203,11 +164,6 @@ abstract class AbstractAction extends AbstractComponent
 
     /**
      * For add or remove files for AbstractEntity with files
-     *
-     * @param AbstractEntity $entity
-     * @param string         $field
-     *
-     * @return AbstractEntity
      */
     protected function processEntityFiles(AbstractEntity $entity, string $field = 'files'): AbstractEntity
     {
@@ -253,8 +209,6 @@ abstract class AbstractAction extends AbstractComponent
 
     /**
      * For uploaded files without entity
-     *
-     * @param string $field
      *
      * @return File[]
      */
@@ -304,8 +258,6 @@ abstract class AbstractAction extends AbstractComponent
      * For upload file from POST body
      *
      * @param string $filename
-     *
-     * @return null|File
      */
     protected function getFileFromBody($filename = ''): ?File
     {
@@ -337,8 +289,6 @@ abstract class AbstractAction extends AbstractComponent
      * Return recaptcha status if is enabled
      *
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
-     *
-     * @return bool
      */
     protected function isRecaptchaChecked(): bool
     {
@@ -372,12 +322,9 @@ abstract class AbstractAction extends AbstractComponent
 
     /**
      * @param string $template
-     * @param array  $data
      *
      * @throws HttpBadRequestException
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
-     *
-     * @return string
      */
     protected function render($template, array $data = []): string
     {
@@ -409,12 +356,7 @@ abstract class AbstractAction extends AbstractComponent
     }
 
     /**
-     * @param string $template
-     * @param array  $data
-     *
      * @throws HttpBadRequestException
-     *
-     * @return Response
      */
     protected function respond(string $template, array $data = []): Response
     {
@@ -441,13 +383,8 @@ abstract class AbstractAction extends AbstractComponent
     }
 
     /**
-     * @param string $template
-     * @param array  $data
-     *
      * @throws HttpBadRequestException
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
-     *
-     * @return Response
      */
     protected function respondWithTemplate(string $template, array $data = []): Response
     {
@@ -462,11 +399,6 @@ abstract class AbstractAction extends AbstractComponent
         return $this->response;
     }
 
-    /**
-     * @param array $array
-     *
-     * @return Response
-     */
     protected function respondWithJson(array $array = []): Response
     {
         $json = json_encode(array_serialize($array), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
@@ -476,8 +408,6 @@ abstract class AbstractAction extends AbstractComponent
 
     /**
      * @param array|string $output
-     *
-     * @return Response
      */
     protected function respondWithText($output = ''): Response
     {

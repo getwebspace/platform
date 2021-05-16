@@ -8,9 +8,6 @@ use Psr\Container\ContainerInterface;
 
 abstract class FileAction extends AbstractAction
 {
-    /**
-     * @var FileService
-     */
     protected FileService $fileService;
 
     /**

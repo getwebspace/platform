@@ -24,12 +24,8 @@ class CategoryService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws MissingTitleValueException
      * @throws AddressAlreadyExistsException
-     *
-     * @return Category
      */
     public function create(array $data = []): Category
     {
@@ -75,7 +71,7 @@ class CategoryService extends AbstractService
             throw new MissingTitleValueException();
         }
 
-        $category = (new Category)
+        $category = (new Category())
             ->setParent($data['parent'])
             ->setChildren($data['children'])
             ->setDescription($data['description'])
@@ -120,8 +116,6 @@ class CategoryService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws CategoryNotFoundException
      *
      * @return Category|Collection
@@ -203,12 +197,9 @@ class CategoryService extends AbstractService
 
     /**
      * @param Category|string|Uuid $entity
-     * @param array                $data
      *
      * @throws AddressAlreadyExistsException
      * @throws CategoryNotFoundException
-     *
-     * @return Category
      */
     public function update($entity, array $data = []): Category
     {
@@ -318,8 +309,6 @@ class CategoryService extends AbstractService
      * @param Category|string|Uuid $entity
      *
      * @throws CategoryNotFoundException
-     *
-     * @return bool
      */
     public function delete($entity): bool
     {

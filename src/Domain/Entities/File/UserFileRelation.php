@@ -13,7 +13,6 @@ use Doctrine\ORM\Mapping as ORM;
 class UserFileRelation extends FileRelation
 {
     /**
-     * @var User
      * @ORM\ManyToOne(targetEntity="App\Domain\Entities\User", inversedBy="files")
      * @ORM\JoinColumn(name="entity_uuid", referencedColumnName="uuid", nullable=true)
      */

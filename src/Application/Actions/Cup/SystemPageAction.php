@@ -92,7 +92,7 @@ class SystemPageAction extends AbstractAction
             }
 
             return $this->respondWithTemplate('cup/system/index.twig', [
-                'health' => sys_self_check_health()
+                'health' => sys_self_check_health(),
             ]);
         }
 

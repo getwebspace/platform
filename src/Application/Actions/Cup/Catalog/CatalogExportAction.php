@@ -99,7 +99,7 @@ class CatalogExportAction extends CatalogAction
                     );
 
                     $lastCategory = $model->getCategory()->toString();
-                    $row++;
+                    ++$row;
                 }
 
                 // product attributes
@@ -129,7 +129,7 @@ class CatalogExportAction extends CatalogAction
                             case 'description':
                             case 'extra':
                                 $cell
-                                    ->setValue(trim($wizard->toRichTextObject($model->$field)->getPlainText()));
+                                    ->setValue(trim($wizard->toRichTextObject($model->{$field})->getPlainText()));
 
                                 break;
 
@@ -137,7 +137,7 @@ class CatalogExportAction extends CatalogAction
                             case 'price':
                             case 'priceWholesale':
                                 $cell
-                                    ->setValue($model->$field)
+                                    ->setValue($model->{$field})
                                     ->getStyle()
                                     ->getNumberFormat()
                                     ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED2);
@@ -147,7 +147,7 @@ class CatalogExportAction extends CatalogAction
                             case 'vendorcode':
                             case 'barcode':
                                 $cell
-                                    ->setValue($model->$field)
+                                    ->setValue($model->{$field})
                                     ->getStyle()
                                     ->getAlignment()
                                     ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
@@ -157,7 +157,7 @@ class CatalogExportAction extends CatalogAction
                             case 'volume':
                             case 'stock':
                                 $cell
-                                    ->setValue($model->$field)
+                                    ->setValue($model->{$field})
                                     ->getStyle()
                                     ->getNumberFormat()
                                     ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_00);
@@ -166,7 +166,7 @@ class CatalogExportAction extends CatalogAction
 
                             case 'order':
                                 $cell
-                                    ->setValue($model->$field)
+                                    ->setValue($model->{$field})
                                     ->getStyle()
                                     ->getNumberFormat()
                                     ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER);
@@ -184,8 +184,8 @@ class CatalogExportAction extends CatalogAction
 
                             default:
                                 // entity field value
-                                if (isset($model->$field)) {
-                                    $cell->setValue($model->$field);
+                                if (isset($model->{$field})) {
+                                    $cell->setValue($model->{$field});
 
                                     continue 2;
                                 }
@@ -232,7 +232,7 @@ class CatalogExportAction extends CatalogAction
                     }
                 }
 
-                $row++;
+                ++$row;
             }
 
             return $this->response

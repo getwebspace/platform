@@ -5,7 +5,7 @@ services:
         build:
             context: .
             dockerfile: docker/debian/Dockerfile
-        image: 0x12f/platform:dev
+        image: getwebspace/platform:dev
         environment:
             - DEBUG=1
           # - SALT=Please-Change-Me
@@ -22,7 +22,7 @@ services:
             - ./var:/var/container/var:rw
             - ./var/upload:/var/container/public/uploads:rw
             - ./vendor:/var/container/vendor:rw
-            - ./.php_cs.dist:/var/container/.php_cs.dist:ro
+            - ./.php-cs-fixer.dist.php:/var/container/.php-cs-fixer.dist.php:ro
             - ./migrations.json:/var/container/migrations.json:ro
             - ./composer.json:/var/container/composer.json:rw
             - ./composer.lock:/var/container/composer.lock:rw

@@ -2,15 +2,11 @@
 
 namespace App\Application\Actions\Common\Catalog;
 
-use Slim\Http\Response;
-
 class CartAction extends CatalogAction
 {
     /**
      * @throws \Doctrine\DBAL\DBALException
      * @throws \App\Domain\Exceptions\HttpBadRequestException
-     *
-     * @return Response
      */
     protected function action(): \Slim\Http\Response
     {
@@ -78,9 +74,9 @@ class CartAction extends CatalogAction
 
                 // mail to administrator
                 if (
-                    ($this->parameter('catalog_mail_admin', 'off') === 'on') &&
-                    ($email = $this->parameter('smtp_from', '')) !== '' &&
-                    ($tpl = $this->parameter('catalog_mail_admin_template', '')) !== ''
+                    ($this->parameter('catalog_mail_admin', 'off') === 'on')
+                    && ($email = $this->parameter('smtp_from', '')) !== ''
+                    && ($tpl = $this->parameter('catalog_mail_admin_template', '')) !== ''
                 ) {
                     $products = $this->catalogProductService->read(['uuid' => array_keys($order->getList())]);
 
@@ -96,9 +92,9 @@ class CartAction extends CatalogAction
 
                 // mail to client
                 if (
-                    ($this->parameter('catalog_mail_client', 'off') === 'on') &&
-                    $order->getEmail() &&
-                    ($tpl = $this->parameter('catalog_mail_client_template', '')) !== ''
+                    ($this->parameter('catalog_mail_client', 'off') === 'on')
+                    && $order->getEmail()
+                    && ($tpl = $this->parameter('catalog_mail_client_template', '')) !== ''
                 ) {
                     $products = $this->catalogProductService->read(['uuid' => array_keys($order->getList())]);
 

@@ -24,12 +24,8 @@ class GroupService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws MissingTitleValueException
      * @throws TitleAlreadyExistsException
-     *
-     * @return UserGroup
      */
     public function create(array $data = []): UserGroup
     {
@@ -59,8 +55,6 @@ class GroupService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws UserGroupNotFoundException
      *
      * @return Collection|UserGroup
@@ -84,8 +78,8 @@ class GroupService extends AbstractService
 
         try {
             if (
-                !is_array($data['uuid']) && $data['uuid'] !== null ||
-                !is_array($data['title']) && $data['title'] !== null
+                !is_array($data['uuid']) && $data['uuid'] !== null
+                || !is_array($data['title']) && $data['title'] !== null
             ) {
                 switch (true) {
                     case $data['uuid']:
@@ -114,12 +108,9 @@ class GroupService extends AbstractService
 
     /**
      * @param string|UserGroup|Uuid $entity
-     * @param array                 $data
      *
      * @throws TitleAlreadyExistsException
      * @throws UserGroupNotFoundException
-     *
-     * @return UserGroup
      */
     public function update($entity, array $data = []): UserGroup
     {
@@ -169,8 +160,6 @@ class GroupService extends AbstractService
      * @param string|UserGroup|Uuid $entity
      *
      * @throws UserGroupNotFoundException
-     *
-     * @return bool
      */
     public function delete($entity): bool
     {

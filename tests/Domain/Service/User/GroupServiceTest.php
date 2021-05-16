@@ -11,6 +11,10 @@ use App\Domain\Service\User\GroupService as UserGroupService;
 use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class GroupServiceTest extends TestCase
 {
     /**

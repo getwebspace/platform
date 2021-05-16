@@ -30,16 +30,12 @@ class UserService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws EmailAlreadyExistsException
      * @throws UsernameAlreadyExistsException
      * @throws PhoneAlreadyExistsException
      * @throws MissingUniqueValueException
      * @throws WrongEmailValueException
      * @throws WrongPhoneValueException
-     *
-     * @return User
      */
     public function create(array $data = []): User
     {
@@ -74,7 +70,7 @@ class UserService extends AbstractService
             throw new WrongPasswordException();
         }
 
-        $user = (new User)
+        $user = (new User())
             ->setUsername($data['username'])
             ->setEmail($data['email'])
             ->setPhone($data['phone'])
@@ -96,8 +92,6 @@ class UserService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws UserNotFoundException
      * @throws WrongPasswordException
      *
@@ -146,11 +140,11 @@ class UserService extends AbstractService
 
         try {
             if (
-                $data['identifier'] !== null ||
-                !is_array($data['uuid']) && $data['uuid'] !== null ||
-                !is_array($data['username']) && $data['username'] !== null ||
-                !is_array($data['email']) && $data['email'] !== null ||
-                !is_array($data['phone']) && $data['phone'] !== null
+                $data['identifier'] !== null
+                || !is_array($data['uuid']) && $data['uuid'] !== null
+                || !is_array($data['username']) && $data['username'] !== null
+                || !is_array($data['email']) && $data['email'] !== null
+                || !is_array($data['phone']) && $data['phone'] !== null
             ) {
                 switch (true) {
                     case $data['identifier']:
@@ -196,7 +190,7 @@ class UserService extends AbstractService
 
                     // if is first user auth
                     if (!$session) {
-                        $session = (new UserSession)->setDate('now');
+                        $session = (new UserSession())->setDate('now');
                         $this->entityManager->persist($session);
                     }
 
@@ -222,7 +216,6 @@ class UserService extends AbstractService
 
     /**
      * @param string|User|Uuid $entity
-     * @param array            $data
      *
      * @throws UsernameAlreadyExistsException
      * @throws EmailAlreadyExistsException
@@ -230,8 +223,6 @@ class UserService extends AbstractService
      * @throws WrongEmailValueException
      * @throws WrongPhoneValueException
      * @throws UserNotFoundException
-     *
-     * @return User
      */
     public function update($entity, array $data = []): User
     {
@@ -337,8 +328,8 @@ class UserService extends AbstractService
     public function block($entity): ?User
     {
         if (
-            (is_string($entity) && Uuid::isValid($entity)) ||
-            (is_object($entity) && is_a($entity, Uuid::class))
+            (is_string($entity) && Uuid::isValid($entity))
+            || (is_object($entity) && is_a($entity, Uuid::class))
         ) {
             $entity = $this->service->findOneByUuid((string) $entity);
         }
@@ -358,8 +349,6 @@ class UserService extends AbstractService
      * @param string|User|Uuid $entity
      *
      * @throws UserNotFoundException
-     *
-     * @return User
      */
     public function delete($entity): User
     {

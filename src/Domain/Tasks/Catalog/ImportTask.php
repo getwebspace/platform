@@ -4,7 +4,7 @@ namespace App\Domain\Tasks\Catalog;
 
 use App\Domain\AbstractTask;
 use App\Domain\Service\Catalog\AttributeService as CatalogAttributeService;
-use App\Domain\Service\Catalog\CategoryService as CatalogCatalogService;
+use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\CategoryNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
@@ -39,7 +39,7 @@ class ImportTask extends AbstractTask
             return $this->setStatusFail();
         }
 
-        $catalogCategoryService = CatalogCatalogService::getWithContainer($this->container);
+        $catalogCategoryService = CatalogCategoryService::getWithContainer($this->container);
         $catalogProductService = CatalogProductService::getWithContainer($this->container);
         $catalogAttributeService = CatalogAttributeService::getWithContainer($this->container);
         $catalogProductAttributeService = CatalogProductAttributeService::getWithContainer($this->container);
@@ -127,10 +127,10 @@ class ImportTask extends AbstractTask
                                     $create = [];
                                     foreach ($data as $key => $value) {
                                         if (
-                                            $key !== 'empty' &&
-                                            in_array($key, \App\Domain\References\Catalog::IMPORT_FIELDS, true) &&
-                                            !in_array($value, \App\Domain\References\Catalog::IMPORT_FIELDS, true) &&
-                                            ($value === null) === false
+                                            $key !== 'empty'
+                                            && in_array($key, \App\Domain\References\Catalog::IMPORT_FIELDS, true)
+                                            && !in_array($value, \App\Domain\References\Catalog::IMPORT_FIELDS, true)
+                                            && ($value === null) === false
                                         ) {
                                             $create[$key] = $value['raw'];
                                         }
@@ -169,10 +169,10 @@ class ImportTask extends AbstractTask
                                 $update = ['date' => $now];
                                 foreach ($data as $key => $value) {
                                     if (
-                                        $key !== 'empty' &&
-                                        in_array($key, \App\Domain\References\Catalog::IMPORT_FIELDS, true) &&
-                                        !in_array($value, \App\Domain\References\Catalog::IMPORT_FIELDS, true) &&
-                                        ($value === null) === false
+                                        $key !== 'empty'
+                                        && in_array($key, \App\Domain\References\Catalog::IMPORT_FIELDS, true)
+                                        && !in_array($value, \App\Domain\References\Catalog::IMPORT_FIELDS, true)
+                                        && ($value === null) === false
                                     ) {
                                         $update[$key] = $value['raw'];
                                     }
@@ -297,8 +297,6 @@ class ImportTask extends AbstractTask
      *
      * @param $sheet
      * @param $cell
-     *
-     * @return bool
      */
     protected function isMergedCell($sheet, $cell): bool
     {

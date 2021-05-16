@@ -18,8 +18,6 @@ class Parameter extends AbstractEntity
     protected string $key = '';
 
     /**
-     * @param string $key
-     *
      * @return $this
      */
     public function setKey(string $key)
@@ -31,9 +29,6 @@ class Parameter extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getKey(): string
     {
         return $this->key;
@@ -60,9 +55,6 @@ class Parameter extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getValue(): string
     {
         return $this->value;

@@ -2,7 +2,7 @@ WebSpace Engine
 ====
 _(Content Management System)_
 
-![Docker builder](https://github.com/0x12f/platform/workflows/Docker%20builder/badge.svg)
+![Docker builder](https://github.com/getwebspace/platform/workflows/Docker%20builder/badge.svg)
 
 Multifunctional content management system,
 primarily intended for:
@@ -14,7 +14,7 @@ primarily intended for:
 Licensed under the MIT license. See [License File](LICENSE.md) for more information.
 
 #### Production mode
-[Installation instructions](https://github.com/0x12f/platform/wiki/Installation-(Docker)) from Docker template [0x12f/platform-template](https://github.com/0x12f/platform-template)  
+[Installation instructions](https://github.com/getwebspace/platform/wiki/Installation-(Docker)) from Docker template [getwebspace/platform-template](https://github.com/getwebspace/platform-template)  
 
 #### Developer mode
 Use `Docker` by running the command: `docker-compose up -d`

@@ -1,6 +1,6 @@
 {
-    "name": "0x12f/cms",
-    "description": "Content Management System structure by 0x12f",
+    "name": "getwebspace/platform",
+    "description": "Content Management System structure",
     "authors": [
         {
             "name": "Aleksey Ilyin",
@@ -27,7 +27,7 @@
         "ramsey/uuid": "^3.9.3",
         "ramsey/uuid-doctrine": "^1.6",
         "bhaktaraz/php-rss-generator": "dev-master",
-        "phpmailer/phpmailer": "^v6.2.0",
+        "phpmailer/phpmailer": "^v6.4.1",
         "pragmarx/google2fa": "^3.0.3",
         "phpoffice/phpspreadsheet": "^1.15.0",
         "bacon/bacon-qr-code": "^1.0.3",

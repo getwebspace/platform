@@ -20,11 +20,11 @@
                         <a href="/cup/form/{{ item.form_uuid }}/view" class="btn btn-secondary btn-icon mr-1">
                             <i class="fas fa-long-arrow-alt-left"></i>
                         </a>
-                        <h4 class="card-title">Детали полученных данных ({{ item.uuid }})</h4>
+                        <h4 class="card-title">Полученные данные ({{ item.uuid }})</h4>
                     </div>
                 </div>
                 <div class="card-body">
-                    <iframe srcdoc="{{ item.message|raw }}" frameborder="0" style="width: 100%; min-height: 350px; overflow-y: scroll"></iframe>
+                    <iframe src="/cup/form/{{ item.form_uuid }}/view/{{ item.uuid }}/preview" frameborder="0" style="width: 100%; min-height: 350px; overflow-y: scroll"></iframe>
 
                     <div class="row">
                         {% for file in item.getFiles().sortBy('date') %}

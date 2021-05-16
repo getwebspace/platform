@@ -3,15 +3,12 @@
 namespace App\Application\Actions\Common\Catalog;
 
 use App\Domain\Service\Catalog\Exception\OrderNotFoundException;
-use Slim\Http\Response;
 
 class CartDoneAction extends CatalogAction
 {
     /**
      * @throws \Doctrine\DBAL\DBALException
      * @throws \App\Domain\Exceptions\HttpBadRequestException
-     *
-     * @return Response
      */
     protected function action(): \Slim\Http\Response
     {

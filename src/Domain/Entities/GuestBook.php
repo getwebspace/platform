@@ -14,7 +14,6 @@ use Ramsey\Uuid\Uuid;
 class GuestBook extends AbstractEntity
 {
     /**
-     * @var Uuid
      * @ORM\Id
      * @ORM\Column(type="uuid")
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -22,9 +21,6 @@ class GuestBook extends AbstractEntity
      */
     protected Uuid $uuid;
 
-    /**
-     * @return Uuid
-     */
     public function getUuid(): Uuid
     {
         return $this->uuid;
@@ -36,8 +32,6 @@ class GuestBook extends AbstractEntity
     protected string $name = '';
 
     /**
-     * @param string $name
-     *
      * @return $this
      */
     public function setName(string $name)
@@ -49,22 +43,17 @@ class GuestBook extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getName(): string
     {
         return $this->name;
     }
 
     /**
-     * @ORM\Column(type="string", length=120, unique=true, options={"default": ""})
+     * @ORM\Column(type="string", length=120, options={"default": ""})
      */
     protected string $email = '';
 
     /**
-     * @param string $email
-     *
      * @throws \App\Domain\Exceptions\WrongEmailValueException
      *
      * @return $this
@@ -78,9 +67,6 @@ class GuestBook extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getEmail(): string
     {
         return $this->email;
@@ -92,8 +78,6 @@ class GuestBook extends AbstractEntity
     protected string $message = '';
 
     /**
-     * @param string $message
-     *
      * @return $this
      */
     public function setMessage(string $message)
@@ -103,9 +87,6 @@ class GuestBook extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getMessage(): string
     {
         return $this->message;
@@ -117,8 +98,6 @@ class GuestBook extends AbstractEntity
     protected string $response = '';
 
     /**
-     * @param string $response
-     *
      * @return $this
      */
     public function setResponse(string $response)
@@ -128,25 +107,18 @@ class GuestBook extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getResponse(): string
     {
         return $this->response;
     }
 
     /**
-     * @var string
-     *
      * @see \App\Domain\Types\GuestBookStatusType::LIST
      * @ORM\Column(type="GuestBookStatusType", options={"default": \App\Domain\Types\GuestBookStatusType::STATUS_WORK})
      */
     protected string $status = \App\Domain\Types\GuestBookStatusType::STATUS_WORK;
 
     /**
-     * @param string $status
-     *
      * @return $this
      */
     public function setStatus(string $status)
@@ -167,7 +139,6 @@ class GuestBook extends AbstractEntity
     }
 
     /**
-     * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     protected DateTime $date;

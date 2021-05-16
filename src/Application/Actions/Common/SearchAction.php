@@ -62,6 +62,7 @@ class SearchAction extends AbstractAction
                         $qb->andWhere('e.status = :status')->setParameter('status', CategoryStatusType::STATUS_WORK);
 
                         break;
+
                     case $type === 'catalog_product':
                         $qb->andWhere('e.status = :status')->setParameter('status', ProductStatusType::STATUS_WORK);
 
@@ -119,7 +120,7 @@ class SearchAction extends AbstractAction
     private function advanced(string $query)
     {
         if ($query && !$this->request->getParam('query_strong', $this->request->getParam('qs'))) {
-            $query = implode(' ', array_map(fn($word) => (mb_strlen($word) > 3 ? $word . '*' : $word), explode(' ', $query)));
+            $query = implode(' ', array_map(fn ($word) => (mb_strlen($word) > 3 ? $word . '*' : $word), explode(' ', $query)));
         }
         $limit = (int) $this->request->getParam('limit', $this->parameter('search_limit', 10));
 
@@ -139,7 +140,6 @@ class SearchAction extends AbstractAction
             foreach ($entities as $type => $service) {
                 if (!empty($search_by_index[$type])) {
                     /** @var AbstractService $service */
-
                     foreach ($service->read(['uuid' => $search_by_index[$type], 'limit' => $limit]) as $index => $item) {
                         $result[$type][$index] = array_intersect_key(
                             $item->toArray(),

@@ -13,7 +13,7 @@ on:
 
 env:
     ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-    DEFAULT_IMAGE_NAME: 0x12f/platform
+    DEFAULT_IMAGE_NAME: getwebspace/platform
 
 jobs:
     # Run tests.

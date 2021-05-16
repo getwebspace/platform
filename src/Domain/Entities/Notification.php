@@ -14,7 +14,6 @@ use Ramsey\Uuid\Uuid;
 class Notification extends AbstractEntity
 {
     /**
-     * @var Uuid
      * @ORM\Id
      * @ORM\Column(type="uuid")
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -22,9 +21,6 @@ class Notification extends AbstractEntity
      */
     protected Uuid $uuid;
 
-    /**
-     * @return Uuid
-     */
     public function getUuid(): Uuid
     {
         return $this->uuid;
@@ -48,9 +44,6 @@ class Notification extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return Uuid
-     */
     public function getUserUuid(): Uuid
     {
         return $this->user_uuid;
@@ -62,8 +55,6 @@ class Notification extends AbstractEntity
     protected string $title = '';
 
     /**
-     * @param string $title
-     *
      * @return $this
      */
     public function setTitle(string $title)
@@ -75,9 +66,6 @@ class Notification extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->title;
@@ -89,8 +77,6 @@ class Notification extends AbstractEntity
     protected string $message = '';
 
     /**
-     * @param string $message
-     *
      * @return $this
      */
     public function setMessage(string $message)
@@ -100,23 +86,17 @@ class Notification extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getMessage(): string
     {
         return $this->message;
     }
 
     /**
-     * @var array
      * @ORM\Column(type="array")
      */
     protected array $params = [];
 
     /**
-     * @param array $params
-     *
      * @return $this
      */
     public function setParams(array $params)
@@ -126,16 +106,12 @@ class Notification extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getParams(): array
     {
         return $this->params;
     }
 
     /**
-     * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     protected DateTime $date;

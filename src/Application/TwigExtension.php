@@ -3,7 +3,7 @@
 namespace App\Application;
 
 use App\Domain\AbstractExtension;
-use App\Domain\Service\Catalog\CategoryService as CatalogCatalogService;
+use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\File\FileService;
@@ -207,6 +207,7 @@ class TwigExtension extends AbstractExtension
      * old debug function
      *
      * @deprecated
+     * @tracySkipLocation
      *
      * @param mixed ...$args
      */
@@ -231,14 +232,12 @@ class TwigExtension extends AbstractExtension
      * Date format function
      *
      * @param DateTime|string $obj
-     * @param null|string     $format
-     * @param string          $timezone
      *
      * @throws Exception
      *
      * @return string
      */
-    public function df($obj = 'now', $format = null, $timezone = '')
+    public function df($obj = 'now', string $format = null, string $timezone = '')
     {
         if (is_string($obj) || is_numeric($obj)) {
             $obj = new DateTime($obj);
@@ -249,8 +248,8 @@ class TwigExtension extends AbstractExtension
         }
 
         return $obj
-            ->setTimezone(new DateTimeZone($timezone ? $timezone : $this->parameter('common_timezone', 'UTC')))
-            ->format($format ? $format : $this->parameter('common_date_format', 'j-m-Y, H:i'));
+            ->setTimezone(new DateTimeZone($timezone ?: $this->parameter('common_timezone', 'UTC')))
+            ->format($format ?: $this->parameter('common_date_format', 'j-m-Y, H:i'));
     }
 
     public function collect(array $array = [])
@@ -407,6 +406,7 @@ class TwigExtension extends AbstractExtension
                             }
 
                             break;
+
                         case 'category':
                             if (is_object($value) && is_a($value, \App\Domain\Entities\Publication\Category::class)) {
                                 $criteria['category'][] = $value->getUuid();
@@ -417,6 +417,7 @@ class TwigExtension extends AbstractExtension
                             }
 
                             break;
+
                         case 'address':
                             $criteria['address'][] = $value;
                     }
@@ -461,7 +462,7 @@ class TwigExtension extends AbstractExtension
                     'offset' => $offset,
                 ])
                 ->map(function ($model) {
-                    /** @var $model \App\Domain\Entities\GuestBook */
+                    /** @var \App\Domain\Entities\GuestBook $model */
                     $email = explode('@', $model->getEmail());
                     $name = implode('@', array_slice($email, 0, count($email) - 1));
                     $len = (int) floor(mb_strlen($name) / 2);
@@ -479,7 +480,7 @@ class TwigExtension extends AbstractExtension
 
     // catalog functions
 
-    // получение списка категорий товаров
+    // fetch categories list
     public function catalog_category()
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_category');
@@ -487,7 +488,7 @@ class TwigExtension extends AbstractExtension
         static $buf;
 
         if (!$buf) {
-            $catalogCategoryService = CatalogCatalogService::getWithContainer($this->container);
+            $catalogCategoryService = CatalogCategoryService::getWithContainer($this->container);
             $buf = $catalogCategoryService->read([
                 'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
             ]);

@@ -24,12 +24,8 @@ class TaskService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws MissingTitleValueException
      * @throws MissingActionValueException
-     *
-     * @return Task
      */
     public function create(array $data = []): Task
     {
@@ -51,7 +47,7 @@ class TaskService extends AbstractService
             throw new MissingActionValueException();
         }
 
-        $task = (new Task)
+        $task = (new Task())
             ->setTitle($data['title'])
             ->setAction($data['action'])
             ->setProgress($data['progress'])
@@ -67,8 +63,6 @@ class TaskService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws TaskNotFoundException
      *
      * @return Collection|Task
@@ -115,11 +109,8 @@ class TaskService extends AbstractService
 
     /**
      * @param string|Task|Uuid $entity
-     * @param array            $data
      *
      * @throws TaskNotFoundException
-     *
-     * @return Task
      */
     public function update($entity, array $data = []): Task
     {
@@ -179,8 +170,6 @@ class TaskService extends AbstractService
      * @param string|Task|Uuid $entity
      *
      * @throws TaskNotFoundException
-     *
-     * @return bool
      */
     public function delete($entity): bool
     {

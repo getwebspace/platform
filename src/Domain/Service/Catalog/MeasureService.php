@@ -24,12 +24,8 @@ class MeasureService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws TitleAlreadyExistsException
      * @throws MissingTitleValueException
-     *
-     * @return Measure
      */
     public function create(array $data = []): Measure
     {
@@ -47,7 +43,7 @@ class MeasureService extends AbstractService
             throw new MissingTitleValueException();
         }
 
-        $measure = (new Measure)
+        $measure = (new Measure())
             ->setTitle($data['title'])
             ->setContraction($data['contraction'])
             ->setValue($data['value']);
@@ -59,8 +55,6 @@ class MeasureService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws MeasureNotFoundException
      *
      * @return Collection|Measure
@@ -113,12 +107,9 @@ class MeasureService extends AbstractService
 
     /**
      * @param Measure|string|Uuid $entity
-     * @param array               $data
      *
      * @throws TitleAlreadyExistsException
      * @throws MeasureNotFoundException
-     *
-     * @return Measure
      */
     public function update($entity, array $data = []): Measure
     {
@@ -168,8 +159,6 @@ class MeasureService extends AbstractService
      * @param Measure|string|Uuid $entity
      *
      * @throws MeasureNotFoundException
-     *
-     * @return bool
      */
     public function delete($entity): bool
     {

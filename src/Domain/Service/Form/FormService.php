@@ -25,13 +25,9 @@ class FormService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws TitleAlreadyExistsException
      * @throws MissingTitleValueException
      * @throws AddressAlreadyExistsException
-     *
-     * @return Form
      */
     public function create(array $data = []): Form
     {
@@ -55,7 +51,7 @@ class FormService extends AbstractService
             throw new AddressAlreadyExistsException();
         }
 
-        $form = (new Form)
+        $form = (new Form())
             ->setTitle($data['title'])
             ->setAddress($data['address'])
             ->setTemplate($data['template'])
@@ -70,8 +66,6 @@ class FormService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws FormNotFoundException
      *
      * @return Collection|Form
@@ -128,13 +122,10 @@ class FormService extends AbstractService
 
     /**
      * @param Form|string|Uuid $entity
-     * @param array            $data
      *
      * @throws TitleAlreadyExistsException
      * @throws AddressAlreadyExistsException
      * @throws FormNotFoundException
-     *
-     * @return Form
      */
     public function update($entity, array $data = []): Form
     {
@@ -205,8 +196,6 @@ class FormService extends AbstractService
      * @param Form|string|Uuid $entity
      *
      * @throws FormNotFoundException
-     *
-     * @return bool
      */
     public function delete($entity): bool
     {

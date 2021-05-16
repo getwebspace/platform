@@ -6,19 +6,11 @@ class Search
 {
     public const CACHE_FILE = CACHE_DIR . '/search_idx';
 
-    /**
-     * @return bool
-     */
     public static function isPossible(): bool
     {
         return file_exists(self::CACHE_FILE);
     }
 
-    /**
-     * @param string $query
-     *
-     * @return array
-     */
     public static function search(string $query): array
     {
         $query = static::getIndexedText($query);
@@ -28,7 +20,7 @@ class Search
         $results = [];
 
         // sort words
-        usort($query_words, fn($word) => str_start_with($word, ['-', '+']) ? 1 : -1);
+        usort($query_words, fn ($word) => str_start_with($word, ['-', '+']) ? 1 : -1);
 
         foreach ($index as $line) {
             $wordCount = 0;
@@ -48,7 +40,7 @@ class Search
                     $search = str_replace('+', '', $search);
 
                     if (str_start_with($word, '+')) {
-                        $mustNtFound++;
+                        ++$mustNtFound;
                     }
                 }
 
@@ -62,7 +54,7 @@ class Search
                 }
 
                 if (mb_stristr($line, $search)) {
-                    $wordCount++;
+                    ++$wordCount;
                     $wordCount = $wordCount * $mustNtFound;
                 }
             }
@@ -79,8 +71,6 @@ class Search
     /**
      * @param array|string $strings
      * @param false        $indexing
-     *
-     * @return string
      */
     public static function getIndexedText($strings, $indexing = false): string
     {

@@ -17,7 +17,6 @@ class Publication extends AbstractEntity
     use FileTrait;
 
     /**
-     * @var Uuid
      * @ORM\Id
      * @ORM\Column(type="uuid")
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -25,23 +24,51 @@ class Publication extends AbstractEntity
      */
     protected Uuid $uuid;
 
-    /**
-     * @return Uuid
-     */
     public function getUuid(): Uuid
     {
         return $this->uuid;
     }
 
     /**
-     * @var string
+     * @ORM\Column(type="uuid", nullable=true, options={"default": null})
+     */
+    protected ?Uuid $user_uuid;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\User")
+     * @ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid")
+     */
+    protected ?User $user = null;
+
+    /**
+     * @param string|User $user
+     *
+     * @return $this
+     */
+    public function setUser($user)
+    {
+        if (is_a($user, User::class)) {
+            $this->user_uuid = $user->getUuid();
+            $this->user = $user;
+        } else {
+            $this->user_uuid = null;
+            $this->user = null;
+        }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    /**
      * @ORM\Column(type="string", length=1000, unique=true, options={"default": ""})
      */
     protected string $address = '';
 
     /**
-     * @param string $address
-     *
      * @return $this
      */
     public function setAddress(string $address)
@@ -53,9 +80,6 @@ class Publication extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAddress(): string
     {
         return $this->address;
@@ -67,8 +91,6 @@ class Publication extends AbstractEntity
     protected string $title = '';
 
     /**
-     * @param string $title
-     *
      * @return $this
      */
     public function setTitle(string $title)
@@ -80,9 +102,6 @@ class Publication extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->title;
@@ -115,7 +134,6 @@ class Publication extends AbstractEntity
     }
 
     /**
-     * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     protected DateTime $date;
@@ -143,7 +161,6 @@ class Publication extends AbstractEntity
     }
 
     /**
-     * @var array
      * @ORM\Column(type="array")
      */
     protected array $content = [
@@ -152,8 +169,6 @@ class Publication extends AbstractEntity
     ];
 
     /**
-     * @param array $data
-     *
      * @return $this
      */
     public function setContent(array $data)
@@ -172,16 +187,12 @@ class Publication extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getContent(): array
     {
         return $this->content;
     }
 
     /**
-     * @var array
      * @ORM\Column(type="array")
      */
     protected array $poll = [
@@ -190,7 +201,6 @@ class Publication extends AbstractEntity
     ];
 
     /**
-     * @var array
      * @ORM\Column(type="array")
      */
     protected array $meta = [
@@ -200,8 +210,6 @@ class Publication extends AbstractEntity
     ];
 
     /**
-     * @param array $data
-     *
      * @return $this
      */
     public function setMeta(array $data)
@@ -222,9 +230,6 @@ class Publication extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getMeta(): array
     {
         return $this->meta;

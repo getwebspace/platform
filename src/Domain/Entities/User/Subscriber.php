@@ -15,7 +15,6 @@ use Ramsey\Uuid\Uuid;
 class Subscriber extends AbstractEntity
 {
     /**
-     * @var Uuid
      * @ORM\Id
      * @ORM\Column(type="uuid")
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -23,23 +22,17 @@ class Subscriber extends AbstractEntity
      */
     protected Uuid $uuid;
 
-    /**
-     * @return Uuid
-     */
     public function getUuid(): Uuid
     {
         return $this->uuid;
     }
 
     /**
-     * @var string
      * @ORM\Column(type="string", length=120, unique=true, options={"default": ""})
      */
     protected string $email = '';
 
     /**
-     * @param string $email
-     *
      * @throws \App\Domain\Exceptions\WrongEmailValueException
      *
      * @return $this
@@ -53,16 +46,12 @@ class Subscriber extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getEmail(): string
     {
         return $this->email;
     }
 
     /**
-     * @var DateTime
      * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
      */
     protected DateTime $date;

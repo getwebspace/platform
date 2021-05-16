@@ -8,6 +8,7 @@ return [
     App\Domain\Types\Catalog\AttributeTypeType::NAME => App\Domain\Types\Catalog\AttributeTypeType::class,
     App\Domain\Types\Catalog\CategoryStatusType::NAME => App\Domain\Types\Catalog\CategoryStatusType::class,
     App\Domain\Types\Catalog\ProductStatusType::NAME => App\Domain\Types\Catalog\ProductStatusType::class,
+    App\Domain\Types\Catalog\ProductTypeType::NAME => App\Domain\Types\Catalog\ProductTypeType::class,
     App\Domain\Types\Catalog\OrderStatusType::NAME => App\Domain\Types\Catalog\OrderStatusType::class,
     App\Domain\Types\FileItemType::NAME => App\Domain\Types\FileItemType::class,
     App\Domain\Types\GuestBookStatusType::NAME => App\Domain\Types\GuestBookStatusType::class,

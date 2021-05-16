@@ -12,8 +12,6 @@ class ListAction extends CatalogAction
     /**
      * @throws \Doctrine\DBAL\DBALException
      * @throws \App\Domain\Exceptions\HttpBadRequestException
-     *
-     * @return Response
      */
     protected function action(): \Slim\Http\Response
     {
@@ -52,14 +50,11 @@ class ListAction extends CatalogAction
     }
 
     /**
-     * @param array      $params
-     * @param Collection $categories
-     *
      * @throws \App\Domain\Exceptions\HttpBadRequestException
      *
      * @return Response
      */
-    protected function prepareMain(array $params, $categories): ?Response
+    protected function prepareMain(array $params, Collection $categories): ?Response
     {
         if ($params['address'] === '') {
             $pagination = $this->parameter('catalog_category_pagination', 10);
@@ -72,7 +67,7 @@ class ListAction extends CatalogAction
 
             $products = collect($query->select('p')->getQuery()->getResult());
 
-            for ($i = 1; $i <= 5; $i++) {
+            for ($i = 1; $i <= 5; ++$i) {
                 if (($field = $this->request->getParam('field' . $i, false)) !== false) {
                     $params['field'][$i] = $field;
                     $query
@@ -84,9 +79,9 @@ class ListAction extends CatalogAction
             foreach ($this->request->getParams() as $key => $value) {
                 if (
                     (
-                        !in_array($key, ['price', 'country', 'manufacturer', 'order', 'direction'], true) &&
-                        !str_start_with($key, 'field') &&
-                        $key !== 'format' // kostil
+                        !in_array($key, ['price', 'country', 'manufacturer', 'order', 'direction'], true)
+                        && !str_start_with($key, 'field')
+                        && $key !== 'format' // kostil
                     ) && $value
                 ) {
                     $attributes[$key] = $value;
@@ -190,9 +185,6 @@ class ListAction extends CatalogAction
     }
 
     /**
-     * @param array      $params
-     * @param Collection $categories
-     *
      * @throws \App\Domain\Exceptions\HttpBadRequestException
      *
      * @return Response
@@ -217,7 +209,7 @@ class ListAction extends CatalogAction
 
             $products = collect($query->select('p')->getQuery()->getResult());
 
-            for ($i = 1; $i <= 5; $i++) {
+            for ($i = 1; $i <= 5; ++$i) {
                 if (($field = $this->request->getParam('field' . $i, false)) !== false) {
                     $params['field'][$i] = $field;
                     $query
@@ -229,9 +221,9 @@ class ListAction extends CatalogAction
             foreach ($this->request->getParams() as $key => $value) {
                 if (
                     (
-                        !in_array($key, ['price', 'country', 'manufacturer', 'order', 'direction'], true) &&
-                        !str_start_with($key, 'field') &&
-                        $key !== 'format' // kostil
+                        !in_array($key, ['price', 'country', 'manufacturer', 'order', 'direction'], true)
+                        && !str_start_with($key, 'field')
+                        && $key !== 'format' // kostil
                     ) && $value
                 ) {
                     $attributes[$key] = $value;
@@ -343,9 +335,6 @@ class ListAction extends CatalogAction
     }
 
     /**
-     * @param array      $params
-     * @param Collection $categories
-     *
      * @throws \App\Domain\Exceptions\HttpBadRequestException
      *
      * @return Response
@@ -374,9 +363,6 @@ class ListAction extends CatalogAction
         return null;
     }
 
-    /**
-     * @return array
-     */
     protected function parsePath(): array
     {
         $pathCatalog = $this->parameter('catalog_address', 'catalog');

@@ -13,9 +13,6 @@ abstract class AbstractService extends AbstractComponent
      */
     protected $service;
 
-    /**
-     * @var array
-     */
     protected static array $default_read = [
         'order' => [],
         'limit' => null,
@@ -44,8 +41,6 @@ abstract class AbstractService extends AbstractComponent
     /**
      * @param string $alias
      * @param string $indexBy the index for the from
-     *
-     * @return \Doctrine\ORM\QueryBuilder
      */
     public function createQueryBuilder($alias, $indexBy = null): \Doctrine\ORM\QueryBuilder
     {
@@ -53,11 +48,7 @@ abstract class AbstractService extends AbstractComponent
     }
 
     /**
-     * @param string $sql
-     *
      * @throws \Doctrine\DBAL\Exception
-     *
-     * @return \Doctrine\DBAL\Statement
      */
     public function query(string $sql): \Doctrine\DBAL\Statement
     {
@@ -78,12 +69,8 @@ abstract class AbstractService extends AbstractComponent
     abstract public function delete($entity);
 
     /**
-     * @param AbstractEntity $entity
-     *
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
-     *
-     * @return AbstractEntity
      */
     public function write(AbstractEntity $entity): AbstractEntity
     {

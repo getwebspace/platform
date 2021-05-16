@@ -30,6 +30,7 @@
                                 <tr>
                                     <th>Заголовок</th>
                                     <th width="15%">Категория</th>
+                                    <th width="15%">Автор</th>
                                     <th width="15%">Дата публикации</th>
                                     <th width="15%" class="text-center no-sorting"></th>
                                 </tr>
@@ -40,6 +41,7 @@
                                     <tr>
                                         <td>{{ item.title }}</td>
                                         <td>{{ categories.where('uuid', item.category).first().title ?? '&mdash;' }}</td>
+                                        <td>{{ item.user.getName('short') }}</td>
                                         <td data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i') }}</td>
                                         <td class="text-center">
                                             <form action="/cup/publication/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить публикацию?');">

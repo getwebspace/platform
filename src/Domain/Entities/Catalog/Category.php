@@ -26,7 +26,6 @@ class Category extends AbstractEntity
     use FileTrait;
 
     /**
-     * @var Uuid
      * @ORM\Id
      * @ORM\Column(type="uuid")
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -34,9 +33,6 @@ class Category extends AbstractEntity
      */
     protected Uuid $uuid;
 
-    /**
-     * @return Uuid
-     */
     public function getUuid(): Uuid
     {
         return $this->uuid;
@@ -60,9 +56,6 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return Uuid
-     */
     public function getParent(): Uuid
     {
         return $this->parent;
@@ -74,8 +67,6 @@ class Category extends AbstractEntity
     protected string $title = '';
 
     /**
-     * @param string $title
-     *
      * @return $this
      */
     public function setTitle(string $title)
@@ -87,23 +78,17 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->title;
     }
 
     /**
-     * @var string
      * @ORM\Column(type="text", length=10000, options={"default": ""})
      */
     protected string $description = '';
 
     /**
-     * @param string $description
-     *
      * @return $this
      */
     public function setDescription(string $description)
@@ -115,9 +100,6 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getDescription(): string
     {
         return $this->description;
@@ -129,8 +111,6 @@ class Category extends AbstractEntity
     protected string $address = '';
 
     /**
-     * @param string $address
-     *
      * @return $this
      */
     public function setAddress(string $address)
@@ -142,9 +122,6 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAddress(): string
     {
         return $this->address;
@@ -155,9 +132,6 @@ class Category extends AbstractEntity
      */
     protected string $field1 = '';
 
-    /**
-     * @param string $field1
-     */
     public function setField1(string $field1)
     {
         if ($this->checkStrLenMax($field1, 255)) {
@@ -167,9 +141,6 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getField1(): string
     {
         return $this->field1;
@@ -180,9 +151,6 @@ class Category extends AbstractEntity
      */
     protected string $field2 = '';
 
-    /**
-     * @param string $field2
-     */
     public function setField2(string $field2)
     {
         if ($this->checkStrLenMax($field2, 255)) {
@@ -192,9 +160,6 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getField2(): string
     {
         return $this->field2;
@@ -205,9 +170,6 @@ class Category extends AbstractEntity
      */
     protected string $field3 = '';
 
-    /**
-     * @param string $field3
-     */
     public function setField3(string $field3)
     {
         if ($this->checkStrLenMax($field3, 255)) {
@@ -217,16 +179,12 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getField3(): string
     {
         return $this->field3;
     }
 
     /**
-     * @var array
      * @ORM\Column(type="array")
      */
     protected array $product = [
@@ -238,8 +196,6 @@ class Category extends AbstractEntity
     ];
 
     /**
-     * @param array $data
-     *
      * @return $this
      */
     public function setProduct(array $data)
@@ -264,9 +220,6 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getProduct(): array
     {
         return $this->product;
@@ -278,8 +231,6 @@ class Category extends AbstractEntity
     protected int $pagination = 10;
 
     /**
-     * @param int $pagination
-     *
      * @return $this
      */
     public function setPagination(int $pagination)
@@ -289,9 +240,6 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getPagination(): int
     {
         return $this->pagination;
@@ -314,9 +262,6 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function getChildren(): bool
     {
         return $this->children;
@@ -328,8 +273,6 @@ class Category extends AbstractEntity
     protected int $order = 1;
 
     /**
-     * @param int $order
-     *
      * @return Category
      */
     public function setOrder(int $order)
@@ -339,25 +282,18 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getOrder(): int
     {
         return $this->order;
     }
 
     /**
-     * @var string
-     *
      * @see \App\Domain\Types\UserStatusType::LIST
      * @ORM\Column(type="CatalogCategoryStatusType", options={"default": \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK})
      */
     protected string $status = \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK;
 
     /**
-     * @param string $status
-     *
      * @return $this
      */
     public function setStatus(string $status)
@@ -378,7 +314,6 @@ class Category extends AbstractEntity
     }
 
     /**
-     * @var array
      * @ORM\Column(type="array")
      */
     protected array $sort = [
@@ -387,8 +322,6 @@ class Category extends AbstractEntity
     ];
 
     /**
-     * @param array $data
-     *
      * @return $this
      */
     public function setSort(array $data)
@@ -399,24 +332,22 @@ class Category extends AbstractEntity
         ];
         $data = array_merge($default, $data);
 
-        $this->sort = [
-            'by' => $data['by'],
-            'direction' => $data['direction'],
-        ];
+        if (in_array($data['by'], \App\Domain\References\Catalog::ORDER_BY, true)) {
+            $this->sort['by'] = $data['by'];
+        }
+        if (in_array($data['direction'], \App\Domain\References\Catalog::ORDER_DIRECTION, true)) {
+            $this->sort['direction'] = $data['direction'];
+        }
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getSort(): array
     {
         return $this->sort;
     }
 
     /**
-     * @var array
      * @ORM\Column(type="array")
      */
     protected array $meta = [
@@ -426,8 +357,6 @@ class Category extends AbstractEntity
     ];
 
     /**
-     * @param array $data
-     *
      * @return $this
      */
     public function setMeta(array $data)
@@ -448,9 +377,6 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getMeta(): array
     {
         return $this->meta;
@@ -465,8 +391,6 @@ class Category extends AbstractEntity
     ];
 
     /**
-     * @param array $data
-     *
      * @return $this
      */
     public function setTemplate(array $data)
@@ -485,9 +409,6 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getTemplate(): array
     {
         return $this->template;
@@ -499,8 +420,6 @@ class Category extends AbstractEntity
     protected string $external_id = '';
 
     /**
-     * @param string $external_id
-     *
      * @return $this
      */
     public function setExternalId(string $external_id)
@@ -512,9 +431,6 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getExternalId(): string
     {
         return $this->external_id;
@@ -526,8 +442,6 @@ class Category extends AbstractEntity
     protected string $export = 'manual';
 
     /**
-     * @param string $export
-     *
      * @return Category
      */
     public function setExport(string $export)
@@ -537,9 +451,6 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getExport(): string
     {
         return $this->export;
@@ -603,8 +514,6 @@ class Category extends AbstractEntity
     protected $files = [];
 
     /**
-     * @param Collection $categories
-     *
      * @return Collection
      */
     public function getNested(Collection &$categories)

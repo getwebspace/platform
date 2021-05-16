@@ -15,7 +15,6 @@ use RuntimeException;
 class ProductAttribute extends AbstractEntity
 {
     /**
-     * @var Uuid
      * @ORM\Id
      * @ORM\Column(type="uuid")
      * @ORM\GeneratedValue(strategy="CUSTOM")
@@ -23,9 +22,6 @@ class ProductAttribute extends AbstractEntity
      */
     protected Uuid $uuid;
 
-    /**
-     * @return Uuid
-     */
     public function getUuid(): Uuid
     {
         return $this->uuid;
@@ -37,15 +33,12 @@ class ProductAttribute extends AbstractEntity
     protected Uuid $product_uuid;
 
     /**
-     * @var Product
      * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Catalog\Product")
      * @ORM\JoinColumn(name="product_uuid", referencedColumnName="uuid")
      */
     protected Product $product;
 
     /**
-     * @param Product $product
-     *
      * @return $this
      */
     public function setProduct(Product $product)
@@ -58,9 +51,6 @@ class ProductAttribute extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return Product
-     */
     public function getProduct(): Product
     {
         return $this->product;
@@ -72,15 +62,12 @@ class ProductAttribute extends AbstractEntity
     protected Uuid $attribute_uuid;
 
     /**
-     * @var Attribute
      * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Catalog\Attribute")
      * @ORM\JoinColumn(name="attribute_uuid", referencedColumnName="uuid")
      */
     protected Attribute $attribute;
 
     /**
-     * @param Attribute $attribute
-     *
      * @return $this
      */
     public function setAttribute(Attribute $attribute)
@@ -93,48 +80,27 @@ class ProductAttribute extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return Attribute
-     */
     public function getAttribute(): Attribute
     {
         return $this->attribute;
     }
 
-    /**
-     * @var string
-     */
     protected string $title = '';
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @var string
-     */
     protected string $type = '';
 
-    /**
-     * @return string
-     */
     public function getType(): string
     {
         return $this->type;
     }
 
-    /**
-     * @var string
-     */
     protected string $address = '';
 
-    /**
-     * @return string
-     */
     public function getAddress(): string
     {
         return $this->address;
@@ -193,8 +159,6 @@ class ProductAttribute extends AbstractEntity
 
     /**
      * Return other values current attribute
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getOtherValues(): \Illuminate\Support\Collection
     {
@@ -207,8 +171,6 @@ class ProductAttribute extends AbstractEntity
 
     /**
      * Return other Products with current attribute value
-     *
-     * @return \Illuminate\Support\Collection
      */
     public function getOtherProducts(): \Illuminate\Support\Collection
     {

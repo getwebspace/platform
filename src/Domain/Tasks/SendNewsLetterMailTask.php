@@ -45,7 +45,7 @@ class SendNewsLetterMailTask extends AbstractTask
             $userService = UserService::getWithContainer($this->container);
             $userSubscriberService = UserSubscriberService::getWithContainer($this->container);
 
-            // список адресов
+            // address list select
             switch ($args['type']) {
                 case 'all':
                     $list = collect()
@@ -72,7 +72,7 @@ class SendNewsLetterMailTask extends AbstractTask
                 $perPage = 5;
                 $count = ceil($list->count() / $perPage);
 
-                for ($i = 0; $i < $count; $i++) {
+                for ($i = 0; $i < $count; ++$i) {
                     foreach ($list->forPage($i, $perPage) as $email) {
                         $mail = Mail::send(array_merge($args, ['to' => $email]));
 

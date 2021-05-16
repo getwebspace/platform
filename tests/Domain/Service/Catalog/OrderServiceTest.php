@@ -10,6 +10,10 @@ use Doctrine\ORM\EntityManager;
 use Illuminate\Support\Collection;
 use tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class OrderServiceTest extends TestCase
 {
     /**

@@ -15,7 +15,7 @@ class OrderStatusType extends AbstractEnumType
     public const STATUS_COMPLETE = 'complete';
     public const STATUS_CANCEL = 'cancel';
 
-    public const LIST          = [
+    public const LIST = [
         self::STATUS_NEW,
         self::STATUS_PROCESS,
         self::STATUS_PAYMENT,

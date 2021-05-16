@@ -58,8 +58,6 @@ class ProductAttributeService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @return ProductAttribute
      */
     public function create(array $data = [])
@@ -71,7 +69,7 @@ class ProductAttributeService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        $productAttribute = (new ProductAttribute)
+        $productAttribute = (new ProductAttribute())
             ->setProduct($data['product'])
             ->setAttribute($data['attribute'])
             ->setValue($data['value']);
@@ -89,11 +87,8 @@ class ProductAttributeService extends AbstractService
 
     /**
      * @param       $entity
-     * @param array $data
      *
      * @throws AttributeNotFoundException
-     *
-     * @return ProductAttribute
      */
     public function update($entity, array $data = []): ProductAttribute
     {

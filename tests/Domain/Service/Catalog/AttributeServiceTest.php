@@ -12,6 +12,10 @@ use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
 use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class AttributeServiceTest extends TestCase
 {
     /**
@@ -70,7 +74,7 @@ class AttributeServiceTest extends TestCase
             'address' => 'some-custom-address',
         ];
 
-        $attribute = (new Attribute)
+        $attribute = (new Attribute())
             ->setTitle($data['title'])
             ->setAddress($data['address']);
 
@@ -89,7 +93,7 @@ class AttributeServiceTest extends TestCase
             'address' => 'some-custom-address',
         ];
 
-        $attribute = (new Attribute)
+        $attribute = (new Attribute())
             ->setTitle($data['title'] . '-miss')
             ->setAddress($data['address']);
 

@@ -25,13 +25,9 @@ class GuestBookService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws MissingNameValueException
      * @throws MissingEmailValueException
      * @throws MissingMessageValueException
-     *
-     * @return GuestBook
      */
     public function create(array $data = []): GuestBook
     {
@@ -55,7 +51,7 @@ class GuestBookService extends AbstractService
             throw new MissingMessageValueException();
         }
 
-        $file = (new GuestBook)
+        $file = (new GuestBook())
             ->setName($data['name'])
             ->setEmail($data['email'])
             ->setMessage($data['message'])
@@ -70,8 +66,6 @@ class GuestBookService extends AbstractService
     }
 
     /**
-     * @param array $data
-     *
      * @throws EntryNotFoundException
      *
      * @return Collection|GuestBook
@@ -118,11 +112,8 @@ class GuestBookService extends AbstractService
 
     /**
      * @param GuestBook|string|Uuid $entity
-     * @param array                 $data
      *
      * @throws EntryNotFoundException
-     *
-     * @return GuestBook
      */
     public function update($entity, array $data = []): GuestBook
     {
@@ -178,8 +169,6 @@ class GuestBookService extends AbstractService
      * @param GuestBook|string|Uuid $entity
      *
      * @throws EntryNotFoundException
-     *
-     * @return bool
      */
     public function delete($entity): bool
     {

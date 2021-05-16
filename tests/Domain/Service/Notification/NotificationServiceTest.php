@@ -12,6 +12,10 @@ use App\Domain\Service\Notification\NotificationService;
 use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class NotificationServiceTest extends TestCase
 {
     /**

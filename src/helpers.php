@@ -8,11 +8,7 @@ if (!function_exists('array_add')) {
     /**
      * Add an element to an array using "dot" notation if it doesn't exist.
      *
-     * @param array  $array
-     * @param string $key
      * @param mixed  $value
-     *
-     * @return array
      */
     function array_add(array $array, string $key, $value): array
     {
@@ -23,10 +19,6 @@ if (!function_exists('array_add')) {
 if (!function_exists('array_collapse')) {
     /**
      * Collapse an array of arrays into a single array.
-     *
-     * @param array $array
-     *
-     * @return array
      */
     function array_collapse(array $array): array
     {
@@ -37,10 +29,6 @@ if (!function_exists('array_collapse')) {
 if (!function_exists('array_divide')) {
     /**
      * Divide an array into two arrays. One with keys and the other with values.
-     *
-     * @param array $array
-     *
-     * @return array
      */
     function array_divide(array $array): array
     {
@@ -52,10 +40,7 @@ if (!function_exists('array_dot')) {
     /**
      * Flatten a multi-dimensional associative array with dots.
      *
-     * @param array  $array
      * @param string $prepend
-     *
-     * @return array
      */
     function array_dot(array $array, $prepend = ''): array
     {
@@ -67,10 +52,7 @@ if (!function_exists('array_except')) {
     /**
      * Get all of the given array except for a specified array of keys.
      *
-     * @param array        $array
      * @param array|string $keys
-     *
-     * @return array
      */
     function array_except(array $array, $keys): array
     {
@@ -82,8 +64,6 @@ if (!function_exists('array_first')) {
     /**
      * Return the first element in an array passing a given truth test.
      *
-     * @param array         $array
-     * @param null|callable $callback
      * @param mixed         $default
      *
      * @return mixed
@@ -98,10 +78,7 @@ if (!function_exists('array_flatten')) {
     /**
      * Flatten a multi-dimensional array into a single level.
      *
-     * @param array $array
      * @param int   $depth
-     *
-     * @return array
      */
     function array_flatten(array $array, $depth = INF): array
     {
@@ -113,7 +90,6 @@ if (!function_exists('array_forget')) {
     /**
      * Remove one or many array items from a given array using "dot" notation.
      *
-     * @param array        $array
      * @param array|string $keys
      */
     function array_forget(array &$array, $keys): void
@@ -127,7 +103,6 @@ if (!function_exists('array_get')) {
      * Get an item from an array using "dot" notation.
      *
      * @param array|ArrayAccess $array
-     * @param string            $key
      * @param mixed             $default
      *
      * @return mixed
@@ -144,8 +119,6 @@ if (!function_exists('array_has')) {
      *
      * @param array|ArrayAccess $array
      * @param array|string      $keys
-     *
-     * @return bool
      */
     function array_has($array, $keys): bool
     {
@@ -157,8 +130,6 @@ if (!function_exists('array_last')) {
     /**
      * Return the last element in an array passing a given truth test.
      *
-     * @param array         $array
-     * @param null|callable $callback
      * @param mixed         $default
      *
      * @return mixed
@@ -173,10 +144,7 @@ if (!function_exists('array_only')) {
     /**
      * Get a subset of the items from the given array.
      *
-     * @param array        $array
      * @param array|string $keys
-     *
-     * @return array
      */
     function array_only(array $array, $keys): array
     {
@@ -188,11 +156,8 @@ if (!function_exists('array_pluck')) {
     /**
      * Pluck an array of values from an array.
      *
-     * @param array             $array
      * @param array|string      $value
      * @param null|array|string $key
-     *
-     * @return array
      */
     function array_pluck(array $array, $value, $key = null): array
     {
@@ -204,11 +169,8 @@ if (!function_exists('array_prepend')) {
     /**
      * Push an item onto the beginning of an array.
      *
-     * @param array $array
      * @param mixed $value
      * @param mixed $key
-     *
-     * @return array
      */
     function array_prepend(array $array, $value, $key = null): array
     {
@@ -220,8 +182,6 @@ if (!function_exists('array_pull')) {
     /**
      * Get a value from the array, and remove it.
      *
-     * @param array  $array
-     * @param string $key
      * @param mixed  $default
      *
      * @return mixed
@@ -236,7 +196,6 @@ if (!function_exists('array_random')) {
     /**
      * Get a random value from an array.
      *
-     * @param array    $array
      * @param null|int $num
      *
      * @return mixed
@@ -253,11 +212,7 @@ if (!function_exists('array_set')) {
      *
      * If no key is given to the method, the entire array will be replaced.
      *
-     * @param array  $array
-     * @param string $key
      * @param mixed  $value
-     *
-     * @return array
      */
     function array_set(array &$array, string $key, $value): array
     {
@@ -269,10 +224,7 @@ if (!function_exists('array_sort')) {
     /**
      * Sort the array by the given callback or attribute name.
      *
-     * @param array                $array
      * @param null|callable|string $callback
-     *
-     * @return array
      */
     function array_sort(array $array, $callback = null): array
     {
@@ -283,10 +235,6 @@ if (!function_exists('array_sort')) {
 if (!function_exists('array_sort_recursive')) {
     /**
      * Recursively sort an array by keys and values.
-     *
-     * @param array $array
-     *
-     * @return array
      */
     function array_sort_recursive(array $array): array
     {
@@ -297,11 +245,6 @@ if (!function_exists('array_sort_recursive')) {
 if (!function_exists('array_where')) {
     /**
      * Filter the array using the given callback.
-     *
-     * @param array    $array
-     * @param callable $callback
-     *
-     * @return array
      */
     function array_where(array $array, callable $callback): array
     {
@@ -313,10 +256,7 @@ if (!function_exists('str_start_with')) {
     /**
      * Determine if a given string starts with a given substring.
      *
-     * @param string       $haystack
      * @param array|string $needles
-     *
-     * @return bool
      */
     function str_start_with(string $haystack, $needles): bool
     {
@@ -334,10 +274,7 @@ if (!function_exists('str_end_with')) {
     /**
      * Determine if a given string ends with a given substring.
      *
-     * @param string       $haystack
      * @param array|string $needles
-     *
-     * @return bool
      */
     function str_end_with(string $haystack, $needles): bool
     {
@@ -354,9 +291,6 @@ if (!function_exists('str_end_with')) {
 if (!function_exists('str_translate')) {
     /**
      * Transliterate a russian string
-     *
-     * @param string $input
-     * @param bool   $back
      *
      * @return array|string|string[]
      */
@@ -382,10 +316,6 @@ if (!function_exists('str_translate')) {
 if (!function_exists('str_mask_email')) {
     /**
      * Mask email
-     *
-     * @param string $email
-     *
-     * @return string
      */
     function str_mask_email(string $email): string
     {
@@ -406,8 +336,6 @@ if (!function_exists('blank')) {
      * Determine if the given value is "blank".
      *
      * @param mixed $value
-     *
-     * @return bool
      */
     function blank($value): bool
     {
@@ -433,8 +361,6 @@ if (!function_exists('from_service_to_array')) {
      * Helper for read from Service class and return always array
      *
      * @param AbstractEntity|Collection $object
-     *
-     * @return array
      */
     function from_service_to_array($object): array
     {

@@ -25,23 +25,17 @@ class Category extends AbstractEntity
      */
     protected $uuid;
 
-    /**
-     * @return Uuid
-     */
     public function getUuid(): Uuid
     {
         return $this->uuid;
     }
 
     /**
-     * @var string
      * @ORM\Column(type="string", length=1000, unique=true, options={"default": ""})
      */
     protected string $address = '';
 
     /**
-     * @param string $address
-     *
      * @return $this
      */
     public function setAddress(string $address)
@@ -53,17 +47,11 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getAddress(): string
     {
         return $this->address;
     }
 
-    /**
-     * @return string
-     */
     public function rss(): string
     {
         return implode('/', ['rss', $this->address]);
@@ -75,8 +63,6 @@ class Category extends AbstractEntity
     protected string $title = '';
 
     /**
-     * @param string $title
-     *
      * @return $this
      */
     public function setTitle(string $title)
@@ -88,23 +74,17 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->title;
     }
 
     /**
-     * @var string
      * @ORM\Column(type="text", length=10000, options={"default": ""})
      */
     protected string $description = '';
 
     /**
-     * @param string $description
-     *
      * @return $this
      */
     public function setDescription(string $description)
@@ -116,9 +96,6 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getDescription(): string
     {
         return $this->description;
@@ -142,9 +119,6 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getParent(): string
     {
         return $this->parent;
@@ -156,8 +130,6 @@ class Category extends AbstractEntity
     public int $pagination = 10;
 
     /**
-     * @param int $value
-     *
      * @return $this
      */
     public function setPagination(int $value)
@@ -167,9 +139,6 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return int
-     */
     public function getPagination(): int
     {
         return $this->pagination;
@@ -192,9 +161,6 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function getChildren(): bool
     {
         return $this->children;
@@ -217,16 +183,12 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function getPublic(): bool
     {
         return $this->public;
     }
 
     /**
-     * @var array
      * @ORM\Column(type="array")
      */
     protected array $sort = [
@@ -235,8 +197,6 @@ class Category extends AbstractEntity
     ];
 
     /**
-     * @param array $data
-     *
      * @return $this
      */
     public function setSort(array $data)
@@ -247,24 +207,22 @@ class Category extends AbstractEntity
         ];
         $data = array_merge($default, $data);
 
-        $this->sort = [
-            'by' => $data['by'],
-            'direction' => $data['direction'],
-        ];
+        if (in_array($data['by'], \App\Domain\References\Publication::ORDER_BY, true)) {
+            $this->sort['by'] = $data['by'];
+        }
+        if (in_array($data['direction'], \App\Domain\References\Publication::ORDER_DIRECTION, true)) {
+            $this->sort['direction'] = $data['direction'];
+        }
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getSort(): array
     {
         return $this->sort;
     }
 
     /**
-     * @var array
      * @ORM\Column(type="array")
      */
     protected array $meta = [
@@ -274,8 +232,6 @@ class Category extends AbstractEntity
     ];
 
     /**
-     * @param array $data
-     *
      * @return $this
      */
     public function setMeta(array $data)
@@ -296,16 +252,12 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getMeta(): array
     {
         return $this->meta;
     }
 
     /**
-     * @var array
      * @ORM\Column(type="array")
      */
     protected array $template = [
@@ -315,8 +267,6 @@ class Category extends AbstractEntity
     ];
 
     /**
-     * @param array $data
-     *
      * @return $this
      */
     public function setTemplate(array $data)
@@ -337,9 +287,6 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getTemplate(): array
     {
         return $this->template;
@@ -353,8 +300,6 @@ class Category extends AbstractEntity
     protected $files = [];
 
     /**
-     * @param Collection $categories
-     *
      * @return Collection
      */
     public function getNested(Collection $categories)

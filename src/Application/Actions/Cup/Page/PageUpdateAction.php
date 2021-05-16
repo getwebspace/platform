@@ -29,6 +29,7 @@ class PageUpdateAction extends PageAction
                         switch (true) {
                             case $this->request->getParam('save', 'exit') === 'exit':
                                 return $this->response->withRedirect('/cup/page');
+
                             default:
                                 return $this->response->withRedirect('/cup/page/' . $page->getUuid() . '/edit');
                         }

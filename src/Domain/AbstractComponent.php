@@ -10,26 +10,12 @@ use Psr\Log\LoggerInterface;
 
 abstract class AbstractComponent
 {
-    /**
-     * @var null|ContainerInterface
-     */
     protected ?ContainerInterface $container = null;
 
-    /**
-     * @var null|EntityManager
-     */
     protected ?EntityManager $entityManager = null;
 
-    /**
-     * @var null|LoggerInterface
-     */
     protected ?LoggerInterface $logger = null;
 
-    /**
-     * @param null|ContainerInterface $container
-     * @param null|EntityManager      $entityManager
-     * @param null|LoggerInterface    $logger
-     */
     public function __construct(ContainerInterface $container = null, EntityManager $entityManager = null, LoggerInterface $logger = null)
     {
         if ($container) {
@@ -61,6 +47,13 @@ abstract class AbstractComponent
         static $parameters;
 
         if (!$parameters) {
+            if (!$this->container) {
+                global $app;
+
+                if ($app) {
+                    $this->container = $app->getContainer();
+                }
+            }
             if ($this->container) {
                 \RunTracy\Helpers\Profiler\Profiler::start('parameters');
                 $parameters = ParameterService::getWithContainer($this->container)->read();

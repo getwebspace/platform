@@ -15,6 +15,10 @@ use App\Domain\Types\UserStatusType;
 use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class UserServiceTest extends TestCase
 {
     /**
@@ -136,7 +140,7 @@ class UserServiceTest extends TestCase
             'password' => $this->getFaker()->password,
         ];
 
-        $user = (new User)
+        $user = (new User())
             ->setUsername($data['username'])
             ->setPassword($data['password'])
             ->setRegister('now')->setChange('now');
@@ -156,7 +160,7 @@ class UserServiceTest extends TestCase
             'password' => $this->getFaker()->password,
         ];
 
-        $user = (new User)
+        $user = (new User())
             ->setEmail($data['email'])
             ->setPassword($data['password'])
             ->setRegister('now')->setChange('now');
@@ -176,7 +180,7 @@ class UserServiceTest extends TestCase
             'password' => $this->getFaker()->password,
         ];
 
-        $user = (new User)
+        $user = (new User())
             ->setPhone($data['phone'])
             ->setPassword($data['password'])
             ->setRegister('now')->setChange('now');

@@ -10,6 +10,10 @@ use App\Domain\Service\Parameter\ParameterService;
 use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
+/**
+ * @internal
+ * @coversNothing
+ */
 class ParameterServiceTest extends TestCase
 {
     /**
@@ -58,7 +62,7 @@ class ParameterServiceTest extends TestCase
             'value' => $this->getFaker()->text,
         ];
 
-        $parameter = (new Parameter)
+        $parameter = (new Parameter())
             ->setKey($data['key'])
             ->setValue($data['value']);
 

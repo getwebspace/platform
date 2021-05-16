@@ -139,6 +139,8 @@ $app
                             ->setName('cup:form:view:list');
                         $app->map(['get', 'post'], '/{data}', \App\Application\Actions\Cup\Form\Data\DataViewAction::class)
                             ->setName('cup:form:view:data');
+                        $app->map(['get', 'post'], '/{data}/preview', \App\Application\Actions\Cup\Form\Data\DataPreviewAction::class)
+                            ->setName('cup:form:view:preview');
                         $app->map(['get', 'post'], '/{data}/delete', \App\Application\Actions\Cup\Form\Data\DataDeleteAction::class)
                             ->setName('cup:form:view:delete');
                     });
@@ -294,7 +296,7 @@ $app
 
 // other PRIVATE section
 $app
-    ->group('', function (App $app) use ($container): void {
+    ->group('', function (App $app): void {
         $app
             ->map(['get', 'post'], '/search', \App\Application\Actions\Common\SearchAction::class)
             ->setName('common:search')
@@ -319,6 +321,22 @@ $app
         // forbidden
         $app->map(['get', 'post'], '/forbidden', \App\Application\Actions\Common\ForbiddenPageAction::class)
             ->setName('forbidden');
+
+        // publication
+        $app
+            ->group('', function (App $app) use ($container): void {
+                $publicationCategoryService = \App\Domain\Service\Publication\CategoryService::getWithContainer($container);
+
+                if (($categories = $publicationCategoryService->read()) !== null) {
+                    $categoryPath = $categories->pluck('address')->implode('|');
+
+                    // view categories and products
+                    $app
+                        ->get("/{category:{$categoryPath}}[/{args:.*}]", \App\Application\Actions\Common\Publication\ListAction::class)
+                        ->setName('common:publication:list')
+                        ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+                }
+            });
 
         // file
         $app
@@ -364,9 +382,9 @@ $app
         $app->get('/rss/{channel:.*}', \App\Application\Actions\Common\PublicationRSS::class)
             ->setName('common:rss');
 
-        // dynamic path handler
-        $app->get('/{args:.*}', \App\Application\Actions\Common\DynamicPageAction::class)
-            ->setName('common:dynamic');
+        // page
+        $app->get('/{args:.*}', \App\Application\Actions\Common\PageAction::class)
+            ->setName('common:page');
     })
     ->add(
         ($_ENV['DEBUG'] ?? false) ?

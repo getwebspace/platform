@@ -18,6 +18,7 @@ class ProductCreateAction extends CatalogAction
                 $product = $this->catalogProductService->create([
                     'category' => $this->request->getParam('category'),
                     'title' => $this->request->getParam('title'),
+                    'type' => $this->request->getParam('type'),
                     'description' => $this->request->getParam('description'),
                     'extra' => $this->request->getParam('extra'),
                     'address' => $this->request->getParam('address'),
@@ -54,6 +55,7 @@ class ProductCreateAction extends CatalogAction
                 switch (true) {
                     case $this->request->getParam('save', 'exit') === 'exit':
                         return $this->response->withRedirect('/cup/catalog/product');
+
                     default:
                         return $this->response->withRedirect('/cup/catalog/product/' . $product->getUuid() . '/edit');
                 }
