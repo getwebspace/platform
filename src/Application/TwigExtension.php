@@ -94,9 +94,6 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('catalog_product', [$this, 'catalog_product']),
             new TwigFunction('catalog_product_view', [$this, 'catalog_product_view']),
             new TwigFunction('catalog_order', [$this, 'catalog_order']),
-
-            // trademaster
-            new TwigFunction('tm_api', [$this, 'tm_api']),
         ];
     }
 
