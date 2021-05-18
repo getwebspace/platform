@@ -345,6 +345,9 @@ abstract class AbstractAction extends AbstractComponent
             if (($path = realpath(THEME_DIR . '/' . $this->parameter('common_theme', 'default'))) !== false) {
                 $this->renderer->getLoader()->addPath($path);
             }
+
+            // add default errors pages
+            $this->renderer->getLoader()->addPath(VIEW_ERROR_DIR);
             $rendered = $this->renderer->fetch($template, $data);
 
             \RunTracy\Helpers\Profiler\Profiler::finish('render (%s)', $template);

@@ -72,7 +72,7 @@ $container['plugin'] = function (ContainerInterface $c) {
 // view twig file render
 $container['view'] = function (ContainerInterface $c) {
     $settings = array_merge(
-        ['template_path' => [VIEW_DIR, VIEW_ERROR_DIR]],
+        ['template_path' => VIEW_DIR],
         $c->get('twig'),
         ['displayErrorDetails' => $c->get('settings')['displayErrorDetails']]
     );
