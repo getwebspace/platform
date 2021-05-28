@@ -64,6 +64,7 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('current_path', [$this, 'currentPath']),
 
             // wse functions
+            new TwigFunction('_', [$this, 'locale'], ['is_safe' => ['html']]),
             new TwigFunction('form', [$this, 'form'], ['is_safe' => ['html']]),
             new TwigFunction('reference', [$this, 'reference']),
             new TwigFunction('parameter', [$this, 'parameter']),
@@ -166,6 +167,11 @@ class TwigExtension extends AbstractExtension
     }
 
     // wse functions
+
+    public function locale(string $value)
+    {
+        return i18n::$locale[$value] ?? $value;
+    }
 
     public function form($type, $name, $args = [])
     {

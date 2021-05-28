@@ -6,5 +6,5 @@ use App\Domain\AbstractException;
 
 class RelationNotFoundException extends AbstractException
 {
-    protected $message = 'EXCEPTION_FILE_RELATION_NOT_FOUND';
+    protected $message = 'EXCEPTION_RELATION_NOT_FOUND';
 }

@@ -7,6 +7,9 @@ use Slim\Http\Response;
  * @var \Slim\App $app
  */
 
+// apply locale
+$app->add(\App\Application\Middlewares\LocaleMiddleware::class);
+
 // check user access
 $app->add(\App\Application\Middlewares\AccessCheckerMiddleware::class);
 

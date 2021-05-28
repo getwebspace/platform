@@ -6,4 +6,5 @@ use App\Domain\AbstractException;
 
 class MissingUserUuidValueException extends AbstractException
 {
+    protected $message = 'EXCEPTION_USER_UUID_MISSING';
 }
