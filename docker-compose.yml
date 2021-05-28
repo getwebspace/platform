@@ -1,9 +1,5 @@
 version: "3"
 
-networks:
-    web:
-        external: true
-
 services:
     platform:
         build:
@@ -32,13 +28,5 @@ services:
             - ./composer.json:/var/container/composer.json:rw
             - ./composer.lock:/var/container/composer.lock:rw
             - ./phpunit.xml:/var/container/phpunit.xml:ro
-        labels:
-            - traefik.enable=true
-            - traefik.port=80
-            - traefik.backend=demo.getwebspace.org
-            - traefik.frontend.rule=Host:demo.getwebspace.org
-            - traefik.frontend.redirect.entryPoint=https
-            - traefik.docker.network=web
-        networks:
-            - web
-        restart: always
+        ports:
+            - 9000:80
