@@ -6,4 +6,5 @@ use App\Domain\AbstractException;
 
 class PublicationNotFoundException extends AbstractException
 {
+    protected $message = 'EXCEPTION_PUBLICATION_NOT_FOUND';
 }

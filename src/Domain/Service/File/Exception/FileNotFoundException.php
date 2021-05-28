@@ -6,4 +6,5 @@ use App\Domain\AbstractException;
 
 class FileNotFoundException extends AbstractException
 {
+    protected $message = 'EXCEPTION_FILE_NOT_FOUND';
 }

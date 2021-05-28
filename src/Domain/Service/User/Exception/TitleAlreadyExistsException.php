@@ -6,4 +6,5 @@ use App\Domain\AbstractException;
 
 class TitleAlreadyExistsException extends AbstractException
 {
+    protected $message = 'EXCEPTION_TITLE_ALREADY_EXISTS';
 }

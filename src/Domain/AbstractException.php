@@ -11,9 +11,9 @@ abstract class AbstractException extends Exception
 
     protected string $description = '';
 
-    public function __construct(?string $message = null, ?Throwable $previous = null)
+    public function __construct(string $message = '', ?Throwable $previous = null)
     {
-        if ($message !== null) {
+        if ($message) {
             $this->message = $message;
         }
 
@@ -22,11 +22,7 @@ abstract class AbstractException extends Exception
 
     public function getTitle(): string
     {
-        if ($this->title) {
-            return $this->title;
-        }
-
-        return $this->getDescription();
+        return $this->title ?: (new \ReflectionClass($this))->getShortName();
     }
 
     public function setTitle(string $title): self
@@ -38,11 +34,7 @@ abstract class AbstractException extends Exception
 
     public function getDescription(): string
     {
-        if ($this->description) {
-            return $this->description;
-        }
-
-        return $this->getMessage();
+        return $this->description ?: $this->getMessage();
     }
 
     public function setDescription(string $description): self

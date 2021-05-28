@@ -6,4 +6,5 @@ use App\Domain\AbstractException;
 
 class UserGroupNotFoundException extends AbstractException
 {
+    protected $message = 'EXCEPTION_USER_GROUP_NOT_FOUND';
 }

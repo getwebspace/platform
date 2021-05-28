@@ -6,4 +6,5 @@ use App\Domain\AbstractException;
 
 class PageNotFoundException extends AbstractException
 {
+    protected $message = 'EXCEPTION_PAGE_NOT_FOUND';
 }

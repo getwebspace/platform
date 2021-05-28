@@ -6,4 +6,5 @@ use App\Domain\AbstractException;
 
 class CategoryNotFoundException extends AbstractException
 {
+    protected $message = 'EXCEPTION_CATEGORY_NOT_FOUND';
 }

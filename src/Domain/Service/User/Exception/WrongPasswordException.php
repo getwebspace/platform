@@ -6,4 +6,5 @@ use App\Domain\AbstractException;
 
 class WrongPasswordException extends AbstractException
 {
+    protected $message = 'EXCEPTION_WRONG_PASSWORD';
 }

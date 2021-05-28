@@ -56,8 +56,8 @@ abstract class AbstractAction extends AbstractComponent
         if (!$routes) {
             $routes = collect($this->container->get('router')->getRoutes())
                 ->flatten()
-                ->map(fn ($item) => $item->getName())
-                ->filter(fn ($item) => !str_start_with($item, \App\Application\Middlewares\AccessCheckerMiddleware::PUBLIC));
+                ->map(fn($item) => $item->getName())
+                ->filter(fn($item) => !str_start_with($item, \App\Application\Middlewares\AccessCheckerMiddleware::PUBLIC));
         }
 
         return $routes->combine($routes);
@@ -110,8 +110,6 @@ abstract class AbstractAction extends AbstractComponent
         $this->response = $response;
         $this->args = $args;
 
-        $result = null;
-
         try {
             $result = $this->action();
         } catch (AbstractHttpException $exception) {
@@ -146,6 +144,10 @@ abstract class AbstractAction extends AbstractComponent
         return $result;
     }
 
+    /**
+     * @throws AbstractHttpException
+     * @return Response
+     */
     abstract protected function action(): \Slim\Http\Response;
 
     /**

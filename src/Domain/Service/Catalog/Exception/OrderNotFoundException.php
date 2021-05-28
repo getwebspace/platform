@@ -6,4 +6,5 @@ use App\Domain\AbstractException;
 
 class OrderNotFoundException extends AbstractException
 {
+    protected $message = 'EXCEPTION_ORDER_NOT_FOUND';
 }

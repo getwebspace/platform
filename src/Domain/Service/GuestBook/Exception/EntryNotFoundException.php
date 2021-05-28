@@ -6,4 +6,5 @@ use App\Domain\AbstractException;
 
 class EntryNotFoundException extends AbstractException
 {
+    protected $message = 'EXCEPTION_ENTRY_NOT_FOUND';
 }
