@@ -9,4 +9,6 @@ class WrongIpValueException extends AbstractHttpException
     protected string $title = 'Ip is wrong';
 
     protected string $description = 'Ip value is wrong';
+
+    protected $message = 'EXCEPTION_WRONG_IP';
 }

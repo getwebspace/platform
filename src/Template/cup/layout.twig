@@ -132,6 +132,22 @@
                         </div>
 
                         <div class="page-inner mt--5">
+                            {% if _error is not empty %}
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="card bg-danger">
+                                            <div class="card-header text-center">
+                                                <h4 class="card-title text-white">В форме есть ошибки ({{ _error|count }})</h4>
+                                                <p class="text-white my-0">
+                                                    Проверьте форму на наличие подсвеченных красным полей,
+                                                    исправьте ошибку и попробуйте снова.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+
                             {% block content %}
                                 <div class="row">
                                     <div class="col-md-12">
