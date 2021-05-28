@@ -6,14 +6,14 @@ use App\Domain\AbstractService;
 use App\Domain\Entities\Catalog\Order;
 use App\Domain\Entities\User;
 use App\Domain\Repository\Catalog\OrderRepository;
+use App\Domain\Service\Catalog\Exception\WrongEmailValueException;
+use App\Domain\Service\Catalog\Exception\WrongPhoneValueException;
 use App\Domain\Service\Catalog\Exception\OrderNotFoundException;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
 
 class OrderService extends AbstractService
 {
-    protected const SERIAL_LENGTH = 7;
-
     /**
      * @var OrderRepository
      */
@@ -24,6 +24,13 @@ class OrderService extends AbstractService
         $this->service = $this->entityManager->getRepository(Order::class);
     }
 
+    /**
+     * @param array $data
+     *
+     * @throws Exception\WrongEmailValueException
+     * @throws Exception\WrongPhoneValueException
+     * @return Order
+     */
     public function create(array $data = []): Order
     {
         $default = [
@@ -144,8 +151,13 @@ class OrderService extends AbstractService
 
     /**
      * @param Order|string|Uuid $entity
+     * @param array             $data
      *
+     * @throws WrongEmailValueException
+     * @throws WrongPhoneValueException
      * @throws OrderNotFoundException
+     *
+     * @return Order
      */
     public function update($entity, array $data = []): Order
     {

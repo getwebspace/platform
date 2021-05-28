@@ -46,6 +46,7 @@ class CartAction extends CatalogAction
             }
 
             if ($this->isRecaptchaChecked()) {
+                // todo try/catch
                 $order = $this->catalogOrderService->create($data);
 
                 // notify to user

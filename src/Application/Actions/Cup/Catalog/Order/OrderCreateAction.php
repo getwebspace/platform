@@ -10,6 +10,8 @@ class OrderCreateAction extends CatalogAction
     {
         if ($this->request->isPost()) {
             $user_uuid = $this->request->getParam('user_uuid');
+
+            // todo try/catch
             $order = $this->catalogOrderService->create([
                 'user' => $user_uuid ? $this->userService->read(['uuid' => $user_uuid]) : '',
                 'delivery' => $this->request->getParam('delivery'),

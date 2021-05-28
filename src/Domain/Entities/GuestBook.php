@@ -6,6 +6,7 @@ use App\Domain\AbstractEntity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
+use RuntimeException;
 
 /**
  * @ORM\Entity(repositoryClass="App\Domain\Repository\GuestBookRepository")
@@ -54,14 +55,18 @@ class GuestBook extends AbstractEntity
     protected string $email = '';
 
     /**
-     * @throws \App\Domain\Exceptions\WrongEmailValueException
+     * @throws \App\Domain\Service\GuestBook\Exception\WrongEmailValueException
      *
      * @return $this
      */
     public function setEmail(string $email)
     {
-        if ($this->checkStrLenMax($email, 120) && $this->checkEmailByValue($email)) {
-            $this->email = $email;
+        try {
+            if ($this->checkStrLenMax($email, 120) && $this->checkEmailByValue($email)) {
+                $this->email = $email;
+            }
+        } catch (RuntimeException $e) {
+            throw new \App\Domain\Service\GuestBook\Exception\WrongEmailValueException();
         }
 
         return $this;

@@ -7,6 +7,7 @@ use App\Domain\Entities\GuestBook;
 use App\Domain\Service\GuestBook\Exception\MissingEmailValueException;
 use App\Domain\Service\GuestBook\Exception\MissingMessageValueException;
 use App\Domain\Service\GuestBook\Exception\MissingNameValueException;
+use App\Domain\Service\GuestBook\Exception\WrongEmailValueException;
 use App\Domain\Service\GuestBook\GuestBookService;
 
 class GuestBookAction extends AbstractAction
@@ -35,11 +36,11 @@ class GuestBookAction extends AbstractAction
                     }
 
                     return $this->respondWithJson(['description' => 'Message added']);
-                } catch (MissingEmailValueException $e) {
-                    $this->addError('name', $e->getMessage());
-                } catch (MissingMessageValueException $e) {
-                    $this->addError('email', $e->getMessage());
                 } catch (MissingNameValueException $e) {
+                    $this->addError('name', $e->getMessage());
+                } catch (MissingEmailValueException | WrongEmailValueException $e) {
+                    $this->addError('email', $e->getMessage());
+                } catch (MissingMessageValueException $e) {
                     $this->addError('message', $e->getMessage());
                 }
             } else {

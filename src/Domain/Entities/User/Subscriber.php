@@ -3,10 +3,10 @@
 namespace App\Domain\Entities\User;
 
 use App\Domain\AbstractEntity;
-use App\Domain\Entities\User;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
+use RuntimeException;
 
 /**
  * @ORM\Entity(repositoryClass="App\Domain\Repository\User\SubscriberRepository")
@@ -33,14 +33,18 @@ class Subscriber extends AbstractEntity
     protected string $email = '';
 
     /**
-     * @throws \App\Domain\Exceptions\WrongEmailValueException
+     * @throws \App\Domain\Service\User\Exception\WrongEmailValueException
      *
      * @return $this
      */
     public function setEmail(string $email)
     {
-        if ($this->checkStrLenMax($email, 120) && $this->checkEmailByValue($email)) {
-            $this->email = $email;
+        try {
+            if ($this->checkStrLenMax($email, 120) && $this->checkEmailByValue($email)) {
+                $this->email = $email;
+            }
+        } catch (RuntimeException $e) {
+            throw new \App\Domain\Service\User\Exception\WrongEmailValueException();
         }
 
         return $this;

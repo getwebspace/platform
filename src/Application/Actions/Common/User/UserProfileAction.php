@@ -2,8 +2,8 @@
 
 namespace App\Application\Actions\Common\User;
 
-use App\Domain\Exceptions\WrongEmailValueException;
-use App\Domain\Exceptions\WrongPhoneValueException;
+use App\Domain\Service\User\Exception\WrongEmailValueException;
+use App\Domain\Service\User\Exception\WrongPhoneValueException;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 
