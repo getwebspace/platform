@@ -561,6 +561,17 @@
                                 } %}
 
                                 {% include 'cup/field.twig' with {
+                                    'label': 'Запрещенные домены для регистрации',
+                                    'type': 'textarea',
+                                    'name': 'user[banned_email]',
+                                    'message': 'Каждый домен с новой строки',
+                                    'args': {
+                                        'style': 'height: 100px!important;',
+                                        'placeholder': '@mail.ru'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
                                     'label': 'Группа пользователя (по-умолчанию)',
                                     'type': 'select',
                                     'name': 'user[group]',

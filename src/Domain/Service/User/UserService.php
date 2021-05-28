@@ -9,6 +9,7 @@ use App\Domain\Exceptions\WrongEmailValueException;
 use App\Domain\Exceptions\WrongPhoneValueException;
 use App\Domain\Repository\UserRepository;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
+use App\Domain\Service\User\Exception\EmailBannedException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
 use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
@@ -31,6 +32,7 @@ class UserService extends AbstractService
 
     /**
      * @throws EmailAlreadyExistsException
+     * @throws EmailBannedException
      * @throws UsernameAlreadyExistsException
      * @throws PhoneAlreadyExistsException
      * @throws MissingUniqueValueException
@@ -57,8 +59,13 @@ class UserService extends AbstractService
         if ($data['username'] && $this->service->findOneByUsername($data['username']) !== null) {
             throw new UsernameAlreadyExistsException();
         }
-        if ($data['email'] && $this->service->findOneByEmail($data['email']) !== null) {
-            throw new EmailAlreadyExistsException();
+        if ($data['email']) {
+            if ($this->service->findOneByEmail($data['email']) !== null) {
+                throw new EmailAlreadyExistsException();
+            }
+            if (str_end_with($data['email'], array_map('trim', explode(PHP_EOL, $this->parameter('user_banned_email', ''))))) {
+                throw new EmailBannedException();
+            }
         }
         if ($data['phone'] && $this->service->findOneByPhone($data['phone']) !== null) {
             throw new PhoneAlreadyExistsException();
@@ -158,12 +165,12 @@ class UserService extends AbstractService
                         break;
 
                     case $data['username']:
-                        $user = $this->service->findOneByUsername($data['username']);
+                        $user = $this->service->findOneByUsername((string) $data['username']);
 
                         break;
 
                     case $data['email']:
-                        $user = $this->service->findOneByEmail($data['email']);
+                        $user = $this->service->findOneByEmail((string) $data['email']);
 
                         break;
 
@@ -174,7 +181,7 @@ class UserService extends AbstractService
                 }
 
                 if (
-                    empty($user) || (!empty($criteria['status']) && $data['status'] !== $user->getStatus())
+                    empty($user) || (!empty($data['status']) && $data['status'] !== $user->getStatus())
                 ) {
                     throw new UserNotFoundException();
                 }

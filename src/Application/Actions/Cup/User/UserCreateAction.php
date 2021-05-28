@@ -5,6 +5,7 @@ namespace App\Application\Actions\Cup\User;
 use App\Domain\Exceptions\WrongEmailValueException;
 use App\Domain\Exceptions\WrongPhoneValueException;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
+use App\Domain\Service\User\Exception\EmailBannedException;
 use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 
@@ -40,7 +41,7 @@ class UserCreateAction extends UserAction
                 }
             } catch (UsernameAlreadyExistsException $e) {
                 $this->addError('username', $e->getMessage());
-            } catch (WrongEmailValueException | EmailAlreadyExistsException $e) {
+            } catch (WrongEmailValueException | EmailAlreadyExistsException | EmailBannedException $e) {
                 $this->addError('email', $e->getMessage());
             } catch (WrongPhoneValueException | PhoneAlreadyExistsException $e) {
                 $this->addError('phone', $e->getMessage());
