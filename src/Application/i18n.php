@@ -26,7 +26,7 @@ class i18n
     /**
      * i18n constructor
      */
-    public static function init(array $config = [])
+``    public static function init(array $config = []): void
     {
         $default = [
             'accept' => [],
@@ -37,15 +37,15 @@ class i18n
         $config = array_merge($default, $config);
         $priority = new SplPriorityQueue();
 
-        if ($config['force'] && in_array($config['force'], static::$accept)) {
+        if ($config['force'] && in_array($config['force'], static::$accept, true)) {
             $priority->insert($config['force'], 10);
         }
 
-        if ($config['locale'] && in_array($config['locale'], static::$accept)) {
+        if ($config['locale'] && in_array($config['locale'], static::$accept, true)) {
             $priority->insert($config['locale'], 5);
         }
 
-        if ($config['default'] && in_array($config['default'], static::$accept)) {
+        if ($config['default'] && in_array($config['default'], static::$accept, true)) {
             $priority->insert($config['default'], 0);
         }
 
@@ -62,6 +62,7 @@ class i18n
      * @param SplPriorityQueue $priority
      *
      * @throws FileNotFoundException
+     *
      * @return array
      */
     protected static function load($priority)
@@ -76,6 +77,7 @@ class i18n
                     switch ($type) {
                         case 'ini':
                             return parse_ini_file($path, true);
+
                         case 'php':
                             return require_once $path;
                     }

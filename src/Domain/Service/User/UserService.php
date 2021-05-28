@@ -5,8 +5,6 @@ namespace App\Domain\Service\User;
 use App\Domain\AbstractService;
 use App\Domain\Entities\User;
 use App\Domain\Entities\User\Session as UserSession;
-use App\Domain\Service\User\Exception\WrongEmailValueException;
-use App\Domain\Service\User\Exception\WrongPhoneValueException;
 use App\Domain\Repository\UserRepository;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\EmailBannedException;
@@ -14,7 +12,9 @@ use App\Domain\Service\User\Exception\MissingUniqueValueException;
 use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
+use App\Domain\Service\User\Exception\WrongEmailValueException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
+use App\Domain\Service\User\Exception\WrongPhoneValueException;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
 

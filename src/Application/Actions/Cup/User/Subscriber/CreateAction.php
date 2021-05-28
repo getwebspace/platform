@@ -3,8 +3,8 @@
 namespace App\Application\Actions\Cup\User\Subscriber;
 
 use App\Application\Actions\Cup\User\UserAction;
-use App\Domain\Service\User\Exception\WrongEmailValueException;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
+use App\Domain\Service\User\Exception\WrongEmailValueException;
 
 class CreateAction extends UserAction
 {
