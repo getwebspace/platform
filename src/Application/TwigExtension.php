@@ -2,6 +2,7 @@
 
 namespace App\Application;
 
+use App\Application\Twig\ResourceParser;
 use App\Domain\AbstractExtension;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
@@ -43,6 +44,13 @@ class TwigExtension extends AbstractExtension
     public function getName()
     {
         return 'wse';
+    }
+
+    public function getTokenParsers()
+    {
+        return [
+            new ResourceParser(),
+        ];
     }
 
     public function getFilters()
