@@ -26,7 +26,7 @@ class i18n
     /**
      * i18n constructor
      */
-``    public static function init(array $config = []): void
+    public static function init(array $config = []): void
     {
         $default = [
             'accept' => [],
