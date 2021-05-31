@@ -87,7 +87,7 @@
                                             'type': 'select',
                                             'name': 'type',
                                             'args': {
-                                                'option': collect(reference('/App/Domain/Types/Catalog/ProductTypeType::LIST')).combine(['Продукт', 'Услуга']),
+                                                'option': _(reference('/App/Domain/Types/Catalog/ProductTypeType::LIST')),
                                                 'selected': reference('/App/Domain/Types/Catalog/ProductTypeType::TYPE_PRODUCT')
                                             }
                                         } %}

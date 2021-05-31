@@ -166,7 +166,7 @@
                                             'type': 'select',
                                             'name': 'status',
                                             'args': {
-                                                'option': collect(reference('/App/Domain/Types/Catalog/OrderStatusType::LIST')).combine(['Новый', 'В работе', 'Оплачен', 'Готов', 'Выполнен', 'Отменён']),
+                                                'option': _(reference('/App/Domain/Types/Catalog/OrderStatusType::LIST')),
                                                 'selected': order.status ? order.status : reference('/App/Domain/Types/Catalog/OrderStatusType::STATUS_PROCESS')
                                             }
                                         } %}

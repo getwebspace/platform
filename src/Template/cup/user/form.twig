@@ -90,7 +90,7 @@
                                     'type': 'select',
                                     'name': 'allow_mail',
                                     'args': {
-                                        'option': {'yes':'Да', 'no':'Нет'},
+                                        'option': _(['yes', 'no']),
                                         'selected': item.getAllowMail() ? 'yes' : 'no'
                                     }
                                 } %}
@@ -137,7 +137,7 @@
                                     'type': 'select',
                                     'name': 'group_uuid',
                                     'args': {
-                                        'option': {(NIL): 'Без группы'}|merge(groups.pluck('title', 'uuid').all()),
+                                        'option': _({(NIL): 'WITHOUT_GROUP'}|merge(groups.pluck('title', 'uuid').all())),
                                         'selected': item.group_uuid ?? parameter('user_group')
                                     }
                                 } %}
@@ -149,7 +149,7 @@
                                         'type': 'select',
                                         'name': 'status',
                                         'args': {
-                                            'option': collect(reference('/App/Domain/Types/UserStatusType::LIST')).combine(['Активный', 'Заблокирован', 'Удалён']),
+                                            'option': _(reference('/App/Domain/Types/UserStatusType::LIST')),
                                             'selected': item.status
                                         }
                                     } %}

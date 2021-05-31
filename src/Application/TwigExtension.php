@@ -168,9 +168,22 @@ class TwigExtension extends AbstractExtension
 
     // wse functions
 
-    public function locale(string $value)
+    public function locale($value)
     {
-        return i18n::$locale[$value] ?? $value;
+        switch (true) {
+            case is_a($value, Collection::class):
+            case is_array($value):
+                foreach ($value as $key => $item) {
+                    $value[$key] = i18n::$locale[$item] ?? $item;
+                }
+
+                return $value;
+
+            case is_string($value):
+                return i18n::$locale[$value] ?? $value;
+        }
+
+        return $value;
     }
 
     public function form($type, $name, $args = [])

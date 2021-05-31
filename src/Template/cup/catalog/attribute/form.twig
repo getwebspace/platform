@@ -51,7 +51,7 @@
                                     'name': 'type',
                                     'message': '<b>Внимание</b>: тип "Булево" может быть добавлен только к категории.',
                                     'args': {
-                                        'option': collect(reference('/App/Domain/Types/Catalog/AttributeTypeType::LIST')).combine(['Строка', 'Целое', 'Дробное', 'Булево']),
+                                        'option': _(reference('/App/Domain/Types/Catalog/AttributeTypeType::LIST')),
                                         'selected': attribute.type,
                                         'required': true
                                     }
