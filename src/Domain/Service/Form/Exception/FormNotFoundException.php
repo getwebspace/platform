@@ -6,4 +6,5 @@ use App\Domain\AbstractException;
 
 class FormNotFoundException extends AbstractException
 {
+    protected $message = 'EXCEPTION_FORM_NOT_FOUND';
 }

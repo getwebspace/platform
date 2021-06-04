@@ -6,4 +6,5 @@ use App\Domain\AbstractException;
 
 class AttributeNotFoundException extends AbstractException
 {
+    protected $message = 'EXCEPTION_ATTRIBUTE_NOT_FOUND';
 }

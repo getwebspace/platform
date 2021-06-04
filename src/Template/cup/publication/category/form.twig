@@ -80,7 +80,7 @@
                                     'type': 'select',
                                     'name': 'children',
                                     'args': {
-                                        'option': {'yes':'Да', 'no':'Нет'},
+                                        'option': _(['yes', 'no']),
                                         'selected': item.children ? 'yes' : 'no'
                                     }
                                 } %}
@@ -102,7 +102,7 @@
                                     'type': 'select',
                                     'name': 'public',
                                     'args': {
-                                        'option': {'yes':'Да', 'no':'Нет'},
+                                        'option': _(['yes', 'no']),
                                         'selected': item.public ? 'yes' : 'no'
                                     }
                                 } %}
@@ -122,7 +122,7 @@
                                     'type': 'select',
                                     'name': 'sort[by]',
                                     'args': {
-                                        'option': collect(reference('/App/Domain/References/Publication::ORDER_BY')).combine(['Дата', 'Заголовок']),
+                                        'option': _(reference('/App/Domain/References/Publication::ORDER_BY')),
                                         'selected': item.sort['by']
                                     }
                                 } %}
@@ -133,7 +133,7 @@
                                     'type': 'select',
                                     'name': 'sort[direction]',
                                     'args': {
-                                        'option': collect(reference('/App/Domain/References/Publication::ORDER_DIRECTION')).combine(['По убыванию', 'По возрастанию']),
+                                        'option': _(reference('/App/Domain/References/Publication::ORDER_DIRECTION')),
                                         'selected': item.sort['direction']
                                     }
                                 } %}

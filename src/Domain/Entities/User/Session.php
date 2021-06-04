@@ -7,6 +7,7 @@ use App\Domain\Entities\User;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
+use RuntimeException;
 
 /**
  * @ORM\Entity
@@ -54,14 +55,18 @@ class Session extends AbstractEntity
     /**
      * @param $ip
      *
-     * @throws \App\Domain\Exceptions\WrongIpValueException
+     * @throws \App\Domain\Service\User\Exception\WrongIpValueException
      *
      * @return $this
      */
     public function setIp($ip)
     {
-        if ($this->checkStrLenMax($ip, 16) && $this->getIpByValue($ip)) {
-            $this->ip = $ip;
+        try {
+            if ($this->checkStrLenMax($ip, 16) && $this->getIpByValue($ip)) {
+                $this->ip = $ip;
+            }
+        } catch (RuntimeException $e) {
+            throw new \App\Domain\Service\User\Exception\WrongIpValueException();
         }
 
         return $this;

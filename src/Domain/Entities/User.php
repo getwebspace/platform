@@ -9,6 +9,7 @@ use App\Domain\Traits\FileTrait;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
+use RuntimeException;
 
 /**
  * @ORM\Entity(repositoryClass="App\Domain\Repository\UserRepository")
@@ -59,14 +60,18 @@ class User extends AbstractEntity
     protected string $email = '';
 
     /**
-     * @throws \App\Domain\Exceptions\WrongEmailValueException
+     * @throws \App\Domain\Service\User\Exception\WrongEmailValueException
      *
      * @return $this
      */
     public function setEmail(string $email)
     {
-        if ($this->checkStrLenMax($email, 120) && $this->checkEmailByValue($email)) {
-            $this->email = $email;
+        try {
+            if ($this->checkStrLenMax($email, 120) && $this->checkEmailByValue($email)) {
+                $this->email = $email;
+            }
+        } catch (RuntimeException $e) {
+            throw new \App\Domain\Service\User\Exception\WrongEmailValueException();
         }
 
         return $this;
@@ -97,15 +102,19 @@ class User extends AbstractEntity
     protected string $phone = '';
 
     /**
-     * @throws \App\Domain\Exceptions\WrongPhoneValueException
+     * @throws \App\Domain\Service\User\Exception\WrongPhoneValueException
      *
      * @return $this
      */
     public function setPhone(string $phone = null)
     {
         if ($phone) {
-            if ($this->checkStrLenMax($phone, 25) && $this->checkPhoneByValue($phone)) {
-                $this->phone = $phone;
+            try {
+                if ($this->checkStrLenMax($phone, 25) && $this->checkPhoneByValue($phone)) {
+                    $this->phone = $phone;
+                }
+            } catch (RuntimeException $e) {
+                throw new \App\Domain\Service\User\Exception\WrongPhoneValueException();
             }
         } else {
             $this->phone = '';

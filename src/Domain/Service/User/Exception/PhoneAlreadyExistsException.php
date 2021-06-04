@@ -6,4 +6,5 @@ use App\Domain\AbstractException;
 
 class PhoneAlreadyExistsException extends AbstractException
 {
+    protected $message = 'EXCEPTION_PHONE_ALREADY_EXISTS';
 }

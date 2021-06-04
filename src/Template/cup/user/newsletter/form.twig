@@ -39,7 +39,7 @@
                                     'type': 'select',
                                     'name': 'type',
                                     'args': {
-                                        'option': collect(reference('/App/Domain/References/User::NEWSLETTER_TYPE')).combine(['Все', 'Пользователи', 'Подписчики']),
+                                        'option': _(reference('/App/Domain/References/User::NEWSLETTER_TYPE')),
                                         'selected': reference('/App/Domain/References/User::NEWSLETTER_TYPE_ALL')
                                     }
                                 } %}

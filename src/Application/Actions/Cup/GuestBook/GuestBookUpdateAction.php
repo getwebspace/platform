@@ -11,6 +11,7 @@ class GuestBookUpdateAction extends GuestBookAction
 
             if ($entry) {
                 if ($this->request->isPost()) {
+                    // todo try/catch
                     $entry = $this->guestBookService->update($entry, [
                         'name' => $this->request->getParam('name'),
                         'email' => $this->request->getParam('email'),

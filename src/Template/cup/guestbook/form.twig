@@ -90,7 +90,7 @@
                                     'type': 'select',
                                     'name': 'status',
                                     'args': {
-                                        'option': collect(reference('/App/Domain/Types/UserStatusType::LIST')).combine(['Активный', 'Модерация']),
+                                        'option': _(reference('/App/Domain/Types/GuestBookStatusType::LIST')),
                                         'selected': item.status
                                     }
                                 } %}

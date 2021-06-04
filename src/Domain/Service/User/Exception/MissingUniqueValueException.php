@@ -6,4 +6,5 @@ use App\Domain\AbstractException;
 
 class MissingUniqueValueException extends AbstractException
 {
+    protected $message = 'EXCEPTION_UNIQUE_MISSING';
 }

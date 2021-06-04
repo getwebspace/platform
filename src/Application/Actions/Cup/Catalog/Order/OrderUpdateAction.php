@@ -14,6 +14,8 @@ class OrderUpdateAction extends CatalogAction
             if ($order) {
                 if ($this->request->isPost()) {
                     $user_uuid = $this->request->getParam('user_uuid');
+
+                    // todo try/catch
                     $order = $this->catalogOrderService->update($order, [
                         'user' => $user_uuid ? $this->userService->read(['uuid' => $user_uuid]) : '',
                         'delivery' => $this->request->getParam('delivery'),

@@ -8,8 +8,8 @@
     <!-- Favicon -->
     <link href="/default/img/favicon.ico" rel="shortcut icon" />
 
-    <style>* { font-display: auto; }</style>
-    <link rel="stylesheet" href="/default/css/bootstrap.min.css">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    {% resource 'bootstrap.min.css' '4.2.1' %}
     <link rel="stylesheet" href="/default/css/style.css">
 
     <!--[if lt IE 9]>
@@ -55,22 +55,23 @@
         <!-- Google Font -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,300i,400,400i,700,700i">
 
-        <link rel="stylesheet" href="/default/css/font-awesome.min.css">
+        {% resource 'font-awesome:font-awesome.min.css' '4.7.0' %}
+        {% resource 'jqueryui:jquery-ui.min.css' '1.12.1' %}
+        {% resource 'OwlCarousel2:owl.carousel.min.css' '2.3.4' %}
+        {% resource 'slicknav.min.css' '1.0.10' %}
+        {% resource 'limonte-sweetalert2:sweetalert2.min.css' '10.16.6' %}
         <link rel="stylesheet" href="/default/css/flaticon.css">
-        <link rel="stylesheet" href="/default/css/slicknav.min.css">
-        <link rel="stylesheet" href="/default/css/jquery-ui.min.css">
-        <link rel="stylesheet" href="/default/css/owl.carousel.min.css">
         <link rel="stylesheet" href="/default/css/animate.css">
 
-        <script src="/default/js/jquery-3.2.1.min.js"></script>
-        <script src="/default/js/bootstrap.min.js"></script>
-        <script src="/default/js/jquery.slicknav.min.js"></script>
-        <script src="/default/js/owl.carousel.min.js"></script>
-        <script src="/default/js/jquery.nicescroll.min.js"></script>
-        <script src="/default/js/jquery.zoom.min.js"></script>
-        <script src="/default/js/jquery-ui.min.js"></script>
+        {% resource 'jquery.min.js' '3.2.1' %}
+        {% resource 'jquery-ui.min.js' '1.12.1' %}
+        {% resource 'bootstrap.min.js' '4.2.1' %}
+        {% resource 'owl.carousel.min.js' '2.3.4' %}
+        {% resource 'slicknav.min.js' '1.0.10' %}
+        {% resource 'nicescroll.min.js' '3.7.6' %}
+        {% resource 'limonte-sweetalert2:sweetalert2.min.js' '10.16.6' %}
+        {% resource 'jquery-zoom:jquery.zoom.min.js' '1.7.21' %}
         <script src="/default/js/main.js"></script>
-        <script src="/assets/js/plugin/sweetalert/sweetalert2.all.min.js"></script>
 
         {% include 'mixin/img-script.twig' %}
         {#{% include 'mixin/adbd.twig' %}#}
@@ -79,4 +80,3 @@
         {% include 'mixin/recaptcha.twig' %}
     </body>
 {% endblock %}
-

@@ -42,7 +42,8 @@
                                             {{ item.title }}
                                         </td>
                                         <td>
-                                            {{ item.mailto|join(', ') }}
+                                            {{ item.mailto|join('<br>+ ')|raw }}
+                                            {{ item.authorSend ? '<br>+ заявитель' }}
                                         </td>
                                         <td>
                                             {% include 'cup/form.twig' with {

@@ -9,6 +9,7 @@ use App\Domain\Service\GuestBook\Exception\EntryNotFoundException;
 use App\Domain\Service\GuestBook\Exception\MissingEmailValueException;
 use App\Domain\Service\GuestBook\Exception\MissingMessageValueException;
 use App\Domain\Service\GuestBook\Exception\MissingNameValueException;
+use App\Domain\Service\GuestBook\Exception\WrongEmailValueException;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
 
@@ -28,6 +29,7 @@ class GuestBookService extends AbstractService
      * @throws MissingNameValueException
      * @throws MissingEmailValueException
      * @throws MissingMessageValueException
+     * @throws WrongEmailValueException
      */
     public function create(array $data = []): GuestBook
     {
@@ -113,6 +115,7 @@ class GuestBookService extends AbstractService
     /**
      * @param GuestBook|string|Uuid $entity
      *
+     * @throws WrongEmailValueException
      * @throws EntryNotFoundException
      */
     public function update($entity, array $data = []): GuestBook

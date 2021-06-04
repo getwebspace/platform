@@ -110,8 +110,6 @@ abstract class AbstractAction extends AbstractComponent
         $this->response = $response;
         $this->args = $args;
 
-        $result = null;
-
         try {
             $result = $this->action();
         } catch (AbstractHttpException $exception) {
@@ -146,6 +144,9 @@ abstract class AbstractAction extends AbstractComponent
         return $result;
     }
 
+    /**
+     * @throws AbstractHttpException
+     */
     abstract protected function action(): \Slim\Http\Response;
 
     /**
@@ -345,6 +346,9 @@ abstract class AbstractAction extends AbstractComponent
             if (($path = realpath(THEME_DIR . '/' . $this->parameter('common_theme', 'default'))) !== false) {
                 $this->renderer->getLoader()->addPath($path);
             }
+
+            // add default errors pages
+            $this->renderer->getLoader()->addPath(VIEW_ERROR_DIR);
             $rendered = $this->renderer->fetch($template, $data);
 
             \RunTracy\Helpers\Profiler\Profiler::finish('render (%s)', $template);

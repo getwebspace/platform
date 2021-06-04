@@ -425,6 +425,7 @@ if (!function_exists('sys_self_check_health')) {
             BASE_DIR => 755,
             BIN_DIR => 755,
             CONFIG_DIR => 755,
+            LOCLAE_DIR => 755,
             PLUGIN_DIR => 777,
             PUBLIC_DIR => 755,
             UPLOAD_DIR => 777,

@@ -6,4 +6,5 @@ use App\Domain\AbstractException;
 
 class UsernameAlreadyExistsException extends AbstractException
 {
+    protected $message = 'EXCEPTION_USERNAME_ALREADY_EXISTS';
 }

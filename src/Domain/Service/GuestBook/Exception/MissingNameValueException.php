@@ -6,4 +6,5 @@ use App\Domain\AbstractException;
 
 class MissingNameValueException extends AbstractException
 {
+    protected $message = 'EXCEPTION_NAME_MISSING';
 }

@@ -6,4 +6,5 @@ use App\Domain\AbstractException;
 
 class MissingEmailValueException extends AbstractException
 {
+    protected $message = 'EXCEPTION_EMAIL_MISSING';
 }

@@ -2,6 +2,7 @@
 
 namespace App\Application;
 
+use App\Application\Twig\ResourceParser;
 use App\Domain\AbstractExtension;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
@@ -45,6 +46,13 @@ class TwigExtension extends AbstractExtension
         return 'wse';
     }
 
+    public function getTokenParsers()
+    {
+        return [
+            new ResourceParser(),
+        ];
+    }
+
     public function getFilters()
     {
         return [
@@ -64,6 +72,7 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('current_path', [$this, 'currentPath']),
 
             // wse functions
+            new TwigFunction('_', [$this, 'locale'], ['is_safe' => ['html']]),
             new TwigFunction('form', [$this, 'form'], ['is_safe' => ['html']]),
             new TwigFunction('reference', [$this, 'reference']),
             new TwigFunction('parameter', [$this, 'parameter']),
@@ -94,9 +103,6 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('catalog_product', [$this, 'catalog_product']),
             new TwigFunction('catalog_product_view', [$this, 'catalog_product_view']),
             new TwigFunction('catalog_order', [$this, 'catalog_order']),
-
-            // trademaster
-            new TwigFunction('tm_api', [$this, 'tm_api']),
         ];
     }
 
@@ -169,6 +175,25 @@ class TwigExtension extends AbstractExtension
     }
 
     // wse functions
+
+    public function locale($value)
+    {
+        switch (true) {
+            case is_a($value, Collection::class):
+            case is_array($value):
+                $buf = [];
+                foreach ($value as $item) {
+                    $buf[$item] = i18n::$locale[$item] ?? $item;
+                }
+
+                return $buf;
+
+            case is_string($value):
+                return i18n::$locale[$value] ?? $value;
+        }
+
+        return $value;
+    }
 
     public function form($type, $name, $args = [])
     {

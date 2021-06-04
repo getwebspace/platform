@@ -4,11 +4,11 @@ namespace App\Domain\Service\User;
 
 use App\Domain\AbstractService;
 use App\Domain\Entities\User\Subscriber as UserSubscriber;
-use App\Domain\Exceptions\WrongEmailValueException;
 use App\Domain\Repository\User\SubscriberRepository as UserSubscriberRepository;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
+use App\Domain\Service\User\Exception\WrongEmailValueException;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
 

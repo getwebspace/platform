@@ -160,7 +160,7 @@
                                                     'type': 'select',
                                                     'name': 'common[auto_generate_address]',
                                                     'args': {
-                                                        'option': {'yes':'Да', 'no':'Нет'}
+                                                        'option': _(['yes', 'no'])
                                                     }
                                                 } %}
                                             </div>
@@ -217,7 +217,7 @@
                                                     'type': 'select',
                                                     'name': 'smtp[secure]',
                                                     'args': {
-                                                        'option': {'':'Нет', 'ssl':'SSL', 'tls':'TLS'}
+                                                        'option': {'':'---', 'ssl':'SSL', 'tls':'TLS'}
                                                     }
                                                 } %}
 
@@ -244,7 +244,7 @@
                                                     'type': 'select',
                                                     'name': 'file[is_enabled]',
                                                     'args': {
-                                                        'option': {'yes':'Да', 'no':'Нет'},
+                                                        'option': _(['yes', 'no']),
                                                         'selected': 'yes'
                                                     }
                                                 } %}
@@ -257,7 +257,7 @@
                                                     'type': 'select',
                                                     'name': 'image[enable]',
                                                     'args': {
-                                                        'option': {'yes':'Да', 'no':'Нет'}
+                                                        'option': _(['yes', 'no'])
                                                     }
                                                 } %}
 
@@ -342,7 +342,7 @@
                                                     'type': 'select',
                                                     'name': 'notification[is_enabled]',
                                                     'args': {
-                                                        'option': {'yes':'Да', 'no':'Нет'},
+                                                        'option': _(['yes', 'no']),
                                                         'selected': 'yes'
                                                     }
                                                 } %}
@@ -370,7 +370,7 @@
                                                     'type': 'select',
                                                     'name': 'form[is_enabled]',
                                                     'args': {
-                                                        'option': {'yes':'Да', 'no':'Нет'},
+                                                        'option': _(['yes', 'no']),
                                                         'selected': 'yes'
                                                     }
                                                 } %}
@@ -384,7 +384,7 @@
                                                     'type': 'select',
                                                     'name': 'search[is_enabled]',
                                                     'args': {
-                                                        'option': {'yes':'Да', 'no':'Нет'},
+                                                        'option': _(['yes', 'no']),
                                                         'selected': 'yes'
                                                     }
                                                 } %}
@@ -421,7 +421,7 @@
                                                     'type': 'select',
                                                     'name': 'guestbook[is_enabled]',
                                                     'args': {
-                                                        'option': {'yes':'Да', 'no':'Нет'},
+                                                        'option': _(['yes', 'no']),
                                                         'selected': 'yes'
                                                     }
                                                 } %}
@@ -457,7 +457,7 @@
                                                     'type': 'select',
                                                     'name': 'entity[is_enabled]',
                                                     'args': {
-                                                        'option': {'yes':'Да', 'no':'Нет'},
+                                                        'option': _(['yes', 'no']),
                                                         'selected': 'yes'
                                                     }
                                                 } %}
@@ -470,7 +470,7 @@
                                                     'type': 'select',
                                                     'name': 'entity[access]',
                                                     'args': {
-                                                        'option': {'all':'Все', 'key':'Только ключи', 'user':'Пользователи и ключи'},
+                                                        'option': _(['all', 'key', 'user']),
                                                         'selected': 'user'
                                                     }
                                                 } %}
@@ -505,7 +505,7 @@
                                     'type': 'select',
                                     'name': 'user[is_enabled]',
                                     'args': {
-                                        'option': {'yes':'Да', 'no':'Нет'},
+                                        'option': _(['yes', 'no']),
                                         'selected': 'yes'
                                     }
                                 } %}
@@ -516,7 +516,7 @@
                                     'type': 'select',
                                     'name': 'user[login_type]',
                                     'args': {
-                                        'option': {'username':'Логин', 'email':'E-Mail', 'phone':'Телефон'}
+                                        'option': _(['username', 'email', 'phone'])
                                     }
                                 } %}
 
@@ -557,6 +557,17 @@
                                     'args': {
                                         'placeholder': 'user.profile.twig',
                                         'value': 'user.profile.twig'
+                                    }
+                                } %}
+
+                                {% include 'cup/field.twig' with {
+                                    'label': 'Запрещенные домены для регистрации',
+                                    'type': 'textarea',
+                                    'name': 'user[banned_email]',
+                                    'message': 'Каждый домен с новой строки',
+                                    'args': {
+                                        'style': 'height: 100px!important;',
+                                        'placeholder': '@mail.ru'
                                     }
                                 } %}
 
@@ -612,7 +623,7 @@
                                                     'type': 'select',
                                                     'name': 'catalog[is_enabled]',
                                                     'args': {
-                                                        'option': {'yes':'Да', 'no':'Нет'},
+                                                        'option': _(['yes', 'no']),
                                                         'selected': 'yes'
                                                     }
                                                 } %}
@@ -678,7 +689,7 @@
                                                     'type': 'select',
                                                     'name': 'catalog[sort_by]',
                                                     'args': {
-                                                        'option': collect(reference('/App/Domain/References/Catalog::ORDER_BY')).combine(['Заголовок', 'Цена', 'Наличие', 'Дата']),
+                                                        'option': _(reference('/App/Domain/References/Catalog::ORDER_BY')),
                                                         'selected': 'title'
                                                     }
                                                 } %}
@@ -689,8 +700,8 @@
                                                     'type': 'select',
                                                     'name': 'catalog[sort_direction]',
                                                     'args': {
-                                                        'option': collect(reference('/App/Domain/References/Catalog::ORDER_DIRECTION')).combine(['По возрастанию', 'По убыванию']),
-                                                        'selected': 'asc'
+                                                        'option': _(reference('/App/Domain/References/Catalog::ORDER_DIRECTION')),
+                                                        'selected': 'ASC'
                                                     }
                                                 } %}
 
@@ -713,7 +724,7 @@
                                                     'type': 'select',
                                                     'name': 'catalog[mail_client]',
                                                     'args': {
-                                                        'option': {'off':'Выключена', 'on':'Включена'},
+                                                        'option': _(['off', 'on']),
                                                         'selected': 'off'
                                                     }
                                                 } %}
@@ -733,7 +744,7 @@
                                                     'type': 'select',
                                                     'name': 'catalog[mail_admin]',
                                                     'args': {
-                                                        'option': {'off':'Выключена', 'on':'Включена'},
+                                                        'option': _(['off', 'on']),
                                                         'selected': 'off'
                                                     }
                                                 } %}
@@ -845,7 +856,7 @@
                                                     'type': 'select',
                                                     'name': 'catalog[order_fields]',
                                                     'args': {
-                                                        'option': {'yes':'Да', 'no':'Нет'},
+                                                        'option': _(['yes', 'no']),
                                                         'selected': 'no'
                                                     }
                                                 } %}
@@ -933,7 +944,7 @@
                                                     'type': 'select',
                                                     'name': 'integration[recaptcha]',
                                                     'args': {
-                                                        'option': {'off':'Выключена', 'on':'Включена'}
+                                                        'option': _(['off', 'on'])
                                                     }
                                                 } %}
 

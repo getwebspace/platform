@@ -2,12 +2,10 @@
 
 namespace App\Domain;
 
-use App\Domain\Exceptions\WrongEmailValueException;
-use App\Domain\Exceptions\WrongIpValueException;
-use App\Domain\Exceptions\WrongPhoneValueException;
 use BadMethodCallException;
 use DateTime;
 use Ramsey\Uuid\Uuid;
+use RuntimeException;
 
 abstract class AbstractEntity extends AbstractComponent
 {
@@ -60,7 +58,7 @@ abstract class AbstractEntity extends AbstractComponent
     }
 
     /**
-     * @throws WrongEmailValueException
+     * @throws RuntimeException
      */
     protected function checkEmailByValue(string $value): bool
     {
@@ -69,14 +67,14 @@ abstract class AbstractEntity extends AbstractComponent
                 return true;
             }
 
-            throw new WrongEmailValueException();
+            throw new RuntimeException();
         }
 
         return false;
     }
 
     /**
-     * @throws WrongPhoneValueException
+     * @throws RuntimeException
      */
     protected function checkPhoneByValue(string &$value): bool
     {
@@ -93,7 +91,7 @@ abstract class AbstractEntity extends AbstractComponent
                 return true;
             }
 
-            throw new WrongPhoneValueException();
+            throw new RuntimeException();
         }
 
         return false;
@@ -118,7 +116,7 @@ abstract class AbstractEntity extends AbstractComponent
     }
 
     /**
-     * @throws WrongIpValueException
+     * @throws RuntimeException
      */
     protected function getIpByValue(string $value): bool
     {
@@ -126,7 +124,7 @@ abstract class AbstractEntity extends AbstractComponent
             return true;
         }
 
-        throw new WrongIpValueException();
+        throw new RuntimeException();
     }
 
     protected function getPasswordHashByValue(string $value): string

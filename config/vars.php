@@ -4,6 +4,7 @@
 define('BASE_DIR',          realpath(__DIR__ . '/..'));
 define('BIN_DIR',           realpath(__DIR__ . '/../bin'));
 define('CONFIG_DIR',        realpath(__DIR__ . '/../config'));
+define('LOCALE_DIR',        realpath(__DIR__ . '/../locale'));
 define('PLUGIN_DIR',        realpath(__DIR__ . '/../plugin'));
 define('PUBLIC_DIR',        realpath(__DIR__ . '/../public'));
 define('UPLOAD_DIR',        realpath(__DIR__ . '/../public/uploads'));

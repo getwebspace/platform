@@ -6,4 +6,5 @@ use App\Domain\AbstractException;
 
 class EmailAlreadyExistsException extends AbstractException
 {
+    protected $message = 'EXCEPTION_EMAIL_ALREADY_EXISTS';
 }

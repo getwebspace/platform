@@ -140,7 +140,7 @@ class SearchAction extends AbstractAction
             foreach ($entities as $type => $service) {
                 if (!empty($search_by_index[$type])) {
                     /** @var AbstractService $service */
-                    foreach ($service->read(['uuid' => $search_by_index[$type], 'limit' => $limit]) as $index => $item) {
+                    foreach ($service->read(['uuid' => $search_by_index[$type], 'status' => 'work', 'limit' => $limit]) as $index => $item) {
                         $result[$type][$index] = array_intersect_key(
                             $item->toArray(),
                             array_flip([

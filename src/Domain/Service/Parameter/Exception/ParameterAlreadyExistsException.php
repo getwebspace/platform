@@ -6,4 +6,5 @@ use App\Domain\AbstractException;
 
 class ParameterAlreadyExistsException extends AbstractException
 {
+    protected $message = 'EXCEPTION_PARAMETER_ALREADY_EXISTS';
 }

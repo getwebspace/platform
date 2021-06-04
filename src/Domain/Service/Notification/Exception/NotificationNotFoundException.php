@@ -6,4 +6,5 @@ use App\Domain\AbstractException;
 
 class NotificationNotFoundException extends AbstractException
 {
+    protected $message = 'EXCEPTION_NOTIFICATION_NOT_FOUND';
 }
