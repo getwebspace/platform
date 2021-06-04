@@ -113,6 +113,7 @@ class FormAction extends AbstractAction
                 $task = new \App\Domain\Tasks\SendMailTask($this->container);
                 $task->execute([
                     'to' => $mailto,
+                    'cc' => $form->getAuthorSend() && !empty($data['email']) ? $data['email'] : '',
                     'subject' => $form->getTitle(),
                     'body' => $body,
                     'isHtml' => $isHtml,

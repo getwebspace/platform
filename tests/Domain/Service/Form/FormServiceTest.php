@@ -41,6 +41,7 @@ class FormServiceTest extends TestCase
             'title' => $this->getFaker()->title,
             'address' => 'some-custom-address',
             'template' => $this->getFaker()->word,
+            'authorSend' => $this->getFaker()->boolean,
             'recaptcha' => $this->getFaker()->boolean,
             'origin' => [$this->getFaker()->domainName],
             'mailto' => [$this->getFaker()->email],
@@ -51,6 +52,7 @@ class FormServiceTest extends TestCase
         $this->assertSame($data['title'], $form->getTitle());
         $this->assertSame($data['address'], $form->getAddress());
         $this->assertSame($data['template'], $form->getTemplate());
+        $this->assertSame($data['authorSend'], $form->getAuthorSend());
         $this->assertSame($data['recaptcha'], $form->getRecaptcha());
         $this->assertSame($data['origin'], $form->getOrigin());
         $this->assertSame($data['mailto'], $form->getMailto());
@@ -62,6 +64,7 @@ class FormServiceTest extends TestCase
         $this->assertSame($data['title'], $f->getTitle());
         $this->assertSame($data['address'], $f->getAddress());
         $this->assertSame($data['template'], $f->getTemplate());
+        $this->assertSame($data['authorSend'], $f->getAuthorSend());
         $this->assertSame($data['recaptcha'], $f->getRecaptcha());
         $this->assertSame($data['origin'], $f->getOrigin());
         $this->assertSame($data['mailto'], $f->getMailto());
@@ -159,6 +162,7 @@ class FormServiceTest extends TestCase
             'title' => $this->getFaker()->title,
             'address' => 'some-custom-address',
             'template' => $this->getFaker()->word,
+            'authorSend' => $this->getFaker()->boolean,
             'recaptcha' => $this->getFaker()->boolean,
             'origin' => [$this->getFaker()->domainName],
             'mailto' => [$this->getFaker()->email],
@@ -168,6 +172,7 @@ class FormServiceTest extends TestCase
             'title' => $this->getFaker()->title,
             'address' => 'some-custom-address',
             'template' => $this->getFaker()->word,
+            'authorSend' => $this->getFaker()->boolean,
             'recaptcha' => $this->getFaker()->boolean,
             'origin' => [$this->getFaker()->domainName],
             'mailto' => [$this->getFaker()->email],
@@ -178,6 +183,7 @@ class FormServiceTest extends TestCase
         $this->assertSame($data['title'], $form->getTitle());
         $this->assertSame($data['address'], $form->getAddress());
         $this->assertSame($data['template'], $form->getTemplate());
+        $this->assertSame($data['authorSend'], $form->getAuthorSend());
         $this->assertSame($data['recaptcha'], $form->getRecaptcha());
         $this->assertSame($data['origin'], $form->getOrigin());
         $this->assertSame($data['mailto'], $form->getMailto());

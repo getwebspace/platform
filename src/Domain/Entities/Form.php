@@ -115,6 +115,31 @@ class Form extends AbstractEntity
     }
 
     /**
+     * @ORM\Column(type="boolean", options={"default": false})
+     */
+    protected bool $authorSend = false;
+
+    /**
+     * @param mixed $authorSend
+     *
+     * @return $this
+     */
+    public function setAuthorSend($authorSend)
+    {
+        $this->authorSend = $this->getBooleanByValue($authorSend);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getAuthorSend()
+    {
+        return $this->authorSend;
+    }
+
+    /**
      * @ORM\Column(type="array")
      */
     protected array $origin = [];

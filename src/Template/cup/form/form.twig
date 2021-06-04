@@ -113,6 +113,18 @@
                                     }
                                 } %}
                             </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Включить отправку копии заявителю',
+                                    'message': 'Копия формы будет отправлена заявителю, если будет найдено заполенное поле <code>email</code>.<br/>По-умолчанию: выключено',
+                                    'type': 'select',
+                                    'name': 'authorSend',
+                                    'args': {
+                                        'option': _(['yes', 'no']),
+                                        'selected': item.authorSend ? 'yes' : 'no'
+                                    }
+                                } %}
+                            </div>
                         </div>
                     </div>
 
