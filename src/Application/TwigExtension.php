@@ -181,11 +181,12 @@ class TwigExtension extends AbstractExtension
         switch (true) {
             case is_a($value, Collection::class):
             case is_array($value):
-                foreach ($value as $key => $item) {
-                    $value[$key] = i18n::$locale[$item] ?? $item;
+                $buf = [];
+                foreach ($value as $item) {
+                    $buf[$item] = i18n::$locale[$item] ?? $item;
                 }
 
-                return $value;
+                return $buf;
 
             case is_string($value):
                 return i18n::$locale[$value] ?? $value;
