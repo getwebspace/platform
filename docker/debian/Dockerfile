@@ -87,7 +87,7 @@ RUN set -x \
     && chmod -R 0777 ${PLATFORM_HOME}/var
 
 EXPOSE 80/tcp 443/tcp
-VOLUME ["${PLATFORM_HOME}/plugin", "${PLATFORM_HOME}/public/resource", "${PLATFORM_HOME}/theme", "${PLATFORM_HOME}/var", "${PLATFORM_HOME}/public/uploads"]
+VOLUME ["${PLATFORM_HOME}/locale", "${PLATFORM_HOME}/plugin", "${PLATFORM_HOME}/public/resource", "${PLATFORM_HOME}/theme", "${PLATFORM_HOME}/var", "${PLATFORM_HOME}/public/uploads"]
 
 STOPSIGNAL SIGTERM
 
