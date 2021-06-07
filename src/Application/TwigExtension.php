@@ -182,8 +182,11 @@ class TwigExtension extends AbstractExtension
             case is_a($value, Collection::class):
             case is_array($value):
                 $buf = [];
-                foreach ($value as $item) {
-                    $buf[$item] = i18n::$locale[$item] ?? $item;
+                foreach ($value as $key => $item) {
+                    if (is_numeric($key) && in_array($item, array_keys(i18n::$locale))) {
+                        $key = $item;
+                    }
+                    $buf[$key] = i18n::$locale[$item] ?? $item;
                 }
 
                 return $buf;
