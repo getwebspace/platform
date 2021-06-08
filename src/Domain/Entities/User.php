@@ -4,10 +4,12 @@ namespace App\Domain\Entities;
 
 use App\Domain\AbstractEntity;
 use App\Domain\Entities\User\Group as UserGroup;
+use App\Domain\Entities\User\Integration as UserIntegration;
 use App\Domain\Entities\User\Session as UserSession;
 use App\Domain\Traits\FileTrait;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Illuminate\Support\Collection;
 use Ramsey\Uuid\Uuid;
 use RuntimeException;
 
@@ -393,6 +395,71 @@ class User extends AbstractEntity
     public function getChange()
     {
         return $this->change;
+    }
+
+    /**
+     * @ORM\Column(type="array", options={"default": "a:0:{}"})
+     */
+    protected array $token = [];
+
+    /**
+     * @return $this
+     */
+    public function setToken(array $token)
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    /**
+     * @param mixed  $data
+     *
+     * @return $this
+     */
+    public function changeToken(string $name, $data)
+    {
+        $this->token[$name] = $data;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getToken(?string $name = null)
+    {
+        if ($name) {
+            return $this->token[$name] ?? null;
+        }
+
+        return $this->token;
+    }
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Domain\Entities\User\Integration", mappedBy="user", orphanRemoval=true)
+     */
+    protected $integrations = [];
+
+    /**
+     * @return $this
+     */
+    public function addIntegration(UserIntegration $integration)
+    {
+        $this->integrations[] = $integration;
+        $integration->setUser($this);
+
+        return $this;
+    }
+
+    /**
+     * @param mixed $raw
+     *
+     * @return array|Collection
+     */
+    public function getIntegrations($raw = false)
+    {
+        return $raw ? $this->integrations : collect($this->integrations);
     }
 
     /**

@@ -1,0 +1,108 @@
+<?php declare(strict_types=1);
+
+namespace tests\Domain\Service\User;
+
+use App\Domain\Entities\User;
+use App\Domain\Entities\User\Integration as UserIntegration;
+use App\Domain\Repository\User\IntegrationRepository as UserIntegrationRepository;
+use App\Domain\Service\User\Exception\IntegrationNotFoundException;
+use App\Domain\Service\User\IntegrationService;
+use App\Domain\Service\User\UserService;
+use Doctrine\ORM\EntityManager;
+use tests\TestCase;
+
+/**
+ * @internal
+ * @coversNothing
+ */
+class IntegrationServiceTest extends TestCase
+{
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+
+    /**
+     * @var IntegrationService
+     */
+    protected $service;
+
+    /**
+     * @var User test user
+     */
+    private User $user;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->em = $this->getEntityManager();
+        $this->service = IntegrationService::getWithEntityManager($this->em);
+        $this->user = UserService::getWithEntityManager($this->em)->create([
+            'username' => $this->getFaker()->word,
+            'email' => $this->getFaker()->email,
+            'phone' => $this->getFaker()->e164PhoneNumber,
+            'password' => $this->getFaker()->password,
+            'firstname' => $this->getFaker()->firstName,
+            'lastname' => $this->getFaker()->lastName,
+            'address' => $this->getFaker()->address,
+            'additional' => $this->getFaker()->company,
+        ]);
+    }
+
+    public function testCreateSuccess(): void
+    {
+        $data = [
+            'user' => $this->user,
+            'provider' => $this->getFaker()->word,
+            'unique' => (string) $this->getFaker()->randomNumber(),
+        ];
+
+        $integration = $this->service->create($data);
+        $this->assertInstanceOf(UserIntegration::class, $integration);
+        $this->assertSame($data['user'], $integration->getUser());
+        $this->assertSame($data['provider'], $integration->getProvider());
+        $this->assertSame($data['unique'], $integration->getUnique());
+
+        /** @var UserIntegrationRepository $userIntegrationRepo */
+        $userIntegrationRepo = $this->em->getRepository(UserIntegration::class);
+        $i = $userIntegrationRepo->findOneByUuid($integration->getUuid());
+        $this->assertInstanceOf(UserIntegration::class, $i);
+        $this->assertSame($data['user'], $i->getUser());
+    }
+
+    public function testReadSuccess(): void
+    {
+        $data = [
+            'user' => $this->user,
+            'provider' => $this->getFaker()->word,
+            'unique' => (string) $this->getFaker()->randomNumber(),
+        ];
+
+        $this->service->create($data);
+
+        $integration = $this->service->read([
+            'provider' => $data['provider'],
+            'unique' => $data['unique'],
+        ]);
+        $this->assertInstanceOf(UserIntegration::class, $integration);
+        $this->assertSame($data['user'], $integration->getUser());
+    }
+
+    public function testDelete(): void
+    {
+        $this->expectException(IntegrationNotFoundException::class);
+
+        $data = [
+            'user' => $this->user,
+            'provider' => $this->getFaker()->word,
+            'unique' => $this->getFaker()->randomNumber(),
+        ];
+
+        $integration = $this->service->create($data);
+        $this->service->delete($integration);
+        $this->service->read([
+            'provider' => $data['provider'],
+            'unique' => $data['unique'],
+        ]);
+    }
+}

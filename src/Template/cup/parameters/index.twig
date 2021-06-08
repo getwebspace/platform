@@ -24,7 +24,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="nav-link" data-toggle="pill" href="#other-user" role="tab">
+                                <a class="nav-link" data-toggle="pill" href="#user" role="tab">
                                     Пользователи
                                 </a>
                             </li>
@@ -498,107 +498,209 @@
                             </div>
 
                             {# TAB: User #}
-                            <div class="tab-pane fade" id="other-user" role="tabpanel">
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Включить пользователей',
-                                    'description': 'Позволяет пользователям регистрироваться на сайте',
-                                    'type': 'select',
-                                    'name': 'user[is_enabled]',
-                                    'args': {
-                                        'option': _(['yes', 'no']),
-                                        'selected': 'yes'
-                                    }
-                                } %}
+                            <div class="tab-pane fade" id="user" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-5 col-md-4">
+                                        <div class="nav flex-column nav-pills nav-secondary">
+                                            <a class="nav-link active"  data-toggle="pill" href="#user-common">Основные</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#user-template">Шаблоны</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#user-access">Группа и права доступа</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#user-auth">Параметры входа</a>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-sm-7 col-md-8 mt-5 mt-sm-0">
+                                        <div class="tab-content">
 
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Метод авторизации на сайте',
-                                    'description': 'Вы можете выбрать, каким способом будет производиться авторизация пользователей на сайте. Доступно два варианта, либо с использованием своего логина или с использованием E-mail',
-                                    'type': 'select',
-                                    'name': 'user[login_type]',
-                                    'args': {
-                                        'option': _(['username', 'email', 'phone'])
-                                    }
-                                } %}
+                                            {# TAB: User common #}
+                                            <div class="tab-pane fade active show" id="user-common">
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Включить пользователей',
+                                                    'description': 'Позволяет пользователям регистрироваться на сайте',
+                                                    'type': 'select',
+                                                    'name': 'user[is_enabled]',
+                                                    'args': {
+                                                        'option': _(['yes', 'no']),
+                                                        'selected': 'yes'
+                                                    }
+                                                } %}
+                                            </div>
 
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Шаблон страницы авторизации',
-                                    'type': 'text',
-                                    'name': 'user[login_template]',
-                                    'args': {
-                                        'placeholder': 'user.login.twig',
-                                        'value': 'user.login.twig'
-                                    }
-                                } %}
+                                            {# TAB: User Template #}
+                                            <div class="tab-pane fade" id="user-template">
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Шаблон страницы авторизации',
+                                                    'type': 'text',
+                                                    'name': 'user[login_template]',
+                                                    'args': {
+                                                        'placeholder': 'user.login.twig',
+                                                        'value': 'user.login.twig'
+                                                    }
+                                                } %}
 
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Шаблон страницы регистрации',
-                                    'type': 'text',
-                                    'name': 'user[register_template]',
-                                    'args': {
-                                        'placeholder': 'user.register.twig',
-                                        'value': 'user.register.twig'
-                                    }
-                                } %}
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Шаблон страницы регистрации',
+                                                    'type': 'text',
+                                                    'name': 'user[register_template]',
+                                                    'args': {
+                                                        'placeholder': 'user.register.twig',
+                                                        'value': 'user.register.twig'
+                                                    }
+                                                } %}
 
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Шаблон страницы восстановления пароля',
-                                    'type': 'text',
-                                    'name': 'user[lostpassword_template]',
-                                    'args': {
-                                        'placeholder': 'user.lostpassword.twig',
-                                        'value': 'user.lostpassword.twig'
-                                    }
-                                } %}
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Шаблон страницы восстановления пароля',
+                                                    'type': 'text',
+                                                    'name': 'user[lostpassword_template]',
+                                                    'args': {
+                                                        'placeholder': 'user.lostpassword.twig',
+                                                        'value': 'user.lostpassword.twig'
+                                                    }
+                                                } %}
 
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Шаблон страницы профиля пользователя',
-                                    'type': 'text',
-                                    'name': 'user[profile_template]',
-                                    'args': {
-                                        'placeholder': 'user.profile.twig',
-                                        'value': 'user.profile.twig'
-                                    }
-                                } %}
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Шаблон страницы профиля пользователя',
+                                                    'type': 'text',
+                                                    'name': 'user[profile_template]',
+                                                    'args': {
+                                                        'placeholder': 'user.profile.twig',
+                                                        'value': 'user.profile.twig'
+                                                    }
+                                                } %}
+                                            </div>
 
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Запрещенные домены для регистрации',
-                                    'type': 'textarea',
-                                    'name': 'user[banned_email]',
-                                    'message': 'Каждый домен с новой строки',
-                                    'args': {
-                                        'style': 'height: 100px!important;',
-                                        'placeholder': '@mail.ru'
-                                    }
-                                } %}
+                                            {# TAB: User Access #}
+                                            <div class="tab-pane fade" id="user-access">
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Группа пользователя (по-умолчанию)',
+                                                    'type': 'select',
+                                                    'name': 'user[group]',
+                                                    'description': 'Новый пользователь будет автоматически добавляться в выбранную группу',
+                                                    'args': {
+                                                        'option': {'': '---'}|merge(groups.pluck('title', 'uuid').all())
+                                                    }
+                                                } %}
 
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Группа пользователя (по-умолчанию)',
-                                    'type': 'select',
-                                    'name': 'user[group]',
-                                    'description': 'Новый пользователь будет автоматически добавляться в выбранную группу',
-                                    'args': {
-                                        'option': {'': '---'}|merge(groups.pluck('title', 'uuid').all())
-                                    }
-                                } %}
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Права доступа (по-умолчанию)',
+                                                    'type': 'select',
+                                                    'name': 'user[access][]',
+                                                    'description': [
+                                                        'Указанные права доступа так же будут применены для незарегистрированного пользователя<br>',
+                                                        '<button class="btn btn-outline-success btn-sm mr-1" type="button" data-access-click="common">Общие</button>',
+                                                        '<button class="btn btn-outline-secondary btn-sm mr-1" type="button" data-access-click="cup">Панель управления</button>',
+                                                        '<button class="btn btn-outline-info btn-sm mr-1" type="button" data-access-click="api">API</button>',
+                                                        '<button class="btn btn-outline-danger btn-sm mr-1" type="button" data-access-click="none">Ничего</button>',
+                                                    ]|join(''),
+                                                    'args': {
+                                                        'multiple': true,
+                                                        'option': routes.all,
+                                                        'selected': routes.guest,
+                                                        'force-value': parameter['user[access]'].value ? parameter['user[access]'].value|split(',') : null
+                                                    }
+                                                } %}
+                                            </div>
 
-                                {% include 'cup/field.twig' with {
-                                    'label': 'Права доступа (по-умолчанию)',
-                                    'type': 'select',
-                                    'name': 'user[access][]',
-                                    'description': [
-                                        'Указанные права доступа так же будут применены для незарегистрированного пользователя<br>',
-                                        '<button class="btn btn-outline-success btn-sm mr-1" type="button" data-access-click="common">Общие</button>',
-                                        '<button class="btn btn-outline-secondary btn-sm mr-1" type="button" data-access-click="cup">Панель управления</button>',
-                                        '<button class="btn btn-outline-info btn-sm mr-1" type="button" data-access-click="api">API</button>',
-                                        '<button class="btn btn-outline-danger btn-sm mr-1" type="button" data-access-click="none">Ничего</button>',
-                                    ]|join(''),
-                                    'args': {
-                                        'multiple': true,
-                                        'option': routes.all,
-                                        'selected': routes.guest,
-                                        'force-value': parameter['user[access]'].value ? parameter['user[access]'].value|split(',') : null
-                                    }
-                                } %}
+                                            {# TAB: User Auth #}
+                                            <div class="tab-pane fade" id="user-auth">
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Метод авторизации на сайте',
+                                                    'description': 'Вы можете выбрать, каким способом будет производиться авторизация пользователей на сайте. Доступно два варианта, либо с использованием своего логина или с использованием E-mail',
+                                                    'type': 'select',
+                                                    'name': 'user[login_type]',
+                                                    'args': {
+                                                        'option': _(['username', 'email', 'phone'])
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Запрещенные домены для регистрации',
+                                                    'type': 'textarea',
+                                                    'name': 'user[banned_email]',
+                                                    'message': 'Каждый домен с новой строки',
+                                                    'args': {
+                                                        'style': 'height: 100px!important;',
+                                                        'placeholder': '@mail.ru'
+                                                    }
+                                                } %}
+
+                                                <hr>
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Включить вход через Facebook',
+                                                    'description': 'Позволяет пользователям регистрироваться и входить на сайт с помощью социальной сети',
+                                                    'type': 'select',
+                                                    'name': 'user[auth_facebook_is_enabled]',
+                                                    'args': {
+                                                        'option': _(['yes', 'no']),
+                                                        'selected': 'no'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'App ID',
+                                                    'postfix': '<i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="top" title="Требуется внимательная проверка значения!"></i>',
+                                                    'type': 'text',
+                                                    'name': 'user[auth_facebook_app_id]'
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'App Secret',
+                                                    'postfix': '<i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="top" title="Требуется внимательная проверка значения!"></i>',
+                                                    'type': 'text',
+                                                    'name': 'user[auth_facebook_app_secret]'
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Proxy URL',
+                                                    'postfix': '<i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="top" title="Требуется внимательная проверка значения!"></i>',
+                                                    'type': 'text',
+                                                    'name': 'user[auth_facebook_proxy]',
+                                                    'args': {
+                                                        'value': base_url() ~ '/user/login?provider=facebook'
+                                                    }
+                                                } %}
+
+                                                <hr>
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Включить вход через VK',
+                                                    'description': 'Позволяет пользователям регистрироваться и входить на сайт с помощью социальной сети',
+                                                    'type': 'select',
+                                                    'name': 'user[auth_vk_is_enabled]',
+                                                    'args': {
+                                                        'option': _(['yes', 'no']),
+                                                        'selected': 'no'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'App ID',
+                                                    'postfix': '<i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="top" title="Требуется внимательная проверка значения!"></i>',
+                                                    'type': 'text',
+                                                    'name': 'user[auth_vk_app_id]'
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'App Secret',
+                                                    'postfix': '<i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="top" title="Требуется внимательная проверка значения!"></i>',
+                                                    'type': 'text',
+                                                    'name': 'user[auth_vk_app_secret]'
+                                                } %}
+
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Proxy URL',
+                                                    'postfix': '<i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="top" title="Требуется внимательная проверка значения!"></i>',
+                                                    'type': 'text',
+                                                    'name': 'user[auth_vk_proxy]',
+                                                    'args': {
+                                                        'value': base_url() ~ '/user/login?provider=vk'
+                                                    }
+                                                } %}
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             {# TAB: Catalog #}

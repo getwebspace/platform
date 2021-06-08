@@ -34,9 +34,27 @@ class LoginPageAction extends UserAction
                         'ip' => $data['ip'],
                         'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
                     ]);
+                    $session = $user->getSession();
+
+                    // create new session
+                    if ($session === null) {
+                        $session = $this->userSessionService->create([
+                            'user' => $user,
+                            'date' => 'now',
+                            'agent' => $this->request->getServerParam('HTTP_USER_AGENT'),
+                            'ip' => $this->request->getServerParam('REMOTE_ADDR'),
+                        ]);
+                    } else {
+                        // update session
+                        $session = $this->userSessionService->update($session, [
+                            'date' => 'now',
+                            'agent' => $this->request->getServerParam('HTTP_USER_AGENT'),
+                            'ip' => $this->request->getServerParam('REMOTE_ADDR'),
+                        ]);
+                    }
 
                     setcookie('uuid', $user->getUuid()->toString(), time() + \App\Domain\References\Date::YEAR, '/');
-                    setcookie('session', $user->getSession()->getHash(), time() + \App\Domain\References\Date::YEAR, '/');
+                    setcookie('session', $session->getHash(), time() + \App\Domain\References\Date::YEAR, '/');
 
                     return $this->response->withRedirect($data['redirect'] ? $data['redirect'] : '/cup');
                 } catch (UserNotFoundException $exception) {

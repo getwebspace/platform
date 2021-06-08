@@ -192,6 +192,10 @@
                             <li class="list-group-item">Зарегистрирован: {{ item.register|df('d.m.Y H:i:s') }}</li>
                             <li class="list-group-item">Последнее редактирование: {{ item.change|df('d.m.Y H:i:s') }}</li>
 
+                            {% for integration in item.getIntegrations() %}
+                                <li class="list-group-item">Подключена социальная сеть: {{ integration.provider|capitalize }}</li>
+                            {% endfor %}
+
                             {% if item.session.date.getTimestamp() %}
                                 <li class="list-group-item">Последняя активность: {{ item.session.date|df('d.m.Y H:i:s') }}</li>
                             {% endif %}

@@ -171,6 +171,9 @@ ol {
 	min-width: 32px;
 	padding: 8px 0;
 }
+.btn-border {
+	border: 1px solid black;
+}
 
 /* Preloder */
 
