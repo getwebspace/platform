@@ -13,7 +13,62 @@
     } %}
 
     <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            // load resources once
+            if (window.editor_loader === undefined) {
+                window.editor_loader = async function (list) {
+                    for (let url of list) {
+                        await window.editor_loader.load(url);
+                    }
+                }
+                window.editor_loader.loaded = new Set();
+                window.editor_loader.load = url => {
+                    return new Promise(resolve => {
+                        if (window.editor_loader.loaded.has(url)) {
+                            return resolve();
+                        }
+
+                        let el;
+                        switch (true) {
+                            case url.includes('.js'): {
+                                el = document.createElement('script');
+                                el.src = url;
+                                el.onload = () => setTimeout(resolve, 30);
+                                break;
+                            }
+                            case url.includes('.css'): {
+                                el = document.createElement('link');
+                                el.rel = 'stylesheet';
+                                el.href = url;
+                                el.onload = resolve;
+                                break;
+                            }
+                        }
+
+                        document.body.appendChild(el);
+                        window.editor_loader.loaded.add(url);
+                    });
+                };
+            }
+
+            await window.editor_loader([
+                '/assets/js/plugin/codemirror/lib/codemirror.css?v={{ sha }}',
+                '/assets/js/plugin/codemirror/theme/darcula.css?v={{ sha }}',
+                '/assets/js/plugin/froala/froala_editor.pkgd.css?v={{ sha }}',
+                '/assets/js/plugin/froala/froala_style.css?v={{ sha }}',
+                '/assets/js/plugin/codemirror/lib/codemirror.js?v={{ sha }}',
+                '/assets/js/plugin/codemirror/addon/mode/overlay.js?v={{ sha }}',
+                '/assets/js/plugin/codemirror/addon/selection/selection-pointer.js?v={{ sha }}',
+                '/assets/js/plugin/codemirror/mode/css/css.js?v={{ sha }}',
+                '/assets/js/plugin/codemirror/mode/xml/xml.js?v={{ sha }}',
+                '/assets/js/plugin/codemirror/mode/javascript/javascript.js?v={{ sha }}',
+                '/assets/js/plugin/codemirror/mode/vbscript/vbscript.js?v={{ sha }}',
+                '/assets/js/plugin/codemirror/mode/htmlmixed/htmlmixed.js?v={{ sha }}',
+                '/assets/js/plugin/codemirror/mode/twig/twig.js?v={{ sha }}',
+                '/assets/js/plugin/froala/froala_editor.pkgd.js?v={{ sha }}',
+                '/assets/js/plugin/froala/ru.js?v={{ sha }}',
+            ]);
+
             let $editor = $('#wysiwygeditor-{{ editorId }}')
                 .froalaEditor({
                     iframe: true,
