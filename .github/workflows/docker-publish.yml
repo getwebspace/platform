@@ -60,3 +60,31 @@ jobs:
 
             - name: Push container
               run: docker push $DEFAULT_IMAGE_NAME:${{ env.VERSION }}
+
+    # build debian based container WITH sqlsrv PDO driver
+    debian-sqlsrv:
+        needs: debian
+
+        runs-on: ubuntu-20.04
+        if: github.event_name == 'push'
+
+        steps:
+            - uses: actions/checkout@v2
+
+            - name: Definition version
+              run: |
+                  VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
+                  [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
+                  [ "$VERSION" == "master" ] && VERSION=latest
+
+                  echo VERSION=$VERSION
+                  echo "::set-env name=VERSION::$VERSION"
+
+            - name: Build container
+              run: docker build . --build-arg=COMMIT=${{ github.sha }} --build-arg=BRANCH=${{ env.VERSION }}--sqlsrv --file docker/debian/Dockerfile --tag $DEFAULT_IMAGE_NAME:${{ env.VERSION }}-sqlsrv
+
+            - name: Log into registry
+              run: echo "${{ secrets.DOCKER_HUB }}" | docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
+
+            - name: Push container
+              run: docker push $DEFAULT_IMAGE_NAME:${{ env.VERSION }}-sqlsrv
