@@ -44,7 +44,7 @@ RUN set -x \
         pngquant \
         gifsicle \
         imagemagick \
-        msodbcsql \
+        msodbcsql17 \
         unixodbc-dev \
     && nginx -V \
     && pecl install -f imagick yaml sqlsrv pdo_sqlsrv \
