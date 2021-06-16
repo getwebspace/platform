@@ -86,7 +86,7 @@ RUN set -x \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && rm /var/log/lastlog /var/log/faillog \
-    && chmod -R 0777 ${PLATFORM_HOME}/locale \
+    && chmod -R 0755 ${PLATFORM_HOME}/locale \
     && chmod -R 0777 ${PLATFORM_HOME}/plugin \
     && chmod -R 0777 ${PLATFORM_HOME}/public/resource \
     && chmod -R 0777 ${PLATFORM_HOME}/public/uploads \
