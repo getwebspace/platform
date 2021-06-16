@@ -46,6 +46,8 @@ RUN set -x \
         imagemagick \
         msodbcsql17 \
         unixodbc-dev \
+    && sed -i 's,^\(MinProtocol[ ]*=\).*,\1'TLSv1.0',g' /etc/ssl/openssl.cnf \
+    && sed -i 's,^\(CipherString[ ]*=\).*,\1'DEFAULT@SECLEVEL=1',g' /etc/ssl/openssl.cnf \
     && nginx -V \
     && pecl install -f imagick yaml sqlsrv pdo_sqlsrv \
     && docker-php-ext-configure gd \
