@@ -63,7 +63,7 @@ jobs:
 
     # build debian based container WITH sqlsrv PDO driver
     debian-sqlsrv:
-        needs: debian
+        needs: test
 
         runs-on: ubuntu-20.04
         if: github.event_name == 'push'
@@ -81,7 +81,7 @@ jobs:
                   echo "::set-env name=VERSION::$VERSION"
 
             - name: Build container
-              run: docker build . --build-arg=COMMIT=${{ github.sha }} --build-arg=BRANCH=${{ env.VERSION }}-sqlsrv --file docker/debian/Dockerfile --tag $DEFAULT_IMAGE_NAME:${{ env.VERSION }}-sqlsrv
+              run: docker build . --build-arg=COMMIT=${{ github.sha }} --build-arg=BRANCH=${{ env.VERSION }}-sqlsrv --file docker/debian-sqlsrv/Dockerfile --tag $DEFAULT_IMAGE_NAME:${{ env.VERSION }}-sqlsrv
 
             - name: Log into registry
               run: echo "${{ secrets.DOCKER_HUB }}" | docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
