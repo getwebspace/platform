@@ -30,51 +30,23 @@
                                         padding: 0;
                                         margin: 0;
                                     }
+                                    #CodeMirror .fr-toolbar {
+                                        display: none;
+                                    }
+                                    #CodeMirror .fr-wrapper,
+                                    #CodeMirror .fr-wrapper .CodeMirror-wrap {
+                                        height: 500px!important;
+                                    }
                                 </style>
 
-                                {% include 'cup/form.twig' with {
-                                    'type': 'textarea',
-                                    'name': 'content',
+                                {% include 'cup/editor.twig' with {
+                                    'name': 'template',
                                     'args': {
                                         'id': 'code',
                                         'value': content,
-                                        'style': 'height: 450px !important; opacity: 0'
+                                        'text_mode': true,
                                     }
                                 } %}
-
-                                <script type="text/javascript">
-                                        document.addEventListener('DOMContentLoaded', () => {
-                                            CodeMirror.defineMode('htmltwig', function(config) {
-                                                return CodeMirror.overlayMode(CodeMirror.getMode(config, 'htmlmixed'), CodeMirror.getMode(config, 'twig'));
-                                            });
-
-                                            let
-                                                mode = {
-                                                    name: 'htmltwig',
-                                                    scriptTypes: [
-                                                        {matches: /\/x-handlebars-template|\/x-mustache/i, mode: null},
-                                                        {matches: /(text|application)\/(x-)?vb(a|script)/i, mode: 'vbscript'}
-                                                    ],
-                                                    tags: {
-                                                        style: [
-                                                            ['type', /^text\/(x-)?scss$/, 'text/x-scss'],
-                                                            [null, null, 'css']
-                                                        ],
-                                                        custom: [
-                                                            [null, null, 'customMode']
-                                                        ]
-                                                    },
-                                                },
-                                                editor = CodeMirror.fromTextArea(document.getElementById('code'), {
-                                                    mode,
-                                                    lineNumbers: true,
-                                                    indentWithTabs: false,
-                                                    selectionPointer: true,
-                                                });
-
-                                            // You read this, why? :)
-                                        });
-                                    </script>
                             </div>
                         </div>
                     </div>
