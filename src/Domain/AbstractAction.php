@@ -407,7 +407,7 @@ abstract class AbstractAction extends AbstractComponent
     {
         $json = json_encode(array_serialize($array), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
-        return $this->response->withHeader('Content-Type', 'application/json')->write($json);
+        return $this->response->withHeader('Content-Type', 'application/json; charset=utf-8')->write($json);
     }
 
     /**
@@ -419,6 +419,6 @@ abstract class AbstractAction extends AbstractComponent
             $output = json_encode(array_serialize($output), JSON_UNESCAPED_UNICODE);
         }
 
-        return $this->response->withHeader('Content-Type', 'text/plain')->write($output);
+        return $this->response->withHeader('Content-Type', 'text/plain; charset=utf-8')->write($output);
     }
 }
