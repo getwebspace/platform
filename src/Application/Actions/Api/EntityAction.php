@@ -42,7 +42,7 @@ class EntityAction extends ActionApi
 
         if (($access = $this->isAccessAllowed()) !== false) {
             $status = 200;
-            $params = array_merge($params, $access);
+            $params['access'] = $access;
             $service = null;
 
             // read section
@@ -166,6 +166,10 @@ class EntityAction extends ActionApi
                     }
 
                     break;
+
+                default:
+                    $status = 204;
+                    $result = 'unknown type: ' . $params['entity'];
             }
 
             // update section

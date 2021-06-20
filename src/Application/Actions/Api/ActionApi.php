@@ -27,7 +27,10 @@ abstract class ActionApi extends AbstractAction
             // no break
 
             case 'key':
-                if (($key = $this->request->getParam('key')) !== null) {
+                if (
+                    ($key = $this->request->getHeaderLine('key')) !== null
+                    || ($key = $this->request->getParam('key')) !== null
+                ) {
                     if (in_array($key, explode(PHP_EOL, $this->parameter('entity_keys', '')), true)) {
                         // allow access for key
                         $access = true;
