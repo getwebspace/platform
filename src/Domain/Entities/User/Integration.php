@@ -129,4 +129,13 @@ class Integration extends AbstractEntity
     {
         return $this->date;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'provider' => $this->getProvider(),
+            'unique' => $this->getUnique(),
+            'date' => $this->getDate(),
+        ];
+    }
 }
