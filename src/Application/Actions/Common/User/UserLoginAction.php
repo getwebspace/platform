@@ -27,14 +27,14 @@ class UserLoginAction extends UserAction
                     'user' => $user,
                     'date' => 'now',
                     'agent' => $this->request->getServerParam('HTTP_USER_AGENT'),
-                    'ip' => $this->request->getServerParam('REMOTE_ADDR'),
+                    'ip' => $this->getRequestRemoteIP(),
                 ]);
             } else {
                 // update session
                 $session = $this->userSessionService->update($session, [
                     'date' => 'now',
                     'agent' => $this->request->getServerParam('HTTP_USER_AGENT'),
-                    'ip' => $this->request->getServerParam('REMOTE_ADDR'),
+                    'ip' => $this->getRequestRemoteIP(),
                 ]);
             }
 

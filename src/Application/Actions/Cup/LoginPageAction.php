@@ -20,7 +20,7 @@ class LoginPageAction extends UserAction
                 'password' => $this->request->getParam('password', ''),
 
                 'agent' => $this->request->getServerParam('HTTP_USER_AGENT'),
-                'ip' => $this->request->getServerParam('REMOTE_ADDR'),
+                'ip' => $this->getRequestRemoteIP(),
 
                 'redirect' => $this->request->getParam('redirect'),
             ];
@@ -42,14 +42,14 @@ class LoginPageAction extends UserAction
                             'user' => $user,
                             'date' => 'now',
                             'agent' => $this->request->getServerParam('HTTP_USER_AGENT'),
-                            'ip' => $this->request->getServerParam('REMOTE_ADDR'),
+                            'ip' => $this->getRequestRemoteIP(),
                         ]);
                     } else {
                         // update session
                         $session = $this->userSessionService->update($session, [
                             'date' => 'now',
                             'agent' => $this->request->getServerParam('HTTP_USER_AGENT'),
-                            'ip' => $this->request->getServerParam('REMOTE_ADDR'),
+                            'ip' => $this->getRequestRemoteIP(),
                         ]);
                     }
 

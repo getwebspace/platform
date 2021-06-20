@@ -164,6 +164,20 @@ abstract class AbstractAction extends AbstractComponent
     }
 
     /**
+     * @return string|null
+     */
+    protected function getRequestRemoteIP()
+    {
+        return $this->request->getServerParam(
+            'HTTP_X_REAL_IP',
+            $this->request->getServerParam(
+                'HTTP_X_FORWARDED_FOR',
+                $this->request->getServerParam('REMOTE_ADDR')
+            )
+        );
+    }
+
+    /**
      * For add or remove files for AbstractEntity with files
      */
     protected function processEntityFiles(AbstractEntity $entity, string $field = 'files'): AbstractEntity
@@ -299,7 +313,7 @@ abstract class AbstractAction extends AbstractComponent
             $query = http_build_query([
                 'secret' => $this->parameter('integration_recaptcha_private'),
                 'response' => $this->request->getParam('recaptcha', ''),
-                'remoteip' => $this->request->getServerParam('REMOTE_ADDR'),
+                'remoteip' => $this->getRequestRemoteIP(),
             ]);
             $verify = json_decode(file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, stream_context_create([
                 'http' => [
