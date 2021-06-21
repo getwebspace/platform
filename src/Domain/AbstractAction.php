@@ -164,7 +164,7 @@ abstract class AbstractAction extends AbstractComponent
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     protected function getRequestRemoteIP()
     {

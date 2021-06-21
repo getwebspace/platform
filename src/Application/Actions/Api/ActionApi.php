@@ -37,7 +37,6 @@ abstract class ActionApi extends AbstractAction
                         $params['key'] = $key;
                     }
                 }
-            // no break
         }
 
         return $access ? $params : false;
