@@ -53,6 +53,10 @@
                                         <td class="text-center">
                                             <form action="/cup/catalog/order/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить заказ?');">
                                                 <div class="btn-group">
+                                                    <a href="/cup/catalog/order/{{ item.uuid }}/invoice" class="btn btn-sm btn-outline-info">
+                                                        <i class="fas fa-file-invoice"></i>
+                                                        <span class="d-none d-md-inline-block">Инвойс</span>
+                                                    </a>
                                                     <a href="/cup/catalog/order/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
                                                         <i class="fas fa-fw fa-edit"></i>
                                                         <span class="d-none d-md-inline-block">Изменить</span>

@@ -5,7 +5,7 @@ $(() => {
     let topbar_open = 0,
         topbar = $('.topbar-toggler');
     
-    topbar.on('click', function() {
+    topbar.on('click', function () {
         if (topbar_open === 1) {
             $('html').removeClass('topbar_open');
             topbar.removeClass('toggled');
@@ -20,12 +20,12 @@ $(() => {
     // sidenav
     let nav_open = 0,
         nav_el = $('.sidenav-toggler');
-    nav_el.on('click', function(){
-        if (nav_open === 1){
+    nav_el.on('click', function () {
+        if (nav_open === 1) {
             $('html').removeClass('nav_open');
             nav_el.removeClass('toggled');
             nav_open = 0;
-        }  else {
+        } else {
             $('html').addClass('nav_open');
             nav_el.addClass('toggled');
             nav_open = 1;
@@ -36,7 +36,7 @@ $(() => {
     $('body').on('click', '.quick-sidebar-toggler, .close-quick-sidebar, .quick-sidebar-overlay', (e) => {
         $(e.currentTarget).toggleClass('toggled');
         $('html').toggleClass('quick_sidebar_open');
-    
+        
         let $el;
         if (($el = $('.quick-sidebar-overlay')) && $el.length) {
             $el.remove();
@@ -100,14 +100,14 @@ $(() => {
     // publication preview
     $('form [data-click="preview"]').on('click', function (e) {
         e.preventDefault();
-    
+        
         let $form = $(e.currentTarget).parents('form'),
             preview = window.open('/cup/publication/preview', 'prv', 'height=400,width=750,left=0,top=0,resizable=1,scrollbars=1');
-    
+        
         $form.attr('action', '/cup/publication/preview');
         $form.attr('target', 'prv');
         $form.submit();
-    
+        
         preview.focus();
         
         setTimeout(() => {
@@ -138,23 +138,23 @@ $(() => {
     {
         let $select = $('select[name="access[]"], [name="user[access][]"]'),
             $options = $select.find('option');
-    
+        
         $('[data-access-click]').on('click', (e) => {
             let $btn = $(e.currentTarget),
                 type = $btn.attr('data-access-click');
-        
+            
             if (type === 'none') {
                 $options.prop('selected', false);
             } else {
                 $options.each((i, el) => {
                     let $buf = $(el);
-                
+                    
                     if ($buf.val().startsWith(type)) {
                         $buf.prop('selected', !(+$buf.prop('selected')));
                     }
                 });
             }
-        
+            
             $select.trigger('change.select2');
         });
     }
@@ -164,12 +164,12 @@ $(() => {
         $('[data-entity-click="add"]').on('click', (e) => {
             function key() {
                 let d = new Date().getTime();
-        
+                
                 return 'xxxx-xyyx-xxxx-yxxy'.replace(/[xy]/g, (c) => {
                     let r = (d + Math.random() * 16) % 16 | 0;
                     
                     d = Math.floor(d / 16);
-            
+                    
                     return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
                 });
             }
@@ -177,7 +177,7 @@ $(() => {
             
             let $keys = $('[name="entity[keys]"]'),
                 value = $keys.val();
-    
+            
             $keys.val((value ? value + "\n" : '') + key());
         })
     }
@@ -213,14 +213,14 @@ $(() => {
             $row = $that.find('div.col-12.col-md-6 .row'),
             $template = $that.find('div[style="display: none"]').show().detach(),
             $select = $that.find('select');
-    
+        
         $that.find('button').on('click', () => {
             if ($row.find('[name="attributes[' + $select.val() + ']"]').length === 0) {
                 let $buf = $template.clone();
-            
+                
                 $buf.find('label').text($select.find(':selected').text());
                 $buf.find('input').attr('name', 'attributes[' + $select.val() + ']');
-            
+                
                 $buf.appendTo($row);
             }
         });
@@ -238,16 +238,16 @@ $(() => {
             $btnSuccess = $modal.find('button'),
             $template = $that.find('.list-group [style="display: none!important;"]').show().detach()
         ;
-    
+        
         $that.find('[data-btn-related-modal-products]').click((e) => {
             e.preventDefault();
             this.blur();
-        
+            
             let handler = (e) => {
                 $product
                     .html('')
                     .prop('disabled', true);
-    
+                
                 $.get('/api/catalog/product', {category: $(e.currentTarget).val()}, (res) => {
                     if (res.status === 200) {
                         for (let item of res.data) {
@@ -256,36 +256,36 @@ $(() => {
                             );
                         }
                     }
-        
+                    
                     $product
                         .trigger('change.select2')
                         .prop('disabled', false);
                 });
             };
             $category.html('').off('change', handler).on('change', handler);
-        
+            
             $.get('/api/catalog/category', (res) => {
                 if (res.status === 200) {
                     (function renderTree(list, parent = '00000000-0000-0000-0000-000000000000', title = '') {
                         let buf = 0;
-                    
+                        
                         for (let item of list) {
                             if (item.parent === parent) {
                                 let $el = $option.clone().text((title + ' ' + item.title).trim()).val(item.uuid);
-                            
+                                
                                 $category.append($el);
-                            
+                                
                                 if (renderTree(list, item.uuid, (title + ' ' + item.title).trim()) !== 0) {
                                     $el.remove();
                                 }
-                            
+                                
                                 buf++;
                             }
                         }
-                    
+                        
                         return buf;
                     })(res.data);
-                
+                    
                     $category.trigger('change').trigger('change.select2');
                     $modal.modal();
                 }
@@ -297,7 +297,7 @@ $(() => {
             
             $(e.currentTarget).parents('li').remove();
         });
-    
+        
         $btnSuccess.on('click', () => {
             if ($product.val() && $quantity.val() >= 1) {
                 let $selected = $product.find(':selected'),
@@ -307,17 +307,17 @@ $(() => {
                     let $buf = $template.clone(),
                         $a = $buf.find('a'),
                         $input = $buf.find('[name="relation[]"]');
-                
+                    
                     $a.attr('href', $a.attr('href').replace('%UUID%', $selected.val()));
                     $a.text($selected.text());
                     $input.attr('name', 'relation[' + $selected.attr('value') + ']');
                     $input.val($quantity.val());
-                
+                    
                     $buf.appendTo($that.find('ul.list-group'));
                 } else {
                     $find.val(parseFloat($find.val()) + parseFloat($quantity.val()));
                 }
-            
+                
                 $.modal.close();
             }
         });
@@ -335,24 +335,24 @@ $(() => {
             $quantity = $modal.find('[type="number"]'),
             $btnSuccess = $modal.find('button')
         ;
-    
+        
         $table.find('tr [type="number"]').on('change', (e) => {
             let $el = $(e.currentTarget);
-        
+            
             if ($el.val() <= 0) {
                 $el.parents('tr').remove();
             }
         });
-    
+        
         $('[data-btn-order-modal-products]').click((e) => {
             e.preventDefault();
             this.blur();
-        
+            
             let handler = (e) => {
                 $product
                     .html('')
                     .prop('disabled', true);
-    
+                
                 $.get('/api/catalog/product', {category: $(e.currentTarget).val()}, (res) => {
                     if (res.status === 200) {
                         for (let item of res.data) {
@@ -361,53 +361,53 @@ $(() => {
                             );
                         }
                     }
-        
+                    
                     $product
                         .trigger('change.select2')
                         .prop('disabled', false);
                 });
             };
             $category.html('').off('change', handler).on('change', handler);
-        
+            
             $.get('/api/catalog/category', (res) => {
                 if (res.status === 200) {
                     (function renderTree(list, parent = '00000000-0000-0000-0000-000000000000', title = '') {
                         let buf = 0;
-        
+                        
                         for (let item of list) {
                             if (item.parent === parent) {
                                 let $el = $option.clone().text((title + ' ' + item.title).trim()).val(item.uuid);
-                
+                                
                                 $category.append($el);
-                
+                                
                                 if (renderTree(list, item.uuid, (title + ' ' + item.title).trim()) !== 0) {
                                     $el.remove();
                                 }
-                
+                                
                                 buf++;
                             }
                         }
-        
+                        
                         return buf;
                     })(res.data);
-    
+                    
                     $category.trigger('change').trigger('change.select2');
                     $modal.modal();
                 }
             });
         });
-    
+        
         $btnSuccess.on('click', () => {
             if ($product.val() && $quantity.val() >= 1) {
                 let $selected = $product.find(':selected'),
                     $find = $('[name="list[' + $selected.attr('value') + ']"]');
-            
+                
                 if ($find.length === 0) {
                     let $input = $('<input class="form-control" type="number" placeholder="1" min="0" step="any">')
                         .attr('name', 'list[' + $selected.attr('value') + ']')
                         .val($quantity.val())
                     ;
-                
+                    
                     table.row.add([$selected.text(), $selected.data('price'), $quantity.val()])
                         .draw(true)
                         .nodes().to$()
@@ -415,9 +415,25 @@ $(() => {
                 } else {
                     $find.val(parseFloat($find.val()) + parseFloat($quantity.val()));
                 }
-            
+                
                 $.modal.close();
             }
         });
     }
+    
+    window.print_element = function (selector) {
+        let $html = $('html').clone(),
+            $invoice = $html.find(selector).html(),
+            $style = $('<style>* {background-color:#FFFFFF!important;}</style>');
+        
+        // replace
+        $html.find('body').html($invoice).append($style);
+        
+        // open print window
+        let print = window.open('', 'Print-Window');
+            print.document.open();
+            print.document.write($html.html());
+            print.print();
+        setTimeout(() => print.close(), 10);
+    };
 });

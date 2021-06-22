@@ -164,6 +164,20 @@ abstract class AbstractAction extends AbstractComponent
     }
 
     /**
+     * @return null|string
+     */
+    protected function getRequestRemoteIP()
+    {
+        return $this->request->getServerParam(
+            'HTTP_X_REAL_IP',
+            $this->request->getServerParam(
+                'HTTP_X_FORWARDED_FOR',
+                $this->request->getServerParam('REMOTE_ADDR')
+            )
+        );
+    }
+
+    /**
      * For add or remove files for AbstractEntity with files
      */
     protected function processEntityFiles(AbstractEntity $entity, string $field = 'files'): AbstractEntity
@@ -299,7 +313,7 @@ abstract class AbstractAction extends AbstractComponent
             $query = http_build_query([
                 'secret' => $this->parameter('integration_recaptcha_private'),
                 'response' => $this->request->getParam('recaptcha', ''),
-                'remoteip' => $this->request->getServerParam('REMOTE_ADDR'),
+                'remoteip' => $this->getRequestRemoteIP(),
             ]);
             $verify = json_decode(file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, stream_context_create([
                 'http' => [
@@ -407,7 +421,7 @@ abstract class AbstractAction extends AbstractComponent
     {
         $json = json_encode(array_serialize($array), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
-        return $this->response->withHeader('Content-Type', 'application/json')->write($json);
+        return $this->response->withHeader('Content-Type', 'application/json; charset=utf-8')->write($json);
     }
 
     /**
@@ -419,6 +433,6 @@ abstract class AbstractAction extends AbstractComponent
             $output = json_encode(array_serialize($output), JSON_UNESCAPED_UNICODE);
         }
 
-        return $this->response->withHeader('Content-Type', 'text/plain')->write($output);
+        return $this->response->withHeader('Content-Type', 'text/plain; charset=utf-8')->write($output);
     }
 }

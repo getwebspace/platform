@@ -29,10 +29,9 @@ class EntityAction extends ActionApi
 {
     protected function action(): \Slim\Http\Response
     {
-        $status = 200;
+        $status = 401;
         $params = [
             'entity' => null,
-            'key' => null,
             'order' => [],
             'limit' => 1000,
             'offset' => 0,
@@ -41,33 +40,9 @@ class EntityAction extends ActionApi
         $params['entity'] = ltrim($this->resolveArg('args'), '/');
         $result = [];
 
-        // check access
-        switch ($this->parameter('entity_access', 'user')) {
-            case 'all':
-                // allow access for all
-                break;
-
-            case 'user':
-                if (($user = $this->request->getAttribute('user')) !== null) {
-                    $params['key'] = $user->getUuid()->toString();
-
-                    break;
-                }
-                // no break
-
-            case 'key':
-                if (($key = $this->request->getParam('key')) !== null) {
-                    if (in_array($key, explode(PHP_EOL, $this->parameter('entity_keys', '')), true)) {
-                        break;
-                    }
-                }
-                // no break
-
-            default:
-                $status = 401;
-        }
-
-        if ($status === 200) {
+        if (($access = $this->isAccessAllowed()) !== false) {
+            $status = 200;
+            $params['access'] = $access;
             $service = null;
 
             // read section
@@ -191,10 +166,14 @@ class EntityAction extends ActionApi
                     }
 
                     break;
+
+                default:
+                    $status = 204;
+                    $result = 'unknown type: ' . $params['entity'];
             }
 
             // update section
-            if ($this->parameter('entity_access', 'user') === 'key' && $this->request->isPost()) {
+            if (!empty($access['key']) && $this->request->isPost()) {
                 try {
                     switch ($status) {
                         case 200:

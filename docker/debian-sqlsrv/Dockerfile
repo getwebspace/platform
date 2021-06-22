@@ -19,11 +19,16 @@ RUN set -x \
         gnupg2 \
     && echo "deb-src http://nginx.org/packages/debian buster nginx" | tee /etc/apt/sources.list.d/nginx.list \
     && wget http://nginx.org/keys/nginx_signing.key && apt-key add nginx_signing.key && rm nginx_signing.key \
+    && curl http://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+    && curl http://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+    && wget http://nginx.org/keys/nginx_signing.key && apt-key add nginx_signing.key && rm nginx_signing.key \
     && apt-get update \
-    && apt-get install --no-install-recommends -y \
+    && ACCEPT_EULA=Y apt-get install --no-install-recommends -y \
         nginx \
         git \
         unzip \
+        openssl \
+        ca-certificates \
         supervisor \
         libfreetype6-dev \
         libjpeg62-turbo-dev \
@@ -39,11 +44,15 @@ RUN set -x \
         pngquant \
         gifsicle \
         imagemagick \
+        msodbcsql17 \
+        unixodbc-dev \
+    && sed -i 's,^\(MinProtocol[ ]*=\).*,\1'TLSv1.0',g' /etc/ssl/openssl.cnf \
+    && sed -i 's,^\(CipherString[ ]*=\).*,\1'DEFAULT@SECLEVEL=1',g' /etc/ssl/openssl.cnf \
     && nginx -V \
-    && pecl install imagick yaml \
+    && pecl install -f imagick yaml sqlsrv pdo_sqlsrv \
     && docker-php-ext-configure gd \
     && docker-php-ext-install -j$(nproc) gettext zip gd pdo_mysql \
-    && docker-php-ext-enable opcache.so imagick yaml \
+    && docker-php-ext-enable opcache.so imagick sqlsrv pdo_sqlsrv yaml \
     && docker-php-source delete \
     && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php --quiet --install-dir=/usr/bin --filename=composer \
@@ -51,9 +60,9 @@ RUN set -x \
 
 # Copy configs
 COPY docker/php.ini /usr/local/etc/php/conf.d/custom.ini
-COPY docker/debian/nginx.conf /etc/nginx/nginx.conf
-COPY docker/debian/supervisor.conf /etc/supervisor/conf.d/supervisor.conf
-COPY docker/debian/entrypoint.sh /entrypoint.sh
+COPY docker/debian-sqlsrv/nginx.conf /etc/nginx/nginx.conf
+COPY docker/debian-sqlsrv/supervisor.conf /etc/supervisor/conf.d/supervisor.conf
+COPY docker/debian-sqlsrv/entrypoint.sh /entrypoint.sh
 
 # Set homedir as work
 WORKDIR ${PLATFORM_HOME}

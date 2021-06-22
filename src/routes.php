@@ -195,6 +195,8 @@ $app
                             ->setName('cup:catalog:order:edit');
                         $app->map(['get', 'post'], '/{order}/delete', \App\Application\Actions\Cup\Catalog\Order\OrderDeleteAction::class)
                             ->setName('cup:catalog:order:delete');
+                        $app->map(['get', 'post'], '/{order}/invoice', \App\Application\Actions\Cup\Catalog\Order\OrderInvoiceAction::class)
+                            ->setName('cup:catalog:order:invoice');
                     });
 
                     // import export

@@ -10,6 +10,7 @@ class ResourceNode extends Node
     private static array $storage = [];
 
     private string $name = '';
+
     private string $version = '';
 
     public function __construct($name, $version, $line, $tag = null)
@@ -20,11 +21,11 @@ class ResourceNode extends Node
         $this->version = $version;
     }
 
-    public function compile(Compiler $compiler)
+    public function compile(Compiler $compiler): void
     {
         $compiler
             ->addDebugInfo($this)
-            ->raw("echo ")
+            ->raw('echo ')
             ->string($this->resource($this->name, $this->version) . PHP_EOL)
             ->raw(";\n");
     }
@@ -35,11 +36,11 @@ class ResourceNode extends Node
         $search = explode(':', $search);
         $name = $search[0];
 
-        if (!in_array($name, static::$storage)) {
+        if (!in_array($name, static::$storage, true)) {
             $result = json_decode(file_get_contents('https://api.cdnjs.com/libraries?search=' . $name), true);
 
             if ($result['total'] >= 1) {
-                $index = +array_search($name, array_column($result['results'], 'name'));
+                $index = +array_search($name, array_column($result['results'], 'name'), true);
                 $libname = $result['results'][$index]['name'];
                 $cdn = file_get_contents('https://api.cdnjs.com/libraries/' . $libname . ($version ? '/' . $version : '') . '?fields=name,version,files');
 
@@ -52,10 +53,11 @@ class ResourceNode extends Node
         if ($cdn) {
             $cdn = json_decode($cdn, true);
 
-            if (!in_array($name, $cdn['files'])) {
+            if (!in_array($name, $cdn['files'], true)) {
                 foreach ($cdn['files'] as $item) {
                     if (str_end_with($item, $search)) {
                         $name = $item;
+
                         break;
                     }
                 }

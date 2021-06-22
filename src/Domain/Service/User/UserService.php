@@ -4,7 +4,6 @@ namespace App\Domain\Service\User;
 
 use App\Domain\AbstractService;
 use App\Domain\Entities\User;
-use App\Domain\Entities\User\Session as UserSession;
 use App\Domain\Repository\UserRepository;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\EmailBannedException;
@@ -53,6 +52,7 @@ class UserService extends AbstractService
             'allow_mail' => true,
             'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
             'group' => null,
+            'token' => [],
         ];
         $data = array_merge($default, $data);
 
@@ -89,6 +89,7 @@ class UserService extends AbstractService
             ->setAllowMail($data['allow_mail'])
             ->setStatus($data['status'])
             ->setGroup($data['group'])
+            ->setToken($data['token'])
             ->setRegister('now')
             ->setChange('now');
 
@@ -191,27 +192,6 @@ class UserService extends AbstractService
                     throw new WrongPasswordException();
                 }
 
-                // optional: update fields
-                if ($data['agent'] && $data['ip']) {
-                    $session = $user->getSession();
-
-                    // if is first user auth
-                    if (!$session) {
-                        $session = (new UserSession())->setDate('now');
-                        $this->entityManager->persist($session);
-                    }
-
-                    // update session
-                    $user->setSession(
-                        $session
-                            ->setDate('now')
-                            ->setAgent($data['agent'])
-                            ->setIp($data['ip'])
-                    );
-
-                    $this->entityManager->flush();
-                }
-
                 return $user;
             }
 
@@ -254,6 +234,7 @@ class UserService extends AbstractService
                 'allow_mail' => null,
                 'status' => null,
                 'group' => null,
+                'token' => null,
             ];
             $data = array_merge($default, $data);
 
@@ -312,6 +293,11 @@ class UserService extends AbstractService
                 }
                 if ($data['group'] !== null) {
                     $entity->setGroup($data['group']);
+                }
+                if ($data['token'] !== null) {
+                    foreach ($data['token'] as $token => $value) {
+                        $entity->changeToken($token, $value);
+                    }
                 }
 
                 $entity->setChange('now');

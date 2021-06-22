@@ -203,10 +203,6 @@ class UserServiceTest extends TestCase
         $user = $this->service->read(['identifier' => $data['username']]);
         $this->assertInstanceOf(User::class, $user);
         $this->assertSame($data['username'], $user->getUsername());
-
-        $user = $this->service->read(array_merge($data, ['agent' => $this->getFaker()->userAgent, 'ip' => $this->getFaker()->ipv4]));
-        $this->assertInstanceOf(User::class, $user);
-        $this->assertSame($data['username'], $user->getUsername());
     }
 
     public function testReadSuccess2(): void
@@ -221,10 +217,6 @@ class UserServiceTest extends TestCase
         $user = $this->service->read(['identifier' => $data['email']]);
         $this->assertInstanceOf(User::class, $user);
         $this->assertSame($data['email'], $user->getEmail());
-
-        $user = $this->service->read(array_merge($data, ['agent' => $this->getFaker()->userAgent, 'ip' => $this->getFaker()->ipv4]));
-        $this->assertInstanceOf(User::class, $user);
-        $this->assertSame($data['email'], $user->getEmail());
     }
 
     public function testReadSuccess3(): void
@@ -237,10 +229,6 @@ class UserServiceTest extends TestCase
         $this->service->create($data);
 
         $user = $this->service->read(['identifier' => $data['phone']]);
-        $this->assertInstanceOf(User::class, $user);
-        $this->assertSame($data['phone'], $user->getPhone());
-
-        $user = $this->service->read(array_merge($data, ['agent' => $this->getFaker()->userAgent, 'ip' => $this->getFaker()->ipv4]));
         $this->assertInstanceOf(User::class, $user);
         $this->assertSame($data['phone'], $user->getPhone());
     }

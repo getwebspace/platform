@@ -1,0 +1,16 @@
+{% if parameter('user_auth_facebook_is_enabled', 'no') == 'yes' or parameter('user_auth_vk_is_enabled', 'no') == 'yes' %}
+    <b>Социальные сети</b>
+
+    <div class="row">
+        {% for type in ['facebook', 'vk'] %}
+            {% if parameter('user_auth_' ~ type ~ '_is_enabled', 'no') == 'yes' %}
+                <div class="col-4">
+                    <a class="btn btn-border btn-lg w-100" href="{{ user.getIntegrations().firstWhere('provider', type) ? '#' : oauth_url(type) }}">
+                        <i class="fab fa-{{ type == 'vk' ? type : 'facebook-f' }} pull-left" style="font-size:xx-large;margin:5px;"></i><br>
+                        <small>{{ user.getIntegrations().firstWhere('provider', type) ? 'Подключен' : 'Подключить' }}</small>
+                    </a>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endif %}

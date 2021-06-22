@@ -4,6 +4,8 @@ namespace App\Application;
 
 use App\Application\Twig\ResourceParser;
 use App\Domain\AbstractExtension;
+use App\Domain\OAuth\FacebookOAuthProvider;
+use App\Domain\OAuth\VKOAuthProvider;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
@@ -82,9 +84,11 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('collect', [$this, 'collect']),
             new TwigFunction('non_page_path', [$this, 'non_page_path']),
             new TwigFunction('current_page_number', [$this, 'current_page_number']),
+            new TwigFunction('build_query', [$this, 'build_query'], ['is_safe' => ['html']]),
             new TwigFunction('current_query', [$this, 'current_query'], ['is_safe' => ['html']]),
             new TwigFunction('is_current_page_number', [$this, 'is_current_page_number']),
             new TwigFunction('qr_code', [$this, 'qr_code'], ['is_safe' => ['html']]),
+            new TwigFunction('oauth_url', [$this, 'oauth_url'], ['is_safe' => ['html']]),
 
             // files functions
             new TwigFunction('files', [$this, 'files']),
@@ -183,7 +187,7 @@ class TwigExtension extends AbstractExtension
             case is_array($value):
                 $buf = [];
                 foreach ($value as $key => $item) {
-                    if (is_numeric($key) && in_array($item, array_keys(i18n::$locale))) {
+                    if (is_numeric($key) && in_array($item, array_keys(i18n::$locale), true)) {
                         $key = $item;
                     }
                     $buf[$key] = i18n::$locale[$item] ?? $item;
@@ -309,6 +313,16 @@ class TwigExtension extends AbstractExtension
         return $page;
     }
 
+    public function build_query($url = '', array $params = []): string
+    {
+        if (is_array($url)) {
+            $params = $url;
+            $url = '';
+        }
+
+        return $url . '?' . urldecode(http_build_query($params));
+    }
+
     public function current_query($key = null, $value = null)
     {
         $query = [];
@@ -340,6 +354,19 @@ class TwigExtension extends AbstractExtension
         $writer = new \BaconQrCode\Writer($renderer);
 
         return '<img src="data:image/png;base64,' . base64_encode($writer->writeString($value)) . '" height="' . $height . '" width="' . $width . '">';
+    }
+
+    public function oauth_url(string $provider): string
+    {
+        switch ($provider) {
+            case 'facebook':
+                return (new FacebookOAuthProvider($this->container))->getAuthUrl();
+
+            case 'vk':
+                return (new VKOAuthProvider($this->container))->getAuthUrl();
+        }
+
+        return '';
     }
 
     // files functions

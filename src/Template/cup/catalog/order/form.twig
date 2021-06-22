@@ -6,6 +6,11 @@
             <div>
                 <h2 class="text-white pb-2 fw-bold">Заказы</h2>
             </div>
+            <div class="ml-md-auto py-2 py-md-0">
+                <a href="/cup/catalog/order/{{ order.uuid }}/invoice" class="btn btn-secondary">
+                    Инвойс
+                </a>
+            </div>
         </div>
     </div>
 {% endblock %}
@@ -22,12 +27,17 @@
                             <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
                                 <li class="nav-item">
                                     <a class="nav-link active show" data-toggle="pill" href="#order" role="tab">
-                                        Заказ
+                                        О заказе
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="pill" href="#delivery" role="tab">
+                                        Доставка и статус
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="pill" href="#other" role="tab">
-                                        Дополнительно
+                                        Другое
                                     </a>
                                 </li>
                             </ul>
@@ -35,7 +45,7 @@
                     </div>
                     <div class="card-body">
                         <div class="tab-content">
-                            {# Tab: Заказ #}
+                            {# Tab: О заказе #}
                             <div class="tab-pane fade show active" id="order" role="tabpanel">
                                 <div class="row">
                                     <div class="col-md-6">
@@ -63,8 +73,7 @@
                                                 'readonly': order.user and order.user.phone ? true : false
                                             }
                                         } %}
-                                    </div>
-                                    <div class="col-md-6">
+
                                         {% include 'cup/form.twig' with {
                                             'label': 'E-Mail',
                                             'type': 'email',
@@ -75,21 +84,6 @@
                                             }
                                         } %}
                                     </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Адрес доставки',
-                                            'type': 'textarea',
-                                            'name': 'delivery[address]',
-                                            'args': {
-                                                'value': order.user ? order.user.getAddress() : order.delivery.address,
-                                                'readonly': order.user ? true : false,
-                                                'style': 'min-height: 131px;'
-                                            }
-                                        } %}
-                                    </div>
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Комментарий',
@@ -97,59 +91,17 @@
                                             'name': 'comment',
                                             'args': {
                                                 'value': order.comment,
-                                                'style': 'min-height: 131px;'
+                                                'style': 'min-height: 133px;'
                                             }
                                         } %}
                                     </div>
                                 </div>
-
-                                <div class="separator-dot"></div>
-                                <div class="d-flex align-items-center">
-                                    <div class="card-title">Состав заказа</div>
-
-                                    <button type="button" data-btn-order-modal-products class="btn btn-outline-secondary ml-auto">
-                                        <i class="fa fa-plus"></i>
-                                        Добавить товар
-                                    </button>
-                                </div>
-                                <div class="separator-dot"></div>
-
-                                <table data-table="order" class="table table-striped table-hover" style="width: 100%;">
-                                    <thead>
-                                        <tr>
-                                            <th class="no-sorting">Позиция</th>
-                                            <th width="15%" class="no-sorting">Цена</th>
-                                            <th width="15%" class="no-sorting">Количество</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for product in products %}
-                                            {% set count = order.list[product.uuid.toString()] %}
-                                            <tr>
-                                                <td>{{ product.title }}</td>
-                                                <td>{{ product.price|number_format(2, '.', ' ') }}</td>
-                                                <td>
-                                                    {% include 'cup/form.twig' with {
-                                                        'type': 'number',
-                                                        'name': 'list['~ product.uuid ~']',
-                                                        'args': {
-                                                            'value': count,
-                                                            'placeholder': '1',
-                                                            'step': 'any',
-                                                            'min': '0',
-                                                        }
-                                                    } %}
-                                                </td>
-                                            </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
                             </div>
 
-                            {# Tab: Дополнительно #}
-                            <div class="tab-pane fade" id="other" role="tabpanel">
+                            {# Tab: Доставка и статус #}
+                            <div class="tab-pane fade" id="delivery" role="tabpanel">
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Дата создания',
                                             'type': 'datetime',
@@ -159,19 +111,7 @@
                                                 'readonly': true
                                             }
                                         } %}
-                                    </div>
-                                    <div class="col-md-6">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Статус',
-                                            'type': 'select',
-                                            'name': 'status',
-                                            'args': {
-                                                'option': _(reference('/App/Domain/Types/Catalog/OrderStatusType::LIST')),
-                                                'selected': order.status ? order.status : reference('/App/Domain/Types/Catalog/OrderStatusType::STATUS_PROCESS')
-                                            }
-                                        } %}
-                                    </div>
-                                    <div class="col-md-6">
+
                                         {% include 'cup/form.twig' with {
                                             'label': 'Дата доставки',
                                             'type': 'datetime',
@@ -182,12 +122,39 @@
                                             }
                                         } %}
                                     </div>
+                                    <div class="col-12 col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Адрес доставки',
+                                            'type': 'textarea',
+                                            'name': 'delivery[address]',
+                                            'args': {
+                                                'value': order.user ? order.user.getAddress() : order.delivery.address,
+                                                'readonly': order.user ? true : false,
+                                                'style': 'min-height: 133px;'
+                                            }
+                                        } %}
+                                    </div>
                                 </div>
 
-                                <hr>
-
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-12 col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Статус',
+                                            'type': 'select',
+                                            'name': 'status',
+                                            'args': {
+                                                'option': _(reference('/App/Domain/Types/Catalog/OrderStatusType::LIST')),
+                                                'selected': order.status ? order.status : reference('/App/Domain/Types/Catalog/OrderStatusType::STATUS_PROCESS')
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {# Tab: Дополнительно #}
+                            <div class="tab-pane fade" id="other" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Идентификатор пользователя',
                                             'type': 'text',
@@ -197,8 +164,6 @@
                                                 'value': order.user ? order.user.uuid : ''
                                             }
                                         } %}
-                                    </div>
-                                    <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Внешний ID',
                                             'type': 'text',
@@ -209,13 +174,15 @@
                                             }
                                         } %}
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'type': 'text',
+                                            'label': 'Техническая информация',
+                                            'type': 'textarea',
                                             'name': 'system',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
                                             'args': {
                                                 'value': order.system,
+                                                'style': 'min-height: 133px;'
                                             }
                                         } %}
                                     </div>
@@ -225,6 +192,61 @@
                     </div>
                     <div class="card-action">
                         {% include "cup/form-save.twig" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-head-row">
+                            <div class="card-title">Состав заказа</div>
+
+                            <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
+                                <li class="nav-item">
+                                    <button type="button" data-btn-order-modal-products class="btn btn-outline-secondary ml-auto">
+                                        <i class="fa fa-plus"></i>
+                                        Добавить товар
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="tab-content">
+                            <table data-table="order" class="table table-striped table-hover" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th class="no-sorting">Позиция</th>
+                                        <th width="15%" class="no-sorting">Цена</th>
+                                        <th width="15%" class="no-sorting">Количество</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for product in products %}
+                                        {% set count = order.list[product.uuid.toString()] %}
+                                        <tr>
+                                            <td>{{ product.title }}</td>
+                                            <td>{{ product.price|number_format(2, '.', ' ') }}</td>
+                                            <td>
+                                                {% include 'cup/form.twig' with {
+                                                    'type': 'number',
+                                                    'name': 'list['~ product.uuid ~']',
+                                                    'args': {
+                                                        'value': count,
+                                                        'placeholder': '1',
+                                                        'step': 'any',
+                                                        'min': '0',
+                                                    }
+                                                } %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>

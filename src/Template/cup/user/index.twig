@@ -100,8 +100,7 @@
                                     <th width="15%">Логин</th>
                                     <th>Фамилия и имя</th>
                                     <th width="15%">Группа</th>
-                                    <th width="15%">Дата регистрации</th>
-                                    <th width="15%">Дата посещения</th>
+                                    <th width="15%">Дата регистрации / посещения</th>
                                     <th width="15%" class="text-center no-sorting"></th>
                                 </tr>
                             </thead>
@@ -118,19 +117,25 @@
                                             )
                                         }}
                                     ">
-                                        <td data-order="{{ user.username }}">
-                                            {{ user.username }}
+                                        <td data-order="{{ user.username }}">{{ user.username ?: '<code>Без логина</code>'|raw }}</td>
+                                        <td>
+                                            {{ user.getName() ?: '<code>Без имени</code>'|raw }}
+                                            {{ user.getEmail() ? ('<br>' ~ user.getEmail())|raw : '' }}
 
-                                            {% if user.getAllowMail() %}
-                                                <div class="text-black-50 float-right" data-toggle="tooltip" data-placement="right" title="Подписан на рассылку">
-                                                    <i class="fa fa-envelope"></i>
-                                                </div>
-                                            {% endif %}
+                                            <div class="text-black-50 float-right">
+                                                {% for integration in user.getIntegrations() %}
+                                                    <i class="fab fa-{{ integration.provider }}"></i>
+                                                {% endfor %}
+                                                {% if user.getAllowMail() %}
+                                                    <i class="fa fa-envelope" data-toggle="tooltip" data-placement="right" title="Подписан на рассылку"></i>
+                                                {% endif %}
+                                            </div>
                                         </td>
-                                        <td>{{ user.getName() }}</td>
                                         <td>{{ user.group.title ?? '<code>Без группы</code>' }}</td>
-                                        <td data-order="{{ user.register.getTimestamp() }}">{{ user.register|df('d.m.Y H:i:s') }}</td>
-                                        <td data-order="{{ user.session.date.getTimestamp() }}">{{ user.session.date ? user.session.date|df('d.m.Y H:i:s') : '' }}</td>
+                                        <td data-order="{{ user.session.date.getTimestamp() }}">
+                                            {{ user.register|df('d.m.Y H:i:s') }}
+                                            {{ user.session.date ? ('/<br>' ~ user.session.date|df('d.m.Y H:i:s'))|raw : '' }}
+                                        </td>
                                         <td class="text-center">
                                             <form action="/cup/user/{{ user.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить пользователя?');">
                                                 <div class="btn-group">
@@ -138,10 +143,12 @@
                                                         <i class="fas fa-fw fa-edit"></i>
                                                         <span class="d-none d-md-inline-block">Изменить</span>
                                                     </a>
-                                                    <button type="submit" class="btn btn-sm btn-danger">
-                                                        <i class="fas fa-fw fa-trash-alt"></i>
-                                                        <span class="d-none d-md-inline-block">Удалить</span>
-                                                    </button>
+                                                    {% if user.status != reference('/App/Domain/Types/UserStatusType::STATUS_DELETE') %}
+                                                        <button type="submit" class="btn btn-sm btn-danger">
+                                                            <i class="fas fa-fw fa-trash-alt"></i>
+                                                            <span class="d-none d-md-inline-block">Удалить</span>
+                                                        </button>
+                                                    {% endif %}
                                                 </div>
                                             </form>
                                         </td>

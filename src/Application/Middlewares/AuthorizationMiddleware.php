@@ -51,13 +51,7 @@ class AuthorizationMiddleware extends AbstractMiddleware
                 ]);
 
                 if ($user && $user->getSession()) {
-                    $hash = sha1(
-                        'salt:' . ($this->container->get('secret')['salt'] ?? '') . ';' .
-                        'uuid:' . $user->getUuid()->toString() . ';' .
-                        'ip:' . md5($user->getSession()->getIp()) . ';' .
-                        'agent:' . md5($user->getSession()->getAgent()) . ';' .
-                        'date:' . $user->getSession()->getDate()->getTimestamp()
-                    );
+                    $hash = $user->getSession()->getHash();
 
                     if ($data['session'] === $hash) {
                         $request = $request->withAttribute('user', $user);

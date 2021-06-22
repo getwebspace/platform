@@ -30,7 +30,7 @@ class UserRegisterAction extends UserAction
             if ($this->isRecaptchaChecked()) {
                 if ($data['password'] === $data['password_again']) {
                     try {
-                        $groupUuid = $this->parameter('user_group', null);
+                        $groupUuid = $this->parameter('user_group');
                         $this->userService->create([
                             'firstname' => $data['firstname'],
                             'lastname' => $data['lastname'],
