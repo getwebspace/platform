@@ -53,7 +53,7 @@ class AccessCheckerMiddleware extends AbstractMiddleware
             $redirect = '/cup/forbidden';
 
             if (!$user) {
-                $redirect = '/cup/login';
+                $redirect = '/cup/login?redirect=' . $request->getUri()->getPath();
             }
         }
 
