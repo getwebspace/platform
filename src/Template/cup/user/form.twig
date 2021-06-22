@@ -105,6 +105,8 @@
                                     }
                                 } %}
                             </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Адрес',
@@ -112,6 +114,7 @@
                                     'name': 'address',
                                     'args': {
                                         'value': item.address,
+                                        'style': 'min-height: 133px;'
                                     }
                                 } %}
                             </div>
@@ -123,6 +126,7 @@
                                     'name': 'additional',
                                     'args': {
                                         'value': item.additional,
+                                        'style': 'min-height: 133px;'
                                     }
                                 } %}
                             </div>
