@@ -5060,7 +5060,7 @@ label {
     font-size: 14px;
     border-color: #ebedf2;
     padding: .6rem 1rem;
-    height: inherit !important;
+    height: 42px !important;
 }
 
 .form-control:focus {
