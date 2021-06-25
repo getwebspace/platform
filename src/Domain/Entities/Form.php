@@ -33,7 +33,7 @@ class Form extends AbstractEntity
     /**
      * @return $this
      */
-    public function setTitle(string $title)
+    public function setTitle(string $title): self
     {
         if ($this->checkStrLenMax($title, 255)) {
             $this->title = $title;
@@ -55,7 +55,7 @@ class Form extends AbstractEntity
     /**
      * @return $this
      */
-    public function setAddress(string $address)
+    public function setAddress(string $address): self
     {
         if ($this->checkStrLenMax($address, 1000)) {
             $this->address = $this->getAddressByValue($address, $this->getTitle());
@@ -77,7 +77,7 @@ class Form extends AbstractEntity
     /**
      * @return $this
      */
-    public function setTemplate(string $template)
+    public function setTemplate(string $template): self
     {
         $this->template = $template;
 
@@ -99,17 +99,14 @@ class Form extends AbstractEntity
      *
      * @return $this
      */
-    public function setRecaptcha($recaptcha)
+    public function setRecaptcha($recaptcha): self
     {
         $this->recaptcha = $this->getBooleanByValue($recaptcha);
 
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function getRecaptcha()
+    public function getRecaptcha(): bool
     {
         return $this->recaptcha;
     }
@@ -124,17 +121,14 @@ class Form extends AbstractEntity
      *
      * @return $this
      */
-    public function setAuthorSend($authorSend)
+    public function setAuthorSend($authorSend): self
     {
         $this->authorSend = $this->getBooleanByValue($authorSend);
 
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function getAuthorSend()
+    public function getAuthorSend(): bool
     {
         return $this->authorSend;
     }
@@ -149,7 +143,7 @@ class Form extends AbstractEntity
      *
      * @return $this
      */
-    public function setOrigin($value)
+    public function setOrigin($value): self
     {
         $this->origin = $this->getArrayByExplodeValue($value, PHP_EOL);
 
@@ -171,7 +165,7 @@ class Form extends AbstractEntity
      *
      * @return $this
      */
-    public function setMailto($value)
+    public function setMailto($value): self
     {
         $this->mailto = $this->getArrayByExplodeValue($value, PHP_EOL);
 
@@ -181,5 +175,27 @@ class Form extends AbstractEntity
     public function getMailto(): array
     {
         return $this->mailto;
+    }
+
+    /**
+     * @ORM\Column(type="string", length=250, options={"default": ""})
+     */
+    protected string $duplicate = '';
+
+    /**
+     * @return $this
+     */
+    public function setDuplicate(string $duplicate): self
+    {
+        if ($this->checkStrLenMax($duplicate, 250)) {
+            $this->duplicate = $duplicate;
+        }
+
+        return $this;
+    }
+
+    public function getDuplicate(): string
+    {
+        return $this->duplicate;
     }
 }

@@ -45,6 +45,7 @@ class FormServiceTest extends TestCase
             'recaptcha' => $this->getFaker()->boolean,
             'origin' => [$this->getFaker()->domainName],
             'mailto' => [$this->getFaker()->email],
+            'duplicate' => $this->getFaker()->url,
         ];
 
         $form = $this->service->create($data);
@@ -56,6 +57,7 @@ class FormServiceTest extends TestCase
         $this->assertSame($data['recaptcha'], $form->getRecaptcha());
         $this->assertSame($data['origin'], $form->getOrigin());
         $this->assertSame($data['mailto'], $form->getMailto());
+        $this->assertSame($data['duplicate'], $form->getDuplicate());
 
         /** @var FormRepository $formRepo */
         $formRepo = $this->em->getRepository(Form::class);
@@ -68,6 +70,7 @@ class FormServiceTest extends TestCase
         $this->assertSame($data['recaptcha'], $f->getRecaptcha());
         $this->assertSame($data['origin'], $f->getOrigin());
         $this->assertSame($data['mailto'], $f->getMailto());
+        $this->assertSame($data['duplicate'], $f->getDuplicate());
     }
 
     public function testCreateWithMissingTitleValue(): void
@@ -166,6 +169,7 @@ class FormServiceTest extends TestCase
             'recaptcha' => $this->getFaker()->boolean,
             'origin' => [$this->getFaker()->domainName],
             'mailto' => [$this->getFaker()->email],
+            'duplicate' => $this->getFaker()->url,
         ]);
 
         $data = [
@@ -176,6 +180,7 @@ class FormServiceTest extends TestCase
             'recaptcha' => $this->getFaker()->boolean,
             'origin' => [$this->getFaker()->domainName],
             'mailto' => [$this->getFaker()->email],
+            'duplicate' => $this->getFaker()->url,
         ];
 
         $form = $this->service->update($form, $data);
@@ -187,6 +192,7 @@ class FormServiceTest extends TestCase
         $this->assertSame($data['recaptcha'], $form->getRecaptcha());
         $this->assertSame($data['origin'], $form->getOrigin());
         $this->assertSame($data['mailto'], $form->getMailto());
+        $this->assertSame($data['duplicate'], $form->getDuplicate());
     }
 
     public function testUpdateWithFormNotFound(): void

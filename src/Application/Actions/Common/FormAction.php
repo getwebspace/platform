@@ -109,6 +109,19 @@ class FormAction extends AbstractAction
                     }
                 }
 
+                // check if duplication is enabled
+                if (($duplicate = $form->getDuplicate()) !== '') {
+                    // send json task
+                    $task = new \App\Domain\Tasks\SendJSONTask($this->container);
+                    $task->execute([
+                        'url' => $duplicate,
+                        'data' => array_merge($data, ['attachments' => $attachments]),
+                    ]);
+
+                    // run worker
+                    \App\Domain\AbstractTask::worker($task);
+                }
+
                 // send mail task
                 $task = new \App\Domain\Tasks\SendMailTask($this->container);
                 $task->execute([

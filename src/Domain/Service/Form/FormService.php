@@ -39,6 +39,7 @@ class FormService extends AbstractService
             'recaptcha' => true,
             'origin' => [],
             'mailto' => [],
+            'duplicate' => '',
         ];
         $data = array_merge($default, $data);
 
@@ -59,7 +60,8 @@ class FormService extends AbstractService
             ->setAuthorSend($data['authorSend'])
             ->setRecaptcha($data['recaptcha'])
             ->setOrigin($data['origin'])
-            ->setMailto($data['mailto']);
+            ->setMailto($data['mailto'])
+            ->setDuplicate($data['duplicate']);
 
         $this->entityManager->persist($form);
         $this->entityManager->flush();
@@ -148,6 +150,7 @@ class FormService extends AbstractService
                 'recaptcha' => null,
                 'origin' => null,
                 'mailto' => null,
+                'duplicate' => null,
             ];
             $data = array_merge($default, $data);
 
@@ -187,6 +190,9 @@ class FormService extends AbstractService
                 }
                 if ($data['mailto'] !== null) {
                     $entity->setMailto($data['mailto']);
+                }
+                if ($data['duplicate'] !== null) {
+                    $entity->setDuplicate($data['duplicate']);
                 }
 
                 $this->entityManager->flush();

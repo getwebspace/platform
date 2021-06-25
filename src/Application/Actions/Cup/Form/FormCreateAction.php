@@ -20,6 +20,7 @@ class FormCreateAction extends FormAction
                     'recaptcha' => $this->request->getParam('recaptcha'),
                     'origin' => $this->request->getParam('origin'),
                     'mailto' => $this->request->getParam('mailto'),
+                    'duplicate' => $this->request->getParam('duplicate'),
                 ]);
 
                 switch (true) {
