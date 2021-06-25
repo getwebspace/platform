@@ -84,7 +84,7 @@
                                             'type': 'textarea',
                                             'name': 'mailto',
                                             'args': {
-                                                'value': item.mailto|join('\n'),
+                                                'value': item.mailto ? item.mailto|join('\n') : user.getEmail(),
                                                 'required': true,
                                                 'placeholder': 'manager@example.com',
                                                 'style': 'min-height: 133px;'
