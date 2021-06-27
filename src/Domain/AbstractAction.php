@@ -186,17 +186,19 @@ abstract class AbstractAction extends AbstractComponent
 
         // new
         if (($uploaded = $this->getUploadedFiles($field)) !== []) {
+            $index = 0;
+
             foreach ($uploaded as $name => $files) {
                 if (is_numeric($name)) {
                     $name = '';
                 }
 
-                foreach ($files as $index => $file) {
+                foreach ($files as $file) {
                     $fileRelationService->create([
                         'entity' => $entity,
                         'file' => $file,
                         'comment' => $name,
-                        'order' => $index + 1,
+                        'order' => ++$index,
                     ]);
                 }
             }
