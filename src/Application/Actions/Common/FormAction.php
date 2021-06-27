@@ -3,22 +3,23 @@
 namespace App\Application\Actions\Common;
 
 use App\Domain\AbstractAction;
+use App\Domain\Entities\File;
+use App\Domain\Entities\Form;
+use App\Domain\Entities\Form\Data as FromData;
 use App\Domain\Exceptions\HttpNotFoundException;
-use App\Domain\Service\File\FileService;
 use App\Domain\Service\Form\DataService as FormDataService;
 use App\Domain\Service\Form\FormService;
 use DateTime;
-use Slim\Http\UploadedFile;
 
 class FormAction extends AbstractAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $fileService = FileService::getWithContainer($this->container);
         $formService = FormService::getWithContainer($this->container);
         $formDataService = FormDataService::getWithContainer($this->container);
         $form = $formService->read(['address' => $this->resolveArg('unique')]);
 
+        /** @var Form $form */
         if ($form) {
             if (
                 (
@@ -91,21 +92,14 @@ class FormAction extends AbstractAction
                 // prepare attachments
                 $attachments = [];
                 if ($this->parameter('file_is_enabled', 'no') === 'yes') {
-                    foreach ($this->request->getUploadedFiles() as $field => $files) {
-                        if (!is_array($files)) {
-                            $files = [$files];
-                        }
+                    $formData = $this->processEntityFiles($formData);
 
+                    foreach ($formData->getFiles() as $file) {
                         /**
-                         * @var UploadedFile $el
+                         * @var FromData $formData
+                         * @var File     $file
                          */
-                        foreach ($files as $el) {
-                            if (!$el->getError()) {
-                                $model = $fileService->createFromPath($el->file, $el->getClientFilename());
-                                $formData->addFile($model);
-                                $attachments[$model->getName()] = $model->getInternalPath();
-                            }
-                        }
+                        $attachments[$file->getFileName()] = $file->getPublicPath();
                     }
                 }
 

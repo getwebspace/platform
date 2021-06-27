@@ -186,17 +186,24 @@ abstract class AbstractAction extends AbstractComponent
 
         // new
         if (($uploaded = $this->getUploadedFiles($field)) !== []) {
-            foreach ($uploaded as $index => $file) {
-                $fileRelationService->create([
-                    'entity' => $entity,
-                    'file' => $file,
-                    'order' => $index + 1,
-                ]);
+            foreach ($uploaded as $name => $files) {
+                if (is_numeric($name)) {
+                    $name = '';
+                }
+
+                foreach ($files as $index => $file) {
+                    $fileRelationService->create([
+                        'entity' => $entity,
+                        'file' => $file,
+                        'comment' => $name,
+                        'order' => $index + 1,
+                    ]);
+                }
             }
         }
 
         // update
-        if (($files = $this->request->getParam($field)) !== null) {
+        if (($files = $this->request->getParam($field)) !== null && is_array($files)) {
             foreach ($files as $uuid => $data) {
                 $default = [
                     'order' => null,
@@ -243,14 +250,20 @@ abstract class AbstractAction extends AbstractComponent
 
             $image_uuids = [];
 
-            foreach ($files as $file) {
-                if (!$file->getError()) {
-                    if (($model = $fileService->createFromPath($file->file, $file->getClientFilename())) !== null) {
-                        $uploaded[] = $model;
+            foreach ($files as $name => $file) {
+                if (!is_array($file)) {
+                    $file = [$file];
+                }
 
-                        // is image
-                        if (str_start_with('image/', $model->getType())) {
-                            $image_uuids[] = $model->getUuid();
+                foreach ($file as $index => $item) {
+                    if (!$item->getError()) {
+                        if (($model = $fileService->createFromPath($item->file, $item->getClientFilename())) !== null) {
+                            $uploaded[$name][$index] = $model;
+
+                            // is image
+                            if (str_start_with('image/', $model->getType())) {
+                                $image_uuids[] = $model->getUuid();
+                            }
                         }
                     }
                 }

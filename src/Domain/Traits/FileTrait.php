@@ -2,8 +2,10 @@
 
 namespace App\Domain\Traits;
 
+use App\Domain\Entities\File;
+
 /**
- * @property array $files
+ * @property File[] $files
  */
 trait FileTrait
 {
