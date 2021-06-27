@@ -203,7 +203,7 @@ abstract class AbstractAction extends AbstractComponent
 
                     // link file to entity
                     if ($fileRelation) {
-                        $entity->addFile($fileRelation->getFile());
+                        $entity->addFile($fileRelation);
                     }
                 }
             }
