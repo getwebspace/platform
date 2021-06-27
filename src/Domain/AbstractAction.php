@@ -194,12 +194,17 @@ abstract class AbstractAction extends AbstractComponent
                 }
 
                 foreach ($files as $file) {
-                    $fileRelationService->create([
+                    $fileRelation = $fileRelationService->create([
                         'entity' => $entity,
                         'file' => $file,
                         'comment' => $name,
                         'order' => ++$index,
                     ]);
+
+                    // link file to entity
+                    if ($fileRelation) {
+                        $entity->addFile($fileRelation->getFile());
+                    }
                 }
             }
         }

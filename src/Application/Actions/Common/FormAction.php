@@ -86,7 +86,6 @@ class FormAction extends AbstractAction
                 $formData = $formDataService->create([
                     'form_uuid' => $form->getUuid(),
                     'message' => $body,
-                    'date' => new DateTime(),
                 ]);
 
                 // prepare attachments
