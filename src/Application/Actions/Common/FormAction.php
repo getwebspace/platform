@@ -3,7 +3,7 @@
 namespace App\Application\Actions\Common;
 
 use App\Domain\AbstractAction;
-use App\Domain\Entities\File;
+use App\Domain\Entities\FileRelation;
 use App\Domain\Entities\Form;
 use App\Domain\Entities\Form\Data as FromData;
 use App\Domain\Exceptions\HttpNotFoundException;
@@ -95,13 +95,15 @@ class FormAction extends AbstractAction
 
                     foreach ($formData->getFiles() as $file) {
                         /**
-                         * @var FromData $formData
-                         * @var File     $file
+                         * @var FromData     $formData
+                         * @var FileRelation $file
                          */
                         $attachments[$file->getFileName()] = $file->getPublicPath();
                         $json[] = [
                             'uuid' => $file->getUuid()->toString(),
                             'name' => $file->getFileName(),
+                            'order' => $file->getOrder(),
+                            'comment' => $file->getComment(),
                             'internal' => $file->getInternalPath(),
                             'public' => $file->getPublicPath(),
                         ];
