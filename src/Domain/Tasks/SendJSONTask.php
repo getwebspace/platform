@@ -13,6 +13,7 @@ class SendJSONTask extends AbstractTask
         $default = [
             'url' => '',
             'data' => [],
+            'files' => [],
         ];
         $params = array_merge($default, $params);
 
@@ -21,12 +22,18 @@ class SendJSONTask extends AbstractTask
 
     protected function action(array $args = []): void
     {
+        $data = (array) $args['data'];
+
+        if ($args['files']) {
+            $data['files'] = $args['files'];
+        }
+
         $result = file_get_contents($args['url'], false, stream_context_create([
             'http' => [
                 'method' => 'POST',
-                'content' => json_encode((array) $args['data']),
+                'content' => json_encode($data),
                 'header' => 'Content-Type: application/json;' . PHP_EOL . 'Accept: application/json' . PHP_EOL,
-                'timeout' => 60,
+                'timeout' => 30,
             ],
         ]));
 

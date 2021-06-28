@@ -89,6 +89,7 @@ class FormAction extends AbstractAction
 
                 // prepare attachments
                 $attachments = [];
+                $json = [];
                 if ($this->parameter('file_is_enabled', 'no') === 'yes') {
                     $formData = $this->processEntityFiles($formData);
 
@@ -98,6 +99,12 @@ class FormAction extends AbstractAction
                          * @var File     $file
                          */
                         $attachments[$file->getFileName()] = $file->getPublicPath();
+                        $json[] = [
+                            'uuid' => $file->getUuid()->toString(),
+                            'name' => $file->getFileName(),
+                            'internal' => $file->getInternalPath(),
+                            'public' => $file->getPublicPath(),
+                        ];
                     }
                 }
 
@@ -107,7 +114,8 @@ class FormAction extends AbstractAction
                     $task = new \App\Domain\Tasks\SendJSONTask($this->container);
                     $task->execute([
                         'url' => $duplicate,
-                        'data' => array_merge($data, ['attachments' => $attachments]),
+                        'data' => $data,
+                        'files' => $json,
                     ]);
 
                     // run worker
