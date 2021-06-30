@@ -106,7 +106,7 @@ class CategoryService extends AbstractService
         }
 
         /** @var Category $category */
-        if ($this->service->findOneBy(['parent' => $category->getParent(), 'address' => $category->getAddress(), 'external_id' => $category->getExternalId()]) !== null) {
+        if ($this->service->findOneUnique($category->getParent()->toString(), $category->getAddress(), $category->getExternalId()) !== null) {
             throw new AddressAlreadyExistsException();
         }
 
@@ -249,7 +249,11 @@ class CategoryService extends AbstractService
                     $entity->setDescription($data['description']);
                 }
                 if ($data['address'] !== null) {
-                    $found = $this->service->findOneByAddress($data['address']);
+                    $found = $this->service->findOneUnique(
+                        $data['parent'] ?? $entity->getParent()->toString(),
+                        $data['address'] ?? $entity->getAddress(),
+                        $data['external_id'] ?? $entity->getExternalId()
+                    );
 
                     if ($found === null || $found === $entity) {
                         $entity->setAddress($data['address']);

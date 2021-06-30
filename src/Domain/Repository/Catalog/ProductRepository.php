@@ -47,4 +47,22 @@ class ProductRepository extends AbstractRepository
 
         return $result;
     }
+
+    public function findOneUnique(string $category, string $address, string $external_id): ?Product
+    {
+        $query = $this->createQueryBuilder('c')
+            ->andWhere('c.category = :category')->setParameter('category', $category, Types::STRING)
+            ->andWhere('c.address = :address')->setParameter('address', $address, Types::STRING)
+            ->andWhere('c.external_id = :external_id')->setParameter('external_id', $external_id, Types::STRING)
+            ->getQuery();
+
+        try {
+            $result = $query->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            $results = $query->getResult();
+            $result = array_shift($results);
+        }
+
+        return $result;
+    }
 }
