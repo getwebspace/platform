@@ -105,7 +105,8 @@ class CategoryService extends AbstractService
             }
         }
 
-        if ($this->service->findOneBy(['parent' => $category->getParent(), 'address' => $category->getAddress()]) !== null) {
+        /** @var Category $category */
+        if ($this->service->findOneBy(['parent' => $category->getParent(), 'address' => $category->getAddress(), 'external_id' => $category->getExternalId()]) !== null) {
             throw new AddressAlreadyExistsException();
         }
 

@@ -116,7 +116,8 @@ class ProductService extends AbstractService
             }
         }
 
-        if ($this->service->findOneBy(['category' => $product->getCategory(), 'address' => $product->getAddress()]) !== null) {
+        /** @var Product $product */
+        if ($this->service->findOneBy(['category' => $product->getCategory(), 'address' => $product->getAddress(), 'external_id' => $product->getExternalId()]) !== null) {
             throw new AddressAlreadyExistsException();
         }
 
