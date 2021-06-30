@@ -582,34 +582,13 @@ class TwigExtension extends AbstractExtension
     }
 
     // fetch product list by category_uuid
-    public function catalog_products($unique, $order = [], $limit = 10, $offset = null)
+    public function catalog_products(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_products');
 
         static $buf;
 
-        $criteria = [
-            'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
-        ];
-
-        if (!is_array($unique)) {
-            $unique = [$unique];
-        }
-
-        foreach ($unique as $value) {
-            switch (true) {
-                case \Ramsey\Uuid\Uuid::isValid($value) === true:
-                    $criteria['category'][] = $value;
-
-                    break;
-
-                case is_numeric($value) === true:
-                    $criteria['external_id'][] = $value;
-
-                    break;
-            }
-        }
-
+        $criteria['status'] = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
         $key = json_encode($criteria, JSON_UNESCAPED_UNICODE) . $limit . $offset;
 
         if (!array_key_exists($key, (array) $buf)) {
@@ -623,41 +602,13 @@ class TwigExtension extends AbstractExtension
     }
 
     // fetch product list by uuid, external_id or address
-    public function catalog_product($unique = null, $order = [], $limit = 10, $offset = null)
+    public function catalog_product(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_product');
 
         static $buf;
 
-        $criteria = [
-            'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
-        ];
-
-        if ($unique) {
-            if (!is_array($unique)) {
-                $unique = [$unique];
-            }
-
-            foreach ($unique as $value) {
-                switch (true) {
-                    case \Ramsey\Uuid\Uuid::isValid($value) === true:
-                        $criteria['uuid'][] = $value;
-
-                        break;
-
-                    case is_numeric($value) === true:
-                        $criteria['external_id'][] = $value;
-
-                        break;
-
-                    default:
-                        $criteria['address'][] = $value;
-
-                        break;
-                }
-            }
-        }
-
+        $criteria['status'] = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
         $key = json_encode($criteria, JSON_UNESCAPED_UNICODE) . $limit . $offset;
 
         if (!array_key_exists($key, (array) $buf)) {
@@ -690,6 +641,8 @@ class TwigExtension extends AbstractExtension
 
                 $_SESSION['catalog_product_view'] = $list;
         }
+
+        return null;
     }
 
     // fetch order
