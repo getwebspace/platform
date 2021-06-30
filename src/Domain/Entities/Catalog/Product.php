@@ -21,7 +21,7 @@ use Ramsey\Uuid\Uuid;
  *         @ORM\Index(name="catalog_product_order_idx", columns={"order"})
  *     },
  *     uniqueConstraints={
- *         @ORM\UniqueConstraint(name="catalog_product_unique", columns={"category", "address"})
+ *         @ORM\UniqueConstraint(name="catalog_product_unique", columns={"category", "address", "external_id"})
  *     }
  * )
  */
