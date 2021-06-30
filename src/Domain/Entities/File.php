@@ -337,7 +337,13 @@ class File extends AbstractEntity
             \RunTracy\Helpers\Profiler\Profiler::start('file:getPublicPath (%s)', $size);
 
             if ($this->private) {
-                $buf[$uuid][$size] = '/file/get/' . $this->salt . '/' . $this->hash . ($size && $this->isValidSizeAndFileExists($size) ? '/' . $size : '');
+                if (str_start_with($this->type, 'image/')) {
+                    $buf[$uuid][$size] = '/file/view/';
+                } else {
+                    $buf[$uuid][$size] = '/file/get/';
+                }
+
+                $buf[$uuid][$size] .= $this->salt . '/' . $this->hash . ($size && $this->isValidSizeAndFileExists($size) ? '/' . $size : '');
             } else {
                 $buf[$uuid][$size] = '/uploads/' . $this->salt . ($size && $this->isValidSizeAndFileExists($size) ? '/' . $size : '') . '/' . $this->getFileName();
             }

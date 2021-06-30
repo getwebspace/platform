@@ -2,12 +2,14 @@
 
 namespace App\Domain\Traits;
 
+use App\Domain\Entities\File;
+
 /**
- * @property array $files
+ * @property File[] $files
  */
 trait FileTrait
 {
-    public function addFile(\App\Domain\Entities\File $file): void
+    public function addFile(\App\Domain\Entities\FileRelation $file): void
     {
         $this->files[] = $file;
     }
@@ -19,7 +21,7 @@ trait FileTrait
         }
     }
 
-    public function removeFile(\App\Domain\Entities\File $file): void
+    public function removeFile(\App\Domain\Entities\FileRelation $file): void
     {
         foreach ($this->files as $key => $value) {
             if ($file === $value) {

@@ -19,111 +19,149 @@
                     <div class="card-header">
                         <div class="card-head-row">
                             <div class="card-title">{{ item.uuid ? 'Редактирование формы ' ~ item.title : 'Создание новой формы' }}</div>
+
+                            <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active show" data-toggle="pill" href="#form" role="tab">
+                                        Форма
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="pill" href="#recipient" role="tab">
+                                        Получатели
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="pill" href="#other" role="tab">
+                                        Другое
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Название',
-                                    'type': 'text',
-                                    'name': 'title',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Краткое описание формы"></i>',
-                                    'args': {
-                                        'value': item.title,
-                                        'required': true,
-                                        'placeholder': 'Форма контактов',
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Адрес обработчика формы',
-                                    'type': 'text',
-                                    'name': 'address',
-                                    'prefix': base_url() ~ '/form/',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Адрес формы. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов"></i>',
-                                    'args': {
-                                        'value': item.address,
-                                        'placeholder': 'contact-form',
-                                    }
-                                } %}
-                            </div>
-                        </div>
+                        <div class="tab-content">
+                            {# Tab: Форма #}
+                            <div class="tab-pane fade show active" id="form" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Название',
+                                            'type': 'text',
+                                            'name': 'title',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Краткое описание формы"></i>',
+                                            'args': {
+                                                'value': item.title,
+                                                'required': true,
+                                                'placeholder': 'Форма контактов',
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
 
-                        <hr>
+                                <hr>
 
-                        <div class="row">
-                            <div class="col-md-12">
-                                {% include 'cup/editor.twig' with {
-                                    'label': 'Шаблон письма',
-                                    'name': 'template',
-                                    'args': {
-                                        'value': item.template
-                                    }
-                                } %}
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {% include 'cup/editor.twig' with {
+                                            'label': 'Шаблон письма',
+                                            'name': 'template',
+                                            'args': {
+                                                'value': item.template
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
                             </div>
-                        </div>
 
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'E-Mail адреса получателей',
-                                    'message': 'Каждая новая строка должна быть отдельным E-Mail адресом получателя. Используйте символ ":" для разделения E-Mail:Имя получателя',
-                                    'type': 'textarea',
-                                    'name': 'mailto',
-                                    'args': {
-                                        'value': item.mailto|join('\n'),
-                                        'required': true,
-                                        'placeholder': 'manager@example.com',
-                                        'style': 'min-height: 150px;'
-                                    }
-                                } %}
+                            {# Tab: Получатели #}
+                            <div class="tab-pane fade" id="recipient" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'E-Mail адреса получателей',
+                                            'message': 'Каждая новая строка должна быть отдельным E-Mail адресом получателя. Используйте символ ":" для разделения E-Mail:Имя получателя',
+                                            'type': 'textarea',
+                                            'name': 'mailto',
+                                            'args': {
+                                                'value': item.mailto ? item.mailto|join('\n') : user.getEmail(),
+                                                'required': true,
+                                                'placeholder': 'manager@example.com',
+                                                'style': 'min-height: 133px;'
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Включить отправку копии заявителю',
+                                            'message': 'Копия формы будет отправлена заявителю, если будет найдено заполенное поле <code>email</code>.<br/>По-умолчанию: выключено',
+                                            'type': 'select',
+                                            'name': 'authorSend',
+                                            'args': {
+                                                'option': _(['yes', 'no']),
+                                                'selected': item.authorSend ? 'yes' : 'no'
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Адреса страниц использования',
-                                    'message': 'Каждая новая строка должна быть отдельным адресом страницы где размещена форма. Используйте символ "*" для указания любого адреса страницы.',
-                                    'type': 'textarea',
-                                    'name': 'origin',
-                                    'args': {
-                                        'value': item.origin ? item.origin|join('\n') : full_url_for('common:main'),
-                                        'required': true,
-                                        'placeholder': full_url_for('common:main'),
-                                        'style': 'min-height: 150px;'
-                                    }
-                                } %}
-                            </div>
-                        </div>
 
-                        <hr>
+                            {# Tab: Другое #}
+                            <div class="tab-pane fade" id="other" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Адреса страниц использования',
+                                            'message': 'Каждая новая строка должна быть отдельным адресом страницы где размещена форма. Используйте символ "*" для указания любого адреса страницы.',
+                                            'type': 'textarea',
+                                            'name': 'origin',
+                                            'args': {
+                                                'value': item.origin ? item.origin|join('\n') : '*',
+                                                'required': true,
+                                                'placeholder': full_url_for('common:main'),
+                                                'style': 'min-height: 133px;'
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Адрес обработчика формы',
+                                            'type': 'text',
+                                            'name': 'address',
+                                            'prefix': base_url() ~ '/form/',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Адрес формы. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов"></i>',
+                                            'args': {
+                                                'value': item.address,
+                                                'placeholder': 'contact-form',
+                                            }
+                                        } %}
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Включить проверку reCAPTCHA',
+                                            'message': 'Возможность отключить проверку reCAPTCHA индивидуально для текущей формы.<br/>По-умолчанию: включено',
+                                            'type': 'select',
+                                            'name': 'recaptcha',
+                                            'args': {
+                                                'option': _(['yes', 'no']),
+                                                'selected': item.recaptcha ? 'yes' : 'no'
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Включить проверку reCAPTCHA',
-                                    'message': 'Возможность отключить проверку reCAPTCHA индивидуально для текущей формы.<br/>По-умолчанию: включено',
-                                    'type': 'select',
-                                    'name': 'recaptcha',
-                                    'args': {
-                                        'option': _(['yes', 'no']),
-                                        'selected': item.recaptcha ? 'yes' : 'no'
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Включить отправку копии заявителю',
-                                    'message': 'Копия формы будет отправлена заявителю, если будет найдено заполенное поле <code>email</code>.<br/>По-умолчанию: выключено',
-                                    'type': 'select',
-                                    'name': 'authorSend',
-                                    'args': {
-                                        'option': _(['yes', 'no']),
-                                        'selected': item.authorSend ? 'yes' : 'no'
-                                    }
-                                } %}
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Дублировать данные',
+                                            'message': 'Полученные данные будут продублированы на указанный адрес в формате JSON',
+                                            'type': 'text',
+                                            'name': 'duplicate',
+                                            'args': {
+                                                'value': item.duplicate,
+                                                'placeholder': 'https://example.com/api/form-data',
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

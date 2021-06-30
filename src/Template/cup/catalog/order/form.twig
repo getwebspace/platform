@@ -26,8 +26,8 @@
 
                             <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
                                 <li class="nav-item">
-                                    <a class="nav-link active show" data-toggle="pill" href="#order" role="tab">
-                                        О заказе
+                                    <a class="nav-link active show" data-toggle="pill" href="#client" role="tab">
+                                        Клиент
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -45,8 +45,8 @@
                     </div>
                     <div class="card-body">
                         <div class="tab-content">
-                            {# Tab: О заказе #}
-                            <div class="tab-pane fade show active" id="order" role="tabpanel">
+                            {# Tab: Клиент #}
+                            <div class="tab-pane fade show active" id="client" role="tabpanel">
                                 <div class="row">
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
@@ -151,7 +151,7 @@
                                 </div>
                             </div>
 
-                            {# Tab: Дополнительно #}
+                            {# Tab: Другое #}
                             <div class="tab-pane fade" id="other" role="tabpanel">
                                 <div class="row">
                                     <div class="col-12 col-md-6">

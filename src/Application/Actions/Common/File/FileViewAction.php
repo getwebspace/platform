@@ -2,7 +2,7 @@
 
 namespace App\Application\Actions\Common\File;
 
-class FileGetAction extends FileAction
+class FileViewAction extends FileAction
 {
     protected function action(): \Slim\Http\Response
     {
@@ -13,10 +13,7 @@ class FileGetAction extends FileAction
         ]);
 
         return $this->response
-            ->withHeader('Content-Type', 'application/download')
-            ->withHeader('Content-Description', 'File Transfer')
-            ->withHeader('Content-Transfer-Encoding', 'binary')
-            ->withHeader('Content-Disposition', 'attachment; filename="' . $file->getFileName() . '"')
+            ->withHeader('Content-Type', $file->getType())
             ->withHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
             ->withHeader('Pragma', 'private')
             ->withHeader('Expires', '0')

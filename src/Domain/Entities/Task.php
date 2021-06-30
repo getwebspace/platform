@@ -150,7 +150,9 @@ class Task extends AbstractEntity
      */
     public function setOutput(string $output)
     {
-        $this->output = $output;
+        if ($this->checkStrLenMax($output, 1000)) {
+            $this->output = $output;
+        }
 
         return $this;
     }

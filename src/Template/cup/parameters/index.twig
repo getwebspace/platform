@@ -588,7 +588,6 @@
                                                         'Указанные права доступа так же будут применены для незарегистрированного пользователя<br>',
                                                         '<button class="btn btn-outline-success btn-sm mr-1" type="button" data-access-click="common">Общие</button>',
                                                         '<button class="btn btn-outline-secondary btn-sm mr-1" type="button" data-access-click="cup">Панель управления</button>',
-                                                        '<button class="btn btn-outline-info btn-sm mr-1" type="button" data-access-click="api">API</button>',
                                                         '<button class="btn btn-outline-danger btn-sm mr-1" type="button" data-access-click="none">Ничего</button>',
                                                     ]|join(''),
                                                     'args': {
@@ -1083,14 +1082,20 @@
                                                             {% if credentials.author_email %}
                                                                 <a href="mailto:{{ credentials.author_email }}">{{ credentials.author }}</a>
                                                             {% else %}
-                                                                {{ credentials.author }}
+                                                                {% for author in credentials.author|split(';') %}
+                                                                    {{ author|trim }}<br>
+                                                                {% endfor %}
                                                             {% endif %}
                                                         </dd>
                                                     </d1>
                                                     {% if credentials.author_site %}
                                                         <d1>
                                                             <dt>Сайт</dt>
-                                                            <dd><a href="{{ credentials.author_site }}" target="_blank">{{ credentials.author_site }}</a></dd>
+                                                            <dd>
+                                                                {% for link in credentials.author_site|split(';') %}
+                                                                    <a href="{{ link|trim }}" target="_blank">{{ link|trim }}</a><br>
+                                                                {% endfor %}
+                                                            </dd>
                                                         </d1>
                                                     {% endif %}
                                                     {% if credentials.description %}

@@ -3,22 +3,22 @@
 namespace App\Application\Actions\Common;
 
 use App\Domain\AbstractAction;
+use App\Domain\Entities\FileRelation;
+use App\Domain\Entities\Form;
+use App\Domain\Entities\Form\Data as FromData;
 use App\Domain\Exceptions\HttpNotFoundException;
-use App\Domain\Service\File\FileService;
 use App\Domain\Service\Form\DataService as FormDataService;
 use App\Domain\Service\Form\FormService;
-use DateTime;
-use Slim\Http\UploadedFile;
 
 class FormAction extends AbstractAction
 {
     protected function action(): \Slim\Http\Response
     {
-        $fileService = FileService::getWithContainer($this->container);
         $formService = FormService::getWithContainer($this->container);
         $formDataService = FormDataService::getWithContainer($this->container);
         $form = $formService->read(['address' => $this->resolveArg('unique')]);
 
+        /** @var Form $form */
         if ($form) {
             if (
                 (
@@ -85,28 +85,43 @@ class FormAction extends AbstractAction
                 $formData = $formDataService->create([
                     'form_uuid' => $form->getUuid(),
                     'message' => $body,
-                    'date' => new DateTime(),
                 ]);
 
                 // prepare attachments
                 $attachments = [];
+                $json = [];
                 if ($this->parameter('file_is_enabled', 'no') === 'yes') {
-                    foreach ($this->request->getUploadedFiles() as $field => $files) {
-                        if (!is_array($files)) {
-                            $files = [$files];
-                        }
+                    $formData = $this->processEntityFiles($formData);
 
+                    foreach ($formData->getFiles() as $file) {
                         /**
-                         * @var UploadedFile $el
+                         * @var FromData     $formData
+                         * @var FileRelation $file
                          */
-                        foreach ($files as $el) {
-                            if (!$el->getError()) {
-                                $model = $fileService->createFromPath($el->file, $el->getClientFilename());
-                                $formData->addFile($model);
-                                $attachments[$model->getName()] = $model->getInternalPath();
-                            }
-                        }
+                        $attachments[$file->getFileName()] = $file->getPublicPath();
+                        $json[] = [
+                            'uuid' => $file->getUuid()->toString(),
+                            'name' => $file->getFileName(),
+                            'order' => $file->getOrder(),
+                            'comment' => $file->getComment(),
+                            'internal' => $file->getInternalPath(),
+                            'public' => $file->getPublicPath(),
+                        ];
                     }
+                }
+
+                // check if duplication is enabled
+                if (($duplicate = $form->getDuplicate()) !== '') {
+                    // send json task
+                    $task = new \App\Domain\Tasks\SendJSONTask($this->container);
+                    $task->execute([
+                        'url' => $duplicate,
+                        'data' => $data,
+                        'files' => $json,
+                    ]);
+
+                    // run worker
+                    \App\Domain\AbstractTask::worker($task);
                 }
 
                 // send mail task

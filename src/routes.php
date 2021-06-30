@@ -345,6 +345,8 @@ $app
             ->group('/file', function (App $app): void {
                 $app->get('/get/{salt}/{hash}', \App\Application\Actions\Common\File\FileGetAction::class)
                     ->setName('common:file:get');
+                $app->get('/view/{salt}/{hash}', \App\Application\Actions\Common\File\FileViewAction::class)
+                    ->setName('common:file:view');
                 $app
                     ->post('/upload', \App\Application\Actions\Common\File\FileUploadAction::class)
                     ->setName('common:file:upload')

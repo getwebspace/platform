@@ -11,7 +11,7 @@ class AccessCheckerMiddleware extends AbstractMiddleware
 {
     public const PUBLIC = [
         'forbidden',
-        'api:entity',
+        'api:',
         'cup:login',
         'cup:forbidden',
         'cup:system',
@@ -33,11 +33,10 @@ class AccessCheckerMiddleware extends AbstractMiddleware
         /** @var User $user */
         $user = $request->getAttribute('user', false);
 
+        $access = $this->parameter('user_access', false);
+        $access = $access === false ? [] : explode(',', $access);
         if ($user && $user->getGroup()) {
-            $access = $user->getGroup()->getAccess();
-        } else {
-            $access = $this->parameter('user_access', false);
-            $access = $access === false ? [] : explode(',', $access);
+            $access = array_unique(array_merge($access, $user->getGroup()->getAccess()));
         }
 
         if (

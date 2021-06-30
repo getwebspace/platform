@@ -37,7 +37,7 @@ class UpdateAction extends UserAction
                     'item' => $userGroup,
                     'routes' => [
                         'all' => $this->getRoutes()->all(),
-                        'default' => $this->getRoutes()->filter(fn ($el) => str_start_with($el, ['api:', 'common:']))->all(),
+                        'default' => explode(',', $this->parameter('user_access', '')),
                     ],
                 ]);
             }
