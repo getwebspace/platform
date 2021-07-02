@@ -341,21 +341,23 @@ class ListAction extends CatalogAction
      */
     protected function prepareProduct(array $params, Collection $categories): ?Response
     {
-        /**
-         * @var \App\Domain\Entities\Catalog\Product $product
-         */
-        $product = $this->catalogProductService->read([
-            'address' => $params['address'],
+        $products = $this->catalogProductService->read([
+            'address' => [$params['address']],
             'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
         ]);
 
-        if ($product) {
+        if ($products->count()) {
+            /**
+             * @var \App\Domain\Entities\Catalog\Product $product
+             */
+            $product = $products->first();
             $category = $categories->firstWhere('uuid', $product->getCategory());
 
             return $this->respond($category->template['product'], [
                 'categories' => $categories,
                 'category' => $category,
                 'product' => $product,
+                'products' => $products,
                 'params' => $params,
             ]);
         }
