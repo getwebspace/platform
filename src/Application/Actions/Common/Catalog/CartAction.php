@@ -16,7 +16,7 @@ class CartAction extends CatalogAction
                 'list' => $this->request->getParam('list', []),
                 'phone' => $this->request->getParam('phone'),
                 'email' => $this->request->getParam('email'),
-                'comment' => $this->request->getParam('comment'),
+                'comment' => $this->request->getParam('comment', ''),
                 'shipping' => $this->request->getParam('shipping'),
                 'system' => $this->request->getParam('system', ''),
             ];
