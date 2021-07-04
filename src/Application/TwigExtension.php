@@ -581,7 +581,7 @@ class TwigExtension extends AbstractExtension
         return $result;
     }
 
-    // fetch product list by category_uuid
+    // getting a list of products by criteria
     public function catalog_products(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_products');
@@ -601,7 +601,7 @@ class TwigExtension extends AbstractExtension
         return $buf[$key];
     }
 
-    // fetch product list by uuid, external_id or address
+    // returns a product or a list of products by criteria
     public function catalog_product(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_product');
