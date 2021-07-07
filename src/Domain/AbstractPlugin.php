@@ -19,14 +19,32 @@ abstract class AbstractPlugin extends AbstractComponent
     public const AUTHOR_SITE = '';
     public const VERSION = '1.0';
 
-    protected static array $storage = [];
+    /**
+     * @var array
+     */
+    private static array $storage = [];
 
-    public static function setStorage($key, $value): void
+    /**
+     * @param string $key
+     * @param mixed  $value
+     *
+     * @return mixed
+     */
+    public static function setStorage(string $key, $value)
     {
         static::$storage[static::NAME][$key] = $value;
+
+        return $value;
     }
 
-    public static function getStorage($key, $default = null, $namespace = null)
+    /**
+     * @param string      $key
+     * @param mixed       $default
+     * @param string|null $namespace
+     *
+     * @return mixed|null
+     */
+    public static function getStorage(string $key, $default = null, ?string $namespace = null)
     {
         return static::$storage[$namespace ?: self::NAME][$key] ?? $default;
     }
