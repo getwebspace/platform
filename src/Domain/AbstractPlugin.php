@@ -19,6 +19,18 @@ abstract class AbstractPlugin extends AbstractComponent
     public const AUTHOR_SITE = '';
     public const VERSION = '1.0';
 
+    protected static array $storage = [];
+
+    public static function setStorage($key, $value): void
+    {
+        static::$storage[static::NAME][$key] = $value;
+    }
+
+    public static function getStorage($key, $default = null, $namespace = null)
+    {
+        return static::$storage[$namespace ?: self::NAME][$key] ?? $default;
+    }
+
     private \Slim\Router $router;
 
     private Twig $renderer;
