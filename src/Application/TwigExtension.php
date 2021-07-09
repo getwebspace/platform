@@ -430,55 +430,12 @@ class TwigExtension extends AbstractExtension
         return $buf[strval($unique)];
     }
 
-    // fetch publications by args
-    public function publication($data = null, $order = [], $limit = 10, $offset = null)
+    // fetch publications by criteria
+    public function publication(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:publication');
 
         static $buf;
-
-        $criteria = [];
-
-        if ($data) {
-            if (!is_array($data)) {
-                $data = [$data];
-            }
-            $data = array_merge_recursive(['uuid' => [], 'address' => [], 'category' => []], $data);
-
-            foreach ($data as $type => $values) {
-                if (is_a($values, Collection::class)) {
-                    $values = $values->all();
-                }
-                if (!is_array($data)) {
-                    $values = [$values];
-                }
-
-                foreach ($values as $value) {
-                    switch ($type) {
-                        case 'uuid':
-                            if (\Ramsey\Uuid\Uuid::isValid(strval($value)) === true) {
-                                $criteria['uuid'][] = $value;
-                            }
-
-                            break;
-
-                        case 'category':
-                            if (is_object($value) && is_a($value, \App\Domain\Entities\Publication\Category::class)) {
-                                $criteria['category'][] = $value->getUuid();
-                            } else {
-                                if (\Ramsey\Uuid\Uuid::isValid(strval($value)) === true) {
-                                    $criteria['category'][] = $value;
-                                }
-                            }
-
-                            break;
-
-                        case 'address':
-                            $criteria['address'][] = $value;
-                    }
-                }
-            }
-        }
 
         $key = json_encode($criteria, JSON_UNESCAPED_UNICODE) . $limit . $offset;
 
