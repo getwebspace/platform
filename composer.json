@@ -13,6 +13,7 @@
         "php": ">=7.4",
         "ext-json": "*",
         "ext-yaml": "*",
+        "ext-soap": "*",
         "slim/slim": "^3.12",
         "slim/php-view": "^2.2",
         "slim/twig-view": "^2.5",
