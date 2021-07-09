@@ -1,7 +1,7 @@
 {% set uuids = catalog_product_view() %}
 
 {% if uuids and uuids|count > 4 %}
-    {% set viewed = catalog_product(uuids) %}
+    {% set viewed = catalog_product({'uuid': uuids}) %}
 
     <!-- VIEWED PRODUCTS section -->
     <section class="related-product-section">
