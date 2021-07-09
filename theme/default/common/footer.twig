@@ -33,7 +33,7 @@
                     <div class="fw-latest-post-widget">
                         <div class="lp-item">
                             <div class="lp-content">
-                                {% set publication = publication(null, {'date': 'desc'}, 1) %}
+                                {% set publication = publication([], {'date': 'desc'}, 1) %}
                                 <h6>{{ publication.title }}</h6>
                                 <span>{{ publication.date|df('d.m.Y') }}</span>
                                 {{ publication.content.short|truncate(250)|raw }}
