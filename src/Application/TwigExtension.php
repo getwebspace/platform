@@ -330,7 +330,7 @@ class TwigExtension extends AbstractExtension
         foreach (explode('&', rawurldecode($this->uri->getQuery())) as $fragment) {
             if ($fragment) {
                 $buf = explode('=', $fragment);
-                $query[$buf[0]] = $buf[1];
+                $query[$buf[0]] = $buf[1] ?? '';
             }
         }
         if ($key) {
