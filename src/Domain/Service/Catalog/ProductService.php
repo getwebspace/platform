@@ -116,7 +116,8 @@ class ProductService extends AbstractService
             }
         }
 
-        if ($this->service->findOneBy(['category' => $product->getCategory(), 'address' => $product->getAddress()]) !== null) {
+        /** @var Product $product */
+        if ($this->service->findOneUnique($product->getCategory()->toString(), $product->getAddress(), $product->getExternalId()) !== null) {
             throw new AddressAlreadyExistsException();
         }
 
@@ -290,7 +291,11 @@ class ProductService extends AbstractService
                     $entity->setExtra($data['extra']);
                 }
                 if ($data['address'] !== null) {
-                    $found = $this->service->findOneByAddress($data['address']);
+                    $found = $this->service->findOneUnique(
+                        $data['category'] ?? $entity->getCategory()->toString(),
+                        $data['address'] ?? $entity->getAddress(),
+                        $data['external_id'] ?? $entity->getExternalId()
+                    );
 
                     if ($found === null || $found === $entity) {
                         $entity->setAddress($data['address']);

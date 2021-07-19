@@ -1,11 +1,23 @@
 {#
+    placeholder - ссылка на картинку-заглушку
     src - ссылка на картинку
     id - attr id
     class - attr class
     alt - attr alt
     title - attr title
     style - attr style
+    args - другие аргументы
 #}
 {% htmlcompress %}
-    <img data-lazyload-image data-src="{{ src }}" {{ id ? ('id="'~ id|trim ~ '"')|raw : '' }} {{ class ? ('class="'~ class|trim ~'"')|raw : '' }} {{ alt ? ('alt="'~ alt|trim ~'"')|raw : '' }} {{ title ? ('title="'~ title|trim ~'"')|raw : '' }} {{ style ? ('style="'~ style|trim ~'"')|raw : '' }} />
+    <img
+        data-lazyload-image
+        data-src="{{ src }}"
+        {{ placeholder ? ('src="' ~ placeholder ~ '"')|raw ? '' }}
+        {{ id ? ('id="'~ id|trim ~ '"')|raw : '' }}
+        {{ class ? ('class="'~ class|trim ~'"')|raw : '' }}
+        {{ alt ? ('alt="'~ alt|trim ~'"')|raw : '' }}
+        {{ title ? ('title="'~ title|trim ~'"')|raw : '' }}
+        {{ style ? ('style="'~ style|trim ~'"')|raw : '' }}
+        {{ args|raw }}
+    />
 {% endhtmlcompress %}

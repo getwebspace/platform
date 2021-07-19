@@ -51,7 +51,7 @@ class SearchIndexTask extends AbstractTask
         }
 
         $productService = \App\Domain\Service\Catalog\ProductService::getWithContainer($this->container);
-        foreach ($productService->read() as $item) {
+        foreach ($productService->read(['status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK]) as $item) {
             /** @var Product $item */
             $index[] = $this->implode([
                 'catalog_product',

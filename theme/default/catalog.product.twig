@@ -45,6 +45,7 @@
                     <div class="product-pic-zoom">
                         {% include 'mixin/img.twig' with {
                             'src': product.hasFiles() ? product.getFiles().first().getPublicPath('middle') : '/assets/img/no_image.png',
+                            'placeholder': product.hasFiles() ? product.getFiles().first().getPublicPath('small') : '',
                             'class': 'product-big-img',
                             'title': product.title,
                             'alt': product.title,

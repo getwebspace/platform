@@ -330,7 +330,7 @@ class TwigExtension extends AbstractExtension
         foreach (explode('&', rawurldecode($this->uri->getQuery())) as $fragment) {
             if ($fragment) {
                 $buf = explode('=', $fragment);
-                $query[$buf[0]] = $buf[1];
+                $query[$buf[0]] = $buf[1] ?? '';
             }
         }
         if ($key) {
@@ -430,55 +430,12 @@ class TwigExtension extends AbstractExtension
         return $buf[strval($unique)];
     }
 
-    // fetch publications by args
-    public function publication($data = null, $order = [], $limit = 10, $offset = null)
+    // fetch publications by criteria
+    public function publication(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:publication');
 
         static $buf;
-
-        $criteria = [];
-
-        if ($data) {
-            if (!is_array($data)) {
-                $data = [$data];
-            }
-            $data = array_merge_recursive(['uuid' => [], 'address' => [], 'category' => []], $data);
-
-            foreach ($data as $type => $values) {
-                if (is_a($values, Collection::class)) {
-                    $values = $values->all();
-                }
-                if (!is_array($data)) {
-                    $values = [$values];
-                }
-
-                foreach ($values as $value) {
-                    switch ($type) {
-                        case 'uuid':
-                            if (\Ramsey\Uuid\Uuid::isValid(strval($value)) === true) {
-                                $criteria['uuid'][] = $value;
-                            }
-
-                            break;
-
-                        case 'category':
-                            if (is_object($value) && is_a($value, \App\Domain\Entities\Publication\Category::class)) {
-                                $criteria['category'][] = $value->getUuid();
-                            } else {
-                                if (\Ramsey\Uuid\Uuid::isValid(strval($value)) === true) {
-                                    $criteria['category'][] = $value;
-                                }
-                            }
-
-                            break;
-
-                        case 'address':
-                            $criteria['address'][] = $value;
-                    }
-                }
-            }
-        }
 
         $key = json_encode($criteria, JSON_UNESCAPED_UNICODE) . $limit . $offset;
 
@@ -581,35 +538,14 @@ class TwigExtension extends AbstractExtension
         return $result;
     }
 
-    // fetch product list by category_uuid
-    public function catalog_products($unique, $order = [], $limit = 10, $offset = null)
+    // getting a list of products by criteria
+    public function catalog_products(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_products');
 
         static $buf;
 
-        $criteria = [
-            'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
-        ];
-
-        if (!is_array($unique)) {
-            $unique = [$unique];
-        }
-
-        foreach ($unique as $value) {
-            switch (true) {
-                case \Ramsey\Uuid\Uuid::isValid($value) === true:
-                    $criteria['category'][] = $value;
-
-                    break;
-
-                case is_numeric($value) === true:
-                    $criteria['external_id'][] = $value;
-
-                    break;
-            }
-        }
-
+        $criteria['status'] = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
         $key = json_encode($criteria, JSON_UNESCAPED_UNICODE) . $limit . $offset;
 
         if (!array_key_exists($key, (array) $buf)) {
@@ -622,42 +558,14 @@ class TwigExtension extends AbstractExtension
         return $buf[$key];
     }
 
-    // fetch product list by uuid, external_id or address
-    public function catalog_product($unique = null, $order = [], $limit = 10, $offset = null)
+    // returns a product or a list of products by criteria
+    public function catalog_product(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_product');
 
         static $buf;
 
-        $criteria = [
-            'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
-        ];
-
-        if ($unique) {
-            if (!is_array($unique)) {
-                $unique = [$unique];
-            }
-
-            foreach ($unique as $value) {
-                switch (true) {
-                    case \Ramsey\Uuid\Uuid::isValid($value) === true:
-                        $criteria['uuid'][] = $value;
-
-                        break;
-
-                    case is_numeric($value) === true:
-                        $criteria['external_id'][] = $value;
-
-                        break;
-
-                    default:
-                        $criteria['address'][] = $value;
-
-                        break;
-                }
-            }
-        }
-
+        $criteria['status'] = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
         $key = json_encode($criteria, JSON_UNESCAPED_UNICODE) . $limit . $offset;
 
         if (!array_key_exists($key, (array) $buf)) {
@@ -690,6 +598,8 @@ class TwigExtension extends AbstractExtension
 
                 $_SESSION['catalog_product_view'] = $list;
         }
+
+        return null;
     }
 
     // fetch order

@@ -42,7 +42,7 @@ RUN set -x \
     && nginx -V \
     && pecl install imagick yaml \
     && docker-php-ext-configure gd \
-    && docker-php-ext-install -j$(nproc) gettext zip gd pdo_mysql \
+    && docker-php-ext-install -j$(nproc) gettext zip gd pdo_mysql soap \
     && docker-php-ext-enable opcache.so imagick yaml \
     && docker-php-source delete \
     && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
