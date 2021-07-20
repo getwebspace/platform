@@ -347,13 +347,14 @@ class TwigExtension extends AbstractExtension
 
     public function qr_code($value, $width = 256, $height = 256)
     {
-        $renderer = new \BaconQrCode\Renderer\Image\Png();
+        $renderer = new \BaconQrCode\Renderer\Image\Svg();
         $renderer->setWidth($width);
         $renderer->setHeight($height);
+        $renderer->setMargin(0);
 
         $writer = new \BaconQrCode\Writer($renderer);
 
-        return '<img src="data:image/png;base64,' . base64_encode($writer->writeString($value)) . '" height="' . $height . '" width="' . $width . '">';
+        return '<img src="data:image/svg+xml;base64,' . base64_encode($writer->writeString($value)) . '" height="' . $height . '" width="' . $width . '">';
     }
 
     public function oauth_url(string $provider): string
