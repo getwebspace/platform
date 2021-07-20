@@ -3,6 +3,7 @@
 namespace App\Application\Actions\Cup\Catalog\Order;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
+use const App\Application\Actions\Cup\Catalog\INVOICE_TEMPLATE;
 
 class OrderListAction extends CatalogAction
 {
@@ -15,6 +16,7 @@ class OrderListAction extends CatalogAction
 
         return $this->respondWithTemplate('cup/catalog/order/index.twig', [
             'orders' => $list,
+            'invoice' => INVOICE_TEMPLATE
         ]);
     }
 }

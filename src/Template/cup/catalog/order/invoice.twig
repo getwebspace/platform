@@ -9,9 +9,9 @@
                 <h2 class="text-white pb-2 fw-bold">Заказы</h2>
             </div>
             <div class="ml-md-auto py-2 py-md-0">
-                <button onclick="print_element('#invoice')" class="btn btn-light btn-border">
+                <a href="#" onclick="print_element('#invoice')" class="btn btn-light">
                     Печать
-                </button>
+                </a>
                 <a href="/cup/catalog/order/{{ order.uuid }}/edit" class="btn btn-secondary">
                     Редактировать
                 </a>
@@ -26,89 +26,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div id="invoice" class="card card-invoice">
-                        <div class="card-header">
-                            <div class="invoice-header">
-                                <h3 class="invoice-title">
-                                    Инвойс
-                                </h3>
-                                {#<div class="invoice-logo">
-                                    <img src="../assets/img/examples/logoinvoice.svg" alt="company logo">
-                                </div>#}
-                            </div>
-                            {#<div class="invoice-desc">
-                                Bandung, West Java, Indonesia<br/>
-                                Fax 621113
-                            </div>#}
-                        </div>
-                        <div class="card-body">
-                            <div class="separator-solid"></div>
-                            <div class="row">
-                                <div class="col-md-3 info-invoice">
-                                    <h5 class="sub">Дата</h5>
-                                    <p>{{ order.date|df('Y-m-d H:i') }}</p>
-                                </div>
-                                <div class="col-md-3 info-invoice">
-                                    <h5 class="sub">Заказ</h5>
-                                    <p>{{ order.serial }}</p>
-                                </div>
-                                <div class="col-md-6 info-invoice text-right">
-                                    <h5 class="sub">Клиент</h5>
-                                    <p>
-                                        {{ order.user ? order.user.getName() : order.delivery.client }}<br>
-                                        {{ order.user and order.user.phone ? order.user.phone : (order.phone ? order.phone : '&mdash;') }}<br>
-                                        {{ order.user and order.user.email ? order.user.email : (order.email ? order.email : '&mdash;') }}<br>
-                                        {{ order.user ? order.user.getAddress() : order.delivery.address }}<br>
-                                        {{ order.comment }}
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="invoice-detail">
-                                        <div class="invoice-top">
-                                            <h3 class="title"><strong>Заказ</strong></h3>
-                                        </div>
-                                        <div class="invoice-item">
-                                            <div class="table-responsive">
-                                                <table class="table table-striped">
-                                                    <thead>
-                                                        <tr>
-                                                            <td><strong>Позиция</strong></td>
-                                                            <td width="15%" class="text-center"><strong>Цена</strong></td>
-                                                            <td width="15%" class="text-center"><strong>Количество</strong></td>
-                                                            <td width="15%" class="text-right"><strong>Всего</strong></td>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {% set total = 0 %}
-                                                        {% for product in products %}
-                                                            {% set count = order.list[product.uuid.toString()] %}
-                                                            {% set total = total + (product.price * count) %}
-                                                            <tr>
-                                                                <td>{{ product.title }}</td>
-                                                                <td class="text-center">{{ product.price|number_format(2, '.', ' ') }}</td>
-                                                                <td class="text-center">{{ count }}</td>
-                                                                <td class="text-right">{{ (product.price * count)|number_format(2, '.', ' ') }}</td>
-                                                            </tr>
-                                                        {% endfor %}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="separator-solid mb-3"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <div class="row">
-                                <div class="col-12 text-right transfer-total">
-                                    <h5 class="sub">Общая сумма</h5>
-                                    <div class="price">{{ total|number_format(2, '.', ' ') }}</div>
-                                    <span>Налоги включены</span>
-                                </div>
-                            </div>
-                        </div>
+                        {{ include(template_from_string(parameter('catalog_invoice') ?: invoice)) }}
                     </div>
                 </div>
             </div>
