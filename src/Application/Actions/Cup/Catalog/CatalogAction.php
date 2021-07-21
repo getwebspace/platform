@@ -124,7 +124,7 @@ const INVOICE_TEMPLATE = <<<EOD
     </div>
 
     <div class="row mt-4">
-        <div class="col-4">{{ qr_code(base_url() ~ '/cart/done/0b857048-c66d-42b0-9324-7c0bbd02c43c', 100, 100) }}</div>
+        <div class="col-4">{{ qr_code(base_url() ~ '/cart/done/' ~ order.uuid, 100, 100) }}</div>
         <div class="col-8"></div>
     </div>
 </div>
