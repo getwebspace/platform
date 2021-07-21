@@ -1,6 +1,6 @@
 {% extends 'cup/layout.twig' %}
 
-{% block title %}Инвойс #{{ order.serial }}{% endblock %}
+{% block title %}Инвойс #{{ order.external_id ?: order.serial }}{% endblock %}
 
 {% block breadcrumb %}
     <div class="page-inner py-5">

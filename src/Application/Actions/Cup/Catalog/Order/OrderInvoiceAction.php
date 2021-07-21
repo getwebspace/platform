@@ -13,7 +13,9 @@ class OrderInvoiceAction extends CatalogAction
             $order = $this->catalogOrderService->read(['uuid' => $this->resolveArg('order')]);
 
             if ($order) {
-                $products = $this->catalogProductService->read(['uuid' => array_keys($order->getList())]);
+                $products = $this->catalogProductService
+                    ->read(['uuid' => array_keys($order->getList())])
+                    ->sortByDesc('price');
 
                 return $this->respondWithTemplate('cup/catalog/order/invoice.twig', [
                     'order' => $order,
