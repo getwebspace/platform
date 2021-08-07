@@ -109,319 +109,321 @@
                 <!-- End Sidebar -->
 
                 <div class="main-panel">
-                    <div class="content">
-                        <div class="panel-header bg-primary-gradient">
-                            {% block breadcrumb %}
-                                <div class="page-inner py-5">
-                                    <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
-                                        <div>
-                                            <h2 class="text-white pb-2 fw-bold">Панель управления</h2>
-                                            <h5 class="text-white op-7 mb-2">Добро пожаловать в панель управления сайтом</h5>
-                                        </div>
-                                        <div class="ml-md-auto py-2 py-md-0">
-                                            {#<a href="#" class="btn btn-white btn-border btn-round mr-2">Manage</a>
-                                            <a href="#" class="btn btn-secondary btn-round">Add Customer</a>#}
-                                        </div>
-                                    </div>
-                                </div>
-                            {% endblock %}
-                        </div>
-
-                        <div class="page-inner mt--5">
-                            {% if _error is not empty %}
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="card bg-danger">
-                                            <div class="card-header text-center">
-                                                <h4 class="card-title text-white">Обнаружены ошибки ({{ _error|count }})</h4>
-                                                <p class="text-white my-0">
-                                                    В форме обнаружены ошибки, пожалуйста,
-                                                    проверьте поля выделенные красным цветом,
-                                                    исправьте ошибки и попробуйте снова.
-                                                </p>
+                    {% block panelinner %}
+                        <div class="content">
+                            <div class="panel-header bg-primary-gradient">
+                                {% block breadcrumb %}
+                                    <div class="page-inner py-5">
+                                        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+                                            <div>
+                                                <h2 class="text-white pb-2 fw-bold">Панель управления</h2>
+                                                <h5 class="text-white op-7 mb-2">Добро пожаловать в панель управления сайтом</h5>
+                                            </div>
+                                            <div class="ml-md-auto py-2 py-md-0">
+                                                {#<a href="#" class="btn btn-white btn-border btn-round mr-2">Manage</a>
+                                                <a href="#" class="btn btn-secondary btn-round">Add Customer</a>#}
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            {% endif %}
+                                {% endblock %}
+                            </div>
 
-                            {% block content %}
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="card full-height">
-                                            <div class="card-header">
-                                                <div class="d-flex align-items-center">
-                                                    <h4 class="card-title">Быстрый переход</h4>
-
-                                                    <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto"></ul>
-                                                </div>
-                                            </div>
-                                            <div class="card-body">
-                                                <div class="row">
-                                                    <div class="col-12 col-sm-6 col-lg-4">
-                                                        <a href="/cup/user" class="card card-stats card-primary card-round">
-                                                            <div class="card-body">
-                                                                <p class="card-category">
-                                                                    <b>Редактирование пользователей</b><br>
-                                                                    Управление зарегистрированными пользователями, редактирование их профилей и блокировка
-                                                                </p>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-                                                    <div class="col-12 col-sm-6 col-lg-4">
-                                                        <a href="/cup/publication" class="card card-stats card-primary card-round">
-                                                            <div class="card-body">
-                                                                <p class="card-category">
-                                                                    <b>Публикации</b><br>
-                                                                    Раздел управления статьями, новостями, записями в личный блог
-                                                                </p>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-                                                    <div class="col-12 col-sm-6 col-lg-4">
-                                                        <a href="/cup/page" class="card card-stats card-primary card-round">
-                                                            <div class="card-body">
-                                                                <p class="card-category">
-                                                                    <b>Страницы сайта</b><br>
-                                                                    Создание и редактирование страниц, которые как правило редко изменяются и имеют постоянный адрес
-                                                                </p>
-                                                            </div>
-                                                        </a>
-                                                    </div>
-                                                    {% if parameter('catalog_is_enabled', 'yes') != 'no' %}
-                                                        <div class="col-12 col-sm-6 col-lg-4">
-                                                            <a href="/cup/catalog/product" class="card card-stats card-primary card-round">
-                                                                <div class="card-body">
-                                                                    <p class="card-category">
-                                                                        <b>Номенклатура товаров</b><br>
-                                                                        Управление товарами и услугами сайта, добавление новых позиций и изменение существующих
-                                                                    </p>
-                                                                </div>
-                                                            </a>
-                                                        </div>
-                                                        <div class="col-12 col-sm-6 col-lg-4">
-                                                            <a href="/cup/catalog/product" class="card card-stats card-primary card-round">
-                                                                <div class="card-body">
-                                                                    <p class="card-category">
-                                                                        <b>Категории магазина</b><br>
-                                                                        Создание и редактирование категорий товаров, изменение описания и приложенных фотографий
-                                                                    </p>
-                                                                </div>
-                                                            </a>
-                                                        </div>
-                                                    {% endif %}
-                                                    {% if parameter('guestbook_is_enabled', 'yes') != 'no' %}
-                                                        <div class="col-12 col-sm-6 col-lg-4">
-                                                            <a href="/cup/guestbook" class="card card-stats card-primary card-round">
-                                                                <div class="card-body">
-                                                                    <p class="card-category">
-                                                                        <b>Гостевая книга</b><br>
-                                                                        Просмотр отзывов посетителей о сайте, изменение и управление ответами
-                                                                    </p>
-                                                                </div>
-                                                            </a>
-                                                        </div>
-                                                    {% endif %}
-                                                    {% if parameter('form_is_enabled', 'yes') != 'no' %}
-                                                        <div class="col-12 col-sm-6 col-lg-4">
-                                                            <a href="/cup/form" class="card card-stats card-primary card-round">
-                                                                <div class="card-body">
-                                                                    <p class="card-category">
-                                                                        <b>Формы связи</b><br>
-                                                                        Создание и редактирование форм обратной связи, настройка формата письма
-                                                                    </p>
-                                                                </div>
-                                                            </a>
-                                                        </div>
-                                                    {% endif %}
-                                                    <div class="col-12 col-sm-6 col-lg-4">
-                                                        <a href="/cup/parameters" class="card card-stats card-primary card-round">
-                                                            <div class="card-body">
-                                                                <p class="card-category">
-                                                                    <b>Настройки системы</b><br>
-                                                                    Настройка общих параметров скрипта, а также настройка вывода новостей, каталога, плагинов
-                                                                </p>
-                                                            </div>
-                                                        </a>
-                                                    </div>
+                            <div class="page-inner mt--5">
+                                {% if _error is not empty %}
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="card bg-danger">
+                                                <div class="card-header text-center">
+                                                    <h4 class="card-title text-white">Обнаружены ошибки ({{ _error|count }})</h4>
+                                                    <p class="text-white my-0">
+                                                        В форме обнаружены ошибки, пожалуйста,
+                                                        проверьте поля выделенные красным цветом,
+                                                        исправьте ошибки и попробуйте снова.
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                {% endif %}
 
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="card full-height">
-                                            <div class="card-header">
-                                                <ul class="nav nav-pills nav-secondary nav-pills-no-bd" role="tablist">
-                                                    <li class="nav-item">
-                                                        <a class="nav-link active show" data-toggle="pill" href="#stats" role="tab">
-                                                            Сводка сайта
-                                                        </a>
-                                                    </li>
-                                                    <li class="nav-item">
-                                                        <a class="nav-link" data-toggle="pill" href="#notepad" role="tab">
-                                                            Блокнот
-                                                        </a>
-                                                    </li>
-                                                </ul>
+                                {% block content %}
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="card full-height">
+                                                <div class="card-header">
+                                                    <div class="d-flex align-items-center">
+                                                        <h4 class="card-title">Быстрый переход</h4>
+
+                                                        <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto"></ul>
+                                                    </div>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="row">
+                                                        <div class="col-12 col-sm-6 col-lg-4">
+                                                            <a href="/cup/user" class="card card-stats card-primary card-round">
+                                                                <div class="card-body">
+                                                                    <p class="card-category">
+                                                                        <b>Редактирование пользователей</b><br>
+                                                                        Управление зарегистрированными пользователями, редактирование их профилей и блокировка
+                                                                    </p>
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                        <div class="col-12 col-sm-6 col-lg-4">
+                                                            <a href="/cup/publication" class="card card-stats card-primary card-round">
+                                                                <div class="card-body">
+                                                                    <p class="card-category">
+                                                                        <b>Публикации</b><br>
+                                                                        Раздел управления статьями, новостями, записями в личный блог
+                                                                    </p>
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                        <div class="col-12 col-sm-6 col-lg-4">
+                                                            <a href="/cup/page" class="card card-stats card-primary card-round">
+                                                                <div class="card-body">
+                                                                    <p class="card-category">
+                                                                        <b>Страницы сайта</b><br>
+                                                                        Создание и редактирование страниц, которые как правило редко изменяются и имеют постоянный адрес
+                                                                    </p>
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                        {% if parameter('catalog_is_enabled', 'yes') != 'no' %}
+                                                            <div class="col-12 col-sm-6 col-lg-4">
+                                                                <a href="/cup/catalog/product" class="card card-stats card-primary card-round">
+                                                                    <div class="card-body">
+                                                                        <p class="card-category">
+                                                                            <b>Номенклатура товаров</b><br>
+                                                                            Управление товарами и услугами сайта, добавление новых позиций и изменение существующих
+                                                                        </p>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
+                                                            <div class="col-12 col-sm-6 col-lg-4">
+                                                                <a href="/cup/catalog/product" class="card card-stats card-primary card-round">
+                                                                    <div class="card-body">
+                                                                        <p class="card-category">
+                                                                            <b>Категории магазина</b><br>
+                                                                            Создание и редактирование категорий товаров, изменение описания и приложенных фотографий
+                                                                        </p>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if parameter('guestbook_is_enabled', 'yes') != 'no' %}
+                                                            <div class="col-12 col-sm-6 col-lg-4">
+                                                                <a href="/cup/guestbook" class="card card-stats card-primary card-round">
+                                                                    <div class="card-body">
+                                                                        <p class="card-category">
+                                                                            <b>Гостевая книга</b><br>
+                                                                            Просмотр отзывов посетителей о сайте, изменение и управление ответами
+                                                                        </p>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
+                                                        {% endif %}
+                                                        {% if parameter('form_is_enabled', 'yes') != 'no' %}
+                                                            <div class="col-12 col-sm-6 col-lg-4">
+                                                                <a href="/cup/form" class="card card-stats card-primary card-round">
+                                                                    <div class="card-body">
+                                                                        <p class="card-category">
+                                                                            <b>Формы связи</b><br>
+                                                                            Создание и редактирование форм обратной связи, настройка формата письма
+                                                                        </p>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
+                                                        {% endif %}
+                                                        <div class="col-12 col-sm-6 col-lg-4">
+                                                            <a href="/cup/parameters" class="card card-stats card-primary card-round">
+                                                                <div class="card-body">
+                                                                    <p class="card-category">
+                                                                        <b>Настройки системы</b><br>
+                                                                        Настройка общих параметров скрипта, а также настройка вывода новостей, каталога, плагинов
+                                                                    </p>
+                                                                </div>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div class="card-body">
-                                                <div class="tab-content">
+                                        </div>
+                                    </div>
 
-                                                    {# Tab: Сводка #}
-                                                    <div class="tab-pane fade show active" id="stats" role="tabpanel">
-                                                        <div class="row">
-                                                            <div class="col-12 col-md-6">
-                                                                <p class="text-muted text-center">Ниже отображается статистика использования движка по разделам</p>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="card full-height">
+                                                <div class="card-header">
+                                                    <ul class="nav nav-pills nav-secondary nav-pills-no-bd" role="tablist">
+                                                        <li class="nav-item">
+                                                            <a class="nav-link active show" data-toggle="pill" href="#stats" role="tab">
+                                                                Сводка сайта
+                                                            </a>
+                                                        </li>
+                                                        <li class="nav-item">
+                                                            <a class="nav-link" data-toggle="pill" href="#notepad" role="tab">
+                                                                Блокнот
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="tab-content">
 
-                                                                <table class="table table-stats">
-                                                                    {% if stats.pages %}
+                                                        {# Tab: Сводка #}
+                                                        <div class="tab-pane fade show active" id="stats" role="tabpanel">
+                                                            <div class="row">
+                                                                <div class="col-12 col-md-6">
+                                                                    <p class="text-muted text-center">Ниже отображается статистика использования движка по разделам</p>
+
+                                                                    <table class="table table-stats">
+                                                                        {% if stats.pages %}
+                                                                            <tr>
+                                                                                <th width="50%">Количество страниц:</th>
+                                                                                <td width="50%" class="text-center">{{ stats.pages }}</td>
+                                                                            </tr>
+                                                                        {% endif %}
+                                                                        {% if stats.publications %}
+                                                                            <tr>
+                                                                                <th width="50%">Количество публикаций:</th>
+                                                                                <td width="50%" class="text-center">{{ stats.publications }}</td>
+                                                                            </tr>
+                                                                        {% endif %}
+                                                                        {% if stats.guestbook %}
+                                                                            <tr>
+                                                                                <th width="50%">Количество отзвывов:</th>
+                                                                                <td width="50%" class="text-center">{{ stats.guestbook }}</td>
+                                                                            </tr>
+                                                                        {% endif %}
+                                                                        {% if stats.users %}
+                                                                            <tr>
+                                                                                <th width="50%">Количество пользователей:</th>
+                                                                                <td width="50%" class="text-center">{{ stats.users }}</td>
+                                                                            </tr>
+                                                                        {% endif %}
+                                                                        {% if stats.catalog.category or stats.catalog.product %}
+                                                                            <tr>
+                                                                                <th width="50%">Количество категорий и товаров:</th>
+                                                                                <td width="50%" class="text-center">{{ stats.catalog.category }} | {{ stats.catalog.product }}</td>
+                                                                            </tr>
+                                                                        {% endif %}
+                                                                        {% if stats.catalog.order %}
+                                                                            <tr>
+                                                                                <th width="50%">Количество заказов:</th>
+                                                                                <td width="50%" class="text-center">{{ stats.catalog.order }}</td>
+                                                                            </tr>
+                                                                        {% endif %}
+                                                                        {% if stats.files %}
+                                                                            <tr>
+                                                                                <th width="50%">Количество файлов:</th>
+                                                                                <td width="50%" class="text-center">{{ stats.files }}</td>
+                                                                            </tr>
+                                                                        {% endif %}
+                                                                        {% if plugins.count() %}
+                                                                            <tr>
+                                                                                <th width="50%">Количество плагинов:</th>
+                                                                                <td width="50%" class="text-center">
+                                                                                    {{ plugins.count() }}
+                                                                                </td>
+                                                                            </tr>
+                                                                        {% endif %}
+                                                                    </table>
+                                                                </div>
+                                                                <div class="col-12 col-md-6 border-left">
+                                                                    <p class="text-muted text-center">Здесь собрана техническая информация о движке и сервере</p>
+
+                                                                    <table class="table table-properties">
                                                                         <tr>
-                                                                            <th width="50%">Количество страниц:</th>
-                                                                            <td width="50%" class="text-center">{{ stats.pages }}</td>
-                                                                        </tr>
-                                                                    {% endif %}
-                                                                    {% if stats.publications %}
-                                                                        <tr>
-                                                                            <th width="50%">Количество публикаций:</th>
-                                                                            <td width="50%" class="text-center">{{ stats.publications }}</td>
-                                                                        </tr>
-                                                                    {% endif %}
-                                                                    {% if stats.guestbook %}
-                                                                        <tr>
-                                                                            <th width="50%">Количество отзвывов:</th>
-                                                                            <td width="50%" class="text-center">{{ stats.guestbook }}</td>
-                                                                        </tr>
-                                                                    {% endif %}
-                                                                    {% if stats.users %}
-                                                                        <tr>
-                                                                            <th width="50%">Количество пользователей:</th>
-                                                                            <td width="50%" class="text-center">{{ stats.users }}</td>
-                                                                        </tr>
-                                                                    {% endif %}
-                                                                    {% if stats.catalog.category or stats.catalog.product %}
-                                                                        <tr>
-                                                                            <th width="50%">Количество категорий и товаров:</th>
-                                                                            <td width="50%" class="text-center">{{ stats.catalog.category }} | {{ stats.catalog.product }}</td>
-                                                                        </tr>
-                                                                    {% endif %}
-                                                                    {% if stats.catalog.order %}
-                                                                        <tr>
-                                                                            <th width="50%">Количество заказов:</th>
-                                                                            <td width="50%" class="text-center">{{ stats.catalog.order }}</td>
-                                                                        </tr>
-                                                                    {% endif %}
-                                                                    {% if stats.files %}
-                                                                        <tr>
-                                                                            <th width="50%">Количество файлов:</th>
-                                                                            <td width="50%" class="text-center">{{ stats.files }}</td>
-                                                                        </tr>
-                                                                    {% endif %}
-                                                                    {% if plugins.count() %}
-                                                                        <tr>
-                                                                            <th width="50%">Количество плагинов:</th>
+                                                                            <th width="50%">Версия движка:</th>
                                                                             <td width="50%" class="text-center">
-                                                                                {{ plugins.count() }}
+                                                                                {{ properties.version.branch }}
+                                                                                (<a href="https://github.com/getwebspace/platform/tree/{{ properties.version.commit }}" target="_blank">source</a>)
                                                                             </td>
                                                                         </tr>
-                                                                    {% endif %}
-                                                                </table>
-                                                            </div>
-                                                            <div class="col-12 col-md-6 border-left">
-                                                                <p class="text-muted text-center">Здесь собрана техническая информация о движке и сервере</p>
-
-                                                                <table class="table table-properties">
-                                                                    <tr>
-                                                                        <th width="50%">Версия движка:</th>
-                                                                        <td width="50%" class="text-center">
-                                                                            {{ properties.version.branch }}
-                                                                            (<a href="https://github.com/getwebspace/platform/tree/{{ properties.version.commit }}" target="_blank">source</a>)
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th width="50%">Операционная система:</th>
-                                                                        <td width="50%" class="text-center">{{ properties.os }}</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th width="50%">Версия PHP:</th>
-                                                                        <td width="50%" class="text-center">{{ properties.php }}</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th width="50%">Выделено ОЗУ:</th>
-                                                                        <td width="50%" class="text-center">{{ properties.memory_limit }}</td>
-                                                                    </tr>
-                                                                    {% if properties.disable_functions %}
                                                                         <tr>
-                                                                            <th width="50%">Отключенные функции:</th>
-                                                                            <td width="50%" class="text-center">{{ properties.disable_functions }}</td>
+                                                                            <th width="50%">Операционная система:</th>
+                                                                            <td width="50%" class="text-center">{{ properties.os }}</td>
                                                                         </tr>
-                                                                    {% endif %}
-                                                                    {% if properties.disable_classes %}
                                                                         <tr>
-                                                                            <th width="50%">Отключенные классы:</th>
-                                                                            <td width="50%" class="text-center">{{ properties.disable_classes }}</td>
+                                                                            <th width="50%">Версия PHP:</th>
+                                                                            <td width="50%" class="text-center">{{ properties.php }}</td>
                                                                         </tr>
-                                                                    {% endif %}
-                                                                    <tr>
-                                                                        <th width="50%">Максимальный размер загружаемого файла:</th>
-                                                                        <td width="50%" class="text-center">{{ properties.upload_max_filesize }}</td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <th width="50%">Максимальное количество загружаемых файлов:</th>
-                                                                        <td width="50%" class="text-center">{{ properties.max_file_uploads }}</td>
-                                                                    </tr>
-                                                                </table>
+                                                                        <tr>
+                                                                            <th width="50%">Выделено ОЗУ:</th>
+                                                                            <td width="50%" class="text-center">{{ properties.memory_limit }}</td>
+                                                                        </tr>
+                                                                        {% if properties.disable_functions %}
+                                                                            <tr>
+                                                                                <th width="50%">Отключенные функции:</th>
+                                                                                <td width="50%" class="text-center">{{ properties.disable_functions }}</td>
+                                                                            </tr>
+                                                                        {% endif %}
+                                                                        {% if properties.disable_classes %}
+                                                                            <tr>
+                                                                                <th width="50%">Отключенные классы:</th>
+                                                                                <td width="50%" class="text-center">{{ properties.disable_classes }}</td>
+                                                                            </tr>
+                                                                        {% endif %}
+                                                                        <tr>
+                                                                            <th width="50%">Максимальный размер загружаемого файла:</th>
+                                                                            <td width="50%" class="text-center">{{ properties.upload_max_filesize }}</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <th width="50%">Максимальное количество загружаемых файлов:</th>
+                                                                            <td width="50%" class="text-center">{{ properties.max_file_uploads }}</td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
 
-                                                    {# Tab: Блокнот #}
-                                                    <div class="tab-pane fade" id="notepad" role="tabpanel">
-                                                        <div class="row">
-                                                            <div class="col-md-12">
-                                                                <form action="/cup/parameters?return=/cup" method="post">
-                                                                    <p class="text-muted text-center">Здесь вы можете сохранять собственные заметки и памятки</p>
+                                                        {# Tab: Блокнот #}
+                                                        <div class="tab-pane fade" id="notepad" role="tabpanel">
+                                                            <div class="row">
+                                                                <div class="col-md-12">
+                                                                    <form action="/cup/parameters?return=/cup" method="post">
+                                                                        <p class="text-muted text-center">Здесь вы можете сохранять собственные заметки и памятки</p>
 
-                                                                    {% include 'cup/editor.twig' with {
-                                                                        'name': 'notepad[' ~ user.username ~ ']',
-                                                                        'args': {
-                                                                            'value': notepad, 'required': true
-                                                                        }
-                                                                    } %}
-                                                                    <button type="submit" class="btn btn-success">Сохранить</button>
-                                                                </form>
+                                                                        {% include 'cup/editor.twig' with {
+                                                                            'name': 'notepad[' ~ user.username ~ ']',
+                                                                            'args': {
+                                                                                'value': notepad, 'required': true
+                                                                            }
+                                                                        } %}
+                                                                        <button type="submit" class="btn btn-success">Сохранить</button>
+                                                                    </form>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    {#
-                                    <div class="col-md-4">
-                                        <div class="card card-primary bg-primary-gradient">
-                                            <div class="card-body">
-                                                <h4 class="mt-3 b-b1 pb-2 mb-4 fw-bold">Сейчас на сайте</h4>
-                                                <h1 class="mb-4 fw-bold">17</h1>
-                                                <h4 class="mt-3 b-b1 pb-2 mb-5 fw-bold">Просмотров страниц в минуту</h4>
-                                                <div id="activeUsersChart">
-                                                    <canvas style="display: inline-block; width: 294px; height: 100px; vertical-align: top;" width="294" height="100"></canvas>
+                                        {#
+                                        <div class="col-md-4">
+                                            <div class="card card-primary bg-primary-gradient">
+                                                <div class="card-body">
+                                                    <h4 class="mt-3 b-b1 pb-2 mb-4 fw-bold">Сейчас на сайте</h4>
+                                                    <h1 class="mb-4 fw-bold">17</h1>
+                                                    <h4 class="mt-3 b-b1 pb-2 mb-5 fw-bold">Просмотров страниц в минуту</h4>
+                                                    <div id="activeUsersChart">
+                                                        <canvas style="display: inline-block; width: 294px; height: 100px; vertical-align: top;" width="294" height="100"></canvas>
+                                                    </div>
+                                                    <h4 class="mt-5 pb-3 mb-0 fw-bold">Популярные страницы</h4>
+                                                    <ul class="list-unstyled">
+                                                        <li class="d-flex justify-content-between pb-1 pt-1"><small>/product/readypro/index.html</small> <span>7</span></li>
+                                                        <li class="d-flex justify-content-between pb-1 pt-1"><small>/product/atlantis/demo.html</small> <span>10</span></li>
+                                                    </ul>
                                                 </div>
-                                                <h4 class="mt-5 pb-3 mb-0 fw-bold">Популярные страницы</h4>
-                                                <ul class="list-unstyled">
-                                                    <li class="d-flex justify-content-between pb-1 pt-1"><small>/product/readypro/index.html</small> <span>7</span></li>
-                                                    <li class="d-flex justify-content-between pb-1 pt-1"><small>/product/atlantis/demo.html</small> <span>10</span></li>
-                                                </ul>
                                             </div>
                                         </div>
+                                        #}
                                     </div>
-                                    #}
-                                </div>
-                            {% endblock %}
+                                {% endblock %}
+                            </div>
                         </div>
-                    </div>
+                    {% endblock %}
 
                     <footer class="footer">
                         <div class="container-fluid">
