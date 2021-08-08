@@ -45,7 +45,13 @@
                                     </li>
                                 </ul>
 
-                                <ul class="navbar-nav topbar-nav ml-md-auto align-items-center">
+                                {% if parameter('common_site_enabled') != 'yes' %}
+                                    <a href="/cup/parameters" class="d-block badge badge-danger mx-2 mt-2 mb-1 w-100">
+                                        Сайт отключен!
+                                    </a>
+                                {% endif %}
+
+                                <ul class="navbar-nav topbar-nav ml-md-2 align-items-center">
                                     {% for plugin in plugins %}
                                         {% for param in plugin.getToolbarItem() %}
                                             {% if param.twig %}

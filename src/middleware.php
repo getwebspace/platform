@@ -19,6 +19,9 @@ $app->add(\App\Application\Middlewares\AuthorizationMiddleware::class);
 // plugin functions
 $app->add(\App\Application\Middlewares\PluginMiddleware::class);
 
+// check is site disabled
+$app->add(\App\Application\Middlewares\IsSiteEnabledMiddleware::class);
+
 // RunTracy
 $app->add(new RunTracy\Middlewares\TracyMiddleware($app));
 

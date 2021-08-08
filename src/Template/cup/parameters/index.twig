@@ -69,6 +69,19 @@
                                             {# TAB: Common #}
                                             <div class="tab-pane fade active show" id="other-common">
                                                 {% include 'cup/field.twig' with {
+                                                    'label': 'Сайт доступен посетителям',
+                                                    'description': 'Можно использовать во время технических работ и/или инвентаризации',
+                                                    'type': 'select',
+                                                    'name': 'common[site_enabled]',
+                                                    'args': {
+                                                        'option': _(['yes', 'no']),
+                                                        'selected': 'yes'
+                                                    }
+                                                } %}
+
+                                                <hr>
+
+                                                {% include 'cup/field.twig' with {
                                                     'label': 'Название сайта',
                                                     'description': 'например: "Моя домашняя страница"',
                                                     'type': 'text',

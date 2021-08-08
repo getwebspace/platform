@@ -1,3 +1,7 @@
-<h4>Bad request</h4>
-<b>{{ exception.getMessage() }}</b>
-<pre>{{ exception.getTraceAsString() }}</pre>
+{% extends 'layout.twig' %}
+
+{% block body %}
+    <h4>Bad request</h4>
+    <b>{{ exception.getMessage() }}</b>
+    <pre>{{ exception.getTraceAsString() }}</pre>
+{% endblock %}
