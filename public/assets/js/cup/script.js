@@ -347,27 +347,7 @@ $(() => {
         $('[data-btn-order-modal-products]').click((e) => {
             e.preventDefault();
             this.blur();
-            
-            let handler = (e) => {
-                $product
-                    .html('')
-                    .prop('disabled', true);
-                
-                $.get('/api/catalog/product', {category: $(e.currentTarget).val()}, (res) => {
-                    if (res.status === 200) {
-                        for (let item of res.data) {
-                            $product.append(
-                                $option.clone().text(item.title).val(item.uuid).data('price', item.price)
-                            );
-                        }
-                    }
-                    
-                    $product
-                        .trigger('change.select2')
-                        .prop('disabled', false);
-                });
-            };
-            $category.html('').off('change', handler).on('change', handler);
+            $category.html('');
             
             $.get('/api/catalog/category', (res) => {
                 if (res.status === 200) {
@@ -394,6 +374,22 @@ $(() => {
                     $category.trigger('change').trigger('change.select2');
                     $modal.modal();
                 }
+            });
+        });
+    
+        $category.on('change', (e) => {
+            $product.html('').prop('disabled', true);
+    
+            $.get('/api/catalog/product', {category: $(e.currentTarget).val()}, (res) => {
+                if (res.status === 200) {
+                    for (let item of res.data) {
+                        $product.append(
+                            $option.clone().text(item.title).val(item.uuid).data('price', item.price)
+                        );
+                    }
+                }
+        
+                $product.trigger('change.select2').prop('disabled', false);
             });
         });
         
