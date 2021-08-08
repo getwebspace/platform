@@ -554,6 +554,11 @@
 
                     triggerEvent('cart:checkout:before', data);
 
+                    // Google reCAPTCHA работает если подключен mixin/recaptcha.twig
+                    if (typeof (grecaptcha) !== 'undefined' && grecaptcha.getToken) {
+                        data.append('recaptcha', await grecaptcha.getToken());
+                    }
+
                     $.ajax({
                         url: options.cart.url || location.pathname,
                         type: 'POST',
