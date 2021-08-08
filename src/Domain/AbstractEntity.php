@@ -217,7 +217,12 @@ abstract class AbstractEntity extends AbstractComponent
      */
     public function toArray(): array
     {
-        return array_serialize(array_except(get_object_vars($this), ['__initializer__', '__cloner__', '__isInitialized__']));
+        return array_serialize(
+            array_except(
+                get_object_vars($this),
+                ['__initializer__', '__cloner__', '__isInitialized__', 'logger', 'entityManager', 'container']
+            )
+        );
     }
 
     /**
@@ -252,7 +257,7 @@ abstract class AbstractEntity extends AbstractComponent
     /**
      * Denied to write property
      *
-     * @param mixed  $value
+     * @param mixed $value
      *
      * @return mixed
      */
