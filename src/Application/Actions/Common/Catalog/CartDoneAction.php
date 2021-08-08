@@ -17,13 +17,8 @@ class CartDoneAction extends CatalogAction
                 $order = $this->catalogOrderService->read(['uuid' => $this->resolveArg('order')]);
 
                 if ($order) {
-                    $products = $this->catalogProductService
-                        ->read(['uuid' => array_keys($order->getList())])
-                        ->sortByDesc('price');
-
                     return $this->respond($this->parameter('catalog_cart_complete_template', 'catalog.cart.complete.twig'), [
                         'order' => $order,
-                        'products' => $products,
                     ]);
                 }
             } catch (OrderNotFoundException $e) {

@@ -36,9 +36,6 @@ class OrderService extends AbstractService
                 'address' => '',
             ],
             'user' => null,
-            'list' => [
-                // 'uuid' => 'count',
-            ],
             'phone' => '',
             'email' => '',
             'status' => \App\Domain\Types\Catalog\OrderStatusType::STATUS_NEW,
@@ -58,7 +55,6 @@ class OrderService extends AbstractService
             ->setSerial($lastOrder ? ((int) $lastOrder->getSerial()) + 1 : 1)
             ->setDelivery($data['delivery'])
             ->setUser($data['user'])
-            ->setList($data['list'])
             ->setPhone($data['phone'])
             ->setEmail($data['email'])
             ->setStatus($data['status'])
@@ -167,7 +163,6 @@ class OrderService extends AbstractService
             $default = [
                 'delivery' => null,
                 'user' => null,
-                'list' => null,
                 'phone' => null,
                 'email' => null,
                 'status' => null,
@@ -186,9 +181,6 @@ class OrderService extends AbstractService
                 }
                 if ($data['user'] !== null) {
                     $entity->setUser($data['user']);
-                }
-                if ($data['list'] !== null) {
-                    $entity->setList($data['list']);
                 }
                 if ($data['phone'] !== null) {
                     if (blank($data['phone'])) {

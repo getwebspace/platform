@@ -234,25 +234,28 @@ class Order extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(name="`list`", type="array")
+     * @var array
+     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\OrderProduct", mappedBy="order", orphanRemoval=true)
      */
-    protected array $list = [
-        // 'uuid' => 'count',
-    ];
+    protected $products = [];
 
-    /**
-     * @return $this
-     */
-    public function setList(array $list)
+    public function getProducts($raw = false)
     {
-        $this->list = $list;
-
-        return $this;
+        return $raw ? $this->products : collect($this->products);
     }
 
-    public function getList(): array
+    public function hasProducts()
     {
-        return $this->list;
+        return count($this->products);
+    }
+
+    public function getTotalPrice($price_type = 'price'): float
+    {
+        if (in_array($price_type, ['priceFirst', 'price', 'priceWholesale'])) {
+            return $this->getProducts()->sum(fn($el) => $el->{$price_type} * $el->count);
+        }
+
+        return 0;
     }
 
     /**

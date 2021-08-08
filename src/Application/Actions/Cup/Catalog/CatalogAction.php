@@ -5,6 +5,7 @@ namespace App\Application\Actions\Cup\Catalog;
 use App\Domain\AbstractAction;
 use App\Domain\Service\Catalog\AttributeService as CatalogAttributeService;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
+use App\Domain\Service\Catalog\OrderProductService as CatalogOrderProductService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
 use App\Domain\Service\Catalog\ProductAttributeService as CatalogProductAttributeService;
 use App\Domain\Service\Catalog\ProductRelationService as CatalogProductRelationService;
@@ -30,6 +31,8 @@ abstract class CatalogAction extends AbstractAction
 
     protected CatalogOrderService $catalogOrderService;
 
+    protected CatalogOrderProductService $catalogOrderProductService;
+
     protected NotificationService $notificationService;
 
     /**
@@ -46,6 +49,7 @@ abstract class CatalogAction extends AbstractAction
         $this->catalogProductAttributeService = CatalogProductAttributeService::getWithContainer($container);
         $this->catalogProductRelationService = CatalogProductRelationService::getWithContainer($container);
         $this->catalogOrderService = CatalogOrderService::getWithContainer($container);
+        $this->catalogOrderProductService = CatalogOrderProductService::getWithContainer($container);
         $this->notificationService = NotificationService::getWithContainer($container);
     }
 
@@ -112,19 +116,17 @@ const INVOICE_TEMPLATE = <<<EOD
     </div>
 
     {% set total = 0 %}
-    {% for product in products %}
-        {% set count = order.list[product.uuid.toString()] %}
-        {% set total = total + (product.price * count) %}
+    {% for item in order.products %}
         <div class="row p-1 {{ loop.last ?: 'border-bottom' }} {{ loop.index0 % 2 ? 'bg-grey1' }}">
-            <div class="col-6">{{ product.title }}</div>
-            <div class="col-2 text-right">{{ product.price|number_format(2, '.', ' ') }}</div>
-            <div class="col-2 text-right">{{ count }}</div>
-            <div class="col-2 text-right">{{ (product.price * count)|number_format(2, '.', ' ') }}</div>
+            <div class="col-6">{{ item.title }}</div>
+            <div class="col-2 text-right">{{ item.price|number_format(2, '.', ' ') }}</div>
+            <div class="col-2 text-right">{{ item.count }}</div>
+            <div class="col-2 text-right">{{ (item.price * item.count)|number_format(2, '.', ' ') }}</div>
         </div>
     {% endfor %}
 
     <div class="row p-1">
-        <div class="col-6 offset-6 text-right font-weight-bold border-top">Общая сумма: {{ total|number_format(2, '.', ' ') }}</div>
+        <div class="col-6 offset-6 text-right font-weight-bold border-top">Общая сумма: {{ order.getTotalPrice()|number_format(2, '.', ' ') }}</div>
     </div>
 </div>
 EOD;

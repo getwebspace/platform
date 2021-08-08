@@ -328,7 +328,7 @@
                             $items.append(
                                 $('<input ' + options.selectors['cart-data'] + '>')
                                     .attr('type', 'number')
-                                    .attr('name', 'list[' + item.uuid + ']')
+                                    .attr('name', 'products[' + item.uuid + ']')
                                     .val(item.quantity)
                             );
                         }
@@ -567,10 +567,10 @@
                         cache: false,
                         processData: false,
                         success: (res) => {
-                            this.cartRemoveAll();
                             triggerEvent('cart:checkout:after', data);
 
-                            if (res) {
+                            if (res && res.redirect) {
+                                this.cartRemoveAll();
                                 location = res.redirect;
                             }
                         }

@@ -225,17 +225,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for product in products %}
-                                        {% set count = order.list[product.uuid.toString()] %}
+                                    {% for item in order.products %}
                                         <tr>
-                                            <td>{{ product.title }}</td>
-                                            <td>{{ product.price|number_format(2, '.', ' ') }}</td>
+                                            <td>{{ item.title }}</td>
+                                            <td>{{ item.price|number_format(2, '.', ' ') }}</td>
                                             <td>
                                                 {% include 'cup/form.twig' with {
                                                     'type': 'number',
-                                                    'name': 'list['~ product.uuid ~']',
+                                                    'name': 'products['~ item.product.uuid ~']',
                                                     'args': {
-                                                        'value': count,
+                                                        'value': item.count,
                                                         'placeholder': '1',
                                                         'step': 'any',
                                                         'min': '0',

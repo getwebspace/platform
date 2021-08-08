@@ -75,17 +75,24 @@
                     <table class="table mt-3 mb-5" style="width: 100%;">
                         <tr>
                             <td>Название</td>
-                            <td>Цена</td>
-                            <td>Кол-во</td>
+                            <td class="text-right">Цена</td>
+                            <td class="text-right">Кол-во</td>
+                            <td class="text-right">Сумма</td>
                         </tr>
 
-                        {% for product in products %}
+                        {% for item in order.products %}
                             <tr>
-                                <td>{{ product.title }}</td>
-                                <td>{{ product.price }}</td>
-                                <td>{{ order.list[product.uuid.toString()] }}</td>
+                                <td>{{ item.title }}</td>
+                                <td class="text-right">{{ item.price|number_format(2, '.', ' ') }}</td>
+                                <td class="text-right">{{ item.count }}</td>
+                                <td class="text-right">{{ (item.price * item.count)|number_format(2, '.', ' ') }}</td>
                             </tr>
                         {% endfor %}
+
+                        <tr>
+                            <td colspan="3">Всего</td>
+                            <td class="text-right">{{ order.getTotalPrice()|number_format(2, '.', ' ') }}</td>
+                        </tr>
                     </table>
                 </div>
             </div>

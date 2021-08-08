@@ -24,6 +24,10 @@ class OrderCreateAction extends CatalogAction
                 'external_id' => $this->request->getParam('external_id'),
                 'system' => $this->request->getParam('system', ''),
             ]);
+            $this->catalogOrderProductService->proccess(
+                $order,
+                $this->request->getParam('products', [])
+            );
 
             // notify to user
             if ($user_uuid && $this->parameter('notification_is_enabled', 'yes') === 'yes') {

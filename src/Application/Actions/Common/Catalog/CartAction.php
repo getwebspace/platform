@@ -13,7 +13,6 @@ class CartAction extends CatalogAction
         if ($this->request->isPost()) {
             $data = [
                 'delivery' => $this->request->getParam('delivery'),
-                'list' => $this->request->getParam('list', []),
                 'phone' => $this->request->getParam('phone'),
                 'email' => $this->request->getParam('email'),
                 'comment' => $this->request->getParam('comment', ''),
@@ -48,6 +47,10 @@ class CartAction extends CatalogAction
             if ($this->isRecaptchaChecked()) {
                 // todo try/catch
                 $order = $this->catalogOrderService->create($data);
+                $this->catalogOrderProductService->proccess(
+                    $order,
+                    $this->request->getParam('products', [])
+                );
 
                 // notify to user
                 if ($user && $this->parameter('notification_is_enabled', 'yes') === 'yes') {
@@ -79,13 +82,11 @@ class CartAction extends CatalogAction
                     && ($email = $this->parameter('smtp_from', '')) !== ''
                     && ($tpl = $this->parameter('catalog_mail_admin_template', '')) !== ''
                 ) {
-                    $products = $this->catalogProductService->read(['uuid' => array_keys($order->getList())]);
-
                     // add task send admin mail
                     $task = new \App\Domain\Tasks\SendMailTask($this->container);
                     $task->execute([
                         'to' => $email,
-                        'body' => $this->render($tpl, ['order' => $order, 'products' => $products]),
+                        'body' => $this->render($tpl, ['order' => $order]),
                         'isHtml' => true,
                     ]);
                     $isNeedRunWorker = $task;
@@ -97,13 +98,11 @@ class CartAction extends CatalogAction
                     && $order->getEmail()
                     && ($tpl = $this->parameter('catalog_mail_client_template', '')) !== ''
                 ) {
-                    $products = $this->catalogProductService->read(['uuid' => array_keys($order->getList())]);
-
                     // add task send client mail
                     $task = new \App\Domain\Tasks\SendMailTask($this->container);
                     $task->execute([
                         'to' => $order->getEmail(),
-                        'body' => $this->render($tpl, ['order' => $order, 'products' => $products]),
+                        'body' => $this->render($tpl, ['order' => $order]),
                         'isHtml' => true,
                     ]);
                     $isNeedRunWorker = $task;

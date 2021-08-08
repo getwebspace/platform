@@ -396,11 +396,11 @@ $(() => {
         $btnSuccess.on('click', () => {
             if ($product.val() && $quantity.val() >= 1) {
                 let $selected = $product.find(':selected'),
-                    $find = $('[name="list[' + $selected.attr('value') + ']"]');
+                    $find = $('[name="products[' + $selected.attr('value') + ']"]');
                 
                 if ($find.length === 0) {
                     let $input = $('<input class="form-control" type="number" placeholder="1" min="0" step="any">')
-                        .attr('name', 'list[' + $selected.attr('value') + ']')
+                        .attr('name', 'products[' + $selected.attr('value') + ']')
                         .val($quantity.val())
                     ;
                     
