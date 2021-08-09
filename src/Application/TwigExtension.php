@@ -412,7 +412,7 @@ class TwigExtension extends AbstractExtension
         if (!$buf) {
             $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
             $buf = $publicationCategoryService->read([
-                'public' => $public,
+                'public' => $public ?: null,
             ]);
         }
 
