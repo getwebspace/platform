@@ -6,16 +6,16 @@
     fancybox_opt - json
 #}
 {% htmlcompress %}
-    {% set editorId = random() %}
+    {% set galleryId = random() %}
     {% set owlcarousel = owlcarousel is not defined or owlcarousel == true %}
     {% set fancybox = fancybox is not defined or fancybox == true %}
 
-    <div id="gallery-{{ editorId }}">
+    <div id="gallery-{{ galleryId }}">
         <div {{ owlcarousel ? 'class="owl-carousel"' }}>
             {% for address in images %}
                 {{ owlcarousel ? '<div class="item">' }}
                     {% if fancybox %}
-                        <a data-fancybox="gallery-{{ editorId }}" href="{{ address }}">
+                        <a data-fancybox="gallery-{{ galleryId }}" href="{{ address }}">
                             <img src="{{ address }}" alt="Gallery image {{ loop.index }}"></a>
                         </a>
                     {% else %}
@@ -77,11 +77,11 @@
                 ]);
 
                 {% if owlcarousel %}
-                    $('[id="gallery-{{ editorId }}"] .owl-carousel').owlCarousel({{ owlcarousel_opt|raw }});
+                    $('[id="gallery-{{ galleryId }}"] .owl-carousel').owlCarousel({{ owlcarousel_opt|raw }});
                 {% endif %}
 
                 {% if fancybox %}
-                    $('[id="gallery-{{ editorId }}"] [data-fancybox]').fancybox({{ fancybox_opt|raw }});
+                    $('[id="gallery-{{ galleryId }}"] [data-fancybox]').fancybox({{ fancybox_opt|raw }});
                 {% endif %}
             });
         </script>
