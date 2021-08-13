@@ -197,7 +197,7 @@ steps - collection
                     });
 
                     // handle change radio option with next step
-                    $quiz.find('[data-button="0"] [data-option] input[type="radio"]').on('change', (e) => {
+                    $quiz.find('[data-button="0"] [data-option] input[type="radio"]').on('click', (e) => {
                         change_step(+$step.text(), +$step.text() + 1, $(e.currentTarget).val());
                     });
 
