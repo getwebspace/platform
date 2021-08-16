@@ -240,6 +240,14 @@ steps - collection
                                         throw new Error('Invalid E-Mail address');
                                     }
                                 }
+                                if ((el.type === 'checkbox' || el.type === 'radio') && el.checked === false) {
+                                    if (el.required === true) {
+                                        el.classList.add('check-error');
+                                        throw new Error('Required field');
+                                    }
+
+                                    return;
+                                }
 
                                 data.append(el.name, el.value);
                             });
