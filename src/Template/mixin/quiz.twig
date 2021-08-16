@@ -64,7 +64,7 @@ steps - collection
                                     {% set icon = option.icon is defined %}
                                     {% set image = option.image is defined %}
 
-                                    <div class="{{ small_col }} col-md-3" data-option="{{ loop.index }}">
+                                    <div class="{{ small_col }} col-md-3" data-option="{{ loop.index }}" data-option-name="{{ option.name }}" >
                                         <div class="row d-flex justify-content-between my-2">
                                             <div class="col-12 text-center" data-label>
                                                 {% if icon %}<i class="{{ option.icon }} fa-3x"></i>{% endif %}
@@ -87,7 +87,7 @@ steps - collection
                                 {% endfor %}
 
                                 {% for field in step.field %}
-                                    <div class="col-12" data-field="{{ loop.index }}">
+                                    <div class="col-12" data-field="{{ loop.index }}" data-field-name="{{ field.name }}">
                                         {% include 'mixin/form.twig' with field %}
                                     </div>
                                 {% endfor %}
