@@ -40,7 +40,7 @@ class OrderProduct extends AbstractEntity
     /**
      * @return $this
      */
-    public function setOrder(Order $order): OrderProduct
+    public function setOrder(Order $order): self
     {
         if (is_a($order, Order::class)) {
             $this->order = $order;
@@ -69,7 +69,7 @@ class OrderProduct extends AbstractEntity
     /**
      * @return $this
      */
-    public function setProduct(Product $product): OrderProduct
+    public function setProduct(Product $product): self
     {
         if (is_a($product, Product::class)) {
             $this->product = $product;
@@ -127,16 +127,13 @@ class OrderProduct extends AbstractEntity
     /**
      * @return $this
      */
-    public function setCount(float $count): OrderProduct
+    public function setCount(float $count): self
     {
         $this->count = $count;
 
         return $this;
     }
 
-    /**
-     * @return float
-     */
     public function getCount(): float
     {
         return $this->count;

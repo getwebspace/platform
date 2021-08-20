@@ -55,7 +55,7 @@ class OrderProductService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        $productRelation = (new OrderProduct)
+        $productRelation = (new OrderProduct())
             ->setOrder($data['order'])
             ->setProduct($data['product'])
             ->setCount($data['count']);

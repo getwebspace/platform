@@ -32,7 +32,7 @@ abstract class ActionApi extends AbstractAction
                     $key = $this->request->getHeaderLine('key');
                 }
 
-                if ($key && strpos($this->parameter('entity_keys', ''), $key) !== false) {
+                if ($key && mb_strpos($this->parameter('entity_keys', ''), $key) !== false) {
                     // allow access for key
                     $access = true;
                     $params['key'] = $key;

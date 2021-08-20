@@ -19,13 +19,9 @@ abstract class AbstractPlugin extends AbstractComponent
     public const AUTHOR_SITE = '';
     public const VERSION = '1.0';
 
-    /**
-     * @var array
-     */
     private static array $storage = [];
 
     /**
-     * @param string $key
      * @param mixed  $value
      *
      * @return mixed
@@ -38,11 +34,9 @@ abstract class AbstractPlugin extends AbstractComponent
     }
 
     /**
-     * @param string      $key
      * @param mixed       $default
-     * @param string|null $namespace
      *
-     * @return mixed|null
+     * @return null|mixed
      */
     public static function getStorage(string $key, $default = null, ?string $namespace = null)
     {

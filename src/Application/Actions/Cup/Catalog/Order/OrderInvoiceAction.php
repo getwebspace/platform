@@ -15,7 +15,7 @@ class OrderInvoiceAction extends CatalogAction
             if ($order) {
                 return $this->respondWithTemplate('cup/catalog/order/invoice.twig', [
                     'order' => $order,
-                    'invoice' => INVOICE_TEMPLATE
+                    'invoice' => INVOICE_TEMPLATE,
                 ]);
             }
         }

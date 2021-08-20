@@ -41,7 +41,7 @@ class ProductAttribute extends AbstractEntity
     /**
      * @return $this
      */
-    public function setProduct(Product $product): ProductAttribute
+    public function setProduct(Product $product): self
     {
         if (is_a($product, Product::class)) {
             $this->product = $product;
@@ -70,7 +70,7 @@ class ProductAttribute extends AbstractEntity
     /**
      * @return $this
      */
-    public function setAttribute(Attribute $attribute): ProductAttribute
+    public function setAttribute(Attribute $attribute): self
     {
         if (is_a($attribute, Attribute::class)) {
             $this->attribute_uuid = $attribute->getUuid();

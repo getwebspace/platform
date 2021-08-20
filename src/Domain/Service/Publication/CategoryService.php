@@ -115,7 +115,7 @@ class CategoryService extends AbstractService
             $criteria['parent'] = $data['parent'];
         }
         if ($data['public'] !== null) {
-            $criteria['public'] = !!$data['public'];
+            $criteria['public'] = (bool) $data['public'];
         }
 
         try {

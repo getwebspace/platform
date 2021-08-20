@@ -251,8 +251,8 @@ class Order extends AbstractEntity
 
     public function getTotalPrice($price_type = 'price'): float
     {
-        if (in_array($price_type, ['priceFirst', 'price', 'priceWholesale'])) {
-            return $this->getProducts()->sum(fn($el) => $el->{$price_type} * $el->count);
+        if (in_array($price_type, ['priceFirst', 'price', 'priceWholesale'], true)) {
+            return $this->getProducts()->sum(fn ($el) => $el->{$price_type} * $el->count);
         }
 
         return 0;

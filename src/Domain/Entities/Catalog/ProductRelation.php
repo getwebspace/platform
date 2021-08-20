@@ -39,7 +39,7 @@ class ProductRelation extends AbstractEntity
     /**
      * @return $this
      */
-    public function setProduct(Product $product): ProductRelation
+    public function setProduct(Product $product): self
     {
         if (is_a($product, Product::class)) {
             $this->product = $product;
@@ -68,7 +68,7 @@ class ProductRelation extends AbstractEntity
     /**
      * @return $this
      */
-    public function setRelated(Product $product): ProductRelation
+    public function setRelated(Product $product): self
     {
         if (is_a($product, Product::class)) {
             $this->related_uuid = $product->getUuid();
@@ -91,16 +91,13 @@ class ProductRelation extends AbstractEntity
     /**
      * @return $this
      */
-    public function setCount(float $count): ProductRelation
+    public function setCount(float $count): self
     {
         $this->count = $count;
 
         return $this;
     }
 
-    /**
-     * @return float
-     */
     public function getCount(): float
     {
         return $this->count;
