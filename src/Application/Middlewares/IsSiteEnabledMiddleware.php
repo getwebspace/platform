@@ -25,7 +25,7 @@ class IsSiteEnabledMiddleware extends AbstractMiddleware
             $renderer->getLoader()->addPath(VIEW_ERROR_DIR);
 
             return $response
-                ->write($renderer->fetch('p000.twig'))
+                ->write($renderer->fetch('p503.twig'))
                 ->withStatus(503);
         }
 
