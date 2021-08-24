@@ -312,7 +312,7 @@ class Order extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="string", length=50, options={"default": ""})
+     * @ORM\Column(type="string", length=255, options={"default": ""})
      */
     protected string $external_id = '';
 
