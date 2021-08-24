@@ -14,9 +14,9 @@ class LoginPageAction extends UserAction
 
         if ($this->request->isPost()) {
             $data = [
-                'phone' => $this->request->getParam('phone'),
-                'email' => $this->request->getParam('email'),
-                'username' => $this->request->getParam('username'),
+                'phone' => $this->request->getParam('phone', ''),
+                'email' => $this->request->getParam('email', ''),
+                'username' => $this->request->getParam('username', ''),
                 'password' => $this->request->getParam('password', ''),
 
                 'agent' => $this->request->getServerParam('HTTP_USER_AGENT'),
