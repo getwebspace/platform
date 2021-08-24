@@ -16,7 +16,8 @@ class UserLoginAction extends UserAction
     protected function action(): \Slim\Http\Response
     {
         $identifier = $this->parameter('user_login_type', 'username');
-        $user = $this->process($identifier);
+        $provider = $this->request->getParam('provider', 'self');
+        $user = $this->process($identifier, $provider);
 
         if ($user) {
             $session = $user->getSession();
@@ -44,19 +45,22 @@ class UserLoginAction extends UserAction
             return $this->response->withRedirect($this->request->getParam('redirect', '/user/profile'));
         }
 
-        return $this->respond($this->parameter('user_login_template', 'user.login.twig'), ['identifier' => $identifier]);
+        return $this->respond($this->parameter('user_login_template', 'user.login.twig'), [
+            'identifier' => $identifier,
+            'provider' => $provider,
+        ]);
     }
 
-    protected function process(string $identifier): ?User
+    protected function process(string $identifier, string $provider): ?User
     {
-        switch ($this->request->getParam('provider', 'self')) {
-            // via login/email
+        switch ($provider) {
+            // via login/email/phone with password
             case 'self':
                 if ($this->request->isPost()) {
                     $data = [
-                        'phone' => $this->request->getParam('phone'),
-                        'email' => $this->request->getParam('email'),
-                        'username' => $this->request->getParam('username'),
+                        'phone' => $this->request->getParam('phone', ''),
+                        'email' => $this->request->getParam('email', ''),
+                        'username' => $this->request->getParam('username', ''),
                         'password' => $this->request->getParam('password', ''),
                     ];
 
@@ -74,6 +78,60 @@ class UserLoginAction extends UserAction
                     }
 
                     $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
+                }
+
+                break;
+
+            // via login/email/phone with code
+            case 'code':
+                if ($this->request->isPost() && $this->parameter('user_auth_code_is_enabled', 'no') === 'yes') {
+                    $data = [
+                        'phone' => $this->request->getParam('phone', ''),
+                        'email' => $this->request->getParam('email', ''),
+                        'username' => $this->request->getParam('username', ''),
+                        'code' => $this->request->getParam('code', ''),
+                    ];
+
+                    if ($this->isRecaptchaChecked()) {
+                        try {
+                            $user = $this->userService->read([
+                                'identifier' => $data[$identifier],
+                            ]);
+
+                            if ($this->request->getParam('sendcode') !== null) {
+                                if ($user->getEmail()) {
+                                    // new code
+                                    $code = implode('-', [random_int(100, 999), random_int(100, 999), random_int(100, 999)]);
+
+                                    // update auth code
+                                    $this->userService->update($user, ['auth_code' => $code]);
+
+                                    // add task send auth code to mail
+                                    $task = new \App\Domain\Tasks\SendMailTask($this->container);
+                                    $task->execute([
+                                        'to' => $user->getEmail(),
+                                        'body' => $this->render(
+                                            $this->parameter('user_auth_code_mail_template', 'user.mail.code.twig'),
+                                            ['code' => $code]
+                                        ),
+                                        'isHtml' => true,
+                                    ]);
+                                    \App\Domain\AbstractTask::worker($task);
+                                }
+                            } else {
+                                // check code
+                                if ($data['code'] && $data['code'] === $user->getAuthCode()) {
+                                    $this->userService->update($user, ['auth_code' => '']);
+
+                                    return $user;
+                                }
+
+                                $this->addError('code', 'EXCEPTION_WRONG_CODE');
+                            }
+                        } catch (UserNotFoundException $e) {
+                            $this->addError($identifier, $e->getMessage());
+                        }
+                    }
                 }
 
                 break;
