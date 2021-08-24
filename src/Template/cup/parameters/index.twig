@@ -69,6 +69,19 @@
                                             {# TAB: Common #}
                                             <div class="tab-pane fade active show" id="other-common">
                                                 {% include 'cup/field.twig' with {
+                                                    'label': 'Сайт доступен посетителям',
+                                                    'description': 'Можно использовать во время технических работ и/или инвентаризации',
+                                                    'type': 'select',
+                                                    'name': 'common[site_enabled]',
+                                                    'args': {
+                                                        'option': _(['yes', 'no']),
+                                                        'selected': 'yes'
+                                                    }
+                                                } %}
+
+                                                <hr>
+
+                                                {% include 'cup/field.twig' with {
                                                     'label': 'Название сайта',
                                                     'description': 'например: "Моя домашняя страница"',
                                                     'type': 'text',
@@ -625,6 +638,28 @@
                                                 <hr>
 
                                                 {% include 'cup/field.twig' with {
+                                                    'label': 'Включить вход через код',
+                                                    'description': 'При авторизации пользователя будет возможность подтверждения личности через высланный на почту код',
+                                                    'type': 'select',
+                                                    'name': 'user[auth_code_is_enabled]',
+                                                    'args': {
+                                                        'option': _(['yes', 'no']),
+                                                        'selected': 'no'
+                                                    }
+                                                } %}
+                                                {% include 'cup/field.twig' with {
+                                                    'label': 'Шаблон письма для авторизации с кодом',
+                                                    'type': 'text',
+                                                    'name': 'user[auth_code_mail_template]',
+                                                    'args': {
+                                                        'placeholder': 'user.mail.code.twig',
+                                                        'value': 'user.mail.code.twig'
+                                                    }
+                                                } %}
+
+                                                <hr>
+
+                                                {% include 'cup/field.twig' with {
                                                     'label': 'Включить вход через Facebook',
                                                     'description': 'Позволяет пользователям регистрироваться и входить на сайт с помощью социальной сети',
                                                     'type': 'select',
@@ -634,21 +669,18 @@
                                                         'selected': 'no'
                                                     }
                                                 } %}
-
                                                 {% include 'cup/field.twig' with {
                                                     'label': 'App ID',
                                                     'postfix': '<i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="top" title="Требуется внимательная проверка значения!"></i>',
                                                     'type': 'text',
                                                     'name': 'user[auth_facebook_app_id]'
                                                 } %}
-
                                                 {% include 'cup/field.twig' with {
                                                     'label': 'App Secret',
                                                     'postfix': '<i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="top" title="Требуется внимательная проверка значения!"></i>',
                                                     'type': 'text',
                                                     'name': 'user[auth_facebook_app_secret]'
                                                 } %}
-
                                                 {% include 'cup/field.twig' with {
                                                     'label': 'Proxy URL',
                                                     'postfix': '<i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="top" title="Требуется внимательная проверка значения!"></i>',
@@ -671,21 +703,18 @@
                                                         'selected': 'no'
                                                     }
                                                 } %}
-
                                                 {% include 'cup/field.twig' with {
                                                     'label': 'App ID',
                                                     'postfix': '<i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="top" title="Требуется внимательная проверка значения!"></i>',
                                                     'type': 'text',
                                                     'name': 'user[auth_vk_app_id]'
                                                 } %}
-
                                                 {% include 'cup/field.twig' with {
                                                     'label': 'App Secret',
                                                     'postfix': '<i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="top" title="Требуется внимательная проверка значения!"></i>',
                                                     'type': 'text',
                                                     'name': 'user[auth_vk_app_secret]'
                                                 } %}
-
                                                 {% include 'cup/field.twig' with {
                                                     'label': 'Proxy URL',
                                                     'postfix': '<i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="top" title="Требуется внимательная проверка значения!"></i>',

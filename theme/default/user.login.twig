@@ -96,7 +96,7 @@
                 <div class="card card-signin my-5">
                     <div class="card-body">
                         <h5 class="card-title text-center">Вход</h5>
-                        <form class="form-signin" method="post" data-grecaptcha>
+                        <form class="form-signin" method="post" enctype="multipart/form-data" data-grecaptcha>
                             {% if identifier == 'email' %}
                                 <div class="form-label-group">
                                     {% include 'mixin/form.twig' with {
@@ -123,29 +123,48 @@
                                 </div>
                             {% endif %}
 
-                            <div class="form-label-group">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Пароль',
-                                    'type': 'password',
-                                    'name': 'password',
-                                } %}
-                            </div>
+                            {% if provider == 'code' and parameter('user_auth_code_is_enabled', 'no') == 'yes' %}
+                                <div class="form-label-group">
+                                    {% include 'cup/form.twig' with {
+                                        'label': 'Код-пароль',
+                                        'type': 'text',
+                                        'name': 'code',
+                                        'postfix_btn': '<button class="btn btn-info btn-block text-uppercase px-2" type="submit" name="sendcode">Выслать код</button>',
+                                        'args': {
+                                            'placeholder': '000-000-000',
+                                            'autocomplete': false,
+                                        },
+                                    } %}
+                                </div>
+                            {% else %}
+                                <div class="form-label-group">
+                                    {% include 'mixin/form.twig' with {
+                                        'label': 'Пароль',
+                                        'type': 'password',
+                                        'name': 'password',
+                                    } %}
+                                </div>
+                            {% endif %}
 
-                            <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Войти</button>
+                            <button class="btn btn-primary btn-block text-uppercase" type="submit">Войти</button>
 
-                            <hr>
+                            {% if provider == 'self' %}
+                                {% if parameter('user_auth_code_is_enabled', 'no') == 'yes' %}
+                                    <a href="?provider=code" class="btn btn-info btn-block text-uppercase">Войти через код</a>
+                                {% endif %}
 
-                            <div class="row d-flex justify-content-center">
-                                {% for type in ['facebook', 'vk'] %}
-                                    {% if parameter('user_auth_' ~ type ~ '_is_enabled', 'no') == 'yes' %}
-                                        <div class="col-4">
-                                            <a href="{{ oauth_url(type) }}" class="btn btn-icon btn-block btn-info">
-                                                <i class="fab fa-{{ type }}" style="font-size:x-large;"></i>
-                                            </a>
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
+                                <div class="row d-flex justify-content-center mt-2">
+                                    {% for type in ['facebook', 'vk'] %}
+                                        {% if parameter('user_auth_' ~ type ~ '_is_enabled', 'no') == 'yes' %}
+                                            <div class="col-4">
+                                                <a href="{{ oauth_url(type) }}" class="btn btn-icon btn-block btn-info">
+                                                    <i class="fab fa-{{ type }}" style="font-size:x-large;"></i>
+                                                </a>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
                         </form>
                     </div>
                 </div>

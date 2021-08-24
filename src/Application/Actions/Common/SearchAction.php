@@ -5,7 +5,6 @@ namespace App\Application\Actions\Common;
 use App\Application\Search;
 use App\Domain\AbstractAction;
 use App\Domain\AbstractService;
-use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\Page\PageService;
 use App\Domain\Service\Publication\PublicationService;
@@ -16,13 +15,14 @@ class SearchAction extends AbstractAction
 {
     protected function action(): \Slim\Http\Response
     {
+        $type = $this->request->getParam('type', $this->request->getParam('t', ''));
         $query = trim(str_escape($this->request->getParam('query', $this->request->getParam('q', ''))));
+        $data = Search::isPossible() ? $this->advanced($query) : $this->primitive($query);
 
-        if (Search::isPossible()) {
-            return $this->advanced($query);
-        }
-
-        return $this->primitive($query);
+        return $this->respond($this->parameter('search_template', 'search.twig'), [
+            'count' => $data['count'],
+            'result' => $type ? [$type => $data['result'][$type]] : $data['result'],
+        ]);
     }
 
     private function primitive(string $query)
@@ -41,7 +41,6 @@ class SearchAction extends AbstractAction
             $entities = [
                 'page' => PageService::getWithContainer($this->container),
                 'publication' => PublicationService::getWithContainer($this->container),
-                'catalog_category' => CatalogCategoryService::getWithContainer($this->container),
                 'catalog_product' => CatalogProductService::getWithContainer($this->container),
             ];
 
@@ -111,10 +110,7 @@ class SearchAction extends AbstractAction
             \RunTracy\Helpers\Profiler\Profiler::finish('search', ['index' => false]);
         }
 
-        return $this->respond($this->parameter('search_template', 'search.twig'), [
-            'count' => $count,
-            'result' => $result,
-        ]);
+        return ['count' => $count, 'result' => $result];
     }
 
     private function advanced(string $query)
@@ -179,9 +175,6 @@ class SearchAction extends AbstractAction
             \RunTracy\Helpers\Profiler\Profiler::finish('search', ['index' => true]);
         }
 
-        return $this->respond($this->parameter('search_template', 'search.twig'), [
-            'count' => $count,
-            'result' => $result,
-        ]);
+        return ['count' => $count, 'result' => $result];
     }
 }

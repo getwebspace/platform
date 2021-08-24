@@ -347,27 +347,7 @@ $(() => {
         $('[data-btn-order-modal-products]').click((e) => {
             e.preventDefault();
             this.blur();
-            
-            let handler = (e) => {
-                $product
-                    .html('')
-                    .prop('disabled', true);
-                
-                $.get('/api/catalog/product', {category: $(e.currentTarget).val()}, (res) => {
-                    if (res.status === 200) {
-                        for (let item of res.data) {
-                            $product.append(
-                                $option.clone().text(item.title).val(item.uuid).data('price', item.price)
-                            );
-                        }
-                    }
-                    
-                    $product
-                        .trigger('change.select2')
-                        .prop('disabled', false);
-                });
-            };
-            $category.html('').off('change', handler).on('change', handler);
+            $category.html('');
             
             $.get('/api/catalog/category', (res) => {
                 if (res.status === 200) {
@@ -396,15 +376,31 @@ $(() => {
                 }
             });
         });
+    
+        $category.on('change', (e) => {
+            $product.html('').prop('disabled', true);
+    
+            $.get('/api/catalog/product', {category: $(e.currentTarget).val()}, (res) => {
+                if (res.status === 200) {
+                    for (let item of res.data) {
+                        $product.append(
+                            $option.clone().text(item.title).val(item.uuid).data('price', item.price)
+                        );
+                    }
+                }
+        
+                $product.trigger('change.select2').prop('disabled', false);
+            });
+        });
         
         $btnSuccess.on('click', () => {
             if ($product.val() && $quantity.val() >= 1) {
                 let $selected = $product.find(':selected'),
-                    $find = $('[name="list[' + $selected.attr('value') + ']"]');
+                    $find = $('[name="products[' + $selected.attr('value') + ']"]');
                 
                 if ($find.length === 0) {
                     let $input = $('<input class="form-control" type="number" placeholder="1" min="0" step="any">')
-                        .attr('name', 'list[' + $selected.attr('value') + ']')
+                        .attr('name', 'products[' + $selected.attr('value') + ']')
                         .val($quantity.val())
                     ;
                     

@@ -52,6 +52,8 @@ class UserService extends AbstractService
             'allow_mail' => true,
             'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
             'group' => null,
+            'auth_code' => '',
+            'external_id' => '',
             'token' => [],
         ];
         $data = array_merge($default, $data);
@@ -89,6 +91,8 @@ class UserService extends AbstractService
             ->setAllowMail($data['allow_mail'])
             ->setStatus($data['status'])
             ->setGroup($data['group'])
+            ->setAuthCode($data['auth_code'])
+            ->setExternalId($data['external_id'])
             ->setToken($data['token'])
             ->setRegister('now')
             ->setChange('now');
@@ -116,6 +120,7 @@ class UserService extends AbstractService
             'additional' => null,
             'allow_mail' => null,
             'status' => null,
+            'external_id' => null,
             'password' => null, // optional: for check
             'agent' => null, // optional: for update
             'ip' => null, // optional: for update
@@ -145,6 +150,9 @@ class UserService extends AbstractService
         if ($data['status'] !== null && in_array($data['status'], \App\Domain\Types\UserStatusType::LIST, true)) {
             $criteria['status'] = $data['status'];
         }
+        if ($data['external_id'] !== null) {
+            $criteria['external_id'] = $data['external_id'];
+        }
 
         try {
             if (
@@ -153,6 +161,7 @@ class UserService extends AbstractService
                 || !is_array($data['username']) && $data['username'] !== null
                 || !is_array($data['email']) && $data['email'] !== null
                 || !is_array($data['phone']) && $data['phone'] !== null
+                || !is_array($data['external_id']) && $data['external_id'] !== null
             ) {
                 switch (true) {
                     case $data['identifier']:
@@ -177,6 +186,11 @@ class UserService extends AbstractService
 
                     case $data['phone']:
                         $user = $this->service->findOneByPhone($data['phone']);
+
+                        break;
+
+                    case $data['external_id']:
+                        $user = $this->service->findOneByExternalId($data['external_id']);
 
                         break;
                 }
@@ -234,6 +248,8 @@ class UserService extends AbstractService
                 'allow_mail' => null,
                 'status' => null,
                 'group' => null,
+                'auth_code' => null,
+                'external_id' => null,
                 'token' => null,
             ];
             $data = array_merge($default, $data);
@@ -293,6 +309,12 @@ class UserService extends AbstractService
                 }
                 if ($data['group'] !== null) {
                     $entity->setGroup($data['group']);
+                }
+                if ($data['auth_code'] !== null) {
+                    $entity->setAuthCode($data['auth_code']);
+                }
+                if ($data['external_id'] !== null) {
+                    $entity->setExternalId($data['external_id']);
                 }
                 if ($data['token'] !== null) {
                     foreach ($data['token'] as $token => $value) {

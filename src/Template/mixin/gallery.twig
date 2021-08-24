@@ -1,0 +1,89 @@
+{#
+    images - images
+    owlcarousel - true/false (true)
+    owlcarousel_opt - json
+    fancybox - true/false (true)
+    fancybox_opt - json
+#}
+{% htmlcompress %}
+    {% set galleryId = random() %}
+    {% set owlcarousel = owlcarousel is not defined or owlcarousel == true %}
+    {% set fancybox = fancybox is not defined or fancybox == true %}
+
+    <div id="gallery-{{ galleryId }}">
+        <div {{ owlcarousel ? 'class="owl-carousel"' }}>
+            {% for address in images %}
+                {{ owlcarousel ? '<div class="item">' }}
+                    {% if fancybox %}
+                        <a data-fancybox="gallery-{{ galleryId }}" href="{{ address }}">
+                            <img src="{{ address }}" alt="Gallery image {{ loop.index }}"></a>
+                        </a>
+                    {% else %}
+                        <img src="{{ address }}" alt="Gallery image {{ loop.index }}">
+                    {% endif %}
+                {{ owlcarousel ? '</div>' }}
+            {% endfor %}
+        </div>
+
+        <script type="text/javascript">
+            document.addEventListener('DOMContentLoaded', async () => {
+                // load resources once
+                if (window.editor_loader === undefined) {
+                    window.editor_loader = async function (list) {
+                        for (let url of list) {
+                            await window.editor_loader.load(url);
+                        }
+                    }
+                    window.editor_loader.loaded = new Set();
+                    window.editor_loader.load = url => {
+                        return new Promise(resolve => {
+                            if (window.editor_loader.loaded.has(url)) {
+                                return resolve();
+                            }
+
+                            let el;
+                            switch (true) {
+                                case url.includes('.js'): {
+                                    el = document.createElement('script');
+                                    el.src = url;
+                                    el.onload = () => setTimeout(resolve, 30);
+                                    break;
+                                }
+                                case url.includes('.css'): {
+                                    el = document.createElement('link');
+                                    el.rel = 'stylesheet';
+                                    el.href = url;
+                                    el.onload = resolve;
+                                    break;
+                                }
+                            }
+
+                            document.body.appendChild(el);
+                            window.editor_loader.loaded.add(url);
+                        });
+                    };
+                }
+
+                await window.editor_loader([
+                    {% if owlcarousel %}
+                        'https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css',
+                        'https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css',
+                        'https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js',
+                    {% endif %}
+                    {% if fancybox %}
+                        'https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css',
+                        'https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js',
+                    {% endif %}
+                ]);
+
+                {% if owlcarousel %}
+                    $('[id="gallery-{{ galleryId }}"] .owl-carousel').owlCarousel({{ owlcarousel_opt|raw }});
+                {% endif %}
+
+                {% if fancybox %}
+                    $('[id="gallery-{{ galleryId }}"] [data-fancybox]').fancybox({{ fancybox_opt|raw }});
+                {% endif %}
+            });
+        </script>
+    </div>
+{% endhtmlcompress %}

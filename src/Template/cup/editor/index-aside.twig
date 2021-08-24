@@ -1,0 +1,35 @@
+<div class="page-aside bg-grey1">
+    <style>
+        .page-aside {
+            min-height: calc(100vh - 62px - 15px) !important;
+            padding-bottom: 0 !important;
+        }
+
+        .page-aside #editor-app-nav {
+            position: relative;
+            height: calc(100vh - 62px - 15px - 66px);
+            overflow: auto;
+        }
+
+        @media screen and (max-width: 856px) {
+            .page-aside,
+            .page-aside #editor-app-nav {
+                height: unset!important;
+                min-height: unset!important;
+            }
+        }
+    </style>
+
+    <div class="aside-header">
+        <div class="title">Выбрать шаблон</div>
+        <a class="btn btn-primary toggle-editor-nav" data-toggle="collapse" href="#editor-app-nav" role="button" aria-expanded="false" aria-controls="editor-nav">
+            <span class="btn-label">
+                <i class="icon-menu"></i>
+            </span>
+            Список файлов
+        </a>
+    </div>
+    <div class="aside-nav collapse" id="editor-app-nav">
+        {% include 'cup/editor/index-aside-file.twig' %}
+    </div>
+</div>

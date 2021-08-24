@@ -39,7 +39,7 @@
             {% if prefix is not empty %}<span class="input-group-addon">{{ prefix }}</span>{% endif %}
         {% endif %}
 
-        {{ form( type, name, { 'class': ['form-control'] } | merge(args) ) }}
+        {{ form( type, name, { 'id': type ~ '-' ~ name, 'class': ['form-control'] }|merge(args) ) }}
 
         {# LABEL FOR CHECKBOX OR RADIO #}
         {% if label is not empty and type in ['checkbox', 'radio'] %}

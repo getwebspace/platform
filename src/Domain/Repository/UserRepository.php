@@ -81,4 +81,20 @@ class UserRepository extends AbstractRepository
 
         return $result;
     }
+
+    public function findOneByExternalId(string $external_id): ?User
+    {
+        $query = $this->createQueryBuilder('u')
+            ->andWhere('u.external_id = :external_id')->setParameter('external_id', $external_id, Types::STRING)
+            ->getQuery();
+
+        try {
+            $result = $query->getOneOrNullResult();
+        } catch (NonUniqueResultException $e) {
+            $results = $query->getResult();
+            $result = array_shift($results);
+        }
+
+        return $result;
+    }
 }

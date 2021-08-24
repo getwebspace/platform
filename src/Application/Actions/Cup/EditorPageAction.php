@@ -27,7 +27,7 @@ class EditorPageAction extends AbstractAction
         if ($this->request->isPost()) {
             $path = str_replace('..', '', $this->request->getParam('path'));
             $absolute_path = $theme_dir . '/' . $path;
-            $content = $this->request->getParam('content');
+            $content = $this->request->getParam('template');
 
             // delete file
             if ($this->request->getParam('save', 'exit') === 'delete' && file_exists($absolute_path)) {

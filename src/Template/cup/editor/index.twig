@@ -4,94 +4,50 @@
     <div class="page-inner py-5"></div>
 {% endblock %}
 
-{% block content %}
-    <div class="row">
-        <div class="col-12 col-md-8 col-lg-9">
-            <div class="card">
-                <form method="post">
-                    <div class="card-header">
-                        <div class="d-flex align-items-center">
-                            <h4 class="card-title">Редактор</h4>
-                            <a href="/cup/editor" class="btn btn-secondary btn-round ml-auto">
-                                <i class="fa fa-plus"></i>
-                                Создать файл
-                            </a>
-                        </div>
-                    </div>
+{% block panelinner %}
+    <div class="container container-full">
+        <div class="page-inner page-inner-fill">
+            <div class="page-with-aside mail-wrapper bg-white">
+                {% include 'cup/editor/index-aside.twig' %}
 
-                    <div id="CodeMirror" class="card-body">
-                        <div class="row">
-                            <div class="col-12">
-                                <style>
-                                    #CodeMirror,
-                                    #CodeMirror div.row,
-                                    #CodeMirror div.row div.col-12,
-                                    #CodeMirror div.row div.col-12 .form-group {
-                                        padding: 0;
-                                        margin: 0;
-                                    }
-                                    #CodeMirror .fr-toolbar {
-                                        display: none;
-                                    }
-                                    #CodeMirror .fr-wrapper,
-                                    #CodeMirror .fr-wrapper .CodeMirror-wrap {
-                                        height: 500px!important;
-                                    }
-                                </style>
+                <form id="CodeMirror" class="page-content w-100" method="post">
+                    {% include 'cup/form.twig' with {
+                        'type': 'text',
+                        'name': 'path',
+                        'postfix_btn': '<button type="submit" name="save" value="exit" class="btn btn-primary">Сохранить</button><button type="submit" name="save" value="delete" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt" data-toggle="tooltip" data-placement="right" title="Удалить файл"></i></button>',
+                        'args': {
+                            'value': file.path,
+                            'readonly': true,
+                            'required': true,
+                            'placeholder': 'template.twig',
+                            'autocomplete':'off'
+                        }
+                    } %}
 
-                                {% include 'cup/editor.twig' with {
-                                    'name': 'template',
-                                    'args': {
-                                        'id': 'code',
-                                        'value': content,
-                                        'text_mode': true,
-                                    }
-                                } %}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card-action">
-                        {% include 'cup/form.twig' with {
-                            'type': 'text',
-                            'name': 'path',
-                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="left" title="Здесь указывается путь к файлу относительно каталога выбранной, в данный момент, темы"></i>',
-                            'postfix_btn': '<button type="submit" name="save" value="exit" class="btn btn-primary">Сохранить</button><button type="submit" name="save" value="delete" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt" data-toggle="tooltip" data-placement="right" title="Удалить файл"></i></button>',
-                            'args': {
-                                'value': file.path,
-                                'required': true,
-                                'placeholder': 'template.twig',
-                                'autocomplete':'off'
-                            }
-                        } %}
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <div class="col-12 col-md-4 col-lg-3">
-            <div class="card">
-                <div class="card-header">
-                    <div class="d-flex align-items-center">
-                        <h4 class="card-title">Список файлов</h4>
-                    </div>
-                </div>
-                <div class="card-body">
                     <style>
-                        .file-scrollbar {
-                            position: relative;
-                            height: 540px;
-                            overflow: auto;
-                            display: block;
+                        #CodeMirror .CodeMirror {
+                            min-height: 86vh !important;
+                        }
+                        #CodeMirror style + .form-group {
+                            padding: 0;
+                        }
+
+                        @media screen and (max-width: 856px) {
+                            #CodeMirror .CodeMirror {
+                                height: 68vh !important;
+                            }
                         }
                     </style>
 
-                    <div class="file-scrollbar">
-                        <table class="table">
-                            {% include 'cup/editor/file.twig' with {'list': list} only %}
-                        </table>
-                    </div>
-                </div>
+                    {% include 'cup/editor.twig' with {
+                        'name': 'template',
+                        'args': {
+                            'id': 'code',
+                            'value': content,
+                            'text_mode': true,
+                        }
+                    } %}
+                </form>
             </div>
         </div>
     </div>

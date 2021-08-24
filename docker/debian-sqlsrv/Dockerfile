@@ -1,4 +1,4 @@
-FROM php:7.4-fpm
+FROM php:7.4-fpm-buster
 MAINTAINER Aleksey Ilyin <alksily@outlook.com>
 
 # Set args

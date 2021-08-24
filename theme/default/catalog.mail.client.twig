@@ -53,17 +53,24 @@
                                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                                 <tr>
                                                     <td>Название</td>
-                                                    <td style="width: 20%">Цена</td>
-                                                    <td style="width: 20%">Кол-во</td>
+                                                    <td>Цена</td>
+                                                    <td>Кол-во</td>
+                                                    <td>Сумма</td>
                                                 </tr>
 
-                                                {% for product in products %}
+                                                {% for item in order.products %}
                                                     <tr>
-                                                        <td>{{ product.title }}</td>
-                                                        <td>{{ product.price }}</td>
-                                                        <td>{{ order.list[product.uuid.toString()] }}</td>
+                                                        <td>{{ item.title }}</td>
+                                                        <td>{{ item.price|number_format(2, '.', ' ') }}</td>
+                                                        <td>{{ item.count }}</td>
+                                                        <td>{{ (item.price * item.count)|number_format(2, '.', ' ') }}</td>
                                                     </tr>
                                                 {% endfor %}
+
+                                                <tr>
+                                                    <td colspan="3">Всего</td>
+                                                    <td>{{ order.getTotalPrice()|number_format(2, '.', ' ') }}</td>
+                                                </tr>
                                             </table>
                                         </td>
                                     </tr>

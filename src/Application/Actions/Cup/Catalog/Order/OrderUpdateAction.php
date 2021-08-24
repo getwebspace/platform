@@ -28,6 +28,10 @@ class OrderUpdateAction extends CatalogAction
                         'external_id' => $this->request->getParam('external_id'),
                         'system' => $this->request->getParam('system', ''),
                     ]);
+                    $this->catalogOrderProductService->proccess(
+                        $order,
+                        $this->request->getParam('products', [])
+                    );
 
                     switch (true) {
                         case $this->request->getParam('save', 'exit') === 'exit':
@@ -38,11 +42,8 @@ class OrderUpdateAction extends CatalogAction
                     }
                 }
 
-                $products = $this->catalogProductService->read(['uuid' => array_keys($order->getList())]);
-
                 return $this->respondWithTemplate('cup/catalog/order/form.twig', [
                     'order' => $order,
-                    'products' => $products,
                 ]);
             }
         }

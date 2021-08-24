@@ -48,6 +48,8 @@ class UserServiceTest extends TestCase
             'lastname' => $this->getFaker()->lastName,
             'address' => $this->getFaker()->address,
             'additional' => $this->getFaker()->text,
+            'auth_code' => (string) $this->getFaker()->numberBetween(0, 10000),
+            'external_id' => $this->getFaker()->uuid,
         ];
 
         $user = $this->service->create($data);
@@ -58,6 +60,8 @@ class UserServiceTest extends TestCase
         $this->assertSame($data['lastname'], $user->getLastname());
         $this->assertSame($data['address'], $user->getAddress());
         $this->assertSame($data['additional'], $user->getAdditional());
+        $this->assertSame($data['auth_code'], $user->getAuthCode());
+        $this->assertSame($data['external_id'], $user->getExternalId());
 
         /** @var UserRepository $userRepo */
         $userRepo = $this->em->getRepository(User::class);
@@ -285,6 +289,8 @@ class UserServiceTest extends TestCase
             'password' => $this->getFaker()->password,
             'address' => $this->getFaker()->address,
             'additional' => $this->getFaker()->text,
+            'auth_code' => (string) $this->getFaker()->numberBetween(0, 10000),
+            'external_id' => $this->getFaker()->uuid,
         ]);
 
         $data = [
@@ -296,6 +302,8 @@ class UserServiceTest extends TestCase
             'address' => $this->getFaker()->address,
             'additional' => $this->getFaker()->text,
             'email' => $this->getFaker()->email,
+            'auth_code' => (string) $this->getFaker()->numberBetween(0, 10000),
+            'external_id' => $this->getFaker()->uuid,
         ];
 
         $user = $this->service->update($user, $data);
@@ -305,6 +313,8 @@ class UserServiceTest extends TestCase
         $this->assertSame($data['address'], $user->getAddress());
         $this->assertSame($data['additional'], $user->getAdditional());
         $this->assertSame($data['email'], $user->getEmail());
+        $this->assertSame($data['auth_code'], $user->getAuthCode());
+        $this->assertSame($data['external_id'], $user->getExternalId());
     }
 
     public function testUpdateWithUserNotFound(): void

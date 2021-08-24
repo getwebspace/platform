@@ -163,6 +163,22 @@
 
                         <hr>
 
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Внешний ID',
+                                    'type': 'text',
+                                    'name': 'external_id',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
+                                    'args': {
+                                        'value': item.external_id,
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <hr>
+
                         {% include 'cup/form-image.twig' with { 'entity': item, 'multiple': false } %}
                     </div>
 
@@ -182,8 +198,8 @@
                                 <img src="{{ item.avatar(80) }}" alt="{{ item.name('full') }}" class="avatar-img rounded-circle">
                             </div>
                             <div class="name">{{ item.username }}</div>
-                            <div class="text-muted">{{ item.level }}</div>
                             <div class="text-muted">{{ item.uuid }}</div>
+                            <div class="text-muted">{{ item.external_id }}</div>
                         </div>
                     </div>
                     <div class="card-footer">
@@ -202,6 +218,10 @@
 
                             {% if item.session.date.getTimestamp() %}
                                 <li class="list-group-item">Последняя активность: {{ item.session.date|df('d.m.Y H:i:s') }}</li>
+                            {% endif %}
+
+                            {% if item.auth_code %}
+                                <li class="list-group-item">Код авторизации: {{ item.auth_code }}</li>
                             {% endif %}
 
                             {% if item.session.ip %}

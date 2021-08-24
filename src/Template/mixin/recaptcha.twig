@@ -6,44 +6,45 @@
                 // Just get token
                 // Usage: let token = await window.getRCToken();
                 grecaptcha.getToken = async function () {
-                    console.info('reCAPTCHA token');
+                    console.debug('reCAPTCHA token');
                     let token = await grecaptcha.execute('{{ parameter('integration_recaptcha_public') }}');
-                    console.info('reCAPTCHA token: done');
+                    console.debug('reCAPTCHA token: done');
 
                     return token;
                 };
 
-                // auto handle function with [data-grecaptcha] flag
+                let handler = async function (e) {
+                    e.preventDefault();
+                    let btn = e.currentTarget,
+                        form = btn.closest('form[data-grecaptcha]');
+
+                    // remove listener
+                    btn.removeEventListener('click', handler);
+
+                    // get token
+                    form.setAttribute('data-grecaptcha-loading', 'true');
+                    let token = await grecaptcha.getToken();
+                    form.setAttribute('data-grecaptcha-loading', 'false');
+
+                    // add input to form
+                    let input = document.createElement('input');
+                        input.setAttribute('type', 'hidden');
+                        input.setAttribute('name', 'recaptcha');
+                        input.setAttribute('value', token);
+
+                    form.appendChild(input);
+
+                    // submit form by click
+                    btn.click();
+
+                    // add listener again
+                    btn.addEventListener('click', handler);
+                };
+
+                // auto handle function with [data-grecaptcha] data-tag
                 // <form data-grecaptcha ..
-                for (let form of document.querySelectorAll('form[data-grecaptcha]')) {
-                    let handler = async function (e) {
-                        e.preventDefault();
-
-                        // remove listener
-                        form.removeEventListener('submit', handler);
-
-                        // get token
-                        form.setAttribute('data-grecaptcha-loading', 'true');
-                        let token = await grecaptcha.getToken();
-                        form.setAttribute('data-grecaptcha-loading', 'false');
-
-                        // add input to form
-                        let input = document.createElement('input');
-                            input.setAttribute('type', 'hidden');
-                            input.setAttribute('name', 'recaptcha');
-                            input.setAttribute('value', token);
-
-                        form.appendChild(input);
-
-                        // submit form
-                        form.submit();
-
-                        // add listener again
-                        form.addEventListener('submit', handler);
-                    };
-
-                    // add listener
-                    form.addEventListener('submit', handler);
+                for (let btn of document.querySelectorAll('form[data-grecaptcha] [type="submit"]')) {
+                    btn.addEventListener('click', handler); // add listener
                 }
             });
         </script>

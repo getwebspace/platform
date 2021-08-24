@@ -10,6 +10,7 @@ WebSpace Engine - is a free open source multi-user site engine with great functi
 ## Features
 
 - Templates in Twig
+- Template editor
 - Plugins API
 - HTTP API (dedicated API, and each public controller as API)
 - Docker compatible
@@ -26,11 +27,18 @@ WebSpace Engine - is a free open source multi-user site engine with great functi
 
 and more..
 
+## Plugins
+
+- Search optimization (robots.txt, sitemap, Yandex.Market, Google Merchant)
+- Clear cache
+- Import products from CommerceML
+- 1C Bitrix CRM integration
+- TradeMaster
+
 ## Roadmap
 
 - english language support
 - ukrainian language support
-- cool template editor
 - more plugins
 
 ## Demo

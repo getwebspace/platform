@@ -42,7 +42,7 @@ class User extends AbstractEntity
     /**
      * @return $this
      */
-    public function setUsername(string $username)
+    public function setUsername(string $username): self
     {
         if ($this->checkStrLenMax($username, 50)) {
             $this->username = $username;
@@ -66,7 +66,7 @@ class User extends AbstractEntity
      *
      * @return $this
      */
-    public function setEmail(string $email)
+    public function setEmail(string $email): self
     {
         try {
             if ($this->checkStrLenMax($email, 120) && $this->checkEmailByValue($email)) {
@@ -86,10 +86,8 @@ class User extends AbstractEntity
 
     /**
      * Gravatar
-     *
-     * @return string
      */
-    public function avatar(int $size = 40)
+    public function avatar(int $size = 40): string
     {
         if ($this->hasFiles()) {
             return $this->getFiles()->first()->getPublicPath();
@@ -108,7 +106,7 @@ class User extends AbstractEntity
      *
      * @return $this
      */
-    public function setPhone(string $phone = null)
+    public function setPhone(string $phone = null): self
     {
         if ($phone) {
             try {
@@ -138,7 +136,7 @@ class User extends AbstractEntity
     /**
      * @return $this
      */
-    public function setPassword(string $password)
+    public function setPassword(string $password): self
     {
         if ($password && $this->checkStrLenMax($password, 140)) {
             $this->password = $this->getPasswordHashByValue($password);
@@ -160,7 +158,7 @@ class User extends AbstractEntity
     /**
      * @return $this
      */
-    public function setFirstname(string $firstname)
+    public function setFirstname(string $firstname): self
     {
         if ($this->checkStrLenMax($firstname, 50)) {
             $this->firstname = $firstname;
@@ -182,7 +180,7 @@ class User extends AbstractEntity
     /**
      * @return $this
      */
-    public function setLastname(string $lastname)
+    public function setLastname(string $lastname): self
     {
         if ($this->checkStrLenMax($lastname, 50)) {
             $this->lastname = $lastname;
@@ -196,10 +194,7 @@ class User extends AbstractEntity
         return $this->lastname;
     }
 
-    /**
-     * @return string
-     */
-    public function getName(string $type = 'full')
+    public function getName(string $type = 'full'): string
     {
         if ($this->lastname || $this->firstname) {
             switch ($type) {
@@ -222,7 +217,7 @@ class User extends AbstractEntity
     /**
      * @return $this
      */
-    public function setAddress(string $address)
+    public function setAddress(string $address): self
     {
         if ($this->checkStrLenMax($address, 500)) {
             $this->address = $address;
@@ -244,7 +239,7 @@ class User extends AbstractEntity
     /**
      * @return $this
      */
-    public function setAdditional(string $additional)
+    public function setAdditional(string $additional): self
     {
         if ($this->checkStrLenMax($additional, 250)) {
             $this->additional = $additional;
@@ -268,17 +263,14 @@ class User extends AbstractEntity
      *
      * @return $this
      */
-    public function setAllowMail($allow_mail)
+    public function setAllowMail($allow_mail): self
     {
         $this->allow_mail = $this->getBooleanByValue($allow_mail);
 
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function getAllowMail()
+    public function getAllowMail(): bool
     {
         return $this->allow_mail;
     }
@@ -292,7 +284,7 @@ class User extends AbstractEntity
     /**
      * @return $this
      */
-    public function setStatus(string $status)
+    public function setStatus(string $status): self
     {
         if (in_array($status, \App\Domain\Types\UserStatusType::LIST, true)) {
             $this->status = $status;
@@ -301,10 +293,7 @@ class User extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getStatus()
+    public function getStatus(): string
     {
         return $this->status;
     }
@@ -322,10 +311,8 @@ class User extends AbstractEntity
 
     /**
      * @param string|UserGroup $group
-     *
-     * @return User
      */
-    public function setGroup($group)
+    public function setGroup($group): self
     {
         if (is_a($group, UserGroup::class)) {
             $this->group_uuid = $group->getUuid();
@@ -398,6 +385,50 @@ class User extends AbstractEntity
     }
 
     /**
+     * @ORM\Column(type="string", length=12, options={"default": ""})
+     */
+    protected string $auth_code = '';
+
+    /**
+     * @return $this
+     */
+    public function setAuthCode(string $code): self
+    {
+        if ($this->checkStrLenMax($code, 12)) {
+            $this->auth_code = $code;
+        }
+
+        return $this;
+    }
+
+    public function getAuthCode(): string
+    {
+        return $this->auth_code;
+    }
+
+    /**
+     * @ORM\Column(type="string", length=255, options={"default": ""})
+     */
+    protected string $external_id = '';
+
+    /**
+     * @return $this
+     */
+    public function setExternalId(string $external_id): self
+    {
+        if ($this->checkStrLenMax($external_id, 255)) {
+            $this->external_id = $external_id;
+        }
+
+        return $this;
+    }
+
+    public function getExternalId(): string
+    {
+        return $this->external_id;
+    }
+
+    /**
      * @ORM\Column(type="array", options={"default": "a:0:{}"})
      */
     protected array $token = [];
@@ -405,7 +436,7 @@ class User extends AbstractEntity
     /**
      * @return $this
      */
-    public function setToken(array $token)
+    public function setToken(array $token): self
     {
         $this->token = $token;
 
@@ -417,7 +448,7 @@ class User extends AbstractEntity
      *
      * @return $this
      */
-    public function changeToken(string $name, $data)
+    public function changeToken(string $name, $data): self
     {
         $this->token[$name] = $data;
 
@@ -425,7 +456,7 @@ class User extends AbstractEntity
     }
 
     /**
-     * @return array
+     * @return null|array|mixed
      */
     public function getToken(?string $name = null)
     {
@@ -444,7 +475,7 @@ class User extends AbstractEntity
     /**
      * @return $this
      */
-    public function addIntegration(UserIntegration $integration)
+    public function addIntegration(UserIntegration $integration): self
     {
         $this->integrations[] = $integration;
         $integration->setUser($this);
@@ -470,7 +501,7 @@ class User extends AbstractEntity
     /**
      * @return $this
      */
-    public function setSession(UserSession $session)
+    public function setSession(UserSession $session): self
     {
         $this->session = $session;
         $this->session->setUser($this);
@@ -478,10 +509,7 @@ class User extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return null|UserSession
-     */
-    public function getSession()
+    public function getSession(): ?UserSession
     {
         return $this->session;
     }

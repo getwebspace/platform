@@ -1,2 +1,6 @@
-<b>{{ exception.getMessage() }}</b>
-<pre>{{ exception.getTraceAsString() }}</pre>
+{% extends 'layout.twig' %}
+
+{% block body %}
+    <b>{{ exception.getMessage() }}</b>
+    <pre>{{ exception.getTraceAsString() }}</pre>
+{% endblock %}

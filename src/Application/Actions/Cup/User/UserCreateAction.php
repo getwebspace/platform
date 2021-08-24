@@ -29,6 +29,7 @@ class UserCreateAction extends UserAction
                     'allow_mail' => $this->request->getParam('allow_mail'),
                     'phone' => $this->request->getParam('phone'),
                     'group' => $group_uuid !== \Ramsey\Uuid\Uuid::NIL ? $userGroups->firstWhere('uuid', $group_uuid) : '',
+                    'external_id' => $this->request->getParam('external_id'),
                 ]);
                 $user = $this->processEntityFiles($user);
 

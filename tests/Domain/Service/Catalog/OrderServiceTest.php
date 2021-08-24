@@ -40,11 +40,6 @@ class OrderServiceTest extends TestCase
                 'client' => $this->getFaker()->word,
                 'address' => $this->getFaker()->text,
             ],
-            'list' => [
-                $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
-                $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
-                $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
-            ],
             'phone' => $this->getFaker()->e164PhoneNumber,
             'email' => $this->getFaker()->email,
             'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\OrderStatusType::LIST),
@@ -59,7 +54,6 @@ class OrderServiceTest extends TestCase
         $order = $this->service->create($data);
         $this->assertInstanceOf(Order::class, $order);
         $this->assertEquals($data['delivery'], $order->getDelivery());
-        $this->assertEquals($data['list'], $order->getList());
         $this->assertSame($data['phone'], $order->getPhone());
         $this->assertSame($data['email'], $order->getEmail());
         $this->assertSame($data['status'], $order->getStatus());
@@ -75,7 +69,6 @@ class OrderServiceTest extends TestCase
         $o = $orderRepo->findOneByUuid($order->getUuid());
         $this->assertInstanceOf(Order::class, $o);
         $this->assertEquals($data['delivery'], $o->getDelivery());
-        $this->assertEquals($data['list'], $o->getList());
         $this->assertSame($data['phone'], $o->getPhone());
         $this->assertSame($data['email'], $o->getEmail());
         $this->assertSame($data['status'], $o->getStatus());
@@ -93,11 +86,6 @@ class OrderServiceTest extends TestCase
             'delivery' => [
                 'client' => $this->getFaker()->word,
                 'address' => $this->getFaker()->text,
-            ],
-            'list' => [
-                $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
-                $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
-                $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
             ],
             'phone' => $this->getFaker()->e164PhoneNumber,
             'email' => $this->getFaker()->email,
@@ -122,11 +110,6 @@ class OrderServiceTest extends TestCase
             'delivery' => [
                 'client' => $this->getFaker()->word,
                 'address' => $this->getFaker()->text,
-            ],
-            'list' => [
-                $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
-                $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
-                $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
             ],
             'phone' => $this->getFaker()->e164PhoneNumber,
             'email' => $this->getFaker()->email,
@@ -158,11 +141,6 @@ class OrderServiceTest extends TestCase
                 'client' => $this->getFaker()->word,
                 'address' => $this->getFaker()->text,
             ],
-            'list' => [
-                $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
-                $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
-                $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
-            ],
             'phone' => $this->getFaker()->e164PhoneNumber,
             'email' => $this->getFaker()->email,
             'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\OrderStatusType::LIST),
@@ -179,11 +157,6 @@ class OrderServiceTest extends TestCase
                 'client' => $this->getFaker()->word,
                 'address' => $this->getFaker()->text,
             ],
-            'list' => [
-                $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
-                $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
-                $this->getFaker()->uuid => $this->getFaker()->randomNumber(),
-            ],
             'phone' => $this->getFaker()->e164PhoneNumber,
             'email' => $this->getFaker()->email,
             'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\OrderStatusType::LIST),
@@ -198,7 +171,6 @@ class OrderServiceTest extends TestCase
         $order = $this->service->update($order, $data);
         $this->assertInstanceOf(Order::class, $order);
         $this->assertEquals($data['delivery'], $order->getDelivery());
-        $this->assertEquals($data['list'], $order->getList());
         $this->assertSame($data['phone'], $order->getPhone());
         $this->assertSame($data['email'], $order->getEmail());
         $this->assertSame($data['status'], $order->getStatus());

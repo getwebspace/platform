@@ -1116,6 +1116,15 @@ body {
     transition: all .3s;
 }
 
+.main-panel > .container-full {
+    padding: 0 !important;
+    min-height: calc(100% - 123px);
+    margin-top: 61px;
+    overflow: hidden;
+    width: 100%;
+    max-width: unset;
+}
+
 .main-panel > .content {
     padding: 0px !important;
     min-height: calc(100% - 123px);
@@ -1789,6 +1798,7 @@ body {
 }
 
 /*      Mail      */
+.mail-wrapper .toggle-editor-nav,
 .mail-wrapper .toggle-email-nav {
     margin-top: 10px;
     display: none;
@@ -18959,6 +18969,7 @@ img.mfp-img {
         margin-bottom: 10px;
     }
 
+    .mail-wrapper .toggle-editor-nav,
     .mail-wrapper .toggle-email-nav {
         display: inline-block !important;
     }

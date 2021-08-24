@@ -69,61 +69,73 @@
                 '/assets/js/plugin/froala/ru.js?v={{ sha }}',
             ]);
 
-            let $editor = $('#wysiwygeditor-{{ editorId }}')
-                .froalaEditor({
-                    iframe: true,
-                    width: '100%',
-                    height: '345',
-                    language: 'ru',
+            (function init() {
+                let $editor = $('#wysiwygeditor-{{ editorId }}:visible');
 
-                    htmlRemoveTags: [],
-                    htmlAllowedAttrs: ['.*'],
+                if ($editor.length) {
+                    if ('{{ item.type }}' === 'text' || '{{ args.text_mode }}') {
+                        CodeMirror.fromTextArea($editor.get(0), {
+                            lineNumbers: true
+                        });
+                    } else {
+                        $editor.froalaEditor({
+                            iframe: true,
+                            width: '100%',
+                            height: '345',
+                            language: 'ru',
 
-                    toolbarButtons: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineClass', 'inlineStyle', 'paragraphStyle', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'embedly', 'insertFile', 'insertTable', '|', 'emoticons', 'fontAwesome', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'html', '|', 'undo', 'redo'],
+                            htmlRemoveTags: [],
+                            htmlAllowedAttrs: ['.*'],
 
-                    fileMaxSize: 1024 * 1024 * 3,
-                    fileUploadMethod: 'POST',
-                    fileUploadParam: 'file',
-                    fileUploadParams: {'path_only': true},
-                    fileUploadURL: '/file/upload',
+                            toolbarButtons: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineClass', 'inlineStyle', 'paragraphStyle', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'embedly', 'insertFile', 'insertTable', '|', 'emoticons', 'fontAwesome', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'html', '|', 'undo', 'redo'],
 
-                    imageMaxSize: 5 * 1024 * 1024,
-                    imageAllowedTypes: ['jpeg', 'jpg', 'png'],
-                    imageUploadMethod: 'POST',
-                    imageUploadParam: 'image',
-                    imageUploadParams: {'path_only': true},
-                    imageUploadURL: '/file/upload',
-                    imageManagerLoadURL: '/cup/file/image',
-                    imageManagerDeleteURL: '/cup/file/image/delete',
+                            fileMaxSize: 1024 * 1024 * 3,
+                            fileUploadMethod: 'POST',
+                            fileUploadParam: 'file',
+                            fileUploadParams: {'path_only': true},
+                            fileUploadURL: '/file/upload',
 
-                    videoAllowedProviders: ['youtube', 'vimeo'],
-                    videoMaxSize: 1024 * 1024 * 15,
-                    videoAllowedTypes: ['mp4', 'webm'],
-                    videoUploadMethod: 'POST',
-                    videoUploadParam: 'video',
-                    videoUploadParams: {'path_only': true},
-                    videoUploadURL: '/file/upload',
+                            imageMaxSize: 5 * 1024 * 1024,
+                            imageAllowedTypes: ['jpeg', 'jpg', 'png'],
+                            imageUploadMethod: 'POST',
+                            imageUploadParam: 'image',
+                            imageUploadParams: {'path_only': true},
+                            imageUploadURL: '/file/upload',
+                            imageManagerLoadURL: '/cup/file/image',
+                            imageManagerDeleteURL: '/cup/file/image/delete',
 
-                    codeBeautifierOptions: {
-                        end_with_newline: true,
-                        indent_inner_html: true,
-                        extra_liners: "['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'pre', 'ul', 'ol', 'table', 'dl']",
-                        brace_style: 'expand',
-                        indent_char: ' ',
-                        indent_size: 4,
-                        wrap_line_length: 0
-                    },
+                            videoAllowedProviders: ['youtube', 'vimeo'],
+                            videoMaxSize: 1024 * 1024 * 15,
+                            videoAllowedTypes: ['mp4', 'webm'],
+                            videoUploadMethod: 'POST',
+                            videoUploadParam: 'video',
+                            videoUploadParams: {'path_only': true},
+                            videoUploadURL: '/file/upload',
 
-                    pastePlain: true,
-                    htmlUntouched: true,
-                    htmlExecuteScripts: false,
-                    fullPage: false,
-                    entities: ''
-                });
+                            codeBeautifierOptions: {
+                                end_with_newline: true,
+                                indent_inner_html: true,
+                                extra_liners: "['p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'pre', 'ul', 'ol', 'table', 'dl']",
+                                brace_style: 'expand',
+                                indent_char: ' ',
+                                indent_size: 4,
+                                wrap_line_length: 0
+                            },
 
-            if ('{{ item.type }}' === 'text' || '{{ args.text_mode }}') {
-                $editor.froalaEditor('codeView.toggle');
-            }
+                            multiLine: true,
+                            pastePlain: true,
+                            htmlSimpleAmpersand: true,
+                            htmlAllowComments: true,
+                            htmlUntouched: true,
+                            htmlExecuteScripts: false,
+                            fullPage: false,
+                            entities: ''
+                        });
+                    }
+                } else {
+                    setTimeout(init, 250);
+                }
+            })();
         });
     </script>
 {% endblock %}

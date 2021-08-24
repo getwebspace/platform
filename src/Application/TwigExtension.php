@@ -238,10 +238,10 @@ class TwigExtension extends AbstractExtension
     /**
      * old debug function
      *
+     * @param mixed ...$args
+     *
      * @deprecated
      * @tracySkipLocation
-     *
-     * @param mixed ...$args
      */
     public function pre(...$args): void
     {
@@ -347,13 +347,14 @@ class TwigExtension extends AbstractExtension
 
     public function qr_code($value, $width = 256, $height = 256)
     {
-        $renderer = new \BaconQrCode\Renderer\Image\Png();
+        $renderer = new \BaconQrCode\Renderer\Image\Svg();
         $renderer->setWidth($width);
         $renderer->setHeight($height);
+        $renderer->setMargin(0);
 
         $writer = new \BaconQrCode\Writer($renderer);
 
-        return '<img src="data:image/png;base64,' . base64_encode($writer->writeString($value)) . '" height="' . $height . '" width="' . $width . '">';
+        return '<img src="data:image/svg+xml;base64,' . base64_encode($writer->writeString($value)) . '" height="' . $height . '" width="' . $width . '">';
     }
 
     public function oauth_url(string $provider): string
@@ -400,34 +401,23 @@ class TwigExtension extends AbstractExtension
 
     // publication functions
 
-    // fetch publication category by unique
-    public function publication_category($unique = null)
+    // fetch publication category
+    public function publication_category(bool $public = true)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:publication_category');
 
-        static $categories;
-
-        if (!$categories) {
-            $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
-            $categories = $publicationCategoryService->read();
-        }
-
         static $buf;
 
-        if (is_null($unique)) {
-            return $categories->where('public', true);
-        }
-        if (is_string($unique)) {
-            $unique = \Ramsey\Uuid\Uuid::fromString($unique);
-        }
-        if (!array_key_exists($unique, (array) $buf)) {
-            $uuids = $categories->firstWhere('uuid', $unique)->getNested($categories)->pluck('uuid')->all();
-            $buf[strval($unique)] = $categories->whereIn('uuid', $uuids, false);
+        if (!$buf) {
+            $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
+            $buf = $publicationCategoryService->read([
+                'public' => $public ?: null,
+            ]);
         }
 
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:publication_category');
 
-        return $buf[strval($unique)];
+        return $buf;
     }
 
     // fetch publications by criteria
