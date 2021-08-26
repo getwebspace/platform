@@ -43,7 +43,7 @@
 
                 // auto handle function with [data-grecaptcha] data-tag
                 // <form data-grecaptcha ..
-                for (let btn of document.querySelectorAll('form[data-grecaptcha] [type="submit"]')) {
+                for (let btn of document.querySelectorAll('form[data-grecaptcha] button:not([type="button"])')) {
                     btn.addEventListener('click', handler); // add listener
                 }
             });
