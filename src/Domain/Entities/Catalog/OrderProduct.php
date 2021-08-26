@@ -119,6 +119,13 @@ class OrderProduct extends AbstractEntity
         return $this->priceWholesale;
     }
 
+    protected string $external_id = '';
+
+    public function getExternalId(): string
+    {
+        return $this->external_id;
+    }
+
     /**
      * @ORM\Column(type="float", scale=2, precision=10, options={"default": 1})
      */
@@ -148,6 +155,7 @@ class OrderProduct extends AbstractEntity
             'priceFirst' => $this->product->getPriceFirst(),
             'price' => $this->product->getPrice(),
             'priceWholesale' => $this->product->getPriceWholesale(),
+            'external_id' => $this->product->getExternalId(),
             'count' => $this->getCount(),
         ];
     }
@@ -162,5 +170,6 @@ class OrderProduct extends AbstractEntity
         $this->priceFirst = $this->product->getPriceFirst();
         $this->price = $this->product->getPrice();
         $this->priceWholesale = $this->product->getPriceWholesale();
+        $this->external_id = $this->product->getExternalId();
     }
 }
