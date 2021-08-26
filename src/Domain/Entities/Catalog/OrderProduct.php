@@ -172,4 +172,14 @@ class OrderProduct extends AbstractEntity
         $this->priceWholesale = $this->product->getPriceWholesale();
         $this->external_id = $this->product->getExternalId();
     }
+
+    // magic
+    public function __call($name, $arguments)
+    {
+        if (method_exists($this->product, $name)) {
+            return $this->product->{$name}(...$arguments);
+        }
+
+        return null;
+    }
 }
