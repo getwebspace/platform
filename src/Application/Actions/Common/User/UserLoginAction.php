@@ -10,6 +10,7 @@ use App\Domain\Service\User\Exception\EmailBannedException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongEmailValueException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
+use DateTime;
 
 class UserLoginAction extends UserAction
 {
@@ -67,7 +68,7 @@ class UserLoginAction extends UserAction
                     if ($this->isRecaptchaChecked()) {
                         try {
                             return $this->userService->read([
-                                'identifier' => $data[$identifier],
+                                $identifier => $data[$identifier],
                                 'password' => $data['password'],
                             ]);
                         } catch (UserNotFoundException $e) {
@@ -95,28 +96,34 @@ class UserLoginAction extends UserAction
                     if ($this->isRecaptchaChecked()) {
                         try {
                             $user = $this->userService->read([
-                                'identifier' => $data[$identifier],
+                                $identifier => $data[$identifier],
                             ]);
 
                             if ($this->request->getParam('sendcode') !== null) {
                                 if ($user->getEmail()) {
-                                    // new code
-                                    $code = implode('-', [random_int(100, 999), random_int(100, 999), random_int(100, 999)]);
+                                    if ((new DateTime('now'))->diff($user->getChange())->i > 10) {
+                                        // new code
+                                        $code = implode('-', [random_int(100, 999), random_int(100, 999), random_int(100, 999)]);
 
-                                    // update auth code
-                                    $this->userService->update($user, ['auth_code' => $code]);
+                                        // update auth code
+                                        $this->userService->update($user, ['auth_code' => $code]);
 
-                                    // add task send auth code to mail
-                                    $task = new \App\Domain\Tasks\SendMailTask($this->container);
-                                    $task->execute([
-                                        'to' => $user->getEmail(),
-                                        'body' => $this->render(
-                                            $this->parameter('user_auth_code_mail_template', 'user.mail.code.twig'),
-                                            ['code' => $code]
-                                        ),
-                                        'isHtml' => true,
-                                    ]);
-                                    \App\Domain\AbstractTask::worker($task);
+                                        // add task send auth code to mail
+                                        $task = new \App\Domain\Tasks\SendMailTask($this->container);
+                                        $task->execute([
+                                            'to' => $user->getEmail(),
+                                            'body' => $this->render(
+                                                $this->parameter('user_auth_code_mail_template', 'user.mail.code.twig'),
+                                                ['code' => $code]
+                                            ),
+                                            'isHtml' => true,
+                                        ]);
+                                        \App\Domain\AbstractTask::worker($task);
+                                    } else {
+                                        $this->addError('code', 'EXCEPTION_WRONG_CODE_TIMEOUT');
+                                    }
+                                } else {
+                                    $this->addError('code', 'EXCEPTION_EMAIL_MISSING');
                                 }
                             } else {
                                 // check code
