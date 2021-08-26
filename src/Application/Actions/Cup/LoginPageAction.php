@@ -14,9 +14,7 @@ class LoginPageAction extends UserAction
 
         if ($this->request->isPost()) {
             $data = [
-                'phone' => $this->request->getParam('phone', ''),
-                'email' => $this->request->getParam('email', ''),
-                'username' => $this->request->getParam('username', ''),
+                'identifier' => $this->request->getParam('identifier', ''),
                 'password' => $this->request->getParam('password', ''),
 
                 'agent' => $this->request->getServerParam('HTTP_USER_AGENT'),
@@ -28,7 +26,7 @@ class LoginPageAction extends UserAction
             if ($this->isRecaptchaChecked()) {
                 try {
                     $user = $this->userService->read([
-                        'identifier' => $data[$identifier],
+                        'identifier' => $data['identifier'],
                         'password' => $data['password'],
                         'agent' => $data['agent'],
                         'ip' => $data['ip'],
