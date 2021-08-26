@@ -45,7 +45,7 @@
                                     </li>
                                 </ul>
 
-                                {% if parameter('common_site_enabled') != 'yes' %}
+                                {% if parameter('common_site_enabled', 'yes') != 'yes' %}
                                     <a href="/cup/parameters" class="d-block badge badge-danger mx-2 mt-2 mb-1 w-100">
                                         Сайт отключен!
                                     </a>

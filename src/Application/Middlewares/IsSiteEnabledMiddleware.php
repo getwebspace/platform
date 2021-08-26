@@ -21,6 +21,10 @@ class IsSiteEnabledMiddleware extends AbstractMiddleware
         if (str_start_with($route->getName(), 'common:') && $this->parameter('common_site_enabled', 'yes') !== 'yes') {
             $renderer = $this->container->get('view');
 
+            if (($path = realpath(THEME_DIR . '/' . $this->parameter('common_theme', 'default'))) !== false) {
+                $renderer->getLoader()->addPath($path);
+            }
+
             // add default errors pages
             $renderer->getLoader()->addPath(VIEW_ERROR_DIR);
 
