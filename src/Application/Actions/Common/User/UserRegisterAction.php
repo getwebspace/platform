@@ -23,8 +23,10 @@ class UserRegisterAction extends UserAction
                 'phone' => $this->request->getParam('phone', ''),
                 'address' => $this->request->getParam('address', ''),
                 'additional' => $this->request->getParam('additional', ''),
+                'allow_mail' => $this->request->getParam('allow_mail', true),
                 'password' => $this->request->getParam('password'),
                 'password_again' => $this->request->getParam('password_again'),
+                'external_id' => $this->request->getParam('external_id'),
             ];
 
             if ($this->isRecaptchaChecked()) {
@@ -39,8 +41,10 @@ class UserRegisterAction extends UserAction
                             'phone' => $data['phone'],
                             'address' => $data['address'],
                             'additional' => $data['additional'],
+                            'allow_mail' => $data['allow_mail'],
                             'password' => $data['password'],
                             'group' => $groupUuid ? $this->userGroupService->read(['uuid' => $groupUuid]) : null,
+                            'external_id' => $data['external_id'],
                         ]);
 
                         return $this->response->withRedirect('/user/login');

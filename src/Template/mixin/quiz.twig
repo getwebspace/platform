@@ -15,7 +15,8 @@ steps - collection
                 }
 
                 [id="quiz-{{ quizId }}"] [data-option] [data-label],
-                [id="quiz-{{ quizId }}"] [data-step-list].list-group-item-secondary {
+                [id="quiz-{{ quizId }}"] [data-step-list].list-group-item-secondary,
+                [id="quiz-{{ quizId }}"] .progress {
                     cursor: pointer;
                 }
 
@@ -93,14 +94,14 @@ steps - collection
                                 {% endfor %}
 
                                 {% if button %}
-                                    <div class="col-12 text-center text-md-right mt-2">
+                                    <div class="col-12 text-center text-md-right mt-4">
                                         {% if loop.first != true %}
                                             <button type="button" class="btn btn-secondary" data-click="back">{{ step.btn_back ?: 'Назад' }}</button>
                                         {% endif %}
                                         <button type="button" class="btn btn-primary" data-click="next">{{ step.btn_next ?: 'Далее' }}</button>
                                     </div>
                                 {% elseif loop.last %}
-                                    <div class="col-12 text-center text-md-right mt-2">
+                                    <div class="col-12 text-center text-md-right mt-4">
                                         <button type="button" class="btn btn-secondary" data-click="back">{{ step.btn_back ?: 'Назад' }}</button>
                                         <button type="button" class="btn btn-primary" data-click="submit">{{ step.btn_submit ?: 'Отправить' }}</button>
                                     </div>
