@@ -19,7 +19,7 @@ class UserRepository extends AbstractRepository
     public function findOneByUsername(string $username): ?User
     {
         $query = $this->createQueryBuilder('u')
-            ->andWhere('LOWER(u.username) LIKE LOWER(:username)')->setParameter('username', $username, Types::STRING)
+            ->andWhere('LOWER(u.username) = LOWER(:username)')->setParameter('username', $username, Types::STRING)
             ->getQuery();
 
         try {
@@ -35,7 +35,7 @@ class UserRepository extends AbstractRepository
     public function findOneByEmail(string $email): ?User
     {
         $query = $this->createQueryBuilder('u')
-            ->andWhere('LOWER(u.email) LIKE LOWER(:email)')->setParameter('email', $email, Types::STRING)
+            ->andWhere('LOWER(u.email) = LOWER(:email)')->setParameter('email', $email, Types::STRING)
             ->getQuery();
 
         try {
