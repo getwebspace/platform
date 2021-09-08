@@ -105,12 +105,14 @@ class ProductRelation extends AbstractEntity
 
     public function toArray(): array
     {
+        $type = get_class($this->related) === Product::class ? 'product' : 'related';
+
         return [
-            'uuid' => $this->related->getUuid(),
-            'title' => $this->related->getTitle(),
-            'address' => $this->related->getAddress(),
-            'price' => $this->related->getPrice(),
-            'count' => $this->getCount(),
+            'uuid' => $this->{$type}->getUuid(),
+            'title' => $this->{$type}->getTitle(),
+            'address' => $this->{$type}->getAddress(),
+            'price' => $this->{$type}->getPrice(),
+            'count' => $type === 'related' ? $this->getCount() : 1,
         ];
     }
 }
