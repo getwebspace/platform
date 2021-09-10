@@ -3,279 +3,276 @@ action - form action url
 title - text
 steps - collection
 #}
-{% htmlcompress %}
-    {% set quizId = random() %}
+{% set quizId = random() %}
+<div id="quiz-{{ quizId }}">
+    <form action="{{ action }}" method="post" enctype="multipart/form-data">
+        <style>
+            [id="quiz-{{ quizId }}"] [data-input].radio,
+            [id="quiz-{{ quizId }}"] [data-input].checkbox {
+                display: none;
+            }
 
-    <div id="quiz-{{ quizId }}">
-        <form action="{{ action }}" method="post" enctype="multipart/form-data">
-            <style>
-                [id="quiz-{{ quizId }}"] [data-input].radio,
-                [id="quiz-{{ quizId }}"] [data-input].checkbox {
-                    display: none;
-                }
+            [id="quiz-{{ quizId }}"] [data-option] [data-label],
+            [id="quiz-{{ quizId }}"] [data-step-list].list-group-item-secondary,
+            [id="quiz-{{ quizId }}"] .progress {
+                cursor: pointer;
+            }
 
-                [id="quiz-{{ quizId }}"] [data-option] [data-label],
-                [id="quiz-{{ quizId }}"] [data-step-list].list-group-item-secondary,
-                [id="quiz-{{ quizId }}"] .progress {
-                    cursor: pointer;
-                }
+            [id="quiz-{{ quizId }}"] [data-step-list] span:not(:empty):before {
+                content: '(';
+            }
 
-                [id="quiz-{{ quizId }}"] [data-step-list] span:not(:empty):before {
-                    content: '(';
-                }
-
-                [id="quiz-{{ quizId }}"] [data-step-list] span:not(:empty):after {
-                    content: ')';
-                }
-            </style>
-            <div class="row">
-                <div class="col-12 col-md-8 text-center text-md-left">
-                    <h3 class="d-none d-md-inline">{{ title ?: 'Заголовок опроса' }}</h3>
-                    <h4 class="d-inline d-md-none">{{ title ?: 'Заголовок опроса' }}</h4>
-                </div>
-                <div class="col-12 col-md-4 mt-2 mt-md-0">
-                    <div class="row">
-                        <div class="col-12 col-md-4 text-center text-md-left text-muted">
-                            Шаг <span data-progress="current">1</span> из <span data-progress="of">{{ steps|count }}</span>
-                        </div>
-                        <div class="col-12 col-md-8 text-center text-md-right my-auto">
-                            <div class="progress" data-progress="bar">
-                                <div class="progress-bar progress-bar-striped" style="width: 10%"></div>
-                            </div>
+            [id="quiz-{{ quizId }}"] [data-step-list] span:not(:empty):after {
+                content: ')';
+            }
+        </style>
+        <div class="row">
+            <div class="col-12 col-md-8 text-center text-md-left">
+                <h3 class="d-none d-md-inline">{{ title ?: 'Заголовок опроса' }}</h3>
+                <h4 class="d-inline d-md-none">{{ title ?: 'Заголовок опроса' }}</h4>
+            </div>
+            <div class="col-12 col-md-4 mt-2 mt-md-0">
+                <div class="row">
+                    <div class="col-12 col-md-4 text-center text-md-left text-muted">
+                        Шаг <span data-progress="current">1</span> из <span data-progress="of">{{ steps|count }}</span>
+                    </div>
+                    <div class="col-12 col-md-8 text-center text-md-right my-auto">
+                        <div class="progress" data-progress="bar">
+                            <div class="progress-bar progress-bar-striped" style="width: 10%"></div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="row mt-3">
-                <div class="col-12 col-md-8">
-                    {% for step in steps %}
-                        {% set button = (step.field is defined or (step.option is defined and 'checkbox' in collect(step.option).pluck('type'))) and loop.last == false %}
+        <div class="row mt-3">
+            <div class="col-12 col-md-8">
+                {% for step in steps %}
+                    {% set button = (step.field is defined or (step.option is defined and 'checkbox' in collect(step.option).pluck('type'))) and loop.last == false %}
 
-                        <section data-step="{{ loop.index }}" data-button="{{ button or loop.last ?: 0 }}" class="text-center text-md-left" {{ loop.first != true ? 'style="display: none"' }}>
-                            <h4 class="d-none d-md-inline">{{ step.title ?: 'Заголовок вопроса ' ~ loop.index }}</h4>
-                            <h5 class="d-inline d-md-none">{{ step.title ?: 'Заголовок вопроса ' ~ loop.index }}</h5>
-                            <p class="py-2 text-justify">{{ step.description }}</p>
+                    <section data-step="{{ loop.index }}" data-button="{{ button or loop.last ?: 0 }}" class="text-center text-md-left" {{ loop.first != true ? 'style="display: none"' }}>
+                        <h4 class="d-none d-md-inline">{{ step.title ?: 'Заголовок вопроса ' ~ loop.index }}</h4>
+                        <h5 class="d-inline d-md-none">{{ step.title ?: 'Заголовок вопроса ' ~ loop.index }}</h5>
+                        <p class="py-2 text-justify">{{ step.description }}</p>
 
-                            {% set count = step.option|count %}
-                            {% set small_col = count == 1 ? 'col-12' : (count % 2 == 0 ? 'col-6' : (count % 3 == 0 ? 'col-3' : 'col-4')) %}
+                        {% set count = step.option|count %}
+                        {% set small_col = count == 1 ? 'col-12' : (count % 2 == 0 ? 'col-6' : (count % 3 == 0 ? 'col-3' : 'col-4')) %}
 
-                            <div class="row d-flex justify-content-center">
-                                {% for option in step.option %}
-                                    {% set icon = option.icon is defined %}
-                                    {% set image = option.image is defined %}
+                        <div class="row d-flex justify-content-center">
+                            {% for option in step.option %}
+                                {% set icon = option.icon is defined %}
+                                {% set image = option.image is defined %}
 
-                                    <div class="{{ small_col }} col-md-3" data-option="{{ loop.index }}" data-option-name="{{ option.name }}" >
-                                        <div class="row d-flex justify-content-between my-2">
-                                            <div class="col-12 text-center" data-label>
-                                                {% if icon %}<i class="{{ option.icon }} fa-3x"></i>{% endif %}
-                                                {% if image %}
-                                                    {% include 'mixin/img.twig' with {
-                                                        'src': option.image,
-                                                        'alt': product.title,
-                                                        'style': 'height: 50px; width: 50px; object-fit: contain; object-position: center center;'
-                                                    } only %}
-                                                {% endif %}
-                                            </div>
-                                            {% if option.label %}
-                                                <div class="col-12 my-auto my-md-0 mt-md-2 text-center">
-                                                    {% include 'mixin/form.twig' with option %}
-                                                    <div class="font-weight-bold" data-label>{{ option.label }}</div>
-                                                </div>
+                                <div class="{{ small_col }} col-md-3" data-option="{{ loop.index }}" data-option-name="{{ option.name }}" >
+                                    <div class="row d-flex justify-content-between my-2">
+                                        <div class="col-12 text-center" data-label>
+                                            {% if icon %}<i class="{{ option.icon }} fa-3x"></i>{% endif %}
+                                            {% if image %}
+                                                {% include 'mixin/img.twig' with {
+                                                    'src': option.image,
+                                                    'alt': product.title,
+                                                    'style': 'height: 50px; width: 50px; object-fit: contain; object-position: center center;'
+                                                } only %}
                                             {% endif %}
                                         </div>
-                                    </div>
-                                {% endfor %}
-
-                                {% for field in step.field %}
-                                    <div class="col-12" data-field="{{ loop.index }}" data-field-name="{{ field.name }}">
-                                        {% include 'mixin/form.twig' with field %}
-                                    </div>
-                                {% endfor %}
-
-                                {% if button %}
-                                    <div class="col-12 text-center text-md-right mt-4">
-                                        {% if loop.first != true %}
-                                            <button type="button" class="btn btn-secondary" data-click="back">{{ step.btn_back ?: 'Назад' }}</button>
+                                        {% if option.label %}
+                                            <div class="col-12 my-auto my-md-0 mt-md-2 text-center">
+                                                {% include 'mixin/form.twig' with option %}
+                                                <div class="font-weight-bold" data-label>{{ option.label }}</div>
+                                            </div>
                                         {% endif %}
-                                        <button type="button" class="btn btn-primary" data-click="next">{{ step.btn_next ?: 'Далее' }}</button>
                                     </div>
-                                {% elseif loop.last %}
-                                    <div class="col-12 text-center text-md-right mt-4">
+                                </div>
+                            {% endfor %}
+
+                            {% for field in step.field %}
+                                <div class="col-12" data-field="{{ loop.index }}" data-field-name="{{ field.name }}">
+                                    {% include 'mixin/form.twig' with field %}
+                                </div>
+                            {% endfor %}
+
+                            {% if button %}
+                                <div class="col-12 text-center text-md-right mt-4">
+                                    {% if loop.first != true %}
                                         <button type="button" class="btn btn-secondary" data-click="back">{{ step.btn_back ?: 'Назад' }}</button>
-                                        <button type="button" class="btn btn-primary" data-click="submit">{{ step.btn_submit ?: 'Отправить' }}</button>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </section>
-                    {% endfor %}
-                </div>
-                <div class="d-none d-md-block col-md-4">
-                    <ul class="list-group list-group-flush">
-                        {% for step in steps %}
-                            <li class="list-group-item {{ loop.first ? 'active' }} text-uppercase" data-step-list="{{ loop.index }}" data-step-title="{{ step.title }}">
-                                {{ step.title }} <span></span>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
+                                    {% endif %}
+                                    <button type="button" class="btn btn-primary" data-click="next">{{ step.btn_next ?: 'Далее' }}</button>
+                                </div>
+                            {% elseif loop.last %}
+                                <div class="col-12 text-center text-md-right mt-4">
+                                    <button type="button" class="btn btn-secondary" data-click="back">{{ step.btn_back ?: 'Назад' }}</button>
+                                    <button type="button" class="btn btn-primary" data-click="submit">{{ step.btn_submit ?: 'Отправить' }}</button>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </section>
+                {% endfor %}
             </div>
+            <div class="d-none d-md-block col-md-4">
+                <ul class="list-group list-group-flush">
+                    {% for step in steps %}
+                        <li class="list-group-item {{ loop.first ? 'active' }} text-uppercase" data-step-list="{{ loop.index }}" data-step-title="{{ step.title }}">
+                            {{ step.title }} <span></span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
 
-            <script>
-                document.addEventListener('DOMContentLoaded', () => {
-                    if (typeof $ === 'undefined') {
-                        console.warn('Quiz need jQuery');
-                        return;
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                if (typeof $ === 'undefined') {
+                    console.warn('Quiz need jQuery');
+                    return;
+                }
+
+                let $quiz = $('[id="quiz-{{ quizId }}"]'),
+                    $step = $quiz.find('[data-progress="current"]'),
+                    $stepList = $quiz.find('[data-step-list]');
+
+                function change_step(current_step, new_step, variant = '') {
+                    let $progressBar = $quiz.find('[data-progress="bar"] div'),
+                        count_step = +$quiz.find('[data-progress="of"]').text();
+
+                    if (new_step > 0 && new_step <= count_step) {
+                        $quiz.find('section[data-step="' + current_step + '"]').hide();
+                        $quiz.find('section[data-step="' + new_step + '"]').show();
+
+                        $step.text(new_step);
+                        $progressBar.css('width', new_step / count_step * 100 + '%');
+                        $stepList.removeClass('active').filter('[data-step-list="' + new_step + '"]').addClass('active');
+
+                        // highlight prev item in list
+                        if (current_step < new_step) {
+                            let $prev = $stepList
+                                .filter('[data-step-list="' + current_step + '"]')
+                                .addClass('list-group-item-secondary');
+
+                            if (variant) {
+                                $prev.find('span').text(variant);
+                            }
+                        } else {
+                            $stepList
+                                .filter('[data-step-list="' + new_step + '"]')
+                                .removeClass('list-group-item-secondary')
+                                .find('span')
+                                .text('');
+                        }
                     }
+                }
 
-                    let $quiz = $('[id="quiz-{{ quizId }}"]'),
-                        $step = $quiz.find('[data-progress="current"]'),
-                        $stepList = $quiz.find('[data-step-list]');
+                // handle click on: btn next/back, progress bar, step list
+                $quiz.find('[data-click="next"], [data-click="back"], [data-progress="bar"], [data-step-list]').on('click', (e) => {
+                    let current_step = +$step.text(),
+                        new_step = null,
+                        $emptyFields = $('section[data-step="' + current_step + '"] input:required').filter((i, el) => !el.value),
+                        $btn = $(e.currentTarget);
 
-                    function change_step(current_step, new_step, variant = '') {
-                        let $progressBar = $quiz.find('[data-progress="bar"] div'),
-                            count_step = +$quiz.find('[data-progress="of"]').text();
-
-                        if (new_step > 0 && new_step <= count_step) {
-                            $quiz.find('section[data-step="' + current_step + '"]').hide();
-                            $quiz.find('section[data-step="' + new_step + '"]').show();
-
-                            $step.text(new_step);
-                            $progressBar.css('width', new_step / count_step * 100 + '%');
-                            $stepList.removeClass('active').filter('[data-step-list="' + new_step + '"]').addClass('active');
-
-                            // highlight prev item in list
-                            if (current_step < new_step) {
-                                let $prev = $stepList
-                                    .filter('[data-step-list="' + current_step + '"]')
-                                    .addClass('list-group-item-secondary');
-
-                                if (variant) {
-                                    $prev.find('span').text(variant);
-                                }
+                    switch (true) {
+                        case $btn.is('[data-click="next"]'): {
+                            if ($emptyFields.length) {
+                                $emptyFields.addClass('border-danger');
+                                setTimeout(() => $emptyFields.removeClass('border-danger'), 2500);
                             } else {
-                                $stepList
-                                    .filter('[data-step-list="' + new_step + '"]')
-                                    .removeClass('list-group-item-secondary')
-                                    .find('span')
-                                    .text('');
+                                new_step = current_step + 1;
                             }
+                            break;
+                        }
+                        case $btn.is('[data-progress="bar"]'):
+                        case $btn.is('[data-click="back"]'): {
+                            new_step = current_step - 1;
+                            break;
+                        }
+                        case $btn.is('[data-step-list]'): {
+                            let value = $btn.attr('data-step-list');
+
+                            if (value < current_step) {
+                                new_step = value;
+                            }
+                            break;
                         }
                     }
 
-                    // handle click on: btn next/back, progress bar, step list
-                    $quiz.find('[data-click="next"], [data-click="back"], [data-progress="bar"], [data-step-list]').on('click', (e) => {
-                        let current_step = +$step.text(),
-                            new_step = null,
-                            $emptyFields = $('section[data-step="' + current_step + '"] input:required').filter((i, el) => !el.value),
-                            $btn = $(e.currentTarget);
+                    change_step(current_step, new_step);
+                });
 
-                        switch (true) {
-                            case $btn.is('[data-click="next"]'): {
-                                if ($emptyFields.length) {
-                                    $emptyFields.addClass('border-danger');
-                                    setTimeout(() => $emptyFields.removeClass('border-danger'), 2500);
-                                } else {
-                                    new_step = current_step + 1;
-                                }
-                                break;
-                            }
-                            case $btn.is('[data-progress="bar"]'):
-                            case $btn.is('[data-click="back"]'): {
-                                new_step = current_step - 1;
-                                break;
-                            }
-                            case $btn.is('[data-step-list]'): {
-                                let value = $btn.attr('data-step-list');
+                // handle change radio option with next step
+                $quiz.find('[data-button="0"] [data-option] input[type="radio"]').on('click', (e) => {
+                    change_step(+$step.text(), +$step.text() + 1, $(e.currentTarget).val());
+                });
 
-                                if (value < current_step) {
-                                    new_step = value;
-                                }
-                                break;
-                            }
+                // handle click on icon with label (radio|checkbox)
+                $quiz.find('[data-option] [data-label]').on('click', (e) => {
+                    let $el = $(e.currentTarget).parents('[data-option]'),
+                        $input = $el.find('input[type="radio"], input[type="checkbox"]');
+
+                    $input.click();
+
+                    switch (true) {
+                        case $input.is('[type="radio"]'): {
+                            $el.parents('[data-step]').find('.text-primary.active').removeClass('text-primary active')
+                            $el.addClass('text-primary active');
+                            break;
                         }
-
-                        change_step(current_step, new_step);
-                    });
-
-                    // handle change radio option with next step
-                    $quiz.find('[data-button="0"] [data-option] input[type="radio"]').on('click', (e) => {
-                        change_step(+$step.text(), +$step.text() + 1, $(e.currentTarget).val());
-                    });
-
-                    // handle click on icon with label (radio|checkbox)
-                    $quiz.find('[data-option] [data-label]').on('click', (e) => {
-                        let $el = $(e.currentTarget).parents('[data-option]'),
-                            $input = $el.find('input[type="radio"], input[type="checkbox"]');
-
-                        $input.click();
-
-                        switch (true) {
-                            case $input.is('[type="radio"]'): {
-                                $el.parents('[data-step]').find('.text-primary.active').removeClass('text-primary active')
-                                $el.addClass('text-primary active');
-                                break;
-                            }
-                            case $input.is('[type="checkbox"]'): {
-                                $el.toggleClass('text-primary active', $input.is(':checked'));
-                                break;
-                            }
+                        case $input.is('[type="checkbox"]'): {
+                            $el.toggleClass('text-primary active', $input.is(':checked'));
+                            break;
                         }
-                    });
+                    }
+                });
 
-                    // handle submit
-                    $quiz.find('[data-click="submit"]').on('click', async () => {
-                        if ('{{ action }}') {
-                            let data = new FormData(),
-                                $inputs = $quiz.find('input, select, textarea');
+                // handle submit
+                $quiz.find('[data-click="submit"]').on('click', async () => {
+                    if ('{{ action }}') {
+                        let data = new FormData(),
+                            $inputs = $quiz.find('input, select, textarea');
 
-                            $inputs.each((i, el) => {
-                                if (el.required === true && el.value === '') {
+                        $inputs.each((i, el) => {
+                            if (el.required === true && el.value === '') {
+                                el.classList.add('check-error');
+                                throw new Error('Required field');
+                            }
+                            if (el.required === true && el.type === 'email') {
+                                // todo replace regex
+                                if (/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(el.value) === false) {
+                                    el.classList.add('check-error');
+                                    throw new Error('Invalid E-Mail address');
+                                }
+                            }
+                            if ((el.type === 'checkbox' || el.type === 'radio') && el.checked === false) {
+                                if (el.required === true) {
                                     el.classList.add('check-error');
                                     throw new Error('Required field');
                                 }
-                                if (el.required === true && el.type === 'email') {
-                                    // todo replace regex
-                                    if (/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/.test(el.value) === false) {
-                                        el.classList.add('check-error');
-                                        throw new Error('Invalid E-Mail address');
-                                    }
-                                }
-                                if ((el.type === 'checkbox' || el.type === 'radio') && el.checked === false) {
-                                    if (el.required === true) {
-                                        el.classList.add('check-error');
-                                        throw new Error('Required field');
-                                    }
 
-                                    return;
-                                }
-
-                                data.append(el.name, el.value);
-                            });
-
-                            // Google reCAPTCHA works if mixin/recaptcha.twig included
-                            if (typeof (grecaptcha) !== 'undefined' && grecaptcha.getToken) {
-                                data.append('recaptcha', await grecaptcha.getToken());
+                                return;
                             }
 
-                            $.ajax({
-                                url: '{{ action }}',
-                                type: 'POST',
-                                data,
-                                contentType: false,
-                                cache: false,
-                                processData: false,
-                                success: (res) => {
-                                    $inputs.val('');
-                                    change_step(+$step.text(), 1);
-                                    $stepList.removeClass('list-group-item-secondary').find('span').text('');
-                                    $(window).trigger('event:quiz:sent', res, data);
-                                }
-                            });
+                            data.append(el.name, el.value);
+                        });
+
+                        // Google reCAPTCHA works if mixin/recaptcha.twig included
+                        if (typeof (grecaptcha) !== 'undefined' && grecaptcha.getToken) {
+                            data.append('recaptcha', await grecaptcha.getToken());
                         }
-                    });
+
+                        $.ajax({
+                            url: '{{ action }}',
+                            type: 'POST',
+                            data,
+                            contentType: false,
+                            cache: false,
+                            processData: false,
+                            success: (res) => {
+                                $inputs.val('');
+                                change_step(+$step.text(), 1);
+                                $stepList.removeClass('list-group-item-secondary').find('span').text('');
+                                $(window).trigger('event:quiz:sent', res, data);
+                            }
+                        });
+                    }
                 });
-            </script>
-        </form>
-    </div>
-{% endhtmlcompress %}
+            });
+        </script>
+    </form>
+</div>
