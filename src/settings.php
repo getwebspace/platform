@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-$sha = '/' . mb_substr($_ENV['COMMIT_SHA'] ?? 'specific', 0, 6);
+$sha = '/' . mb_substr($_ENV['COMMIT_SHA'] ?? 'specific', 0, 7);
 $settings = [
     // Secret salt
     'secret' => [
