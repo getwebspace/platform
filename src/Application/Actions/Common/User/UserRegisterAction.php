@@ -26,7 +26,7 @@ class UserRegisterAction extends UserAction
                 'allow_mail' => $this->request->getParam('allow_mail', true),
                 'password' => $this->request->getParam('password'),
                 'password_again' => $this->request->getParam('password_again'),
-                'external_id' => $this->request->getParam('external_id'),
+                'external_id' => $this->request->getParam('external_id', ''),
             ];
 
             if ($this->isRecaptchaChecked()) {
