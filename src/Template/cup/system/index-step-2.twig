@@ -1,0 +1,50 @@
+<div class="card-body">
+    <h5 class="text-center">Самопроверка системы</h5>
+
+    <div class="row my-3">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-7">
+                    <table class="w-100">
+                        {% for folder, status in health.folders %}
+                            <tr>
+                                <td>{{ folder }}</td>
+                                <td>
+                                    <span class="badge {{ status == 1 ? 'badge-success' : 'badge-danger' }} badge-pill">{{ status == 1 ? 'Ok' : status }}</span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                <div class="col-5">
+                    <table class="w-100">
+                        <tr>
+                            <td>Версия PHP</td>
+                            <td>
+                                <span class="badge {{ health.php ? 'badge-success' : 'badge-danger' }} badge-pill">{{ health.php ? 'Ok' : 'Fail' }}</span>
+                            </td>
+                        </tr>
+                        {% for ext, status in health.extensions %}
+                            <tr>
+                                <td>Ext. {{ ext }}</td>
+                                <td>
+                                    <span class="badge {{ status ? 'badge-success' : 'badge-danger' }} badge-pill">{{ status ? 'Ok' : 'Fail' }}</span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <p class="text-center text-muted">
+        Если любой из этих пунктов не прошел проверку,<br>
+        то пожалуйста выполните действия для исправления этого.
+    </p>
+</div>
+
+<div class="card-footer d-flex justify-content-center">
+    <a href="/cup/system/1" class="btn btn-secondary">Назад</a>
+    <a href="/cup/system/3" class="btn btn-primary ml-1">Далее</a>
+</div>

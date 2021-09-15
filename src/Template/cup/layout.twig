@@ -342,10 +342,10 @@
 
                                                                     <table class="table table-properties">
                                                                         <tr>
-                                                                            <th width="50%">Версия движка:</th>
+                                                                            <th width="50%">Сборка:</th>
                                                                             <td width="50%" class="text-center">
                                                                                 {{ properties.version.branch }}
-                                                                                (<a href="https://github.com/getwebspace/platform/tree/{{ properties.version.commit }}" target="_blank">source</a>)
+                                                                                (<a href="https://github.com/getwebspace/platform/tree/{{ properties.version.commit }}" target="_blank">{{ sha }}</a>)
                                                                             </td>
                                                                         </tr>
                                                                         <tr>
@@ -434,19 +434,24 @@
 
                     <footer class="footer">
                         <div class="container-fluid">
-                            <nav class="pull-left">
+                            <div class="copyright mr-auto">
+                                Copyright &copy; 2011-{{ 'now'|df('Y') }} <a href="https://getwebspace.org" target="_blank">WebSpace Engine</a> &mdash; платформа для управления контентом на сайте.<br>
+                                Сборка: <span class="text-muted">{{ sha }}</span>
+                            </div>
+                            <nav class="pull-right">
                                 <ul class="nav">
                                     <li class="nav-item">
                                         <a class="nav-link" href="https://github.com/getwebspace/platform" target="_blank">
                                             GitHub
                                         </a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="https://github.com/getwebspace/platform/issues" target="_blank">
+                                            Поддержка
+                                        </a>
+                                    </li>
                                 </ul>
                             </nav>
-                            <div class="copyright ml-auto">
-                                Copyright &copy; {{ 'now'|df('Y') }} All rights reserved |
-                                Powered by <a href="https://getwebspace.org" target="_blank">WebSpace</a>
-                            </div>
                         </div>
                     </footer>
                 </div>

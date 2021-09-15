@@ -2,106 +2,20 @@
 
 {% block body %}
     <body class="d-flex align-items-center justify-content-center">
-        <div class="row my-5">
-            <div class="col-12 col-md-5 col-lg-6">
-                <div class="card card-block">
-                    <div class="card-body">
-                        <h3 class="text-center">Настройки пользователя</h3>
-
-                        <div class="row justify-content-center">
-                            <div class="col-12">
-                                <form action="/cup/system" method="post" class="mt-3 mb-4" onsubmit="return confirm('Вы уверены?');">
-                                    <p class="text-center">
-                                        Создание нового (или обновление текущего) пользователя
-                                        с правами администратора.
-                                    </p>
-
-                                    {% include 'cup/form.twig' with {
-                                        'label': 'Логин',
-                                        'type': 'text',
-                                        'name': 'user[username]',
-                                        'args': {
-                                            'required': true,
-                                            'placeholder': 'administrator',
-                                            'value': user.username ?? 'administrator'
-                                        }
-                                    } %}
-                                    {% include 'cup/form.twig' with {
-                                        'label': 'E-Mail',
-                                        'type': 'email',
-                                        'name': 'user[email]',
-                                        'args': {
-                                            'required': true,
-                                            'placeholder': 'administrator@example.com',
-                                            'value': user.email
-                                        }
-                                    } %}
-                                    {% include 'cup/form.twig' with {
-                                        'label': 'Пароль',
-                                        'type': 'password',
-                                        'name': 'user[password]',
-                                    } %}
-
-                                    <div class="d-flex justify-content-center mt-4">
-                                        <button type="submit" name="database" value="create" class="btn btn-primary mr-1">
-                                            Создать
-                                        </button>
-                                        <button type="submit" name="database" value="update" class="btn btn-secondary mr-1">
-                                            Обновить
-                                        </button>
-                                        <button type="submit" name="database" value="delete" class="btn btn-danger">
-                                            Удалить
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div class="card card-block" style="width: 630px;">
+            <div class="card-header text-center">
+                <h4 class="card-title">
+                    Установка и обновление платформы
+                    WebSpace Engine
+                </h4>
             </div>
-            <div class="col-12 col-md-7 col-lg-6">
-                <div class="card card-block">
-                    <div class="card-body">
-                        <h3 class="text-center">Самопроверка системы</h3>
 
-                        <div class="row my-3">
-                            <div class="col-12">
-                                <div class="row">
-                                    <div class="col-7">
-                                        <ul class="list-group list-group-bordered">
-                                            {% for folder, status in health.folders %}
-                                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    {{ folder }}
-                                                    <span class="badge {{ status == 1 ? 'badge-success' : 'badge-danger' }} badge-pill">{{ status == 1 ? 'Ok' : status }}</span>
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                    <div class="col-5">
-                                        <ul class="list-group list-group-bordered">
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                Версия PHP
-                                                <span class="badge {{ health.php ? 'badge-success' : 'badge-danger' }} badge-pill">{{ health.php ? 'Ok' : 'Fail' }}</span>
-                                            </li>
+            {% include 'cup/system/index-step-' ~ step ~ '.twig' %}
 
-                                            {% for ext, status in health.extensions %}
-                                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                    Ext. {{ ext }}
-                                                    <span class="badge {{ status ? 'badge-success' : 'badge-danger' }} badge-pill">{{ status ? 'Ok' : 'Fail' }}</span>
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <p class="text-center text-muted">
-                            Если любой из этих пунктов выделен красным,<br>
-                            то пожалуйста выполните действия для<br>
-                            исправления этого.
-                        </p>
-                    </div>
+            <div class="card-footer">
+                <div>
+                    Copyright &copy; 2011-{{ 'now'|df('Y') }} <a href="https://getwebspace.org" target="_blank">WebSpace Engine</a> &mdash; платформа для управления контентом на сайте.<br>
+                    Сборка: <span class="text-muted">{{ sha }}</span>
                 </div>
             </div>
         </div>

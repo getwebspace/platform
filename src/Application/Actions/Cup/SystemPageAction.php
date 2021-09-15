@@ -88,10 +88,11 @@ class SystemPageAction extends AbstractAction
                 // write lock file
                 file_put_contents(self::$lock_file, time());
 
-                return $this->response->withRedirect('/cup/system');
+                return $this->response->withRedirect('/cup');
             }
 
             return $this->respondWithTemplate('cup/system/index.twig', [
+                'step' => $this->args['step'] ?? '1',
                 'health' => sys_self_check_health(),
             ]);
         }
