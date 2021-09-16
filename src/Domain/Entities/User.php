@@ -522,6 +522,20 @@ class User extends AbstractEntity
     protected $files = [];
 
     /**
+     * @var array
+     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\Publication", mappedBy="user", orphanRemoval=true)
+     * @ORM\OrderBy({"date": "ASC"})
+     */
+    protected $publications = [];
+
+    /**
+     * @var array
+     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\Catalog\Order", mappedBy="user", orphanRemoval=true)
+     * @ORM\OrderBy({"date": "ASC"})
+     */
+    protected $orders = [];
+
+    /**
      * Return model as array
      */
     public function toArray(): array

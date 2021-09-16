@@ -372,4 +372,40 @@ class Order extends AbstractEntity
     {
         return $this->system;
     }
+
+    /**
+     * Return model as array
+     */
+    public function toArray(): array
+    {
+        $email = $this->getEmail();
+        $phone = $this->getPhone();
+        $delivery = $this->getDelivery();
+
+        if (($user = $this->getUser()) !== null) {
+            $email = $user->getEmail();
+            $phone = $user->getPhone();
+            $delivery = [
+                'client' => $user->getName(),
+                'address' => $user->getAddress(),
+            ];
+        }
+
+        return [
+            'uuid' => $this->getUuid(),
+            'serial' => $this->getSerial(),
+            'user' => $this->user_uuid ? $this->user_uuid->toString() : Uuid::NIL,
+            'delivery' => $delivery,
+            'shipping' => $this->getShipping(),
+            'comment' => $this->getComment(),
+            'phone' => $phone,
+            'email' => $email,
+            'products' => $this->getProducts()->map->toArray(),
+            'status' => $this->getStatus(),
+            'date' => $this->getDate(),
+            'external_id' => $this->getExternalId(),
+            'export' => $this->getExport(),
+            'system' => $this->getSystem(),
+        ];
+    }
 }

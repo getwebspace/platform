@@ -241,4 +241,20 @@ class Publication extends AbstractEntity
      * @ORM\OrderBy({"order": "ASC"})
      */
     protected $files = [];
+
+    /**
+     * Return model as array
+     */
+    public function toArray(): array
+    {
+        return [
+            'uuid' => $this->getUuid(),
+            'user' => $this->user_uuid ? $this->user_uuid->toString() : Uuid::NIL,
+            'address' => $this->getAddress(),
+            'title' => $this->getTitle(),
+            'category' => $this->getCategory()->toString(),
+            'date' => $this->getDate(),
+            'files' => $this->getFiles()->map->toArray(),
+        ];
+    }
 }

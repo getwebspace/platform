@@ -1,0 +1,30 @@
+<section class="contact-section">
+    <div class="container">
+        <h4 class="mb-2">Заказы</h4>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Статус</th>
+                    <th class="text-center">Дата заказа</th>
+                    <th class="text-center">Дата доставки</th>
+                    <th class="text-right">Товаров</th>
+                    <th class="text-right">Сумма</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in user.orders %}
+                    <tr>
+                        <td>{{ order.serial }}</td>
+                        <td>{{ order.status }}</td>
+                        <td class="text-center">{{ order.date|df('d.m.Y H:i') }}</td>
+                        <td class="text-center">{{ order.shipping|df('d.m.Y H:i') }}</td>
+                        <td class="text-right">{{ order.hasProducts() }}</td>
+                        <td class="text-right">{{ order.getTotalPrice()|number_format(2, '.', ' ') }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
