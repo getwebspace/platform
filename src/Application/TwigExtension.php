@@ -583,40 +583,19 @@ class TwigExtension extends AbstractExtension
     }
 
     // fetch order
-    public function catalog_order($unique)
+    public function catalog_order(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_order');
 
-        static $buf;
+        $catalogOrderService = CatalogOrderService::getWithContainer($this->container);
+        $result = $catalogOrderService->read(array_merge($criteria, [
+            'order' => $order,
+            'limit' => $limit,
+            'offset' => $offset,
+        ]));
 
-        $criteria = [];
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_order');
 
-        switch (true) {
-            case \Ramsey\Uuid\Uuid::isValid($unique):
-                $criteria['uuid'] = $unique;
-
-                break;
-
-            case is_numeric($unique):
-                $criteria['external_id'] = $unique;
-
-                break;
-
-            default:
-                $criteria['serial'] = $unique;
-
-                break;
-        }
-
-        $key = json_encode($criteria, JSON_UNESCAPED_UNICODE);
-
-        if (!array_key_exists($key, (array) $buf)) {
-            $catalogOrderService = CatalogOrderService::getWithContainer($this->container);
-            $buf[$key] = $catalogOrderService->read($criteria);
-        }
-
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_order (%s)', $key);
-
-        return $buf[$key];
+        return $result;
     }
 }
