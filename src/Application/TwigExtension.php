@@ -373,28 +373,18 @@ class TwigExtension extends AbstractExtension
     // files functions
 
     // fetch files by args
-    public function files($files = [])
+    public function files(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
-        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:files', $files);
-
-        $criteria = [];
-
-        if ($files) {
-            if (!is_a($files, \Illuminate\Support\Collection::class) && !is_array($files)) {
-                $files = [$files];
-            }
-
-            foreach ($files as $uuid) {
-                if (\Ramsey\Uuid\Uuid::isValid($uuid) === true) {
-                    $criteria['uuid'][] = $uuid;
-                }
-            }
-        }
+        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:files');
 
         $fileService = FileService::getWithContainer($this->container);
-        $result = $fileService->read($criteria);
+        $result = $fileService->read(array_merge($criteria, [
+            'order' => $order,
+            'limit' => $limit,
+            'offset' => $offset,
+        ]));
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:files', $files);
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:files');
 
         return $result;
     }
