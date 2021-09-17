@@ -87,6 +87,10 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('build_query', [$this, 'build_query'], ['is_safe' => ['html']]),
             new TwigFunction('current_query', [$this, 'current_query'], ['is_safe' => ['html']]),
             new TwigFunction('is_current_page_number', [$this, 'is_current_page_number']),
+            new TwigFunction('base64_encode', [$this, 'base64_encode']),
+            new TwigFunction('base64_decode', [$this, 'base64_decode']),
+            new TwigFunction('json_encode', [$this, 'json_encode']),
+            new TwigFunction('json_decode', [$this, 'json_decode']),
             new TwigFunction('qr_code', [$this, 'qr_code'], ['is_safe' => ['html']]),
             new TwigFunction('oauth_url', [$this, 'oauth_url'], ['is_safe' => ['html']]),
 
@@ -343,6 +347,26 @@ class TwigExtension extends AbstractExtension
     public function is_current_page_number($number)
     {
         return $this->current_page_number() === $number;
+    }
+
+    public function base64_encode(string $string)
+    {
+        return base64_encode($string);
+    }
+
+    public function base64_decode(string $string, bool $strict = false)
+    {
+        return base64_decode($string, $strict);
+    }
+
+    public function json_encode($json, ?bool $associative = true, int $depth = 512, int $flags = 0)
+    {
+        return json_decode($json, $associative, $depth, $flags);
+    }
+
+    public function json_decode($value, int $flags = JSON_UNESCAPED_UNICODE, int $depth = 512)
+    {
+        return json_encode($value, $flags, $depth);
     }
 
     public function qr_code($value, $width = 256, $height = 256)
