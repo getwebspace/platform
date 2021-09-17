@@ -156,7 +156,7 @@ class OrderProduct extends AbstractEntity
             'price' => $this->product->getPrice(),
             'priceWholesale' => $this->product->getPriceWholesale(),
             'external_id' => $this->product->getExternalId(),
-            'files' => $this->product->getFiles()->map->toArray(),
+            'files' => $this->product->getFiles(),
             'count' => $this->getCount(),
         ];
     }

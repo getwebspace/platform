@@ -378,34 +378,34 @@ class Order extends AbstractEntity
      */
     public function toArray(): array
     {
-        $email = $this->getEmail();
-        $phone = $this->getPhone();
-        $delivery = $this->getDelivery();
+        $email = $this->email;
+        $phone = $this->phone;
+        $delivery = $this->delivery;
 
-        if (($user = $this->getUser()) !== null) {
-            $email = $user->getEmail();
-            $phone = $user->getPhone();
+        if ($this->user_uuid !== null) {
+            $email = $this->user->getEmail();
+            $phone = $this->user->getPhone();
             $delivery = [
-                'client' => $user->getName(),
-                'address' => $user->getAddress(),
+                'client' => $this->user->getName(),
+                'address' => $this->user->getAddress(),
             ];
         }
 
         return [
-            'uuid' => $this->getUuid(),
-            'serial' => $this->getSerial(),
-            'user' => $this->user_uuid ? $this->user_uuid->toString() : Uuid::NIL,
+            'uuid' => $this->uuid,
+            'serial' => $this->serial,
+            'user' => $this->user_uuid ?: Uuid::NIL,
             'delivery' => $delivery,
-            'shipping' => $this->getShipping(),
-            'comment' => $this->getComment(),
+            'shipping' => $this->shipping,
+            'comment' => $this->comment,
             'phone' => $phone,
             'email' => $email,
-            'products' => $this->getProducts()->map->toArray(),
-            'status' => $this->getStatus(),
-            'date' => $this->getDate(),
-            'external_id' => $this->getExternalId(),
-            'export' => $this->getExport(),
-            'system' => $this->getSystem(),
+            'products' => $this->getProducts(),
+            'status' => $this->status,
+            'date' => $this->date,
+            'external_id' => $this->external_id,
+            'export' => $this->export,
+            'system' => $this->system,
         ];
     }
 }
