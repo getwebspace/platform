@@ -39,7 +39,7 @@ class Publication extends AbstractEntity
      * @ORM\ManyToOne(targetEntity="App\Domain\Entities\User")
      * @ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid")
      */
-    protected ?User $user = null;
+    protected ?User $user;
 
     /**
      * @param string|User $user
@@ -109,7 +109,7 @@ class Publication extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
+     * @ORM\Column(type="uuid", nullable=true, options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
     protected ?uuid $category_uuid;
 
@@ -117,7 +117,7 @@ class Publication extends AbstractEntity
      * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Publication\Category")
      * @ORM\JoinColumn(name="category_uuid", referencedColumnName="uuid")
      */
-    protected ?PublicationCategory $category = null;
+    protected ?PublicationCategory $category;
 
     /**
      * @return $this
