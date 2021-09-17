@@ -4,10 +4,11 @@ namespace App\Domain;
 
 use BadMethodCallException;
 use DateTime;
+use JsonSerializable;
 use Ramsey\Uuid\Uuid;
 use RuntimeException;
 
-abstract class AbstractEntity extends AbstractComponent
+abstract class AbstractEntity extends AbstractComponent implements JsonSerializable
 {
     /**
      * @param string[] $args
@@ -230,7 +231,12 @@ abstract class AbstractEntity extends AbstractComponent
      */
     public function __toString(): string
     {
-        return json_encode($this->toArray(), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT, 2048);
+        return serialize($this->toArray());
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->toArray();
     }
 
     public function __isset(string $name): bool
