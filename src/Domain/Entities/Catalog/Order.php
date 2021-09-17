@@ -66,11 +66,11 @@ class Order extends AbstractEntity
     protected ?User $user = null;
 
     /**
-     * @param string|User $user
+     * @param null|User $user
      *
      * @return $this
      */
-    public function setUser($user)
+    public function setUser(?User $user)
     {
         if (is_a($user, User::class)) {
             $this->user_uuid = $user->getUuid();
