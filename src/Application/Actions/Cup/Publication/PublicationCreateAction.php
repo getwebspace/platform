@@ -18,7 +18,7 @@ class PublicationCreateAction extends PublicationAction
                     'address' => $this->request->getParam('address'),
                     'date' => $this->request->getParam('date'),
                     'category' => $this->publicationCategoryService->read([
-                        'uuid' => $this->request->getParam('category')
+                        'uuid' => $this->request->getParam('category'),
                     ]),
                     'content' => $this->request->getParam('content'),
                     'poll' => $this->request->getParam('poll'),
@@ -33,7 +33,7 @@ class PublicationCreateAction extends PublicationAction
                     default:
                         return $this->response->withAddedHeader('Location', '/cup/publication/' . $publication->getUuid() . '/edit')->withStatus(301);
                 }
-            } catch (MissingTitleValueException | TitleAlreadyExistsException $e) {
+            } catch (MissingTitleValueException|TitleAlreadyExistsException $e) {
                 $this->addError('title', $e->getMessage());
             } catch (AddressAlreadyExistsException $e) {
                 $this->addError('address', $e->getMessage());

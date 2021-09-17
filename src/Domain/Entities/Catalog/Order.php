@@ -66,8 +66,6 @@ class Order extends AbstractEntity
     protected ?User $user = null;
 
     /**
-     * @param null|User $user
-     *
      * @return $this
      */
     public function setUser(?User $user)

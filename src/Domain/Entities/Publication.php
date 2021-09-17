@@ -120,11 +120,9 @@ class Publication extends AbstractEntity
     protected ?PublicationCategory $category = null;
 
     /**
-     * @param PublicationCategory $category
-     *
      * @return $this
      */
-    public function setCategory(PublicationCategory $category)
+    public function setCategory(?PublicationCategory $category)
     {
         if (is_a($category, PublicationCategory::class)) {
             $this->category_uuid = $category->getUuid();

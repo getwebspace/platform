@@ -154,7 +154,7 @@ class UserLoginAction extends UserAction
                             return $integration->getUser();
                         }
                         $this->addError($identifier, 'EXCEPTION_USER_NOT_FOUND');
-                    } catch (EmailAlreadyExistsException | EmailBannedException | WrongEmailValueException $e) {
+                    } catch (EmailAlreadyExistsException|EmailBannedException|WrongEmailValueException $e) {
                         $this->addError($identifier, $e->getMessage());
                     }
                 }
@@ -172,7 +172,7 @@ class UserLoginAction extends UserAction
                             return $integration->getUser();
                         }
                         $this->addError($identifier, 'EXCEPTION_USER_NOT_FOUND');
-                    } catch (EmailAlreadyExistsException | EmailBannedException | WrongEmailValueException $e) {
+                    } catch (EmailAlreadyExistsException|EmailBannedException|WrongEmailValueException $e) {
                         $this->addError($identifier, $e->getMessage());
                     }
                 }

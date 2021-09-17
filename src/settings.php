@@ -88,7 +88,7 @@ switch (!isset($settings['settings']['displayErrorDetails']) || $settings['setti
 
     case false:
         // set router cache file if display error is negative
-        $settings['settings']['routerCacheFile'] = CACHE_DIR . $sha. '/routes.cache.php';
+        $settings['settings']['routerCacheFile'] = CACHE_DIR . $sha . '/routes.cache.php';
 
         // enable Tracy panel
         \Tracy\Debugger::enable(\Tracy\Debugger::PRODUCTION, LOG_DIR);

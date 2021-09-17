@@ -59,7 +59,7 @@ class AuthorizationMiddleware extends AbstractMiddleware
                 } else {
                     throw new \RuntimeException();
                 }
-            } catch (\RuntimeException | UserNotFoundException $e) {
+            } catch (\RuntimeException|UserNotFoundException $e) {
                 // clear cookie
                 setcookie('uuid', '-1', time(), '/');
                 setcookie('session', '-1', time(), '/');

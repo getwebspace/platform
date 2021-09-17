@@ -22,7 +22,7 @@ class PublicationUpdateAction extends PublicationAction
                             'date' => $this->request->getParam('date'),
 
                             'category' => $this->publicationCategoryService->read([
-                                'uuid' => $this->request->getParam('category')
+                                'uuid' => $this->request->getParam('category'),
                             ]),
                             'content' => $this->request->getParam('content'),
                             'poll' => $this->request->getParam('poll'),

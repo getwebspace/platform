@@ -30,7 +30,7 @@ class FormCreateAction extends FormAction
                     default:
                         return $this->response->withRedirect('/cup/form/' . $form->getUuid() . '/edit');
                 }
-            } catch (MissingTitleValueException | TitleAlreadyExistsException $e) {
+            } catch (MissingTitleValueException|TitleAlreadyExistsException $e) {
                 $this->addError('title', $e->getMessage());
             } catch (AddressAlreadyExistsException $e) {
                 $this->addError('address', $e->getMessage());

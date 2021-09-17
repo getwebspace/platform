@@ -34,7 +34,7 @@ class CategoryCreateAction extends PublicationAction
                     default:
                         return $this->response->withAddedHeader('Location', '/cup/publication/category/' . $publicationCategory->getUuid() . '/edit')->withStatus(301);
                 }
-            } catch (MissingTitleValueException | TitleAlreadyExistsException $e) {
+            } catch (MissingTitleValueException|TitleAlreadyExistsException $e) {
                 $this->addError('title', $e->getMessage());
             } catch (AddressAlreadyExistsException $e) {
                 $this->addError('address', $e->getMessage());
