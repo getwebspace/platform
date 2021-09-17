@@ -3,6 +3,7 @@
 namespace App\Domain\Entities;
 
 use App\Domain\AbstractEntity;
+use App\Domain\Entities\Publication\Category as PublicationCategory;
 use App\Domain\Traits\FileTrait;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
@@ -108,27 +109,35 @@ class Publication extends AbstractEntity
     }
 
     /**
-     * @var string|uuid
      * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
-    protected $category = \Ramsey\Uuid\Uuid::NIL;
+    protected ?uuid $category_uuid;
 
     /**
-     * @param string|Uuid $uuid
+     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Publication\Category")
+     * @ORM\JoinColumn(name="category_uuid", referencedColumnName="uuid")
+     */
+    protected ?PublicationCategory $category = null;
+
+    /**
+     * @param PublicationCategory $category
      *
      * @return $this
      */
-    public function setCategory($uuid)
+    public function setCategory(PublicationCategory $category)
     {
-        $this->category = $this->getUuidByValue($uuid);
+        if (is_a($category, PublicationCategory::class)) {
+            $this->category_uuid = $category->getUuid();
+            $this->category = $category;
+        } else {
+            $this->category_uuid = null;
+            $this->category = null;
+        }
 
         return $this;
     }
 
-    /**
-     * @return string|uuid
-     */
-    public function getCategory()
+    public function getCategory(): ?PublicationCategory
     {
         return $this->category;
     }
@@ -248,13 +257,15 @@ class Publication extends AbstractEntity
     public function toArray(): array
     {
         return [
-            'uuid' => $this->getUuid(),
-            'user' => $this->user_uuid ? $this->user_uuid->toString() : Uuid::NIL,
-            'address' => $this->getAddress(),
-            'title' => $this->getTitle(),
-            'category' => $this->getCategory()->toString(),
-            'date' => $this->getDate(),
-            'files' => $this->getFiles()->map->toArray(),
+            'uuid' => $this->uuid,
+            'user' => $this->user_uuid ?: Uuid::NIL,
+            'address' => $this->address,
+            'title' => $this->title,
+            'category' => $this->category,
+            'date' => $this->date,
+            'content' => $this->content,
+            'files' => $this->getFiles(),
+            'meta' => $this->meta,
         ];
     }
 }

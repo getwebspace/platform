@@ -41,7 +41,7 @@
                             <h2>{{ publication.title }}</h2>
                             <div>
                                 <ul class="meta">
-                                    <li><a href="/{{ category.address }}">{{ category.title }}</a></li>
+                                    <li><a href="/{{ publication.category.address }}">{{ publication.category.title }}</a></li>
                                     <li>{{ publication.date|df }}</a></li>
                                     <li>{{ publication.user.getName('short') }}</li>
                                 </ul>
