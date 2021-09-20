@@ -18,134 +18,154 @@
                     <div class="card-header">
                         <div class="card-head-row">
                             <div class="card-title">{{ item.uuid ? 'Редактирование страницы ' ~ item.title : 'Создание новой страницы' }}</div>
+
+                            <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link active show" data-toggle="pill" href="#page" role="tab">
+                                        Страница
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="pill" href="#other" role="tab">
+                                        Дополнительно
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Название',
-                                    'type': 'text',
-                                    'name': 'title',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Краткое описание страницы"></i>',
-                                    'args': {
-                                        'value': item.title,
-                                        'required': true,
-                                        'placeholder': 'О нас',
-                                    }
-                                } %}
+                        <div class="tab-content">
+                            {# Tab: Товар #}
+                            <div class="tab-pane fade show active" id="page" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Название',
+                                            'type': 'text',
+                                            'name': 'title',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Краткое описание страницы"></i>',
+                                            'args': {
+                                                'value': item.title,
+                                                'required': true,
+                                                'placeholder': 'О нас',
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Адрес',
+                                            'type': 'text',
+                                            'name': 'address',
+                                            'prefix': base_url() ~ '/',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Название страницы. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов"></i>',
+                                            'args': {
+                                                'value': item.address,
+                                                'placeholder': 'about',
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        {% include 'cup/editor.twig' with {
+                                            'label': 'Тело страницы',
+                                            'name': 'content',
+                                            'args': {
+                                                'value': item.content
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Дата',
-                                    'type': 'datetime',
-                                    'name': 'date',
-                                    'args': {
-                                        'value': item.date|df('Y-m-d\\TH:i'),
-                                        'placeholder': '20.01.2019 12:34',
-                                    }
-                                } %}
+
+                            {# Tab: Дополнительно #}
+                            <div class="tab-pane fade" id="other" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Дата',
+                                            'type': 'datetime',
+                                            'name': 'date',
+                                            'args': {
+                                                'value': item.date|df('Y-m-d\\TH:i'),
+                                                'placeholder': '20.01.2019 12:34',
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Тип содержимого',
+                                            'type': 'select',
+                                            'name': 'type',
+                                            'message': 'Если нет понимания на что влияет это поле, оставьте значение по-умолчанию',
+                                            'args': {
+                                                'option': reference('/App/Domain/Types/PageTypeType::LIST'),
+                                                'selected': item.type
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Шаблон',
+                                            'type': 'text',
+                                            'name': 'template',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="Укажите название шаблона, который хотите использовать для данной страницы или оставьте <b>page.twig</b>"></i>',
+                                            'args': {
+                                                'value': item.template is not empty ? item.template : 'page.twig',
+                                                'required': true,
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                {% include 'cup/form-image.twig' with { 'entity': item } %}
+
+                                <hr>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Метатег Title',
+                                            'type': 'text',
+                                            'name': 'meta[title]',
+                                            'args': {
+                                                'value': item.meta.title,
+                                            }
+                                        } %}
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Метатег Description',
+                                            'type': 'text',
+                                            'name': 'meta[description]',
+                                            'args': {
+                                                'value': item.meta.description,
+                                            }
+                                        } %}
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Метатег Keywords',
+                                            'type': 'text',
+                                            'name': 'meta[keywords]',
+                                            'args': {
+                                                'value': item.meta.keywords,
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Адрес',
-                                    'type': 'text',
-                                    'name': 'address',
-                                    'prefix': base_url() ~ '/',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Название страницы. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов"></i>',
-                                    'args': {
-                                        'value': item.address,
-                                        'placeholder': 'about',
-                                    }
-                                } %}
-                            </div>
-                        </div>
 
-                        <hr>
 
-                        <div class="row">
-                            <div class="col-md-12">
-                                {% include 'cup/editor.twig' with {
-                                    'label': 'Текст страницы',
-                                    'name': 'content',
-                                    'args': {
-                                        'value': item.content
-                                    }
-                                } %}
-                            </div>
-                        </div>
 
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Тип содержимого',
-                                    'type': 'select',
-                                    'name': 'type',
-                                    'message': 'Если нет понимания на что влияет это поле, оставьте значение по-умолчанию',
-                                    'args': {
-                                        'option': reference('/App/Domain/Types/PageTypeType::LIST'),
-                                        'selected': item.type
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Шаблон',
-                                    'type': 'text',
-                                    'name': 'template',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="Укажите название шаблона, который хотите использовать для данной страницы или оставьте <b>page.twig</b>"></i>',
-                                    'args': {
-                                        'value': item.template is not empty ? item.template : 'page.twig',
-                                        'required': true,
-                                    }
-                                } %}
-                            </div>
-                        </div>
-
-                        <hr>
-
-                        {% include 'cup/form-image.twig' with { 'entity': item } %}
-
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Метатег Title',
-                                    'type': 'text',
-                                    'name': 'meta[title]',
-                                    'args': {
-                                        'value': item.meta.title,
-                                    }
-                                } %}
-                            </div>
-
-                            <div class="col-md-4">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Метатег Description',
-                                    'type': 'text',
-                                    'name': 'meta[description]',
-                                    'args': {
-                                        'value': item.meta.description,
-                                    }
-                                } %}
-                            </div>
-
-                            <div class="col-md-4">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Метатег Keywords',
-                                    'type': 'text',
-                                    'name': 'meta[keywords]',
-                                    'args': {
-                                        'value': item.meta.keywords,
-                                    }
-                                } %}
-                            </div>
-                        </div>
                     </div>
 
                     <div class="card-action">
