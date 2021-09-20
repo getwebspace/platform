@@ -18,9 +18,9 @@ class PublicationFileRelation extends FileRelation
      */
     protected Publication $publication;
 
-    public function setEntity(AbstractEntity $entity)
+    public function setEntity(AbstractEntity $entity): PublicationFileRelation
     {
-        if (is_object($entity) && is_a($entity, Publication::class)) {
+        if (is_a($entity, Publication::class)) {
             $this->entity_uuid = $entity->getUuid();
             $this->publication = $entity;
         }
