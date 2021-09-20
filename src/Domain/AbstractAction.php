@@ -164,15 +164,15 @@ abstract class AbstractAction extends AbstractComponent
     }
 
     /**
-     * @return null|string
+     * @return string
      */
-    protected function getRequestRemoteIP()
+    protected function getRequestRemoteIP(): string
     {
         return $this->request->getServerParam(
             'HTTP_X_REAL_IP',
             $this->request->getServerParam(
                 'HTTP_X_FORWARDED_FOR',
-                $this->request->getServerParam('REMOTE_ADDR')
+                $this->request->getServerParam('REMOTE_ADDR', '')
             )
         );
     }
@@ -294,7 +294,7 @@ abstract class AbstractAction extends AbstractComponent
      *
      * @param string $filename
      */
-    protected function getFileFromBody($filename = ''): ?File
+    protected function getFileFromBody(string $filename = ''): ?File
     {
         $uploaded = null;
         $tmp_path = UPLOAD_DIR . '/' . uniqid();
