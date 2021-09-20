@@ -22,7 +22,7 @@ use Ramsey\Uuid\Uuid;
  *     "user": "\App\Domain\Entities\File\UserFileRelation",
  * })
  */
-class FileRelation extends AbstractEntity
+abstract class FileRelation extends AbstractEntity
 {
     /**
      * @ORM\Id
@@ -47,15 +47,7 @@ class FileRelation extends AbstractEntity
     /**
      * @return $this
      */
-    public function setEntity(AbstractEntity $entity)
-    {
-        if (is_object($entity) && is_a($entity, AbstractEntity::class) && method_exists($entity, 'getUuid')) {
-            $this->entity_uuid = $entity->getUuid();
-            $this->entity = $entity;
-        }
-
-        return $this;
-    }
+    abstract public function setEntity(AbstractEntity $entity);
 
     public function getEntity()
     {
