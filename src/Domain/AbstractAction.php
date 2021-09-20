@@ -184,9 +184,9 @@ abstract class AbstractAction extends AbstractComponent
     {
         $fileRelationService = FileRelationService::getWithContainer($this->container);
 
-        // new
-        if (($uploaded = $this->getUploadedFiles($field)) !== []) {
-            $index = 0;
+            // new
+            if (($uploaded = $this->getUploadedFiles($field)) !== []) {
+                $index = $entity->hasFiles();
 
             foreach ($uploaded as $name => $files) {
                 if (is_numeric($name)) {
