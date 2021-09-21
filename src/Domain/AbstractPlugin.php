@@ -130,7 +130,7 @@ abstract class AbstractPlugin extends AbstractComponent
      *
      * @param array $params
      */
-    protected function addSettingsField($params = []): void
+    protected function addSettingsField(array $params = []): void
     {
         $default = [
             'label' => '',
@@ -167,7 +167,7 @@ abstract class AbstractPlugin extends AbstractComponent
      *
      * @param array $params
      */
-    protected function addToolbarItem($params = []): void
+    protected function addToolbarItem(array $params = []): void
     {
         $default = [
             'twig' => '',
@@ -190,7 +190,7 @@ abstract class AbstractPlugin extends AbstractComponent
      *
      * @return \Slim\Interfaces\RouteInterface|\Slim\Route
      */
-    protected function enableNavigationItem($params = [])
+    protected function enableNavigationItem(array $params = [])
     {
         $default = [
             'handler' => function (Request $req, Response $res) {
@@ -258,7 +258,7 @@ abstract class AbstractPlugin extends AbstractComponent
      * @throws HttpBadRequestException
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
-    protected function render($template, array $data = []): string
+    protected function render(string $template, array $data = []): string
     {
         try {
             \RunTracy\Helpers\Profiler\Profiler::start('plugin render (%s)', $template);
