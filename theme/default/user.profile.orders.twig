@@ -21,7 +21,7 @@
                         <td class="text-center">{{ order.date|df('d.m.Y H:i') }}</td>
                         <td class="text-center">{{ order.shipping|df('d.m.Y H:i') }}</td>
                         <td class="text-right">{{ order.hasProducts() }}</td>
-                        <td class="text-right">{{ order.getTotalPrice()|number_format(2, '.', ' ') }}</td>
+                        <td class="text-right text-nowrap">{{ order.getTotalPrice()|number_format(2, '.', ' ') }}</td>
                     </tr>
                 {% endfor %}
             </tbody>
