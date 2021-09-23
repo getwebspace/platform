@@ -1,6 +1,37 @@
 "use strict";
 
 $(() => {
+    // sidebar
+    let $sidebar = $('.toggle-sidebar');
+    
+    $sidebar.on('click', (e) => {
+        let $wrapper = $(".wrapper");
+        
+        switch ($wrapper.hasClass('sidebar_minimize')) {
+            case false:
+                $sidebar
+                    .addClass('toggled')
+                    .html('<i class="fas fa-ellipsis-v"></i>');
+                
+                localStorage.setItem('sidebar', '1');
+                break;
+                
+            case true:
+                $sidebar
+                    .removeClass('toggled')
+                    .html('<i class="fas fa-ellipsis-h"></i>');
+    
+                localStorage.setItem('sidebar', '0');
+                break;
+        }
+    
+        $wrapper.toggleClass('sidebar_minimize');
+    });
+    
+    if(localStorage.getItem('sidebar') === '1') {
+        $sidebar.click();
+    }
+    
     // toolbar
     let topbar_open = 0,
         topbar = $('.topbar-toggler');

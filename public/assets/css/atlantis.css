@@ -19272,7 +19272,8 @@ body[data-background-color="dark"] .main-header {
     box-shadow: 0px 0px 5px #121727;
 }
 
-body[data-background-color="dark"] .main-panel {
+body[data-background-color="dark"] .main-panel,
+body[data-background-color="dark"] .table {
     color: rgba(169, 175, 187, 0.82) !important;
 }
 
@@ -19331,7 +19332,11 @@ body[data-background-color="dark"] .card-default .card-title, body[data-backgrou
 }
 
 body[data-background-color="dark"] .nav-pills .nav-link:not(.active) {
-    background: #ffffff;
+    background: #1f283e;
+}
+
+body[data-background-color="dark"] .nav-pills .nav-link {
+    border: 1px solid #2f374b;
 }
 
 body[data-background-color="dark"] .card-pricing .specification-list li {
