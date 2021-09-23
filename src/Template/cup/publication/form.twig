@@ -89,7 +89,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         {% include 'cup/editor.twig' with {
-                                            'label': 'Краткое описание',
+                                            'label': 'Краткое содержимое',
                                             'name': 'content[short]',
                                             'args': {
                                                 'value': publication.content.short
@@ -100,7 +100,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         {% include 'cup/editor.twig' with {
-                                            'label': 'Полное описание',
+                                            'label': 'Полное содержимое',
                                             'name': 'content[full]',
                                             'args': {
                                                 'value': publication.content.full
