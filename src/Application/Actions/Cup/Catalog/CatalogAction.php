@@ -98,35 +98,35 @@ const INVOICE_TEMPLATE = <<<'EOD'
 
         <div class="row mt-3">
             <div class="col-6">
-                {{ order.user ? order.user.getName() : order.delivery.client }}<br />
-                {{ order.user and order.user.phone ? order.user.phone : (order.phone ? order.phone : '&mdash;') }}<br />
-                {{ order.user and order.user.email ? order.user.email : (order.email ? order.email : '&mdash;') }}
+                {{ order.user and order.user.getName() == order.delivery.client ? order.user.getName() : order.delivery.client }}<br />
+                {{ order.user and order.user.phone == order.phone ? order.user.phone : (order.phone ? order.phone : '&mdash;') }}<br />
+                {{ order.user and order.user.email == order.email ? order.user.email : (order.email ? order.email : '&mdash;') }}
             </div>
             <div class="col-6 text-right">
-                {{ order.user ? order.user.getAddress() : order.delivery.address }}<br />
+                {{ order.user and order.user.address == order.delivery.address ? order.user.address : order.delivery.address }}<br />
                 {{ order.comment }}
             </div>
         </div>
 
-        <div class="row p-1 mt-3 bg-grey2">
-            <div class="col-6 font-weight-bold">Позиция</div>
-            <div class="col-2 text-right font-weight-bold">Цена</div>
-            <div class="col-2 text-right font-weight-bold">Количество</div>
-            <div class="col-2 text-right font-weight-bold">Всего</div>
+        <div class="row py-1 mt-3 bg-grey2">
+            <div class="col-8 col-md-6 text-nowrap font-weight-bold">Позиция</div>
+            <div class="d-none d-md-block col-md-2 text-right text-nowrap font-weight-bold">Цена</div>
+            <div class="d-none d-md-block col-md-2 text-right text-nowrap font-weight-bold">Количество</div>
+            <div class="col-4 col-md-2 text-right text-nowrap font-weight-bold">Сумма</div>
         </div>
 
         {% set total = 0 %}
         {% for item in order.products %}
-            <div class="row p-1 {{ loop.last ?: 'border-bottom' }} {{ loop.index0 % 2 ? 'bg-grey1' }}">
-                <div class="col-6">{{ item.title }}</div>
-                <div class="col-2 text-right">{{ item.price|number_format(2, '.', ' ') }}</div>
-                <div class="col-2 text-right">{{ item.count }}</div>
-                <div class="col-2 text-right">{{ (item.price * item.count)|number_format(2, '.', ' ') }}</div>
+            <div class="row py-1 {{ loop.last ?: 'border-bottom' }} {{ loop.index0 % 2 ? 'bg-grey1' }}">
+                <div class="col-8 col-md-6 overflow-hidden text-nowrap">{{ item.title }}</div>
+                <div class="d-none d-md-block col-md-2 text-right text-nowrap">{{ item.price|number_format(2, '.', ' ') }}</div>
+                <div class="d-none d-md-block col-md-2 text-right text-nowrap">{{ item.count }}</div>
+                <div class="col-4 col-md-2 text-right text-nowrap">{{ (item.price * item.count)|number_format(2, '.', ' ') }}</div>
             </div>
         {% endfor %}
 
-        <div class="row p-1">
-            <div class="col-6 offset-6 text-right font-weight-bold border-top">Общая сумма: {{ order.getTotalPrice()|number_format(2, '.', ' ') }}</div>
+        <div class="row py-1">
+            <div class="col-12 text-right text-nowrap font-weight-bold border-top">Общая сумма: {{ order.getTotalPrice()|number_format(2, '.', ' ') }}</div>
         </div>
     </div>
     EOD;
