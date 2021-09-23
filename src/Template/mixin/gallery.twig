@@ -26,44 +26,7 @@
 
     <script type="text/javascript">
         document.addEventListener('DOMContentLoaded', async () => {
-            // load resources once
-            if (window.editor_loader === undefined) {
-                window.editor_loader = async function (list) {
-                    for (let url of list) {
-                        await window.editor_loader.load(url);
-                    }
-                }
-                window.editor_loader.loaded = new Set();
-                window.editor_loader.load = url => {
-                    return new Promise(resolve => {
-                        if (window.editor_loader.loaded.has(url)) {
-                            return resolve();
-                        }
-
-                        let el;
-                        switch (true) {
-                            case url.includes('.js'): {
-                                el = document.createElement('script');
-                                el.src = url;
-                                el.onload = () => setTimeout(resolve, 30);
-                                break;
-                            }
-                            case url.includes('.css'): {
-                                el = document.createElement('link');
-                                el.rel = 'stylesheet';
-                                el.href = url;
-                                el.onload = resolve;
-                                break;
-                            }
-                        }
-
-                        document.body.appendChild(el);
-                        window.editor_loader.loaded.add(url);
-                    });
-                };
-            }
-
-            await window.editor_loader([
+            await window.loader([
                 {% if owlcarousel %}
                     'https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css',
                     'https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css',
