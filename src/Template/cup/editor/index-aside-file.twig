@@ -10,7 +10,7 @@
 
 <ul class="nav">
     {% for item in list.where('type', 'file').sortBy('name') %}
-        <li class="{{ current_path() ends with prefix ~ item.name ? 'active' }}">
+        <li class="{{ current_path() ends with prefix ~ item.name ? 'active' }}" style="{{ padding ? 'padding-left: ' ~ padding ~ 'px;'}}">
             <a href="/cup/editor/{{ prefix }}{{ item.name }}">
                 <i class="fas fa-file fa-fw"></i> {{ item.name }}
             </a>
