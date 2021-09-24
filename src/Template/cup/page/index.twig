@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Страницы</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Страницы'|locale }}</h2>
             </div>
         </div>
     </div>
@@ -16,10 +16,10 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
-                        <h4 class="card-title">Список страниц ({{ list.count() }})</h4>
+                        <h4 class="card-title">{{ 'Список страниц'|locale }} ({{ list.count() }})</h4>
                         <a href="/cup/page/add" class="btn btn-primary btn-round ml-auto">
                             <i class="fa fa-plus"></i>
-                            Создать страницу
+                            {{ 'Создать страницу'|locale }}
                         </a>
                     </div>
                 </div>
@@ -28,9 +28,9 @@
                         <table data-table class="table table-striped table-hover" style="width: 100%;">
                             <thead>
                                 <tr>
-                                    <th>Заголовок</th>
-                                    <th width="20%">Ссылка</th>
-                                    <th width="15%">Дата публикации</th>
+                                    <th>{{ 'Заголовок'|locale }}</th>
+                                    <th width="20%">{{ 'Ссылка'|locale }}</th>
+                                    <th width="15%">{{ 'Дата публикации'|locale }}</th>
                                     <th width="15%" class="text-center no-sorting"></th>
                                 </tr>
                             </thead>
@@ -49,15 +49,15 @@
                                         </td>
                                         <td data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i') }}</td>
                                         <td class="text-center">
-                                            <form action="/cup/page/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить страницу?');">
+                                            <form action="/cup/page/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Вы действительно хотите удалить страницу?'|locale }}');">
                                                 <div class="btn-group">
                                                     <a href="/cup/page/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
                                                         <i class="fas fa-fw fa-edit"></i>
-                                                        <span class="d-none d-md-inline-block">Изменить</span>
+                                                        <span class="d-none d-md-inline-block">{{ 'Изменить'|locale }}</span>
                                                     </a>
                                                     <button type="submit" class="btn btn-sm btn-danger">
                                                         <i class="fas fa-fw fa-trash-alt"></i>
-                                                        <span class="d-none d-md-inline-block">Удалить</span>
+                                                        <span class="d-none d-md-inline-block">{{ 'Удалить'|locale }}'</span>
                                                     </button>
                                                 </div>
                                             </form>

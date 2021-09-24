@@ -2,7 +2,7 @@
     <li class="nav-item">
         <a href="/cup">
             <i class="fas fa-home"></i>
-            <p>Панель управления</p>
+            <p>{{ 'Панель управления'|locale }}</p>
         </a>
     </li>
 
@@ -11,25 +11,25 @@
             <span class="sidebar-mini-icon">
                 <i class="fa fa-ellipsis-h"></i>
             </span>
-            <h4 class="text-section">Разделы</h4>
+            <h4 class="text-section">{{ 'Разделы'|locale }}</h4>
         </li>
 
         <li class="nav-item">
             <a data-toggle="collapse" href="#nav-publication">
                 <i class="fas fa-newspaper"></i>
-                <p>Публикации</p>
+                <p>{{ 'Публикации'|locale }}</p>
                 <span class="caret"></span>
             </a>
             <div class="collapse" id="nav-publication">
                 <ul class="nav nav-collapse">
                     <li>
                         <a href="/cup/publication">
-                            <span class="sub-item">Редактирование</span>
+                            <span class="sub-item">{{ 'Редактирование'|locale }}</span>
                         </a>
                     </li>
                     <li>
                         <a href="/cup/publication/category">
-                            <span class="sub-item">Категории</span>
+                            <span class="sub-item">{{ 'Категории'|locale }}</span>
                         </a>
                     </li>
                 </ul>
@@ -39,37 +39,37 @@
         <li class="nav-item">
             <a href="/cup/page">
                 <i class="fas fa-book-open"></i>
-                <p>Страницы</p>
+                <p>{{ 'Страницы'|locale }}</p>
             </a>
         </li>
 
         <li class="nav-item">
             <a data-toggle="collapse" href="#nav-user">
                 <i class="fas fa-users"></i>
-                <p>Пользователи</p>
+                <p>{{ 'Пользователи'|locale }}</p>
                 <span class="caret"></span>
             </a>
             <div class="collapse" id="nav-user">
                 <ul class="nav nav-collapse">
                     <li>
                         <a href="/cup/user">
-                            <span class="sub-item">Список</span>
+                            <span class="sub-item">{{ 'Список'|locale }}</span>
                         </a>
                     </li>
                     {% if parameter('user_is_enabled', 'yes') != 'no' %}
                         <li>
                             <a href="/cup/user/group">
-                                <span class="sub-item">Группы</span>
+                                <span class="sub-item">{{ 'Группы'|locale }}</span>
                             </a>
                         </li>
                         <li>
                             <a href="/cup/user/subscriber">
-                                <span class="sub-item">Подписчики</span>
+                                <span class="sub-item">{{ 'Подписчики'|locale }}</span>
                             </a>
                         </li>
                         <li>
                             <a href="/cup/user/newsletter">
-                                <span class="sub-item">Рассылка</span>
+                                <span class="sub-item">{{ 'Рассылка'|locale }}</span>
                             </a>
                         </li>
                     {% endif %}
@@ -81,7 +81,7 @@
             <li class="nav-item">
                 <a href="/cup/form">
                     <i class="fas fa-question-circle"></i>
-                    <p>Формы</p>
+                    <p>{{ 'Формы'|locale }}</p>
                 </a>
             </li>
         {% endif %}
@@ -90,29 +90,29 @@
             <li class="nav-item">
                 <a data-toggle="collapse" href="#nav-catalog">
                     <i class="fas fa-store"></i>
-                    <p>Каталог</p>
+                    <p>{{ 'Каталог'|locale }}</p>
                     <span class="caret"></span>
                 </a>
                 <div class="collapse" id="nav-catalog">
                     <ul class="nav nav-collapse">
                         <li>
                             <a href="/cup/catalog/product">
-                                <span class="sub-item">Номенклатура</span>
+                                <span class="sub-item">{{ 'Номенклатура'|locale }}</span>
                             </a>
                         </li>
                         <li>
                             <a href="/cup/catalog/category">
-                                <span class="sub-item">Категории</span>
+                                <span class="sub-item">{{ 'Категории'|locale }}</span>
                             </a>
                         </li>
                         <li>
                             <a href="/cup/catalog/attribute">
-                                <span class="sub-item">Атрибуты</span>
+                                <span class="sub-item">{{ 'Атрибуты'|locale }}</span>
                             </a>
                         </li>
                         <li>
                             <a href="/cup/catalog/order">
-                                <span class="sub-item">Заказы</span>
+                                <span class="sub-item">{{ 'Заказы'|locale }}</span>
                             </a>
                         </li>
                     </ul>
@@ -124,7 +124,7 @@
             <li class="nav-item">
                 <a href="/cup/guestbook">
                     <i class="fas fa-book-reader"></i>
-                    <p>Гостевая книга</p>
+                    <p>{{ 'Гостевая книга'|locale }}</p>
                 </a>
             </li>
         {% endif %}
@@ -132,14 +132,14 @@
         <li class="nav-item">
             <a href="/cup/file">
                 <i class="fas fa-file"></i>
-                <p>Файлы</p>
+                <p>{{ 'Файлы'|locale }}</p>
             </a>
         </li>
 
         <li class="nav-item">
             <a href="/cup/parameters">
                 <i class="fas fa-cog"></i>
-                <p>Настройки</p>
+                <p>{{ 'Настройки'|locale }}</p>
             </a>
         </li>
 
@@ -148,7 +148,7 @@
                 <span class="sidebar-mini-icon">
                     <i class="fa fa-ellipsis-h"></i>
                 </span>
-                <h4 class="text-section">Плагины</h4>
+                <h4 class="text-section">{{ 'Плагины'|locale }}</h4>
             </li>
 
             {% for plugin in plugins %}
@@ -167,20 +167,20 @@
             <span class="sidebar-mini-icon">
                 <i class="fa fa-ellipsis-h"></i>
             </span>
-            <h4 class="text-section">Другое</h4>
+            <h4 class="text-section">{{ 'Другое'|locale }}</h4>
         </li>
 
         <li class="nav-item">
             <a href="/cup/editor">
                 <i class="fas fa-edit"></i>
-                <p>Редактор шаблона</p>
+                <p>{{ 'Редактор шаблона'|locale }}</p>
             </a>
         </li>
     {% else %}
         <li class="nav-item">
             <a href="/user/logout">
                 <i class="fas fa-sign-out-alt"></i>
-                <p>Выход</p>
+                <p>{{ 'Выход'|locale }}</p>
             </a>
         </li>
     {% endif %}

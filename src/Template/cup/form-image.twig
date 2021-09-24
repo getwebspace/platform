@@ -6,14 +6,13 @@
 {% endif %}
 
 {% block fileimage %}
-
     <div data-fileimage class="row">
         <div class="col-md-12">
             {% include 'cup/form.twig' with {
-                'label': multiple ? 'Изображения' : 'Изображение',
+                'label': multiple ? 'Изображения'|locale : 'Изображение'|locale,
                 'type': 'file',
                 'name': 'files[]',
-                'postfix': multiple ? '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Здесь можно выбрать несколько изображений"></i>' : '',
+                'postfix': multiple ? '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Здесь можно выбрать несколько изображений')|locale ~ '"></i>' : '',
                 'args': {
                     'class': ['d-block', 'btn', 'btn-sm', 'bg-grey2'],
                     'multiple': multiple,

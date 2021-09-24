@@ -8,7 +8,7 @@ if (!function_exists('array_add')) {
     /**
      * Add an element to an array using "dot" notation if it doesn't exist.
      *
-     * @param mixed  $value
+     * @param mixed $value
      */
     function array_add(array $array, string $key, $value): array
     {
@@ -64,7 +64,7 @@ if (!function_exists('array_first')) {
     /**
      * Return the first element in an array passing a given truth test.
      *
-     * @param mixed         $default
+     * @param mixed $default
      *
      * @return mixed
      */
@@ -78,7 +78,7 @@ if (!function_exists('array_flatten')) {
     /**
      * Flatten a multi-dimensional array into a single level.
      *
-     * @param int   $depth
+     * @param int $depth
      */
     function array_flatten(array $array, $depth = INF): array
     {
@@ -130,7 +130,7 @@ if (!function_exists('array_last')) {
     /**
      * Return the last element in an array passing a given truth test.
      *
-     * @param mixed         $default
+     * @param mixed $default
      *
      * @return mixed
      */
@@ -182,7 +182,7 @@ if (!function_exists('array_pull')) {
     /**
      * Get a value from the array, and remove it.
      *
-     * @param mixed  $default
+     * @param mixed $default
      *
      * @return mixed
      */
@@ -212,7 +212,7 @@ if (!function_exists('array_set')) {
      *
      * If no key is given to the method, the entire array will be replaced.
      *
-     * @param mixed  $value
+     * @param mixed $value
      */
     function array_set(array &$array, string $key, $value): array
     {
@@ -353,6 +353,18 @@ if (!function_exists('blank')) {
         }
 
         return empty($value);
+    }
+}
+
+if (!function_exists('__')) {
+    /**
+     * @param string|array|Collection $string
+     *
+     * @return string|array
+     */
+    function __($string)
+    {
+        return \App\Application\i18n::translate($string);
     }
 }
 

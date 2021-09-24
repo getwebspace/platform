@@ -26,7 +26,7 @@ class ResourceNode extends Node
         $compiler
             ->addDebugInfo($this)
             ->raw('echo ')
-            ->string($this->resource($this->name, $this->version) . PHP_EOL)
+            ->string($this->resource($this->name, $this->version))
             ->raw(";\n");
     }
 

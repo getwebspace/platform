@@ -6,6 +6,11 @@ use Twig\TokenParser\AbstractTokenParser;
 
 class ResourceParser extends AbstractTokenParser
 {
+    public function getTag()
+    {
+        return 'resource';
+    }
+
     public function parse(\Twig\Token $token)
     {
         $parser = $this->parser;
@@ -16,10 +21,5 @@ class ResourceParser extends AbstractTokenParser
         $stream->expect(\Twig\Token::BLOCK_END_TYPE);
 
         return new ResourceNode($name, $version, $token->getLine(), $this->getTag());
-    }
-
-    public function getTag()
-    {
-        return 'resource';
     }
 }

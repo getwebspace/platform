@@ -2,6 +2,7 @@
 
 namespace App\Application;
 
+use App\Application\Twig\LocaleParser;
 use App\Application\Twig\ResourceParser;
 use App\Domain\AbstractExtension;
 use App\Domain\OAuth\FacebookOAuthProvider;
@@ -52,6 +53,7 @@ class TwigExtension extends AbstractExtension
     {
         return [
             new ResourceParser(),
+            new LocaleParser(),
         ];
     }
 
@@ -60,6 +62,7 @@ class TwigExtension extends AbstractExtension
         return [
             new TwigFilter('count', [$this, 'count']),
             new TwigFilter('df', [$this, 'df']),
+            new TwigFilter('locale', '__', ['is_safe' => ['html']]),
         ];
     }
 
@@ -74,7 +77,7 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('current_path', [$this, 'currentPath']),
 
             // wse functions
-            new TwigFunction('_', [$this, 'locale'], ['is_safe' => ['html']]),
+            new TwigFunction('_', '__', ['is_safe' => ['html']]),
             new TwigFunction('form', [$this, 'form'], ['is_safe' => ['html']]),
             new TwigFunction('reference', [$this, 'reference']),
             new TwigFunction('parameter', [$this, 'parameter']),
@@ -183,28 +186,6 @@ class TwigExtension extends AbstractExtension
     }
 
     // wse functions
-
-    public function locale($value)
-    {
-        switch (true) {
-            case is_a($value, Collection::class):
-            case is_array($value):
-                $buf = [];
-                foreach ($value as $key => $item) {
-                    if (is_numeric($key) && in_array($item, array_keys(i18n::$locale), true)) {
-                        $key = $item;
-                    }
-                    $buf[$key] = i18n::$locale[$item] ?? $item;
-                }
-
-                return $buf;
-
-            case is_string($value):
-                return i18n::$locale[$value] ?? $value;
-        }
-
-        return $value;
-    }
 
     public function form($type, $name, $args = [])
     {

@@ -367,6 +367,7 @@ abstract class AbstractAction extends AbstractComponent
                 [
                     'sha' => mb_substr($_ENV['COMMIT_SHA'] ?? 'specific', 0, 7),
                     'NIL' => \Ramsey\Uuid\Uuid::NIL,
+                    '_lang' => \App\Application\i18n::$localeCode ?? 'ru',
                     '_request' => &$_REQUEST,
                     '_error' => \Alksily\Support\Form::$globalError = $this->error,
                     'plugins' => $this->container->get('plugin')->get(),
