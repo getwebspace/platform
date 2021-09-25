@@ -67,10 +67,6 @@ class i18n
         while ($priority->valid()) {
             $locale = $priority->current();
 
-            if ($locale === 'ru') {
-                return [];
-            }
-
             foreach (['php', 'ini'] as $type) {
                 $path = LOCALE_DIR . '/' . trim($locale) . '.' . $type;
 
