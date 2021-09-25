@@ -1,5 +1,6 @@
 <?php declare(strict_types=1);
 
+use App\Application\i18n;
 use App\Domain\AbstractEntity;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -358,13 +359,34 @@ if (!function_exists('blank')) {
 
 if (!function_exists('__')) {
     /**
-     * @param string|array|Collection $string
+     * @param string|array|Collection $singular
+     * @param string|null             $plural
+     * @param int|null                $count
      *
      * @return string|array
      */
-    function __($string)
+    function __($singular, ?string $plural = null, ?int $count = null)
     {
-        return \App\Application\i18n::translate($string);
+        $string = $plural && $count > 1 ? $plural : $singular;
+
+        switch (true) {
+            case is_a($string, Collection::class):
+            case is_array($string):
+                $buf = [];
+                foreach ($string as $key => $item) {
+                    if (is_numeric($key) && in_array($item, array_keys(i18n::$locale), true)) {
+                        $key = $item;
+                    }
+                    $buf[$key] = i18n::$locale[$item] ?? $item;
+                }
+
+                return $buf;
+
+            case is_string($string):
+                return i18n::$locale[$string] ?? $string;
+        }
+
+        return $string;
     }
 }
 
@@ -427,57 +449,5 @@ if (!function_exists('array_serialize')) {
         }
 
         return $array;
-    }
-}
-
-if (!function_exists('sys_self_check_health')) {
-    function sys_self_check_health(): array
-    {
-        $fileAccess = [
-            BASE_DIR => 755,
-            BIN_DIR => 755,
-            CONFIG_DIR => 755,
-            LOCALE_DIR => 755,
-            PLUGIN_DIR => 777,
-            PUBLIC_DIR => 755,
-            UPLOAD_DIR => 777,
-            SRC_DIR => 755,
-            VIEW_DIR => 755,
-            VIEW_ERROR_DIR => 755,
-            THEME_DIR => 777,
-            VAR_DIR => 777,
-            CACHE_DIR => 777,
-            LOG_DIR => 777,
-            VENDOR_DIR => 755,
-        ];
-
-        foreach ($fileAccess as $folder => $value) {
-            if (realpath($folder)) {
-                $chmod_value = @decoct(@fileperms($folder)) % 1000;
-
-                if ($chmod_value === $value) {
-                    $fileAccess[$folder] = true;
-                }
-            }
-        }
-
-        return [
-            'php' => version_compare(phpversion(), '7.4', '>='),
-            'extensions' => [
-                'pdo' => extension_loaded('pdo'),
-                // 'pdo_mysql' => extension_loaded('pdo_mysql'),
-                // 'pdo_pgsql' => extension_loaded('pdo_pgsql'),
-                // 'sqlite3' => extension_loaded('sqlite3'),
-                'curl' => extension_loaded('curl'),
-                'json' => extension_loaded('json'),
-                'mbstring' => extension_loaded('mbstring'),
-                'gd' => extension_loaded('gd'),
-                'imagick' => extension_loaded('imagick'),
-                'xml' => extension_loaded('xml'),
-                'yaml' => extension_loaded('yaml'),
-                'zip' => extension_loaded('zip'),
-            ],
-            'folders' => $fileAccess,
-        ];
     }
 }

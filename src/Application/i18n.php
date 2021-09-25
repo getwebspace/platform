@@ -4,7 +4,6 @@ namespace App\Application;
 
 use App\Domain\Exceptions\NullPointException;
 use App\Domain\Service\File\Exception\FileNotFoundException;
-use Illuminate\Support\Collection;
 use SplPriorityQueue;
 
 class i18n
@@ -70,7 +69,7 @@ class i18n
     {
         while ($locale = $priority->extract()) {
             foreach (['php', 'ini'] as $type) {
-                $path = LOCALE_DIR . '/' . trim($locale) . '.' . $type;
+                $path = LOCALE_DIR . '/' . trim('en') . '.' . $type;
 
                 if ($path) {
                     static::$localeCode = $locale;
@@ -108,53 +107,6 @@ class i18n
         arsort($data, SORT_NUMERIC);
 
         return $data ? key($data) : $default;
-    }
-
-    protected static ?array $log = null;
-    protected static string $log_file = VAR_DIR . '/locale_strings.log';
-
-    protected static function translate_log($string): string
-    {
-        if (($_ENV['DEBUG'] ?? false) && strlen(trim($string)) > 0) {
-            if (static::$log === null) {
-                static::$log = [];
-                file_put_contents(static::$log_file, '');
-            }
-            static::$log = explode(PHP_EOL, file_get_contents(static::$log_file));
-            static::$log[] = trim($string);
-            static::$log = array_unique(static::$log);
-
-            file_put_contents(static::$log_file, implode(PHP_EOL, static::$log));
-        }
-
-        return $string;
-    }
-
-    /**
-     * @param string|array|Collection $string
-     *
-     * @return string|array
-     */
-    public static function translate($string)
-    {
-        switch (true) {
-            case is_a($string, Collection::class):
-            case is_array($string):
-                $buf = [];
-                foreach ($string as $key => $item) {
-                    if (is_numeric($key) && in_array($item, array_keys(i18n::$locale), true)) {
-                        $key = $item;
-                    }
-                    $buf[$key] = i18n::$locale[$item] ?? static::translate_log($item);
-                }
-
-                return $buf;
-
-            case is_string($string):
-                return i18n::$locale[$string] ?? static::translate_log($string);
-        }
-
-        return $string;
     }
 }
 
