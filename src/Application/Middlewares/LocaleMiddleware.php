@@ -14,14 +14,21 @@ class LocaleMiddleware extends AbstractMiddleware
      *
      * @throws \Exception
      */
-    public function __invoke(Request $request, Response $response, $next): \Slim\Http\Response
+    public function __invoke(Request $request, Response $response, callable $next): \Slim\Http\Response
     {
         \RunTracy\Helpers\Profiler\Profiler::start('middleware:locale');
 
         $default_locale = $this->parameter('common_lang', 'ru');
-        $user_locale = null;
+        $user_locale = $request->getCookieParam('lang');
 
-        /*if (($user = $request->getAttribute('user')) !== null) {
+        // change lang by cookie
+        if (($lang = $request->getParam('lang')) !== null) {
+            $user_locale = $lang;
+            setcookie('lang', $lang, time() + \App\Domain\References\Date::YEAR, '/');
+        }
+
+        // change lang by user settings
+        /*if (!$user_locale && ($user = $request->getAttribute('user')) !== null) {
             // todo user locale
         }*/
 

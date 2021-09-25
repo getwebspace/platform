@@ -21,7 +21,7 @@ class i18n
     /**
      * Locale code
      */
-    public static ?string $localeCode = null;
+    public static string $localeCode = 'ru';
 
     /**
      * i18n constructor
@@ -61,17 +61,21 @@ class i18n
      *
      * @param SplPriorityQueue $priority
      *
-     * @throws FileNotFoundException
-     *
      * @return array
      */
-    protected static function load($priority)
+    protected static function load(SplPriorityQueue $priority): array
     {
-        while ($locale = $priority->extract()) {
-            foreach (['php', 'ini'] as $type) {
-                $path = LOCALE_DIR . '/' . trim('en') . '.' . $type;
+        while ($priority->valid()) {
+            $locale = $priority->current();
 
-                if ($path) {
+            if ($locale === 'ru') {
+                return [];
+            }
+
+            foreach (['php', 'ini'] as $type) {
+                $path = LOCALE_DIR . '/' . trim($locale) . '.' . $type;
+
+                if (file_exists($path)) {
                     static::$localeCode = $locale;
 
                     switch ($type) {
@@ -83,20 +87,22 @@ class i18n
                     }
                 }
             }
+
+            $priority->next();
         }
 
-        throw new FileNotFoundException('Could not find a language file');
+        return [];
     }
 
     /**
      * Get language code from header
      *
-     * @param string $header
-     * @param string $default
+     * @param string      $header
+     * @param string|null $default
      *
-     * @return mixed|string
+     * @return int|string|null
      */
-    public static function getLanguageFromHeader($header, $default = null)
+    public static function getLanguageFromHeader(string $header, ?string $default = null)
     {
         preg_match_all('~(?<lang>\w+(?:\-\w+|))(?:\;q=(?<q>\d(?:\.\d|))|)[\,]{0,}~i', $header, $list);
 
@@ -109,4 +115,3 @@ class i18n
         return $data ? key($data) : $default;
     }
 }
-
