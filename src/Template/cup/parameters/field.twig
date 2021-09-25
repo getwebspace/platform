@@ -59,13 +59,13 @@
     <div data-input class="row mb-2">
         {# COMMON LABEL #}
         <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
-            {{ label|raw }}
+            {{ label|locale|raw }}
             {% if args.required is not empty %}
                 <i class="text-danger">*</i>
             {% endif %}
             {% if description is not empty %}
                 <br>
-                <span class="text-muted">{{ description|raw }}</span>
+                <span class="text-muted">{{ description|locale|raw }}</span>
             {% endif %}
         </div>
 
@@ -77,7 +77,7 @@
                     <div class="input-group">
                     {% if prefix is not empty %}
                         <div class="input-group-prepend">
-                            <span class="input-group-text">{{ prefix|raw }}</span>
+                            <span class="input-group-text">{{ prefix|locale|raw }}</span>
                         </div>
                     {% endif %}
                 {% endif %}
@@ -96,7 +96,7 @@
                 {% if prefix is not empty or postfix is not empty %}
                     {% if postfix is not empty %}
                         <div class="input-group-append">
-                            <span class="input-group-text">{{ postfix|raw }}</span>
+                            <span class="input-group-text">{{ postfix|locale|raw }}</span>
                         </div>
                     {% endif %}
                     </div>
@@ -104,11 +104,11 @@
             </div>
 
             {% if error %}
-                <label class="error" for="{{ label }}">{{ _(_error[name]) }}</label>
+                <label class="error" for="{{ label }}">{{ _error[name]|locale }}</label>
             {% endif %}
 
             {% if message is not empty %}
-                <small class="form-text text-muted">{{ message|raw }}</small>
+                <small class="form-text text-muted">{{ message|locale|raw }}</small>
             {% endif %}
         </div>
     </div>

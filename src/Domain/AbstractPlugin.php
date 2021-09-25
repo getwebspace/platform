@@ -2,6 +2,7 @@
 
 namespace App\Domain;
 
+use App\Application\i18n;
 use App\Domain\Exceptions\HttpBadRequestException;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
@@ -22,7 +23,7 @@ abstract class AbstractPlugin extends AbstractComponent
     private static array $storage = [];
 
     /**
-     * @param mixed  $value
+     * @param mixed $value
      *
      * @return mixed
      */
@@ -34,7 +35,7 @@ abstract class AbstractPlugin extends AbstractComponent
     }
 
     /**
-     * @param mixed       $default
+     * @param mixed $default
      *
      * @return null|mixed
      */
@@ -230,6 +231,27 @@ abstract class AbstractPlugin extends AbstractComponent
         }
 
         return $this->router->map($params['methods'], $params['pattern'], $params['handler']);
+    }
+
+    /**
+     * Add new line in current locale table
+     *
+     * @param string $original
+     * @param string $translated
+     */
+    public function addLocale(string $original, string $translated)
+    {
+        i18n::addStrings([$original => $translated]);
+    }
+
+    /**
+     * Add new array of lines in current locale table
+     *
+     * @param array $strings
+     */
+    public function addLocales(array $strings)
+    {
+        i18n::addStrings($strings);
     }
 
     /**

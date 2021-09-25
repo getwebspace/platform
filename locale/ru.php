@@ -1,1 +1,0 @@
-<?php declare(strict_types=1);return array_merge(    [],    require_once 'ru/cup.catalog.php',    require_once 'ru/cup.main.php',    require_once 'ru/cup.navigation.php',    require_once 'ru/cup.page.php',    require_once 'ru/cup.parameter.php',    require_once 'ru/cup.user.php',    require_once 'ru/exception.php',    require_once 'ru/other.php',);

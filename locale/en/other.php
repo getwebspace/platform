@@ -5,6 +5,8 @@ return [
     // Select variants
     // ***
 
+    'Например' => 'For example',
+
     // status
     'work' => 'Work',
     'delete' => 'Delete',
@@ -35,6 +37,8 @@ return [
     'Изменить' => 'Change',
     'Удалить' => 'Delete',
     'Сохранить' => 'Save',
+    'Установка и обновление' => 'Installation and update',
+    'Добавить' => 'Add',
 
     // ***
     // Image\images

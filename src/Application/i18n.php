@@ -3,7 +3,6 @@
 namespace App\Application;
 
 use App\Domain\Exceptions\NullPointException;
-use App\Domain\Service\File\Exception\FileNotFoundException;
 use SplPriorityQueue;
 
 class i18n
@@ -94,6 +93,15 @@ class i18n
         return [];
     }
 
+    /**
+     * For add new strings via plugin
+     *
+     * @param array $strings
+     */
+    public static function addStrings(array $strings): void
+    {
+        static::$locale = array_merge(static::$locale, $strings);
+    }
     /**
      * Get language code from header
      *

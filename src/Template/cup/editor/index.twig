@@ -14,7 +14,8 @@
                     {% include 'cup/form.twig' with {
                         'type': 'text',
                         'name': 'path',
-                        'postfix_btn': '<button type="submit" name="save" value="exit" class="btn btn-primary">Сохранить</button><button type="submit" name="save" value="delete" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt" data-toggle="tooltip" data-placement="right" title="Удалить файл"></i></button>',
+                        'postfix_btn': '<button type="submit" name="save" value="exit" class="btn btn-primary">' ~ ('Сохранить')|locale ~ '</button>' ~
+                                       '<button type="submit" name="save" value="delete" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt" data-toggle="tooltip" data-placement="right" title="' ~ ('Удалить')|locale ~ '"></i></button>',
                         'args': {
                             'value': file.path,
                             'readonly': true,
