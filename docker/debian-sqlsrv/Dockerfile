@@ -75,8 +75,8 @@ RUN composer install ${NO_DEV} --no-suggest --no-progress
 # Copy platform
 ADD bin ${PLATFORM_HOME}/bin
 ADD config ${PLATFORM_HOME}/config
-ADD plugin ${PLATFORM_HOME}/plugin
 ADD locale ${PLATFORM_HOME}/locale
+ADD plugin ${PLATFORM_HOME}/plugin
 ADD public ${PLATFORM_HOME}/public
 ADD src ${PLATFORM_HOME}/src
 ADD theme ${PLATFORM_HOME}/theme
