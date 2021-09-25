@@ -2,28 +2,36 @@
 
 namespace App\Application\Twig;
 
+use Twig\Compiler;
+use Twig\Node\Expression\AbstractExpression;
+use Twig\Node\Expression\ConstantExpression;
+use Twig\Node\Expression\FilterExpression;
+use Twig\Node\Expression\NameExpression;
+use Twig\Node\Expression\TempNameExpression;
 use Twig\Node\Node;
+use Twig\Node\PrintNode;
+use Twig\Node\SetNode;
 
 class LocaleNode extends Node
 {
-    public function __construct(\Twig\Node\Node $body, \Twig\Node\Node $plural = null, \Twig\Node\Expression\AbstractExpression $count = null, \Twig\Node\Node $notes = null, $lineno, $tag = null)
+    public function __construct(Node $body, Node $plural = null, AbstractExpression $count = null, Node $notes = null, $lineno = 0, $tag = null)
     {
         $nodes = ['body' => $body];
 
-        if (null !== $plural) {
+        if ($plural !== null) {
             $nodes['plural'] = $plural;
         }
-        if (null !== $count) {
+        if ($count !== null) {
             $nodes['count'] = $count;
         }
-        if (null !== $notes) {
+        if ($notes !== null) {
             $nodes['notes'] = $notes;
         }
 
         parent::__construct($nodes, [], $lineno, $tag);
     }
 
-    public function compile(\Twig\Compiler $compiler)
+    public function compile(Compiler $compiler): void
     {
         $compiler->addDebugInfo($this);
 
@@ -40,7 +48,7 @@ class LocaleNode extends Node
 
             // line breaks are not allowed cause we want a single line comment
             $message = str_replace(["\n", "\r"], ' ', $message);
-            $compiler->write("// notes: {$message}\n");
+            $compiler->write("// notes: $message\n");
         }
 
         if ($vars) {
@@ -94,13 +102,9 @@ class LocaleNode extends Node
         }
     }
 
-    protected function compileString(\Twig\Node\Node $body): array
+    protected function compileString(Node $body): array
     {
-        if (
-            $body instanceof \Twig\Node\Expression\NameExpression ||
-            $body instanceof \Twig\Node\Expression\ConstantExpression ||
-            $body instanceof \Twig\Node\Expression\TempNameExpression
-        ) {
+        if ($body instanceof NameExpression || $body instanceof ConstantExpression || $body instanceof TempNameExpression) {
             return [$body, []];
         }
 
@@ -109,17 +113,17 @@ class LocaleNode extends Node
             $msg = '';
 
             foreach ($body as $node) {
-                if (get_class($node) === '\Twig\Node\Node' && $node->getNode(0) instanceof \Twig\Node\SetNode) {
+                if (get_class($node) === Node::class && $node->getNode(0) instanceof SetNode) {
                     $node = $node->getNode(1);
                 }
 
-                if ($node instanceof \Twig\Node\PrintNode) {
+                if ($node instanceof PrintNode) {
                     $n = $node->getNode('expr');
-                    while ($n instanceof \Twig\Node\Expression\FilterExpression) {
+                    while ($n instanceof FilterExpression) {
                         $n = $n->getNode('node');
                     }
                     $msg .= sprintf('%%%s%%', $n->getAttribute('name'));
-                    $vars[] = new \Twig\Node\Expression\NameExpression($n->getAttribute('name'), $n->getTemplateLine());
+                    $vars[] = new NameExpression($n->getAttribute('name'), $n->getTemplateLine());
                 } else {
                     $msg .= $node->getAttribute('data');
                 }
@@ -129,8 +133,8 @@ class LocaleNode extends Node
         }
 
         return [
-            new \Twig\Node\Node([
-                new \Twig\Node\Expression\ConstantExpression(trim(preg_replace('/\s\s+/', ' ', $msg)), $body->getTemplateLine()),
+            new Node([
+                new ConstantExpression(trim(preg_replace('/\s\s+/', ' ', $msg)), $body->getTemplateLine()),
             ]),
             $vars,
         ];

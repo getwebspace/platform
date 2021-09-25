@@ -17,7 +17,6 @@ use App\Domain\Service\Publication\PublicationService;
 use DateTime;
 use DateTimeZone;
 use Exception;
-use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 use Ramsey\Uuid\Uuid;
 use Slim\Http\Uri;

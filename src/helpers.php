@@ -359,11 +359,9 @@ if (!function_exists('blank')) {
 
 if (!function_exists('__')) {
     /**
-     * @param string|array|Collection $singular
-     * @param string|null             $plural
-     * @param int|null                $count
+     * @param array|Collection|string $singular
      *
-     * @return string|array
+     * @return array|string
      */
     function __($singular, ?string $plural = null, ?int $count = null)
     {
