@@ -192,7 +192,7 @@
 
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Имя отправителя',
-                                                    'description': 'Данное имя будет прикреплено к письму в качетве имени отправителя',
+                                                    'description': 'Данное имя будет прикреплено к письму в качестве имени отправителя',
                                                     'type': 'text',
                                                     'name': 'smtp[from_name]',
                                                 } %}
@@ -216,7 +216,7 @@
 
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Порт SMTP сервера',
-                                                    'description': 'Обычно — 25',
+                                                    'description': 'Обычно — 465',
                                                     'type': 'select',
                                                     'name': 'smtp[port]',
                                                     'args': {
@@ -515,10 +515,10 @@
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-5 col-md-4">
                                         <div class="nav flex-column nav-pills nav-secondary">
-                                            <a class="nav-link active"  data-toggle="pill" href="#user-common">Основные</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#user-template">Шаблоны</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#user-access">Группа и права доступа</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#user-auth">Параметры входа</a>
+                                            <a class="nav-link active"  data-toggle="pill" href="#user-common">{{ 'Основные'|locale }}</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#user-template">{{ 'Шаблоны'|locale }}</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#user-access">{{ 'Группа и права доступа'|locale }}</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#user-auth">{{ 'Параметры входа'|locale }}</a>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-7 col-md-8 mt-5 mt-sm-0">
@@ -736,10 +736,10 @@
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-5 col-md-4">
                                         <div class="nav flex-column nav-pills nav-secondary">
-                                            <a class="nav-link active"  data-toggle="pill" href="#catalog-general">Основное</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#catalog-notify">Уведомления</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#catalog-import-export">Импорт и Экспорт</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#catalog-additional">Дополнительно</a>
+                                            <a class="nav-link active"  data-toggle="pill" href="#catalog-general">{{ 'Основное'|locale }}</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#catalog-notify">{{ 'Уведомления'|locale }}</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#catalog-import-export">{{ 'Импорт и Экспорт'|locale }}</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#catalog-additional">{{ 'Дополнительно'|locale }}</a>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-7 col-md-8 mt-5 mt-sm-0">
@@ -1058,7 +1058,7 @@
 
                                             {% for plugin in plugins %}
                                                 <a class="nav-link" data-toggle="pill" href="#plugins-{{ plugin.getCredentials('name') }}">
-                                                    {{ plugin.getCredentials('title') }}
+                                                    {{ plugin.getCredentials('title')|locale }}
                                                 </a>
                                             {% endfor %}
                                         </div>
@@ -1069,8 +1069,8 @@
                                             {# TAB: Plugin recaptcha #}
                                             <div class="tab-pane fade show active" id="plugins-recaptcha">
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Включение и выключение reCAPTCHA'|locale,
-                                                    'description': 'Защита от роботов'|locale,
+                                                    'label': 'Включение и выключение reCAPTCHA',
+                                                    'description': 'Защита от роботов',
                                                     'type': 'select',
                                                     'name': 'integration[recaptcha]',
                                                     'args': {
@@ -1081,8 +1081,8 @@
                                                 <hr/>
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Публичный ключ сервиса reCAPTCHA'|locale,
-                                                    'description': 'Этот ключ будет использован в HTML-коде сайта на устройства пользователей'|locale,
+                                                    'label': 'Публичный ключ сервиса reCAPTCHA',
+                                                    'description': 'Этот ключ будет использован в HTML-коде сайта на устройства пользователей',
                                                     'type': 'text',
                                                     'name': 'integration[recaptcha_public]',
                                                     'args': {
@@ -1091,8 +1091,8 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Секретный ключ сервиса reCAPTCHA'|locale,
-                                                    'description': 'Этот ключ нужен для связи между сайтом и сервисом reCAPTCHA. Никому его не сообщайте'|locale,
+                                                    'label': 'Секретный ключ сервиса reCAPTCHA',
+                                                    'description': 'Этот ключ нужен для связи между сайтом и сервисом reCAPTCHA. Никому его не сообщайте',
                                                     'type': 'text',
                                                     'name': 'integration[recaptcha_private]',
                                                     'args': {
@@ -1130,7 +1130,7 @@
                                                     {% if credentials.description %}
                                                         <d1>
                                                             <dt>{{ 'Описание'|locale }}</dt>
-                                                            <dd>{{ credentials.description|raw }}</dd>
+                                                            <dd>{{ credentials.description|locale|raw }}</dd>
                                                         </d1>
                                                     {% endif %}
                                                     {% if credentials.version %}
@@ -1168,7 +1168,8 @@
                                                 можно легко использовать в шаблоне.
                                             {% endlocale %}<br>
                                             <b>{{ 'Например'|locale }}</b>:
-                                            {{ 'переменную с именем'|locale }} <code>my_variable</code> {{ 'можно вывести на странице с помощью следующего кода:'|locale }}
+                                            {{ 'переменную с именем'|locale }} <code>my_variable</code>
+                                            {{ 'можно вывести на странице с помощью следующего кода:'|locale }}
                                             <br>
                                             <code>&lbrace;&lbrace; parameter('var_my_variable') &rbrace;&rbrace;</code>
                                         </p>
