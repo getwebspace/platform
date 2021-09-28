@@ -99,7 +99,7 @@ class UserLoginAction extends UserAction
                                 $identifier => $data[$identifier],
                             ]);
 
-                            if ($this->request->getParam('sendcode') !== null) {
+                            if (trim($this->request->getParam('sendcode', '')) === '') {
                                 if ($user->getEmail()) {
                                     if ((new DateTime('now'))->diff($user->getChange())->i > 10) {
                                         // new code
