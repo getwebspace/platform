@@ -31,7 +31,7 @@ class OrderProductService extends AbstractService
         $result = [];
 
         foreach ($products as $uuid => $count) {
-            if ($count >= 1) {
+            if ($count > 0) {
                 $result[] = $this->create([
                     'order' => $order,
                     'product' => $this->catalogProductService->findOneByUuid($uuid),
