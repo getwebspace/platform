@@ -66,11 +66,9 @@ class Order extends AbstractEntity
     protected ?User $user = null;
 
     /**
-     * @param string|User $user
-     *
      * @return $this
      */
-    public function setUser($user)
+    public function setUser(?User $user)
     {
         if (is_a($user, User::class)) {
             $this->user_uuid = $user->getUuid();
@@ -371,5 +369,41 @@ class Order extends AbstractEntity
     public function getSystem(): string
     {
         return $this->system;
+    }
+
+    /**
+     * Return model as array
+     */
+    public function toArray(): array
+    {
+        $email = $this->email;
+        $phone = $this->phone;
+        $delivery = $this->delivery;
+
+        if ($this->user_uuid !== null) {
+            $email = $this->user->getEmail();
+            $phone = $this->user->getPhone();
+            $delivery = [
+                'client' => $this->user->getName(),
+                'address' => $this->user->getAddress(),
+            ];
+        }
+
+        return [
+            'uuid' => $this->uuid,
+            'serial' => $this->serial,
+            'user' => $this->user_uuid ?: Uuid::NIL,
+            'delivery' => $delivery,
+            'shipping' => $this->shipping,
+            'comment' => $this->comment,
+            'phone' => $phone,
+            'email' => $email,
+            'products' => $this->getProducts(),
+            'status' => $this->status,
+            'date' => $this->date,
+            'external_id' => $this->external_id,
+            'export' => $this->export,
+            'system' => $this->system,
+        ];
     }
 }

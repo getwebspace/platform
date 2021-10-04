@@ -18,9 +18,9 @@ class FormDataFileRelation extends FileRelation
      */
     protected FormData $form_data;
 
-    public function setEntity(AbstractEntity $entity)
+    public function setEntity(AbstractEntity $entity): FormDataFileRelation
     {
-        if (is_object($entity) && is_a($entity, FormData::class)) {
+        if (is_a($entity, FormData::class)) {
             $this->entity_uuid = $entity->getUuid();
             $this->form_data = $entity;
         }

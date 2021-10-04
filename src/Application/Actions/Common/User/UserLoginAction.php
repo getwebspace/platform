@@ -99,9 +99,9 @@ class UserLoginAction extends UserAction
                                 $identifier => $data[$identifier],
                             ]);
 
-                            if ($this->request->getParam('sendcode') !== null) {
+                            if (isset($this->request->getParams()['sendcode'])) {
                                 if ($user->getEmail()) {
-                                    if ((new DateTime('now'))->diff($user->getChange())->i > 10) {
+                                    if (!$user->getAuthCode() || (new DateTime('now'))->diff($user->getChange())->i >= 10) {
                                         // new code
                                         $code = implode('-', [random_int(100, 999), random_int(100, 999), random_int(100, 999)]);
 
@@ -154,7 +154,7 @@ class UserLoginAction extends UserAction
                             return $integration->getUser();
                         }
                         $this->addError($identifier, 'EXCEPTION_USER_NOT_FOUND');
-                    } catch (EmailAlreadyExistsException | EmailBannedException | WrongEmailValueException $e) {
+                    } catch (EmailAlreadyExistsException|EmailBannedException|WrongEmailValueException $e) {
                         $this->addError($identifier, $e->getMessage());
                     }
                 }
@@ -172,7 +172,7 @@ class UserLoginAction extends UserAction
                             return $integration->getUser();
                         }
                         $this->addError($identifier, 'EXCEPTION_USER_NOT_FOUND');
-                    } catch (EmailAlreadyExistsException | EmailBannedException | WrongEmailValueException $e) {
+                    } catch (EmailAlreadyExistsException|EmailBannedException|WrongEmailValueException $e) {
                         $this->addError($identifier, $e->getMessage());
                     }
                 }

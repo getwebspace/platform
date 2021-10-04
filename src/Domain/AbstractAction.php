@@ -11,6 +11,7 @@ use App\Domain\Exceptions\HttpNotFoundException;
 use App\Domain\Exceptions\HttpNotImplementedException;
 use App\Domain\Service\File\FileRelationService;
 use App\Domain\Service\File\FileService;
+use App\Domain\Traits\FileTrait;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 use Slim\Http\Request;
@@ -164,15 +165,15 @@ abstract class AbstractAction extends AbstractComponent
     }
 
     /**
-     * @return null|string
+     * @return string
      */
-    protected function getRequestRemoteIP()
+    protected function getRequestRemoteIP(): string
     {
         return $this->request->getServerParam(
             'HTTP_X_REAL_IP',
             $this->request->getServerParam(
                 'HTTP_X_FORWARDED_FOR',
-                $this->request->getServerParam('REMOTE_ADDR')
+                $this->request->getServerParam('REMOTE_ADDR', '')
             )
         );
     }
@@ -182,53 +183,55 @@ abstract class AbstractAction extends AbstractComponent
      */
     protected function processEntityFiles(AbstractEntity $entity, string $field = 'files'): AbstractEntity
     {
-        $fileRelationService = FileRelationService::getWithContainer($this->container);
+        if (in_array(FileTrait::class, class_uses($entity), true)) {
+            $fileRelationService = FileRelationService::getWithContainer($this->container);
 
-        // new
-        if (($uploaded = $this->getUploadedFiles($field)) !== []) {
-            $index = 0;
+            // new
+            if (($uploaded = $this->getUploadedFiles($field)) !== []) {
+                $index = $entity->hasFiles();
 
-            foreach ($uploaded as $name => $files) {
-                if (is_numeric($name)) {
-                    $name = '';
-                }
+                foreach ($uploaded as $name => $files) {
+                    if (is_numeric($name)) {
+                        $name = '';
+                    }
 
-                foreach ($files as $file) {
-                    $fileRelation = $fileRelationService->create([
-                        'entity' => $entity,
-                        'file' => $file,
-                        'comment' => $name,
-                        'order' => ++$index,
-                    ]);
+                    foreach ($files as $file) {
+                        $fileRelation = $fileRelationService->create([
+                            'entity' => $entity,
+                            'file' => $file,
+                            'comment' => $name,
+                            'order' => ++$index,
+                        ]);
 
-                    // link file to entity
-                    if ($fileRelation) {
-                        $entity->addFile($fileRelation);
+                        // link file to entity
+                        if ($fileRelation) {
+                            $entity->addFile($fileRelation);
+                        }
                     }
                 }
             }
-        }
 
-        // update
-        if (($files = $this->request->getParam($field)) !== null && is_array($files)) {
-            foreach ($files as $uuid => $data) {
-                $default = [
-                    'order' => null,
-                    'comment' => null,
-                    'delete' => null,
-                ];
-                $data = array_merge($default, $data);
+            // update
+            if (($files = $this->request->getParam($field)) !== null && is_array($files)) {
+                foreach ($files as $uuid => $data) {
+                    $default = [
+                        'order' => null,
+                        'comment' => null,
+                        'delete' => null,
+                    ];
+                    $data = array_merge($default, $data);
 
-                $relation = $entity->getFiles()->firstWhere('uuid', $uuid);
+                    $relation = $entity->getFiles()->firstWhere('uuid', $uuid);
 
-                if ($relation) {
-                    if ($data['delete'] !== null) {
-                        $fileRelationService->delete($relation);
+                    if ($relation) {
+                        if ($data['delete'] !== null) {
+                            $fileRelationService->delete($relation);
 
-                        continue;
+                            continue;
+                        }
+
+                        $fileRelationService->update($relation, $data);
                     }
-
-                    $fileRelationService->update($relation, $data);
                 }
             }
         }
@@ -294,7 +297,7 @@ abstract class AbstractAction extends AbstractComponent
      *
      * @param string $filename
      */
-    protected function getFileFromBody($filename = ''): ?File
+    protected function getFileFromBody(string $filename = ''): ?File
     {
         $uploaded = null;
         $tmp_path = UPLOAD_DIR . '/' . uniqid();
@@ -361,14 +364,14 @@ abstract class AbstractAction extends AbstractComponent
      * @throws HttpBadRequestException
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
-    protected function render($template, array $data = []): string
+    protected function render(string $template, array $data = []): string
     {
         try {
             \RunTracy\Helpers\Profiler\Profiler::start('render (%s)', $template);
 
             $data = array_merge(
                 [
-                    'sha' => mb_substr($_ENV['COMMIT_SHA'] ?? 'specific', 3, 6),
+                    'sha' => mb_substr($_ENV['COMMIT_SHA'] ?? 'specific', 0, 7),
                     'NIL' => \Ramsey\Uuid\Uuid::NIL,
                     '_request' => &$_REQUEST,
                     '_error' => \Alksily\Support\Form::$globalError = $this->error,

@@ -46,9 +46,9 @@ class UserUpdateAction extends UserAction
                         }
                     } catch (UsernameAlreadyExistsException $e) {
                         $this->addError('username', $e->getMessage());
-                    } catch (WrongEmailValueException | EmailAlreadyExistsException $e) {
+                    } catch (WrongEmailValueException|EmailAlreadyExistsException $e) {
                         $this->addError('email', $e->getMessage());
-                    } catch (WrongPhoneValueException | PhoneAlreadyExistsException $e) {
+                    } catch (WrongPhoneValueException|PhoneAlreadyExistsException $e) {
                         $this->addError('phone', $e->getMessage());
                     }
                 }

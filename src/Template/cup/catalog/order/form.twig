@@ -55,9 +55,8 @@
                                             'name': 'delivery[client]',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="ФИО клиента"></i>',
                                             'args': {
-                                                'value': order.user ? order.user.getName() : order.delivery.client,
+                                                'value': order.user and order.user.getName() == order.delivery.client ? order.user.getName() : order.delivery.client,
                                                 'required': true,
-                                                'readonly': order.user ? true : false
                                             }
                                         } %}
                                     </div>
@@ -69,8 +68,7 @@
                                             'type': 'tel',
                                             'name': 'phone',
                                             'args': {
-                                                'value': order.user and order.user.phone ? order.user.phone : order.phone,
-                                                'readonly': order.user and order.user.phone ? true : false
+                                                'value': order.user and order.user.phone == order.phone ? order.user.phone : order.phone,
                                             }
                                         } %}
 
@@ -79,8 +77,7 @@
                                             'type': 'email',
                                             'name': 'email',
                                             'args': {
-                                                'value': order.user and order.user.email ? order.user.email : order.email,
-                                                'readonly': order.user and order.user.email ? true : false
+                                                'value': order.user and order.user.email == order.email ? order.user.email : order.email,
                                             }
                                         } %}
                                     </div>
@@ -128,8 +125,7 @@
                                             'type': 'textarea',
                                             'name': 'delivery[address]',
                                             'args': {
-                                                'value': order.user ? order.user.getAddress() : order.delivery.address,
-                                                'readonly': order.user ? true : false,
+                                                'value': order.user and order.user.address == order.delivery.address ? order.user.address : order.delivery.address,
                                                 'style': 'min-height: 133px;'
                                             }
                                         } %}

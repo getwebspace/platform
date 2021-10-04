@@ -66,7 +66,7 @@ class PublicationServiceTest extends TestCase
             ]),
             'title' => $this->getFaker()->title,
             'address' => 'publication-custom-address',
-            'category' => $this->category->getUuid(),
+            'category' => $this->category,
             'date' => new DateTime(),
             'content' => [
                 'short' => $this->getFaker()->text(200),
@@ -111,7 +111,7 @@ class PublicationServiceTest extends TestCase
 
         $data = [
             'title' => $this->getFaker()->title,
-            'category' => $this->category->getUuid(),
+            'category' => $this->category,
             'content' => [
                 'short' => $this->getFaker()->text(200),
                 'full' => $this->getFaker()->realText(500),
@@ -137,7 +137,7 @@ class PublicationServiceTest extends TestCase
         $data = [
             'title' => $this->getFaker()->title,
             'address' => 'publication-custom-address-two',
-            'category' => $this->category->getUuid(),
+            'category' => $this->category,
             'content' => [
                 'short' => $this->getFaker()->text(200),
                 'full' => $this->getFaker()->realText(500),
@@ -203,7 +203,7 @@ class PublicationServiceTest extends TestCase
             ]),
             'title' => $this->getFaker()->title,
             'address' => 'publication-custom-address',
-            'category' => $this->category->getUuid(),
+            'category' => $this->category,
             'date' => new DateTime(),
             'content' => [
                 'short' => $this->getFaker()->text(200),
@@ -224,7 +224,7 @@ class PublicationServiceTest extends TestCase
             ]),
             'title' => $this->getFaker()->title,
             'address' => 'publication-custom-address',
-            'category' => $this->category->getUuid(),
+            'category' => $this->category,
             'content' => [
                 'short' => $this->getFaker()->text(200),
                 'full' => $this->getFaker()->realText(500),

@@ -25,7 +25,7 @@ class CreateAction extends UserAction
                     default:
                         return $this->response->withRedirect('/cup/user/group/' . $userGroup->getUuid() . '/edit');
                 }
-            } catch (MissingTitleValueException | TitleAlreadyExistsException $e) {
+            } catch (MissingTitleValueException|TitleAlreadyExistsException $e) {
                 $this->addError('title', $e->getMessage());
             }
         }

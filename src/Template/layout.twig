@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="{{ parameter('common_lang', 'ru') }}">
-    <!-- OpenSource WebSpace Engine CMS (Full free for all) -->
-    <!-- GitHub: https://github.com/getwebspace -->
+    <!-- Copyright © 2011-{{ 'now'|df('Y') }} WebSpace Engine — OpenSource WebSpace Engine CMS -->
+    <!-- Website: https://getwebspace.org -->
 
     <head>
         <meta charset="utf-8">
@@ -12,6 +12,7 @@
         {% block style '' %}
 
         <title>{% block title deferred %}{{ title ? title ~ ' | ' : '' }}{{ parameter('common_title') }}{% endblock %}</title>
+        <script defer type="text/javascript" src="/assets/js/wse.js?v={{ sha }}"></script>
     </head>
 
     {% block body %}

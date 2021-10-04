@@ -208,6 +208,13 @@
                                 <li class="list-group-item">Полное имя: {{ item.getName('full') }}</li>
                             {% endif %}
 
+                            {% if item.publications|count > 0 %}
+                                <li class="list-group-item">Публикаций: {{ item.publications|count }}</li>
+                            {% endif %}
+                            {% if item.orders|count > 0 %}
+                                <li class="list-group-item">Заказов: {{ item.orders|count }}</li>
+                            {% endif %}
+
                             <li class="list-group-item">E-Mail: {{ item.email }}</li>
                             <li class="list-group-item">Зарегистрирован: {{ item.register|df('d.m.Y H:i:s') }}</li>
                             <li class="list-group-item">Последнее редактирование: {{ item.change|df('d.m.Y H:i:s') }}</li>

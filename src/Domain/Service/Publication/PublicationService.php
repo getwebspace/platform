@@ -36,7 +36,7 @@ class PublicationService extends AbstractService
             'user' => '',
             'title' => '',
             'address' => '',
-            'category' => Uuid::NIL,
+            'category' => null,
             'date' => 'now',
             'content' => [
                 'short' => '',

@@ -26,7 +26,7 @@ class UserRegisterAction extends UserAction
                 'allow_mail' => $this->request->getParam('allow_mail', true),
                 'password' => $this->request->getParam('password'),
                 'password_again' => $this->request->getParam('password_again'),
-                'external_id' => $this->request->getParam('external_id'),
+                'external_id' => $this->request->getParam('external_id', ''),
             ];
 
             if ($this->isRecaptchaChecked()) {
@@ -54,9 +54,9 @@ class UserRegisterAction extends UserAction
                         $this->addError('phone', $e->getMessage());
                     } catch (UsernameAlreadyExistsException $e) {
                         $this->addError('username', $e->getMessage());
-                    } catch (WrongEmailValueException | EmailAlreadyExistsException | EmailBannedException $e) {
+                    } catch (WrongEmailValueException|EmailAlreadyExistsException|EmailBannedException $e) {
                         $this->addError('email', $e->getMessage());
-                    } catch (WrongPhoneValueException | PhoneAlreadyExistsException $exception) {
+                    } catch (WrongPhoneValueException|PhoneAlreadyExistsException $exception) {
                         $this->addError('phone', $exception->getMessage());
                     }
                 }

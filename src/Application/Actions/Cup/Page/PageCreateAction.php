@@ -30,7 +30,7 @@ class PageCreateAction extends PageAction
                     default:
                         return $this->response->withRedirect('/cup/page/' . $page->getUuid() . '/edit');
                 }
-            } catch (MissingTitleValueException | TitleAlreadyExistsException $e) {
+            } catch (MissingTitleValueException|TitleAlreadyExistsException $e) {
                 $this->addError('title', $e->getMessage());
             } catch (AddressAlreadyExistsException $e) {
                 $this->addError('address', $e->getMessage());

@@ -315,4 +315,24 @@ class Category extends AbstractEntity
 
         return $result;
     }
+
+    /**
+     * Return model as array
+     */
+    public function toArray(): array
+    {
+        return [
+            'uuid' => $this->uuid,
+            'parent' => $this->parent,
+            'address' => $this->address,
+            'title' => $this->title,
+            'description' => $this->description,
+            'pagination' => $this->pagination,
+            'children' => $this->children,
+            'public' => $this->public,
+            'sort' => $this->sort,
+            'files' => $this->getFiles(),
+            'meta' => $this->meta,
+        ];
+    }
 }

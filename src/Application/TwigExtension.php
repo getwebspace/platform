@@ -87,6 +87,10 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('build_query', [$this, 'build_query'], ['is_safe' => ['html']]),
             new TwigFunction('current_query', [$this, 'current_query'], ['is_safe' => ['html']]),
             new TwigFunction('is_current_page_number', [$this, 'is_current_page_number']),
+            new TwigFunction('base64_encode', [$this, 'base64_encode']),
+            new TwigFunction('base64_decode', [$this, 'base64_decode']),
+            new TwigFunction('json_encode', [$this, 'json_encode']),
+            new TwigFunction('json_decode', [$this, 'json_decode']),
             new TwigFunction('qr_code', [$this, 'qr_code'], ['is_safe' => ['html']]),
             new TwigFunction('oauth_url', [$this, 'oauth_url'], ['is_safe' => ['html']]),
 
@@ -345,6 +349,26 @@ class TwigExtension extends AbstractExtension
         return $this->current_page_number() === $number;
     }
 
+    public function base64_encode(string $string)
+    {
+        return base64_encode($string);
+    }
+
+    public function base64_decode(string $string, bool $strict = false)
+    {
+        return base64_decode($string, $strict);
+    }
+
+    public function json_encode($json, ?bool $associative = true, int $depth = 512, int $flags = 0)
+    {
+        return json_decode($json, $associative, $depth, $flags);
+    }
+
+    public function json_decode($value, int $flags = JSON_UNESCAPED_UNICODE, int $depth = 512)
+    {
+        return json_encode($value, $flags, $depth);
+    }
+
     public function qr_code($value, $width = 256, $height = 256)
     {
         $renderer = new \BaconQrCode\Renderer\Image\Svg();
@@ -373,28 +397,18 @@ class TwigExtension extends AbstractExtension
     // files functions
 
     // fetch files by args
-    public function files($files = [])
+    public function files(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
-        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:files', $files);
-
-        $criteria = [];
-
-        if ($files) {
-            if (!is_a($files, \Illuminate\Support\Collection::class) && !is_array($files)) {
-                $files = [$files];
-            }
-
-            foreach ($files as $uuid) {
-                if (\Ramsey\Uuid\Uuid::isValid($uuid) === true) {
-                    $criteria['uuid'][] = $uuid;
-                }
-            }
-        }
+        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:files');
 
         $fileService = FileService::getWithContainer($this->container);
-        $result = $fileService->read($criteria);
+        $result = $fileService->read(array_merge($criteria, [
+            'order' => $order,
+            'limit' => $limit,
+            'offset' => $offset,
+        ]));
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:files', $files);
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:files');
 
         return $result;
     }
@@ -406,18 +420,14 @@ class TwigExtension extends AbstractExtension
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:publication_category');
 
-        static $buf;
-
-        if (!$buf) {
-            $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
-            $buf = $publicationCategoryService->read([
-                'public' => $public ?: null,
-            ]);
-        }
+        $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
+        $result = $publicationCategoryService->read([
+            'public' => $public ?: null,
+        ]);
 
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:publication_category');
 
-        return $buf;
+        return $result;
     }
 
     // fetch publications by criteria
@@ -425,22 +435,16 @@ class TwigExtension extends AbstractExtension
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:publication');
 
-        static $buf;
-
-        $key = json_encode($criteria, JSON_UNESCAPED_UNICODE) . $limit . $offset;
-
-        if (!isset($buf[$key])) {
-            $publicationService = PublicationService::getWithContainer($this->container);
-            $buf[$key] = $publicationService->read(array_merge($criteria, [
-                'order' => $order,
-                'limit' => $limit,
-                'offset' => $offset,
-            ]));
-        }
+        $publicationService = PublicationService::getWithContainer($this->container);
+        $result = $publicationService->read(array_merge($criteria, [
+            'order' => $order,
+            'limit' => $limit,
+            'offset' => $offset,
+        ]));
 
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:publication');
 
-        return $buf[$key];
+        return $result;
     }
 
     // guestbook functions
@@ -450,34 +454,28 @@ class TwigExtension extends AbstractExtension
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:guestbook');
 
-        static $buf;
+        $guestBookService = GuestBookService::getWithContainer($this->container);
+        $result = $guestBookService
+            ->read([
+                'status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK,
+                'order' => $order,
+                'limit' => $limit,
+                'offset' => $offset,
+            ])
+            ->map(function ($model) {
+                /** @var \App\Domain\Entities\GuestBook $model */
+                $email = explode('@', $model->getEmail());
+                $name = implode('@', array_slice($email, 0, count($email) - 1));
+                $len = (int) floor(mb_strlen($name) / 2);
 
-        $key = json_encode($order, JSON_UNESCAPED_UNICODE) . $limit . $offset;
+                $model->setEmail(mb_substr($name, 0, $len) . str_repeat('*', $len) . '@' . end($email));
 
-        if (!$buf) {
-            $guestBookService = GuestBookService::getWithContainer($this->container);
-            $buf[$key] = $guestBookService
-                ->read([
-                    'status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK,
-                    'order' => $order,
-                    'limit' => $limit,
-                    'offset' => $offset,
-                ])
-                ->map(function ($model) {
-                    /** @var \App\Domain\Entities\GuestBook $model */
-                    $email = explode('@', $model->getEmail());
-                    $name = implode('@', array_slice($email, 0, count($email) - 1));
-                    $len = (int) floor(mb_strlen($name) / 2);
-
-                    $model->setEmail(mb_substr($name, 0, $len) . str_repeat('*', $len) . '@' . end($email));
-
-                    return $model;
-                });
-        }
+                return $model;
+            });
 
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:guestbook');
 
-        return $buf[$key];
+        return $result;
     }
 
     // catalog functions
@@ -487,18 +485,14 @@ class TwigExtension extends AbstractExtension
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_category');
 
-        static $buf;
-
-        if (!$buf) {
-            $catalogCategoryService = CatalogCategoryService::getWithContainer($this->container);
-            $buf = $catalogCategoryService->read([
-                'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
-            ]);
-        }
+        $catalogCategoryService = CatalogCategoryService::getWithContainer($this->container);
+        $result = $catalogCategoryService->read([
+            'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+        ]);
 
         \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_category');
 
-        return $buf;
+        return $result;
     }
 
     // return parent categories
@@ -533,19 +527,13 @@ class TwigExtension extends AbstractExtension
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_products');
 
-        static $buf;
-
         $criteria['status'] = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
-        $key = json_encode($criteria, JSON_UNESCAPED_UNICODE) . $limit . $offset;
+        $catalogProductService = CatalogProductService::getWithContainer($this->container);
+        $result = $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
 
-        if (!array_key_exists($key, (array) $buf)) {
-            $catalogProductService = CatalogProductService::getWithContainer($this->container);
-            $buf[$key] = $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
-        }
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_products');
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_products (%s)', $key);
-
-        return $buf[$key];
+        return $result;
     }
 
     // returns a product or a list of products by criteria
@@ -553,19 +541,13 @@ class TwigExtension extends AbstractExtension
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_product');
 
-        static $buf;
-
         $criteria['status'] = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
-        $key = json_encode($criteria, JSON_UNESCAPED_UNICODE) . $limit . $offset;
+        $catalogProductService = CatalogProductService::getWithContainer($this->container);
+        $result =  $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
 
-        if (!array_key_exists($key, (array) $buf)) {
-            $catalogProductService = CatalogProductService::getWithContainer($this->container);
-            $buf[$key] = $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
-        }
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_product (%s)');
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_product (%s)', $key);
-
-        return $buf[$key];
+        return $result;
     }
 
     // save uuid of product in session or return saved list
@@ -588,45 +570,22 @@ class TwigExtension extends AbstractExtension
 
                 $_SESSION['catalog_product_view'] = $list;
         }
-
-        return null;
     }
 
     // fetch order
-    public function catalog_order($unique)
+    public function catalog_order(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
         \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_order');
 
-        static $buf;
+        $catalogOrderService = CatalogOrderService::getWithContainer($this->container);
+        $result = $catalogOrderService->read(array_merge($criteria, [
+            'order' => $order,
+            'limit' => $limit,
+            'offset' => $offset,
+        ]));
 
-        $criteria = [];
+        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_order');
 
-        switch (true) {
-            case \Ramsey\Uuid\Uuid::isValid($unique):
-                $criteria['uuid'] = $unique;
-
-                break;
-
-            case is_numeric($unique):
-                $criteria['external_id'] = $unique;
-
-                break;
-
-            default:
-                $criteria['serial'] = $unique;
-
-                break;
-        }
-
-        $key = json_encode($criteria, JSON_UNESCAPED_UNICODE);
-
-        if (!array_key_exists($key, (array) $buf)) {
-            $catalogOrderService = CatalogOrderService::getWithContainer($this->container);
-            $buf[$key] = $catalogOrderService->read($criteria);
-        }
-
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_order (%s)', $key);
-
-        return $buf[$key];
+        return $result;
     }
 }

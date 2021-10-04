@@ -31,7 +31,7 @@ $app
             ->setName('cup:forbidden');
 
         // installer
-        $app->map(['get', 'post'], '/system', \App\Application\Actions\Cup\SystemPageAction::class)
+        $app->map(['get', 'post'], '/system[/{step:.*}]', \App\Application\Actions\Cup\SystemPageAction::class)
             ->setName('cup:system');
 
         $app

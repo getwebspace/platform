@@ -38,7 +38,7 @@ class GuestBookAction extends AbstractAction
                     return $this->respondWithJson(['description' => 'Message added']);
                 } catch (MissingNameValueException $e) {
                     $this->addError('name', $e->getMessage());
-                } catch (MissingEmailValueException | WrongEmailValueException $e) {
+                } catch (MissingEmailValueException|WrongEmailValueException $e) {
                     $this->addError('email', $e->getMessage());
                 } catch (MissingMessageValueException $e) {
                     $this->addError('message', $e->getMessage());

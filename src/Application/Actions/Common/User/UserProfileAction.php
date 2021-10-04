@@ -31,9 +31,9 @@ class UserProfileAction extends UserAction
                 );
 
                 return $this->response->withRedirect('/user/profile');
-            } catch (WrongEmailValueException | EmailAlreadyExistsException $e) {
+            } catch (WrongEmailValueException|EmailAlreadyExistsException $e) {
                 $this->addError('email', $e->getMessage());
-            } catch (WrongPhoneValueException | PhoneAlreadyExistsException $e) {
+            } catch (WrongPhoneValueException|PhoneAlreadyExistsException $e) {
                 $this->addError('phone', $e->getMessage());
             }
         }

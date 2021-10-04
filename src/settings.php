@@ -1,5 +1,6 @@
 <?php declare(strict_types=1);
 
+$sha = '/' . mb_substr($_ENV['COMMIT_SHA'] ?? 'specific', 0, 7);
 $settings = [
     // Secret salt
     'secret' => [
@@ -13,7 +14,7 @@ $settings = [
                 SRC_DIR . '/Domain/Entities',
             ],
             'auto_generate_proxies' => true,
-            'proxy_dir' => CACHE_DIR . '/proxies',
+            'proxy_dir' => CACHE_DIR . $sha . '/proxies',
             'cache' => null,
         ],
 
@@ -28,7 +29,7 @@ $settings = [
 
     // Twig settings
     'twig' => [
-        'caches_path' => CACHE_DIR,
+        'caches_path' => CACHE_DIR . $sha,
     ],
 
     // Monolog settings
@@ -87,7 +88,7 @@ switch (!isset($settings['settings']['displayErrorDetails']) || $settings['setti
 
     case false:
         // set router cache file if display error is negative
-        $settings['settings']['routerCacheFile'] = CACHE_DIR . '/routes.cache.php';
+        $settings['settings']['routerCacheFile'] = CACHE_DIR . $sha . '/routes.cache.php';
 
         // enable Tracy panel
         \Tracy\Debugger::enable(\Tracy\Debugger::PRODUCTION, LOG_DIR);

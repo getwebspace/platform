@@ -37,10 +37,9 @@
                             </thead>
                             <tbody>
                                 {% for item in publications %}
-                                    {% set category = categories.where('uuid', item.category).first() %}
                                     <tr>
                                         <td>{{ item.title }}</td>
-                                        <td>{{ categories.where('uuid', item.category).first().title ?? '&mdash;' }}</td>
+                                        <td>{{ item.category.title }}</td>
                                         <td>{{ item.user.getName('short') }}</td>
                                         <td data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i') }}</td>
                                         <td class="text-center">
