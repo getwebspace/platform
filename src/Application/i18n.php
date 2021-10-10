@@ -68,7 +68,7 @@ class i18n
             $locale = $priority->current();
 
             foreach (['php', 'ini'] as $type) {
-                $path = LOCALE_DIR . '/' . trim($locale) . '.' . $type;
+                $path = SRC_LOCALE_DIR . '/' . trim($locale) . '.' . $type;
 
                 if (file_exists($path)) {
                     static::$localeCode = $locale;

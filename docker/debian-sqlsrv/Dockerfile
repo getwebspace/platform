@@ -75,7 +75,6 @@ RUN composer install ${NO_DEV} --no-suggest --no-progress
 # Copy platform
 ADD bin ${PLATFORM_HOME}/bin
 ADD config ${PLATFORM_HOME}/config
-ADD locale ${PLATFORM_HOME}/locale
 ADD plugin ${PLATFORM_HOME}/plugin
 ADD public ${PLATFORM_HOME}/public
 ADD src ${PLATFORM_HOME}/src
@@ -88,7 +87,6 @@ RUN set -x \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && rm /var/log/lastlog /var/log/faillog \
-    && chmod -R 0755 ${PLATFORM_HOME}/locale \
     && chmod -R 0777 ${PLATFORM_HOME}/plugin \
     && chmod -R 0777 ${PLATFORM_HOME}/public/resource \
     && chmod -R 0777 ${PLATFORM_HOME}/public/uploads \
@@ -96,7 +94,7 @@ RUN set -x \
     && chmod -R 0777 ${PLATFORM_HOME}/var
 
 EXPOSE 80/tcp 443/tcp
-VOLUME ["${PLATFORM_HOME}/locale", "${PLATFORM_HOME}/plugin", "${PLATFORM_HOME}/public/resource", "${PLATFORM_HOME}/theme", "${PLATFORM_HOME}/var", "${PLATFORM_HOME}/public/uploads"]
+VOLUME ["${PLATFORM_HOME}/plugin", "${PLATFORM_HOME}/public/resource", "${PLATFORM_HOME}/theme", "${PLATFORM_HOME}/var", "${PLATFORM_HOME}/public/uploads"]
 
 STOPSIGNAL SIGTERM
 

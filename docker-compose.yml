@@ -14,7 +14,6 @@ services:
         volumes:
             - ./bin:/var/container/bin:ro
             - ./config:/var/container/config:ro
-            - ./locale:/var/container/locale:ro
             - ./plugin:/var/container/plugin:rw
             - ./public:/var/container/public:rw
             - ./src:/var/container/src:ro
