@@ -365,11 +365,11 @@ abstract class AbstractAction extends AbstractComponent
 
             $data = array_merge(
                 [
-                    'sha' => mb_substr($_ENV['COMMIT_SHA'] ?? 'specific', 0, 7),
-                    'NIL' => \Ramsey\Uuid\Uuid::NIL,
-                    '_lang' => \App\Application\i18n::$localeCode ?? 'ru',
                     '_request' => &$_REQUEST,
                     '_error' => \Alksily\Support\Form::$globalError = $this->error,
+                    '_lang' => \App\Application\i18n::$localeCode ?? 'ru',
+                    'sha' => mb_substr($_ENV['COMMIT_SHA'] ?? 'specific', 0, 7),
+                    'NIL' => \Ramsey\Uuid\Uuid::NIL,
                     'plugins' => $this->container->get('plugin')->get(),
                     'user' => $this->request->getAttribute('user', false),
                 ],
