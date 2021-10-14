@@ -367,7 +367,7 @@ abstract class AbstractAction extends AbstractComponent
     protected function render(string $template, array $data = []): string
     {
         try {
-            \RunTracy\Helpers\Profiler\Profiler::start('render (%s)', $template);
+            \RunTracy\Helpers\Profiler\Profiler::start('render');
 
             $data = array_merge(
                 [
@@ -388,7 +388,7 @@ abstract class AbstractAction extends AbstractComponent
             $this->renderer->getLoader()->addPath(VIEW_ERROR_DIR);
             $rendered = $this->renderer->fetch($template, $data);
 
-            \RunTracy\Helpers\Profiler\Profiler::finish('render (%s)', $template);
+            \RunTracy\Helpers\Profiler\Profiler::finish('%s', $template);
 
             return $rendered;
         } catch (\Twig\Error\LoaderError $exception) {

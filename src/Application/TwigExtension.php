@@ -408,7 +408,7 @@ class TwigExtension extends AbstractExtension
             'offset' => $offset,
         ]));
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:files');
+        \RunTracy\Helpers\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }
@@ -425,7 +425,7 @@ class TwigExtension extends AbstractExtension
             'public' => $public ?: null,
         ]);
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:publication_category');
+        \RunTracy\Helpers\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }
@@ -442,7 +442,7 @@ class TwigExtension extends AbstractExtension
             'offset' => $offset,
         ]));
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:publication');
+        \RunTracy\Helpers\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }
@@ -473,7 +473,7 @@ class TwigExtension extends AbstractExtension
                 return $model;
             });
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:guestbook');
+        \RunTracy\Helpers\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }
@@ -490,7 +490,7 @@ class TwigExtension extends AbstractExtension
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
         ]);
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_category');
+        \RunTracy\Helpers\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }
@@ -517,7 +517,7 @@ class TwigExtension extends AbstractExtension
 
         $result = collect($breadcrumb)->reverse();
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_category_parents');
+        \RunTracy\Helpers\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }
@@ -531,7 +531,7 @@ class TwigExtension extends AbstractExtension
         $catalogProductService = CatalogProductService::getWithContainer($this->container);
         $result = $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_products');
+        \RunTracy\Helpers\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }
@@ -545,7 +545,7 @@ class TwigExtension extends AbstractExtension
         $catalogProductService = CatalogProductService::getWithContainer($this->container);
         $result =  $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_product (%s)');
+        \RunTracy\Helpers\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }
@@ -584,7 +584,7 @@ class TwigExtension extends AbstractExtension
             'offset' => $offset,
         ]));
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('twig:fn:catalog_order');
+        \RunTracy\Helpers\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }
