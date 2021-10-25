@@ -21,7 +21,7 @@ class SearchAction extends AbstractAction
 
         return $this->respond($this->parameter('search_template', 'search.twig'), [
             'count' => $data['count'],
-            'result' => $type ? [$type => $data['result'][$type]] : $data['result'],
+            'result' => $type ? [$type => $data['result'][$type] ?? []] : $data['result'],
         ]);
     }
 
