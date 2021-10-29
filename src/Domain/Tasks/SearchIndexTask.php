@@ -60,6 +60,7 @@ class SearchIndexTask extends AbstractTask
                     $item->getTitle(),
                     $item->getDescription(),
                     $item->getExtra(),
+                    $item->getVendorCode(),
                     $item->getMeta()['description'],
                 ], true),
             ]);

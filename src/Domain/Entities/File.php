@@ -217,7 +217,7 @@ class File extends AbstractEntity
      */
     public static function info($path): array
     {
-        \RunTracy\Helpers\Profiler\Profiler::start('file:info (%s)', $path);
+        \RunTracy\Helpers\Profiler\Profiler::start('file:info');
 
         $info = pathinfo($path);
         $result = [
@@ -229,7 +229,7 @@ class File extends AbstractEntity
             'hash' => sha1_file($path),
         ];
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('file:info (%s)', $path);
+        \RunTracy\Helpers\Profiler\Profiler::finish('%s', $path);
 
         return $result;
     }
@@ -334,7 +334,7 @@ class File extends AbstractEntity
         $uuid = $this->uuid->toString();
 
         if (!isset($buf[$uuid][$size])) {
-            \RunTracy\Helpers\Profiler\Profiler::start('file:getPublicPath (%s)', $size);
+            \RunTracy\Helpers\Profiler\Profiler::start('file:getPublicPath');
 
             if ($this->private) {
                 if (str_start_with($this->type, 'image/')) {
@@ -348,7 +348,7 @@ class File extends AbstractEntity
                 $buf[$uuid][$size] = '/uploads/' . $this->salt . ($size && $this->isValidSizeAndFileExists($size) ? '/' . $size : '') . '/' . $this->getFileName();
             }
 
-            \RunTracy\Helpers\Profiler\Profiler::finish('file:getPublicPath (%s)', $size, ['uuid' => $uuid]);
+            \RunTracy\Helpers\Profiler\Profiler::finish('%s', $size, ['uuid' => $uuid]);
         }
 
         return $buf[$uuid][$size];

@@ -33,6 +33,8 @@ abstract class AbstractComponent
         }
     }
 
+    private static $parameters;
+
     /**
      * Returns the value of the parameter by the passed key
      * If an array of keys is passed, returns an array of found keys and their values
@@ -44,9 +46,7 @@ abstract class AbstractComponent
      */
     protected function parameter($key = null, $default = null)
     {
-        static $parameters;
-
-        if (!$parameters) {
+        if (!static::$parameters) {
             if (!$this->container) {
                 global $app;
 
@@ -56,24 +56,24 @@ abstract class AbstractComponent
             }
             if ($this->container) {
                 \RunTracy\Helpers\Profiler\Profiler::start('parameters');
-                $parameters = ParameterService::getWithContainer($this->container)->read();
-                \RunTracy\Helpers\Profiler\Profiler::finish('parameters');
+                static::$parameters = ParameterService::getWithContainer($this->container)->read();
+                \RunTracy\Helpers\Profiler\Profiler::finish('%s', static::$parameters->count());
             }
         }
 
-        if ($parameters) {
+        if (static::$parameters) {
             if ($key === null) {
-                return $parameters->mapWithKeys(function ($item) {
+                return static::$parameters->mapWithKeys(function ($item) {
                     [$group, $key] = explode('_', $item->key, 2);
 
                     return [$group . '[' . $key . ']' => $item];
                 });
             }
             if (is_string($key)) {
-                return ($buf = $parameters->firstWhere('key', $key)) ? $buf->getValue() : $default;
+                return ($buf = static::$parameters->firstWhere('key', $key)) ? $buf->getValue() : $default;
             }
 
-            return $parameters->whereIn('key', $key)->pluck('value', 'key')->all() ?? $default;
+            return static::$parameters->whereIn('key', $key)->pluck('value', 'key')->all() ?? $default;
         }
 
         return $default;
