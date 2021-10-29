@@ -271,7 +271,7 @@ abstract class AbstractAction extends AbstractComponent
                             $uploaded[$name][$index] = $model;
 
                             // is image
-                            if (str_start_with('image/', $model->getType())) {
+                            if (str_start_with($model->getType(), 'image/')) {
                                 $image_uuids[] = $model->getUuid();
                             }
                         }
@@ -309,7 +309,7 @@ abstract class AbstractAction extends AbstractComponent
                 $uploaded = $model;
 
                 // is image
-                if (str_start_with('image/', $model->getType())) {
+                if (str_start_with($model->getType(), 'image/')) {
                     // add task convert
                     $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
                     $task->execute(['uuid' => [$model->getUuid()]]);
