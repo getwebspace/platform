@@ -55,8 +55,18 @@
                                 {% for item in products %}
                                     <tr>
                                         <td class="text-center d-none">{{ item.order }}</td>
-                                        <td>{{ item.title }}</td>
-                                        <td class="text-right" data-order="{{ item.price }}">{{ item.price|number_format(2, '.', ' ') }}</td>
+                                        <td>
+                                            {{ item.title }}
+
+                                            <div class="text-black-50 float-right">
+                                                {% if item.special %}
+                                                    <i class="fas fa-tag" data-toggle="tooltip" data-placement="right" title="Акция"></i>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                        <td class="text-right text-nowrap" data-order="{{ item.price }}">
+                                            {{ item.price|number_format(2, '.', ' ') }} {{ item.tax ? '[+'~ item.tax ~'%]'}}
+                                        </td>
                                         <td class="text-center" data-order="{{ item.volume }}">{{ item.getVolumeWithUnit() }}</td>
                                         <td class="text-center" data-order="{{ item.stock }}">{{ item.stock|format_number({fraction_digit: 2}) }}</td>
                                         <td>

@@ -227,6 +227,26 @@ class Product extends AbstractEntity
     }
 
     /**
+     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
+     */
+    protected float $tax = .00;
+
+    /**
+     * @return $this
+     */
+    public function setTax(float $value)
+    {
+        $this->tax = $value;
+
+        return $this;
+    }
+
+    public function getTax(): float
+    {
+        return $this->tax;
+    }
+
+    /**
      * // себестоимость
      *
      * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
@@ -288,6 +308,26 @@ class Product extends AbstractEntity
     public function getPriceWholesale(): float
     {
         return $this->priceWholesale;
+    }
+
+    /**
+     * @ORM\Column(type="boolean", options={"default": false})
+     */
+    protected bool $special = false;
+
+    /**
+     * @return $this
+     */
+    public function setSpecial($value)
+    {
+        $this->special = $this->getBooleanByValue($value);
+
+        return $this;
+    }
+
+    public function getSpecial(): bool
+    {
+        return $this->special;
     }
 
     /**

@@ -67,9 +67,10 @@
                     </div>
                 </div>
                 <div class="col-lg-6 product-details">
-                    <h2 class="p-title">{{ product.title }}</h2>
+                    <h2 class="p-title">{{ product.title }} {% if product.special %}[Акция]{% endif %}</h2>
                     <h3 class="p-price">{{ product.price }}</h3>
                     <h4 class="p-stock">Наличие: {{ product.stock > 0 ? '<span>На складе</span>' : '<span>Отсутствует</span>' }}</h4>
+                    <h4 class="p-stock">Налог: {{ product.tax }}%</h4>
 
                     {# add class item_quantity to quantity input #}
                     <div class="quantity">

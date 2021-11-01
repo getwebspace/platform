@@ -1,7 +1,9 @@
 <div class="col-lg-4 col-sm-6">
     <div class="product-item" data-catalog-item>
         <div class="pi-pic">
-            {#<div class="tag-sale">ON SALE</div>#}
+            {% if product.special %}
+                <div class="tag-sale">Акция</div>
+            {% endif %}
             <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ product.address }}">
                 {% include 'mixin/img.twig' with {
                     'src': product.hasFiles() ? product.getFiles().first().getPublicPath('middle') : '/assets/img/no_image.png',

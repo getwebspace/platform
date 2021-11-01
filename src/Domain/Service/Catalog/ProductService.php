@@ -40,9 +40,11 @@ class ProductService extends AbstractService
             'address' => '',
             'vendorcode' => '',
             'barcode' => '',
+            'tax' => 0.0,
             'priceFirst' => 0.0,
             'price' => 0.0,
             'priceWholesale' => 0.0,
+            'special' => false,
             'volume' => 0.0,
             'unit' => '',
             'stock' => 0.0,
@@ -80,9 +82,11 @@ class ProductService extends AbstractService
             ->setAddress($data['address'])
             ->setVendorCode($data['vendorcode'])
             ->setBarCode($data['barcode'])
+            ->setTax((float) $data['tax'])
             ->setPriceFirst((float) $data['priceFirst'])
             ->setPrice((float) $data['price'])
             ->setPriceWholesale((float) $data['priceWholesale'])
+            ->setSpecial($data['special'])
             ->setVolume((float) $data['volume'])
             ->setUnit($data['unit'])
             ->setStock((float) $data['stock'])
@@ -251,9 +255,11 @@ class ProductService extends AbstractService
                 'address' => null,
                 'vendorcode' => null,
                 'barcode' => null,
+                'tax' => null,
                 'priceFirst' => null,
                 'price' => null,
                 'priceWholesale' => null,
+                'special' => null,
                 'volume' => null,
                 'unit' => null,
                 'stock' => null,
@@ -309,6 +315,9 @@ class ProductService extends AbstractService
                 if ($data['barcode'] !== null) {
                     $entity->setBarCode($data['barcode']);
                 }
+                if ($data['tax'] !== null) {
+                    $entity->setTax((float) $data['tax']);
+                }
                 if ($data['priceFirst'] !== null) {
                     $entity->setPriceFirst((float) $data['priceFirst']);
                 }
@@ -317,6 +326,9 @@ class ProductService extends AbstractService
                 }
                 if ($data['priceWholesale'] !== null) {
                     $entity->setPriceWholesale((float) $data['priceWholesale']);
+                }
+                if ($data['special'] !== null) {
+                    $entity->setSpecial($data['special']);
                 }
                 if ($data['volume'] !== null) {
                     $entity->setVolume((float) $data['volume']);

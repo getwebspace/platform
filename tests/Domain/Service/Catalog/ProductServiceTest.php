@@ -46,9 +46,11 @@ class ProductServiceTest extends TestCase
             'address' => $this->getFaker()->word,
             'vendorcode' => $this->getFaker()->word,
             'barcode' => $this->getFaker()->word,
+            'tax' => $this->getFaker()->randomFloat(),
             'priceFirst' => $this->getFaker()->randomFloat(),
             'price' => $this->getFaker()->randomFloat(),
             'priceWholesale' => $this->getFaker()->randomFloat(),
+            'special' => $this->getFaker()->boolean(),
             'volume' => $this->getFaker()->randomFloat(),
             'unit' => $this->getFaker()->word,
             'stock' => $this->getFaker()->randomFloat(),
@@ -82,9 +84,11 @@ class ProductServiceTest extends TestCase
         $this->assertSame($data['address'], $product->getAddress());
         $this->assertSame($data['vendorcode'], $product->getVendorCode());
         $this->assertSame($data['barcode'], $product->getBarCode());
+        $this->assertSame($data['tax'], $product->getTax());
         $this->assertSame($data['priceFirst'], $product->getPriceFirst());
         $this->assertSame($data['price'], $product->getPrice());
         $this->assertSame($data['priceWholesale'], $product->getPriceWholesale());
+        $this->assertSame($data['special'], $product->getSpecial());
         $this->assertSame($data['volume'], $product->getVolume());
         $this->assertSame($data['unit'], $product->getUnit());
         $this->assertSame($data['stock'], $product->getStock());

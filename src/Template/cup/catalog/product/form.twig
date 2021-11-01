@@ -172,7 +172,6 @@
                                             }
                                         } %}
                                     </div>
-
                                     <div class="col-md-3">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Цена продажи',
@@ -195,6 +194,20 @@
                                             'args': {
                                                 'value': item.priceWholesale|number_format(2, '.', ''),
                                                 'placeholder': '1.0',
+                                                'step': 'any',
+                                                'min': '0',
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Налог',
+                                            'type': 'number',
+                                            'name': 'tax',
+                                            'postfix': '%',
+                                            'args': {
+                                                'value': item.tax|number_format(2, '.', ''),
+                                                'placeholder': '18.0',
                                                 'step': 'any',
                                                 'min': '0',
                                             }
@@ -240,6 +253,17 @@
                                             'args': {
                                                 'option': {'null': '---'}|merge(measure),
                                                 'selected': item.unit
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Акция',
+                                            'type': 'select',
+                                            'name': 'special',
+                                            'args': {
+                                                'option': _(['no', 'yes']),
+                                                'selected': item.special ? 'yes' : 'no'
                                             }
                                         } %}
                                     </div>
