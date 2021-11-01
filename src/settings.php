@@ -1,6 +1,12 @@
 <?php declare(strict_types=1);
 
-$sha = '/' . mb_substr($_ENV['COMMIT_SHA'] ?? 'specific', 0, 7);
+$_CACHE_DIR = CACHE_DIR . '/' . mb_substr($_ENV['COMMIT_SHA'] ?? 'specific', 0, 7);
+
+// check if cache folder exists
+if (!is_dir($_CACHE_DIR)) {
+    mkdir($_CACHE_DIR, 755);
+}
+
 $settings = [
     // Secret salt
     'secret' => [
@@ -15,7 +21,7 @@ $settings = [
                 PLUGIN_DIR,
             ],
             'auto_generate_proxies' => true,
-            'proxy_dir' => CACHE_DIR . $sha . '/proxies',
+            'proxy_dir' => $_CACHE_DIR . '/proxies',
             'cache' => null,
         ],
 
@@ -30,7 +36,7 @@ $settings = [
 
     // Twig settings
     'twig' => [
-        'caches_path' => CACHE_DIR . $sha,
+        'caches_path' => $_CACHE_DIR,
     ],
 
     // Monolog settings
@@ -89,7 +95,7 @@ switch (!isset($settings['settings']['displayErrorDetails']) || $settings['setti
 
     case false:
         // set router cache file if display error is negative
-        $settings['settings']['routerCacheFile'] = CACHE_DIR . $sha . '/routes.cache.php';
+        $settings['settings']['routerCacheFile'] = $_CACHE_DIR . '/routes.cache.php';
 
         // enable Tracy panel
         \Tracy\Debugger::enable(\Tracy\Debugger::PRODUCTION, LOG_DIR);
