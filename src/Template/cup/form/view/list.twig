@@ -29,7 +29,6 @@
                             <thead>
                                 <tr>
                                     <th>Дата получения</th>
-                                    <th width="25%">Идентификатор</th>
                                     <th width="10%" class="text-center no-sorting"></th>
                                 </tr>
                             </thead>
@@ -39,7 +38,6 @@
                                         <td data-order="{{ item.date.getTimestamp() }}">
                                             {{ item.date|df('d.m.Y H:i:s') }}
                                         </td>
-                                        <td>{{ item.uuid }}</td>
                                         <td class="text-center">
                                             <form action="/cup/form/{{ form.uuid }}/view/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить запись?');">
                                                 <div class="btn-group">
