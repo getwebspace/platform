@@ -57,7 +57,7 @@ abstract class AbstractComponent
             if ($this->container) {
                 \RunTracy\Helpers\Profiler\Profiler::start('parameters');
                 static::$parameters = ParameterService::getWithContainer($this->container)->read();
-                \RunTracy\Helpers\Profiler\Profiler::finish('%s', static::$parameters->count() ?? 'null');
+                \RunTracy\Helpers\Profiler\Profiler::finish('%s', static::$parameters ? static::$parameters->count() : 'null');
             }
         }
 
