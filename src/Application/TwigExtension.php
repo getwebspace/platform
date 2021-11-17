@@ -543,7 +543,7 @@ class TwigExtension extends AbstractExtension
 
         $criteria['status'] = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
         $catalogProductService = CatalogProductService::getWithContainer($this->container);
-        $result =  $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
+        $result = $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
 
         \RunTracy\Helpers\Profiler\Profiler::finish('%s', $result->count());
 

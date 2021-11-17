@@ -18,7 +18,7 @@ class UserFileRelation extends FileRelation
      */
     protected User $user;
 
-    public function setEntity(AbstractEntity $entity): UserFileRelation
+    public function setEntity(AbstractEntity $entity): self
     {
         if (is_a($entity, User::class)) {
             $this->entity_uuid = $entity->getUuid();

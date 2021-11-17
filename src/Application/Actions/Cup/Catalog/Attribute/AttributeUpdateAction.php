@@ -3,7 +3,6 @@
 namespace App\Application\Actions\Cup\Catalog\Attribute;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
-use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
 
 class AttributeUpdateAction extends CatalogAction

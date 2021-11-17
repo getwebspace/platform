@@ -18,7 +18,7 @@ class PageFileRelation extends FileRelation
      */
     protected Page $page;
 
-    public function setEntity(AbstractEntity $entity): PageFileRelation
+    public function setEntity(AbstractEntity $entity): self
     {
         if (is_a($entity, Page::class)) {
             $this->entity_uuid = $entity->getUuid();

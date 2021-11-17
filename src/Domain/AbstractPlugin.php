@@ -127,8 +127,6 @@ abstract class AbstractPlugin extends AbstractComponent
 
     /**
      * Add plugin setting field
-     *
-     * @param array $params
      */
     protected function addSettingsField(array $params = []): void
     {
@@ -164,8 +162,6 @@ abstract class AbstractPlugin extends AbstractComponent
 
     /**
      * Add toolbar button
-     *
-     * @param array $params
      */
     protected function addToolbarItem(array $params = []): void
     {
@@ -253,8 +249,6 @@ abstract class AbstractPlugin extends AbstractComponent
     }
 
     /**
-     * @param string $template
-     *
      * @throws HttpBadRequestException
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      */

@@ -165,9 +165,6 @@ abstract class AbstractAction extends AbstractComponent
         return $this->args[$name];
     }
 
-    /**
-     * @return string
-     */
     protected function getRequestRemoteIP(): string
     {
         return $this->request->getServerParam(
@@ -295,8 +292,6 @@ abstract class AbstractAction extends AbstractComponent
 
     /**
      * For upload file from POST body
-     *
-     * @param string $filename
      */
     protected function getFileFromBody(string $filename = ''): ?File
     {
@@ -360,8 +355,6 @@ abstract class AbstractAction extends AbstractComponent
     }
 
     /**
-     * @param string $template
-     *
      * @throws HttpBadRequestException
      * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
      */

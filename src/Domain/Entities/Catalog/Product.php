@@ -316,6 +316,8 @@ class Product extends AbstractEntity
     protected bool $special = false;
 
     /**
+     * @param mixed $value
+     *
      * @return $this
      */
     public function setSpecial($value)

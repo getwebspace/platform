@@ -18,7 +18,7 @@ class CatalogProductFileRelation extends FileRelation
      */
     protected CatalogProduct $catalog_product;
 
-    public function setEntity(AbstractEntity $entity): CatalogProductFileRelation
+    public function setEntity(AbstractEntity $entity): self
     {
         if (is_a($entity, CatalogProduct::class)) {
             $this->entity_uuid = $entity->getUuid();

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Domain\Traits;
 
@@ -12,20 +12,15 @@ trait MacroableTrait
 {
     /**
      * The registered string macros.
-     *
-     * @var array
      */
     protected static array $macros = [];
 
     /**
      * Mix another object into the class.
      *
-     * @param object $mixin
-     *
      * @throws ReflectionException
-     * @return void
      */
-    public static function mixin(object $mixin)
+    public static function mixin(object $mixin): void
     {
         $methods = (new ReflectionClass($mixin))->getMethods(
             ReflectionMethod::IS_PUBLIC | ReflectionMethod::IS_PROTECTED
@@ -39,12 +34,9 @@ trait MacroableTrait
     /**
      * Register a custom macro.
      *
-     * @param string          $name
-     * @param object|callable $macro
-     *
-     * @return void
+     * @param callable|object $macro
      */
-    public static function macro(string $name, $macro)
+    public static function macro(string $name, $macro): void
     {
         static::$macros[$name] = $macro;
     }
@@ -52,10 +44,8 @@ trait MacroableTrait
     /**
      * Dynamically handle calls to the class.
      *
-     * @param string $method
-     * @param array  $parameters
-     *
      * @throws BadMethodCallException
+     *
      * @return mixed
      */
     public static function __callStatic(string $method, array $parameters)
@@ -76,10 +66,6 @@ trait MacroableTrait
 
     /**
      * Checks if macro is registered.
-     *
-     * @param string $name
-     *
-     * @return bool
      */
     public static function hasMacro(string $name): bool
     {
@@ -89,10 +75,8 @@ trait MacroableTrait
     /**
      * Dynamically handle calls to the class.
      *
-     * @param string $method
-     * @param array  $parameters
-     *
      * @throws BadMethodCallException
+     *
      * @return mixed
      */
     public function __call(string $method, array $parameters)
