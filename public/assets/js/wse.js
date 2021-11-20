@@ -14,16 +14,16 @@ if (window.loader === undefined) {
             
             let el;
             switch (true) {
-                case url.includes('.js'): {
-                    el = document.createElement('script');
-                    el.src = url;
-                    el.onload = () => setTimeout(resolve, 30);
-                    break;
-                }
-                case url.includes('.css'): {
+                case url.endsWith('.css') || url.includes('.css'): {
                     el = document.createElement('link');
                     el.rel = 'stylesheet';
                     el.href = url;
+                    el.onload = () => setTimeout(resolve, 30);
+                    break;
+                }
+                case url.endsWith('.js') || url.includes('.js'): {
+                    el = document.createElement('script');
+                    el.src = url;
                     el.onload = () => setTimeout(resolve, 30);
                     break;
                 }
