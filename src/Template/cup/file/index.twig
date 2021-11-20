@@ -27,7 +27,7 @@
                                 <th>Имя</th>
                                 <th width="10%">Размер</th>
                                 <th width="15%">Дата создания</th>
-                                <th width="10%" class="text-center"></th>
+                                <th width="15%" class="text-center"></th>
                             </tr>
                         {% endblock %}
 
@@ -40,9 +40,9 @@
                                             <i class="fas fa-external-link-alt"></i>
                                         </a>
                                     </td>
-                                    <td>{{ item.getFileSize() }}</td>
-                                    <td data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i:s') }}</td>
-                                    <td class="text-center">
+                                    <td width="10%">{{ item.getFileSize() }}</td>
+                                    <td width="15%" data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i:s') }}</td>
+                                    <td width="15%" class="text-center">
                                         <form action="/cup/file/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить файл?');">
                                             <div class="btn-group">
                                                 <button type="submit" class="btn btn-sm btn-danger">
