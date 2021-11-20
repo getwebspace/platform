@@ -24,49 +24,38 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table data-table class="table table-striped table-hover" style="width: 100%;">
-                            <thead>
+                    {% embed 'mixin/datatable.twig' %}
+                        {% block thead %}
+                            <tr>
+                                <th>{{ 'Заголовок'|locale }}</th>
+                                <th width="15%">{{ 'Дата публикации'|locale }}</th>
+                                <th width="15%" class="text-center"></th>
+                            </tr>
+                        {% endblock %}
+
+                        {% block tbody %}
+                            {% for item in list %}
                                 <tr>
-                                    <th>{{ 'Заголовок'|locale }}</th>
-                                    <th width="20%">{{ 'Ссылка'|locale }}</th>
-                                    <th width="15%">{{ 'Дата публикации'|locale }}</th>
-                                    <th width="15%" class="text-center no-sorting"></th>
+                                    <td>{{ item.title }}</td>
+                                    <td width="15%" data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i') }}</td>
+                                    <td width="15%" class="text-center">
+                                        <form action="/cup/page/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Вы действительно хотите удалить страницу?'|locale }}');">
+                                            <div class="btn-group">
+                                                <a href="/cup/page/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
+                                                    <i class="fas fa-fw fa-edit"></i>
+                                                    <span class="d-none d-md-inline-block">{{ 'Изменить'|locale }}</span>
+                                                </a>
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-fw fa-trash-alt"></i>
+                                                    <span class="d-none d-md-inline-block">{{ 'Удалить'|locale }}'</span>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {% for item in list %}
-                                    <tr>
-                                        <td>{{ item.title }}</td>
-                                        <td>
-                                            {% include 'cup/form.twig' with {
-                                                'type': 'text',
-                                                'args': {
-                                                    'value': '/' ~ item.address,
-                                                    'placeholder': 'contact-form',
-                                                }
-                                            } %}
-                                        </td>
-                                        <td data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i') }}</td>
-                                        <td class="text-center">
-                                            <form action="/cup/page/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Вы действительно хотите удалить страницу?'|locale }}');">
-                                                <div class="btn-group">
-                                                    <a href="/cup/page/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
-                                                        <i class="fas fa-fw fa-edit"></i>
-                                                        <span class="d-none d-md-inline-block">{{ 'Изменить'|locale }}</span>
-                                                    </a>
-                                                    <button type="submit" class="btn btn-sm btn-danger">
-                                                        <i class="fas fa-fw fa-trash-alt"></i>
-                                                        <span class="d-none d-md-inline-block">{{ 'Удалить'|locale }}'</span>
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
                 </div>
             </div>
         </div>
