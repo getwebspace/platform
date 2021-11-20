@@ -199,7 +199,7 @@
                             </div>
                             <div class="name">{{ item.username }}</div>
                             <div class="text-muted">{{ item.uuid }}</div>
-                            <div class="text-muted">{{ item.external_id }}</div>
+                            <div class="text-muted">{{ item.external_id ? '['~ item.external_id ~']' }}</div>
                         </div>
                     </div>
                     <div class="card-footer">
