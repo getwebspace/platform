@@ -6,6 +6,7 @@ return [
     // ***
 
     'Выход' => 'Exit',
+    'Профиль' => 'Profile',
     'Панель управления' => 'Control Panel',
     'Разделы' => 'Sections',
     'Публикации' => 'Publications',
