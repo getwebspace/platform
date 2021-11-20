@@ -24,7 +24,7 @@
     </table>
     <div data-table-scroll="{{ tableId }}" class="clusterize-scroll" style="max-height: 70vh!important; overflow: auto;">
         <table class="table table-striped table-hover w-100">
-            <tbody data-table-content="{{ tableId }}" class="clusterize-content">
+            <tbody data-table-content="{{ tableId }}" class="clusterize-content" style="display: none;">
                 {% block tbody %}
                     <tr class="clusterize-no-data">
                         <td>{{ 'Нет данных'|locale }}</td>
@@ -36,6 +36,10 @@
 </div>
 
 <script type="text/javascript">
+    let $rows;
+    document.addEventListener('DOMContentLoaded', () => {
+        $rows = $('[data-table-content="{{ tableId }}"] tr:not(.clusterize-no-data)').detach();
+    });
     document.addEventListener('DOMContentLoaded', async () => {
         await window.loader([
             'https://cdnjs.cloudflare.com/ajax/libs/clusterize.js/0.18.0/clusterize.min.css',
@@ -43,8 +47,7 @@
         ]);
 
         let $scroll = $('[data-table-scroll="{{ tableId }}"]'),
-            $content = $('[data-table-content="{{ tableId }}"]'),
-            $rows = $content.find('tr:not(.clusterize-no-data)').detach();
+            $content = $('[data-table-content="{{ tableId }}"]');
 
         // init table
         let clusterize = new Clusterize({
@@ -59,9 +62,9 @@
             let query = e.currentTarget.value.toLowerCase(),
                 result = [];
 
-            for (let i = 0; i < rows.length; i++) {
-                if (rows[i].innerText.toLowerCase().includes(query)) {
-                    result.push(rows[i].outerHTML);
+            for (let i = 0; i < $rows.length; i++) {
+                if ($rows[i].innerText.toLowerCase().includes(query)) {
+                    result.push($rows[i].outerHTML);
                 }
             }
 
