@@ -4,7 +4,7 @@ $_CACHE_DIR = CACHE_DIR . '/' . mb_substr($_ENV['COMMIT_SHA'] ?? 'specific', 0, 
 
 // check if cache folder exists
 if (!is_dir($_CACHE_DIR)) {
-    if (@mkdir($_CACHE_DIR, 755) === false) {
+    if (@mkdir($_CACHE_DIR) === false) {
         $_CACHE_DIR = CACHE_DIR;
     }
 }

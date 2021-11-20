@@ -103,28 +103,29 @@ class SystemPageAction extends AbstractAction
     protected function self_check(): array
     {
         $fileAccess = [
-            BASE_DIR => 755,
-            BIN_DIR => 555,
-            CONFIG_DIR => 555,
-            PLUGIN_DIR => 777,
-            PUBLIC_DIR => 755,
-            UPLOAD_DIR => 777,
-            SRC_DIR => 755,
-            SRC_LOCALE_DIR => 755,
-            VIEW_DIR => 755,
-            VIEW_ERROR_DIR => 755,
-            THEME_DIR => 777,
-            VAR_DIR => 777,
-            CACHE_DIR => 777,
-            LOG_DIR => 777,
-            VENDOR_DIR => 755,
+            BASE_DIR => 0755,
+            BIN_DIR => 0755,
+            CONFIG_DIR => 0755,
+            PLUGIN_DIR => 0777,
+            PUBLIC_DIR => 0755,
+            RESOURCE_DIR => 0755,
+            UPLOAD_DIR => 0776,
+            SRC_DIR => 0755,
+            SRC_LOCALE_DIR => 0755,
+            VIEW_DIR => 0755,
+            VIEW_ERROR_DIR => 0755,
+            THEME_DIR => 0776,
+            VAR_DIR => 0777,
+            CACHE_DIR => 0777,
+            LOG_DIR => 0777,
+            VENDOR_DIR => 0755,
         ];
 
         foreach ($fileAccess as $folder => $value) {
             if (realpath($folder)) {
-                $chmod_value = @decoct(@fileperms($folder)) % 1000;
-
-                if ($chmod_value === $value) {
+                if ($value === (@fileperms($folder) & 0777)) {
+                    $fileAccess[$folder] = true;
+                } elseif (chmod($folder, $value)) {
                     $fileAccess[$folder] = true;
                 }
             }

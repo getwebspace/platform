@@ -78,10 +78,11 @@ RUN set -x \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && rm /var/log/lastlog /var/log/faillog \
+    && chown -R www-data:www-data ${PLATFORM_HOME} \
+    && chmod -R 0755 ${PLATFORM_HOME} \
     && chmod -R 0777 ${PLATFORM_HOME}/plugin \
-    && chmod -R 0777 ${PLATFORM_HOME}/public/resource \
-    && chmod -R 0777 ${PLATFORM_HOME}/public/uploads \
-    && chmod -R 0777 ${PLATFORM_HOME}/theme \
+    && chmod -R 0776 ${PLATFORM_HOME}/public/uploads \
+    && chmod -R 0776 ${PLATFORM_HOME}/theme \
     && chmod -R 0777 ${PLATFORM_HOME}/var
 
 EXPOSE 80/tcp 443/tcp
