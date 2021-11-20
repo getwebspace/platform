@@ -109,25 +109,6 @@ $(() => {
         });
     });
     
-    $('[data-table]').DataTable({
-        'deferRender': true,
-        'stateSave': true,
-        'language': {
-            'search': 'Поиск:',
-            'lengthMenu': 'Отображать _MENU_ строк на страницу',
-            'zeroRecords': 'Нет результатов',
-            'info': 'Страница _PAGE_ из _PAGES_',
-            'infoEmpty': 'Нет записей',
-            'infoFiltered': '(проверено в _MAX_ результатах)',
-            'paginate': {
-                'first': 'В начало',
-                'previous': 'Сюда',
-                'next': 'Туда',
-                'last': 'В конец'
-            },
-        }
-    });
-    
     // publication preview
     $('form [data-click="preview"]').on('click', function (e) {
         e.preventDefault();
@@ -358,7 +339,7 @@ $(() => {
     {
         let
             $table = $('[data-table="order"]'),
-            table = $table.DataTable(),
+            //table = $table.DataTable(),
             $modal = $('[data-order-modal-products].modal'),
             $category = $modal.find('[type="select"][name="category"]'),
             $product = $modal.find('[type="select"][name="product"]'),
@@ -435,10 +416,10 @@ $(() => {
                         .val($quantity.val())
                     ;
                     
-                    table.row.add([$selected.text(), $selected.data('price'), $quantity.val()])
-                        .draw(true)
-                        .nodes().to$()
-                        .find('td:last-child').html($('<div class="form-group">').append($input));
+                    // table.row.add([$selected.text(), $selected.data('price'), $quantity.val()])
+                    //     .draw(true)
+                    //     .nodes().to$()
+                    //     .find('td:last-child').html($('<div class="form-group">').append($input));
                 } else {
                     $find.val(parseFloat($find.val()) + parseFloat($quantity.val()));
                 }
