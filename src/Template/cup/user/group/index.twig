@@ -24,50 +24,49 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table data-table class="table table-striped table-hover" style="width: 100%;">
-                            <thead>
+                    {% embed 'mixin/datatable.twig' %}
+                        {% block thead %}
+                            <tr>
+                                <th>Название</th>
+                                <th width="10%">Пользователей</th>
+                                <th width="20%">Права доступа</th>
+                                <th width="15%" class="text-center"></th>
+                            </tr>
+                        {% endblock %}
+
+                        {% block tbody %}
+                            {% for group in groups %}
+                                {% set users_in_group = users.where('group', group)|count %}
                                 <tr>
-                                    <th>Название</th>
-                                    <th width="10%">Пользователей</th>
-                                    <th width="20%">Права доступа</th>
-                                    <th width="15%" class="text-center no-sorting"></th>
+                                    <td>{{ group.title }}</td>
+                                    <td width="10%" class="text-center">{{ users_in_group }}</td>
+                                    <td width="20%">
+                                        <code>
+                                            {% if group.access %}
+                                                Прав доступно: {{ group.access|count }}
+                                            {% else %}
+                                                Без прав
+                                            {% endif %}
+                                        </code>
+                                    </td>
+                                    <td width="15%" class="text-center">
+                                        <form action="/cup/user/group/{{ group.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить группу?');">
+                                            <div class="btn-group">
+                                                <a href="/cup/user/group/{{ group.uuid }}/edit" class="btn btn-sm btn-info">
+                                                    <i class="fas fa-fw fa-edit"></i>
+                                                    <span class="d-none d-md-inline-block">Изменить</span>
+                                                </a>
+                                                <button type="{{ users_in_group ? 'button' : 'submit' }}" class="btn btn-sm btn-danger" {{ users_in_group ? 'data-toggle="tooltip" data-placement="left" title="Нельзя удалить группу, пока в ней есть пользователи"' }}>
+                                                    <i class="fas fa-fw fa-trash-alt"></i>
+                                                    <span class="d-none d-md-inline-block">Удалить</span>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {% for group in groups %}
-                                    {% set users_in_group = users.where('group', group)|count %}
-                                    <tr>
-                                        <td>{{ group.title }}</td>
-                                        <td class="text-center">{{ users_in_group }}</td>
-                                        <td>
-                                            <code>
-                                                {% if group.access %}
-                                                    Прав доступно: {{ group.access|count }}
-                                                {% else %}
-                                                    Без прав
-                                                {% endif %}
-                                            </code>
-                                        </td>
-                                        <td class="text-center">
-                                            <form action="/cup/user/group/{{ group.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить группу?');">
-                                                <div class="btn-group">
-                                                    <a href="/cup/user/group/{{ group.uuid }}/edit" class="btn btn-sm btn-info">
-                                                        <i class="fas fa-fw fa-edit"></i>
-                                                        <span class="d-none d-md-inline-block">Изменить</span>
-                                                    </a>
-                                                    <button type="{{ users_in_group ? 'button' : 'submit' }}" class="btn btn-sm btn-danger" {{ users_in_group ? 'data-toggle="tooltip" data-placement="left" title="Нельзя удалить группу, пока в ней есть пользователи"' }}>
-                                                        <i class="fas fa-fw fa-trash-alt"></i>
-                                                        <span class="d-none d-md-inline-block">Удалить</span>
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
                 </div>
             </div>
         </div>

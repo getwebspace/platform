@@ -34,7 +34,7 @@
                         {% endblock %}
 
                         {% block tbody %}
-                            {% for item in list %}
+                            {% for item in list.sortByDesc('date') %}
                                 <tr>
                                     <td>{{ item.title }}</td>
                                     <td width="15%" data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i') }}</td>

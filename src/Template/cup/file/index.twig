@@ -21,42 +21,41 @@
                 </div>
 
                 <div class="card-body">
-                    <div class="table-responsive">
-                        <table data-table class="table table-striped table-hover" style="width: 100%;">
-                            <thead>
+                    {% embed 'mixin/datatable.twig' %}
+                        {% block thead %}
+                            <tr>
+                                <th>Имя</th>
+                                <th width="10%">Размер</th>
+                                <th width="15%">Дата создания</th>
+                                <th width="10%" class="text-center"></th>
+                            </tr>
+                        {% endblock %}
+
+                        {% block tbody %}
+                            {% for item in list.sortByDesc('date') %}
                                 <tr>
-                                    <th>Имя</th>
-                                    <th width="10%">Размер</th>
-                                    <th width="15%">Дата создания</th>
-                                    <th width="10%" class="text-center no-sorting"></th>
+                                    <td>
+                                        <a href="{{ item.getPublicPath() }}" target="_blank">
+                                            {{ item.getFileName() }}
+                                            <i class="fas fa-external-link-alt"></i>
+                                        </a>
+                                    </td>
+                                    <td>{{ item.getFileSize() }}</td>
+                                    <td data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i:s') }}</td>
+                                    <td class="text-center">
+                                        <form action="/cup/file/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить файл?');">
+                                            <div class="btn-group">
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-fw fa-trash-alt"></i>
+                                                    <span class="d-none d-md-inline-block">Удалить</span>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                {% for item in list %}
-                                    <tr>
-                                        <td>
-                                            <a href="{{ item.getPublicPath() }}" target="_blank">
-                                                {{ item.getFileName() }}
-                                                <i class="fas fa-external-link-alt"></i>
-                                            </a>
-                                        </td>
-                                        <td>{{ item.getFileSize() }}</td>
-                                        <td data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i:s') }}</td>
-                                        <td class="text-center">
-                                            <form action="/cup/file/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить файл?');">
-                                                <div class="btn-group">
-                                                    <button type="submit" class="btn btn-sm btn-danger">
-                                                        <i class="fas fa-fw fa-trash-alt"></i>
-                                                        <span class="d-none d-md-inline-block">Удалить</span>
-                                                    </button>
-                                                </div>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
                 </div>
             </div>
         </div>
