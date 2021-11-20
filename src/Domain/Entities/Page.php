@@ -191,7 +191,9 @@ class Page extends AbstractEntity
      */
     public function setTemplate(string $template)
     {
-        $this->template = $template;
+        if ($this->checkStrLenMax($template, 50)) {
+            $this->template = $template;
+        }
 
         return $this;
     }
