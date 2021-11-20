@@ -90,7 +90,7 @@ class FormAction extends AbstractAction
                 // prepare attachments
                 $attachments = [];
                 $json = [];
-                if ($this->parameter('file_is_enabled', 'no') === 'yes') {
+                if ($this->parameter('file_is_enabled', 'yes') === 'yes') {
                     $formData = $this->processEntityFiles($formData);
 
                     foreach ($formData->getFiles() as $file) {

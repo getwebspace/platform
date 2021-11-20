@@ -10,7 +10,7 @@ class FileUploadAction extends FileAction
 
         $models = [];
 
-        if ($this->parameter('file_is_enabled', 'no') === 'yes') {
+        if ($this->parameter('file_is_enabled', 'yes') === 'yes') {
             foreach ($this->request->getUploadedFiles() as $field => $files) {
                 if (!is_array($files)) {
                     $files = [$files]; // allow upload one file

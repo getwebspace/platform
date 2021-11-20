@@ -246,7 +246,7 @@ abstract class AbstractAction extends AbstractComponent
     {
         $uploaded = [];
 
-        if ($this->parameter('file_is_enabled', 'no') === 'yes') {
+        if ($this->parameter('file_is_enabled', 'yes') === 'yes') {
             $fileService = FileService::getWithContainer($this->container);
 
             /** @var \Psr\Http\Message\UploadedFileInterface[] $files */
