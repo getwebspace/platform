@@ -123,10 +123,10 @@ class SystemPageAction extends AbstractAction
 
         foreach ($fileAccess as $folder => $value) {
             if (realpath($folder)) {
-                if ($value === (@fileperms($folder) & 0777)) {
+                if ($value === (@fileperms($folder) & 0777) || @chmod($folder, $value)) {
                     $fileAccess[$folder] = true;
-                } elseif (chmod($folder, $value)) {
-                    $fileAccess[$folder] = true;
+                } else {
+                    $fileAccess[$folder] = decoct($value);
                 }
             }
         }
