@@ -25,7 +25,7 @@ class ListAction extends AbstractAction
                     $category = $categories->firstWhere('address', $params['category']);
                     $childrenCategories = $category->getNested($categories)->pluck('uuid')->all();
 
-                    return $this->respond($category->template['list'], [
+                    return $this->respond($category->template['list'] ?? 'publication.list.twig', [
                         'categories' => $categories->where('public', true),
                         'category' => $category,
                         'publications' => $publicationService->read([
@@ -47,7 +47,7 @@ class ListAction extends AbstractAction
                         $publication = $publicationService->read(['address' => $params['address']]);
                         $category = $categories->firstWhere('uuid', $publication->getCategory());
 
-                        return $this->respond($category->template['full'], [
+                        return $this->respond($category->template['full'] ?? 'publication.full.twig', [
                             'categories' => $categories->where('public', true),
                             'category' => $category,
                             'publication' => $publication,
