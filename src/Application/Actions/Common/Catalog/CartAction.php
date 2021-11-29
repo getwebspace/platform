@@ -46,7 +46,7 @@ class CartAction extends CatalogAction
 
             if ($this->isRecaptchaChecked()) {
                 // todo try/catch
-                $order = $this->catalogOrderService->create($data);
+                $order = static::$storage['order'] = $this->catalogOrderService->create($data);
                 $this->catalogOrderProductService->proccess(
                     $order,
                     $this->request->getParam('products', [])

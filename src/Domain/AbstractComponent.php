@@ -33,6 +33,13 @@ abstract class AbstractComponent
         }
     }
 
+    /**
+     * Global storage across engine
+     * @var array
+     * @todo осмыслить это еще раз
+     */
+    protected static array $storage = [];
+
     private static $parameters;
 
     /**
