@@ -10,7 +10,7 @@ class CartDoneAction extends CatalogAction
      * @throws \Doctrine\DBAL\DBALException
      * @throws \App\Domain\Exceptions\HttpBadRequestException
      */
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('order') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('order'))) {
             try {
@@ -26,6 +26,6 @@ class CartDoneAction extends CatalogAction
             }
         }
 
-        return $this->response->withRedirect('/cart');
+        return $this->respondWithRedirect('/cart');
     }
 }

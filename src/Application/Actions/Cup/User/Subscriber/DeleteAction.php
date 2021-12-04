@@ -7,7 +7,7 @@ use App\Domain\Service\User\Exception\UserNotFoundException;
 
 class DeleteAction extends UserAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
             $userSubscriber = $this->userSubscriberService->read(['uuid' => $this->resolveArg('uuid')]);
@@ -21,6 +21,6 @@ class DeleteAction extends UserAction
             }
         }
 
-        return $this->response->withRedirect('/cup/user/subscriber');
+        return $this->respondWithRedirect('/cup/user/subscriber');
     }
 }

@@ -8,7 +8,7 @@ use App\Domain\Repository\FileRepository;
 use App\Domain\Service\File\Exception\FileAlreadyExistsException;
 use App\Domain\Service\File\Exception\FileNotFoundException;
 use Illuminate\Support\Collection;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface as Uuid;
 
 class FileService extends AbstractService
 {
@@ -33,7 +33,7 @@ class FileService extends AbstractService
      */
     public function createFromPath(string $path, string $name_with_ext = null)
     {
-        \RunTracy\Helpers\Profiler\Profiler::start('file:getFromPath (%s)', $path);
+        \Netpromotion\Profiler\Profiler::start('file:getFromPath (%s)', $path);
 
         $saved = false;
 
@@ -60,7 +60,7 @@ class FileService extends AbstractService
             $dir = UPLOAD_DIR . '/' . $salt . '/' . File::prepareName($name_with_ext ? $name_with_ext : basename($path));
 
             if (!is_dir(dirname($dir))) {
-                mkdir(dirname($dir), 0777, true);
+                mkdir(dirname($dir), 0o777, true);
             }
 
             if (rename($path, $dir) && chmod($dir, 444)) {
@@ -101,12 +101,12 @@ class FileService extends AbstractService
      */
     protected static function getFileFromRemote($path)
     {
-        $headers = get_headers($path, 1);
+        $headers = get_headers($path, true);
         $code = (int) mb_substr($headers[0], 9, 3);
 
         if ($code === 302) {
             $url = parse_url($path);
-            $location = $headers['Location'];
+            $location = $headers['Location'] ?? '';
 
             return static::getFileFromRemote(($url['scheme'] ?? 'http') . '://' . $url['host'] . '/' . $location);
         }
@@ -236,7 +236,7 @@ class FileService extends AbstractService
     public function update($entity, array $data = []): File
     {
         switch (true) {
-            case is_string($entity) && Uuid::isValid($entity):
+            case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
                 $entity = $this->service->findOneByUuid((string) $entity);
 
@@ -301,7 +301,7 @@ class FileService extends AbstractService
     public function delete($entity): bool
     {
         switch (true) {
-            case is_string($entity) && Uuid::isValid($entity):
+            case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
                 $entity = $this->service->findOneByUuid((string) $entity);
 

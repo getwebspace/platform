@@ -4,9 +4,9 @@ namespace App\Application\Actions\Cup\Catalog;
 
 class CatalogImportAction extends CatalogAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
-        if ($this->request->isPost()) {
+        if ($this->isPost()) {
             // Fields
             $fields = array_map('trim', explode(PHP_EOL, $this->parameter('catalog_import_columns', '')));
 

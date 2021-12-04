@@ -10,13 +10,13 @@ use App\Domain\Service\Task\TaskService;
 
 class RefreshAction extends AbstractAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         /** @var User $user */
         $user = $this->request->getAttribute('user', false);
         $notificationService = NotificationService::getWithContainer($this->container);
 
-        $exists = (array) $this->request->getParam('tasks');
+        $exists = (array) $this->getParam('tasks');
         $taskService = TaskService::getWithContainer($this->container);
         $tasks = collect()
             ->merge($taskService->read(['uuid' => array_keys($exists)]))
@@ -54,7 +54,7 @@ class RefreshAction extends AbstractAction
                     'order' => ['date' => 'asc'],
                     'limit' => 25,
                 ])
-                ->whereNotIn('uuid', (array) $this->request->getParam('notifications'))
+                ->whereNotIn('uuid', (array) $this->getParam('notifications'))
                 ->map(fn ($item) => array_except($item->toArray(), ['params', 'user_uuid']))
                 ->values(),
 

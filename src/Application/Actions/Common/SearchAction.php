@@ -13,10 +13,10 @@ use App\Domain\Types\Catalog\ProductStatusType;
 
 class SearchAction extends AbstractAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
-        $type = $this->request->getParam('type', $this->request->getParam('t', ''));
-        $query = trim(str_escape($this->request->getParam('query', $this->request->getParam('q', ''))));
+        $type = $this->getParam('type', $this->getParam('t', ''));
+        $query = trim(str_escape($this->getParam('query', $this->getParam('q', ''))));
         $data = Search::isPossible() ? $this->advanced($query) : $this->primitive($query);
 
         return $this->respond($this->parameter('search_template', 'search.twig'), [
@@ -27,16 +27,16 @@ class SearchAction extends AbstractAction
 
     private function primitive(string $query)
     {
-        if ($query && !$this->request->getParam('query_strong', $this->request->getParam('qs'))) {
+        if ($query && !$this->getParam('query_strong', $this->getParam('qs'))) {
             $query = '%' . $query . '%';
         }
-        $limit = (int) $this->request->getParam('limit', $this->parameter('search_limit', 10));
+        $limit = (int) $this->getParam('limit', $this->parameter('search_limit', 10));
 
         $count = 0;
         $result = [];
 
         if ($query) {
-            \RunTracy\Helpers\Profiler\Profiler::start('search', ['index' => false]);
+            \Netpromotion\Profiler\Profiler::start('search', ['index' => false]);
 
             $entities = [
                 'page' => PageService::getWithContainer($this->container),
@@ -54,7 +54,7 @@ class SearchAction extends AbstractAction
                     $qb->andWhere('LOWER(e.title) LIKE LOWER(:title)');
                 }
 
-                $qb->setParameter('title', $query, \Doctrine\DBAL\Types\Type::STRING);
+                $qb->setParameter('title', $query, \Doctrine\DBAL\ParameterType::STRING);
 
                 switch (true) {
                     case $type === 'catalog_category':
@@ -107,7 +107,7 @@ class SearchAction extends AbstractAction
                 }
             }
 
-            \RunTracy\Helpers\Profiler\Profiler::finish('search', ['index' => false]);
+            \Netpromotion\Profiler\Profiler::finish('search', ['index' => false]);
         }
 
         return ['count' => $count, 'result' => $result];
@@ -115,16 +115,16 @@ class SearchAction extends AbstractAction
 
     private function advanced(string $query)
     {
-        if ($query && !$this->request->getParam('query_strong', $this->request->getParam('qs'))) {
+        if ($query && !$this->getParam('query_strong', $this->getParam('qs'))) {
             $query = implode(' ', array_map(fn ($word) => (mb_strlen($word) > 3 ? $word . '*' : $word), explode(' ', $query)));
         }
-        $limit = (int) $this->request->getParam('limit', $this->parameter('search_limit', 10));
+        $limit = (int) $this->getParam('limit', $this->parameter('search_limit', 10));
 
         $count = 0;
         $result = [];
 
         if ($query) {
-            \RunTracy\Helpers\Profiler\Profiler::start('search', ['index' => true]);
+            \Netpromotion\Profiler\Profiler::start('search', ['index' => true]);
 
             $entities = [
                 'page' => PageService::getWithContainer($this->container),
@@ -172,7 +172,7 @@ class SearchAction extends AbstractAction
                 }
             }
 
-            \RunTracy\Helpers\Profiler\Profiler::finish('search', ['index' => true]);
+            \Netpromotion\Profiler\Profiler::finish('search', ['index' => true]);
         }
 
         return ['count' => $count, 'result' => $result];

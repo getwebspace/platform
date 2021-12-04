@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-/** @var \Slim\Container $container */
+/** @var \DI\Container $container */
 
 // file for setup plugins
 // by $plugins register your plugin

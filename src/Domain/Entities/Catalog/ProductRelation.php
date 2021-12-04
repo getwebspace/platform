@@ -4,7 +4,7 @@ namespace App\Domain\Entities\Catalog;
 
 use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface as Uuid;
 
 /**
  * @ORM\Entity
@@ -18,9 +18,9 @@ class ProductRelation extends AbstractEntity
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    protected Uuid $uuid;
+    protected \Ramsey\Uuid\UuidInterface $uuid;
 
-    public function getUuid(): Uuid
+    public function getUuid(): \Ramsey\Uuid\UuidInterface
     {
         return $this->uuid;
     }
@@ -28,7 +28,7 @@ class ProductRelation extends AbstractEntity
     /**
      * @ORM\Column(type="uuid")
      */
-    protected Uuid $product_uuid;
+    protected \Ramsey\Uuid\UuidInterface $product_uuid;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Catalog\Product")
@@ -57,7 +57,7 @@ class ProductRelation extends AbstractEntity
     /**
      * @ORM\Column(type="uuid")
      */
-    protected Uuid $related_uuid;
+    protected \Ramsey\Uuid\UuidInterface $related_uuid;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Catalog\Product")

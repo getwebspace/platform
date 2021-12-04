@@ -12,7 +12,7 @@ use App\Domain\Service\Form\FormService;
 
 class FormAction extends AbstractAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         $formService = FormService::getWithContainer($this->container);
         $formDataService = FormDataService::getWithContainer($this->container);
@@ -25,12 +25,12 @@ class FormAction extends AbstractAction
                     empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest'
                 ) && !empty($_SERVER['HTTP_REFERER'])
             ) {
-                $this->response = $this->response->withRedirect($_SERVER['HTTP_REFERER']);
+                $this->response = $this->respondWithRedirect($_SERVER['HTTP_REFERER']);
             }
 
             if (!$form->getRecaptcha() || $this->isRecaptchaChecked()) {
                 $remote = $_SERVER['HTTP_ORIGIN'] ?? $_SERVER['HTTP_REFERER'] ?? false;
-                $data = $this->request->getParams();
+                $data = $this->getParams();
 
                 // CORS header sets
                 foreach ($form->getOrigin() as $origin) {
@@ -72,7 +72,7 @@ class FormAction extends AbstractAction
                     $body = $this->renderer->fetchFromString($form->getTemplate(), $data);
                 } else {
                     // no template, check post data for mail body
-                    if (($buf = $this->request->getParam('body', false)) !== false) {
+                    if (($buf = $this->getParam('body', false)) !== false) {
                         $body = $buf;
                     } else {
                         // json in mail

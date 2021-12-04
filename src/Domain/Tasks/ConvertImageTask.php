@@ -74,7 +74,7 @@ class ConvertImageTask extends AbstractTask
                                     $buf = array_merge($params, ['-resize x' . $pixels . '\>']);
                                     $this->logger->info('Task: convert image', ['size' => $size, 'params' => $buf]);
 
-                                    @mkdir($path, 0777, true);
+                                    @mkdir($path, 0o777, true);
                                     @exec($command . " '" . $original . "' " . implode(' ', $buf) . " '" . $path . '/' . $file->getName() . ".jpg'");
                                 } else {
                                     $this->logger->info('Task: skip, converted file already exists');

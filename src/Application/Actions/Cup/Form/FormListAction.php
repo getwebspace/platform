@@ -4,7 +4,7 @@ namespace App\Application\Actions\Cup\Form;
 
 class FormListAction extends FormAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         $list = $this->formService->read();
 

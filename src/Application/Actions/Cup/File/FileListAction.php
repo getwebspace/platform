@@ -4,7 +4,7 @@ namespace App\Application\Actions\Cup\File;
 
 class FileListAction extends FileAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         $list = $this->fileService->read();
 

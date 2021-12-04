@@ -8,19 +8,19 @@ use App\Domain\Service\User\Exception\WrongPasswordException;
 
 class LoginPageAction extends UserAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         $identifier = $this->parameter('user_login_type', 'username');
 
-        if ($this->request->isPost()) {
+        if ($this->isPost()) {
             $data = [
-                'identifier' => $this->request->getParam('identifier', ''),
-                'password' => $this->request->getParam('password', ''),
+                'identifier' => $this->getParam('identifier', ''),
+                'password' => $this->getParam('password', ''),
 
-                'agent' => $this->request->getServerParam('HTTP_USER_AGENT'),
+                'agent' => $this->getServerParam('HTTP_USER_AGENT'),
                 'ip' => $this->getRequestRemoteIP(),
 
-                'redirect' => $this->request->getParam('redirect'),
+                'redirect' => $this->getParam('redirect'),
             ];
 
             if ($this->isRecaptchaChecked()) {
@@ -39,14 +39,14 @@ class LoginPageAction extends UserAction
                         $session = $this->userSessionService->create([
                             'user' => $user,
                             'date' => 'now',
-                            'agent' => $this->request->getServerParam('HTTP_USER_AGENT'),
+                            'agent' => $this->getServerParam('HTTP_USER_AGENT'),
                             'ip' => $this->getRequestRemoteIP(),
                         ]);
                     } else {
                         // update session
                         $session = $this->userSessionService->update($session, [
                             'date' => 'now',
-                            'agent' => $this->request->getServerParam('HTTP_USER_AGENT'),
+                            'agent' => $this->getServerParam('HTTP_USER_AGENT'),
                             'ip' => $this->getRequestRemoteIP(),
                         ]);
                     }
@@ -54,7 +54,7 @@ class LoginPageAction extends UserAction
                     setcookie('uuid', $user->getUuid()->toString(), time() + \App\Domain\References\Date::YEAR, '/');
                     setcookie('session', $session->getHash(), time() + \App\Domain\References\Date::YEAR, '/');
 
-                    return $this->response->withRedirect($data['redirect'] ? $data['redirect'] : '/cup');
+                    return $this->respondWithRedirect($data['redirect'] ? $data['redirect'] : '/cup');
                 } catch (UserNotFoundException $exception) {
                     $this->addError($identifier, $exception->getMessage());
                 } catch (WrongPasswordException $exception) {

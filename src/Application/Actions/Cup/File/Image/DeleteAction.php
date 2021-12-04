@@ -6,9 +6,9 @@ use App\Application\Actions\Cup\File\FileAction;
 
 class DeleteAction extends FileAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
-        $src = $this->request->getParam('src', false);
+        $src = $this->getParam('src', false);
 
         if ($src !== false) {
             $info = pathinfo($src);

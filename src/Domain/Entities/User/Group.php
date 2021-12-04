@@ -4,7 +4,7 @@ namespace App\Domain\Entities\User;
 
 use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface as Uuid;
 
 /**
  * @ORM\Entity(repositoryClass="App\Domain\Repository\User\GroupRepository")
@@ -18,9 +18,9 @@ class Group extends AbstractEntity
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    protected Uuid $uuid;
+    protected \Ramsey\Uuid\UuidInterface $uuid;
 
-    public function getUuid(): Uuid
+    public function getUuid(): \Ramsey\Uuid\UuidInterface
     {
         return $this->uuid;
     }

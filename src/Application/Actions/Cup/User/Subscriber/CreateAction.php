@@ -8,18 +8,18 @@ use App\Domain\Service\User\Exception\WrongEmailValueException;
 
 class CreateAction extends UserAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
-        if ($this->request->isPost()) {
+        if ($this->isPost()) {
             try {
                 $this->userSubscriberService->create([
-                    'email' => $this->request->getParam('email'),
+                    'email' => $this->getParam('email'),
                 ]);
             } catch (WrongEmailValueException|EmailAlreadyExistsException $e) {
                 $this->addError('email', $e->getMessage());
             }
         }
 
-        return $this->response->withRedirect('/cup/user/subscriber');
+        return $this->respondWithRedirect('/cup/user/subscriber');
     }
 }

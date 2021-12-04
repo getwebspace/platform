@@ -7,7 +7,7 @@ use const App\Application\Actions\Cup\Catalog\INVOICE_TEMPLATE;
 
 class OrderListAction extends CatalogAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         $list = $this->catalogOrderService->read([
             'limit' => 1000,

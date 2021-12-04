@@ -1,27 +1,34 @@
 <?php declare(strict_types=1);
 
+use DI\ContainerBuilder;
+
 require __DIR__ . '/../vendor/autoload.php';
 require __DIR__ . '/../config/vars.php';
 
-/**
- * @var \Psr\Container\ContainerInterface $c
- * @var \Psr\Container\ContainerInterface $container
- */
+// instantiate PHP-DI ContainerBuilder
+$containerBuilder = new ContainerBuilder();
 
-// app container
-$c = $container = new \Slim\Container((array) require_once SRC_DIR . '/settings.php');
+// set up settings
+$settings = require SRC_DIR . '/settings.php';
+$settings($containerBuilder);
 
-RunTracy\Helpers\Profiler\Profiler::start('init dependencies');
+\Netpromotion\Profiler\Profiler::start('init dependencies');
 
 // set up dependencies
-require SRC_DIR . '/dependencies.php';
+$dependencies = require SRC_DIR . '/dependencies.php';
+$dependencies($containerBuilder);
 
-RunTracy\Helpers\Profiler\Profiler::finish('init dependencies');
-RunTracy\Helpers\Profiler\Profiler::start('init plugins');
+\Netpromotion\Profiler\Profiler::finish('init dependencies');
+
+// build PHP-DI Container instance
+$c = $container = $containerBuilder->build();
+
+\Netpromotion\Profiler\Profiler::start('init plugins');
 
 // include plugins
 require PLUGIN_DIR . '/installed.php';
 
-RunTracy\Helpers\Profiler\Profiler::finish('init plugins');
+\Netpromotion\Profiler\Profiler::finish('init plugins');
 
-$app = new \Slim\App($container);
+// instantiate the app
+$app = $container->get(\Slim\App::class);

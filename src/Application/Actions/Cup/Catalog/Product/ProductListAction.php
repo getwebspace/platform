@@ -6,7 +6,7 @@ use App\Application\Actions\Cup\Catalog\CatalogAction;
 
 class ProductListAction extends CatalogAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         $category = null;
 
@@ -21,7 +21,7 @@ class ProductListAction extends CatalogAction
                     'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
                 ]);
             } else {
-                return $this->response->withRedirect('/cup/catalog/category');
+                return $this->respondWithRedirect('/cup/catalog/category');
             }
         }
 

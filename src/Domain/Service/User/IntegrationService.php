@@ -8,7 +8,7 @@ use App\Domain\Repository\User\IntegrationRepository as UserIntegrationRepositor
 use App\Domain\Service\User\Exception\IntegrationNotFoundException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use Illuminate\Support\Collection;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface as Uuid;
 
 class IntegrationService extends AbstractService
 {
@@ -108,7 +108,7 @@ class IntegrationService extends AbstractService
     public function delete($entity): bool
     {
         switch (true) {
-            case is_string($entity) && Uuid::isValid($entity):
+            case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
                 $entity = $this->service->findOneByUuid((string) $entity);
 

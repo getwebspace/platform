@@ -4,7 +4,7 @@ namespace App\Application\Actions\Cup\Publication;
 
 class PublicationListAction extends PublicationAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         return $this->respondWithTemplate('cup/publication/index.twig', [
             'categories' => $this->publicationCategoryService->read(),

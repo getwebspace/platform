@@ -6,7 +6,7 @@ use App\Application\Actions\Cup\User\UserAction;
 
 class ForbiddenPageAction extends UserAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         return $this->respond('p403.twig')->withStatus(403);
     }

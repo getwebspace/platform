@@ -4,7 +4,7 @@ namespace App\Application\Actions\Common\File;
 
 class FileViewAction extends FileAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         // @var \App\Domain\Entities\File $file
         $file = $this->fileService->read([

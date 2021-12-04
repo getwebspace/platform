@@ -9,28 +9,28 @@ use App\Domain\Service\User\Exception\WrongPhoneValueException;
 
 class UserProfileAction extends UserAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         /** @var \App\Domain\Entities\User $user */
         $user = $this->request->getAttribute('user', false);
 
-        if ($user && $this->request->isPost()) {
+        if ($user && $this->isPost()) {
             try {
                 $this->userService->update(
                     $user,
                     [
-                        'firstname' => $this->request->getParam('firstname'),
-                        'lastname' => $this->request->getParam('lastname'),
-                        'address' => $this->request->getParam('address'),
-                        'additional' => $this->request->getParam('additional'),
-                        'email' => $this->request->getParam('email'),
-                        'allow_mail' => $this->request->getParam('allow_mail'),
-                        'phone' => $this->request->getParam('phone'),
-                        'password' => $this->request->getParam('password'),
+                        'firstname' => $this->getParam('firstname'),
+                        'lastname' => $this->getParam('lastname'),
+                        'address' => $this->getParam('address'),
+                        'additional' => $this->getParam('additional'),
+                        'email' => $this->getParam('email'),
+                        'allow_mail' => $this->getParam('allow_mail'),
+                        'phone' => $this->getParam('phone'),
+                        'password' => $this->getParam('password'),
                     ]
                 );
 
-                return $this->response->withRedirect('/user/profile');
+                return $this->respondWithRedirect('/user/profile');
             } catch (WrongEmailValueException|EmailAlreadyExistsException $e) {
                 $this->addError('email', $e->getMessage());
             } catch (WrongPhoneValueException|PhoneAlreadyExistsException $e) {

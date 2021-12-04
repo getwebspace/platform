@@ -17,30 +17,22 @@ use App\Domain\Service\Publication\PublicationService;
 use DateTime;
 use DateTimeZone;
 use Exception;
+use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
-use Ramsey\Uuid\Uuid;
-use Slim\Http\Uri;
+use Ramsey\Uuid\UuidInterface as Uuid;
+use Slim\Interfaces\RouteCollectorInterface;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 class TwigExtension extends AbstractExtension
 {
-    /**
-     * @var \Slim\Interfaces\RouterInterface
-     */
-    protected $router;
+    protected RouteCollectorInterface $routeCollector;
 
-    /**
-     * @var \Slim\Http\Uri|string
-     */
-    protected $uri;
-
-    public function __construct(ContainerInterface $container, $uri)
+    public function __construct(ContainerInterface $container = null)
     {
         parent::__construct($container);
 
-        $this->router = $container->get('router');
-        $this->uri = $uri;
+        $this->routeCollector = $container->get(RouteCollectorInterface::class);
     }
 
     public function getName()
@@ -68,6 +60,9 @@ class TwigExtension extends AbstractExtension
     public function getFunctions()
     {
         return [
+            new TwigFunction('current_url', [$this, 'currentUrl']),
+            new TwigFunction('parse_url', [$this, 'parseUrl']),
+
             // slim functions
             new TwigFunction('path_for', [$this, 'pathFor']),
             new TwigFunction('full_url_for', [$this, 'fullUrlFor']),
@@ -86,9 +81,9 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('collect', [$this, 'collect']),
             new TwigFunction('non_page_path', [$this, 'non_page_path']),
             new TwigFunction('current_page_number', [$this, 'current_page_number']),
-            new TwigFunction('build_query', [$this, 'build_query'], ['is_safe' => ['html']]),
             new TwigFunction('current_query', [$this, 'current_query'], ['is_safe' => ['html']]),
             new TwigFunction('is_current_page_number', [$this, 'is_current_page_number']),
+            new TwigFunction('build_query', [$this, 'build_query'], ['is_safe' => ['html']]),
             new TwigFunction('base64_encode', [$this, 'base64_encode']),
             new TwigFunction('base64_decode', [$this, 'base64_decode']),
             new TwigFunction('json_encode', [$this, 'json_encode']),
@@ -116,11 +111,25 @@ class TwigExtension extends AbstractExtension
         ];
     }
 
+    public function currentUrl(): string
+    {
+        return implode('', [
+            $_SERVER['REQUEST_SCHEME'], '://',
+            $_SERVER['HTTP_HOST'],
+            $_SERVER['REQUEST_URI'],
+        ]);
+    }
+
+    public function parseUrl(): array
+    {
+        return parse_url($this->currentUrl());
+    }
+
     // slim functions
 
     public function pathFor($name, $data = [], $queryParams = [])
     {
-        return $this->router->pathFor($name, $data, $queryParams);
+        return $this->routeCollector->getRouteParser()->urlFor($name, $data, $queryParams);
     }
 
     /**
@@ -134,21 +143,10 @@ class TwigExtension extends AbstractExtension
      */
     public function fullUrlFor($name, $data = [], $queryParams = [])
     {
-        $path = $this->pathFor($name, $data, $queryParams);
+        $url = $this->parseUrl();
+        $host = ($url['scheme'] ? $url['scheme'] . ':' : '') . ($url['host'] ? '//' . $url['host'] : '');
 
-        // @var Uri $uri
-        if (is_string($this->uri)) {
-            $uri = Uri::createFromString($this->uri);
-        } else {
-            $uri = $this->uri;
-        }
-
-        $scheme = $uri->getScheme();
-        $authority = $uri->getAuthority();
-
-        $host = ($scheme ? $scheme . ':' : '') . ($authority ? '//' . $authority : '');
-
-        return $host . $path;
+        return $host . $this->pathFor($name, $data, $queryParams);
     }
 
     // base address without slash in end
@@ -159,7 +157,7 @@ class TwigExtension extends AbstractExtension
 
     public function isCurrentPath($name, $data = [])
     {
-        return $this->router->pathFor($name, $data) === $this->baseUrl() . '/' . ltrim($this->uri->getPath(), '/');
+        return $this->routeCollector->pathFor($name, $data) === $this->baseUrl() . '/' . ltrim($this->currentUrl(), '/');
     }
 
     /**
@@ -171,17 +169,9 @@ class TwigExtension extends AbstractExtension
      */
     public function currentPath($withQueryString = false)
     {
-        if (is_string($this->uri)) {
-            return $this->uri;
-        }
+        $path = ltrim($this->currentUrl(), '/');
 
-        $path = $this->baseUrl() . '/' . ltrim($this->uri->getPath(), '/');
-
-        if ($withQueryString && '' !== $query = $this->uri->getQuery()) {
-            $path .= '?' . $query;
-        }
-
-        return $path;
+        return $withQueryString || !mb_strrpos($path, '?') ? $path : mb_strstr($path, '?', true);
     }
 
     // wse functions
@@ -250,10 +240,8 @@ class TwigExtension extends AbstractExtension
      * @param DateTime|string $obj
      *
      * @throws Exception
-     *
-     * @return string
      */
-    public function df($obj = 'now', string $format = null, string $timezone = '')
+    public function df(mixed $obj = 'now', string $format = null, string $timezone = ''): string
     {
         if (is_string($obj) || is_numeric($obj)) {
             $obj = new DateTime($obj);
@@ -268,50 +256,42 @@ class TwigExtension extends AbstractExtension
             ->format($format ?: $this->parameter('common_date_format', 'j-m-Y, H:i'));
     }
 
-    public function collect(array $array = [])
+    public function collect(array $array = []): Collection
     {
         return collect($array);
     }
 
-    public function non_page_path()
+    public function non_page_path(): string
     {
-        $path = $this->baseUrl() . '/' . ltrim($this->uri->getPath(), '/');
-        $path = explode('/', $path);
+        $url = $this->parseUrl();
+        $path = explode('/', ltrim($url['path'], '/'));
 
         if (($key = count($path) - 1) && ($buf = $path[$key]) && ctype_digit($buf)) {
             unset($path[$key]);
         }
 
-        return implode('/', $path);
+        return '/' . implode('/', $path);
     }
 
-    public function current_page_number()
+    public function current_page_number(): int
     {
+        $url = $this->parseUrl();
+        $path = explode('/', ltrim($url['path'], '/'));
         $page = 0;
-        $path = explode('/', ltrim($this->uri->getPath(), '/'));
 
         if (($key = count($path) - 1) && ($buf = $path[$key]) && ctype_digit($buf)) {
-            $page = $path[$key];
+            $page = +$path[$key];
         }
 
         return $page;
     }
 
-    public function build_query($url = '', array $params = []): string
+    public function current_query(string $key = null, mixed $value = null): string
     {
-        if (is_array($url)) {
-            $params = $url;
-            $url = '';
-        }
-
-        return $url . '?' . urldecode(http_build_query($params));
-    }
-
-    public function current_query($key = null, $value = null)
-    {
+        $url = $this->parseUrl();
         $query = [];
 
-        foreach (explode('&', rawurldecode($this->uri->getQuery())) as $fragment) {
+        foreach (explode('&', rawurldecode($url['query'] ?? '')) as $fragment) {
             if ($fragment) {
                 $buf = explode('=', $fragment);
                 $query[$buf[0]] = $buf[1] ?? '';
@@ -324,32 +304,42 @@ class TwigExtension extends AbstractExtension
         return $query ? '?' . rawurldecode(http_build_query($query)) : '';
     }
 
-    public function is_current_page_number($number)
+    public function is_current_page_number($number): bool
     {
         return $this->current_page_number() === $number;
     }
 
-    public function base64_encode(string $string)
+    public function build_query($url = '', array $params = []): string
+    {
+        if (is_array($url)) {
+            $params = $url;
+            $url = '';
+        }
+
+        return $url . '?' . urldecode(http_build_query($params));
+    }
+
+    public function base64_encode(string $string): string
     {
         return base64_encode($string);
     }
 
-    public function base64_decode(string $string, bool $strict = false)
+    public function base64_decode(string $string, bool $strict = false): false|string
     {
         return base64_decode($string, $strict);
     }
 
-    public function json_encode($json, ?bool $associative = true, int $depth = 512, int $flags = 0)
+    public function json_encode(string $json, ?bool $associative = true, int $depth = 512, int $flags = 0): mixed
     {
         return json_decode($json, $associative, $depth, $flags);
     }
 
-    public function json_decode($value, int $flags = JSON_UNESCAPED_UNICODE, int $depth = 512)
+    public function json_decode($value, int $flags = JSON_UNESCAPED_UNICODE, int $depth = 512): false|string
     {
         return json_encode($value, $flags, $depth);
     }
 
-    public function qr_code($value, $width = 256, $height = 256)
+    public function qr_code(mixed $value, $width = 256, $height = 256): string
     {
         $renderer = new \BaconQrCode\Renderer\Image\Svg();
         $renderer->setWidth($width);
@@ -379,7 +369,7 @@ class TwigExtension extends AbstractExtension
     // fetch files by args
     public function files(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
-        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:files');
+        \Netpromotion\Profiler\Profiler::start('twig:fn:files');
 
         $fileService = FileService::getWithContainer($this->container);
         $result = $fileService->read(array_merge($criteria, [
@@ -388,7 +378,7 @@ class TwigExtension extends AbstractExtension
             'offset' => $offset,
         ]));
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('%s', $result->count());
+        \Netpromotion\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }
@@ -398,14 +388,14 @@ class TwigExtension extends AbstractExtension
     // fetch publication category
     public function publication_category(bool $public = true)
     {
-        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:publication_category');
+        \Netpromotion\Profiler\Profiler::start('twig:fn:publication_category');
 
         $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
         $result = $publicationCategoryService->read([
             'public' => $public ?: null,
         ]);
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('%s', $result->count());
+        \Netpromotion\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }
@@ -413,7 +403,7 @@ class TwigExtension extends AbstractExtension
     // fetch publications by criteria
     public function publication(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
-        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:publication');
+        \Netpromotion\Profiler\Profiler::start('twig:fn:publication');
 
         $publicationService = PublicationService::getWithContainer($this->container);
         $result = $publicationService->read(array_merge($criteria, [
@@ -422,7 +412,7 @@ class TwigExtension extends AbstractExtension
             'offset' => $offset,
         ]));
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('%s', $result->count());
+        \Netpromotion\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }
@@ -432,7 +422,7 @@ class TwigExtension extends AbstractExtension
     // fetch guest book rows
     public function guestbook($order = [], $limit = 10, $offset = null)
     {
-        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:guestbook');
+        \Netpromotion\Profiler\Profiler::start('twig:fn:guestbook');
 
         $guestBookService = GuestBookService::getWithContainer($this->container);
         $result = $guestBookService
@@ -453,7 +443,7 @@ class TwigExtension extends AbstractExtension
                 return $model;
             });
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('%s', $result->count());
+        \Netpromotion\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }
@@ -463,14 +453,14 @@ class TwigExtension extends AbstractExtension
     // fetch categories list
     public function catalog_category()
     {
-        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_category');
+        \Netpromotion\Profiler\Profiler::start('twig:fn:catalog_category');
 
         $catalogCategoryService = CatalogCategoryService::getWithContainer($this->container);
         $result = $catalogCategoryService->read([
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
         ]);
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('%s', $result->count());
+        \Netpromotion\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }
@@ -478,7 +468,7 @@ class TwigExtension extends AbstractExtension
     // return parent categories
     public function catalog_category_parents(\App\Domain\Entities\Catalog\Category $category = null)
     {
-        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_category_parents');
+        \Netpromotion\Profiler\Profiler::start('twig:fn:catalog_category_parents');
 
         $categories = $this->catalog_category();
         $breadcrumb = [];
@@ -486,7 +476,7 @@ class TwigExtension extends AbstractExtension
         if (!is_null($category)) {
             $breadcrumb[] = $category;
 
-            while ($category->getParent()->toString() !== Uuid::NIL) {
+            while ($category->getParent()->toString() !== \Ramsey\Uuid\Uuid::NIL) {
                 /**
                  * @var \App\Domain\Entities\Catalog\Category;
                  */
@@ -497,7 +487,7 @@ class TwigExtension extends AbstractExtension
 
         $result = collect($breadcrumb)->reverse();
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('%s', $result->count());
+        \Netpromotion\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }
@@ -505,13 +495,13 @@ class TwigExtension extends AbstractExtension
     // getting a list of products by criteria
     public function catalog_products(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
-        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_products');
+        \Netpromotion\Profiler\Profiler::start('twig:fn:catalog_products');
 
         $criteria['status'] = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
         $catalogProductService = CatalogProductService::getWithContainer($this->container);
         $result = $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('%s', $result->count());
+        \Netpromotion\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }
@@ -519,19 +509,19 @@ class TwigExtension extends AbstractExtension
     // returns a product or a list of products by criteria
     public function catalog_product(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
-        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_product');
+        \Netpromotion\Profiler\Profiler::start('twig:fn:catalog_product');
 
         $criteria['status'] = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
         $catalogProductService = CatalogProductService::getWithContainer($this->container);
         $result = $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('%s', $result->count());
+        \Netpromotion\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }
 
     // save uuid of product in session or return saved list
-    public function catalog_product_view(\Ramsey\Uuid\UuidInterface $uuid = null, $limit = 10)
+    public function catalog_product_view($uuid = null, $limit = 10)
     {
         $list = $_SESSION['catalog_product_view'] ?? [];
 
@@ -539,7 +529,8 @@ class TwigExtension extends AbstractExtension
             case is_null($uuid):
                 return $list;
 
-            case Uuid::isValid($uuid):
+            case is_string($uuid) && \Ramsey\Uuid\Uuid::isValid($uuid):
+            case is_object($uuid) && is_a($uuid, Uuid::class):
                 $list[] = $uuid->toString();
                 $list = array_unique($list);
 
@@ -555,7 +546,7 @@ class TwigExtension extends AbstractExtension
     // fetch order
     public function catalog_order(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
-        \RunTracy\Helpers\Profiler\Profiler::start('twig:fn:catalog_order');
+        \Netpromotion\Profiler\Profiler::start('twig:fn:catalog_order');
 
         $catalogOrderService = CatalogOrderService::getWithContainer($this->container);
         $result = $catalogOrderService->read(array_merge($criteria, [
@@ -564,7 +555,7 @@ class TwigExtension extends AbstractExtension
             'offset' => $offset,
         ]));
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('%s', $result->count());
+        \Netpromotion\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }

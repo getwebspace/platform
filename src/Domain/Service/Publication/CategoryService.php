@@ -10,7 +10,7 @@ use App\Domain\Service\Publication\Exception\CategoryNotFoundException;
 use App\Domain\Service\Publication\Exception\MissingTitleValueException;
 use App\Domain\Service\Publication\Exception\TitleAlreadyExistsException;
 use Illuminate\Support\Collection;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface as Uuid;
 
 class CategoryService extends AbstractService
 {
@@ -149,7 +149,7 @@ class CategoryService extends AbstractService
     public function update($entity, array $data = []): PublicationCategory
     {
         switch (true) {
-            case is_string($entity) && Uuid::isValid($entity):
+            case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
                 $entity = $this->service->findOneByUuid((string) $entity);
 
@@ -232,7 +232,7 @@ class CategoryService extends AbstractService
     public function delete($entity): bool
     {
         switch (true) {
-            case is_string($entity) && Uuid::isValid($entity):
+            case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
                 $entity = $this->service->findOneByUuid((string) $entity);
 

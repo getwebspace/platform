@@ -14,10 +14,10 @@ use DateTime;
 
 class UserLoginAction extends UserAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         $identifier = $this->parameter('user_login_type', 'username');
-        $provider = $this->request->getParam('provider', 'self');
+        $provider = $this->getParam('provider', 'self');
         $user = $this->process($identifier, $provider);
 
         if ($user) {
@@ -28,14 +28,14 @@ class UserLoginAction extends UserAction
                 $session = $this->userSessionService->create([
                     'user' => $user,
                     'date' => 'now',
-                    'agent' => $this->request->getServerParam('HTTP_USER_AGENT'),
+                    'agent' => $this->getServerParam('HTTP_USER_AGENT'),
                     'ip' => $this->getRequestRemoteIP(),
                 ]);
             } else {
                 // update session
                 $session = $this->userSessionService->update($session, [
                     'date' => 'now',
-                    'agent' => $this->request->getServerParam('HTTP_USER_AGENT'),
+                    'agent' => $this->getServerParam('HTTP_USER_AGENT'),
                     'ip' => $this->getRequestRemoteIP(),
                 ]);
             }
@@ -43,7 +43,7 @@ class UserLoginAction extends UserAction
             setcookie('uuid', $user->getUuid()->toString(), time() + \App\Domain\References\Date::YEAR, '/');
             setcookie('session', $session->getHash(), time() + \App\Domain\References\Date::YEAR, '/');
 
-            return $this->response->withRedirect($this->request->getParam('redirect', '/user/profile'));
+            return $this->respondWithRedirect($this->getParam('redirect', '/user/profile'));
         }
 
         return $this->respond($this->parameter('user_login_template', 'user.login.twig'), [
@@ -57,12 +57,12 @@ class UserLoginAction extends UserAction
         switch ($provider) {
             // via login/email/phone with password
             case 'self':
-                if ($this->request->isPost()) {
+                if ($this->isPost()) {
                     $data = [
-                        'phone' => $this->request->getParam('phone', ''),
-                        'email' => $this->request->getParam('email', ''),
-                        'username' => $this->request->getParam('username', ''),
-                        'password' => $this->request->getParam('password', ''),
+                        'phone' => $this->getParam('phone', ''),
+                        'email' => $this->getParam('email', ''),
+                        'username' => $this->getParam('username', ''),
+                        'password' => $this->getParam('password', ''),
                     ];
 
                     if ($this->isRecaptchaChecked()) {
@@ -85,12 +85,12 @@ class UserLoginAction extends UserAction
 
             // via login/email/phone with code
             case 'code':
-                if ($this->request->isPost() && $this->parameter('user_auth_code_is_enabled', 'no') === 'yes') {
+                if ($this->isPost() && $this->parameter('user_auth_code_is_enabled', 'no') === 'yes') {
                     $data = [
-                        'phone' => $this->request->getParam('phone', ''),
-                        'email' => $this->request->getParam('email', ''),
-                        'username' => $this->request->getParam('username', ''),
-                        'code' => $this->request->getParam('code', ''),
+                        'phone' => $this->getParam('phone', ''),
+                        'email' => $this->getParam('email', ''),
+                        'username' => $this->getParam('username', ''),
+                        'code' => $this->getParam('code', ''),
                     ];
 
                     if ($this->isRecaptchaChecked()) {
@@ -99,7 +99,7 @@ class UserLoginAction extends UserAction
                                 $identifier => $data[$identifier],
                             ]);
 
-                            if (isset($this->request->getParams()['sendcode'])) {
+                            if (isset($this->getParams()['sendcode'])) {
                                 if ($user->getEmail()) {
                                     if (!$user->getAuthCode() || (new DateTime('now'))->diff($user->getChange())->i >= 10) {
                                         // new code
@@ -146,7 +146,7 @@ class UserLoginAction extends UserAction
             // via facebook
             case 'facebook':
                 $provider = new FacebookOAuthProvider($this->container);
-                $token = $provider->getToken($this->request->getParam('code'));
+                $token = $provider->getToken($this->getParam('code'));
 
                 if ($token) {
                     try {
@@ -164,7 +164,7 @@ class UserLoginAction extends UserAction
             // via vk
             case 'vk':
                 $provider = new VKOAuthProvider($this->container);
-                $token = $provider->getToken($this->request->getParam('code'));
+                $token = $provider->getToken($this->getParam('code'));
 
                 if ($token) {
                     try {

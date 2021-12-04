@@ -72,7 +72,6 @@ return [
     'email' => 'E-Mail',
     'phone' => 'Telephone',
 
-
     // plugins
     'Включение и выключение reCAPTCHA' => 'Turning reCAPTCHA on and off',
     'Защита от роботов' => 'Robot protection',

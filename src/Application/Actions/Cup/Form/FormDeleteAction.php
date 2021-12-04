@@ -4,12 +4,12 @@ namespace App\Application\Actions\Cup\Form;
 
 class FormDeleteAction extends FormAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
             $this->formService->delete($this->resolveArg('uuid'));
         }
 
-        return $this->response->withRedirect('/cup/form');
+        return $this->respondWithRedirect('/cup/form');
     }
 }

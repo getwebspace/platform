@@ -1,39 +1,43 @@
 <?php declare(strict_types=1);
 
-use Slim\Http\Request;
-use Slim\Http\Response;
+use Psr\Http\Server\RequestHandlerInterface;
+use Slim\App;
+use Slim\Psr7\Request;
+use Slim\Psr7\Response;
 
-/**
- * @var \Slim\App $app
- */
+return function (App $app): void {
+    $c = $app->getContainer();
 
-// apply locale
-$app->add(\App\Application\Middlewares\LocaleMiddleware::class);
+    // apply locale
+    $app->add(new \App\Application\Middlewares\LocaleMiddleware($c));
 
-// check user access
-$app->add(\App\Application\Middlewares\AccessCheckerMiddleware::class);
+    // check user access
+    $app->add(new \App\Application\Middlewares\AccessCheckerMiddleware($c));
 
-// check user auth
-$app->add(\App\Application\Middlewares\AuthorizationMiddleware::class);
+    // check user auth
+    $app->add(new \App\Application\Middlewares\AuthorizationMiddleware($c));
 
-// plugin functions
-$app->add(\App\Application\Middlewares\PluginMiddleware::class);
+    // plugin functions
+    $app->add(new \App\Application\Middlewares\PluginMiddleware($c));
 
-// check is site disabled
-$app->add(\App\Application\Middlewares\IsSiteEnabledMiddleware::class);
+    // check is site disabled
+    $app->add(new \App\Application\Middlewares\IsSiteEnabledMiddleware($c));
 
-// RunTracy
-$app->add(new RunTracy\Middlewares\TracyMiddleware($app));
+    // RunTracy
+    //$app->add(new RunTracy\Middlewares\TracyMiddleware($app));
 
-// redirect to address without slash in end
-$app->add(function (Request $request, Response $response, $next) {
-    $path = $request->getUri()->getPath();
+    // redirect to address without slash in end
+    $app->add(function (Request $request, RequestHandlerInterface $handler) {
+        $path = $request->getUri()->getPath();
 
-    if ($path !== '/' && str_end_with($path, '/')) {
-        $query = $request->getUri()->getQuery();
+        if ($path !== '/' && str_end_with($path, '/')) {
+            $query = $request->getUri()->getQuery();
 
-        return $response->withRedirect(rtrim($path, '/') . ($query ? '?' . $query : ''));
-    }
+            return (new Response())
+                ->withAddedHeader('Location', rtrim($path, '/') . ($query ? '?' . $query : ''))
+                ->withStatus(301);
+        }
 
-    return $next($request, $response);
-});
+        return $handler->handle($request);
+    });
+};

@@ -6,7 +6,7 @@ use App\Domain\AbstractEntity;
 use App\Domain\Traits\FileTrait;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface as Uuid;
 
 /**
  * @ORM\Entity(repositoryClass="App\Domain\Repository\Form\DataRepository")
@@ -22,9 +22,9 @@ class Data extends AbstractEntity
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    protected Uuid $uuid;
+    protected \Ramsey\Uuid\UuidInterface $uuid;
 
-    public function getUuid(): Uuid
+    public function getUuid(): \Ramsey\Uuid\UuidInterface
     {
         return $this->uuid;
     }
@@ -47,7 +47,7 @@ class Data extends AbstractEntity
         return $this;
     }
 
-    public function getFormUuid(): Uuid
+    public function getFormUuid(): \Ramsey\Uuid\UuidInterface
     {
         return $this->form_uuid;
     }

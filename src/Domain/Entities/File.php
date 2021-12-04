@@ -5,7 +5,7 @@ namespace App\Domain\Entities;
 use App\Domain\AbstractEntity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface as Uuid;
 
 /**
  * @ORM\Entity(repositoryClass="App\Domain\Repository\FileRepository")
@@ -19,9 +19,9 @@ class File extends AbstractEntity
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    protected Uuid $uuid;
+    protected \Ramsey\Uuid\UuidInterface $uuid;
 
-    public function getUuid(): Uuid
+    public function getUuid(): \Ramsey\Uuid\UuidInterface
     {
         return $this->uuid;
     }
@@ -213,11 +213,11 @@ class File extends AbstractEntity
      *
      * @param $path
      *
-     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
+     * @throws // RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
     public static function info($path): array
     {
-        \RunTracy\Helpers\Profiler\Profiler::start('file:info');
+        \Netpromotion\Profiler\Profiler::start('file:info');
 
         $info = pathinfo($path);
         $result = [
@@ -229,7 +229,7 @@ class File extends AbstractEntity
             'hash' => sha1_file($path),
         ];
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('%s', $path);
+        \Netpromotion\Profiler\Profiler::finish('%s', $path);
 
         return $result;
     }
@@ -323,7 +323,7 @@ class File extends AbstractEntity
     /**
      * Return public path with salt and hash
      *
-     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
+     * @throws // RunTracy\Helpers\Profiler\Exception\ProfilerException
      *
      * @return string
      */
@@ -334,7 +334,7 @@ class File extends AbstractEntity
         $uuid = $this->uuid->toString();
 
         if (!isset($buf[$uuid][$size])) {
-            \RunTracy\Helpers\Profiler\Profiler::start('file:getPublicPath');
+            \Netpromotion\Profiler\Profiler::start('file:getPublicPath');
 
             if ($this->private) {
                 if (str_start_with($this->type, 'image/')) {
@@ -348,7 +348,7 @@ class File extends AbstractEntity
                 $buf[$uuid][$size] = '/uploads/' . $this->salt . ($size && $this->isValidSizeAndFileExists($size) ? '/' . $size : '') . '/' . $this->getFileName();
             }
 
-            \RunTracy\Helpers\Profiler\Profiler::finish('%s', $size, ['uuid' => $uuid]);
+            \Netpromotion\Profiler\Profiler::finish('%s', $size, ['uuid' => $uuid]);
         }
 
         return $buf[$uuid][$size];

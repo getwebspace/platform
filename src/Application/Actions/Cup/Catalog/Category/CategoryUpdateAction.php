@@ -8,7 +8,7 @@ use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 
 class CategoryUpdateAction extends CatalogAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('category') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('category'))) {
             $category = $this->catalogCategoryService->read([
@@ -17,39 +17,39 @@ class CategoryUpdateAction extends CatalogAction
             ]);
 
             if ($category) {
-                if ($this->request->isPost()) {
+                if ($this->isPost()) {
                     try {
                         $attributes = from_service_to_array(
                             $this->catalogAttributeService->read([
-                                'uuid' => $this->request->getParam('attributes', []),
+                                'uuid' => $this->getParam('attributes', []),
                             ])
                         );
                         $category = $this->catalogCategoryService->update($category, [
-                            'parent' => $this->request->getParam('parent'),
-                            'children' => $this->request->getParam('children'),
-                            'title' => $this->request->getParam('title'),
-                            'description' => $this->request->getParam('description'),
-                            'address' => $this->request->getParam('address'),
-                            'field1' => $this->request->getParam('field1'),
-                            'field2' => $this->request->getParam('field2'),
-                            'field3' => $this->request->getParam('field3'),
+                            'parent' => $this->getParam('parent'),
+                            'children' => $this->getParam('children'),
+                            'title' => $this->getParam('title'),
+                            'description' => $this->getParam('description'),
+                            'address' => $this->getParam('address'),
+                            'field1' => $this->getParam('field1'),
+                            'field2' => $this->getParam('field2'),
+                            'field3' => $this->getParam('field3'),
                             'attributes' => $attributes,
-                            'product' => $this->request->getParam('product'),
-                            'pagination' => $this->request->getParam('pagination'),
-                            'order' => $this->request->getParam('order'),
-                            'sort' => $this->request->getParam('sort'),
-                            'meta' => $this->request->getParam('meta'),
-                            'template' => $this->request->getParam('template'),
-                            'external_id' => $this->request->getParam('external_id'),
+                            'product' => $this->getParam('product'),
+                            'pagination' => $this->getParam('pagination'),
+                            'order' => $this->getParam('order'),
+                            'sort' => $this->getParam('sort'),
+                            'meta' => $this->getParam('meta'),
+                            'template' => $this->getParam('template'),
+                            'external_id' => $this->getParam('external_id'),
                         ]);
                         $category = $this->processEntityFiles($category);
 
                         switch (true) {
-                            case $this->request->getParam('save', 'exit') === 'exit':
-                                return $this->response->withRedirect('/cup/catalog/category');
+                            case $this->getParam('save', 'exit') === 'exit':
+                                return $this->respondWithRedirect('/cup/catalog/category');
 
                             default:
-                                return $this->response->withRedirect('/cup/catalog/category/' . $category->getUuid() . '/edit');
+                                return $this->respondWithRedirect('/cup/catalog/category/' . $category->getUuid() . '/edit');
                         }
                     } catch (MissingTitleValueException $e) {
                         $this->addError('title', $e->getMessage());
@@ -73,6 +73,6 @@ class CategoryUpdateAction extends CatalogAction
             }
         }
 
-        return $this->response->withRedirect('/cup/catalog/category');
+        return $this->respondWithRedirect('/cup/catalog/category');
     }
 }

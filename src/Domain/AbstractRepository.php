@@ -4,7 +4,7 @@ namespace App\Domain;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\NonUniqueResultException;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface as Uuid;
 
 abstract class AbstractRepository extends EntityRepository
 {
@@ -15,7 +15,7 @@ abstract class AbstractRepository extends EntityRepository
      */
     public function findOneByUuid($uuid)
     {
-        if (Uuid::isValid((string) $uuid)) {
+        if (\Ramsey\Uuid\Uuid::isValid((string) $uuid)) {
             $query = $this->createQueryBuilder('en')
                 ->andWhere('en.uuid = :uuid')->setParameter('uuid', (string) $uuid, \Ramsey\Uuid\Doctrine\UuidType::NAME)
                 ->getQuery();

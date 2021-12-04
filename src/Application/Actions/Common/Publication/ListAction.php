@@ -10,7 +10,7 @@ use App\Domain\Service\Publication\PublicationService;
 
 class ListAction extends AbstractAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
         $publicationService = PublicationService::getWithContainer($this->container);
@@ -67,7 +67,7 @@ class ListAction extends AbstractAction
     protected function parsePath(): array
     {
         $category = $this->resolveArg('category');
-        $path = ltrim(preg_replace("/\/" . $category . "/", '', $this->request->getUri()->getPath(), 1), '/');
+        $path = ltrim(preg_replace('/\/' . $category . '/', '', $this->request->getUri()->getPath(), 1), '/');
         $parts = $path ? explode('/', $path) : [];
         $offset = 0;
 

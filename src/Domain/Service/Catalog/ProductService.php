@@ -11,7 +11,7 @@ use App\Domain\Service\Catalog\Exception\CategoryNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\ProductNotFoundException;
 use Illuminate\Support\Collection;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface as Uuid;
 
 class ProductService extends AbstractService
 {
@@ -106,7 +106,7 @@ class ProductService extends AbstractService
             ->setExport($data['export']);
 
         // if address generation is enabled
-        if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && Uuid::isValid($data['category'])) {
+        if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && \Ramsey\Uuid\Uuid::isValid((string) $data['category'])) {
             try {
                 $catalogCategoryService = CatalogCategoryService::getWithContainer($this->container);
                 $catalogCategory = $catalogCategoryService->read(['uuid' => $data['category']]);
@@ -238,7 +238,7 @@ class ProductService extends AbstractService
     public function update($entity, array $data = []): Product
     {
         switch (true) {
-            case is_string($entity) && Uuid::isValid($entity):
+            case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
                 $entity = $this->service->findOneByUuid((string) $entity);
 
@@ -399,7 +399,7 @@ class ProductService extends AbstractService
     public function delete($entity): bool
     {
         switch (true) {
-            case is_string($entity) && Uuid::isValid($entity):
+            case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
                 $entity = $this->service->findOneByUuid((string) $entity);
 

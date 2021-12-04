@@ -7,7 +7,7 @@ use App\Domain\Entities\User;
 
 class MainPageAction extends AbstractAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         /** @var User $user */
         $user = $this->request->getAttribute('user', false);

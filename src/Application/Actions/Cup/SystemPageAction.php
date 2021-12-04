@@ -12,7 +12,7 @@ class SystemPageAction extends AbstractAction
 {
     protected static string $lock_file = VAR_DIR . '/installer.lock';
 
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         /** @var User $user */
         $user = $this->request->getAttribute('user', false);
@@ -24,7 +24,7 @@ class SystemPageAction extends AbstractAction
         } else {
             // need auth user, redirect
             if ($user === false) {
-                return $this->response->withRedirect('/cup/login?redirect=/cup/system');
+                return $this->respondWithRedirect('/cup/login?redirect=/cup/system');
             }
         }
 
@@ -37,9 +37,9 @@ class SystemPageAction extends AbstractAction
 
         // ok, allow access to page
         if ($allow) {
-            if ($this->request->isPost()) {
+            if ($this->isPost()) {
                 // database
-                if ($databaseAction = $this->request->getParam('database', '')) {
+                if ($databaseAction = $this->getParam('database', '')) {
                     $schema = new \Doctrine\ORM\Tools\SchemaTool($this->entityManager);
 
                     switch ($databaseAction) {
@@ -61,7 +61,7 @@ class SystemPageAction extends AbstractAction
                 }
 
                 // user
-                if ($userData = $this->request->getParam('user', [])) {
+                if ($userData = $this->getParam('user', [])) {
                     $userGroupService = UserGroupService::getWithContainer($this->container);
                     $userService = UserService::getWithContainer($this->container);
 
@@ -88,7 +88,7 @@ class SystemPageAction extends AbstractAction
                 // write lock file
                 file_put_contents(self::$lock_file, time());
 
-                return $this->response->withRedirect('/cup');
+                return $this->respondWithRedirect('/cup');
             }
 
             return $this->respondWithTemplate('cup/system/index.twig', [
@@ -97,33 +97,33 @@ class SystemPageAction extends AbstractAction
             ]);
         }
 
-        return $this->response->withRedirect('/cup/login?redirect=/cup/system');
+        return $this->respondWithRedirect('/cup/login?redirect=/cup/system');
     }
 
     protected function self_check(): array
     {
         $fileAccess = [
-            BASE_DIR => 0755,
-            BIN_DIR => 0755,
-            CONFIG_DIR => 0755,
-            PLUGIN_DIR => 0777,
-            PUBLIC_DIR => 0755,
-            RESOURCE_DIR => 0755,
-            UPLOAD_DIR => 0776,
-            SRC_DIR => 0755,
-            SRC_LOCALE_DIR => 0755,
-            VIEW_DIR => 0755,
-            VIEW_ERROR_DIR => 0755,
-            THEME_DIR => 0776,
-            VAR_DIR => 0777,
-            CACHE_DIR => 0777,
-            LOG_DIR => 0777,
-            VENDOR_DIR => 0755,
+            BASE_DIR => 0o755,
+            BIN_DIR => 0o755,
+            CONFIG_DIR => 0o755,
+            PLUGIN_DIR => 0o777,
+            PUBLIC_DIR => 0o755,
+            RESOURCE_DIR => 0o755,
+            UPLOAD_DIR => 0o776,
+            SRC_DIR => 0o755,
+            SRC_LOCALE_DIR => 0o755,
+            VIEW_DIR => 0o755,
+            VIEW_ERROR_DIR => 0o755,
+            THEME_DIR => 0o776,
+            VAR_DIR => 0o777,
+            CACHE_DIR => 0o777,
+            LOG_DIR => 0o777,
+            VENDOR_DIR => 0o755,
         ];
 
         foreach ($fileAccess as $folder => $value) {
             if (realpath($folder)) {
-                if ($value === (@fileperms($folder) & 0777) || @chmod($folder, $value)) {
+                if ($value === (@fileperms($folder) & 0o777) || @chmod($folder, $value)) {
                     $fileAccess[$folder] = true;
                 } else {
                     $fileAccess[$folder] = decoct($value);
@@ -132,7 +132,7 @@ class SystemPageAction extends AbstractAction
         }
 
         return [
-            'php' => version_compare(phpversion(), '7.4', '>='),
+            'php' => version_compare(phpversion(), '8.1', '>='),
             'extensions' => [
                 'pdo' => extension_loaded('pdo'),
                 // 'pdo_mysql' => extension_loaded('pdo_mysql'),

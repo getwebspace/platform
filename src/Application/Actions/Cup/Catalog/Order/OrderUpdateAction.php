@@ -6,39 +6,39 @@ use App\Application\Actions\Cup\Catalog\CatalogAction;
 
 class OrderUpdateAction extends CatalogAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('order') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('order'))) {
             $order = $this->catalogOrderService->read(['uuid' => $this->resolveArg('order')]);
 
             if ($order) {
-                if ($this->request->isPost()) {
-                    $user_uuid = $this->request->getParam('user_uuid');
+                if ($this->isPost()) {
+                    $user_uuid = $this->getParam('user_uuid');
 
                     // todo try/catch
                     $order = $this->catalogOrderService->update($order, [
-                        'user' => $user_uuid ? $this->userService->read(['uuid' => $user_uuid]) : '',
-                        'delivery' => $this->request->getParam('delivery'),
-                        'list' => (array) $this->request->getParam('list', []),
-                        'phone' => $this->request->getParam('phone'),
-                        'email' => $this->request->getParam('email'),
-                        'status' => $this->request->getParam('status'),
-                        'comment' => $this->request->getParam('comment'),
-                        'shipping' => $this->request->getParam('shipping'),
-                        'external_id' => $this->request->getParam('external_id'),
-                        'system' => $this->request->getParam('system', ''),
+                        'user' => $user_uuid ? $this->userService->read(['uuid' => $user_uuid]) : null,
+                        'delivery' => $this->getParam('delivery'),
+                        'list' => (array) $this->getParam('list', []),
+                        'phone' => $this->getParam('phone'),
+                        'email' => $this->getParam('email'),
+                        'status' => $this->getParam('status'),
+                        'comment' => $this->getParam('comment'),
+                        'shipping' => $this->getParam('shipping'),
+                        'external_id' => $this->getParam('external_id'),
+                        'system' => $this->getParam('system', ''),
                     ]);
                     $this->catalogOrderProductService->proccess(
                         $order,
-                        $this->request->getParam('products', [])
+                        $this->getParam('products', [])
                     );
 
                     switch (true) {
-                        case $this->request->getParam('save', 'exit') === 'exit':
-                            return $this->response->withRedirect('/cup/catalog/order');
+                        case $this->getParam('save', 'exit') === 'exit':
+                            return $this->respondWithRedirect('/cup/catalog/order');
 
                         default:
-                            return $this->response->withRedirect('/cup/catalog/order/' . $order->getUuid() . '/edit');
+                            return $this->respondWithRedirect('/cup/catalog/order/' . $order->getUuid() . '/edit');
                     }
                 }
 
@@ -48,6 +48,6 @@ class OrderUpdateAction extends CatalogAction
             }
         }
 
-        return $this->response->withRedirect('/cup/catalog/order');
+        return $this->respondWithRedirect('/cup/catalog/order');
     }
 }

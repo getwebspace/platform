@@ -9,7 +9,7 @@ use App\Domain\Service\User\Exception\MissingTitleValueException;
 use App\Domain\Service\User\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\User\Exception\UserGroupNotFoundException;
 use Illuminate\Support\Collection;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface as Uuid;
 
 class GroupService extends AbstractService
 {
@@ -115,7 +115,7 @@ class GroupService extends AbstractService
     public function update($entity, array $data = []): UserGroup
     {
         switch (true) {
-            case is_string($entity) && Uuid::isValid($entity):
+            case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
                 $entity = $this->service->findOneByUuid((string) $entity);
 
@@ -164,7 +164,7 @@ class GroupService extends AbstractService
     public function delete($entity): bool
     {
         switch (true) {
-            case is_string($entity) && Uuid::isValid($entity):
+            case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
                 $entity = $this->service->findOneByUuid((string) $entity);
 

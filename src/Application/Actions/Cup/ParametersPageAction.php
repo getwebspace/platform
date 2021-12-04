@@ -9,11 +9,11 @@ use App\Domain\Service\User\GroupService as UserGroupService;
 
 class ParametersPageAction extends AbstractAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         $parameters = $this->parameter();
 
-        if ($this->request->isPost()) {
+        if ($this->isPost()) {
             $parameterService = ParameterService::getWithContainer($this->container);
 
             foreach ($this->request->getParsedBody() as $group => $params) {
@@ -31,7 +31,7 @@ class ParametersPageAction extends AbstractAction
                 }
             }
 
-            return $this->response->withRedirect($this->request->getQueryParam('return', '/cup/parameters'));
+            return $this->respondWithRedirect($this->getQueryParam('return', '/cup/parameters'));
         }
 
         return $this->respondWithTemplate('cup/parameters/index.twig', [

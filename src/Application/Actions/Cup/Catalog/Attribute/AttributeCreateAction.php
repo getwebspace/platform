@@ -8,22 +8,22 @@ use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
 
 class AttributeCreateAction extends CatalogAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
-        if ($this->request->isPost()) {
+        if ($this->isPost()) {
             try {
                 $attribute = $this->catalogAttributeService->create([
-                    'title' => $this->request->getParam('title'),
-                    'address' => $this->request->getParam('address'),
-                    'type' => $this->request->getParam('type'),
+                    'title' => $this->getParam('title'),
+                    'address' => $this->getParam('address'),
+                    'type' => $this->getParam('type'),
                 ]);
 
                 switch (true) {
-                    case $this->request->getParam('save', 'exit') === 'exit':
-                        return $this->response->withRedirect('/cup/catalog/attribute');
+                    case $this->getParam('save', 'exit') === 'exit':
+                        return $this->respondWithRedirect('/cup/catalog/attribute');
 
                     default:
-                        return $this->response->withRedirect('/cup/catalog/attribute/' . $attribute->getUuid() . '/edit');
+                        return $this->respondWithRedirect('/cup/catalog/attribute/' . $attribute->getUuid() . '/edit');
                 }
             } catch (TitleAlreadyExistsException|MissingTitleValueException $e) {
                 $this->addError('title', $e->getMessage());

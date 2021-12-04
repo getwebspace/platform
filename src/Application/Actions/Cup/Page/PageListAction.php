@@ -4,7 +4,7 @@ namespace App\Application\Actions\Cup\Page;
 
 class PageListAction extends PageAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         $list = $this->pageService->read();
 

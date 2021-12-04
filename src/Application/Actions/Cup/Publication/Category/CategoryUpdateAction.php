@@ -8,30 +8,30 @@ use App\Domain\Service\Publication\Exception\TitleAlreadyExistsException;
 
 class CategoryUpdateAction extends PublicationAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
             $publicationCategory = $this->publicationCategoryService->read(['uuid' => $this->resolveArg('uuid')]);
 
             if ($publicationCategory) {
-                if ($this->request->isPost()) {
+                if ($this->isPost()) {
                     try {
                         $publicationCategory = $this->publicationCategoryService->update($publicationCategory, [
-                            'title' => $this->request->getParam('title'),
-                            'address' => $this->request->getParam('address'),
-                            'description' => $this->request->getParam('description'),
-                            'parent' => $this->request->getParam('parent'),
-                            'public' => $this->request->getParam('public'),
-                            'children' => $this->request->getParam('children'),
-                            'pagination' => $this->request->getParam('pagination'),
-                            'sort' => $this->request->getParam('sort'),
-                            'meta' => $this->request->getParam('meta'),
-                            'template' => $this->request->getParam('template'),
+                            'title' => $this->getParam('title'),
+                            'address' => $this->getParam('address'),
+                            'description' => $this->getParam('description'),
+                            'parent' => $this->getParam('parent'),
+                            'public' => $this->getParam('public'),
+                            'children' => $this->getParam('children'),
+                            'pagination' => $this->getParam('pagination'),
+                            'sort' => $this->getParam('sort'),
+                            'meta' => $this->getParam('meta'),
+                            'template' => $this->getParam('template'),
                         ]);
                         $publicationCategory = $this->processEntityFiles($publicationCategory);
 
                         switch (true) {
-                            case $this->request->getParam('save', 'exit') === 'exit':
+                            case $this->getParam('save', 'exit') === 'exit':
                                 return $this->response->withAddedHeader('Location', '/cup/publication/category')->withStatus(301);
 
                             default:

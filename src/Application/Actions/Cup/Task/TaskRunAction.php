@@ -6,16 +6,16 @@ use App\Domain\AbstractAction;
 
 class TaskRunAction extends AbstractAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
-        if ($this->request->isPost()) {
+        if ($this->isPost()) {
             if (
-                ($name = $this->request->getParam('task', null)) !== null
+                ($name = $this->getParam('task', null)) !== null
                 && class_exists($name)
             ) {
                 /** @var \App\Domain\AbstractTask $task */
                 $task = new $name($this->container);
-                $task->execute($this->request->getParam('params', []));
+                $task->execute($this->getParam('params', []));
 
                 // run worker
                 \App\Domain\AbstractTask::worker($task);

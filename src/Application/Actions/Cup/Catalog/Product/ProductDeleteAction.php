@@ -6,7 +6,7 @@ use App\Application\Actions\Cup\Catalog\CatalogAction;
 
 class ProductDeleteAction extends CatalogAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         $product = null;
 
@@ -22,6 +22,6 @@ class ProductDeleteAction extends CatalogAction
             }
         }
 
-        return $this->response->withRedirect('/cup/catalog/product' . ($product ? '/' . $product->getCategory() : ''));
+        return $this->respondWithRedirect('/cup/catalog/product' . ($product ? '/' . $product->getCategory() : ''));
     }
 }

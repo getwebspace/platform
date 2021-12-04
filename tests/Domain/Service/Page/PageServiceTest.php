@@ -47,7 +47,7 @@ class PageServiceTest extends TestCase
                 'description' => $this->getFaker()->text,
                 'keywords' => $this->getFaker()->text,
             ],
-            'template' => $this->getFaker()->text,
+            'template' => $this->getFaker()->text(50),
             'type' => $this->getFaker()->randomElement(\App\Domain\Types\PageTypeType::LIST),
         ];
 

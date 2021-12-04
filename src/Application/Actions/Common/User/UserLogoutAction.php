@@ -4,7 +4,7 @@ namespace App\Application\Actions\Common\User;
 
 class UserLogoutAction extends UserAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         /** @var \App\Domain\Entities\User $user */
         $user = $this->request->getAttribute('user', false);
@@ -22,6 +22,6 @@ class UserLogoutAction extends UserAction
             setcookie('session', '-1', time(), '/');
         }
 
-        return $this->response->withRedirect('/');
+        return $this->respondWithRedirect('/');
     }
 }

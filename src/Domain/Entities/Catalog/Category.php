@@ -6,7 +6,7 @@ use App\Domain\AbstractEntity;
 use App\Domain\Traits\FileTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Illuminate\Support\Collection;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface as Uuid;
 
 /**
  * @ORM\Entity(repositoryClass="App\Domain\Repository\Catalog\CategoryRepository")
@@ -31,9 +31,9 @@ class Category extends AbstractEntity
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    protected Uuid $uuid;
+    protected \Ramsey\Uuid\UuidInterface $uuid;
 
-    public function getUuid(): Uuid
+    public function getUuid(): \Ramsey\Uuid\UuidInterface
     {
         return $this->uuid;
     }
@@ -56,7 +56,7 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    public function getParent(): Uuid
+    public function getParent(): \Ramsey\Uuid\UuidInterface
     {
         return $this->parent;
     }
@@ -516,7 +516,7 @@ class Category extends AbstractEntity
     /**
      * @return Collection
      */
-    public function getNested(Collection &$categories)
+    public function getNested(Collection & $categories)
     {
         $result = collect([$this]);
 

@@ -3,27 +3,27 @@
 namespace App\Application\Middlewares;
 
 use App\Domain\AbstractMiddleware;
-use Slim\Http\Request;
-use Slim\Http\Response;
+use Psr\Http\Server\RequestHandlerInterface;
+use Slim\Psr7\Request;
+use Slim\Psr7\Response;
+use Slim\Routing\RouteContext;
 
-class IsEnabledMiddleware extends AbstractMiddleware
+class IsRouteEnabledMiddleware extends AbstractMiddleware
 {
     /**
-     * @param callable $next
-     *
      * @throws \Exception
      */
-    public function __invoke(Request $request, Response $response, $next): \Slim\Http\Response
+    public function __invoke(Request $request, RequestHandlerInterface $handler): \Slim\Psr7\Response
     {
-        /** @var \Slim\Interfaces\RouteInterface $route */
-        $route = $request->getAttribute('route');
+        $routeContext = RouteContext::fromRequest($request);
+        $route = $routeContext->getRoute();
         $routeName = explode(':', $route->getName())[1] ?? '';
 
         if ($routeName && $this->parameter($routeName . '_is_enabled', 'yes') !== 'no') {
-            return $next($request, $response);
+            return $handler->handle($request);
         }
 
-        return $response
+        return (new Response())
             ->withHeader('Location', str_start_with($route->getPattern(), '/cup') ? '/cup/forbidden' : '/forbidden')
             ->withStatus(307);
     }

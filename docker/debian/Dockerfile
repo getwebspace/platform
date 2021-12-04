@@ -1,4 +1,4 @@
-FROM php:7.4-fpm-bullseye
+FROM php:8.1-fpm-bullseye
 MAINTAINER Aleksey Ilyin <alksily@outlook.com>
 
 # Set args
@@ -17,7 +17,7 @@ RUN set -x \
     && apt-get install --no-install-recommends -y \
         wget \
         gnupg2 \
-    && echo "deb-src http://nginx.org/packages/debian buster nginx" | tee /etc/apt/sources.list.d/nginx.list \
+    && echo "deb-src http://nginx.org/packages/debian bullseye nginx" | tee /etc/apt/sources.list.d/nginx.list \
     && wget http://nginx.org/keys/nginx_signing.key && apt-key add nginx_signing.key && rm nginx_signing.key \
     && apt-get update \
     && apt-get install --no-install-recommends -y \
@@ -33,6 +33,7 @@ RUN set -x \
         libonig-dev \
         libmagickwand-dev \
         libyaml-dev \
+        libicu-dev \
         zlib1g-dev \
         jpegoptim \
         optipng \
@@ -40,9 +41,9 @@ RUN set -x \
         gifsicle \
         imagemagick \
     && nginx -V \
-    && pecl install imagick yaml \
+    && pecl install -f imagick yaml \
     && docker-php-ext-configure gd \
-    && docker-php-ext-install -j$(nproc) gettext zip gd pdo_mysql soap \
+    && docker-php-ext-install -j$(nproc) gettext zip gd pdo_mysql soap intl \
     && docker-php-ext-enable opcache.so imagick yaml \
     && docker-php-source delete \
     && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
@@ -61,7 +62,7 @@ WORKDIR ${PLATFORM_HOME}
 # Install PHP libs
 COPY composer.json ${PLATFORM_HOME}/composer.json
 COPY composer.lock ${PLATFORM_HOME}/composer.lock
-RUN composer install ${NO_DEV} --no-suggest --no-progress
+RUN composer install ${NO_DEV} --no-suggest --no-progress --ignore-platform-reqs
 
 # Copy platform
 ADD bin ${PLATFORM_HOME}/bin

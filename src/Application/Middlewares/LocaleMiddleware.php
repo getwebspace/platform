@@ -4,27 +4,26 @@ namespace App\Application\Middlewares;
 
 use App\Application\i18n;
 use App\Domain\AbstractMiddleware;
-use Slim\Http\Request;
-use Slim\Http\Response;
+use Psr\Http\Server\RequestHandlerInterface;
+use Slim\Psr7\Request;
 
 class LocaleMiddleware extends AbstractMiddleware
 {
     /**
-     * @param callable $next
-     *
      * @throws \Exception
      */
-    public function __invoke(Request $request, Response $response, callable $next): \Slim\Http\Response
+    public function __invoke(Request $request, RequestHandlerInterface $handler): \Slim\Psr7\Response
     {
-        \RunTracy\Helpers\Profiler\Profiler::start('middleware:locale');
+        \Netpromotion\Profiler\Profiler::start('middleware:locale');
 
         $default_locale = $this->parameter('common_lang', 'ru');
-        $user_locale = $request->getCookieParam('lang');
+        $user_locale = $request->getCookieParams()['lang'] ?? null;
+        $query_locale = $request->getQueryParams()['lang'] ?? null;
 
         // change lang by cookie
-        if (($lang = $request->getParam('lang')) !== null) {
-            $user_locale = $lang;
-            setcookie('lang', $lang, time() + \App\Domain\References\Date::YEAR, '/');
+        if ($query_locale !== null) {
+            $user_locale = $query_locale;
+            setcookie('lang', $query_locale, time() + \App\Domain\References\Date::YEAR, '/');
         }
 
         // change lang by user settings
@@ -38,8 +37,8 @@ class LocaleMiddleware extends AbstractMiddleware
             'force' => $user_locale,
         ]);
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('middleware:locale');
+        \Netpromotion\Profiler\Profiler::finish('middleware:locale');
 
-        return $next($request, $response);
+        return $handler->handle($request);
     }
 }

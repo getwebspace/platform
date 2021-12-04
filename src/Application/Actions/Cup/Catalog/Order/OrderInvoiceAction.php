@@ -7,7 +7,7 @@ use const App\Application\Actions\Cup\Catalog\INVOICE_TEMPLATE;
 
 class OrderInvoiceAction extends CatalogAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('order') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('order'))) {
             $order = $this->catalogOrderService->read(['uuid' => $this->resolveArg('order')]);
@@ -20,6 +20,6 @@ class OrderInvoiceAction extends CatalogAction
             }
         }
 
-        return $this->response->withRedirect('/cup/catalog/order');
+        return $this->respondWithRedirect('/cup/catalog/order');
     }
 }

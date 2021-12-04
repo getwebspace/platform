@@ -10,7 +10,7 @@ use App\Domain\Service\User\Exception\WrongPhoneValueException;
 
 class UserUpdateAction extends UserAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('uuid')) {
             $user = $this->userService->read(['uuid' => $this->resolveArg('uuid')]);
@@ -18,31 +18,31 @@ class UserUpdateAction extends UserAction
             if ($user) {
                 $userGroups = $this->userGroupService->read();
 
-                if ($this->request->isPost()) {
+                if ($this->isPost()) {
                     try {
-                        $group_uuid = $this->request->getParam('group_uuid');
+                        $group_uuid = $this->getParam('group_uuid');
                         $this->userService->update($user, [
-                            'username' => $this->request->getParam('username'),
-                            'firstname' => $this->request->getParam('firstname'),
-                            'lastname' => $this->request->getParam('lastname'),
-                            'address' => $this->request->getParam('address'),
-                            'additional' => $this->request->getParam('additional'),
-                            'email' => $this->request->getParam('email'),
-                            'allow_mail' => $this->request->getParam('allow_mail'),
-                            'phone' => $this->request->getParam('phone'),
-                            'password' => $this->request->getParam('password'),
+                            'username' => $this->getParam('username'),
+                            'firstname' => $this->getParam('firstname'),
+                            'lastname' => $this->getParam('lastname'),
+                            'address' => $this->getParam('address'),
+                            'additional' => $this->getParam('additional'),
+                            'email' => $this->getParam('email'),
+                            'allow_mail' => $this->getParam('allow_mail'),
+                            'phone' => $this->getParam('phone'),
+                            'password' => $this->getParam('password'),
                             'group' => $group_uuid !== \Ramsey\Uuid\Uuid::NIL ? $userGroups->firstWhere('uuid', $group_uuid) : '',
-                            'status' => $this->request->getParam('status'),
-                            'external_id' => $this->request->getParam('external_id'),
+                            'status' => $this->getParam('status'),
+                            'external_id' => $this->getParam('external_id'),
                         ]);
                         $user = $this->processEntityFiles($user);
 
                         switch (true) {
-                            case $this->request->getParam('save', 'exit') === 'exit':
-                                return $this->response->withRedirect('/cup/user');
+                            case $this->getParam('save', 'exit') === 'exit':
+                                return $this->respondWithRedirect('/cup/user');
 
                             default:
-                                return $this->response->withRedirect('/cup/user/' . $user->getUuid() . '/edit');
+                                return $this->respondWithRedirect('/cup/user/' . $user->getUuid() . '/edit');
                         }
                     } catch (UsernameAlreadyExistsException $e) {
                         $this->addError('username', $e->getMessage());
@@ -57,6 +57,6 @@ class UserUpdateAction extends UserAction
             }
         }
 
-        return $this->response->withRedirect('/cup/user');
+        return $this->respondWithRedirect('/cup/user');
     }
 }

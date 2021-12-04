@@ -6,7 +6,7 @@ use App\Application\Actions\Cup\Form\FormAction;
 
 class DataListAction extends FormAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
             $form = $this->formService->read(['uuid' => $this->resolveArg('uuid')]);
@@ -24,6 +24,6 @@ class DataListAction extends FormAction
             }
         }
 
-        return $this->response->withRedirect('/cup/form');
+        return $this->respondWithRedirect('/cup/form');
     }
 }

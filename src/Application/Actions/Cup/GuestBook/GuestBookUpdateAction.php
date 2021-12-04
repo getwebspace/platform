@@ -4,29 +4,29 @@ namespace App\Application\Actions\Cup\GuestBook;
 
 class GuestBookUpdateAction extends GuestBookAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
             $entry = $this->guestBookService->read(['uuid' => $this->resolveArg('uuid')]);
 
             if ($entry) {
-                if ($this->request->isPost()) {
+                if ($this->isPost()) {
                     // todo try/catch
                     $entry = $this->guestBookService->update($entry, [
-                        'name' => $this->request->getParam('name'),
-                        'email' => $this->request->getParam('email'),
-                        'message' => $this->request->getParam('message'),
-                        'response' => $this->request->getParam('response'),
-                        'date' => $this->request->getParam('date'),
-                        'status' => $this->request->getParam('status'),
+                        'name' => $this->getParam('name'),
+                        'email' => $this->getParam('email'),
+                        'message' => $this->getParam('message'),
+                        'response' => $this->getParam('response'),
+                        'date' => $this->getParam('date'),
+                        'status' => $this->getParam('status'),
                     ]);
 
                     switch (true) {
-                        case $this->request->getParam('save', 'exit') === 'exit':
-                            return $this->response->withRedirect('/cup/guestbook');
+                        case $this->getParam('save', 'exit') === 'exit':
+                            return $this->respondWithRedirect('/cup/guestbook');
 
                         default:
-                            return $this->response->withRedirect('/cup/guestbook/' . $entry->getUuid() . '/edit');
+                            return $this->respondWithRedirect('/cup/guestbook/' . $entry->getUuid() . '/edit');
                     }
                 }
 

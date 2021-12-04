@@ -1,4 +1,4 @@
-FROM php:7.4-fpm-buster
+FROM php:8.1-fpm-buster
 MAINTAINER Aleksey Ilyin <alksily@outlook.com>
 
 # Set args
@@ -38,6 +38,7 @@ RUN set -x \
         libonig-dev \
         libmagickwand-dev \
         libyaml-dev \
+        libicu-dev \
         zlib1g-dev \
         jpegoptim \
         optipng \
@@ -49,9 +50,9 @@ RUN set -x \
     && sed -i 's,^\(MinProtocol[ ]*=\).*,\1'TLSv1.0',g' /etc/ssl/openssl.cnf \
     && sed -i 's,^\(CipherString[ ]*=\).*,\1'DEFAULT@SECLEVEL=1',g' /etc/ssl/openssl.cnf \
     && nginx -V \
-    && pecl install -f imagick yaml sqlsrv pdo_sqlsrv \
+    && pecl install -f imagick yaml sqlsrv-5.10.0beta2 pdo_sqlsrv-5.10.0beta2 \
     && docker-php-ext-configure gd \
-    && docker-php-ext-install -j$(nproc) gettext zip gd pdo_mysql soap \
+    && docker-php-ext-install -j$(nproc) gettext zip gd pdo_mysql soap intl \
     && docker-php-ext-enable opcache.so imagick sqlsrv pdo_sqlsrv yaml \
     && docker-php-source delete \
     && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
@@ -70,7 +71,7 @@ WORKDIR ${PLATFORM_HOME}
 # Install PHP libs
 COPY composer.json ${PLATFORM_HOME}/composer.json
 COPY composer.lock ${PLATFORM_HOME}/composer.lock
-RUN composer install ${NO_DEV} --no-suggest --no-progress
+RUN composer install ${NO_DEV} --no-suggest --no-progress --ignore-platform-reqs
 
 # Copy platform
 ADD bin ${PLATFORM_HOME}/bin

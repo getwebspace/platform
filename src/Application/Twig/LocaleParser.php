@@ -64,6 +64,8 @@ class LocaleParser extends AbstractTokenParser
     }
 
     /**
+     * @param mixed $lineno
+     *
      * @throws SyntaxError
      */
     protected function checkTransString(Node $body, $lineno): void

@@ -4,20 +4,20 @@ namespace App\Application\Actions\Cup\User;
 
 class UserListAction extends UserAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         $criteria = [
             'status' => [\App\Domain\Types\UserStatusType::STATUS_WORK],
         ];
         $orderBy = [];
 
-        if ($this->request->isPost()) {
+        if ($this->isPost()) {
             $data = [
-                'username' => $this->request->getParam('username'),
-                'username_strong' => $this->request->getParam('username_strong'),
-                'email' => $this->request->getParam('email'),
-                'status_block' => $this->request->getParam('status_block'),
-                'status_delete' => $this->request->getParam('status_delete'),
+                'username' => $this->getParam('username'),
+                'username_strong' => $this->getParam('username_strong'),
+                'email' => $this->getParam('email'),
+                'status_block' => $this->getParam('status_block'),
+                'status_delete' => $this->getParam('status_delete'),
             ];
 
             if ($data['username']) {

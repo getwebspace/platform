@@ -8,22 +8,22 @@ use App\Domain\Service\User\Exception\TitleAlreadyExistsException;
 
 class CreateAction extends UserAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
-        if ($this->request->isPost()) {
+        if ($this->isPost()) {
             try {
                 $userGroup = $this->userGroupService->create([
-                    'title' => $this->request->getParam('title'),
-                    'description' => $this->request->getParam('description'),
-                    'access' => $this->request->getParam('access', []),
+                    'title' => $this->getParam('title'),
+                    'description' => $this->getParam('description'),
+                    'access' => $this->getParam('access', []),
                 ]);
 
                 switch (true) {
-                    case $this->request->getParam('save', 'exit') === 'exit':
-                        return $this->response->withRedirect('/cup/user/group');
+                    case $this->getParam('save', 'exit') === 'exit':
+                        return $this->respondWithRedirect('/cup/user/group');
 
                     default:
-                        return $this->response->withRedirect('/cup/user/group/' . $userGroup->getUuid() . '/edit');
+                        return $this->respondWithRedirect('/cup/user/group/' . $userGroup->getUuid() . '/edit');
                 }
             } catch (MissingTitleValueException|TitleAlreadyExistsException $e) {
                 $this->addError('title', $e->getMessage());

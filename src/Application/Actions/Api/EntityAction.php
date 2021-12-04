@@ -27,7 +27,7 @@ use Illuminate\Support\Collection;
 
 class EntityAction extends ActionApi
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         $status = 401;
         $params = [
@@ -173,7 +173,7 @@ class EntityAction extends ActionApi
             }
 
             // update section
-            if (!empty($access['key']) && $this->request->isPost()) {
+            if (!empty($access['key']) && $this->isPost()) {
                 try {
                     switch ($status) {
                         case 200:
@@ -183,7 +183,7 @@ class EntityAction extends ActionApi
                                 }
 
                                 foreach ($result as $index => $item) {
-                                    $result[$index] = $service->update($item, $this->request->getParams());
+                                    $result[$index] = $service->update($item, $this->getParams());
                                 }
                                 $status = 202;
                             }
@@ -191,7 +191,7 @@ class EntityAction extends ActionApi
                             break;
 
                         case 404:
-                            $result = $service->create($this->request->getParams());
+                            $result = $service->create($this->getParams());
                             $status = 201;
 
                             break;
@@ -221,7 +221,7 @@ class EntityAction extends ActionApi
         }
 
         foreach ($data as $value) {
-            if (\Ramsey\Uuid\Uuid::isValid($value) === true) {
+            if (\Ramsey\Uuid\Uuid::isValid((string) $value) === true) {
                 $result[] = $value;
             }
         }

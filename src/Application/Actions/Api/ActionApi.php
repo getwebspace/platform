@@ -27,7 +27,7 @@ abstract class ActionApi extends AbstractAction
             // no break
 
             case 'key':
-                $key = $this->request->getParam('key');
+                $key = $this->getParam('key');
                 if ($key === null) {
                     $key = $this->request->getHeaderLine('key');
                 }

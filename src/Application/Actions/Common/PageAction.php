@@ -9,7 +9,7 @@ use App\Domain\Service\Page\PageService;
 
 class PageAction extends AbstractAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         $pageService = PageService::getWithContainer($this->container);
 

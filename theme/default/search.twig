@@ -84,7 +84,7 @@
                                                 <a href="/{{ item.address }}">{{ item.title }}</a>
 
                                                 {% if item.description or item.content or item.content.short or item.meta.description %}
-                                                    <p class="text-justify mb-0">{{ (item.content.short ?: item.content ?: item.description ?: item.meta.description)|striptags|truncate(250)|raw }}</p>
+                                                    <p class="text-justify mb-0">{{ (item.content.short ?: item.content ?: item.description ?: item.meta.description)|striptags|u.truncate(250)|raw }}</p>
                                                 {% endif %}
                                                 {% if item.price %}
                                                     <p class="font-weight-bold">{{ item.price|format_number({fraction_digit: 2}) }}</p>

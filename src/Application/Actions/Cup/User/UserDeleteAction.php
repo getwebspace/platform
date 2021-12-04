@@ -4,7 +4,7 @@ namespace App\Application\Actions\Cup\User;
 
 class UserDeleteAction extends UserAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
             $this->userService->delete($this->resolveArg('uuid'));

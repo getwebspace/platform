@@ -7,7 +7,7 @@ use App\Domain\Entities\FileRelation;
 use App\Domain\Repository\FileRelationRepository;
 use App\Domain\Service\File\Exception\RelationNotFoundException;
 use Illuminate\Support\Collection;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface as Uuid;
 
 class FileRelationService extends AbstractService
 {
@@ -140,7 +140,7 @@ class FileRelationService extends AbstractService
     public function update($entity, array $data = []): FileRelation
     {
         switch (true) {
-            case is_string($entity) && Uuid::isValid($entity):
+            case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
                 $entity = $this->service->findOneByUuid((string) $entity);
 
@@ -187,7 +187,7 @@ class FileRelationService extends AbstractService
     public function delete($entity): bool
     {
         switch (true) {
-            case is_string($entity) && Uuid::isValid($entity):
+            case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
                 $entity = $this->service->findOneByUuid((string) $entity);
 

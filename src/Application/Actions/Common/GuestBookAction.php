@@ -12,17 +12,17 @@ use App\Domain\Service\GuestBook\GuestBookService;
 
 class GuestBookAction extends AbstractAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         $guestBookService = GuestBookService::getWithContainer($this->container);
 
-        if ($this->request->isPost()) {
+        if ($this->isPost()) {
             if ($this->isRecaptchaChecked()) {
                 try {
                     $guestBookService->create([
-                        'name' => $this->request->getParam('name'),
-                        'email' => $this->request->getParam('email'),
-                        'message' => $this->request->getParam('message'),
+                        'name' => $this->getParam('name'),
+                        'email' => $this->getParam('email'),
+                        'message' => $this->getParam('message'),
                     ]);
 
                     // todo add admin notify

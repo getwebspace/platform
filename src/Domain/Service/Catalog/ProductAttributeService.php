@@ -8,7 +8,7 @@ use App\Domain\Entities\Catalog\Product;
 use App\Domain\Entities\Catalog\ProductAttribute;
 use App\Domain\Repository\Catalog\AttributeRepository;
 use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface as Uuid;
 
 class ProductAttributeService extends AbstractService
 {
@@ -33,7 +33,7 @@ class ProductAttributeService extends AbstractService
                 if ($value) {
                     $this->create([
                         'product' => $product,
-                        'attribute' => Uuid::isValid($unique) ? $this->catalogAttributeService->findOneByUuid($unique) : $this->catalogAttributeService->findOneByAddress($unique),
+                        'attribute' => \Ramsey\Uuid\Uuid::isValid((string) $unique) ? $this->catalogAttributeService->findOneByUuid($unique) : $this->catalogAttributeService->findOneByAddress($unique),
                         'value' => $value,
                     ]);
                 }
@@ -47,7 +47,7 @@ class ProductAttributeService extends AbstractService
                 } else {
                     $this->create([
                         'product' => $product,
-                        'attribute' => Uuid::isValid($unique) ? $this->catalogAttributeService->findOneByUuid($unique) : $this->catalogAttributeService->findOneByAddress($unique),
+                        'attribute' => \Ramsey\Uuid\Uuid::isValid((string) $unique) ? $this->catalogAttributeService->findOneByUuid($unique) : $this->catalogAttributeService->findOneByAddress($unique),
                         'value' => $value,
                     ]);
                 }
@@ -93,7 +93,7 @@ class ProductAttributeService extends AbstractService
     public function update($entity, array $data = []): ProductAttribute
     {
         switch (true) {
-            case is_string($entity) && Uuid::isValid($entity):
+            case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
                 $entity = $this->service->findOneByUuid((string) $entity);
 
@@ -138,7 +138,7 @@ class ProductAttributeService extends AbstractService
     public function delete($entity)
     {
         switch (true) {
-            case is_string($entity) && Uuid::isValid($entity):
+            case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
                 $entity = $this->service->findOneByUuid((string) $entity);
 

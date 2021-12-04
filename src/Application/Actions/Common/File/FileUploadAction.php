@@ -4,9 +4,9 @@ namespace App\Application\Actions\Common\File;
 
 class FileUploadAction extends FileAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
-        $path_only = $this->request->getParam('path_only', false);
+        $path_only = $this->getParam('path_only', false);
 
         $models = [];
 

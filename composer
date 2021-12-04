@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker run --rm --interactive --tty --dns 1.1.1.1 --volume $PWD:/app composer:2 --ignore-platform-reqs "$@"
+docker run --rm --interactive --tty --dns 1.1.1.1 --volume $PWD:/app composer:2.2 --ignore-platform-reqs "$@"

@@ -4,7 +4,7 @@ namespace App\Domain\Entities;
 
 use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface as Uuid;
 
 /**
  * @ORM\Entity
@@ -30,9 +30,9 @@ abstract class FileRelation extends AbstractEntity
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    protected Uuid $uuid;
+    protected \Ramsey\Uuid\UuidInterface $uuid;
 
-    public function getUuid(): Uuid
+    public function getUuid(): \Ramsey\Uuid\UuidInterface
     {
         return $this->uuid;
     }
@@ -40,7 +40,7 @@ abstract class FileRelation extends AbstractEntity
     /**
      * @ORM\Column(type="uuid")
      */
-    protected Uuid $entity_uuid;
+    protected \Ramsey\Uuid\UuidInterface $entity_uuid;
 
     protected AbstractEntity $entity;
 
@@ -57,7 +57,7 @@ abstract class FileRelation extends AbstractEntity
     /**
      * @ORM\Column(type="uuid")
      */
-    protected Uuid $file_uuid;
+    protected \Ramsey\Uuid\UuidInterface $file_uuid;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Domain\Entities\File")

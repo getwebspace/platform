@@ -5,7 +5,6 @@ namespace App\Domain;
 use BadMethodCallException;
 use DateTime;
 use JsonSerializable;
-use Ramsey\Uuid\Uuid;
 use RuntimeException;
 
 abstract class AbstractEntity extends AbstractComponent implements JsonSerializable
@@ -27,7 +26,7 @@ abstract class AbstractEntity extends AbstractComponent implements JsonSerializa
             }
         }
 
-        return Uuid::uuid4()->toString();
+        return \Ramsey\Uuid\Uuid::uuid4()->toString();
     }
 
     protected function checkStrLenBetween(string $value, int $min = 0, int $max = INF): bool
@@ -77,7 +76,7 @@ abstract class AbstractEntity extends AbstractComponent implements JsonSerializa
     /**
      * @throws RuntimeException
      */
-    protected function checkPhoneByValue(string &$value): bool
+    protected function checkPhoneByValue(string & $value): bool
     {
         if ($value) {
             $value = str_replace([' ', '-', '.', '(', ')'], '', $value);
@@ -173,15 +172,15 @@ abstract class AbstractEntity extends AbstractComponent implements JsonSerializa
      */
     protected function getUuidByValue($value)
     {
-        if (Uuid::isValid((string) $value)) {
+        if (\Ramsey\Uuid\Uuid::isValid((string) $value)) {
             if (is_string($value)) {
-                return Uuid::fromString($value);
+                return \Ramsey\Uuid\Uuid::fromString($value);
             }
 
             return $value;
         }
 
-        return Uuid::fromString(Uuid::NIL);
+        return \Ramsey\Uuid\Uuid::fromString(\Ramsey\Uuid\Uuid::NIL);
     }
 
     /**
@@ -234,7 +233,7 @@ abstract class AbstractEntity extends AbstractComponent implements JsonSerializa
         return serialize($this->toArray());
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->toArray();
     }

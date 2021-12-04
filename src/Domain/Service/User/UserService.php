@@ -15,7 +15,7 @@ use App\Domain\Service\User\Exception\WrongEmailValueException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
 use App\Domain\Service\User\Exception\WrongPhoneValueException;
 use Illuminate\Support\Collection;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface as Uuid;
 
 class UserService extends AbstractService
 {
@@ -228,7 +228,7 @@ class UserService extends AbstractService
     public function update($entity, array $data = []): User
     {
         switch (true) {
-            case is_string($entity) && Uuid::isValid($entity):
+            case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
                 $entity = $this->service->findOneByUuid((string) $entity);
 
@@ -342,11 +342,12 @@ class UserService extends AbstractService
      */
     public function block($entity): ?User
     {
-        if (
-            (is_string($entity) && Uuid::isValid($entity))
-            || (is_object($entity) && is_a($entity, Uuid::class))
-        ) {
-            $entity = $this->service->findOneByUuid((string) $entity);
+        switch (true) {
+            case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
+            case is_object($entity) && is_a($entity, Uuid::class):
+                $entity = $this->service->findOneByUuid((string) $entity);
+
+                break;
         }
 
         if (is_object($entity) && is_a($entity, User::class)) {
@@ -368,7 +369,7 @@ class UserService extends AbstractService
     public function delete($entity): User
     {
         switch (true) {
-            case is_string($entity) && Uuid::isValid($entity):
+            case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
                 $entity = $this->service->findOneByUuid((string) $entity);
 

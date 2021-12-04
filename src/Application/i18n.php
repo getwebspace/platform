@@ -57,10 +57,6 @@ class i18n
 
     /**
      * Load language file for specified local
-     *
-     * @param SplPriorityQueue $priority
-     *
-     * @return array
      */
     protected static function load(SplPriorityQueue $priority): array
     {
@@ -91,20 +87,16 @@ class i18n
 
     /**
      * For add new strings via plugin
-     *
-     * @param array $strings
      */
     public static function addStrings(array $strings): void
     {
         static::$locale = array_merge(static::$locale, $strings);
     }
+
     /**
      * Get language code from header
      *
-     * @param string      $header
-     * @param string|null $default
-     *
-     * @return int|string|null
+     * @return null|int|string
      */
     public static function getLanguageFromHeader(string $header, ?string $default = null)
     {

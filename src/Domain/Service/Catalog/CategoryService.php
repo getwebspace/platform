@@ -9,7 +9,7 @@ use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\CategoryNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use Illuminate\Support\Collection;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface as Uuid;
 
 class CategoryService extends AbstractService
 {
@@ -92,7 +92,7 @@ class CategoryService extends AbstractService
             ->setExport($data['export']);
 
         // if address generation is enabled
-        if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && Uuid::isValid($data['parent']) && $data['parent'] !== Uuid::NIL) {
+        if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && \Ramsey\Uuid\Uuid::isValid((string) $data['parent']) && $data['parent'] !== \Ramsey\Uuid\Uuid::NIL) {
             try {
                 $parent = $this->read(['uuid' => $data['parent']]);
 
@@ -205,7 +205,7 @@ class CategoryService extends AbstractService
     public function update($entity, array $data = []): Category
     {
         switch (true) {
-            case is_string($entity) && Uuid::isValid($entity):
+            case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
                 $entity = $this->service->findOneByUuid((string) $entity);
 
@@ -318,7 +318,7 @@ class CategoryService extends AbstractService
     public function delete($entity): bool
     {
         switch (true) {
-            case is_string($entity) && Uuid::isValid($entity):
+            case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
                 $entity = $this->service->findOneByUuid((string) $entity);
 

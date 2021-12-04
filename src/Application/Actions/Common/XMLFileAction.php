@@ -6,7 +6,7 @@ use App\Domain\AbstractAction;
 
 class XMLFileAction extends AbstractAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         $name = $this->resolveArg('name');
 

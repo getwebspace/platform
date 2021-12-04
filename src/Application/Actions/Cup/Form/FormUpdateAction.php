@@ -7,31 +7,31 @@ use App\Domain\Service\Form\Exception\TitleAlreadyExistsException;
 
 class FormUpdateAction extends FormAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
             $form = $this->formService->read(['uuid' => $this->resolveArg('uuid')]);
 
             if ($form) {
-                if ($this->request->isPost()) {
+                if ($this->isPost()) {
                     try {
                         $form = $this->formService->update($form, [
-                            'title' => $this->request->getParam('title'),
-                            'address' => $this->request->getParam('address'),
-                            'template' => $this->request->getParam('template'),
-                            'authorSend' => $this->request->getParam('authorSend'),
-                            'recaptcha' => $this->request->getParam('recaptcha'),
-                            'origin' => $this->request->getParam('origin'),
-                            'mailto' => $this->request->getParam('mailto'),
-                            'duplicate' => $this->request->getParam('duplicate'),
+                            'title' => $this->getParam('title'),
+                            'address' => $this->getParam('address'),
+                            'template' => $this->getParam('template'),
+                            'authorSend' => $this->getParam('authorSend'),
+                            'recaptcha' => $this->getParam('recaptcha'),
+                            'origin' => $this->getParam('origin'),
+                            'mailto' => $this->getParam('mailto'),
+                            'duplicate' => $this->getParam('duplicate'),
                         ]);
 
                         switch (true) {
-                            case $this->request->getParam('save', 'exit') === 'exit':
-                                return $this->response->withRedirect('/cup/form');
+                            case $this->getParam('save', 'exit') === 'exit':
+                                return $this->respondWithRedirect('/cup/form');
 
                             default:
-                                return $this->response->withRedirect('/cup/form/' . $form->getUuid() . '/edit');
+                                return $this->respondWithRedirect('/cup/form/' . $form->getUuid() . '/edit');
                         }
                     } catch (TitleAlreadyExistsException $e) {
                         $this->addError('title', $e->getMessage());
@@ -44,6 +44,6 @@ class FormUpdateAction extends FormAction
             }
         }
 
-        return $this->response->withRedirect('/cup/form');
+        return $this->respondWithRedirect('/cup/form');
     }
 }

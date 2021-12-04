@@ -6,7 +6,7 @@ use App\Application\Actions\Cup\Form\FormAction;
 
 class DataViewAction extends FormAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         if (
             $this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))
@@ -23,6 +23,6 @@ class DataViewAction extends FormAction
             }
         }
 
-        return $this->response->withRedirect('/cup/form');
+        return $this->respondWithRedirect('/cup/form');
     }
 }

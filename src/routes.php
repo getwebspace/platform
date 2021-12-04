@@ -1,397 +1,398 @@
 <?php declare(strict_types=1);
 
+use DI\Container;
+use Psr\Http\Server\RequestHandlerInterface;
 use Slim\App;
-use Slim\Http\Request;
-use Slim\Http\Response;
+use Slim\Interfaces\RouteCollectorProxyInterface as Group;
+use Slim\Psr7\Request;
+use Slim\Psr7\Response;
 
-/**
- * @var \Slim\App                         $app
- * @var \Psr\Container\ContainerInterface $container
- */
+return function (App $app, Container $container): void {
+    // API section
+    $app
+        ->group('/api', function (Group $group): void {
+            // Entity getter
+            $group
+                ->map(['GET', 'POST'], '/{args:.*}', \App\Application\Actions\Api\EntityAction::class)
+                ->setName('api:entity')
+                ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
+        })
+        ->add(new \Slim\HttpCache\Cache('public', 0));
 
-// API section
-$app
-    ->group('/api', function (App $app): void {
-        // Entity getter
-        $app->map(['get', 'post'], '/{args:.*}', \App\Application\Actions\Api\EntityAction::class)
-            ->setName('api:entity')
-            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-    })
-    ->add(new \Slim\HttpCache\Cache('public', 0));
+    // CUP section
+    $app
+        ->group('/cup', function (Group $group): void {
+            // login cup
+            $group->map(['GET', 'POST'], '/login', \App\Application\Actions\Cup\LoginPageAction::class)
+                ->setName('cup:login');
 
-// CUP section
-$app
-    ->group('/cup', function (App $app): void {
-        // login cup
-        $app->map(['get', 'post'], '/login', \App\Application\Actions\Cup\LoginPageAction::class)
-            ->setName('cup:login');
+            // cup forbidden
+            $group->map(['GET', 'POST'], '/forbidden', \App\Application\Actions\Cup\ForbiddenPageAction::class)
+                ->setName('cup:forbidden');
 
-        // cup forbidden
-        $app->map(['get', 'post'], '/forbidden', \App\Application\Actions\Cup\ForbiddenPageAction::class)
-            ->setName('cup:forbidden');
+            // installer
+            $group->map(['GET', 'POST'], '/system[/{step:.*}]', \App\Application\Actions\Cup\SystemPageAction::class)
+                ->setName('cup:system');
 
-        // installer
-        $app->map(['get', 'post'], '/system[/{step:.*}]', \App\Application\Actions\Cup\SystemPageAction::class)
-            ->setName('cup:system');
+            $group
+                ->group('', function (Group $group): void {
+                    // main page
+                    $group->get('', \App\Application\Actions\Cup\MainPageAction::class)
+                        ->setName('cup:main');
 
-        $app
-            ->group('', function (App $app): void {
-                // main page
-                $app->get('', \App\Application\Actions\Cup\MainPageAction::class)
-                    ->setName('cup:main');
+                    // settings
+                    $group->map(['GET', 'POST'], '/parameters', \App\Application\Actions\Cup\ParametersPageAction::class)
+                        ->setName('cup:parameters');
 
-                // settings
-                $app->map(['get', 'post'], '/parameters', \App\Application\Actions\Cup\ParametersPageAction::class)
-                    ->setName('cup:parameters');
+                    // refresh
+                    $group->map(['GET', 'POST'], '/refresh', \App\Application\Actions\Cup\RefreshAction::class)
+                        ->setName('cup:refresh');
 
-                // refresh
-                $app->map(['post', 'get'], '/refresh', \App\Application\Actions\Cup\RefreshAction::class)
-                    ->setName('cup:refresh');
+                    // users
+                    $group->group('/user', function (Group $group): void {
+                        // users group
+                        $group->group('/group', function (Group $group): void {
+                            $group->get('', \App\Application\Actions\Cup\User\Group\ListAction::class)
+                                ->setName('cup:user:group:list');
+                            $group->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\User\Group\CreateAction::class)
+                                ->setName('cup:user:group:add');
+                            $group->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\User\Group\UpdateAction::class)
+                                ->setName('cup:user:group:edit');
+                            $group->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\User\Group\DeleteAction::class)
+                                ->setName('cup:user:group:delete');
+                        });
 
-                // users
-                $app->group('/user', function (App $app): void {
-                    // users group
-                    $app->group('/group', function (App $app): void {
-                        $app->get('', \App\Application\Actions\Cup\User\Group\ListAction::class)
-                            ->setName('cup:user:group:list');
-                        $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\User\Group\CreateAction::class)
-                            ->setName('cup:user:group:add');
-                        $app->map(['get', 'post'], '/{uuid}/edit', \App\Application\Actions\Cup\User\Group\UpdateAction::class)
-                            ->setName('cup:user:group:edit');
-                        $app->map(['get', 'post'], '/{uuid}/delete', \App\Application\Actions\Cup\User\Group\DeleteAction::class)
-                            ->setName('cup:user:group:delete');
+                        // users subscribers
+                        $group->group('/subscriber', function (Group $group): void {
+                            $group->get('', \App\Application\Actions\Cup\User\Subscriber\ListAction::class)
+                                ->setName('cup:user:subscriber:list');
+                            $group->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\User\Subscriber\CreateAction::class)
+                                ->setName('cup:user:subscriber:add');
+                            $group->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\User\Subscriber\DeleteAction::class)
+                                ->setName('cup:user:subscriber:delete');
+                        });
+                        $group->map(['GET', 'POST'], '/newsletter', \App\Application\Actions\Cup\User\NewsLetter\CreateAction::class)
+                            ->setName('cup:user:newsletter:list');
+
+                        $group->map(['GET', 'POST'], '', \App\Application\Actions\Cup\User\UserListAction::class)
+                            ->setName('cup:user:list');
+                        $group->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\User\UserCreateAction::class)
+                            ->setName('cup:user:add');
+                        $group->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\User\UserUpdateAction::class)
+                            ->setName('cup:user:edit');
+                        $group->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\User\UserDeleteAction::class)
+                            ->setName('cup:user:delete');
                     });
 
-                    // users subscribers
-                    $app->group('/subscriber', function (App $app): void {
-                        $app->get('', \App\Application\Actions\Cup\User\Subscriber\ListAction::class)
-                            ->setName('cup:user:subscriber:list');
-                        $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\User\Subscriber\CreateAction::class)
-                            ->setName('cup:user:subscriber:add');
-                        $app->map(['get', 'post'], '/{uuid}/delete', \App\Application\Actions\Cup\User\Subscriber\DeleteAction::class)
-                            ->setName('cup:user:subscriber:delete');
+                    // static pages
+                    $group->group('/page', function (Group $group): void {
+                        $group->map(['GET', 'POST'], '', \App\Application\Actions\Cup\Page\PageListAction::class)
+                            ->setName('cup:page:list');
+                        $group->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\Page\PageCreateAction::class)
+                            ->setName('cup:page:add');
+                        $group->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\Page\PageUpdateAction::class)
+                            ->setName('cup:page:edit');
+                        $group->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\Page\PageDeleteAction::class)
+                            ->setName('cup:page:delete');
                     });
-                    $app->map(['get', 'post'], '/newsletter', \App\Application\Actions\Cup\User\NewsLetter\CreateAction::class)
-                        ->setName('cup:user:newsletter:list');
 
-                    $app->map(['get', 'post'], '', \App\Application\Actions\Cup\User\UserListAction::class)
-                        ->setName('cup:user:list');
-                    $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\User\UserCreateAction::class)
-                        ->setName('cup:user:add');
-                    $app->map(['get', 'post'], '/{uuid}/edit', \App\Application\Actions\Cup\User\UserUpdateAction::class)
-                        ->setName('cup:user:edit');
-                    $app->map(['get', 'post'], '/{uuid}/delete', \App\Application\Actions\Cup\User\UserDeleteAction::class)
-                        ->setName('cup:user:delete');
+                    // publications
+                    $group->group('/publication', function (Group $group): void {
+                        $group->map(['GET', 'POST'], '', \App\Application\Actions\Cup\Publication\PublicationListAction::class)
+                            ->setName('cup:publication:list');
+                        $group->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\Publication\PublicationCreateAction::class)
+                            ->setName('cup:publication:add');
+                        $group->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\Publication\PublicationUpdateAction::class)
+                            ->setName('cup:publication:edit');
+                        $group->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\Publication\PublicationDeleteAction::class)
+                            ->setName('cup:publication:delete');
+                        $group->map(['GET', 'POST'], '/preview', \App\Application\Actions\Cup\Publication\PublicationPreviewAction::class)
+                            ->setName('cup:publication:preview');
+
+                        // category
+                        $group->group('/category', function (Group $group): void {
+                            $group->map(['GET', 'POST'], '', \App\Application\Actions\Cup\Publication\Category\CategoryListAction::class)
+                                ->setName('cup:publication:category:list');
+                            $group->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\Publication\Category\CategoryCreateAction::class)
+                                ->setName('cup:publication:category:add');
+                            $group->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\Publication\Category\CategoryUpdateAction::class)
+                                ->setName('cup:publication:category:edit');
+                            $group->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\Publication\Category\CategoryDeleteAction::class)
+                                ->setName('cup:publication:category:delete');
+                        });
+                    });
+
+                    // forms
+                    $group->group('/form', function (Group $group): void {
+                        $group->get('', \App\Application\Actions\Cup\Form\FormListAction::class)
+                            ->setName('cup:form:list');
+                        $group->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\Form\FormCreateAction::class)
+                            ->setName('cup:form:add');
+                        $group->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\Form\FormUpdateAction::class)
+                            ->setName('cup:form:edit');
+                        $group->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\Form\FormDeleteAction::class)
+                            ->setName('cup:form:delete');
+
+                        // forms data
+                        $group->group('/{uuid}/view', function (Group $group): void {
+                            $group->map(['GET', 'POST'], '', \App\Application\Actions\Cup\Form\Data\DataListAction::class)
+                                ->setName('cup:form:view:list');
+                            $group->map(['GET', 'POST'], '/{data}', \App\Application\Actions\Cup\Form\Data\DataViewAction::class)
+                                ->setName('cup:form:view:data');
+                            $group->map(['GET', 'POST'], '/{data}/preview', \App\Application\Actions\Cup\Form\Data\DataPreviewAction::class)
+                                ->setName('cup:form:view:preview');
+                            $group->map(['GET', 'POST'], '/{data}/delete', \App\Application\Actions\Cup\Form\Data\DataDeleteAction::class)
+                                ->setName('cup:form:view:delete');
+                        });
+                    });
+
+                    // catalog
+                    $group->group('/catalog', function (Group $group): void {
+                        // categories
+                        $group->group('/category', function (Group $group): void {
+                            $group->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\Catalog\Category\CategoryCreateAction::class)
+                                ->setName('cup:catalog:category:add');
+                            $group->map(['GET', 'POST'], '/{category}/edit', \App\Application\Actions\Cup\Catalog\Category\CategoryUpdateAction::class)
+                                ->setName('cup:catalog:category:edit');
+                            $group->map(['GET', 'POST'], '/{category}/delete', \App\Application\Actions\Cup\Catalog\Category\CategoryDeleteAction::class)
+                                ->setName('cup:catalog:category:delete');
+                            $group->get('[/{parent}]', \App\Application\Actions\Cup\Catalog\Category\CategoryListAction::class)
+                                ->setName('cup:catalog:category:list');
+                        });
+
+                        // products
+                        $group->group('/product', function (Group $group): void {
+                            $group->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\Catalog\Product\ProductCreateAction::class)
+                                ->setName('cup:catalog:product:add');
+                            $group->map(['GET', 'POST'], '/{product}/edit', \App\Application\Actions\Cup\Catalog\Product\ProductUpdateAction::class)
+                                ->setName('cup:catalog:product:edit');
+                            $group->map(['GET', 'POST'], '/{product}/delete', \App\Application\Actions\Cup\Catalog\Product\ProductDeleteAction::class)
+                                ->setName('cup:catalog:product:delete');
+                            $group->get('[/{category}]', \App\Application\Actions\Cup\Catalog\Product\ProductListAction::class)
+                                ->setName('cup:catalog:product:list');
+                        });
+
+                        // attribute
+                        $group->group('/attribute', function (Group $group): void {
+                            $group->get('', \App\Application\Actions\Cup\Catalog\Attribute\AttributeListAction::class)
+                                ->setName('cup:attribute:order:list');
+                            $group->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\Catalog\Attribute\AttributeCreateAction::class)
+                                ->setName('cup:attribute:order:add');
+                            $group->map(['GET', 'POST'], '/{attribute}/edit', \App\Application\Actions\Cup\Catalog\Attribute\AttributeUpdateAction::class)
+                                ->setName('cup:attribute:order:edit');
+                            $group->map(['GET', 'POST'], '/{attribute}/delete', \App\Application\Actions\Cup\Catalog\Attribute\AttributeDeleteAction::class)
+                                ->setName('cup:attribute:order:delete');
+                        });
+
+                        // order
+                        $group->group('/order', function (Group $group): void {
+                            $group->get('', \App\Application\Actions\Cup\Catalog\Order\OrderListAction::class)
+                                ->setName('cup:catalog:order:list');
+                            $group->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\Catalog\Order\OrderCreateAction::class)
+                                ->setName('cup:catalog:order:add');
+                            $group->map(['GET', 'POST'], '/{order}/edit', \App\Application\Actions\Cup\Catalog\Order\OrderUpdateAction::class)
+                                ->setName('cup:catalog:order:edit');
+                            $group->map(['GET', 'POST'], '/{order}/delete', \App\Application\Actions\Cup\Catalog\Order\OrderDeleteAction::class)
+                                ->setName('cup:catalog:order:delete');
+                            $group->map(['GET', 'POST'], '/{order}/invoice', \App\Application\Actions\Cup\Catalog\Order\OrderInvoiceAction::class)
+                                ->setName('cup:catalog:order:invoice');
+                        });
+
+                        // import export
+                        $group->group('/data', function (Group $group): void {
+                            $group
+                                ->get('/export', \App\Application\Actions\Cup\Catalog\CatalogExportAction::class)
+                                ->setName('cup:catalog:data:export');
+                            $group
+                                ->post('/import', \App\Application\Actions\Cup\Catalog\CatalogImportAction::class)
+                                ->setName('cup:catalog:data:import');
+                        });
+                    });
+
+                    // guestbook
+                    $group->group('/guestbook', function (Group $group): void {
+                        $group->map(['GET', 'POST'], '', \App\Application\Actions\Cup\GuestBook\GuestBookListAction::class)
+                            ->setName('cup:guestbook:list');
+                        $group->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\GuestBook\GuestBookUpdateAction::class)
+                            ->setName('cup:guestbook:edit');
+                        $group->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\GuestBook\GuestBookDeleteAction::class)
+                            ->setName('cup:guestbook:delete');
+                    });
+
+                    // files
+                    $group->group('/file', function (Group $group): void {
+                        // small text-editor api
+                        $group->group('/image', function (Group $group): void {
+                            $group->get('', \App\Application\Actions\Cup\File\Image\GetAction::class)
+                                ->setName('cup:file:image:get');
+                            $group->post('/delete', \App\Application\Actions\Cup\File\Image\DeleteAction::class)
+                                ->setName('cup:file:image:delete');
+                        });
+
+                        $group->get('', \App\Application\Actions\Cup\File\FileListAction::class)
+                            ->setName('cup:file:list');
+                        $group->any('/{uuid}/delete', \App\Application\Actions\Cup\File\FileDeleteAction::class)
+                            ->setName('cup:file:delete');
+                    });
+
+                    // template editor
+                    $group->group('/editor', function (Group $group): void {
+                        $group->map(['GET', 'POST'], '[/{file:.*}]', \App\Application\Actions\Cup\EditorPageAction::class)
+                            ->setName('cup:editor');
+                    });
+
+                    // task add to queue
+                    $group->post('/task/run', \App\Application\Actions\Cup\Task\TaskRunAction::class)
+                        ->setName('cup:task:run');
+
+                    // dev console
+                    $group->post('/console', '\RunTracy\Controllers\RunTracyConsole:index')
+                        ->setName('cup:console');
+                });
+        })
+        ->add(new \Slim\HttpCache\Cache('private', 0, true));
+
+    // COMMON section
+    // main path
+    $app
+        ->get('/', \App\Application\Actions\Common\MainPageAction::class)
+        ->setName('common:main')
+        ->add(
+            ($_ENV['DEBUG'] ?? false) ?
+                new \Slim\HttpCache\Cache('private', 0, false) :
+                new \Slim\HttpCache\Cache('public', 60, true)
+        );
+
+    // user
+    $app
+        ->group('/user', function (Group $group): void {
+            $group
+                ->map(['GET', 'POST'], '/login', \App\Application\Actions\Common\User\UserLoginAction::class)
+                ->setName('common:user:login')
+                ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
+
+            $group
+                ->map(['GET', 'POST'], '/register', \App\Application\Actions\Common\User\UserRegisterAction::class)
+                ->setName('common:user:register')
+                ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
+
+            $group->map(['GET', 'POST'], '/logout', \App\Application\Actions\Common\User\UserLogoutAction::class)
+                ->setName('common:user:logout');
+
+            $group
+                ->map(['GET', 'POST'], '/profile', \App\Application\Actions\Common\User\UserProfileAction::class)
+                ->setName('common:user:profile')
+                ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class)
+                ->add(function (Request $request, RequestHandlerInterface $handler) {
+                    $user = $request->getAttribute('user', false);
+
+                    if ($user === false) {
+                        return (new Response())
+                            ->withAddedHeader('Location', '/user/login')
+                            ->withStatus(301);
+                    }
+
+                    return $handler->handle($request);
+                });
+        })
+        ->add(new \Slim\HttpCache\Cache('private', 0, true));
+
+    // other PRIVATE section
+    $app
+        ->group('', function (Group $group): void {
+            $group
+                ->map(['GET', 'POST'], '/search', \App\Application\Actions\Common\SearchAction::class)
+                ->setName('common:search')
+                ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
+
+            $group
+                ->map(['GET', 'POST'], '/cart', \App\Application\Actions\Common\Catalog\CartAction::class)
+                ->setName('common:catalog:cart')
+                ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
+
+            // view order confirm
+            $group
+                ->get('/cart/done/{order}', \App\Application\Actions\Common\Catalog\CartDoneAction::class)
+                ->setName('common:catalog:cart:done')
+                ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
+        })
+        ->add(new \Slim\HttpCache\Cache('private', 0, true));
+
+    // other PUBLIC section
+    $app
+        ->group('', function (Group $group) use ($container): void {
+            // forbidden
+            $group->map(['GET', 'POST'], '/forbidden', \App\Application\Actions\Common\ForbiddenPageAction::class)
+                ->setName('forbidden');
+
+            // publication
+            $group
+                ->group('', function (Group $group) use ($container): void {
+                    $publicationCategoryService = \App\Domain\Service\Publication\CategoryService::getWithContainer($container);
+
+                    if (($categories = $publicationCategoryService->read()) !== null) {
+                        $categoryPath = $categories->pluck('address')->implode('|');
+
+                        // view categories and products
+                        $group
+                            ->get("/{category:{$categoryPath}}[/{args:.*}]", \App\Application\Actions\Common\Publication\ListAction::class)
+                            ->setName('common:publication:list')
+                            ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
+                    }
                 });
 
-                // static pages
-                $app->group('/page', function (App $app): void {
-                    $app->map(['get', 'post'], '', \App\Application\Actions\Cup\Page\PageListAction::class)
-                        ->setName('cup:page:list');
-                    $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\Page\PageCreateAction::class)
-                        ->setName('cup:page:add');
-                    $app->map(['get', 'post'], '/{uuid}/edit', \App\Application\Actions\Cup\Page\PageUpdateAction::class)
-                        ->setName('cup:page:edit');
-                    $app->map(['get', 'post'], '/{uuid}/delete', \App\Application\Actions\Cup\Page\PageDeleteAction::class)
-                        ->setName('cup:page:delete');
+            // file
+            $group
+                ->group('/file', function (Group $group): void {
+                    $group->get('/get/{salt}/{hash}', \App\Application\Actions\Common\File\FileGetAction::class)
+                        ->setName('common:file:get');
+                    $group->get('/view/{salt}/{hash}', \App\Application\Actions\Common\File\FileViewAction::class)
+                        ->setName('common:file:view');
+                    $group->post('/upload', \App\Application\Actions\Common\File\FileUploadAction::class)
+                        ->setName('common:file:upload')
+                        ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
                 });
 
-                // publications
-                $app->group('/publication', function (App $app): void {
-                    $app->map(['get', 'post'], '', \App\Application\Actions\Cup\Publication\PublicationListAction::class)
-                        ->setName('cup:publication:list');
-                    $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\Publication\PublicationCreateAction::class)
-                        ->setName('cup:publication:add');
-                    $app->map(['get', 'post'], '/{uuid}/edit', \App\Application\Actions\Cup\Publication\PublicationUpdateAction::class)
-                        ->setName('cup:publication:edit');
-                    $app->map(['get', 'post'], '/{uuid}/delete', \App\Application\Actions\Cup\Publication\PublicationDeleteAction::class)
-                        ->setName('cup:publication:delete');
-                    $app->map(['get', 'post'], '/preview', \App\Application\Actions\Cup\Publication\PublicationPreviewAction::class)
-                        ->setName('cup:publication:preview');
+            // form
+            $group
+                ->post('/form/{unique}', \App\Application\Actions\Common\FormAction::class)
+                ->setName('common:form')
+                ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
 
-                    // category
-                    $app->group('/category', function (App $app): void {
-                        $app->map(['get', 'post'], '', \App\Application\Actions\Cup\Publication\Category\CategoryListAction::class)
-                            ->setName('cup:publication:category:list');
-                        $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\Publication\Category\CategoryCreateAction::class)
-                            ->setName('cup:publication:category:add');
-                        $app->map(['get', 'post'], '/{uuid}/edit', \App\Application\Actions\Cup\Publication\Category\CategoryUpdateAction::class)
-                            ->setName('cup:publication:category:edit');
-                        $app->map(['get', 'post'], '/{uuid}/delete', \App\Application\Actions\Cup\Publication\Category\CategoryDeleteAction::class)
-                            ->setName('cup:publication:category:delete');
-                    });
-                });
-
-                // forms
-                $app->group('/form', function (App $app): void {
-                    $app->get('', \App\Application\Actions\Cup\Form\FormListAction::class)
-                        ->setName('cup:form:list');
-                    $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\Form\FormCreateAction::class)
-                        ->setName('cup:form:add');
-                    $app->map(['get', 'post'], '/{uuid}/edit', \App\Application\Actions\Cup\Form\FormUpdateAction::class)
-                        ->setName('cup:form:edit');
-                    $app->map(['get', 'post'], '/{uuid}/delete', \App\Application\Actions\Cup\Form\FormDeleteAction::class)
-                        ->setName('cup:form:delete');
-
-                    // forms data
-                    $app->group('/{uuid}/view', function (App $app): void {
-                        $app->map(['get', 'post'], '', \App\Application\Actions\Cup\Form\Data\DataListAction::class)
-                            ->setName('cup:form:view:list');
-                        $app->map(['get', 'post'], '/{data}', \App\Application\Actions\Cup\Form\Data\DataViewAction::class)
-                            ->setName('cup:form:view:data');
-                        $app->map(['get', 'post'], '/{data}/preview', \App\Application\Actions\Cup\Form\Data\DataPreviewAction::class)
-                            ->setName('cup:form:view:preview');
-                        $app->map(['get', 'post'], '/{data}/delete', \App\Application\Actions\Cup\Form\Data\DataDeleteAction::class)
-                            ->setName('cup:form:view:delete');
-                    });
-                });
-
-                // catalog
-                $app->group('/catalog', function (App $app): void {
-                    // categories
-                    $app->group('/category', function (App $app): void {
-                        $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\Catalog\Category\CategoryCreateAction::class)
-                            ->setName('cup:catalog:category:add');
-                        $app->map(['get', 'post'], '/{category}/edit', \App\Application\Actions\Cup\Catalog\Category\CategoryUpdateAction::class)
-                            ->setName('cup:catalog:category:edit');
-                        $app->map(['get', 'post'], '/{category}/delete', \App\Application\Actions\Cup\Catalog\Category\CategoryDeleteAction::class)
-                            ->setName('cup:catalog:category:delete');
-                        $app->get('[/{parent}]', \App\Application\Actions\Cup\Catalog\Category\CategoryListAction::class)
-                            ->setName('cup:catalog:category:list');
-                    });
-
-                    // products
-                    $app->group('/product', function (App $app): void {
-                        $app
-                            ->map(['get', 'post'], '/add', \App\Application\Actions\Cup\Catalog\Product\ProductCreateAction::class)
-                            ->setName('cup:catalog:product:add');
-                        $app->map(['get', 'post'], '/{product}/edit', \App\Application\Actions\Cup\Catalog\Product\ProductUpdateAction::class)
-                            ->setName('cup:catalog:product:edit');
-                        $app->map(['get', 'post'], '/{product}/delete', \App\Application\Actions\Cup\Catalog\Product\ProductDeleteAction::class)
-                            ->setName('cup:catalog:product:delete');
-                        $app->get('[/{category}]', \App\Application\Actions\Cup\Catalog\Product\ProductListAction::class)
-                            ->setName('cup:catalog:product:list');
-                    });
-
-                    // attribute
-                    $app->group('/attribute', function (App $app): void {
-                        $app->get('', \App\Application\Actions\Cup\Catalog\Attribute\AttributeListAction::class)
-                            ->setName('cup:attribute:order:list');
-                        $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\Catalog\Attribute\AttributeCreateAction::class)
-                            ->setName('cup:attribute:order:add');
-                        $app->map(['get', 'post'], '/{attribute}/edit', \App\Application\Actions\Cup\Catalog\Attribute\AttributeUpdateAction::class)
-                            ->setName('cup:attribute:order:edit');
-                        $app->map(['get', 'post'], '/{attribute}/delete', \App\Application\Actions\Cup\Catalog\Attribute\AttributeDeleteAction::class)
-                            ->setName('cup:attribute:order:delete');
-                    });
-
-                    // order
-                    $app->group('/order', function (App $app): void {
-                        $app->get('', \App\Application\Actions\Cup\Catalog\Order\OrderListAction::class)
-                            ->setName('cup:catalog:order:list');
-                        $app->map(['get', 'post'], '/add', \App\Application\Actions\Cup\Catalog\Order\OrderCreateAction::class)
-                            ->setName('cup:catalog:order:add');
-                        $app->map(['get', 'post'], '/{order}/edit', \App\Application\Actions\Cup\Catalog\Order\OrderUpdateAction::class)
-                            ->setName('cup:catalog:order:edit');
-                        $app->map(['get', 'post'], '/{order}/delete', \App\Application\Actions\Cup\Catalog\Order\OrderDeleteAction::class)
-                            ->setName('cup:catalog:order:delete');
-                        $app->map(['get', 'post'], '/{order}/invoice', \App\Application\Actions\Cup\Catalog\Order\OrderInvoiceAction::class)
-                            ->setName('cup:catalog:order:invoice');
-                    });
-
-                    // import export
-                    $app->group('/data', function (App $app): void {
-                        $app
-                            ->get('/export', \App\Application\Actions\Cup\Catalog\CatalogExportAction::class)
-                            ->setName('cup:catalog:data:export');
-                        $app
-                            ->post('/import', \App\Application\Actions\Cup\Catalog\CatalogImportAction::class)
-                            ->setName('cup:catalog:data:import');
-                    });
-                });
-
-                // guestbook
-                $app->group('/guestbook', function (App $app): void {
-                    $app->map(['get', 'post'], '', \App\Application\Actions\Cup\GuestBook\GuestBookListAction::class)
-                        ->setName('cup:guestbook:list');
-                    $app->map(['get', 'post'], '/{uuid}/edit', \App\Application\Actions\Cup\GuestBook\GuestBookUpdateAction::class)
-                        ->setName('cup:guestbook:edit');
-                    $app->map(['get', 'post'], '/{uuid}/delete', \App\Application\Actions\Cup\GuestBook\GuestBookDeleteAction::class)
-                        ->setName('cup:guestbook:delete');
-                });
-
-                // files
-                $app->group('/file', function (App $app): void {
-                    // small text-editor api
-                    $app->group('/image', function (App $app): void {
-                        $app->get('', \App\Application\Actions\Cup\File\Image\GetAction::class)
-                            ->setName('cup:file:image:get');
-                        $app->post('/delete', \App\Application\Actions\Cup\File\Image\DeleteAction::class)
-                            ->setName('cup:file:image:delete');
-                    });
-
-                    $app->get('', \App\Application\Actions\Cup\File\FileListAction::class)
-                        ->setName('cup:file:list');
-                    $app->any('/{uuid}/delete', \App\Application\Actions\Cup\File\FileDeleteAction::class)
-                        ->setName('cup:file:delete');
-                });
-
-                // template editor
-                $app->group('/editor', function (App $app): void {
-                    $app->map(['get', 'post'], '[/{file:.*}]', \App\Application\Actions\Cup\EditorPageAction::class)
-                        ->setName('cup:editor');
-                });
-
-                // task add to queue
-                $app->post('/task/run', \App\Application\Actions\Cup\Task\TaskRunAction::class)
-                    ->setName('cup:task:run');
-
-                // dev console
-                $app->post('/console', '\RunTracy\Controllers\RunTracyConsole:index')
-                    ->setName('cup:console');
-            });
-    })
-    ->add(new \Slim\HttpCache\Cache('private', 0, true));
-
-// COMMON section
-// main path
-$app
-    ->get('/', \App\Application\Actions\Common\MainPageAction::class)
-    ->setName('common:main')
-    ->add(
-        ($_ENV['DEBUG'] ?? false) ?
-            new \Slim\HttpCache\Cache('private', 0, false) :
-            new \Slim\HttpCache\Cache('public', 60, true)
-    );
-
-// user
-$app
-    ->group('/user', function (App $app): void {
-        $app
-            ->map(['get', 'post'], '/login', \App\Application\Actions\Common\User\UserLoginAction::class)
-            ->setName('common:user:login')
-            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-
-        $app
-            ->map(['get', 'post'], '/register', \App\Application\Actions\Common\User\UserRegisterAction::class)
-            ->setName('common:user:register')
-            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-
-        $app->map(['get', 'post'], '/logout', \App\Application\Actions\Common\User\UserLogoutAction::class)
-            ->setName('common:user:logout');
-
-        $app
-            ->map(['get', 'post'], '/profile', \App\Application\Actions\Common\User\UserProfileAction::class)
-            ->setName('common:user:profile')
-            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class)
-            ->add(function (Request $request, Response $response, $next) {
-                $user = $request->getAttribute('user', false);
-
-                if ($user === false) {
-                    return $response->withHeader('Location', '/user/login')->withStatus(301);
-                }
-
-                return $next($request, $response);
-            });
-    })
-    ->add(new \Slim\HttpCache\Cache('private', 0, true));
-
-// other PRIVATE section
-$app
-    ->group('', function (App $app): void {
-        $app
-            ->map(['get', 'post'], '/search', \App\Application\Actions\Common\SearchAction::class)
-            ->setName('common:search')
-            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-
-        $app
-            ->map(['get', 'post'], '/cart', \App\Application\Actions\Common\Catalog\CartAction::class)
-            ->setName('common:catalog:cart')
-            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-
-        // view order confirm
-        $app
-            ->get('/cart/done/{order}', \App\Application\Actions\Common\Catalog\CartDoneAction::class)
-            ->setName('common:catalog:cart:done')
-            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-    })
-    ->add(new \Slim\HttpCache\Cache('private', 0, true));
-
-// other PUBLIC section
-$app
-    ->group('', function (App $app) use ($container): void {
-        // forbidden
-        $app->map(['get', 'post'], '/forbidden', \App\Application\Actions\Common\ForbiddenPageAction::class)
-            ->setName('forbidden');
-
-        // publication
-        $app
-            ->group('', function (App $app) use ($container): void {
-                $publicationCategoryService = \App\Domain\Service\Publication\CategoryService::getWithContainer($container);
-
-                if (($categories = $publicationCategoryService->read()) !== null) {
-                    $categoryPath = $categories->pluck('address')->implode('|');
+            // catalog
+            $group
+                ->group('', function (Group $group) use ($container): void {
+                    $paramService = \App\Domain\Service\Parameter\ParameterService::getWithContainer($container);
+                    $pathCatalog = $paramService->read(['key' => 'catalog_address'], 'catalog')->getValue();
 
                     // view categories and products
-                    $app
-                        ->get("/{category:{$categoryPath}}[/{args:.*}]", \App\Application\Actions\Common\Publication\ListAction::class)
-                        ->setName('common:publication:list')
-                        ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-                }
-            });
+                    $group
+                        ->get("/{$pathCatalog}[/{args:.*}]", \App\Application\Actions\Common\Catalog\ListAction::class)
+                        ->setName('common:catalog:list')
+                        ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
+                });
 
-        // file
-        $app
-            ->group('/file', function (App $app): void {
-                $app->get('/get/{salt}/{hash}', \App\Application\Actions\Common\File\FileGetAction::class)
-                    ->setName('common:file:get');
-                $app->get('/view/{salt}/{hash}', \App\Application\Actions\Common\File\FileViewAction::class)
-                    ->setName('common:file:view');
-                $app
-                    ->post('/upload', \App\Application\Actions\Common\File\FileUploadAction::class)
-                    ->setName('common:file:upload')
-                    ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-            });
+            // guest book
+            $group
+                ->map(['GET', 'POST'], '/guestbook[/{page:[0-9]+}}]', \App\Application\Actions\Common\GuestBookAction::class)
+                ->setName('common:guestbook')
+                ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
 
-        // form
-        $app
-            ->post('/form/{unique}', \App\Application\Actions\Common\FormAction::class)
-            ->setName('common:form')
-            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
+            // xml files
+            $group->get('/xml/{name}', \App\Application\Actions\Common\XMLFileAction::class)
+                ->setName('common:xml');
 
-        // catalog
-        $app
-            ->group('', function (App $app) use ($container): void {
-                $paramService = \App\Domain\Service\Parameter\ParameterService::getWithContainer($container);
-                $pathCatalog = $paramService->read(['key' => 'catalog_address'], 'catalog')->getValue();
+            // publication rss
+            $group->get('/rss/{channel:.*}', \App\Application\Actions\Common\PublicationRSS::class)
+                ->setName('common:rss');
 
-                // view categories and products
-                $app
-                    ->get("/{$pathCatalog}[/{args:.*}]", \App\Application\Actions\Common\Catalog\ListAction::class)
-                    ->setName('common:catalog:list')
-                    ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-            });
-
-        // guest book
-        $app
-            ->map(['get', 'post'], '/guestbook[/{page:[0-9]+}}]', \App\Application\Actions\Common\GuestBookAction::class)
-            ->setName('common:guestbook')
-            ->add(\App\Application\Middlewares\IsEnabledMiddleware::class);
-
-        // xml files
-        $app->get('/xml/{name}', \App\Application\Actions\Common\XMLFileAction::class)
-            ->setName('common:xml');
-
-        // publication rss
-        $app->get('/rss/{channel:.*}', \App\Application\Actions\Common\PublicationRSS::class)
-            ->setName('common:rss');
-
-        // page
-        $app->get('/{args:.*}', \App\Application\Actions\Common\PageAction::class)
-            ->setName('common:page');
-    })
-    ->add(
-        ($_ENV['DEBUG'] ?? false) ?
-            new \Slim\HttpCache\Cache('private', 0, false) :
-            new \Slim\HttpCache\Cache('public', 60, true)
-    );
+            // page
+            $group->get('/{args:.*}', \App\Application\Actions\Common\PageAction::class)
+                ->setName('common:page');
+        })
+        ->add(
+            ($_ENV['DEBUG'] ?? false) ?
+                new \Slim\HttpCache\Cache('private', 0, false) :
+                new \Slim\HttpCache\Cache('public', 60, true)
+        );
+};

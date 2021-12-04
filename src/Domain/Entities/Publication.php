@@ -7,7 +7,7 @@ use App\Domain\Entities\Publication\Category as PublicationCategory;
 use App\Domain\Traits\FileTrait;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface as Uuid;
 
 /**
  * @ORM\Entity(repositoryClass="App\Domain\Repository\PublicationRepository")
@@ -23,9 +23,9 @@ class Publication extends AbstractEntity
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    protected Uuid $uuid;
+    protected \Ramsey\Uuid\UuidInterface $uuid;
 
-    public function getUuid(): Uuid
+    public function getUuid(): \Ramsey\Uuid\UuidInterface
     {
         return $this->uuid;
     }
@@ -33,7 +33,7 @@ class Publication extends AbstractEntity
     /**
      * @ORM\Column(type="uuid", nullable=true, options={"default": null})
      */
-    protected ?Uuid $user_uuid;
+    protected ?\Ramsey\Uuid\UuidInterface $user_uuid;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Domain\Entities\User")
@@ -111,7 +111,7 @@ class Publication extends AbstractEntity
     /**
      * @ORM\Column(type="uuid", nullable=true, options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
-    protected ?uuid $category_uuid;
+    protected ?\Ramsey\Uuid\UuidInterface $category_uuid;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Publication\Category")
@@ -256,7 +256,7 @@ class Publication extends AbstractEntity
     {
         return [
             'uuid' => $this->uuid,
-            'user' => $this->user_uuid ?: Uuid::NIL,
+            'user' => $this->user_uuid ?: \Ramsey\Uuid\Uuid::NIL,
             'address' => $this->address,
             'title' => $this->title,
             'category' => $this->category,

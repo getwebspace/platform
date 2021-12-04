@@ -6,7 +6,7 @@ use App\Application\Actions\Cup\Publication\PublicationAction;
 
 class CategoryDeleteAction extends PublicationAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
             $this->publicationCategoryService->delete($this->resolveArg('uuid'));

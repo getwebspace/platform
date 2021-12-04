@@ -11,34 +11,34 @@ use App\Domain\Service\User\Exception\WrongPhoneValueException;
 
 class UserCreateAction extends UserAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         $userGroups = $this->userGroupService->read();
 
-        if ($this->request->isPost()) {
+        if ($this->isPost()) {
             try {
-                $group_uuid = $this->request->getParam('group_uuid');
+                $group_uuid = $this->getParam('group_uuid');
                 $user = $this->userService->create([
-                    'username' => $this->request->getParam('username'),
-                    'password' => $this->request->getParam('password'),
-                    'firstname' => $this->request->getParam('firstname'),
-                    'lastname' => $this->request->getParam('lastname'),
-                    'address' => $this->request->getParam('address'),
-                    'additional' => $this->request->getParam('additional'),
-                    'email' => $this->request->getParam('email'),
-                    'allow_mail' => $this->request->getParam('allow_mail'),
-                    'phone' => $this->request->getParam('phone'),
+                    'username' => $this->getParam('username'),
+                    'password' => $this->getParam('password'),
+                    'firstname' => $this->getParam('firstname'),
+                    'lastname' => $this->getParam('lastname'),
+                    'address' => $this->getParam('address'),
+                    'additional' => $this->getParam('additional'),
+                    'email' => $this->getParam('email'),
+                    'allow_mail' => $this->getParam('allow_mail'),
+                    'phone' => $this->getParam('phone'),
                     'group' => $group_uuid !== \Ramsey\Uuid\Uuid::NIL ? $userGroups->firstWhere('uuid', $group_uuid) : '',
-                    'external_id' => $this->request->getParam('external_id'),
+                    'external_id' => $this->getParam('external_id'),
                 ]);
                 $user = $this->processEntityFiles($user);
 
                 switch (true) {
-                    case $this->request->getParam('save', 'exit') === 'exit':
-                        return $this->response->withRedirect('/cup/user');
+                    case $this->getParam('save', 'exit') === 'exit':
+                        return $this->respondWithRedirect('/cup/user');
 
                     default:
-                        return $this->response->withRedirect('/cup/user/' . $user->getUuid() . '/edit');
+                        return $this->respondWithRedirect('/cup/user/' . $user->getUuid() . '/edit');
                 }
             } catch (UsernameAlreadyExistsException $e) {
                 $this->addError('username', $e->getMessage());

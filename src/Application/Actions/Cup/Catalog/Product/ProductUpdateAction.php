@@ -9,7 +9,7 @@ use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 
 class ProductUpdateAction extends CatalogAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('product') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('product'))) {
             $product = $this->catalogProductService->read([
@@ -18,53 +18,53 @@ class ProductUpdateAction extends CatalogAction
             ]);
 
             if ($product) {
-                if ($this->request->isPost()) {
+                if ($this->isPost()) {
                     try {
                         $product = $this->catalogProductService->update($product, [
-                            'category' => $this->request->getParam('category'),
-                            'title' => $this->request->getParam('title'),
-                            'type' => $this->request->getParam('type'),
-                            'description' => $this->request->getParam('description'),
-                            'extra' => $this->request->getParam('extra'),
-                            'address' => $this->request->getParam('address'),
-                            'vendorcode' => $this->request->getParam('vendorcode'),
-                            'barcode' => $this->request->getParam('barcode'),
-                            'tax' => $this->request->getParam('tax'),
-                            'priceFirst' => $this->request->getParam('priceFirst'),
-                            'price' => $this->request->getParam('price'),
-                            'priceWholesale' => $this->request->getParam('priceWholesale'),
-                            'special' => $this->request->getParam('special'),
-                            'volume' => $this->request->getParam('volume'),
-                            'unit' => $this->request->getParam('unit'),
-                            'stock' => $this->request->getParam('stock'),
-                            'field1' => $this->request->getParam('field1'),
-                            'field2' => $this->request->getParam('field2'),
-                            'field3' => $this->request->getParam('field3'),
-                            'field4' => $this->request->getParam('field4'),
-                            'field5' => $this->request->getParam('field5'),
-                            'country' => $this->request->getParam('country'),
-                            'manufacturer' => $this->request->getParam('manufacturer'),
-                            'tags' => $this->request->getParam('tags'),
-                            'order' => $this->request->getParam('order'),
-                            'date' => $this->request->getParam('date'),
-                            'meta' => $this->request->getParam('meta'),
-                            'external_id' => $this->request->getParam('external_id'),
+                            'category' => $this->getParam('category'),
+                            'title' => $this->getParam('title'),
+                            'type' => $this->getParam('type'),
+                            'description' => $this->getParam('description'),
+                            'extra' => $this->getParam('extra'),
+                            'address' => $this->getParam('address'),
+                            'vendorcode' => $this->getParam('vendorcode'),
+                            'barcode' => $this->getParam('barcode'),
+                            'tax' => $this->getParam('tax'),
+                            'priceFirst' => $this->getParam('priceFirst'),
+                            'price' => $this->getParam('price'),
+                            'priceWholesale' => $this->getParam('priceWholesale'),
+                            'special' => $this->getParam('special'),
+                            'volume' => $this->getParam('volume'),
+                            'unit' => $this->getParam('unit'),
+                            'stock' => $this->getParam('stock'),
+                            'field1' => $this->getParam('field1'),
+                            'field2' => $this->getParam('field2'),
+                            'field3' => $this->getParam('field3'),
+                            'field4' => $this->getParam('field4'),
+                            'field5' => $this->getParam('field5'),
+                            'country' => $this->getParam('country'),
+                            'manufacturer' => $this->getParam('manufacturer'),
+                            'tags' => $this->getParam('tags'),
+                            'order' => $this->getParam('order'),
+                            'date' => $this->getParam('date'),
+                            'meta' => $this->getParam('meta'),
+                            'external_id' => $this->getParam('external_id'),
                         ]);
                         $this->catalogProductAttributeService->proccess(
                             $product,
-                            $this->request->getParam('attributes', [])
+                            $this->getParam('attributes', [])
                         );
                         $this->catalogProductRelationService->proccess(
-                            $product, $this->request->getParam('relation', [])
+                            $product, $this->getParam('relation', [])
                         );
                         $product = $this->processEntityFiles($product);
 
                         switch (true) {
-                            case $this->request->getParam('save', 'exit') === 'exit':
-                                return $this->response->withRedirect('/cup/catalog/product');
+                            case $this->getParam('save', 'exit') === 'exit':
+                                return $this->respondWithRedirect('/cup/catalog/product');
 
                             default:
-                                return $this->response->withRedirect('/cup/catalog/product/' . $product->getUuid() . '/edit');
+                                return $this->respondWithRedirect('/cup/catalog/product/' . $product->getUuid() . '/edit');
                         }
                     } catch (MissingTitleValueException $e) {
                         $this->addError('title', $e->getMessage());
@@ -89,9 +89,9 @@ class ProductUpdateAction extends CatalogAction
                 ]);
             }
 
-            return $this->response->withRedirect('/cup/catalog/product/' . $product->getCategory());
+            return $this->respondWithRedirect('/cup/catalog/product/' . $product->getCategory());
         }
 
-        return $this->response->withRedirect('/cup/catalog/product');
+        return $this->respondWithRedirect('/cup/catalog/product');
     }
 }

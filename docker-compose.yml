@@ -7,6 +7,7 @@ services:
             dockerfile: docker/debian/Dockerfile
         image: getwebspace/platform:dev
         environment:
+            - DOCKER=true
             - DEBUG=1
           # - SALT=Please-Change-Me
           # - SIMPLE_PHONE_CHECK=1

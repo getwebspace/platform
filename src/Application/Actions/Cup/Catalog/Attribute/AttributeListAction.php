@@ -6,7 +6,7 @@ use App\Application\Actions\Cup\Catalog\CatalogAction;
 
 class AttributeListAction extends CatalogAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         $list = $this->catalogAttributeService->read();
 

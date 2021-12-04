@@ -35,8 +35,6 @@ abstract class AbstractComponent
 
     /**
      * Global storage across engine
-     * @var array
-     * @todo осмыслить это еще раз
      */
     protected static array $storage = [];
 
@@ -62,9 +60,9 @@ abstract class AbstractComponent
                 }
             }
             if ($this->container) {
-                \RunTracy\Helpers\Profiler\Profiler::start('parameters');
+                \Netpromotion\Profiler\Profiler::start('parameters');
                 static::$parameters = ParameterService::getWithContainer($this->container)->read();
-                \RunTracy\Helpers\Profiler\Profiler::finish('%s', static::$parameters ? static::$parameters->count() : 'null');
+                \Netpromotion\Profiler\Profiler::finish('%s', static::$parameters ? static::$parameters->count() : 'null');
             }
         }
 

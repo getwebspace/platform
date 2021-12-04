@@ -6,12 +6,12 @@ use App\Application\Actions\Cup\User\UserAction;
 
 class DeleteAction extends UserAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
             $this->userGroupService->delete($this->resolveArg('uuid'));
         }
 
-        return $this->response->withRedirect('/cup/user/group');
+        return $this->respondWithRedirect('/cup/user/group');
     }
 }

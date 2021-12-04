@@ -7,7 +7,7 @@ use DirectoryIterator;
 
 class EditorPageAction extends AbstractAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         $list = collect();
         $file = null;
@@ -24,20 +24,20 @@ class EditorPageAction extends AbstractAction
             $content = file_get_contents($path);
         }
 
-        if ($this->request->isPost()) {
-            $path = str_replace('..', '', $this->request->getParam('path'));
+        if ($this->isPost()) {
+            $path = str_replace('..', '', $this->getParam('path'));
             $absolute_path = $theme_dir . '/' . $path;
-            $content = $this->request->getParam('template');
+            $content = $this->getParam('template');
 
             // delete file
-            if ($this->request->getParam('save', 'exit') === 'delete' && file_exists($absolute_path)) {
+            if ($this->getParam('save', 'exit') === 'delete' && file_exists($absolute_path)) {
                 unlink($absolute_path);
 
                 return $this->response->withAddedHeader('Location', '/cup/editor')->withStatus(301);
             }
 
             if (!file_exists($absolute_path)) {
-                mkdir(dirname($absolute_path), 0777, true);
+                mkdir(dirname($absolute_path), 0o777, true);
             }
 
             file_put_contents($absolute_path, $content);

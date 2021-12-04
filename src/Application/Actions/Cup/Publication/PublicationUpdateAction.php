@@ -7,31 +7,31 @@ use App\Domain\Service\Publication\Exception\TitleAlreadyExistsException;
 
 class PublicationUpdateAction extends PublicationAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
             $publication = $this->publicationService->read(['uuid' => $this->resolveArg('uuid')]);
 
             if ($publication) {
-                if ($this->request->isPost()) {
+                if ($this->isPost()) {
                     try {
                         $publication = $this->publicationService->update($publication, [
                             'user' => $this->request->getAttribute('user'),
-                            'title' => $this->request->getParam('title'),
-                            'address' => $this->request->getParam('address'),
-                            'date' => $this->request->getParam('date'),
+                            'title' => $this->getParam('title'),
+                            'address' => $this->getParam('address'),
+                            'date' => $this->getParam('date'),
 
                             'category' => $this->publicationCategoryService->read([
-                                'uuid' => $this->request->getParam('category'),
+                                'uuid' => $this->getParam('category'),
                             ]),
-                            'content' => $this->request->getParam('content'),
-                            'poll' => $this->request->getParam('poll'),
-                            'meta' => $this->request->getParam('meta'),
+                            'content' => $this->getParam('content'),
+                            'poll' => $this->getParam('poll'),
+                            'meta' => $this->getParam('meta'),
                         ]);
                         $publication = $this->processEntityFiles($publication);
 
                         switch (true) {
-                            case $this->request->getParam('save', 'exit') === 'exit':
+                            case $this->getParam('save', 'exit') === 'exit':
                                 return $this->response->withAddedHeader('Location', '/cup/publication')->withStatus(301);
 
                             default:

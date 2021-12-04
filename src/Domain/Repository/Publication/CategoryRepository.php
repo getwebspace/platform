@@ -6,7 +6,6 @@ use App\Domain\AbstractRepository;
 use App\Domain\Entities\Publication\Category as PublicationCategory;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\NonUniqueResultException;
-use Ramsey\Uuid\Uuid;
 
 /**
  * @method null|PublicationCategory findOneByUuid($uuid)
@@ -19,7 +18,7 @@ class CategoryRepository extends AbstractRepository
 {
     public function findOneByParentUuid($uuid)
     {
-        if (Uuid::isValid((string) $uuid)) {
+        if (\Ramsey\Uuid\Uuid::isValid((string) $uuid)) {
             $query = $this->createQueryBuilder('pc')
                 ->andWhere('pc.parent = :parent')->setParameter('parent', (string) $uuid, \Ramsey\Uuid\Doctrine\UuidType::NAME)
                 ->getQuery();

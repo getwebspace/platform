@@ -23,7 +23,7 @@ class CatalogExportAction extends CatalogAction
         return \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($index + 1) . ($row + 1);
     }
 
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         // Fields
         $fields = trim($this->parameter('catalog_export_columns', \App\Domain\References\Catalog::IMPORT_EXPORT_FIELDS_DEFAULT));
@@ -40,9 +40,9 @@ class CatalogExportAction extends CatalogAction
             ]);
 
             // Products
-            switch (($category = $this->request->getParam('category', false))) {
+            switch (($category = $this->getParam('category', false))) {
                 default:
-                    if (!\Ramsey\Uuid\Uuid::isValid($category)) {
+                    if (!\Ramsey\Uuid\Uuid::isValid((string) $category)) {
                         goto false;
                     }
 

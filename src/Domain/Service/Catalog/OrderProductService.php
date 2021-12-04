@@ -8,7 +8,7 @@ use App\Domain\Entities\Catalog\OrderProduct;
 use App\Domain\Entities\Catalog\Product;
 use App\Domain\Repository\Catalog\ProductRepository;
 use App\Domain\Service\Catalog\Exception\RelationNotFoundException;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface as Uuid;
 
 class OrderProductService extends AbstractService
 {
@@ -89,7 +89,7 @@ class OrderProductService extends AbstractService
     public function delete($entity)
     {
         switch (true) {
-            case is_string($entity) && Uuid::isValid($entity):
+            case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
                 $entity = $this->service->findOneByUuid((string) $entity);
 

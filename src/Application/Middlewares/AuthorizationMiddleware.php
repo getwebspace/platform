@@ -7,9 +7,8 @@ use App\Domain\Repository\UserRepository;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\UserService;
 use Psr\Container\ContainerInterface;
-use Ramsey\Uuid\Uuid;
-use Slim\Http\Request;
-use Slim\Http\Response;
+use Psr\Http\Server\RequestHandlerInterface;
+use Slim\Psr7\Request;
 
 class AuthorizationMiddleware extends AbstractMiddleware
 {
@@ -29,20 +28,18 @@ class AuthorizationMiddleware extends AbstractMiddleware
     }
 
     /**
-     * @param callable $next
-     *
      * @throws \Exception
      */
-    public function __invoke(Request $request, Response $response, $next): \Slim\Http\Response
+    public function __invoke(Request $request, RequestHandlerInterface $handler): \Slim\Psr7\Response
     {
-        \RunTracy\Helpers\Profiler\Profiler::start('middleware:authorization');
+        \Netpromotion\Profiler\Profiler::start('middleware:authorization');
 
         $data = [
-            'uuid' => $request->getCookieParam('uuid', null),
-            'session' => $request->getCookieParam('session', null),
+            'uuid' => $request->getCookieParams()['uuid'] ?? null,
+            'session' => $request->getCookieParams()['session'] ?? null,
         ];
 
-        if ($data['uuid'] && Uuid::isValid($data['uuid']) && $data['session']) {
+        if ($data['uuid'] && \Ramsey\Uuid\Uuid::isValid((string) $data['uuid']) && $data['session']) {
             try {
                 $userService = UserService::getWithContainer($this->container);
                 $user = $userService->read([
@@ -66,8 +63,8 @@ class AuthorizationMiddleware extends AbstractMiddleware
             }
         }
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('middleware:authorization');
+        \Netpromotion\Profiler\Profiler::finish('middleware:authorization');
 
-        return $next($request, $response);
+        return $handler->handle($request);
     }
 }

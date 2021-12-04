@@ -6,20 +6,20 @@ use App\Application\Actions\Cup\User\UserAction;
 
 class CreateAction extends UserAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
-        if ($this->request->isPost()) {
+        if ($this->isPost()) {
             $task = new \App\Domain\Tasks\SendNewsLetterMailTask($this->container);
             $task->execute([
-                'subject' => $this->request->getParam('subject'),
-                'body' => $this->request->getParam('body'),
-                'type' => $this->request->getParam('type'),
+                'subject' => $this->getParam('subject'),
+                'body' => $this->getParam('body'),
+                'type' => $this->getParam('type'),
             ]);
 
             // run worker
             \App\Domain\AbstractTask::worker($task);
 
-            return $this->response->withRedirect('/cup/user/newsletter');
+            return $this->respondWithRedirect('/cup/user/newsletter');
         }
 
         return $this->respondWithTemplate('cup/user/newsletter/form.twig');

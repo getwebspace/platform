@@ -8,16 +8,16 @@ class CartAction extends CatalogAction
      * @throws \Doctrine\DBAL\DBALException
      * @throws \App\Domain\Exceptions\HttpBadRequestException
      */
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
-        if ($this->request->isPost()) {
+        if ($this->isPost()) {
             $data = [
-                'delivery' => $this->request->getParam('delivery'),
-                'phone' => $this->request->getParam('phone'),
-                'email' => $this->request->getParam('email'),
-                'comment' => $this->request->getParam('comment', ''),
-                'shipping' => $this->request->getParam('shipping'),
-                'system' => $this->request->getParam('system', ''),
+                'delivery' => $this->getParam('delivery'),
+                'phone' => $this->getParam('phone'),
+                'email' => $this->getParam('email'),
+                'comment' => $this->getParam('comment', ''),
+                'shipping' => $this->getParam('shipping'),
+                'system' => $this->getParam('system', ''),
             ];
 
             /**
@@ -35,7 +35,7 @@ class CartAction extends CatalogAction
             if ($this->parameter('catalog_order_fields', 'off') === 'on') {
                 $data['comment'] = [$data['comment']];
 
-                foreach ($this->request->getParams() as $key => $value) {
+                foreach ($this->getParams() as $key => $value) {
                     if (!in_array($key, array_merge(array_keys($data), ['recaptcha']), true) && $value) {
                         $data['comment'][] = $key . ' ' . $value;
                     }
@@ -49,7 +49,7 @@ class CartAction extends CatalogAction
                 $order = static::$storage['order'] = $this->catalogOrderService->create($data);
                 $this->catalogOrderProductService->proccess(
                     $order,
-                    $this->request->getParam('products', [])
+                    $this->getParam('products', [])
                 );
 
                 // notify to user

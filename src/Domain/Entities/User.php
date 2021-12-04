@@ -10,7 +10,7 @@ use App\Domain\Traits\FileTrait;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Illuminate\Support\Collection;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface as Uuid;
 use RuntimeException;
 
 /**
@@ -27,9 +27,9 @@ class User extends AbstractEntity
      * @ORM\GeneratedValue(strategy="CUSTOM")
      * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
-    protected Uuid $uuid;
+    protected \Ramsey\Uuid\UuidInterface $uuid;
 
-    public function getUuid(): Uuid
+    public function getUuid(): \Ramsey\Uuid\UuidInterface
     {
         return $this->uuid;
     }
@@ -301,7 +301,7 @@ class User extends AbstractEntity
     /**
      * @ORM\Column(type="uuid", nullable=true, options={"default": NULL})
      */
-    protected ?Uuid $group_uuid;
+    protected ?\Ramsey\Uuid\UuidInterface $group_uuid;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Domain\Entities\User\Group")

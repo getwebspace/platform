@@ -6,7 +6,7 @@ use App\Application\Actions\Cup\Publication\PublicationAction;
 
 class CategoryListAction extends PublicationAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         return $this->respondWithTemplate('cup/publication/category/index.twig', ['list' => $this->publicationCategoryService->read()]);
     }

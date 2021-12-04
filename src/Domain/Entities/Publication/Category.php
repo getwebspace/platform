@@ -6,7 +6,7 @@ use App\Domain\AbstractEntity;
 use App\Domain\Traits\FileTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Illuminate\Support\Collection;
-use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface as Uuid;
 
 /**
  * @ORM\Entity(repositoryClass="App\Domain\Repository\Publication\CategoryRepository")
@@ -25,7 +25,7 @@ class Category extends AbstractEntity
      */
     protected $uuid;
 
-    public function getUuid(): Uuid
+    public function getUuid(): \Ramsey\Uuid\UuidInterface
     {
         return $this->uuid;
     }

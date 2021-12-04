@@ -6,7 +6,7 @@ use App\Application\Actions\Cup\Form\FormAction;
 
 class DataDeleteAction extends FormAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         if (
             $this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))
@@ -15,6 +15,6 @@ class DataDeleteAction extends FormAction
             $this->formDataService->delete($this->resolveArg('data'));
         }
 
-        return $this->response->withRedirect('/cup/form/' . $this->resolveArg('uuid') . '/view');
+        return $this->respondWithRedirect('/cup/form/' . $this->resolveArg('uuid') . '/view');
     }
 }

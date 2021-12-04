@@ -4,8 +4,10 @@ namespace App\Application\Middlewares;
 
 use App\Domain\AbstractMiddleware;
 use App\Domain\Entities\User;
-use Slim\Http\Request;
-use Slim\Http\Response;
+use Psr\Http\Server\RequestHandlerInterface;
+use Slim\Psr7\Request;
+use Slim\Psr7\Response;
+use Slim\Routing\RouteContext;
 
 class AccessCheckerMiddleware extends AbstractMiddleware
 {
@@ -20,14 +22,14 @@ class AccessCheckerMiddleware extends AbstractMiddleware
     /**
      * @throws \Exception
      */
-    public function __invoke(Request $request, Response $response, callable $next): \Slim\Http\Response
+    public function __invoke(Request $request, RequestHandlerInterface $handler): \Slim\Psr7\Response
     {
-        /** @var \Slim\Interfaces\RouteInterface $route */
-        $route = $request->getAttribute('route');
+        $routeContext = RouteContext::fromRequest($request);
+        $route = $routeContext->getRoute();
 
         // continue in any way
         if (str_start_with($route->getName(), static::PUBLIC)) {
-            return $next($request, $response);
+            return $handler->handle($request);
         }
 
         /** @var User $user */
@@ -43,7 +45,7 @@ class AccessCheckerMiddleware extends AbstractMiddleware
             ($access === [] && str_start_with($route->getName(), 'common'))
             || in_array($route->getName(), $access, true)
         ) {
-            return $next($request, $response);
+            return $handler->handle($request);
         }
 
         $redirect = '/forbidden';
@@ -56,6 +58,8 @@ class AccessCheckerMiddleware extends AbstractMiddleware
             }
         }
 
-        return $response->withHeader('Location', $redirect)->withStatus(307);
+        return (new Response())
+            ->withHeader('Location', $redirect)
+            ->withStatus(307);
     }
 }

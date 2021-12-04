@@ -6,7 +6,7 @@ use App\Application\Actions\Cup\File\FileAction;
 
 class GetAction extends FileAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         $result = [];
 

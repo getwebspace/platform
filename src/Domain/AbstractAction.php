@@ -14,8 +14,9 @@ use App\Domain\Service\File\FileService;
 use App\Domain\Traits\FileTrait;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
-use Slim\Http\Request;
-use Slim\Http\Response;
+use Slim\Interfaces\RouteCollectorInterface;
+use Slim\Psr7\Request;
+use Slim\Psr7\Response;
 use Slim\Views\Twig;
 use function PHPUnit\Framework\isNull;
 
@@ -31,10 +32,9 @@ abstract class AbstractAction extends AbstractComponent
     // 50X
     private const NOT_IMPLEMENTED = 'NOT_IMPLEMENTED';
 
-    /**
-     * @var Twig
-     */
-    protected $renderer;
+    protected RouteCollectorInterface $routeCollector;
+
+    protected Twig $renderer;
 
     protected Request $request;
 
@@ -48,7 +48,46 @@ abstract class AbstractAction extends AbstractComponent
     {
         parent::__construct($container);
 
+        $this->routeCollector = $container->get(RouteCollectorInterface::class);
         $this->renderer = $container->get('view');
+    }
+
+    protected function isGet(): bool
+    {
+        return $this->request->getMethod() === 'GET';
+    }
+
+    protected function isPost(): bool
+    {
+        return $this->request->getMethod() === 'POST';
+    }
+
+    protected function getParams(): array
+    {
+        return array_merge(
+            $this->request->getQueryParams(),
+            ($this->request->getParsedBody() ?? [])
+        );
+    }
+
+    protected function getParam(string $key, mixed $default = null): mixed
+    {
+        return $this->getParams()[$key] ?? $default;
+    }
+
+    protected function getQueryParam(string $key, mixed $default = null): mixed
+    {
+        return $this->request->getQueryParams()[$key] ?? $default;
+    }
+
+    protected function getBodyParam(string $key, mixed $default = null): mixed
+    {
+        return ($this->request->getParsedBody() ?? [])[$key] ?? $default;
+    }
+
+    protected function getServerParam(string $key, mixed $default = null): mixed
+    {
+        return $this->request->getServerParams()[$key] ?? $default;
     }
 
     protected function getRoutes(): Collection
@@ -56,7 +95,7 @@ abstract class AbstractAction extends AbstractComponent
         static $routes;
 
         if (!$routes) {
-            $routes = collect($this->container->get('router')->getRoutes())
+            $routes = collect($this->routeCollector->getRoutes())
                 ->flatten()
                 ->map(fn ($item) => $item->getName())
                 ->filter(fn ($item) => !str_start_with($item, \App\Application\Middlewares\AccessCheckerMiddleware::PUBLIC));
@@ -106,7 +145,7 @@ abstract class AbstractAction extends AbstractComponent
 
     public function __invoke(Request $request, Response $response, array $args): Response
     {
-        \RunTracy\Helpers\Profiler\Profiler::start('route');
+        \Netpromotion\Profiler\Profiler::start('route');
 
         $this->request = $request;
         $this->response = $response;
@@ -141,7 +180,7 @@ abstract class AbstractAction extends AbstractComponent
             $result = $result->withHeader('Content-Type', 'application/json');
         }
 
-        \RunTracy\Helpers\Profiler\Profiler::finish('route');
+        \Netpromotion\Profiler\Profiler::finish('route');
 
         return $result;
     }
@@ -149,7 +188,7 @@ abstract class AbstractAction extends AbstractComponent
     /**
      * @throws AbstractHttpException
      */
-    abstract protected function action(): \Slim\Http\Response;
+    abstract protected function action(): \Slim\Psr7\Response;
 
     /**
      * @throws HttpBadRequestException
@@ -167,11 +206,11 @@ abstract class AbstractAction extends AbstractComponent
 
     protected function getRequestRemoteIP(): string
     {
-        return $this->request->getServerParam(
+        return $this->getServerParam(
             'HTTP_X_REAL_IP',
-            $this->request->getServerParam(
+            $this->getServerParam(
                 'HTTP_X_FORWARDED_FOR',
-                $this->request->getServerParam('REMOTE_ADDR', '')
+                $this->getServerParam('REMOTE_ADDR', '')
             )
         );
     }
@@ -210,7 +249,7 @@ abstract class AbstractAction extends AbstractComponent
             }
 
             // update
-            if (($files = $this->request->getParam($field)) !== null && is_array($files)) {
+            if (($files = $this->getParam($field)) !== null && is_array($files)) {
                 foreach ($files as $uuid => $data) {
                     $default = [
                         'order' => null,
@@ -265,7 +304,7 @@ abstract class AbstractAction extends AbstractComponent
 
                 foreach ($file as $index => $item) {
                     if (!$item->getError()) {
-                        if (($model = $fileService->createFromPath($item->file, $item->getClientFilename())) !== null) {
+                        if (($model = $fileService->createFromPath($item->getFilePath(), $item->getClientFilename())) !== null) {
                             $uploaded[$name][$index] = $model;
 
                             // is image
@@ -322,16 +361,16 @@ abstract class AbstractAction extends AbstractComponent
     /**
      * Return recaptcha status if is enabled
      *
-     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
+     * @throws // RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
     protected function isRecaptchaChecked(): bool
     {
-        if ($this->request->isPost() && $this->parameter('integration_recaptcha', 'off') === 'on') {
-            \RunTracy\Helpers\Profiler\Profiler::start('recaptcha');
+        if ($this->isPost() && $this->parameter('integration_recaptcha', 'off') === 'on') {
+            \Netpromotion\Profiler\Profiler::start('recaptcha');
 
             $query = http_build_query([
                 'secret' => $this->parameter('integration_recaptcha_private'),
-                'response' => $this->request->getParam('recaptcha', ''),
+                'response' => $this->getParam('recaptcha', ''),
                 'remoteip' => $this->getRequestRemoteIP(),
             ]);
             $verify = json_decode(file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, stream_context_create([
@@ -346,7 +385,7 @@ abstract class AbstractAction extends AbstractComponent
 
             $this->logger->info('Check reCAPTCHA', ['status' => $verify->success]);
 
-            \RunTracy\Helpers\Profiler\Profiler::finish('recaptcha');
+            \Netpromotion\Profiler\Profiler::finish('recaptcha');
 
             return $verify->success;
         }
@@ -356,12 +395,12 @@ abstract class AbstractAction extends AbstractComponent
 
     /**
      * @throws HttpBadRequestException
-     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
+     * @throws // RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
     protected function render(string $template, array $data = []): string
     {
         try {
-            \RunTracy\Helpers\Profiler\Profiler::start('render');
+            \Netpromotion\Profiler\Profiler::start('render');
 
             $data = array_merge(
                 [
@@ -383,7 +422,7 @@ abstract class AbstractAction extends AbstractComponent
             $this->renderer->getLoader()->addPath(VIEW_ERROR_DIR);
             $rendered = $this->renderer->fetch($template, $data);
 
-            \RunTracy\Helpers\Profiler\Profiler::finish('%s', $template);
+            \Netpromotion\Profiler\Profiler::finish('%s', $template);
 
             return $rendered;
         } catch (\Twig\Error\LoaderError $exception) {
@@ -396,14 +435,14 @@ abstract class AbstractAction extends AbstractComponent
      */
     protected function respond(string $template, array $data = []): Response
     {
-        $format = $this->request->getParam('format', 'html');
+        $format = $this->request->getQueryParams()['format'] ?? 'html';
         $accept = explode(',', $this->request->getHeaderLine('HTTP_ACCEPT'));
 
         switch (true) {
             case $format === 'json':
             case in_array('application/json', $accept, true):
                 return $this->respondWithJson([
-                    'params' => $this->request->getParams(),
+                    'params' => $this->request->getQueryParams(),
                     'data' => $data,
                 ]);
 
@@ -420,7 +459,7 @@ abstract class AbstractAction extends AbstractComponent
 
     /**
      * @throws HttpBadRequestException
-     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
+     * @throws // RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
     protected function respondWithTemplate(string $template, array $data = []): Response
     {
@@ -437,20 +476,28 @@ abstract class AbstractAction extends AbstractComponent
 
     protected function respondWithJson(array $array = []): Response
     {
-        $json = json_encode(array_serialize($array), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $this->response->getBody()->write(
+            json_encode(array_serialize($array), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+        );
 
-        return $this->response->withHeader('Content-Type', 'application/json; charset=utf-8')->write($json);
+        return $this->response->withHeader('Content-Type', 'application/json; charset=utf-8');
     }
 
-    /**
-     * @param array|string $output
-     */
-    protected function respondWithText($output = ''): Response
+    protected function respondWithText(array|string $output = ''): Response
     {
         if (is_array($output) || is_a($output, Collection::class)) {
             $output = json_encode(array_serialize($output), JSON_UNESCAPED_UNICODE);
         }
 
-        return $this->response->withHeader('Content-Type', 'text/plain; charset=utf-8')->write($output);
+        $this->response->getBody()->write(
+            $output
+        );
+
+        return $this->response->withHeader('Content-Type', 'text/plain; charset=utf-8');
+    }
+
+    protected function respondWithRedirect(string $location = '/'): Response
+    {
+        return $this->response->withAddedHeader('Location', $location)->withStatus(301);
     }
 }

@@ -8,27 +8,27 @@ use App\Domain\Service\Page\Exception\TitleAlreadyExistsException;
 
 class PageCreateAction extends PageAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
-        if ($this->request->isPost()) {
+        if ($this->isPost()) {
             try {
                 $page = $this->pageService->create([
-                    'title' => $this->request->getParam('title'),
-                    'address' => $this->request->getParam('address'),
-                    'date' => $this->request->getParam('date'),
-                    'content' => $this->request->getParam('content'),
-                    'type' => $this->request->getParam('type'),
-                    'meta' => $this->request->getParam('meta'),
-                    'template' => $this->request->getParam('template'),
+                    'title' => $this->getParam('title'),
+                    'address' => $this->getParam('address'),
+                    'date' => $this->getParam('date'),
+                    'content' => $this->getParam('content'),
+                    'type' => $this->getParam('type'),
+                    'meta' => $this->getParam('meta'),
+                    'template' => $this->getParam('template'),
                 ]);
                 $page = $this->processEntityFiles($page);
 
                 switch (true) {
-                    case $this->request->getParam('save', 'exit') === 'exit':
-                        return $this->response->withRedirect('/cup/page');
+                    case $this->getParam('save', 'exit') === 'exit':
+                        return $this->respondWithRedirect('/cup/page');
 
                     default:
-                        return $this->response->withRedirect('/cup/page/' . $page->getUuid() . '/edit');
+                        return $this->respondWithRedirect('/cup/page/' . $page->getUuid() . '/edit');
                 }
             } catch (MissingTitleValueException|TitleAlreadyExistsException $e) {
                 $this->addError('title', $e->getMessage());

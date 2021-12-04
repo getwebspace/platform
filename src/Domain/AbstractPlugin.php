@@ -6,8 +6,8 @@ use App\Application\i18n;
 use App\Domain\Exceptions\HttpBadRequestException;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
-use Slim\Http\Request;
-use Slim\Http\Response;
+use Slim\Psr7\Request;
+use Slim\Psr7\Response;
 use Slim\Views\Twig;
 
 abstract class AbstractPlugin extends AbstractComponent
@@ -19,8 +19,6 @@ abstract class AbstractPlugin extends AbstractComponent
     public const AUTHOR_EMAIL = '';
     public const AUTHOR_SITE = '';
     public const VERSION = '1.0';
-
-    private static array $storage = [];
 
     /**
      * @param mixed $value
@@ -201,7 +199,7 @@ abstract class AbstractPlugin extends AbstractComponent
 
         $this->navigation = true;
 
-        return $this->router->map(['get', 'post'], '/cup/plugin/' . static::NAME, $params['handler']);
+        return $this->router->map(['GET', 'POST'], '/cup/plugin/' . static::NAME, $params['handler']);
     }
 
     public function isNavigationItemEnabled(): bool
@@ -215,7 +213,7 @@ abstract class AbstractPlugin extends AbstractComponent
     protected function map(array $params)
     {
         $default = [
-            'methods' => ['get', 'post'],
+            'methods' => ['GET', 'POST'],
             'pattern' => '',
             'handler' => function (Request $req, Response $res) {
                 return $res->withHeader('Content-Type', 'text/plain')->write(
@@ -235,21 +233,16 @@ abstract class AbstractPlugin extends AbstractComponent
 
     /**
      * Add new line in current locale table
-     *
-     * @param string $original
-     * @param string $translated
      */
-    public function addLocale(string $original, string $translated)
+    public function addLocale(string $original, string $translated): void
     {
         i18n::addStrings([$original => $translated]);
     }
 
     /**
      * Add new array of lines in current locale table
-     *
-     * @param array $strings
      */
-    public function addLocales(array $strings)
+    public function addLocales(array $strings): void
     {
         i18n::addStrings($strings);
     }
@@ -257,9 +250,9 @@ abstract class AbstractPlugin extends AbstractComponent
     /**
      * The function will be executed BEFORE processing the selected group of routes
      */
-    public function before(Request $request, Response $response, string $routeName): Response
+    public function before(Request $request, string $routeName): void
     {
-        return $response;
+        // empty method
     }
 
     /**
@@ -272,14 +265,14 @@ abstract class AbstractPlugin extends AbstractComponent
 
     /**
      * @throws HttpBadRequestException
-     * @throws \RunTracy\Helpers\Profiler\Exception\ProfilerException
+     * @throws // RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
     protected function render(string $template, array $data = []): string
     {
         try {
-            \RunTracy\Helpers\Profiler\Profiler::start('plugin render');
+            \Netpromotion\Profiler\Profiler::start('plugin render');
             $rendered = $this->renderer->fetch($template, $data);
-            \RunTracy\Helpers\Profiler\Profiler::finish('%s', $template);
+            \Netpromotion\Profiler\Profiler::finish('%s', $template);
 
             return $rendered;
         } catch (\Twig\Error\LoaderError $exception) {

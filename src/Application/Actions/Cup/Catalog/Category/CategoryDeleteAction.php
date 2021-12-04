@@ -6,7 +6,7 @@ use App\Application\Actions\Cup\Catalog\CatalogAction;
 
 class CategoryDeleteAction extends CatalogAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('category') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('category'))) {
             $category = $this->catalogCategoryService->read([
@@ -39,6 +39,6 @@ class CategoryDeleteAction extends CatalogAction
             }
         }
 
-        return $this->response->withRedirect('/cup/catalog/category');
+        return $this->respondWithRedirect('/cup/catalog/category');
     }
 }

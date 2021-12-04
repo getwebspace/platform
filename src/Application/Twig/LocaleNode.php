@@ -48,7 +48,7 @@ class LocaleNode extends Node
 
             // line breaks are not allowed cause we want a single line comment
             $message = str_replace(["\n", "\r"], ' ', $message);
-            $compiler->write("// notes: $message\n");
+            $compiler->write("// notes: {$message}\n");
         }
 
         if ($vars) {

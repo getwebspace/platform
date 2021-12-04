@@ -24,7 +24,7 @@ class PublicationRSS extends AbstractAction
         $this->publicationCategoryService = PublicationCategoryService::getWithContainer($container);
     }
 
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         $feed = new \Bhaktaraz\RSSGenerator\Feed();
 

@@ -3,20 +3,20 @@
 namespace App\Application\Middlewares;
 
 use App\Domain\AbstractMiddleware;
-use Slim\Http\Request;
-use Slim\Http\Response;
+use Psr\Http\Server\RequestHandlerInterface;
+use Slim\Psr7\Request;
+use Slim\Psr7\Response;
+use Slim\Routing\RouteContext;
 
 class IsSiteEnabledMiddleware extends AbstractMiddleware
 {
     /**
-     * @param callable $next
-     *
      * @throws \Exception
      */
-    public function __invoke(Request $request, Response $response, $next): \Slim\Http\Response
+    public function __invoke(Request $request, RequestHandlerInterface $handler): \Slim\Psr7\Response
     {
-        /** @var \Slim\Interfaces\RouteInterface $route */
-        $route = $request->getAttribute('route');
+        $routeContext = RouteContext::fromRequest($request);
+        $route = $routeContext->getRoute();
 
         if (str_start_with($route->getName(), 'common:') && $this->parameter('common_site_enabled', 'yes') !== 'yes') {
             $renderer = $this->container->get('view');
@@ -28,11 +28,11 @@ class IsSiteEnabledMiddleware extends AbstractMiddleware
             // add default errors pages
             $renderer->getLoader()->addPath(VIEW_ERROR_DIR);
 
-            return $response
+            return (new Response())
                 ->write($renderer->fetch('p503.twig'))
                 ->withStatus(503);
         }
 
-        return $next($request, $response);
+        return $handler->handle($request);
     }
 }

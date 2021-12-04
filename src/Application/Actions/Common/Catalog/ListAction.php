@@ -5,7 +5,7 @@ namespace App\Application\Actions\Common\Catalog;
 use App\Domain\Service\Catalog\Exception\CategoryNotFoundException;
 use App\Domain\Service\Catalog\Exception\ProductNotFoundException;
 use Illuminate\Support\Collection;
-use Slim\Http\Response;
+use Slim\Psr7\Response;
 
 class ListAction extends CatalogAction
 {
@@ -13,7 +13,7 @@ class ListAction extends CatalogAction
      * @throws \Doctrine\DBAL\DBALException
      * @throws \App\Domain\Exceptions\HttpBadRequestException
      */
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         $params = $this->parsePath();
         $categories = $this->catalogCategoryService->read([
@@ -68,15 +68,15 @@ class ListAction extends CatalogAction
             $products = collect($query->select('p')->getQuery()->getResult());
 
             for ($i = 1; $i <= 5; ++$i) {
-                if (($field = $this->request->getParam('field' . $i, false)) !== false) {
+                if (($field = $this->getParam('field' . $i, false)) !== false) {
                     $params['field'][$i] = $field;
                     $query
                         ->andWhere('p.field' . $i . ' = :field' . $i . '')
-                        ->setParameter('field' . $i, str_escape($field), \Doctrine\DBAL\Types\Type::STRING);
+                        ->setParameter('field' . $i, str_escape($field), \Doctrine\DBAL\ParameterType::STRING);
                 }
             }
             $attributes = [];
-            foreach ($this->request->getParams() as $key => $value) {
+            foreach ($this->getParams() as $key => $value) {
                 if (
                     (
                         !in_array($key, ['price', 'country', 'manufacturer', 'order', 'direction'], true)
@@ -109,34 +109,34 @@ class ListAction extends CatalogAction
 
                 $params['attributes'] = $attributes;
             }
-            if (($price = $this->request->getParam('price', false)) !== false) {
+            if (($price = $this->getParam('price', false)) !== false) {
                 $price = array_merge(['min' => 0, 'max' => 0], (array) $price);
 
                 if ($price['min']) {
                     $params['price']['min'] = (float) $price['min'];
                     $query
                         ->andWhere('p.price >= :minPrice')
-                        ->setParameter('minPrice', $params['price']['min'], \Doctrine\DBAL\Types\Type::INTEGER);
+                        ->setParameter('minPrice', $params['price']['min'], \Doctrine\DBAL\ParameterType::INTEGER);
                 }
                 if ($price['max']) {
                     $params['price']['max'] = (float) $price['max'];
                     $query
                         ->andWhere('p.price <= :maxPrice')
-                        ->setParameter('maxPrice', $params['price']['max'], \Doctrine\DBAL\Types\Type::INTEGER);
+                        ->setParameter('maxPrice', $params['price']['max'], \Doctrine\DBAL\ParameterType::INTEGER);
                 }
             }
-            if (($country = $this->request->getParam('country', false)) !== false) {
+            if (($country = $this->getParam('country', false)) !== false) {
                 $query
                     ->andWhere('p.country = :country')
-                    ->setParameter('country', str_escape($country), \Doctrine\DBAL\Types\Type::STRING);
+                    ->setParameter('country', str_escape($country), \Doctrine\DBAL\ParameterType::STRING);
             }
-            if (($manufacturer = $this->request->getParam('manufacturer', false)) !== false) {
+            if (($manufacturer = $this->getParam('manufacturer', false)) !== false) {
                 $query
                     ->andWhere('p.manufacturer = :manufacturer')
-                    ->setParameter('manufacturer', str_escape($manufacturer), \Doctrine\DBAL\Types\Type::STRING);
+                    ->setParameter('manufacturer', str_escape($manufacturer), \Doctrine\DBAL\ParameterType::STRING);
             }
-            if (($order = $this->request->getParam('order', false)) !== false) {
-                $direction = mb_strtolower($this->request->getParam('direction', 'asc'));
+            if (($order = $this->getParam('order', false)) !== false) {
+                $direction = mb_strtolower($this->getParam('direction', 'asc'));
                 $direction = in_array($direction, ['asc', 'desc'], true) ? $direction : 'ASC';
 
                 if (in_array($order, ['title', 'price', 'field1', 'field2', 'field3', 'field4', 'field5'], true)) {
@@ -210,15 +210,15 @@ class ListAction extends CatalogAction
             $products = collect($query->select('p')->getQuery()->getResult());
 
             for ($i = 1; $i <= 5; ++$i) {
-                if (($field = $this->request->getParam('field' . $i, false)) !== false) {
+                if (($field = $this->getParam('field' . $i, false)) !== false) {
                     $params['field'][$i] = $field;
                     $query
                         ->andWhere('p.field' . $i . ' = :field' . $i . '')
-                        ->setParameter('field' . $i, str_escape($field), \Doctrine\DBAL\Types\Type::STRING);
+                        ->setParameter('field' . $i, str_escape($field), \Doctrine\DBAL\ParameterType::STRING);
                 }
             }
             $attributes = [];
-            foreach ($this->request->getParams() as $key => $value) {
+            foreach ($this->getParams() as $key => $value) {
                 if (
                     (
                         !in_array($key, ['price', 'country', 'manufacturer', 'order', 'direction'], true)
@@ -251,34 +251,34 @@ class ListAction extends CatalogAction
 
                 $params['attributes'] = $attributes;
             }
-            if (($price = $this->request->getParam('price', false)) !== false) {
+            if (($price = $this->getParam('price', false)) !== false) {
                 $price = array_merge(['min' => 0, 'max' => 0], (array) $price);
 
                 if ($price['min']) {
                     $params['price']['min'] = (float) $price['min'];
                     $query
                         ->andWhere('p.price >= :minPrice')
-                        ->setParameter('minPrice', $params['price']['min'], \Doctrine\DBAL\Types\Type::INTEGER);
+                        ->setParameter('minPrice', $params['price']['min'], \Doctrine\DBAL\ParameterType::INTEGER);
                 }
                 if ($price['max']) {
                     $params['price']['max'] = (float) $price['max'];
                     $query
                         ->andWhere('p.price <= :maxPrice')
-                        ->setParameter('maxPrice', $params['price']['max'], \Doctrine\DBAL\Types\Type::INTEGER);
+                        ->setParameter('maxPrice', $params['price']['max'], \Doctrine\DBAL\ParameterType::INTEGER);
                 }
             }
-            if (($country = $this->request->getParam('country', false)) !== false) {
+            if (($country = $this->getParam('country', false)) !== false) {
                 $query
                     ->andWhere('p.country = :country')
-                    ->setParameter('country', str_escape($country), \Doctrine\DBAL\Types\Type::STRING);
+                    ->setParameter('country', str_escape($country), \Doctrine\DBAL\ParameterType::STRING);
             }
-            if (($manufacturer = $this->request->getParam('manufacturer', false)) !== false) {
+            if (($manufacturer = $this->getParam('manufacturer', false)) !== false) {
                 $query
                     ->andWhere('p.manufacturer = :manufacturer')
-                    ->setParameter('manufacturer', str_escape($manufacturer), \Doctrine\DBAL\Types\Type::STRING);
+                    ->setParameter('manufacturer', str_escape($manufacturer), \Doctrine\DBAL\ParameterType::STRING);
             }
-            if (($order = $this->request->getParam('order', false)) !== false) {
-                $direction = mb_strtolower($this->request->getParam('direction', 'asc'));
+            if (($order = $this->getParam('order', false)) !== false) {
+                $direction = mb_strtolower($this->getParam('direction', 'asc'));
                 $direction = in_array($direction, ['asc', 'desc'], true) ? $direction : 'ASC';
 
                 if (in_array($order, ['title', 'price', 'field1', 'field2', 'field3', 'field4', 'field5'], true)) {

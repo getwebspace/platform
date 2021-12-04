@@ -4,7 +4,7 @@ namespace App\Application\Actions\Cup\GuestBook;
 
 class GuestBookListAction extends GuestBookAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
         $list = $this->guestBookService->read();
 

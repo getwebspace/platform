@@ -12,21 +12,21 @@ use App\Domain\Service\User\Exception\WrongPhoneValueException;
 
 class UserRegisterAction extends UserAction
 {
-    protected function action(): \Slim\Http\Response
+    protected function action(): \Slim\Psr7\Response
     {
-        if ($this->request->isPost()) {
+        if ($this->isPost()) {
             $data = [
-                'firstname' => $this->request->getParam('firstname', ''),
-                'lastname' => $this->request->getParam('lastname', ''),
-                'username' => $this->request->getParam('username', ''),
-                'email' => $this->request->getParam('email', ''),
-                'phone' => $this->request->getParam('phone', ''),
-                'address' => $this->request->getParam('address', ''),
-                'additional' => $this->request->getParam('additional', ''),
-                'allow_mail' => $this->request->getParam('allow_mail', true),
-                'password' => $this->request->getParam('password'),
-                'password_again' => $this->request->getParam('password_again'),
-                'external_id' => $this->request->getParam('external_id', ''),
+                'firstname' => $this->getParam('firstname', ''),
+                'lastname' => $this->getParam('lastname', ''),
+                'username' => $this->getParam('username', ''),
+                'email' => $this->getParam('email', ''),
+                'phone' => $this->getParam('phone', ''),
+                'address' => $this->getParam('address', ''),
+                'additional' => $this->getParam('additional', ''),
+                'allow_mail' => $this->getParam('allow_mail', true),
+                'password' => $this->getParam('password'),
+                'password_again' => $this->getParam('password_again'),
+                'external_id' => $this->getParam('external_id', ''),
             ];
 
             if ($this->isRecaptchaChecked()) {
@@ -47,7 +47,7 @@ class UserRegisterAction extends UserAction
                             'external_id' => $data['external_id'],
                         ]);
 
-                        return $this->response->withRedirect('/user/login');
+                        return $this->respondWithRedirect('/user/login');
                     } catch (MissingUniqueValueException $e) {
                         $this->addError('email', $e->getMessage());
                         $this->addError('username', $e->getMessage());
