@@ -23,7 +23,7 @@ if (\App\Domain\AbstractTask::workerHasPidFile($action)) {
 $container = $app->getContainer();
 
 /** @var \Monolog\Logger $logger */
-$logger = $container->get('monolog');
+$logger = $container->get(\Psr\Log\LoggerInterface::class);
 
 /** @var \App\Domain\Service\Task\TaskService $taskService */
 $taskService = \App\Domain\Service\Task\TaskService::getWithContainer($container);

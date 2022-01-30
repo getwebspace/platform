@@ -2,16 +2,19 @@
 
 namespace App\Domain;
 
+use DI\Container;
 use Doctrine\ORM\EntityManager;
-use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 
-abstract class AbstractService extends AbstractComponent
+abstract class AbstractService
 {
+    protected Container $container;
+
+    protected EntityManager $entityManager;
+
     /**
      * @var AbstractRepository
      */
-    protected $service;
+    protected mixed $service;
 
     protected static array $default_read = [
         'order' => [],
@@ -19,21 +22,12 @@ abstract class AbstractService extends AbstractComponent
         'offset' => null,
     ];
 
-    public function __construct(ContainerInterface $container = null, EntityManager $entityManager = null, LoggerInterface $logger = null)
+    public function __construct(Container $container, EntityManager $entityManager)
     {
-        parent::__construct($container, $entityManager, $logger);
+        $this->container = $container;
+        $this->entityManager = $entityManager;
 
         $this->init();
-    }
-
-    public static function getWithContainer(ContainerInterface $container)
-    {
-        return new static($container);
-    }
-
-    public static function getWithEntityManager(EntityManager $entityManager, LoggerInterface $logger = null)
-    {
-        return new static(null, $entityManager, $logger);
     }
 
     abstract protected function init();

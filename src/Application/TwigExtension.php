@@ -371,7 +371,7 @@ class TwigExtension extends AbstractExtension
     {
         \Netpromotion\Profiler\Profiler::start('twig:fn:files');
 
-        $fileService = FileService::getWithContainer($this->container);
+        $fileService = $this->container->get(FileService::class);
         $result = $fileService->read(array_merge($criteria, [
             'order' => $order,
             'limit' => $limit,
@@ -390,7 +390,7 @@ class TwigExtension extends AbstractExtension
     {
         \Netpromotion\Profiler\Profiler::start('twig:fn:publication_category');
 
-        $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
+        $publicationCategoryService = $this->container->get(PublicationCategoryService::class);
         $result = $publicationCategoryService->read([
             'public' => $public ?: null,
         ]);
@@ -405,7 +405,7 @@ class TwigExtension extends AbstractExtension
     {
         \Netpromotion\Profiler\Profiler::start('twig:fn:publication');
 
-        $publicationService = PublicationService::getWithContainer($this->container);
+        $publicationService = $this->container->get(PublicationService::class);
         $result = $publicationService->read(array_merge($criteria, [
             'order' => $order,
             'limit' => $limit,
@@ -424,7 +424,7 @@ class TwigExtension extends AbstractExtension
     {
         \Netpromotion\Profiler\Profiler::start('twig:fn:guestbook');
 
-        $guestBookService = GuestBookService::getWithContainer($this->container);
+        $guestBookService = $this->container->get(GuestBookService::class);
         $result = $guestBookService
             ->read([
                 'status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK,
@@ -455,7 +455,7 @@ class TwigExtension extends AbstractExtension
     {
         \Netpromotion\Profiler\Profiler::start('twig:fn:catalog_category');
 
-        $catalogCategoryService = CatalogCategoryService::getWithContainer($this->container);
+        $catalogCategoryService = $this->container->get(CatalogCategoryService::class);
         $result = $catalogCategoryService->read([
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
         ]);
@@ -498,7 +498,7 @@ class TwigExtension extends AbstractExtension
         \Netpromotion\Profiler\Profiler::start('twig:fn:catalog_products');
 
         $criteria['status'] = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
-        $catalogProductService = CatalogProductService::getWithContainer($this->container);
+        $catalogProductService = $this->container->get(CatalogProductService::class);
         $result = $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
 
         \Netpromotion\Profiler\Profiler::finish('%s', $result->count());
@@ -512,7 +512,7 @@ class TwigExtension extends AbstractExtension
         \Netpromotion\Profiler\Profiler::start('twig:fn:catalog_product');
 
         $criteria['status'] = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
-        $catalogProductService = CatalogProductService::getWithContainer($this->container);
+        $catalogProductService = $this->container->get(CatalogProductService::class);
         $result = $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
 
         \Netpromotion\Profiler\Profiler::finish('%s', $result->count());
@@ -548,7 +548,7 @@ class TwigExtension extends AbstractExtension
     {
         \Netpromotion\Profiler\Profiler::start('twig:fn:catalog_order');
 
-        $catalogOrderService = CatalogOrderService::getWithContainer($this->container);
+        $catalogOrderService = $this->container->get(CatalogOrderService::class);
         $result = $catalogOrderService->read(array_merge($criteria, [
             'order' => $order,
             'limit' => $limit,

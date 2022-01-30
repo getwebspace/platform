@@ -128,7 +128,7 @@ return function (ContainerBuilder $containerBuilder): void {
 
     // monolog
     $containerBuilder->addDefinitions([
-        'monolog' => function (ContainerInterface $c) {
+        \Psr\Log\LoggerInterface::class => function (ContainerInterface $c) {
             $settings = $c->get('logger');
 
             $logger = new Monolog\Logger($settings['name']);

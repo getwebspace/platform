@@ -17,7 +17,7 @@ class OrderService extends AbstractService
     /**
      * @var OrderRepository
      */
-    protected $service;
+    protected mixed $service;
 
     protected function init(): void
     {

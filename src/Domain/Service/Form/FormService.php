@@ -17,7 +17,7 @@ class FormService extends AbstractService
     /**
      * @var FormRepository
      */
-    protected $service;
+    protected mixed $service;
 
     protected function init(): void
     {

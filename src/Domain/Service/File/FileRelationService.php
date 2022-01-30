@@ -14,7 +14,7 @@ class FileRelationService extends AbstractService
     /**
      * @var FileRelationRepository
      */
-    protected $service;
+    protected mixed $service;
 
     protected function init(): void
     {

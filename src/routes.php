@@ -328,7 +328,7 @@ return function (App $app, Container $container): void {
             // publication
             $group
                 ->group('', function (Group $group) use ($container): void {
-                    $publicationCategoryService = \App\Domain\Service\Publication\CategoryService::getWithContainer($container);
+                    $publicationCategoryService = $container->get(\App\Domain\Service\Catalog\CategoryService::class);
 
                     if (($categories = $publicationCategoryService->read()) !== null) {
                         $categoryPath = $categories->pluck('address')->implode('|');
@@ -362,7 +362,7 @@ return function (App $app, Container $container): void {
             // catalog
             $group
                 ->group('', function (Group $group) use ($container): void {
-                    $paramService = \App\Domain\Service\Parameter\ParameterService::getWithContainer($container);
+                    $paramService = $container->get(\App\Domain\Service\Parameter\ParameterService::class);
                     $pathCatalog = $paramService->read(['key' => 'catalog_address'], 'catalog')->getValue();
 
                     // view categories and products

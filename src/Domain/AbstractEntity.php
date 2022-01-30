@@ -7,7 +7,7 @@ use DateTime;
 use JsonSerializable;
 use RuntimeException;
 
-abstract class AbstractEntity extends AbstractComponent implements JsonSerializable
+abstract class AbstractEntity implements JsonSerializable
 {
     /**
      * @param string[] $args
@@ -76,7 +76,7 @@ abstract class AbstractEntity extends AbstractComponent implements JsonSerializa
     /**
      * @throws RuntimeException
      */
-    protected function checkPhoneByValue(string & $value): bool
+    protected function checkPhoneByValue(string &$value): bool
     {
         if ($value) {
             $value = str_replace([' ', '-', '.', '(', ')'], '', $value);

@@ -15,11 +15,11 @@ class ProductAttributeService extends AbstractService
     /**
      * @var AttributeRepository
      */
-    protected $catalogAttributeService;
+    protected mixed $service;
 
     protected function init(): void
     {
-        $this->catalogAttributeService = $this->entityManager->getRepository(Attribute::class);
+        $this->service = $this->entityManager->getRepository(Attribute::class);
     }
 
     public function proccess(Product $product, array $attributes, bool $update_only = false): Product
@@ -33,7 +33,7 @@ class ProductAttributeService extends AbstractService
                 if ($value) {
                     $this->create([
                         'product' => $product,
-                        'attribute' => \Ramsey\Uuid\Uuid::isValid((string) $unique) ? $this->catalogAttributeService->findOneByUuid($unique) : $this->catalogAttributeService->findOneByAddress($unique),
+                        'attribute' => \Ramsey\Uuid\Uuid::isValid((string) $unique) ? $this->service->findOneByUuid($unique) : $this->service->findOneByAddress($unique),
                         'value' => $value,
                     ]);
                 }
@@ -47,7 +47,7 @@ class ProductAttributeService extends AbstractService
                 } else {
                     $this->create([
                         'product' => $product,
-                        'attribute' => \Ramsey\Uuid\Uuid::isValid((string) $unique) ? $this->catalogAttributeService->findOneByUuid($unique) : $this->catalogAttributeService->findOneByAddress($unique),
+                        'attribute' => \Ramsey\Uuid\Uuid::isValid((string) $unique) ? $this->service->findOneByUuid($unique) : $this->service->findOneByAddress($unique),
                         'value' => $value,
                     ]);
                 }

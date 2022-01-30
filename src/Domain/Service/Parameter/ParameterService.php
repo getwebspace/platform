@@ -14,7 +14,7 @@ class ParameterService extends AbstractService
     /**
      * @var ParameterRepository
      */
-    protected $service;
+    protected mixed $service;
 
     protected function init(): void
     {

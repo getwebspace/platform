@@ -16,7 +16,7 @@ class CategoryService extends AbstractService
     /**
      * @var CategoryRepository
      */
-    protected $service;
+    protected mixed $service;
 
     protected function init(): void
     {

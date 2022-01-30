@@ -17,7 +17,7 @@ class AttributeService extends AbstractService
     /**
      * @var AttributeRepository
      */
-    protected $service;
+    protected mixed $service;
 
     protected function init(): void
     {

@@ -15,7 +15,7 @@ class FileService extends AbstractService
     /**
      * @var FileRepository
      */
-    protected $service;
+    protected mixed $service;
 
     /**
      * @var FileRelationService

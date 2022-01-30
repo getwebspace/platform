@@ -21,7 +21,7 @@ abstract class AbstractComponent
         if ($container) {
             $this->container = $container;
             $this->entityManager = $container->get(EntityManager::class);
-            $this->logger = $container->get('monolog');
+            $this->logger = $container->get(LoggerInterface::class);
         } else {
             if ($entityManager) {
                 $this->entityManager = $entityManager;
@@ -52,18 +52,9 @@ abstract class AbstractComponent
     protected function parameter($key = null, $default = null)
     {
         if (!static::$parameters) {
-            if (!$this->container) {
-                global $app;
-
-                if ($app) {
-                    $this->container = $app->getContainer();
-                }
-            }
-            if ($this->container) {
-                \Netpromotion\Profiler\Profiler::start('parameters');
-                static::$parameters = ParameterService::getWithContainer($this->container)->read();
-                \Netpromotion\Profiler\Profiler::finish('%s', static::$parameters ? static::$parameters->count() : 'null');
-            }
+            \Netpromotion\Profiler\Profiler::start('parameters');
+            static::$parameters = $this->container->get(ParameterService::class)->read();
+            \Netpromotion\Profiler\Profiler::finish('%s', static::$parameters ? static::$parameters->count() : 'null');
         }
 
         if (static::$parameters) {

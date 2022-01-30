@@ -16,7 +16,7 @@ class TaskService extends AbstractService
     /**
      * @var TaskRepository
      */
-    protected $service;
+    protected mixed $service;
 
     protected function init(): void
     {

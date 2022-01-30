@@ -18,7 +18,7 @@ class SessionService extends AbstractService
     /**
      * @var UserSessionRepository
      */
-    protected $service;
+    protected mixed $service;
 
     protected function init(): void
     {

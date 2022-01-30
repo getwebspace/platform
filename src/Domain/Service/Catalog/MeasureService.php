@@ -16,7 +16,7 @@ class MeasureService extends AbstractService
     /**
      * @var MeasureRepository
      */
-    protected $service;
+    protected mixed $service;
 
     protected function init(): void
     {

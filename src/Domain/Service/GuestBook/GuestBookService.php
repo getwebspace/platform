@@ -18,7 +18,7 @@ class GuestBookService extends AbstractService
     /**
      * @var GuestBookRepository
      */
-    protected $service;
+    protected mixed $service;
 
     protected function init(): void
     {

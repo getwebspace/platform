@@ -17,7 +17,7 @@ class SubscriberService extends AbstractService
     /**
      * @var UserSubscriberRepository
      */
-    protected $service;
+    protected mixed $service;
 
     protected function init(): void
     {

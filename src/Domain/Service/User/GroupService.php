@@ -16,7 +16,7 @@ class GroupService extends AbstractService
     /**
      * @var UserGroupRepository
      */
-    protected $service;
+    protected mixed $service;
 
     protected function init(): void
     {

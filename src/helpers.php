@@ -93,7 +93,7 @@ if (!function_exists('array_forget')) {
      *
      * @param array|string $keys
      */
-    function array_forget(array & $array, $keys): void
+    function array_forget(array &$array, $keys): void
     {
         Arr::forget($array, $keys);
     }
@@ -187,7 +187,7 @@ if (!function_exists('array_pull')) {
      *
      * @return mixed
      */
-    function array_pull(array & $array, string $key, $default = null)
+    function array_pull(array &$array, string $key, $default = null)
     {
         return Arr::pull($array, $key, $default);
     }
@@ -215,7 +215,7 @@ if (!function_exists('array_set')) {
      *
      * @param mixed $value
      */
-    function array_set(array & $array, string $key, $value): array
+    function array_set(array &$array, string $key, $value): array
     {
         return Arr::set($array, $key, $value);
     }

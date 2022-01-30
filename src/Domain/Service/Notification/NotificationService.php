@@ -17,7 +17,7 @@ class NotificationService extends AbstractService
     /**
      * @var NotificationRepository
      */
-    protected $service;
+    protected mixed $service;
 
     protected function init(): void
     {

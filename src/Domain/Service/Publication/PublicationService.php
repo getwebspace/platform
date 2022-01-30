@@ -18,7 +18,7 @@ class PublicationService extends AbstractService
     /**
      * @var PublicationRepository
      */
-    protected $service;
+    protected mixed $service;
 
     protected function init(): void
     {

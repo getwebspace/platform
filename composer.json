@@ -52,6 +52,7 @@
             "App\\": "src/"
         },
         "files": [
+            "config/vars.php",
             "src/helpers.php"
         ]
     },

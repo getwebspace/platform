@@ -17,7 +17,7 @@ class PageService extends AbstractService
     /**
      * @var PageRepository
      */
-    protected $service;
+    protected mixed $service;
 
     protected function init(): void
     {

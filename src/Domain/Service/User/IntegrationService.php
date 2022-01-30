@@ -15,7 +15,7 @@ class IntegrationService extends AbstractService
     /**
      * @var UserIntegrationRepository
      */
-    protected $service;
+    protected mixed $service;
 
     protected function init(): void
     {

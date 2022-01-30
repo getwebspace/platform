@@ -3,7 +3,6 @@
 use DI\ContainerBuilder;
 
 require __DIR__ . '/../vendor/autoload.php';
-require __DIR__ . '/../config/vars.php';
 
 // instantiate PHP-DI ContainerBuilder
 $containerBuilder = new ContainerBuilder();
@@ -19,6 +18,14 @@ $dependencies = require SRC_DIR . '/dependencies.php';
 $dependencies($containerBuilder);
 
 \Netpromotion\Profiler\Profiler::finish('init dependencies');
+
+\Netpromotion\Profiler\Profiler::start('init services');
+
+// set up $services
+$services = require SRC_DIR . '/services.php';
+$services($containerBuilder);
+
+\Netpromotion\Profiler\Profiler::finish('init services');
 
 // build PHP-DI Container instance
 $c = $container = $containerBuilder->build();

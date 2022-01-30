@@ -2,6 +2,7 @@
 
 namespace App\Domain\Service\User;
 
+use App\Domain\AbstractRepository;
 use App\Domain\AbstractService;
 use App\Domain\Entities\User;
 use App\Domain\Repository\UserRepository;
@@ -22,7 +23,7 @@ class UserService extends AbstractService
     /**
      * @var UserRepository
      */
-    protected $service;
+    protected mixed $service;
 
     protected function init(): void
     {

@@ -516,7 +516,7 @@ class Category extends AbstractEntity
     /**
      * @return Collection
      */
-    public function getNested(Collection & $categories)
+    public function getNested(Collection &$categories)
     {
         $result = collect([$this]);
 

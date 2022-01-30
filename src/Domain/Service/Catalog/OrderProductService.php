@@ -15,11 +15,11 @@ class OrderProductService extends AbstractService
     /**
      * @var ProductRepository
      */
-    protected $catalogProductService;
+    protected mixed $service;
 
     protected function init(): void
     {
-        $this->catalogProductService = $this->entityManager->getRepository(Product::class);
+        $this->service = $this->entityManager->getRepository(Product::class);
     }
 
     public function proccess(Order $order, array $products): array
@@ -34,7 +34,7 @@ class OrderProductService extends AbstractService
             if ($count > 0) {
                 $result[] = $this->create([
                     'order' => $order,
-                    'product' => $this->catalogProductService->findOneByUuid($uuid),
+                    'product' => $this->service->findOneByUuid($uuid),
                     'count' => (float) $count,
                 ]);
             }

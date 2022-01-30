@@ -18,7 +18,7 @@ class ProductService extends AbstractService
     /**
      * @var ProductRepository
      */
-    protected $service;
+    protected mixed $service;
 
     protected function init(): void
     {
