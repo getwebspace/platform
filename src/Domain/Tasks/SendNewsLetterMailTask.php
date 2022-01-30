@@ -42,8 +42,8 @@ class SendNewsLetterMailTask extends AbstractTask
         );
 
         if ($args['smtp_host'] && $args['smtp_login'] && $args['smtp_pass']) {
-            $userService = UserService::getWithContainer($this->container);
-            $userSubscriberService = UserSubscriberService::getWithContainer($this->container);
+            $userService = $this->container->get(UserService::class);
+            $userSubscriberService = $this->container->get(UserSubscriberService::class);
 
             // address list select
             switch ($args['type']) {

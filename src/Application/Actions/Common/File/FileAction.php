@@ -17,6 +17,6 @@ abstract class FileAction extends AbstractAction
     {
         parent::__construct($container);
 
-        $this->fileService = FileService::getWithContainer($container);
+        $this->fileService = $this->container->get(FileService::class);
     }
 }

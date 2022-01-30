@@ -21,7 +21,7 @@ class SearchIndexTask extends AbstractTask
     {
         $index = [];
 
-        $pageService = \App\Domain\Service\Page\PageService::getWithContainer($this->container);
+        $pageService = $this->container->get(\App\Domain\Service\Page\PageService::class);
         foreach ($pageService->read() as $item) {
             /** @var Page $item */
             $index[] = $this->implode([
@@ -35,7 +35,7 @@ class SearchIndexTask extends AbstractTask
             ]);
         }
 
-        $publicationService = \App\Domain\Service\Publication\PublicationService::getWithContainer($this->container);
+        $publicationService = $this->container->get(\App\Domain\Service\Publication\PublicationService::class);
         foreach ($publicationService->read() as $item) {
             /** @var Publication $item */
             $index[] = $this->implode([
@@ -50,7 +50,7 @@ class SearchIndexTask extends AbstractTask
             ]);
         }
 
-        $productService = \App\Domain\Service\Catalog\ProductService::getWithContainer($this->container);
+        $productService = $this->container->get(\App\Domain\Service\Catalog\ProductService::class);
         foreach ($productService->read(['status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK]) as $item) {
             /** @var Product $item */
             $index[] = $this->implode([

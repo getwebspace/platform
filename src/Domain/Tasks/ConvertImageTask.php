@@ -49,7 +49,7 @@ class ConvertImageTask extends AbstractTask
         }
         $params[] = '-set comment "Converted in WebSpace Engine CMS"';
 
-        $fileService = FileService::getWithContainer($this->container);
+        $fileService = $this->container->get(FileService::class);
 
         foreach ((array) $args['uuid'] as $index => $uuid) {
             try {

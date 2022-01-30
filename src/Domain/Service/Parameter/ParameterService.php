@@ -47,11 +47,12 @@ class ParameterService extends AbstractService
     }
 
     /**
-     * @param mixed $fallback
+     * @param array      $data
+     * @param mixed|null $fallback
      *
-     * @return Collection|Parameter
+     * @return Collection|Parameter|null
      */
-    public function read(array $data = [], $fallback = null)
+    public function read(array $data = [], mixed $fallback = null): Collection|Parameter|null
     {
         $default = [
             'key' => null,

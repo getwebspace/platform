@@ -48,7 +48,7 @@ class EntityAction extends ActionApi
             // read section
             switch ($params['entity']) {
                 case 'catalog/category':
-                    $service = CatalogCategoryService::getWithContainer($this->container);
+                    $service = $this->container->get(CatalogCategoryService::class);
 
                     try {
                         $result = $service->read(
@@ -64,7 +64,7 @@ class EntityAction extends ActionApi
                     break;
 
                 case 'catalog/product':
-                    $service = CatalogProductService::getWithContainer($this->container);
+                    $service = $this->container->get(CatalogProductService::class);
 
                     try {
                         $result = $service->read(
@@ -80,7 +80,7 @@ class EntityAction extends ActionApi
                     break;
 
                 case 'catalog/order':
-                    $service = CatalogOrderService::getWithContainer($this->container);
+                    $service = $this->container->get(CatalogOrderService::class);
 
                     try {
                         $result = $service->read($params);
@@ -91,7 +91,7 @@ class EntityAction extends ActionApi
                     break;
 
                 case 'file':
-                    $service = FileService::getWithContainer($this->container);
+                    $service = $this->container->get(FileService::class);
 
                     try {
                         $result = $service->read($params);
@@ -102,7 +102,7 @@ class EntityAction extends ActionApi
                     break;
 
                 case 'guestbook':
-                    $service = GuestBookService::getWithContainer($this->container);
+                    $service = $this->container->get(GuestBookService::class);
 
                     try {
                         $result = $service->read($params);
@@ -113,7 +113,7 @@ class EntityAction extends ActionApi
                     break;
 
                 case 'page':
-                    $service = PageService::getWithContainer($this->container);
+                    $service = $this->container->get(PageService::class);
 
                     try {
                         $result = $service->read($params);
@@ -124,7 +124,7 @@ class EntityAction extends ActionApi
                     break;
 
                 case 'publication':
-                    $service = PublicationService::getWithContainer($this->container);
+                    $service = $this->container->get(PublicationService::class);
 
                     try {
                         $result = $service->read($params);
@@ -135,7 +135,7 @@ class EntityAction extends ActionApi
                     break;
 
                 case 'publication/category':
-                    $service = PublicationCategoryService::getWithContainer($this->container);
+                    $service = $this->container->get(PublicationCategoryService::class);
 
                     try {
                         $result = $service->read($params);
@@ -146,7 +146,7 @@ class EntityAction extends ActionApi
                     break;
 
                 case 'user':
-                    $service = UserService::getWithContainer($this->container);
+                    $service = $this->container->get(UserService::class);
 
                     try {
                         $result = $service->read($params);
@@ -157,7 +157,7 @@ class EntityAction extends ActionApi
                     break;
 
                 case 'user/group':
-                    $service = UserGroupService::getWithContainer($this->container);
+                    $service = $this->container->get(UserGroupService::class);
 
                     try {
                         $result = $service->read($params);

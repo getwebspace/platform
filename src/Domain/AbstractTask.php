@@ -62,7 +62,7 @@ abstract class AbstractTask extends AbstractComponent
         parent::__construct($container);
 
         /** @var TaskService $taskService */
-        $this->taskService = TaskService::getWithContainer($container);
+        $this->taskService = $this->container->get(TaskService::class);
         $this->entity = $entity;
         $this->renderer = $container->get('view');
     }

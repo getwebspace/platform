@@ -24,9 +24,9 @@ abstract class AbstractOAuthProvider extends AbstractComponent
     {
         parent::__construct($container);
 
-        $this->userService = UserService::getWithContainer($container);
-        $this->userGroupService = UserGroupService::getWithContainer($container);
-        $this->userIntegrationService = UserIntegrationService::getWithContainer($container);
+        $this->userService = $container->get(UserService::class);
+        $this->userGroupService = $container->get(UserGroupService::class);
+        $this->userIntegrationService = $container->get(UserIntegrationService::class);
     }
 
     abstract public function getAuthUrl(): string;

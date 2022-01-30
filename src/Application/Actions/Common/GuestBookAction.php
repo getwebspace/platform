@@ -14,7 +14,7 @@ class GuestBookAction extends AbstractAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        $guestBookService = GuestBookService::getWithContainer($this->container);
+        $guestBookService = $this->container->get(GuestBookService::class);
 
         if ($this->isPost()) {
             if ($this->isRecaptchaChecked()) {

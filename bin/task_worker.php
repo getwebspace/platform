@@ -26,7 +26,7 @@ $container = $app->getContainer();
 $logger = $container->get(\Psr\Log\LoggerInterface::class);
 
 /** @var \App\Domain\Service\Task\TaskService $taskService */
-$taskService = \App\Domain\Service\Task\TaskService::getWithContainer($container);
+$taskService = $container->get(\App\Domain\Service\Task\TaskService::class);
 
 /** @var \Illuminate\Support\Collection $queue */
 $queue = $taskService->read([

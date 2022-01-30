@@ -71,7 +71,7 @@ class PublicationService extends AbstractService
 
         // if address generation is enabled
         if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
-            $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
+            $publicationCategoryService = $this->container->get(PublicationCategoryService::class);
             $publicationCategory = $publicationCategoryService->read(['uuid' => $data['category']]);
 
             // combine address category with publication address
@@ -231,7 +231,7 @@ class PublicationService extends AbstractService
 
         if (is_object($entity) && is_a($entity, Publication::class)) {
             if (($files = $entity->getFiles()) && $files->isNotEmpty()) {
-                $fileService = \App\Domain\Service\File\FileService::getWithContainer($this->container);
+                $fileService = $this->container->get(\App\Domain\Service\File\FileService::class);
 
                 /**
                  * @var \App\Domain\Entities\File $file

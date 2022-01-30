@@ -11,7 +11,7 @@ class PageAction extends AbstractAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        $pageService = PageService::getWithContainer($this->container);
+        $pageService = $this->container->get(PageService::class);
 
         try {
             $page = $pageService->read(['address' => ltrim($this->resolveArg('args'), '/')]);

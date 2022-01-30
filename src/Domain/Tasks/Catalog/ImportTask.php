@@ -31,7 +31,7 @@ class ImportTask extends AbstractTask
 
     protected function action(array $args = [])
     {
-        $fileService = FileService::getWithContainer($this->container);
+        $fileService = $this->container->get(FileService::class);
 
         try {
             $file = $fileService->read(['uuid' => $args['file']]);
@@ -39,10 +39,10 @@ class ImportTask extends AbstractTask
             return $this->setStatusFail();
         }
 
-        $catalogCategoryService = CatalogCategoryService::getWithContainer($this->container);
-        $catalogProductService = CatalogProductService::getWithContainer($this->container);
-        $catalogAttributeService = CatalogAttributeService::getWithContainer($this->container);
-        $catalogProductAttributeService = CatalogProductAttributeService::getWithContainer($this->container);
+        $catalogCategoryService = $this->container->get(CatalogCategoryService::class);
+        $catalogProductService = $this->container->get(CatalogProductService::class);
+        $catalogAttributeService = $this->container->get(CatalogAttributeService::class);
+        $catalogProductAttributeService = $this->container->get(CatalogProductAttributeService::class);
 
         // parse excel file
         /** @var Collection $data */

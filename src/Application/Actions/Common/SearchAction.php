@@ -39,9 +39,9 @@ class SearchAction extends AbstractAction
             \Netpromotion\Profiler\Profiler::start('search', ['index' => false]);
 
             $entities = [
-                'page' => PageService::getWithContainer($this->container),
-                'publication' => PublicationService::getWithContainer($this->container),
-                'catalog_product' => CatalogProductService::getWithContainer($this->container),
+                'page' => $this->container->get(PageService::class),
+                'publication' => $this->container->get(PublicationService::class),
+                'catalog_product' => $this->container->get(CatalogProductService::class),
             ];
 
             foreach ($entities as $type => $service) {
@@ -127,9 +127,9 @@ class SearchAction extends AbstractAction
             \Netpromotion\Profiler\Profiler::start('search', ['index' => true]);
 
             $entities = [
-                'page' => PageService::getWithContainer($this->container),
-                'publication' => PublicationService::getWithContainer($this->container),
-                'catalog_product' => CatalogProductService::getWithContainer($this->container),
+                'page' => $this->container->get(PageService::class),
+                'publication' => $this->container->get(PublicationService::class),
+                'catalog_product' => $this->container->get(CatalogProductService::class),
             ];
             $search_by_index = \App\Application\Search::search($query);
 

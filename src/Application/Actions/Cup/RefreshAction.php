@@ -14,10 +14,10 @@ class RefreshAction extends AbstractAction
     {
         /** @var User $user */
         $user = $this->request->getAttribute('user', false);
-        $notificationService = NotificationService::getWithContainer($this->container);
+        $notificationService = $this->container->get(NotificationService::class);
 
         $exists = (array) $this->getParam('tasks');
-        $taskService = TaskService::getWithContainer($this->container);
+        $taskService = $this->container->get(TaskService::class);
         $tasks = collect()
             ->merge($taskService->read(['uuid' => array_keys($exists)]))
             ->merge($taskService->read(['order' => ['date' => 'desc'], 'limit' => 50]))

@@ -20,7 +20,7 @@ use Slim\Psr7\Response;
 use Slim\Views\Twig;
 use function PHPUnit\Framework\isNull;
 
-abstract class AbstractAction extends AbstractComponent
+abstract class AbstractAction
 {
     // 40X
     private const BAD_REQUEST = 'BAD_REQUEST';
@@ -31,6 +31,8 @@ abstract class AbstractAction extends AbstractComponent
 
     // 50X
     private const NOT_IMPLEMENTED = 'NOT_IMPLEMENTED';
+
+    protected ContainerInterface $container;
 
     protected RouteCollectorInterface $routeCollector;
 
@@ -46,8 +48,7 @@ abstract class AbstractAction extends AbstractComponent
 
     public function __construct(ContainerInterface $container)
     {
-        parent::__construct($container);
-
+        $this->container = $container;
         $this->routeCollector = $container->get(RouteCollectorInterface::class);
         $this->renderer = $container->get('view');
     }
@@ -221,7 +222,7 @@ abstract class AbstractAction extends AbstractComponent
     protected function processEntityFiles(AbstractEntity $entity, string $field = 'files'): AbstractEntity
     {
         if (in_array(FileTrait::class, class_uses($entity), true)) {
-            $fileRelationService = FileRelationService::getWithContainer($this->container);
+            $fileRelationService = $this->container->get(FileRelationService::class);
 
             // new
             if (($uploaded = $this->getUploadedFiles($field)) !== []) {
@@ -286,7 +287,7 @@ abstract class AbstractAction extends AbstractComponent
         $uploaded = [];
 
         if ($this->parameter('file_is_enabled', 'yes') === 'yes') {
-            $fileService = FileService::getWithContainer($this->container);
+            $fileService = $this->container->get(FileService::class);
 
             /** @var \Psr\Http\Message\UploadedFileInterface[] $files */
             $files = $this->request->getUploadedFiles()[$field] ?? [];
@@ -338,7 +339,7 @@ abstract class AbstractAction extends AbstractComponent
         $tmp_path = UPLOAD_DIR . '/' . uniqid();
 
         if ($filename && file_put_contents($tmp_path, $this->request->getBody()->getContents()) !== false) {
-            $fileService = FileService::getWithContainer($this->container);
+            $fileService = $this->container->get(FileService::class);
 
             if (($model = $fileService->createFromPath($tmp_path, $filename)) !== null) {
                 $uploaded = $model;

@@ -20,7 +20,7 @@ abstract class FormAction extends AbstractAction
     {
         parent::__construct($container);
 
-        $this->formService = FormService::getWithContainer($container);
-        $this->formDataService = FormDataService::getWithContainer($container);
+        $this->formService = $this->container->get(FormService::class);
+        $this->formDataService = $this->container->get(FormDataService::class);
     }
 }

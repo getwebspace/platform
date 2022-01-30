@@ -32,11 +32,11 @@ abstract class CatalogAction extends AbstractAction
     {
         parent::__construct($container);
 
-        $this->userService = UserService::getWithContainer($container);
-        $this->catalogCategoryService = CatalogCategoryService::getWithContainer($container);
-        $this->catalogProductService = CatalogProductService::getWithContainer($container);
-        $this->catalogOrderService = CatalogOrderService::getWithContainer($container);
-        $this->catalogOrderProductService = CatalogOrderProductService::getWithContainer($container);
-        $this->notificationService = NotificationService::getWithContainer($container);
+        $this->userService = $this->container->get(UserService::class);
+        $this->catalogCategoryService = $this->container->get(CatalogCategoryService::class);
+        $this->catalogProductService = $this->container->get(CatalogProductService::class);
+        $this->catalogOrderService = $this->container->get(CatalogOrderService::class);
+        $this->catalogOrderProductService = $this->container->get(CatalogOrderProductService::class);
+        $this->notificationService = $this->container->get(NotificationService::class);
     }
 }

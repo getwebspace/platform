@@ -241,7 +241,7 @@ class CategoryService extends AbstractService
 
         if (is_object($entity) && is_a($entity, PublicationCategory::class)) {
             if (($files = $entity->getFiles()) && $files->isNotEmpty()) {
-                $fileService = \App\Domain\Service\File\FileService::getWithContainer($this->container);
+                $fileService = $this->container->get(\App\Domain\Service\File\FileService::class);
 
                 /**
                  * @var \App\Domain\Entities\File $file

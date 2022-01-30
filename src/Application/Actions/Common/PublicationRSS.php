@@ -20,8 +20,8 @@ class PublicationRSS extends AbstractAction
     {
         parent::__construct($container);
 
-        $this->publicationService = PublicationService::getWithContainer($container);
-        $this->publicationCategoryService = PublicationCategoryService::getWithContainer($container);
+        $this->publicationService = $this->container->get(PublicationService::class);
+        $this->publicationCategoryService = $this->container->get(PublicationCategoryService::class);
     }
 
     protected function action(): \Slim\Psr7\Response

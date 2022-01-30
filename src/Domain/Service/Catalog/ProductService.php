@@ -108,7 +108,7 @@ class ProductService extends AbstractService
         // if address generation is enabled
         if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && \Ramsey\Uuid\Uuid::isValid((string) $data['category'])) {
             try {
-                $catalogCategoryService = CatalogCategoryService::getWithContainer($this->container);
+                $catalogCategoryService = $this->container->get(CatalogCategoryService::class);
                 $catalogCategory = $catalogCategoryService->read(['uuid' => $data['category']]);
 
                 // combine address category with product address

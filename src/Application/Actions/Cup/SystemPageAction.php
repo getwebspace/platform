@@ -62,8 +62,8 @@ class SystemPageAction extends AbstractAction
 
                 // user
                 if ($userData = $this->getParam('user', [])) {
-                    $userGroupService = UserGroupService::getWithContainer($this->container);
-                    $userService = UserService::getWithContainer($this->container);
+                    $userGroupService = $this->container->get(UserGroupService::class);
+                    $userService = $this->container->get(UserService::class);
 
                     // create or read group
                     try {

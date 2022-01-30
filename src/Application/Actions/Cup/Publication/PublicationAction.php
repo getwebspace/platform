@@ -20,7 +20,7 @@ abstract class PublicationAction extends AbstractAction
     {
         parent::__construct($container);
 
-        $this->publicationCategoryService = PublicationCategoryService::getWithContainer($container);
-        $this->publicationService = PublicationService::getWithContainer($container);
+        $this->publicationCategoryService = $this->container->get(PublicationCategoryService::class);
+        $this->publicationService = $this->container->get(PublicationService::class);
     }
 }

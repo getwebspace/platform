@@ -14,8 +14,8 @@ class FormAction extends AbstractAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        $formService = FormService::getWithContainer($this->container);
-        $formDataService = FormDataService::getWithContainer($this->container);
+        $formService = $this->container->get(FormService::class);
+        $formDataService = $this->container->get(FormDataService::class);
         $form = $formService->read(['address' => $this->resolveArg('unique')]);
 
         /** @var Form $form */

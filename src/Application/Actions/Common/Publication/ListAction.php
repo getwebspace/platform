@@ -12,8 +12,8 @@ class ListAction extends AbstractAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        $publicationCategoryService = PublicationCategoryService::getWithContainer($this->container);
-        $publicationService = PublicationService::getWithContainer($this->container);
+        $publicationCategoryService = $this->container->get(PublicationCategoryService::class);
+        $publicationService = $this->container->get(PublicationService::class);
 
         try {
             $params = $this->parsePath();

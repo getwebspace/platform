@@ -2,12 +2,12 @@
 
 namespace App\Domain;
 
-use DI\Container;
 use Doctrine\ORM\EntityManager;
+use Psr\Container\ContainerInterface;
 
 abstract class AbstractService
 {
-    protected Container $container;
+    protected ContainerInterface $container;
 
     protected EntityManager $entityManager;
 
@@ -22,7 +22,7 @@ abstract class AbstractService
         'offset' => null,
     ];
 
-    public function __construct(Container $container, EntityManager $entityManager)
+    public function __construct(ContainerInterface $container, EntityManager $entityManager)
     {
         $this->container = $container;
         $this->entityManager = $entityManager;

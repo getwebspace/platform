@@ -41,7 +41,7 @@ class AuthorizationMiddleware extends AbstractMiddleware
 
         if ($data['uuid'] && \Ramsey\Uuid\Uuid::isValid((string) $data['uuid']) && $data['session']) {
             try {
-                $userService = UserService::getWithContainer($this->container);
+                $userService = $this->container->get(UserService::class);
                 $user = $userService->read([
                     'uuid' => $data['uuid'],
                     'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,

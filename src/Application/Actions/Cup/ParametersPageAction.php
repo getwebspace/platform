@@ -14,7 +14,7 @@ class ParametersPageAction extends AbstractAction
         $parameters = $this->parameter();
 
         if ($this->isPost()) {
-            $parameterService = ParameterService::getWithContainer($this->container);
+            $parameterService = $this->container->get(ParameterService::class);
 
             foreach ($this->request->getParsedBody() as $group => $params) {
                 foreach ($params as $key => $value) {
@@ -40,8 +40,8 @@ class ParametersPageAction extends AbstractAction
                 'all' => $this->getRoutes()->all(),
                 'guest' => $this->getRoutes()->filter(fn ($el) => str_start_with($el, 'common:'))->all(),
             ],
-            'groups' => UserGroupService::getWithContainer($this->container)->read(),
-            'attributes' => CatalogAttributeService::getWithContainer($this->container)->read()->whereNotIn('type', \App\Domain\Types\Catalog\AttributeTypeType::TYPE_BOOLEAN),
+            'groups' => $this->container->get(UserGroupService::class)->read(),
+            'attributes' => $this->container->get(CatalogAttributeService::class)->read()->whereNotIn('type', \App\Domain\Types\Catalog\AttributeTypeType::TYPE_BOOLEAN),
             'parameter' => $parameters,
         ]);
     }
