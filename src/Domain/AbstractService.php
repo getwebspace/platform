@@ -2,11 +2,14 @@
 
 namespace App\Domain;
 
+use App\Domain\Traits\ParameterTrait;
 use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
 
 abstract class AbstractService
 {
+    use ParameterTrait;
+
     protected ContainerInterface $container;
 
     protected EntityManager $entityManager;

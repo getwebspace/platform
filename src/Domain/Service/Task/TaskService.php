@@ -54,7 +54,7 @@ class TaskService extends AbstractService
             ->setStatus($data['status'])
             ->setParams($data['params'])
             ->setOutput($data['output'])
-            ->setDate($data['date']);
+            ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
 
         $this->entityManager->persist($task);
         $this->entityManager->flush();
@@ -154,7 +154,7 @@ class TaskService extends AbstractService
                     $entity->setOutput($data['output']);
                 }
                 if ($data['date'] !== null) {
-                    $entity->setDate($data['date']);
+                    $entity->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
                 }
 
                 $this->entityManager->flush();

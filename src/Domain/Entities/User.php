@@ -342,9 +342,9 @@ class User extends AbstractEntity
      *
      * @return $this
      */
-    public function setRegister($register)
+    public function setRegister($register, $timezone = 'UTC')
     {
-        $this->register = $this->getDateTimeByValue($register);
+        $this->register = $this->getDateTimeByValue($register, $timezone);
 
         return $this;
     }
@@ -369,9 +369,9 @@ class User extends AbstractEntity
      *
      * @return $this
      */
-    public function setChange($change)
+    public function setChange($change, $timezone = 'UTC')
     {
-        $this->change = $this->getDateTimeByValue($change);
+        $this->change = $this->getDateTimeByValue($change, $timezone);
 
         return $this;
     }

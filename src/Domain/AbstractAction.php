@@ -14,6 +14,7 @@ use App\Domain\Service\File\FileService;
 use App\Domain\Traits\FileTrait;
 use App\Domain\Traits\ParameterTrait;
 use App\Domain\Traits\StorageTrait;
+use Doctrine\ORM\EntityManager;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 use Slim\Interfaces\RouteCollectorInterface;
@@ -39,6 +40,8 @@ abstract class AbstractAction
 
     protected ContainerInterface $container;
 
+    protected EntityManager $entityManager;
+
     protected RouteCollectorInterface $routeCollector;
 
     protected Twig $renderer;
@@ -54,6 +57,7 @@ abstract class AbstractAction
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
+        $this->entityManager = $container->get(EntityManager::class);
         $this->routeCollector = $container->get(RouteCollectorInterface::class);
         $this->renderer = $container->get('view');
     }

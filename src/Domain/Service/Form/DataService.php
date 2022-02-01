@@ -41,7 +41,7 @@ class DataService extends AbstractService
         $form = (new FromData())
             ->setFormUuid($data['form_uuid'])
             ->setMessage($data['message'])
-            ->setDate($data['date']);
+            ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
 
         $this->entityManager->persist($form);
         $this->entityManager->flush();
@@ -121,7 +121,7 @@ class DataService extends AbstractService
                     $entity->setMessage($data['message']);
                 }
                 if ($data['date'] !== null) {
-                    $entity->setDate($data['date']);
+                    $entity->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
                 }
 
                 $this->entityManager->flush();

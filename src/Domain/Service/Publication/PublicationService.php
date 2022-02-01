@@ -65,7 +65,7 @@ class PublicationService extends AbstractService
             ->setTitle($data['title'])
             ->setAddress($data['address'])
             ->setCategory($data['category'])
-            ->setDate($data['date'])
+            ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'))
             ->setContent($data['content'])
             ->setMeta($data['meta']);
 
@@ -196,7 +196,7 @@ class PublicationService extends AbstractService
                     $entity->setCategory($data['category']);
                 }
                 if ($data['date'] !== null) {
-                    $entity->setDate($data['date']);
+                    $entity->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
                 }
                 if ($data['content'] !== null) {
                     $entity->setContent($data['content']);

@@ -41,7 +41,7 @@ class SessionService extends AbstractService
 
         $user_session = (new UserSession())
             ->setAgent($data['agent'])
-            ->setDate($data['date'])
+            ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'))
             ->setIp($data['ip']);
 
         $this->entityManager->persist($user_session);
@@ -95,7 +95,7 @@ class SessionService extends AbstractService
                     $entity->setAgent($data['agent']);
                 }
                 if ($data['date'] !== null) {
-                    $entity->setDate($data['date']);
+                    $entity->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
                 }
                 if ($data['ip'] !== null) {
                     $entity->setIp($data['ip']);

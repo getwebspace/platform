@@ -2,7 +2,6 @@
 
 namespace App\Domain\Service\User;
 
-use App\Domain\AbstractRepository;
 use App\Domain\AbstractService;
 use App\Domain\Entities\User;
 use App\Domain\Repository\UserRepository;
@@ -95,8 +94,8 @@ class UserService extends AbstractService
             ->setAuthCode($data['auth_code'])
             ->setExternalId($data['external_id'])
             ->setToken($data['token'])
-            ->setRegister('now')
-            ->setChange('now');
+            ->setRegister('now', $this->parameter('common_timezone', 'UTC'))
+            ->setChange('now', $this->parameter('common_timezone', 'UTC'));
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
@@ -323,7 +322,7 @@ class UserService extends AbstractService
                     }
                 }
 
-                $entity->setChange('now');
+                $entity->setChange('now', $this->parameter('common_timezone', 'UTC'));
 
                 $this->entityManager->flush();
             }

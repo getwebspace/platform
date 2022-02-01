@@ -45,7 +45,7 @@ class SubscriberService extends AbstractService
 
         $userSubscriber = (new UserSubscriber())
             ->setEmail($data['email'])
-            ->setDate($data['date']);
+            ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
 
         $this->entityManager->persist($userSubscriber);
         $this->entityManager->flush();
@@ -135,7 +135,7 @@ class SubscriberService extends AbstractService
                     }
                 }
 
-                $entity->setDate('now');
+                $entity->setDate('now', $this->parameter('common_timezone', 'UTC'));
 
                 $this->entityManager->flush();
             }

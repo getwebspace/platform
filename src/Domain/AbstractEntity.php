@@ -11,15 +11,6 @@ use RuntimeException;
 
 abstract class AbstractEntity implements JsonSerializable
 {
-    use ParameterTrait;
-
-    protected ContainerInterface $container;
-
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container = $container;
-    }
-
     /**
      * @param string[] $args
      *
@@ -148,9 +139,9 @@ abstract class AbstractEntity implements JsonSerializable
      *
      * @throws \Exception
      */
-    protected function getDateTimeByValue($value): DateTime
+    protected function getDateTimeByValue($value, $timezone = 'UTC'): DateTime
     {
-        date_default_timezone_set($this->parameter('common_timezone', 'UTC'));
+        date_default_timezone_set($timezone);
 
         switch (true) {
             case is_string($value):

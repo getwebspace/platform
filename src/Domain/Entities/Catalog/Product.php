@@ -687,9 +687,9 @@ class Product extends AbstractEntity
      *
      * @return $this
      */
-    public function setDate($date)
+    public function setDate($date, $timezone = 'UTC')
     {
-        $this->date = $this->getDateTimeByValue($date);
+        $this->date = $this->getDateTimeByValue($date, $timezone);
 
         return $this;
     }

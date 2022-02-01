@@ -46,7 +46,7 @@ class IntegrationService extends AbstractService
             ->setUser($data['user'])
             ->setProvider($data['provider'])
             ->setUnique($data['unique'])
-            ->setDate($data['date']);
+            ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
 
         $this->entityManager->persist($userIntegration);
         $this->entityManager->flush();

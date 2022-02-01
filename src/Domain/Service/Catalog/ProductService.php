@@ -100,7 +100,7 @@ class ProductService extends AbstractService
             ->setManufacturer($data['manufacturer'])
             ->setTags($data['tags'])
             ->setOrder((int) $data['order'])
-            ->setDate($data['date'])
+            ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'))
             ->setMeta($data['meta'])
             ->setExternalId($data['external_id'])
             ->setExport($data['export']);
@@ -370,7 +370,7 @@ class ProductService extends AbstractService
                     $entity->setOrder((int) $data['order']);
                 }
                 if ($data['date'] !== null) {
-                    $entity->setDate($data['date']);
+                    $entity->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
                 }
                 if ($data['meta'] !== null) {
                     $entity->setMeta($data['meta']);

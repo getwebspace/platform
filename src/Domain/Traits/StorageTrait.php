@@ -12,16 +12,18 @@ use Psr\Container\ContainerInterface;
 trait StorageTrait
 {
     /**
-     * Global storage across actions
+     * storage array
      */
     protected static array $storage = [];
 
     /**
-     * @param mixed $value
+     * @param string      $key
+     * @param mixed       $value
+     * @param string|null $namespace
      *
      * @return mixed
      */
-    public static function setStorage(string $key, $value, ?string $namespace = null)
+    protected static function setStorage(string $key, mixed $value, ?string $namespace = null)
     {
         self::$storage[$namespace][$key] = $value;
 
@@ -29,11 +31,13 @@ trait StorageTrait
     }
 
     /**
-     * @param mixed $default
+     * @param string      $key
+     * @param mixed       $default
+     * @param string|null $namespace
      *
      * @return null|mixed
      */
-    public static function getStorage(string $key, $default = null, ?string $namespace = null)
+    protected static function getStorage(string $key, mixed $default = null, ?string $namespace = null)
     {
         return self::$storage[$namespace][$key] ?? $default;
     }

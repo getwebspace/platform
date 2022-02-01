@@ -130,9 +130,9 @@ class Order extends AbstractEntity
      *
      * @return $this
      */
-    public function setShipping($date)
+    public function setShipping($date, $timezone = 'UTC')
     {
-        $this->shipping = $this->getDateTimeByValue($date);
+        $this->shipping = $this->getDateTimeByValue($date, $timezone);
 
         return $this;
     }
@@ -294,9 +294,9 @@ class Order extends AbstractEntity
      *
      * @return $this
      */
-    public function setDate($date)
+    public function setDate($date, $timezone = 'UTC')
     {
-        $this->date = $this->getDateTimeByValue($date);
+        $this->date = $this->getDateTimeByValue($date, $timezone);
 
         return $this;
     }

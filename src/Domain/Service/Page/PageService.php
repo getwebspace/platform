@@ -60,7 +60,7 @@ class PageService extends AbstractService
             ->setTitle($data['title'])
             ->setAddress($data['address'])
             ->setContent($data['content'])
-            ->setDate($data['date'])
+            ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'))
             ->setMeta($data['meta'])
             ->setTemplate($data['template'])
             ->setType($data['type']);
@@ -178,7 +178,7 @@ class PageService extends AbstractService
                     $entity->setContent($data['content']);
                 }
                 if ($data['date'] !== null) {
-                    $entity->setDate($data['date']);
+                    $entity->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
                 }
                 if ($data['meta'] !== null) {
                     $entity->setMeta($data['meta']);

@@ -55,7 +55,7 @@ class NotificationService extends AbstractService
             ->setTitle($data['title'])
             ->setMessage($data['message'])
             ->setParams($data['params'])
-            ->setDate($data['date']);
+            ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
 
         $this->entityManager->persist($file);
         $this->entityManager->flush();
@@ -143,7 +143,7 @@ class NotificationService extends AbstractService
                     $entity->setParams($data['params']);
                 }
                 if ($data['date'] !== null) {
-                    $entity->setDate($data['date']);
+                    $entity->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
                 }
 
                 $this->entityManager->flush();

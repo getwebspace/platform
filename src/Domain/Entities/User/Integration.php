@@ -118,9 +118,9 @@ class Integration extends AbstractEntity
      *
      * @return $this
      */
-    public function setDate($date): self
+    public function setDate($date, $timezone = 'UTC'): self
     {
-        $this->date = $this->getDateTimeByValue($date);
+        $this->date = $this->getDateTimeByValue($date, $timezone);
 
         return $this;
     }

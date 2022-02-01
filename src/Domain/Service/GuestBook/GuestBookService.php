@@ -59,7 +59,7 @@ class GuestBookService extends AbstractService
             ->setMessage($data['message'])
             ->setResponse($data['response'])
             ->setStatus($data['status'])
-            ->setDate($data['date']);
+            ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
 
         $this->entityManager->persist($file);
         $this->entityManager->flush();
@@ -156,7 +156,7 @@ class GuestBookService extends AbstractService
                     $entity->setStatus($data['status']);
                 }
                 if ($data['date'] !== null) {
-                    $entity->setDate($data['date']);
+                    $entity->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
                 }
 
                 $this->entityManager->flush();

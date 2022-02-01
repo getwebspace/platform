@@ -153,7 +153,7 @@ class FileService extends AbstractService
             ->setSize($data['size'])
             ->setSalt($data['salt'])
             ->setHash($data['hash'])
-            ->setDate($data['date']);
+            ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
 
         $this->entityManager->persist($file);
         $this->entityManager->flush();
@@ -281,7 +281,7 @@ class FileService extends AbstractService
                     $entity->setSalt($data['salt']);
                 }
                 if ($data['date'] !== null) {
-                    $entity->setDate($data['date']);
+                    $entity->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
                 }
 
                 $this->entityManager->flush();

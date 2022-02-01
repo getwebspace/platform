@@ -59,8 +59,8 @@ class OrderService extends AbstractService
             ->setEmail($data['email'])
             ->setStatus($data['status'])
             ->setComment($data['comment'])
-            ->setShipping($data['shipping'])
-            ->setDate($data['date'])
+            ->setShipping($data['shipping'], $this->parameter('common_timezone', 'UTC'))
+            ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'))
             ->setExternalId($data['external_id'])
             ->setExport($data['export'])
             ->setSystem($data['system']);
@@ -199,10 +199,10 @@ class OrderService extends AbstractService
                     $entity->setComment($data['comment']);
                 }
                 if ($data['shipping'] !== null) {
-                    $entity->setShipping($data['shipping']);
+                    $entity->setShipping($data['shipping'], $this->parameter('common_timezone', 'UTC'));
                 }
                 if ($data['date'] !== null) {
-                    $entity->setDate($data['date']);
+                    $entity->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
                 }
                 if ($data['external_id'] !== null) {
                     $entity->setExternalId($data['external_id']);
