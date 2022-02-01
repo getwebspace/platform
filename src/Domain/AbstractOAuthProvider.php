@@ -7,10 +7,15 @@ use App\Domain\Entities\User\Integration as UserIntegration;
 use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\IntegrationService as UserIntegrationService;
 use App\Domain\Service\User\UserService;
+use App\Domain\Traits\ParameterTrait;
 use Psr\Container\ContainerInterface;
 
-abstract class AbstractOAuthProvider extends AbstractComponent
+abstract class AbstractOAuthProvider
 {
+    use ParameterTrait;
+
+    protected ContainerInterface $container;
+
     protected UserService $userService;
 
     protected UserGroupService $userGroupService;
@@ -22,8 +27,7 @@ abstract class AbstractOAuthProvider extends AbstractComponent
      */
     public function __construct(ContainerInterface $container)
     {
-        parent::__construct($container);
-
+        $this->container = $container;
         $this->userService = $container->get(UserService::class);
         $this->userGroupService = $container->get(UserGroupService::class);
         $this->userIntegrationService = $container->get(UserIntegrationService::class);

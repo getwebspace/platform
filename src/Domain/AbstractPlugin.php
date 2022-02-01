@@ -4,14 +4,19 @@ namespace App\Domain;
 
 use App\Application\i18n;
 use App\Domain\Exceptions\HttpBadRequestException;
+use App\Domain\Traits\ParameterTrait;
+use App\Domain\Traits\StorageTrait;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 use Slim\Views\Twig;
 
-abstract class AbstractPlugin extends AbstractComponent
+abstract class AbstractPlugin
 {
+    use ParameterTrait;
+    use StorageTrait;
+
     public const NAME = 'UntitledPlugin';
     public const TITLE = 'Untitled plugin';
     public const DESCRIPTION = '';
@@ -19,28 +24,6 @@ abstract class AbstractPlugin extends AbstractComponent
     public const AUTHOR_EMAIL = '';
     public const AUTHOR_SITE = '';
     public const VERSION = '1.0';
-
-    /**
-     * @param mixed $value
-     *
-     * @return mixed
-     */
-    public static function setStorage(string $key, $value)
-    {
-        static::$storage[static::NAME][$key] = $value;
-
-        return $value;
-    }
-
-    /**
-     * @param mixed $default
-     *
-     * @return null|mixed
-     */
-    public static function getStorage(string $key, $default = null, ?string $namespace = null)
-    {
-        return static::$storage[$namespace ?: self::NAME][$key] ?? $default;
-    }
 
     private \Slim\Router $router;
 
@@ -58,14 +41,12 @@ abstract class AbstractPlugin extends AbstractComponent
 
     public function __construct(ContainerInterface $container)
     {
-        parent::__construct($container);
-
         if (empty(static::NAME) || empty(static::TITLE) || empty(static::AUTHOR)) {
             throw new RuntimeException('Plugin credentials have empty fields');
         }
 
         $this->container[static::NAME] = $this;
-        $this->router = $this->container->get('router');
+        $this->router = $container->get('router');
         $this->renderer = $container->get('view');
     }
 

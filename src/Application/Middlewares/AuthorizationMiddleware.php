@@ -3,30 +3,13 @@
 namespace App\Application\Middlewares;
 
 use App\Domain\AbstractMiddleware;
-use App\Domain\Repository\UserRepository;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\UserService;
-use Psr\Container\ContainerInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Request;
 
 class AuthorizationMiddleware extends AbstractMiddleware
 {
-    /**
-     * @var UserRepository
-     */
-    protected $users;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __construct(ContainerInterface $container)
-    {
-        parent::__construct($container);
-
-        $this->users = $this->entityManager->getRepository(\App\Domain\Entities\User::class);
-    }
-
     /**
      * @throws \Exception
      */

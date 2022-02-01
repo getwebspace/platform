@@ -12,6 +12,8 @@ use App\Domain\Exceptions\HttpNotImplementedException;
 use App\Domain\Service\File\FileRelationService;
 use App\Domain\Service\File\FileService;
 use App\Domain\Traits\FileTrait;
+use App\Domain\Traits\ParameterTrait;
+use App\Domain\Traits\StorageTrait;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 use Slim\Interfaces\RouteCollectorInterface;
@@ -22,6 +24,9 @@ use function PHPUnit\Framework\isNull;
 
 abstract class AbstractAction
 {
+    use ParameterTrait;
+    use StorageTrait;
+
     // 40X
     private const BAD_REQUEST = 'BAD_REQUEST';
     private const NOT_ALLOWED = 'NOT_ALLOWED';

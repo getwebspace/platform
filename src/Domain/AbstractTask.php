@@ -5,17 +5,22 @@ namespace App\Domain;
 use App\Domain\Entities\Task;
 use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Service\Task\TaskService;
+use App\Domain\Traits\ParameterTrait;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
 use Slim\Views\Twig;
 
-abstract class AbstractTask extends AbstractComponent
+abstract class AbstractTask
 {
+    use ParameterTrait;
+
     public const TITLE = '';
 
-    private TaskService $taskService;
+    protected ContainerInterface $container;
 
     private ?Task $entity;
+
+    private TaskService $taskService;
 
     private Twig $renderer;
 
@@ -59,11 +64,9 @@ abstract class AbstractTask extends AbstractComponent
 
     public function __construct(ContainerInterface $container, Task $entity = null)
     {
-        parent::__construct($container);
-
-        /** @var TaskService $taskService */
-        $this->taskService = $this->container->get(TaskService::class);
+        $this->container = $container;
         $this->entity = $entity;
+        $this->taskService = $container->get(TaskService::class);
         $this->renderer = $container->get('view');
     }
 

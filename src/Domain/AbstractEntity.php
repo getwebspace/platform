@@ -2,13 +2,24 @@
 
 namespace App\Domain;
 
+use App\Domain\Traits\ParameterTrait;
 use BadMethodCallException;
 use DateTime;
 use JsonSerializable;
+use Psr\Container\ContainerInterface;
 use RuntimeException;
 
 abstract class AbstractEntity implements JsonSerializable
 {
+    use ParameterTrait;
+
+    protected ContainerInterface $container;
+
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
+
     /**
      * @param string[] $args
      *

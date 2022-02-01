@@ -111,18 +111,11 @@ return function (ContainerBuilder $containerBuilder): void {
 
             // if debug
             if ($settings['displayErrorDetails']) {
-                $view->addExtension(new \Twig\Extension\ProfilerExtension($c->get('twig_profile')));
+                $view->addExtension(new \Twig\Extension\ProfilerExtension(new \Twig\Profiler\Profile()));
                 $view->addExtension(new \Twig\Extension\DebugExtension());
             }
 
             return $view;
-        },
-    ]);
-
-    // twig profile
-    $containerBuilder->addDefinitions([
-        'twig_profile' => function (ContainerInterface $c) {
-            return new \Twig\Profiler\Profile();
         },
     ]);
 
