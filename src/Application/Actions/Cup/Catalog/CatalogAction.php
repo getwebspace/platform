@@ -42,15 +42,15 @@ abstract class CatalogAction extends AbstractAction
     {
         parent::__construct($container);
 
-        $this->userService = $this->container->get(UserService::class);
-        $this->catalogAttributeService = $this->container->get(CatalogAttributeService::class);
-        $this->catalogCategoryService = $this->container->get(CatalogCategoryService::class);
-        $this->catalogProductService = $this->container->get(CatalogProductService::class);
-        $this->catalogProductAttributeService = $this->container->get(CatalogProductAttributeService::class);
-        $this->catalogProductRelationService = $this->container->get(CatalogProductRelationService::class);
-        $this->catalogOrderService = $this->container->get(CatalogOrderService::class);
-        $this->catalogOrderProductService = $this->container->get(CatalogOrderProductService::class);
-        $this->notificationService = $this->container->get(NotificationService::class);
+        $this->userService = $container->get(UserService::class);
+        $this->catalogAttributeService = $container->get(CatalogAttributeService::class);
+        $this->catalogCategoryService = $container->get(CatalogCategoryService::class);
+        $this->catalogProductService = $container->get(CatalogProductService::class);
+        $this->catalogProductAttributeService = $container->get(CatalogProductAttributeService::class);
+        $this->catalogProductRelationService = $container->get(CatalogProductRelationService::class);
+        $this->catalogOrderService = $container->get(CatalogOrderService::class);
+        $this->catalogOrderProductService = $container->get(CatalogOrderProductService::class);
+        $this->notificationService = $container->get(NotificationService::class);
     }
 
     /**

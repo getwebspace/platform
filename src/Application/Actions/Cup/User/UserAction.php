@@ -26,9 +26,9 @@ abstract class UserAction extends AbstractAction
     {
         parent::__construct($container);
 
-        $this->userService = $this->container->get(UserService::class);
-        $this->userSessionService = $this->container->get(UserSessionService::class);
-        $this->userGroupService = $this->container->get(UserGroupService::class);
-        $this->userSubscriberService = $this->container->get(UserSubscriberService::class);
+        $this->userService = $container->get(UserService::class);
+        $this->userSessionService = $container->get(UserSessionService::class);
+        $this->userGroupService = $container->get(UserGroupService::class);
+        $this->userSubscriberService = $container->get(UserSubscriberService::class);
     }
 }

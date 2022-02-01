@@ -17,6 +17,6 @@ abstract class GuestBookAction extends AbstractAction
     {
         parent::__construct($container);
 
-        $this->guestBookService = $this->container->get(GuestBookService::class);
+        $this->guestBookService = $container->get(GuestBookService::class);
     }
 }

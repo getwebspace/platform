@@ -17,6 +17,6 @@ abstract class PageAction extends AbstractAction
     {
         parent::__construct($container);
 
-        $this->pageService = $this->container->get(PageService::class);
+        $this->pageService = $container->get(PageService::class);
     }
 }
