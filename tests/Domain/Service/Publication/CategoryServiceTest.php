@@ -18,21 +18,13 @@ use tests\TestCase;
  */
 class CategoryServiceTest extends TestCase
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var PublicationCategoryService
-     */
-    protected $service;
+    protected PublicationCategoryService $service;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->em = $this->getEntityManager();
-        $this->service = PublicationCategoryService::getWithEntityManager($this->em);
+
+        $this->service = $this->getService(PublicationCategoryService::class);
     }
 
     public function testCreateSuccess(): void

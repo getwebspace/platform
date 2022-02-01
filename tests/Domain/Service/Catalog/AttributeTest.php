@@ -17,39 +17,22 @@ use tests\TestCase;
  */
 class AttributeTest extends TestCase
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
+    protected AttributeService $attributeService;
 
-    /**
-     * @var AttributeService
-     */
-    protected $attributeService;
+    protected CategoryService $categoryService;
 
-    /**
-     * @var CategoryService
-     */
-    protected $categoryService;
+    protected ProductService $productService;
 
-    /**
-     * @var ProductService
-     */
-    protected $productService;
-
-    /**
-     * @var ProductAttributeService
-     */
-    protected $productAttributeService;
+    protected ProductAttributeService $productAttributeService;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->em = $this->getEntityManager();
-        $this->attributeService = AttributeService::getWithEntityManager($this->em);
-        $this->categoryService = CategoryService::getWithEntityManager($this->em);
-        $this->productService = ProductService::getWithEntityManager($this->em);
-        $this->productAttributeService = ProductAttributeService::getWithEntityManager($this->em);
+
+        $this->attributeService = $this->getService(AttributeService::class);
+        $this->categoryService = $this->getService(CategoryService::class);
+        $this->productService = $this->getService(ProductService::class);
+        $this->productAttributeService = $this->getService(ProductAttributeService::class);
     }
 
     public function testCategoryWithAttribute(): void

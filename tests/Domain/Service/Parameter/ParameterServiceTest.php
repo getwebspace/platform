@@ -16,21 +16,13 @@ use tests\TestCase;
  */
 class ParameterServiceTest extends TestCase
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var ParameterService
-     */
-    protected $service;
+    protected ParameterService $service;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->em = $this->getEntityManager();
-        $this->service = ParameterService::getWithEntityManager($this->em);
+
+        $this->service = $this->getService(ParameterService::class);
     }
 
     public function testCreateSuccess(): void

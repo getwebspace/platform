@@ -18,21 +18,13 @@ use tests\TestCase;
  */
 class NotificationServiceTest extends TestCase
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var NotificationService
-     */
-    protected $service;
+    protected NotificationService $service;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->em = $this->getEntityManager();
-        $this->service = NotificationService::getWithEntityManager($this->em);
+
+        $this->service = $this->getService(NotificationService::class);
     }
 
     public function testCreateSuccess(): void

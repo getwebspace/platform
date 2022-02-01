@@ -18,21 +18,13 @@ use tests\TestCase;
  */
 class PageServiceTest extends TestCase
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var PageService
-     */
-    protected $service;
+    protected PageService $service;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->em = $this->getEntityManager();
-        $this->service = PageService::getWithEntityManager($this->em);
+
+        $this->service = $this->getService(PageService::class);
     }
 
     public function testCreateSuccess(): void

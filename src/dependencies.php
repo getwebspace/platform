@@ -42,8 +42,12 @@ return function (ContainerBuilder $containerBuilder): void {
                 $settings['meta']['cache'],
                 false
             );
+            $connection = ($_ENV['TEST'] ?? false)
+                ? ['driver' => 'pdo_sqlite', 'path' => VAR_DIR . '/database-test.sqlite']
+                : $settings['connection']
+            ;
 
-            $em = \Doctrine\ORM\EntityManager::create($settings['connection'], $config);
+            $em = \Doctrine\ORM\EntityManager::create($connection, $config);
             $em->getConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
 
             return $em;

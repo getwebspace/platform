@@ -18,21 +18,13 @@ use tests\TestCase;
  */
 class AttributeServiceTest extends TestCase
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var AttributeService
-     */
-    protected $service;
+    protected AttributeService $service;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->em = $this->getEntityManager();
-        $this->service = AttributeService::getWithEntityManager($this->em);
+
+        $this->service = $this->getService(AttributeService::class);
     }
 
     public function testCreateSuccess(): void

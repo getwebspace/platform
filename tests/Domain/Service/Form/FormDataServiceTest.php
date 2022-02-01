@@ -16,21 +16,13 @@ use tests\TestCase;
  */
 class FormDataServiceTest extends TestCase
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var DataService
-     */
-    protected $service;
+    protected DataService $service;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->em = $this->getEntityManager();
-        $this->service = DataService::getWithEntityManager($this->em);
+
+        $this->service = $this->getService(DataService::class);
     }
 
     public function testCreateSuccess(): void

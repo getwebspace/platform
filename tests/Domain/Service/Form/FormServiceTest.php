@@ -18,21 +18,13 @@ use tests\TestCase;
  */
 class FormServiceTest extends TestCase
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var FormService
-     */
-    protected $service;
+    protected FormService $service;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->em = $this->getEntityManager();
-        $this->service = FormService::getWithEntityManager($this->em);
+
+        $this->service = $this->getService(FormService::class);
     }
 
     public function testCreateSuccess(): void

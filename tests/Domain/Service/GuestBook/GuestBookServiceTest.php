@@ -18,21 +18,13 @@ use tests\TestCase;
  */
 class GuestBookServiceTest extends TestCase
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var GuestBookService
-     */
-    protected $service;
+    protected GuestBookService $service;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->em = $this->getEntityManager();
-        $this->service = GuestBookService::getWithEntityManager($this->em);
+
+        $this->service = $this->getService(GuestBookService::class);
     }
 
     public function testCreateSuccess(): void

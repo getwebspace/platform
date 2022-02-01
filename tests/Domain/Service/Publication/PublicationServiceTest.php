@@ -22,15 +22,7 @@ use tests\TestCase;
  */
 class PublicationServiceTest extends TestCase
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var PublicationService
-     */
-    protected $service;
+    protected PublicationService $service;
 
     /**
      * @var PublicationCategory
@@ -45,11 +37,11 @@ class PublicationServiceTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->em = $this->getEntityManager();
-        $this->service = PublicationService::getWithEntityManager($this->em);
-        $this->userService = UserService::getWithEntityManager($this->em);
 
-        $this->category = (PublicationCategoryService::getWithEntityManager($this->em))->create([
+        $this->service = $this->getService(PublicationService::class);
+        $this->userService = $this->getService(UserService::class);
+
+        $this->category = $this->getService(PublicationCategoryService::class)->create([
             'title' => $this->getFaker()->title,
             'address' => 'category-custom-address',
             'description' => $this->getFaker()->text(255),

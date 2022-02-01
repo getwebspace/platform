@@ -2,51 +2,40 @@
 
 namespace tests;
 
+use DI\Container;
+use Doctrine\ORM\EntityManager;
+use Psr\Container\ContainerInterface;
+use Slim\App;
+
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
-    private function getTypes(): array
-    {
-        static $types;
+    private static App $app;
+    private static ContainerInterface $container;
 
-        if (!$types) {
-            $types = require CONFIG_DIR . '/types.php';
-        }
-
-        return $types;
-    }
+    protected EntityManager $em;
 
     /**
-     * @throws \Doctrine\DBAL\DBALException
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \Doctrine\ORM\Tools\ToolsException
+     * @return App
      */
-    protected function getEntityManager(): \Doctrine\ORM\EntityManager
+    public static function setUpBeforeClass(): void
     {
-        static $em;
+        $_ENV['TEST'] = 1; // in test always true (!)
 
-        if (!$em) {
-            // default timezone
-            date_default_timezone_set('UTC');
+        require SRC_DIR . '/bootstrap.php';
 
-            // include vars
-            require_once __DIR__ . '/../config/vars.php';
+        /**
+         * from bootstrap
+         *
+         * @var \Slim\App     $app
+         */
 
-            foreach ($this->getTypes() as $type => $class) {
-                if (!\Doctrine\DBAL\Types\Type::hasType($type)) {
-                    \Doctrine\DBAL\Types\Type::addType($type, $class);
-                } else {
-                    \Doctrine\DBAL\Types\Type::overrideType($type, $class);
-                }
-            }
+        static::$app = $app;
+        static::$container = static::$app->getContainer();
+    }
 
-            $config = \Doctrine\ORM\Tools\Setup::createAnnotationMetadataConfiguration(
-                [SRC_DIR . '/Domain/Entities'], true, CACHE_DIR . '/proxies', null, false
-            );
-            $em = \Doctrine\ORM\EntityManager::create(
-                ['driver' => 'pdo_sqlite', 'path' => VAR_DIR . '/database-test.sqlite'], $config
-            );
-            $em->getConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
-        }
+    public function setUp(): void
+    {
+        $this->em = $em = static::$container->get(EntityManager::class);
 
         /*
          * for each test, we will use an empty database
@@ -55,8 +44,11 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         $schema = new \Doctrine\ORM\Tools\SchemaTool($em);
         $schema->dropSchema($em->getMetadataFactory()->getAllMetadata());
         $schema->createSchema($em->getMetadataFactory()->getAllMetadata());
+    }
 
-        return $em;
+    protected function getService($class): mixed
+    {
+        return static::$container->get($class);
     }
 
     /**
@@ -73,32 +65,32 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         return $faker;
     }
 
-    /**
-     * @param string $method
-     * @param string $path
-     * @param array  $headers
-     * @param array  $cookies
-     * @param array  $serverParams
-     *
-     * @return Request
-     */
-    protected function createRequest(
-        string $method,
-        string $path,
-        array $headers = ['HTTP_ACCEPT' => 'application/json'],
-        array $cookies = [],
-        array $serverParams = []
-    ): Request
-    {
-        $uri = new Uri('', '', 80, $path);
-        $handle = fopen('php://temp', 'w+');
-        $stream = (new StreamFactory())->createStreamFromResource($handle);
-
-        $h = new Headers();
-        foreach ($headers as $name => $value) {
-            $h->addHeader($name, $value);
-        }
-
-        return new SlimRequest($method, $uri, $h, $cookies, $serverParams, $stream);
-    }
+    //    /**
+    //     * @param string $method
+    //     * @param string $path
+    //     * @param array  $headers
+    //     * @param array  $cookies
+    //     * @param array  $serverParams
+    //     *
+    //     * @return Request
+    //     */
+    //    protected function createRequest(
+    //        string $method,
+    //        string $path,
+    //        array $headers = ['HTTP_ACCEPT' => 'application/json'],
+    //        array $cookies = [],
+    //        array $serverParams = []
+    //    ): Request
+    //    {
+    //        $uri = new Uri('', '', 80, $path);
+    //        $handle = fopen('php://temp', 'w+');
+    //        $stream = (new StreamFactory())->createStreamFromResource($handle);
+    //
+    //        $h = new Headers();
+    //        foreach ($headers as $name => $value) {
+    //            $h->addHeader($name, $value);
+    //        }
+    //
+    //        return new SlimRequest($method, $uri, $h, $cookies, $serverParams, $stream);
+    //    }
 }

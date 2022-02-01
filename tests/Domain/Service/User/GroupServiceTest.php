@@ -17,21 +17,13 @@ use tests\TestCase;
  */
 class GroupServiceTest extends TestCase
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var UserGroupService
-     */
-    protected $service;
+    protected UserGroupService $service;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->em = $this->getEntityManager();
-        $this->service = UserGroupService::getWithEntityManager($this->em);
+
+        $this->service = $this->getService(UserGroupService::class);
     }
 
     public function testCreateSuccess(): void

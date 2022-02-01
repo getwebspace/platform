@@ -21,21 +21,13 @@ use tests\TestCase;
  */
 class UserServiceTest extends TestCase
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var UserService
-     */
-    protected $service;
+    protected UserService $service;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->em = $this->getEntityManager();
-        $this->service = UserService::getWithEntityManager($this->em);
+
+        $this->service = $this->getService(UserService::class);
     }
 
     public function testCreateSuccess1(): void

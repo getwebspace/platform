@@ -17,27 +17,17 @@ use tests\TestCase;
  */
 class IntegrationServiceTest extends TestCase
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
+    protected IntegrationService $service;
 
-    /**
-     * @var IntegrationService
-     */
-    protected $service;
-
-    /**
-     * @var User test user
-     */
     private User $user;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->em = $this->getEntityManager();
-        $this->service = IntegrationService::getWithEntityManager($this->em);
-        $this->user = UserService::getWithEntityManager($this->em)->create([
+
+        $this->service = $this->getService(IntegrationService::class);
+
+        $this->user = $this->getService(UserService::class)->create([
             'username' => $this->getFaker()->word,
             'email' => $this->getFaker()->email,
             'phone' => $this->getFaker()->e164PhoneNumber,

@@ -17,21 +17,13 @@ use tests\TestCase;
  */
 class MeasureServiceTest extends TestCase
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var MeasureService
-     */
-    protected $service;
+    protected MeasureService $service;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->em = $this->getEntityManager();
-        $this->service = MeasureService::getWithEntityManager($this->em);
+
+        $this->service = $this->getService(MeasureService::class);
     }
 
     public function testCreateSuccess(): void

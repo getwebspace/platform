@@ -14,26 +14,18 @@ use tests\TestCase;
  */
 class FileServiceTest extends TestCase
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var FileService
-     */
-    protected $service;
+    protected FileService $service;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->em = $this->getEntityManager();
-        $this->service = FileService::getWithEntityManager($this->em);
+
+        $this->service = $this->getService(FileService::class);
     }
 
     protected function getTestFileUrl()
     {
-        return 'https://loremflickr.com/1024/768?t=' . time();
+        return 'https://loremflickr.com/800/600?t=' . time();
     }
 
     protected function getTestFile()

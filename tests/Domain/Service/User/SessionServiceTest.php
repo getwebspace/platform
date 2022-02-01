@@ -16,15 +16,7 @@ use tests\TestCase;
  */
 class SessionServiceTest extends TestCase
 {
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var UserSessionService
-     */
-    protected $service;
+    protected UserSessionService $service;
 
     /**
      * @var User test user
@@ -34,9 +26,10 @@ class SessionServiceTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->em = $this->getEntityManager();
-        $this->service = UserSessionService::getWithEntityManager($this->em);
-        $this->user = UserService::getWithEntityManager($this->em)->create([
+
+        $this->service = $this->getService(UserSessionService::class);
+
+        $this->user = $this->getService(UserService::class)->create([
             'username' => $this->getFaker()->word,
             'email' => $this->getFaker()->email,
             'phone' => $this->getFaker()->e164PhoneNumber,
