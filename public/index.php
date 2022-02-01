@@ -23,21 +23,13 @@ require __DIR__ . '/../src/bootstrap.php';
  * @var \Slim\App     $app
  * @var \DI\Container $container
  */
-\Netpromotion\Profiler\Profiler::start('init middleware');
-
 // register middleware
 $middleware = require SRC_DIR . '/middleware.php';
 $middleware($app);
 
-\Netpromotion\Profiler\Profiler::finish('init middleware');
-\Netpromotion\Profiler\Profiler::start('init routes');
-
 // register routes
 $routes = require SRC_DIR . '/routes.php';
 $routes($app, $container);
-
-\Netpromotion\Profiler\Profiler::finish('init routes');
-\Netpromotion\Profiler\Profiler::start('run');
 
 $settings = $container->get('settings');
 $displayErrorDetails = $settings['displayErrorDetails'];
@@ -48,7 +40,5 @@ $app->add(\Slim\Views\TwigMiddleware::createFromContainer($app));
 $app->addRoutingMiddleware();
 $app->addErrorMiddleware($displayErrorDetails, $logError, $logErrorDetails);
 $app->run();
-
-\Netpromotion\Profiler\Profiler::finish('run');
 
 // And nothing more :)

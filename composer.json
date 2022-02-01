@@ -35,11 +35,10 @@
         "monolog/monolog": "^2.3",
         "illuminate/collections": "^v8.74",
         "symfony/cache": "^6.0",
-        "tracy/tracy": "^2.8",
         "voku/html-compress-twig": "^4.0",
         "rybakit/twig-deferred-extension": "^3.0",
         "twig/string-extra": "^3.3",
-        "netpromotion/profiler": "^1.3"
+        "symfony/var-dumper": "^6.0"
     },
     "require-dev": {
         "fzaninotto/faker": "@stable",

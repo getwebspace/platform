@@ -36,8 +36,6 @@ class SearchAction extends AbstractAction
         $result = [];
 
         if ($query) {
-            \Netpromotion\Profiler\Profiler::start('search', ['index' => false]);
-
             $entities = [
                 'page' => $this->container->get(PageService::class),
                 'publication' => $this->container->get(PublicationService::class),
@@ -106,8 +104,6 @@ class SearchAction extends AbstractAction
                     $count += count($result[$type]);
                 }
             }
-
-            \Netpromotion\Profiler\Profiler::finish('search', ['index' => false]);
         }
 
         return ['count' => $count, 'result' => $result];
@@ -124,8 +120,6 @@ class SearchAction extends AbstractAction
         $result = [];
 
         if ($query) {
-            \Netpromotion\Profiler\Profiler::start('search', ['index' => true]);
-
             $entities = [
                 'page' => $this->container->get(PageService::class),
                 'publication' => $this->container->get(PublicationService::class),
@@ -171,8 +165,6 @@ class SearchAction extends AbstractAction
                     $count += count($result[$type]);
                 }
             }
-
-            \Netpromotion\Profiler\Profiler::finish('search', ['index' => true]);
         }
 
         return ['count' => $count, 'result' => $result];

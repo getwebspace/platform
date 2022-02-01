@@ -246,14 +246,11 @@ abstract class AbstractPlugin
 
     /**
      * @throws HttpBadRequestException
-     * @throws // RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
     protected function render(string $template, array $data = []): string
     {
         try {
-            \Netpromotion\Profiler\Profiler::start('plugin render');
             $rendered = $this->renderer->fetch($template, $data);
-            \Netpromotion\Profiler\Profiler::finish('%s', $template);
 
             return $rendered;
         } catch (\Twig\Error\LoaderError $exception) {

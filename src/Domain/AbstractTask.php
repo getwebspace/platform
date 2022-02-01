@@ -72,19 +72,14 @@ abstract class AbstractTask
 
     /**
      * @throws HttpBadRequestException
-     * @throws // RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
     protected function render(string $template, array $data = []): string
     {
         try {
-            \Netpromotion\Profiler\Profiler::start('task render');
-
             if (($path = realpath(THEME_DIR . '/' . $this->parameter('common_theme', 'default'))) !== false) {
                 $this->renderer->getLoader()->addPath($path);
             }
             $rendered = $this->renderer->fetch($template, $data);
-
-            \Netpromotion\Profiler\Profiler::finish('%s', $template);
 
             return $rendered;
         } catch (\Twig\Error\LoaderError $exception) {

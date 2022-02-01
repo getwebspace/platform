@@ -14,8 +14,6 @@ class LocaleMiddleware extends AbstractMiddleware
      */
     public function __invoke(Request $request, RequestHandlerInterface $handler): \Slim\Psr7\Response
     {
-        \Netpromotion\Profiler\Profiler::start('middleware:locale');
-
         $default_locale = $this->parameter('common_lang', 'ru');
         $user_locale = $request->getCookieParams()['lang'] ?? null;
         $query_locale = $request->getQueryParams()['lang'] ?? null;
@@ -36,8 +34,6 @@ class LocaleMiddleware extends AbstractMiddleware
             'default' => $default_locale,
             'force' => $user_locale,
         ]);
-
-        \Netpromotion\Profiler\Profiler::finish('middleware:locale');
 
         return $handler->handle($request);
     }

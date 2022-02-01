@@ -25,9 +25,7 @@ trait ParameterTrait
         static $parameters;
 
         if (!$parameters) {
-            \Netpromotion\Profiler\Profiler::start('parameters');
             $parameters = $this->container->get(ParameterService::class)->read();
-            \Netpromotion\Profiler\Profiler::finish('%s', $parameters ? $parameters->count() : 'null');
         }
 
         if ($parameters) {

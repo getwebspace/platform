@@ -15,8 +15,6 @@ class AuthorizationMiddleware extends AbstractMiddleware
      */
     public function __invoke(Request $request, RequestHandlerInterface $handler): \Slim\Psr7\Response
     {
-        \Netpromotion\Profiler\Profiler::start('middleware:authorization');
-
         $data = [
             'uuid' => $request->getCookieParams()['uuid'] ?? null,
             'session' => $request->getCookieParams()['session'] ?? null,
@@ -45,8 +43,6 @@ class AuthorizationMiddleware extends AbstractMiddleware
                 setcookie('session', '-1', time(), '/');
             }
         }
-
-        \Netpromotion\Profiler\Profiler::finish('middleware:authorization');
 
         return $handler->handle($request);
     }

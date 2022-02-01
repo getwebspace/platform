@@ -23,9 +23,6 @@ return function (App $app): void {
     // check is site disabled
     $app->add(new \App\Application\Middlewares\IsSiteEnabledMiddleware($c));
 
-    // RunTracy
-    //$app->add(new RunTracy\Middlewares\TracyMiddleware($app));
-
     // redirect to address without slash in end
     $app->add(function (Request $request, RequestHandlerInterface $handler) {
         $path = $request->getUri()->getPath();

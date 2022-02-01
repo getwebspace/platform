@@ -212,13 +212,9 @@ class File extends AbstractEntity
      * File details by path
      *
      * @param $path
-     *
-     * @throws // RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
     public static function info($path): array
     {
-        \Netpromotion\Profiler\Profiler::start('file:info');
-
         $info = pathinfo($path);
         $result = [
             'dir' => $info['dirname'],
@@ -228,8 +224,6 @@ class File extends AbstractEntity
             'size' => filesize($path),
             'hash' => sha1_file($path),
         ];
-
-        \Netpromotion\Profiler\Profiler::finish('%s', $path);
 
         return $result;
     }
@@ -323,8 +317,6 @@ class File extends AbstractEntity
     /**
      * Return public path with salt and hash
      *
-     * @throws // RunTracy\Helpers\Profiler\Exception\ProfilerException
-     *
      * @return string
      */
     public function getPublicPath(string $size = '')
@@ -334,8 +326,6 @@ class File extends AbstractEntity
         $uuid = $this->uuid->toString();
 
         if (!isset($buf[$uuid][$size])) {
-            \Netpromotion\Profiler\Profiler::start('file:getPublicPath');
-
             if ($this->private) {
                 if (str_start_with($this->type, 'image/')) {
                     $buf[$uuid][$size] = '/file/view/';
@@ -347,8 +337,6 @@ class File extends AbstractEntity
             } else {
                 $buf[$uuid][$size] = '/uploads/' . $this->salt . ($size && $this->isValidSizeAndFileExists($size) ? '/' . $size : '') . '/' . $this->getFileName();
             }
-
-            \Netpromotion\Profiler\Profiler::finish('%s', $size, ['uuid' => $uuid]);
         }
 
         return $buf[$uuid][$size];

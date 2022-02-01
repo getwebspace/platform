@@ -155,8 +155,6 @@ abstract class AbstractAction
 
     public function __invoke(Request $request, Response $response, array $args): Response
     {
-        \Netpromotion\Profiler\Profiler::start('route');
-
         $this->request = $request;
         $this->response = $response;
         $this->args = $args;
@@ -189,8 +187,6 @@ abstract class AbstractAction
             $result->getBody()->write(json_encode($error, JSON_PRETTY_PRINT));
             $result = $result->withHeader('Content-Type', 'application/json');
         }
-
-        \Netpromotion\Profiler\Profiler::finish('route');
 
         return $result;
     }
@@ -370,14 +366,10 @@ abstract class AbstractAction
 
     /**
      * Return recaptcha status if is enabled
-     *
-     * @throws // RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
     protected function isRecaptchaChecked(): bool
     {
         if ($this->isPost() && $this->parameter('integration_recaptcha', 'off') === 'on') {
-            \Netpromotion\Profiler\Profiler::start('recaptcha');
-
             $query = http_build_query([
                 'secret' => $this->parameter('integration_recaptcha_private'),
                 'response' => $this->getParam('recaptcha', ''),
@@ -395,8 +387,6 @@ abstract class AbstractAction
 
             $this->logger->info('Check reCAPTCHA', ['status' => $verify->success]);
 
-            \Netpromotion\Profiler\Profiler::finish('recaptcha');
-
             return $verify->success;
         }
 
@@ -405,13 +395,10 @@ abstract class AbstractAction
 
     /**
      * @throws HttpBadRequestException
-     * @throws // RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
     protected function render(string $template, array $data = []): string
     {
         try {
-            \Netpromotion\Profiler\Profiler::start('render');
-
             $data = array_merge(
                 [
                     '_request' => &$_REQUEST,
@@ -431,8 +418,6 @@ abstract class AbstractAction
             // add default errors pages
             $this->renderer->getLoader()->addPath(VIEW_ERROR_DIR);
             $rendered = $this->renderer->fetch($template, $data);
-
-            \Netpromotion\Profiler\Profiler::finish('%s', $template);
 
             return $rendered;
         } catch (\Twig\Error\LoaderError $exception) {
@@ -469,7 +454,6 @@ abstract class AbstractAction
 
     /**
      * @throws HttpBadRequestException
-     * @throws // RunTracy\Helpers\Profiler\Exception\ProfilerException
      */
     protected function respondWithTemplate(string $template, array $data = []): Response
     {

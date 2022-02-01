@@ -18,8 +18,6 @@ class PluginMiddleware extends AbstractMiddleware
         $plugins = $this->container->get('plugin')->get();
 
         if ($plugins->count()) {
-            // \RunTracy\Helpers\Profiler\Profiler::start('middleware:plugin');
-
             $plugins = $plugins->where('routes', true);
 
             /** @var \Slim\Interfaces\RouteInterface $route */
@@ -29,9 +27,7 @@ class PluginMiddleware extends AbstractMiddleware
             /** @var AbstractPlugin $plugin */
             foreach ($plugins as $plugin) {
                 if ($routeName && str_start_with($routeName, $plugin->getHandledRoute())) {
-                    // \RunTracy\Helpers\Profiler\Profiler::start('plugin');
                     $plugin->before($request, $route->getName());
-                    // \RunTracy\Helpers\Profiler\Profiler::finish('%s', $plugin->getCredentials('name'));
                 }
             }
 
@@ -40,13 +36,9 @@ class PluginMiddleware extends AbstractMiddleware
             /** @var AbstractPlugin $plugin */
             foreach ($plugins as $plugin) {
                 if ($routeName && str_start_with($routeName, $plugin->getHandledRoute())) {
-                    \Netpromotion\Profiler\Profiler::start('plugin');
                     $response = $plugin->after($request, $response, $route->getName());
-                    \Netpromotion\Profiler\Profiler::finish('%s', $plugin->getCredentials('name'));
                 }
             }
-
-            \Netpromotion\Profiler\Profiler::finish('middleware:plugin');
 
             return $response;
         }

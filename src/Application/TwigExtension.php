@@ -369,16 +369,12 @@ class TwigExtension extends AbstractExtension
     // fetch files by args
     public function files(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
-        \Netpromotion\Profiler\Profiler::start('twig:fn:files');
-
         $fileService = $this->container->get(FileService::class);
         $result = $fileService->read(array_merge($criteria, [
             'order' => $order,
             'limit' => $limit,
             'offset' => $offset,
         ]));
-
-        \Netpromotion\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }
@@ -388,14 +384,10 @@ class TwigExtension extends AbstractExtension
     // fetch publication category
     public function publication_category(bool $public = true)
     {
-        \Netpromotion\Profiler\Profiler::start('twig:fn:publication_category');
-
         $publicationCategoryService = $this->container->get(PublicationCategoryService::class);
         $result = $publicationCategoryService->read([
             'public' => $public ?: null,
         ]);
-
-        \Netpromotion\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }
@@ -403,16 +395,12 @@ class TwigExtension extends AbstractExtension
     // fetch publications by criteria
     public function publication(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
-        \Netpromotion\Profiler\Profiler::start('twig:fn:publication');
-
         $publicationService = $this->container->get(PublicationService::class);
         $result = $publicationService->read(array_merge($criteria, [
             'order' => $order,
             'limit' => $limit,
             'offset' => $offset,
         ]));
-
-        \Netpromotion\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }
@@ -422,8 +410,6 @@ class TwigExtension extends AbstractExtension
     // fetch guest book rows
     public function guestbook($order = [], $limit = 10, $offset = null)
     {
-        \Netpromotion\Profiler\Profiler::start('twig:fn:guestbook');
-
         $guestBookService = $this->container->get(GuestBookService::class);
         $result = $guestBookService
             ->read([
@@ -443,8 +429,6 @@ class TwigExtension extends AbstractExtension
                 return $model;
             });
 
-        \Netpromotion\Profiler\Profiler::finish('%s', $result->count());
-
         return $result;
     }
 
@@ -453,14 +437,10 @@ class TwigExtension extends AbstractExtension
     // fetch categories list
     public function catalog_category()
     {
-        \Netpromotion\Profiler\Profiler::start('twig:fn:catalog_category');
-
         $catalogCategoryService = $this->container->get(CatalogCategoryService::class);
         $result = $catalogCategoryService->read([
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
         ]);
-
-        \Netpromotion\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }
@@ -468,8 +448,6 @@ class TwigExtension extends AbstractExtension
     // return parent categories
     public function catalog_category_parents(\App\Domain\Entities\Catalog\Category $category = null)
     {
-        \Netpromotion\Profiler\Profiler::start('twig:fn:catalog_category_parents');
-
         $categories = $this->catalog_category();
         $breadcrumb = [];
 
@@ -487,21 +465,15 @@ class TwigExtension extends AbstractExtension
 
         $result = collect($breadcrumb)->reverse();
 
-        \Netpromotion\Profiler\Profiler::finish('%s', $result->count());
-
         return $result;
     }
 
     // getting a list of products by criteria
     public function catalog_products(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
-        \Netpromotion\Profiler\Profiler::start('twig:fn:catalog_products');
-
         $criteria['status'] = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
         $catalogProductService = $this->container->get(CatalogProductService::class);
         $result = $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
-
-        \Netpromotion\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }
@@ -509,13 +481,9 @@ class TwigExtension extends AbstractExtension
     // returns a product or a list of products by criteria
     public function catalog_product(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
-        \Netpromotion\Profiler\Profiler::start('twig:fn:catalog_product');
-
         $criteria['status'] = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
         $catalogProductService = $this->container->get(CatalogProductService::class);
         $result = $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
-
-        \Netpromotion\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }
@@ -546,16 +514,12 @@ class TwigExtension extends AbstractExtension
     // fetch order
     public function catalog_order(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
-        \Netpromotion\Profiler\Profiler::start('twig:fn:catalog_order');
-
         $catalogOrderService = $this->container->get(CatalogOrderService::class);
         $result = $catalogOrderService->read(array_merge($criteria, [
             'order' => $order,
             'limit' => $limit,
             'offset' => $offset,
         ]));
-
-        \Netpromotion\Profiler\Profiler::finish('%s', $result->count());
 
         return $result;
     }

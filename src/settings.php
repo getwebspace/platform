@@ -78,29 +78,11 @@ return function (ContainerBuilder $containerBuilder): void {
             ini_set('html_errors', '1');
             ini_set('error_reporting', '30719');
 
-            // enable Tracy panel
-            \Tracy\Debugger::$strictMode = E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED;
-            \Tracy\Debugger::enable(\Tracy\Debugger::DEVELOPMENT, LOG_DIR);
-
-            // enable Profiler
-//            \Netpromotion\Profiler\Profiler::enable();
-//            \Tracy\Debugger::getBar()->addPanel(new \Netpromotion\Profiler\Adapter\TracyBarAdapter([
-//                'primaryValue' => 'effective', // or 'absolute'
-//                'show' => [
-//                    'memoryUsageChart' => false,
-//                    'shortProfiles' => true,
-//                    'timeLines' => false,
-//                ],
-//            ]));
-
             break;
 
         case false:
             // should be enabled in production
             $containerBuilder->enableCompilation($_CACHE_DIR);
-
-            // enable Tracy panel
-            \Tracy\Debugger::enable(\Tracy\Debugger::PRODUCTION, LOG_DIR);
 
             break;
     }

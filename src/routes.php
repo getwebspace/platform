@@ -244,10 +244,6 @@ return function (App $app, Container $container): void {
                     // task add to queue
                     $group->post('/task/run', \App\Application\Actions\Cup\Task\TaskRunAction::class)
                         ->setName('cup:task:run');
-
-                    // dev console
-                    $group->post('/console', '\RunTracy\Controllers\RunTracyConsole:index')
-                        ->setName('cup:console');
                 });
         })
         ->add(new \Slim\HttpCache\Cache('private', 0, true));

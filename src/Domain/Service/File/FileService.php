@@ -33,8 +33,6 @@ class FileService extends AbstractService
      */
     public function createFromPath(string $path, string $name_with_ext = null)
     {
-        \Netpromotion\Profiler\Profiler::start('file:getFromPath (%s)', $path);
-
         $saved = false;
 
         // is file saved?
