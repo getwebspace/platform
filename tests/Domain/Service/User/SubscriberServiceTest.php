@@ -8,7 +8,6 @@ use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\SubscriberService as UserSubscriberService;
-use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
 /**

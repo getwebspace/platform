@@ -250,9 +250,7 @@ abstract class AbstractPlugin
     protected function render(string $template, array $data = []): string
     {
         try {
-            $rendered = $this->renderer->fetch($template, $data);
-
-            return $rendered;
+            return $this->renderer->fetch($template, $data);
         } catch (\Twig\Error\LoaderError $exception) {
             throw new RuntimeException($exception->getMessage());
         }

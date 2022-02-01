@@ -8,7 +8,6 @@ use App\Domain\Service\Task\Exception\MissingActionValueException;
 use App\Domain\Service\Task\Exception\MissingTitleValueException;
 use App\Domain\Service\Task\Exception\TaskNotFoundException;
 use App\Domain\Service\Task\TaskService;
-use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
 /**

@@ -8,7 +8,6 @@ use App\Domain\Service\Catalog\Exception\MeasureNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\Catalog\MeasureService;
-use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
 /**

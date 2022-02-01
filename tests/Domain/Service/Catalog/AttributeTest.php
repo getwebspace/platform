@@ -8,7 +8,6 @@ use App\Domain\Service\Catalog\AttributeService;
 use App\Domain\Service\Catalog\CategoryService;
 use App\Domain\Service\Catalog\ProductAttributeService;
 use App\Domain\Service\Catalog\ProductService;
-use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
 /**

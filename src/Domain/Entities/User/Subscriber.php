@@ -62,6 +62,7 @@ class Subscriber extends AbstractEntity
 
     /**
      * @param $date
+     * @param mixed $timezone
      *
      * @throws \Exception
      *

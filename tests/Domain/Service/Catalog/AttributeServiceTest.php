@@ -9,7 +9,6 @@ use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
-use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
 /**

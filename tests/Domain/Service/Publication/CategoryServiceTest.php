@@ -9,7 +9,6 @@ use App\Domain\Service\Publication\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Publication\Exception\CategoryNotFoundException;
 use App\Domain\Service\Publication\Exception\MissingTitleValueException;
 use App\Domain\Service\Publication\Exception\TitleAlreadyExistsException;
-use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
 /**

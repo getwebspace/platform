@@ -370,13 +370,12 @@ class TwigExtension extends AbstractExtension
     public function files(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
         $fileService = $this->container->get(FileService::class);
-        $result = $fileService->read(array_merge($criteria, [
+
+        return $fileService->read(array_merge($criteria, [
             'order' => $order,
             'limit' => $limit,
             'offset' => $offset,
         ]));
-
-        return $result;
     }
 
     // publication functions
@@ -385,24 +384,22 @@ class TwigExtension extends AbstractExtension
     public function publication_category(bool $public = true)
     {
         $publicationCategoryService = $this->container->get(PublicationCategoryService::class);
-        $result = $publicationCategoryService->read([
+
+        return $publicationCategoryService->read([
             'public' => $public ?: null,
         ]);
-
-        return $result;
     }
 
     // fetch publications by criteria
     public function publication(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
         $publicationService = $this->container->get(PublicationService::class);
-        $result = $publicationService->read(array_merge($criteria, [
+
+        return $publicationService->read(array_merge($criteria, [
             'order' => $order,
             'limit' => $limit,
             'offset' => $offset,
         ]));
-
-        return $result;
     }
 
     // guestbook functions
@@ -411,7 +408,8 @@ class TwigExtension extends AbstractExtension
     public function guestbook($order = [], $limit = 10, $offset = null)
     {
         $guestBookService = $this->container->get(GuestBookService::class);
-        $result = $guestBookService
+
+        return $guestBookService
             ->read([
                 'status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK,
                 'order' => $order,
@@ -428,8 +426,6 @@ class TwigExtension extends AbstractExtension
 
                 return $model;
             });
-
-        return $result;
     }
 
     // catalog functions
@@ -438,11 +434,10 @@ class TwigExtension extends AbstractExtension
     public function catalog_category()
     {
         $catalogCategoryService = $this->container->get(CatalogCategoryService::class);
-        $result = $catalogCategoryService->read([
+
+        return $catalogCategoryService->read([
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
         ]);
-
-        return $result;
     }
 
     // return parent categories
@@ -463,9 +458,7 @@ class TwigExtension extends AbstractExtension
             }
         }
 
-        $result = collect($breadcrumb)->reverse();
-
-        return $result;
+        return collect($breadcrumb)->reverse();
     }
 
     // getting a list of products by criteria
@@ -473,9 +466,8 @@ class TwigExtension extends AbstractExtension
     {
         $criteria['status'] = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
         $catalogProductService = $this->container->get(CatalogProductService::class);
-        $result = $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
 
-        return $result;
+        return $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
     }
 
     // returns a product or a list of products by criteria
@@ -483,9 +475,8 @@ class TwigExtension extends AbstractExtension
     {
         $criteria['status'] = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
         $catalogProductService = $this->container->get(CatalogProductService::class);
-        $result = $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
 
-        return $result;
+        return $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
     }
 
     // save uuid of product in session or return saved list
@@ -515,12 +506,11 @@ class TwigExtension extends AbstractExtension
     public function catalog_order(array $criteria = [], $order = [], $limit = 10, $offset = null)
     {
         $catalogOrderService = $this->container->get(CatalogOrderService::class);
-        $result = $catalogOrderService->read(array_merge($criteria, [
+
+        return $catalogOrderService->read(array_merge($criteria, [
             'order' => $order,
             'limit' => $limit,
             'offset' => $offset,
         ]));
-
-        return $result;
     }
 }

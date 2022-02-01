@@ -9,7 +9,6 @@ use App\Domain\Service\Notification\Exception\MissingTitleValueException;
 use App\Domain\Service\Notification\Exception\MissingUserUuidValueException;
 use App\Domain\Service\Notification\Exception\NotificationNotFoundException;
 use App\Domain\Service\Notification\NotificationService;
-use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
 /**

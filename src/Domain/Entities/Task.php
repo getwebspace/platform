@@ -169,6 +169,7 @@ class Task extends AbstractEntity
 
     /**
      * @param $date
+     * @param mixed $timezone
      *
      * @throws \Exception
      *

@@ -118,6 +118,7 @@ class Notification extends AbstractEntity
 
     /**
      * @param $date
+     * @param mixed $timezone
      *
      * @throws \Exception
      *

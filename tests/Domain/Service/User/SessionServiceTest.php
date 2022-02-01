@@ -7,7 +7,6 @@ use App\Domain\Entities\User\Session as UserSession;
 use App\Domain\Repository\User\SessionRepository as UserSessionRepository;
 use App\Domain\Service\User\SessionService as UserSessionService;
 use App\Domain\Service\User\UserService;
-use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
 /**

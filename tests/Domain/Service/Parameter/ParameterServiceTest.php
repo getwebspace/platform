@@ -7,7 +7,6 @@ use App\Domain\Repository\ParameterRepository;
 use App\Domain\Service\Parameter\Exception\ParameterAlreadyExistsException;
 use App\Domain\Service\Parameter\Exception\ParameterNotFoundException;
 use App\Domain\Service\Parameter\ParameterService;
-use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
 /**

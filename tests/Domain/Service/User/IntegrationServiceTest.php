@@ -8,7 +8,6 @@ use App\Domain\Repository\User\IntegrationRepository as UserIntegrationRepositor
 use App\Domain\Service\User\Exception\IntegrationNotFoundException;
 use App\Domain\Service\User\IntegrationService;
 use App\Domain\Service\User\UserService;
-use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
 /**

@@ -13,7 +13,6 @@ use App\Domain\Service\Publication\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\Publication\PublicationService;
 use App\Domain\Service\User\UserService;
 use DateTime;
-use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
 /**

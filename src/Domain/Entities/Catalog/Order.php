@@ -125,6 +125,7 @@ class Order extends AbstractEntity
 
     /**
      * @param $date
+     * @param mixed $timezone
      *
      * @throws \Exception
      *
@@ -289,6 +290,7 @@ class Order extends AbstractEntity
 
     /**
      * @param $date
+     * @param mixed $timezone
      *
      * @throws \Exception
      *

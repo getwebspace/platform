@@ -9,7 +9,6 @@ use App\Domain\Service\Page\Exception\MissingTitleValueException;
 use App\Domain\Service\Page\Exception\PageNotFoundException;
 use App\Domain\Service\Page\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\Page\PageService;
-use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
 /**

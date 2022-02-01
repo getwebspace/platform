@@ -2,11 +2,9 @@
 
 namespace App\Domain;
 
-use App\Domain\Traits\ParameterTrait;
 use BadMethodCallException;
 use DateTime;
 use JsonSerializable;
-use Psr\Container\ContainerInterface;
 use RuntimeException;
 
 abstract class AbstractEntity implements JsonSerializable
@@ -136,6 +134,7 @@ abstract class AbstractEntity implements JsonSerializable
 
     /**
      * @param $value
+     * @param mixed $timezone
      *
      * @throws \Exception
      */

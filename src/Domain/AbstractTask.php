@@ -79,9 +79,8 @@ abstract class AbstractTask
             if (($path = realpath(THEME_DIR . '/' . $this->parameter('common_theme', 'default'))) !== false) {
                 $this->renderer->getLoader()->addPath($path);
             }
-            $rendered = $this->renderer->fetch($template, $data);
 
-            return $rendered;
+            return $this->renderer->fetch($template, $data);
         } catch (\Twig\Error\LoaderError $exception) {
             throw new \RuntimeException($exception->getMessage());
         }

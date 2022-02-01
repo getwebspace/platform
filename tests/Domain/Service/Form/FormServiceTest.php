@@ -9,7 +9,6 @@ use App\Domain\Service\Form\Exception\FormNotFoundException;
 use App\Domain\Service\Form\Exception\MissingTitleValueException;
 use App\Domain\Service\Form\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\Form\FormService;
-use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
 /**

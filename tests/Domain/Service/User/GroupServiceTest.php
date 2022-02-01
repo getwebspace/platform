@@ -8,7 +8,6 @@ use App\Domain\Service\User\Exception\MissingTitleValueException;
 use App\Domain\Service\User\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\User\Exception\UserGroupNotFoundException;
 use App\Domain\Service\User\GroupService as UserGroupService;
-use Doctrine\ORM\EntityManager;
 use tests\TestCase;
 
 /**

@@ -2,8 +2,6 @@
 
 namespace App\Domain\Traits;
 
-use App\Domain\Service\Parameter\ParameterService;
-use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -17,10 +15,6 @@ trait StorageTrait
     protected static array $storage = [];
 
     /**
-     * @param string      $key
-     * @param mixed       $value
-     * @param string|null $namespace
-     *
      * @return mixed
      */
     protected static function setStorage(string $key, mixed $value, ?string $namespace = null)
@@ -31,9 +25,7 @@ trait StorageTrait
     }
 
     /**
-     * @param string      $key
      * @param mixed       $default
-     * @param string|null $namespace
      *
      * @return null|mixed
      */
