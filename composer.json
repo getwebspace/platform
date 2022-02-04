@@ -17,33 +17,33 @@
         "ext-soap": "*",
         "slim/slim": "^4.9",
         "slim/psr7": "^1.5",
-        "slim/twig-view": "^3.2",
+        "slim/twig-view": "^3.3",
         "slim/http-cache": "^1.1",
         "php-di/php-di": "^6.3",
-        "doctrine/orm": "^2.8",
-        "doctrine/migrations": "^3.1",
+        "doctrine/orm": "^2.11",
+        "doctrine/migrations": "^3.4",
         "alksily/support": "^1.2",
         "twig/twig": "^3.3",
         "twig/intl-extra": "^3.3",
         "ramsey/uuid": "^4.2",
         "ramsey/uuid-doctrine": "^1.8.0",
-        "bhaktaraz/php-rss-generator": "dev-master",
         "phpmailer/phpmailer": "^v6.0",
         "pragmarx/google2fa": "^v4.0",
-        "phpoffice/phpspreadsheet": "^1.20",
+        "phpoffice/phpspreadsheet": "^1.21",
         "bacon/bacon-qr-code": "^1.0",
         "monolog/monolog": "^2.3",
-        "illuminate/collections": "^v8.74",
+        "illuminate/collections": "^v8.81",
         "symfony/cache": "^6.0",
         "voku/html-compress-twig": "^4.0",
         "rybakit/twig-deferred-extension": "^3.0",
         "twig/string-extra": "^3.3",
-        "symfony/var-dumper": "^6.0"
+        "symfony/var-dumper": "^6.0",
+        "bhaktaraz/php-rss-generator": "dev-master"
     },
     "require-dev": {
-        "fzaninotto/faker": "@stable",
-        "friendsofphp/php-cs-fixer": "@stable",
-        "phpunit/phpunit": "@stable"
+        "fzaninotto/faker": "^1.9",
+        "friendsofphp/php-cs-fixer": "^3.5",
+        "phpunit/phpunit": "^9.5"
     },
     "autoload": {
         "psr-4": {
