@@ -270,7 +270,7 @@ class CategoryService extends AbstractService
                 if ($data['field3'] !== null) {
                     $entity->setField3($data['field3']);
                 }
-                if ($data['attributes'] !== null && count($data['attributes'])) {
+                if ($data['attributes'] !== null) {
                     $entity->setAttributes($data['attributes']);
                 }
                 if ($data['product'] !== null) {
