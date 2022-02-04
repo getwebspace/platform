@@ -18,7 +18,7 @@ trait ParameterTrait
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \Psr\Container\ContainerExceptionInterface
      */
-    protected function parameter(mixed $key = null, mixed $default = null): string|array|Collection
+    protected function parameter(mixed $key = null, mixed $default = null): mixed
     {
         static $parameters;
 

@@ -204,7 +204,7 @@ class TwigExtension extends AbstractExtension
     }
 
     // return parameter value by key or default
-    public function parameter(mixed $key = null, mixed $default = null): string|array|Collection
+    public function parameter(mixed $key = null, mixed $default = null): mixed
     {
         return parent::parameter($key, $default);
     }
