@@ -27,6 +27,7 @@ class PublicationUpdateAction extends PublicationAction
                             'content' => $this->getParam('content'),
                             'poll' => $this->getParam('poll'),
                             'meta' => $this->getParam('meta'),
+                            'external_id' => $this->getParam('external_id'),
                         ]);
                         $publication = $this->processEntityFiles($publication);
 

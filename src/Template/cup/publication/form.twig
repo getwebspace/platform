@@ -161,6 +161,19 @@
                                             }
                                         } %}
                                     </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            {% include 'cup/form.twig' with {
+                                                'label': 'Внешний ID',
+                                                'type': 'text',
+                                                'name': 'external_id',
+                                                'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
+                                                'args': {
+                                                    'value': item.external_id,
+                                                }
+                                            } %}
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <hr>
