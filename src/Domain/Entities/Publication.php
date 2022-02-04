@@ -244,6 +244,28 @@ class Publication extends AbstractEntity
     }
 
     /**
+     * @ORM\Column(type="string", length=255, options={"default": ""})
+     */
+    protected string $external_id = '';
+
+    /**
+     * @return $this
+     */
+    public function setExternalId(string $external_id): self
+    {
+        if ($this->checkStrLenMax($external_id, 255)) {
+            $this->external_id = $external_id;
+        }
+
+        return $this;
+    }
+
+    public function getExternalId(): string
+    {
+        return $this->external_id;
+    }
+
+    /**
      * @var array
      * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\PublicationFileRelation", mappedBy="publication", orphanRemoval=true)
      * @ORM\OrderBy({"order": "ASC"})

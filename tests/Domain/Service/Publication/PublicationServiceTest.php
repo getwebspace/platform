@@ -68,6 +68,7 @@ class PublicationServiceTest extends TestCase
                 'description' => $this->getFaker()->text(150),
                 'keywords' => $this->getFaker()->text(150),
             ],
+            'external_id' => $this->getFaker()->word,
         ];
 
         $publication = $this->service->create($data);
@@ -77,6 +78,7 @@ class PublicationServiceTest extends TestCase
         $this->assertSame($data['address'], $publication->getAddress());
         $this->assertSame($data['content'], $publication->getContent());
         $this->assertSame($data['meta'], $publication->getMeta());
+        $this->assertSame($data['external_id'], $publication->getExternalId());
 
         /** @var PublicationRepository $publicationRepo */
         $publicationRepo = $this->em->getRepository(Publication::class);
@@ -87,6 +89,7 @@ class PublicationServiceTest extends TestCase
         $this->assertSame($data['address'], $p->getAddress());
         $this->assertSame($data['content'], $p->getContent());
         $this->assertSame($data['meta'], $p->getMeta());
+        $this->assertSame($data['external_id'], $p->getExternalId());
     }
 
     public function testCreateWithMissingTitleValue(): void
@@ -205,6 +208,7 @@ class PublicationServiceTest extends TestCase
                 'description' => $this->getFaker()->text(150),
                 'keywords' => $this->getFaker()->text(150),
             ],
+            'external_id' => $this->getFaker()->word,
         ]);
 
         $data = [
@@ -225,6 +229,7 @@ class PublicationServiceTest extends TestCase
                 'description' => $this->getFaker()->text(150),
                 'keywords' => $this->getFaker()->text(150),
             ],
+            'external_id' => $this->getFaker()->word,
         ];
 
         $publication = $this->service->update($publication, $data);
@@ -235,6 +240,7 @@ class PublicationServiceTest extends TestCase
         $this->assertSame($data['category'], $publication->getCategory());
         $this->assertSame($data['content'], $publication->getContent());
         $this->assertSame($data['meta'], $publication->getMeta());
+        $this->assertSame($data['external_id'], $publication->getExternalId());
     }
 
     public function testUpdateWithPublicationNotFound(): void

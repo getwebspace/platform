@@ -47,6 +47,7 @@ class PublicationService extends AbstractService
                 'description' => '',
                 'keywords' => '',
             ],
+            'external_id' => '',
         ];
         $data = array_merge($default, $data);
 
@@ -67,7 +68,8 @@ class PublicationService extends AbstractService
             ->setCategory($data['category'])
             ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'))
             ->setContent($data['content'])
-            ->setMeta($data['meta']);
+            ->setMeta($data['meta'])
+            ->setExternalId($data['external_id']);
 
         // if address generation is enabled
         if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
@@ -99,6 +101,7 @@ class PublicationService extends AbstractService
             'address' => null,
             'title' => null,
             'category' => null,
+            'external_id' => null,
         ];
         $data = array_merge($default, static::$default_read, $data);
 
@@ -119,12 +122,16 @@ class PublicationService extends AbstractService
         if ($data['category'] !== null) {
             $criteria['category'] = $data['category'];
         }
+        if ($data['external_id'] !== null) {
+            $criteria['external_id'] = $data['external_id'];
+        }
 
         try {
             switch (true) {
                 case !is_array($data['uuid']) && $data['uuid'] !== null:
                 case !is_array($data['title']) && $data['title'] !== null:
                 case !is_array($data['address']) && $data['address'] !== null:
+                case !is_array($data['external_id']) && $data['external_id'] !== null:
                     $publication = $this->service->findOneBy($criteria);
 
                     if (empty($publication)) {
@@ -167,6 +174,7 @@ class PublicationService extends AbstractService
                 'date' => null,
                 'content' => null,
                 'meta' => null,
+                'external_id' => null,
             ];
             $data = array_merge($default, $data);
 
@@ -203,6 +211,9 @@ class PublicationService extends AbstractService
                 }
                 if ($data['meta'] !== null) {
                     $entity->setMeta($data['meta']);
+                }
+                if ($data['external_id'] !== null) {
+                    $entity->setExternalId($data['external_id']);
                 }
 
                 $this->entityManager->flush();
