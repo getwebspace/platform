@@ -6,7 +6,7 @@ use App\Domain\AbstractAction;
 
 abstract class ActionApi extends AbstractAction
 {
-    protected function isAccessAllowed()
+    protected function isAccessAllowed(): array|false
     {
         $access = false;
         $params = [];

@@ -29,7 +29,14 @@ class ImportTask extends AbstractTask
         return parent::execute($params);
     }
 
-    protected function action(array $args = [])
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \App\Domain\Service\Task\Exception\TaskNotFoundException
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     */
+    protected function action(array $args = []): bool
     {
         $fileService = $this->container->get(FileService::class);
 
@@ -206,7 +213,7 @@ class ImportTask extends AbstractTask
         return $this->setStatusDone();
     }
 
-    protected function getCellIndex($index)
+    protected function getCellIndex($index): bool|int|string
     {
         static $alphabet;
 
@@ -225,7 +232,7 @@ class ImportTask extends AbstractTask
      *
      * @return array
      */
-    protected function getParsedExcelData($path = '')
+    protected function getParsedExcelData(string $path = ''): array
     {
         $fields = trim($this->parameter('catalog_import_columns', \App\Domain\References\Catalog::IMPORT_EXPORT_FIELDS_DEFAULT));
 
@@ -299,6 +306,8 @@ class ImportTask extends AbstractTask
      *
      * @param $sheet
      * @param $cell
+     *
+     * @return bool
      */
     protected function isMergedCell($sheet, $cell): bool
     {

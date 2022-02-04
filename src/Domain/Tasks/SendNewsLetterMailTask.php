@@ -25,6 +25,12 @@ class SendNewsLetterMailTask extends AbstractTask
         return parent::execute($params);
     }
 
+    /**
+     * @throws \PHPMailer\PHPMailer\Exception
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \App\Domain\Service\Task\Exception\TaskNotFoundException
+     */
     protected function action(array $args = []): void
     {
         $args = array_merge(

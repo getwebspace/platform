@@ -7,10 +7,15 @@ use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Traits\ParameterTrait;
 use App\Domain\Traits\StorageTrait;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
+use Slim\App;
+use Slim\Interfaces\RouteCollectorInterface;
+use Slim\Interfaces\RouteInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 use Slim\Views\Twig;
+use Twig\Extension\ExtensionInterface;
 
 abstract class AbstractPlugin
 {
@@ -25,7 +30,11 @@ abstract class AbstractPlugin
     public const AUTHOR_SITE = '';
     public const VERSION = '1.0';
 
-    private \Slim\Router $router;
+    protected ContainerInterface $container;
+
+    protected LoggerInterface $logger;
+
+    private RouteCollectorInterface $router;
 
     private Twig $renderer;
 
@@ -39,18 +48,24 @@ abstract class AbstractPlugin
 
     public bool $navigation = false;
 
+    /**
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     */
     public function __construct(ContainerInterface $container)
     {
         if (empty(static::NAME) || empty(static::TITLE) || empty(static::AUTHOR)) {
             throw new RuntimeException('Plugin credentials have empty fields');
         }
 
+        $this->container = $container;
         $this->container[static::NAME] = $this;
-        $this->router = $container->get('router');
+        $this->logger = $container->get(LoggerInterface::class);
+        $this->router = $container->get(App::class)->getRouteCollector();
         $this->renderer = $container->get('view');
     }
 
-    public function getCredentials($field = null)
+    public function getCredentials(string $field = null): array|string
     {
         $credentials = [
             'title' => static::TITLE,
@@ -71,8 +86,6 @@ abstract class AbstractPlugin
 
     /**
      * Register specific twig templates path
-     *
-     * @throws \Twig\Error\LoaderError
      */
     protected function setTemplateFolder(string $path): void
     {
@@ -81,10 +94,7 @@ abstract class AbstractPlugin
         }
     }
 
-    /**
-     * @param mixed ...$name
-     */
-    protected function setHandledRoute(...$name): void
+    protected function setHandledRoute(array ...$name): void
     {
         $this->routes = true;
         $this->handledRoutes = array_merge($this->handledRoutes, $name);
@@ -97,10 +107,8 @@ abstract class AbstractPlugin
 
     /**
      * Register twig specific extension
-     *
-     * @param $extension
      */
-    protected function addTwigExtension($extension): void
+    protected function addTwigExtension(ExtensionInterface $extension): void
     {
         $this->renderer->addExtension(new $extension($this->container));
     }
@@ -161,19 +169,19 @@ abstract class AbstractPlugin
 
     /**
      * Add sidebar menu point
-     *
-     * @param array $params route handler
-     *
-     * @return \Slim\Interfaces\RouteInterface|\Slim\Route
      */
-    protected function enableNavigationItem(array $params = [])
+    protected function enableNavigationItem(array $params = []): RouteInterface
     {
         $default = [
-            'handler' => function (Request $req, Response $res) {
-                return $res->withHeader('Content-Type', 'text/plain')->write(
+            'handler' => function (Request $request, Response $response) {
+                $response = $response->withHeader('Content-Type', 'text/plain');
+
+                $response->getBody()->write(
                     'This is empty route for plugin: ' . static::NAME . PHP_EOL .
                     'Change "handler" key in function arguments enableNavigationItem(["handler" => ??]).'
                 );
+
+                return $response;
             },
         ];
         $params = array_merge($default, $params);
@@ -188,19 +196,19 @@ abstract class AbstractPlugin
         return $this->navigation;
     }
 
-    /**
-     * @return \Slim\Interfaces\RouteInterface|\Slim\Route
-     */
-    protected function map(array $params)
+    protected function map(array $params): RouteInterface
     {
         $default = [
             'methods' => ['GET', 'POST'],
             'pattern' => '',
-            'handler' => function (Request $req, Response $res) {
-                return $res->withHeader('Content-Type', 'text/plain')->write(
+            'handler' => function (Request $request, Response $response) {
+                $response = $response->withHeader('Content-Type', 'text/plain');
+                $response->getBody()->write(
                     'This is empty route for plugin: ' . static::NAME . PHP_EOL .
                     'Change "handler" key in function arguments map(["methods" => "..", "pattern" => "..", "handler" => ??]).'
                 );
+
+                return $response;
             },
         ];
         $params = array_merge($default, $params);
@@ -245,14 +253,12 @@ abstract class AbstractPlugin
     }
 
     /**
-     * @throws HttpBadRequestException
+     * @throws \Twig\Error\SyntaxError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\LoaderError
      */
     protected function render(string $template, array $data = []): string
     {
-        try {
-            return $this->renderer->fetch($template, $data);
-        } catch (\Twig\Error\LoaderError $exception) {
-            throw new RuntimeException($exception->getMessage());
-        }
+        return $this->renderer->fetch($template, $data);
     }
 }

@@ -20,6 +20,11 @@ class ConvertImageTask extends AbstractTask
         return parent::execute($params);
     }
 
+    /**
+     * @throws \Psr\Container\ContainerExceptionInterface
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \App\Domain\Service\Task\Exception\TaskNotFoundException
+     */
     protected function action(array $args = []): void
     {
         if ($this->parameter('image_enable', 'no') === 'no') {
@@ -98,7 +103,7 @@ class ConvertImageTask extends AbstractTask
                     $this->logger->info('Task: convert skipped, small file size');
                 }
             } catch (FileNotFoundException $e) {
-                $this->logger->alert('Task: file not found');
+                $this->logger->alert('Task: file not found', $e);
             }
 
             $this->setProgress($index, count($args['uuid']));

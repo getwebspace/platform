@@ -15,12 +15,10 @@ trait ParameterTrait
      * Returns the value of the parameter by the passed key
      * If an array of keys is passed, returns an array of found keys and their values
      *
-     * @param null|string|string[] $key
-     * @param mixed                $default
-     *
-     * @return null|array|Collection|string
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
      */
-    protected function parameter(mixed $key = null, mixed $default = null): mixed
+    protected function parameter(mixed $key = null, mixed $default = null): string|array|Collection
     {
         static $parameters;
 

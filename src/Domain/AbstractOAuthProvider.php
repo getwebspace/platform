@@ -23,7 +23,8 @@ abstract class AbstractOAuthProvider
     protected UserIntegrationService $userIntegrationService;
 
     /**
-     * {@inheritdoc}
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
      */
     public function __construct(ContainerInterface $container)
     {

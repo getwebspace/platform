@@ -16,7 +16,10 @@ use App\Domain\Traits\ParameterTrait;
 use App\Domain\Traits\StorageTrait;
 use Doctrine\ORM\EntityManager;
 use Illuminate\Support\Collection;
+use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\Log\LoggerInterface;
 use Slim\Interfaces\RouteCollectorInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
@@ -40,6 +43,8 @@ abstract class AbstractAction
 
     protected ContainerInterface $container;
 
+    protected LoggerInterface $logger;
+
     protected EntityManager $entityManager;
 
     protected RouteCollectorInterface $routeCollector;
@@ -54,9 +59,14 @@ abstract class AbstractAction
 
     private array $error = [];
 
+    /**
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     */
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
+        $this->logger = $container->get(LoggerInterface::class);
         $this->entityManager = $container->get(EntityManager::class);
         $this->routeCollector = $container->get(RouteCollectorInterface::class);
         $this->renderer = $container->get('view');
@@ -395,6 +405,8 @@ abstract class AbstractAction
 
     /**
      * @throws HttpBadRequestException
+     * @throws NotFoundExceptionInterface
+     * @throws ContainerExceptionInterface
      */
     protected function render(string $template, array $data = []): string
     {
@@ -417,9 +429,8 @@ abstract class AbstractAction
 
             // add default errors pages
             $this->renderer->getLoader()->addPath(VIEW_ERROR_DIR);
-            $rendered = $this->renderer->fetch($template, $data);
 
-            return $rendered;
+            return $this->renderer->fetch($template, $data);
         } catch (\Twig\Error\LoaderError $exception) {
             throw new HttpBadRequestException($exception->getMessage());
         }
@@ -458,9 +469,7 @@ abstract class AbstractAction
     protected function respondWithTemplate(string $template, array $data = []): Response
     {
         try {
-            $this->response->getBody()->write(
-                $this->render($template, $data)
-            );
+            $this->response->getBody()->write($this->render($template, $data));
         } catch (\Exception $e) {
             return $this->respondWithTemplate('p400.twig', ['exception' => $e])->withStatus(400);
         }
@@ -482,10 +491,7 @@ abstract class AbstractAction
         if (is_array($output) || is_a($output, Collection::class)) {
             $output = json_encode(array_serialize($output), JSON_UNESCAPED_UNICODE);
         }
-
-        $this->response->getBody()->write(
-            $output
-        );
+        $this->response->getBody()->write($output);
 
         return $this->response->withHeader('Content-Type', 'text/plain; charset=utf-8');
     }

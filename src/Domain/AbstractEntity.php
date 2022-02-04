@@ -31,9 +31,6 @@ abstract class AbstractEntity implements JsonSerializable
 
     protected function checkStrLenBetween(string $value, int $min = 0, int $max = INF): bool
     {
-        if (!is_scalar($value)) {
-            return false;
-        }
         $len = mb_strlen($value);
 
         return $len >= $min && $len <= $max;
@@ -41,19 +38,11 @@ abstract class AbstractEntity implements JsonSerializable
 
     protected function checkStrLenMax(string $value, int $max = INF): bool
     {
-        if (!is_scalar($value)) {
-            return false;
-        }
-
         return mb_strlen($value) <= $max;
     }
 
     protected function checkStrLenMin(string $value, int $min = 0): bool
     {
-        if (!is_scalar($value)) {
-            return false;
-        }
-
         return mb_strlen($value) >= $min;
     }
 
@@ -97,10 +86,7 @@ abstract class AbstractEntity implements JsonSerializable
         return false;
     }
 
-    /**
-     * @param $value
-     */
-    protected function getBooleanByValue($value): bool
+    protected function getBooleanByValue(mixed $value): bool
     {
         if (is_string($value) || is_int($value) || is_bool($value)) {
             switch (true) {
@@ -132,32 +118,15 @@ abstract class AbstractEntity implements JsonSerializable
         return crypta_hash($value, ($_ENV['SALT'] ?? 'Li8.1Ej2-<Cid3[bE'));
     }
 
-    /**
-     * @param $value
-     * @param mixed $timezone
-     *
-     * @throws \Exception
-     */
-    protected function getDateTimeByValue($value, $timezone = 'UTC'): DateTime
+    protected function getDateTimeByValue($value, string $timezone = 'UTC'): DateTime
     {
         date_default_timezone_set($timezone);
 
-        switch (true) {
-            case is_string($value):
-            case is_numeric($value):
-                $value = new DateTime($value);
-
-                break;
-
-            case is_a($value, DateTime::class):
-                $value = clone $value;
-
-                break;
-
-            case is_null($value):
-            default:
-                $value = new DateTime('now');
-        }
+        $value = match (true) {
+            is_string($value), is_numeric($value) => new DateTime($value),
+            is_a($value, DateTime::class) => clone $value,
+            default => new DateTime('now'),
+        };
 
         if ($value->getTimezone()->getName() !== 'UTC') {
             $value->setTimeZone(new \DateTimeZone('UTC'));
@@ -166,12 +135,7 @@ abstract class AbstractEntity implements JsonSerializable
         return $value;
     }
 
-    /**
-     * @param $value
-     *
-     * @return \Ramsey\Uuid\UuidInterface|string
-     */
-    protected function getUuidByValue($value)
+    protected function getUuidByValue(mixed $value): string|\Ramsey\Uuid\UuidInterface
     {
         if (\Ramsey\Uuid\Uuid::isValid((string) $value)) {
             if (is_string($value)) {
@@ -184,17 +148,12 @@ abstract class AbstractEntity implements JsonSerializable
         return \Ramsey\Uuid\Uuid::fromString(\Ramsey\Uuid\Uuid::NIL);
     }
 
-    /**
-     * @param array|string $string
-     *
-     * @return array|false|string[]
-     */
-    protected function getArrayByExplodeValue($string, string $delimiter, int $limit = null)
+    protected function getArrayByExplodeValue(array|string $string, string $delimiter, int $limit = null): array
     {
         if (is_array($string)) {
             return $string;
         }
-        if (is_string($delimiter) && is_string($string) && mb_strlen($string) > 0) {
+        if (is_string($string) && mb_strlen($string) > 0) {
             if ($limit) {
                 return explode($delimiter, $string, $limit);
             }
@@ -245,11 +204,9 @@ abstract class AbstractEntity implements JsonSerializable
     }
 
     /**
-     * Access to read property
-     *
-     * @return mixed
+     * access to read property
      */
-    public function __get(string $name)
+    public function __get(string $name): mixed
     {
         if (property_exists($this, $name)) {
             return $this->{$name};
@@ -261,13 +218,9 @@ abstract class AbstractEntity implements JsonSerializable
     }
 
     /**
-     * Denied to write property
-     *
-     * @param mixed $value
-     *
-     * @return mixed
+     * forbidden to change properties
      */
-    public function __set(string $name, $value)
+    public function __set(string $name, mixed $value): void
     {
         throw new BadMethodCallException(
             sprintf("You cannot change value '%s' = '%s' by this way in class '%s'.", $name, $value, get_class($this))

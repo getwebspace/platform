@@ -7,6 +7,7 @@ use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Service\Task\TaskService;
 use App\Domain\Traits\ParameterTrait;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use RuntimeException;
 use Slim\Views\Twig;
 
@@ -18,6 +19,8 @@ abstract class AbstractTask
 
     protected ContainerInterface $container;
 
+    protected LoggerInterface $logger;
+
     private ?Task $entity;
 
     private TaskService $taskService;
@@ -26,10 +29,8 @@ abstract class AbstractTask
 
     /**
      * Start background worker
-     *
-     * @param mixed $action
      */
-    public static function worker($action = ''): void
+    public static function worker(mixed $action = ''): void
     {
         if (is_object($action)) {
             $action = get_class($action);
@@ -62,9 +63,14 @@ abstract class AbstractTask
         @unlink(VAR_DIR . '/' . ($action ? mb_strtolower($action) . '.' : '') . 'worker.pid');
     }
 
+    /**
+     * @throws \Psr\Container\NotFoundExceptionInterface
+     * @throws \Psr\Container\ContainerExceptionInterface
+     */
     public function __construct(ContainerInterface $container, Task $entity = null)
     {
         $this->container = $container;
+        $this->logger = $container->get(LoggerInterface::class);
         $this->entity = $entity;
         $this->taskService = $container->get(TaskService::class);
         $this->renderer = $container->get('view');
@@ -107,6 +113,9 @@ abstract class AbstractTask
         throw new RuntimeException('Exist Task cannot be changed');
     }
 
+    /**
+     * @throws Service\Task\Exception\TaskNotFoundException
+     */
     public function run(): void
     {
         $this->setStatusWork();
@@ -116,6 +125,9 @@ abstract class AbstractTask
 
     abstract protected function action(array $args = []);
 
+    /**
+     * @throws Service\Task\Exception\TaskNotFoundException
+     */
     public function setProgress($value, $count = 0): void
     {
         if ($count !== 0) {
@@ -126,6 +138,9 @@ abstract class AbstractTask
         }
     }
 
+    /**
+     * @throws Service\Task\Exception\TaskNotFoundException
+     */
     public function setStatusWork(): bool
     {
         $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_WORK);
@@ -133,6 +148,9 @@ abstract class AbstractTask
         return true;
     }
 
+    /**
+     * @throws Service\Task\Exception\TaskNotFoundException
+     */
     public function setStatusDone($output = ''): bool
     {
         $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_DONE, 0, $output);
@@ -140,6 +158,9 @@ abstract class AbstractTask
         return true;
     }
 
+    /**
+     * @throws Service\Task\Exception\TaskNotFoundException
+     */
     public function setStatusFail($output = ''): bool
     {
         $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_FAIL, 0, $output);
@@ -147,6 +168,9 @@ abstract class AbstractTask
         return false;
     }
 
+    /**
+     * @throws Service\Task\Exception\TaskNotFoundException
+     */
     public function setStatusCancel($output = ''): bool
     {
         $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_CANCEL, 0, $output);
@@ -154,6 +178,9 @@ abstract class AbstractTask
         return false;
     }
 
+    /**
+     * @throws Service\Task\Exception\TaskNotFoundException
+     */
     public function setStatusDelete($output = ''): bool
     {
         $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_DELETE, 0, $output);
@@ -167,13 +194,9 @@ abstract class AbstractTask
     }
 
     /**
-     * @param null|string $status
-     * @param int         $progress
-     * @param string      $output
-     *
      * @throws Service\Task\Exception\TaskNotFoundException
      */
-    private function saveStateWriteLog($status = null, $progress = 0, $output = ''): void
+    private function saveStateWriteLog(?string $status = null, int $progress = 0, string $output = ''): void
     {
         $this->entity = $this->taskService->update($this->entity, [
             'status' => $status,

@@ -20,6 +20,9 @@ class SendJSONTask extends AbstractTask
         return parent::execute($params);
     }
 
+    /**
+     * @throws \App\Domain\Service\Task\Exception\TaskNotFoundException
+     */
     protected function action(array $args = []): void
     {
         $data = (array) $args['data'];
