@@ -4,14 +4,6 @@ use DI\ContainerBuilder;
 
 return function (ContainerBuilder $containerBuilder): void {
     $_DEBUG = (bool) ($_ENV['DEBUG'] ?? false);
-    $_CACHE_DIR = CACHE_DIR . '/' . mb_substr($_ENV['COMMIT_SHA'] ?? 'specific', 0, 7);
-
-    // check if cache folder exists
-    if (!is_dir($_CACHE_DIR)) {
-        if (@mkdir($_CACHE_DIR) === false) {
-            $_CACHE_DIR = CACHE_DIR;
-        }
-    }
 
     // secret salt
     $containerBuilder->addDefinitions([
@@ -29,7 +21,7 @@ return function (ContainerBuilder $containerBuilder): void {
                     PLUGIN_DIR,
                 ],
                 'auto_generate_proxies' => true,
-                'proxy_dir' => $_CACHE_DIR . '/proxies',
+                'proxy_dir' => CACHE_DIR . '/proxies',
                 'cache' => null,
             ],
 
@@ -46,7 +38,7 @@ return function (ContainerBuilder $containerBuilder): void {
     // twig
     $containerBuilder->addDefinitions([
         'twig' => [
-            'caches_path' => $_CACHE_DIR,
+            'caches_path' => CACHE_DIR,
         ],
     ]);
 
@@ -67,7 +59,7 @@ return function (ContainerBuilder $containerBuilder): void {
             'logErrorDetails' => !$_DEBUG,
 
             // set router cache file if debug is FALSE
-            'routerCacheFile' => $_DEBUG ? null : $_CACHE_DIR . '/routes.cache.php',
+            'routerCacheFile' => $_DEBUG ? null : CACHE_DIR . '/routes.cache.php',
         ],
     ]);
 
@@ -82,7 +74,7 @@ return function (ContainerBuilder $containerBuilder): void {
 
         case false:
             // should be enabled in production
-            $containerBuilder->enableCompilation($_CACHE_DIR);
+            $containerBuilder->enableCompilation(CACHE_DIR);
 
             break;
     }
