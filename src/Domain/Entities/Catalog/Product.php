@@ -89,7 +89,8 @@ class Product extends AbstractEntity
 
     /**
      * @see \App\Domain\Types\ProductTypeType::LIST
-     * @ORM\Column(type="CatalogProductTypeType", options={"default": \App\Domain\Types\Catalog\ProductTypeType::TYPE_PRODUCT})
+     * @ORM\Column(type="CatalogProductTypeType", options={"default":
+     *                                            \App\Domain\Types\Catalog\ProductTypeType::TYPE_PRODUCT})
      */
     protected string $type = \App\Domain\Types\Catalog\ProductTypeType::TYPE_PRODUCT;
 
@@ -575,17 +576,17 @@ class Product extends AbstractEntity
     /**
      * @ORM\Column(type="array")
      */
-    protected $tags = []; // todo set array
+    protected array $tags = [];
 
     /**
      * @param array|string $tags
      *
      * @return $this
      */
-    public function setTags($tags)
+    public function setTags(array|string $tags)
     {
         if (is_string($tags)) {
-            $tags = explode(';', $tags);
+            $tags = explode(',', $tags);
         }
         $this->tags = array_map('trim', $tags);
 
@@ -599,7 +600,8 @@ class Product extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\ProductRelation", mappedBy="product", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\ProductRelation", mappedBy="product",
+     *                                                                            orphanRemoval=true)
      */
     protected $relation = [];
 
@@ -615,7 +617,8 @@ class Product extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\ProductRelation", mappedBy="related", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\ProductRelation", mappedBy="related",
+     *                                                                            orphanRemoval=true)
      */
     protected $related = [];
 
@@ -651,7 +654,8 @@ class Product extends AbstractEntity
 
     /**
      * @see \App\Domain\Types\ProductStatusType::LIST
-     * @ORM\Column(type="CatalogProductStatusType", options={"default": \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK})
+     * @ORM\Column(type="CatalogProductStatusType", options={"default":
+     *                                              \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK})
      */
     protected string $status = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
 
@@ -681,7 +685,7 @@ class Product extends AbstractEntity
     protected DateTime $date;
 
     /**
-     * @param $date
+     * @param       $date
      * @param mixed $timezone
      *
      * @throws \Exception
@@ -787,7 +791,8 @@ class Product extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\CatalogProductFileRelation", mappedBy="catalog_product", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\CatalogProductFileRelation", mappedBy="catalog_product",
+     *                                                                                     orphanRemoval=true)
      * @ORM\OrderBy({"order": "ASC"})
      */
     protected $files = [];

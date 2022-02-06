@@ -528,20 +528,11 @@
 
                                 <hr>
 
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Теги',
-                                            'message': 'Для разделения используйте символ точки с запятой (;).',
-                                            'type': 'textarea',
-                                            'name': 'tags',
-                                            'args': {
-                                                'value': item.tags ? item.origin|join(';') : '',
-                                                'style': 'min-height: 100px;'
-                                            }
-                                        } %}
-                                    </div>
-                                </div>
+                                {% include 'cup/tags.twig' with {
+                                    'args': {
+                                        'value': item.tags|join(',')
+                                    }
+                                } %}
 
                                 <hr>
 

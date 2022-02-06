@@ -1,0 +1,27 @@
+{% block tags %}
+    {% set inputId = random() %}
+
+    {% if args is empty %}
+        {% set args = {} %}
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-12">
+            <div data-input="" class="form-group">
+                <label class="placeholder">
+                    <b>{{ 'Теги'|locale }}</b>
+                </label>
+
+                <div>
+                    <input id="tagsinput-{{ inputId }}" class="form-control" type="text" name="tags" placeholder="{{ 'Добавьте теги'|locale }}" value="{{ args.value }}">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', async () => {
+            $('#tagsinput-{{ inputId }}').tagsinput({tagClass: 'badge-info', maxTags: 100, maxChars: 50, trimValue: true});
+        });
+    </script>
+{% endblock %}
