@@ -59,7 +59,7 @@ abstract class AbstractPlugin
         }
 
         $this->container = $container;
-        $this->container[static::NAME] = $this;
+        $this->container->set(static::NAME, $this);
         $this->logger = $container->get(LoggerInterface::class);
         $this->router = $container->get(App::class)->getRouteCollector();
         $this->renderer = $container->get('view');
@@ -94,7 +94,7 @@ abstract class AbstractPlugin
         }
     }
 
-    protected function setHandledRoute(array ...$name): void
+    protected function setHandledRoute(...$name): void
     {
         $this->routes = true;
         $this->handledRoutes = array_merge($this->handledRoutes, $name);

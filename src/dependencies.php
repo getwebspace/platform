@@ -56,22 +56,28 @@ return function (ContainerBuilder $containerBuilder): void {
     // plugins
     $containerBuilder->addDefinitions([
         'plugin' => function (ContainerInterface $c) {
-            return new class() {
+            return new class($c) {
+                private ContainerInterface $container;
+
                 private Collection $plugins;
 
-                final public function __construct()
+                final public function __construct(ContainerInterface $container)
                 {
+                    $this->container = $container;
                     $this->plugins = collect();
                 }
 
                 /**
                  * Register plugin
-                 *
-                 * @return array|mixed|string
                  */
-                final public function register(\App\Domain\AbstractPlugin $plugin)
+                final public function register(string|\App\Domain\AbstractPlugin $plugin): bool
                 {
-                    $class_name = get_class($plugin);
+                    if (is_object($plugin)) {
+                        $class_name = get_class($plugin);
+                    } else {
+                        $class_name = $plugin;
+                        $plugin = new $plugin($this->container);
+                    }
 
                     if (!$this->plugins->has($class_name)) {
                         $this->plugins[$class_name] = $plugin;

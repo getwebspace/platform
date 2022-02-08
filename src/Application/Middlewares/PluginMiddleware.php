@@ -6,6 +6,7 @@ use App\Domain\AbstractMiddleware;
 use App\Domain\AbstractPlugin;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Request;
+use Slim\Routing\RouteContext;
 
 class PluginMiddleware extends AbstractMiddleware
 {
@@ -20,14 +21,14 @@ class PluginMiddleware extends AbstractMiddleware
         if ($plugins->count()) {
             $plugins = $plugins->where('routes', true);
 
-            /** @var \Slim\Interfaces\RouteInterface $route */
-            $route = $request->getAttribute('route');
+            $routeContext = RouteContext::fromRequest($request);
+            $route = $routeContext->getRoute();
             $routeName = $route->getName();
 
             /** @var AbstractPlugin $plugin */
             foreach ($plugins as $plugin) {
                 if ($routeName && str_start_with($routeName, $plugin->getHandledRoute())) {
-                    $plugin->before($request, $route->getName());
+                    $plugin->before($request, $routeName);
                 }
             }
 
@@ -36,7 +37,7 @@ class PluginMiddleware extends AbstractMiddleware
             /** @var AbstractPlugin $plugin */
             foreach ($plugins as $plugin) {
                 if ($routeName && str_start_with($routeName, $plugin->getHandledRoute())) {
-                    $response = $plugin->after($request, $response, $route->getName());
+                    $response = $plugin->after($request, $response, $routeName);
                 }
             }
 
