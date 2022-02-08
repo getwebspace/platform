@@ -28,9 +28,10 @@ class IsSiteEnabledMiddleware extends AbstractMiddleware
             // add default errors pages
             $renderer->getLoader()->addPath(VIEW_ERROR_DIR);
 
-            return (new Response())
-                ->write($renderer->fetch('p503.twig'))
-                ->withStatus(503);
+            $response = (new Response())->withStatus(503);
+            $response->getBody()->write($renderer->fetch('p503.twig'));
+
+            return $response;
         }
 
         return $handler->handle($request);
