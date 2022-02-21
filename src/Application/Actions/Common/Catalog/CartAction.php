@@ -79,7 +79,7 @@ class CartAction extends CatalogAction
                 // mail to administrator
                 if (
                     ($this->parameter('catalog_mail_admin', 'off') === 'on')
-                    && ($email = $this->parameter('smtp_from', '')) !== ''
+                    && ($email = $this->parameter('mail_from', '')) !== ''
                     && ($tpl = $this->parameter('catalog_mail_admin_template', '')) !== ''
                 ) {
                     // add task send admin mail

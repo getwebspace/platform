@@ -63,7 +63,7 @@
                                             <a class="nav-link"         data-toggle="pill" href="#other-api">{{ 'API'|locale }}</a>
                                         </div>
                                     </div>
-                                    <div class="col-xs-12 col-sm-7 col-md-8 mt-5 mt-sm-0">
+                                    <div class="col-xs-12 col-sm-7 col-md-8 mt-3 mt-sm-0">
                                         <div class="tab-content">
 
                                             {# TAB: Common #}
@@ -184,7 +184,7 @@
                                                     'label': 'Системный E-Mail адрес',
                                                     'description': 'От данного адреса будут отправляться сообщения сайта, например уведомления пользователей, рассылки, подтверждения и т.д. Примечание: некоторые бесплатные почтовые сервисы, например yandex.ru, требуют, чтобы в качестве E-Mail адреса отправителя был указан именно адрес, зарегистрированный на их почтовом сервисе',
                                                     'type': 'text',
-                                                    'name': 'smtp[from]',
+                                                    'name': 'mail[from]',
                                                     'args': {
                                                         'placeholder': 'my.site@company.com'
                                                     }
@@ -194,59 +194,115 @@
                                                     'label': 'Имя отправителя',
                                                     'description': 'Данное имя будет прикреплено к письму в качестве имени отправителя',
                                                     'type': 'text',
-                                                    'name': 'smtp[from_name]',
+                                                    'name': 'mail[from_name]',
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Заголовок при отправке писем',
                                                     'description': 'При отправке писем с сайта вы можете указать заголовок, который будет добавляться к почте отправителя. Например, вы можете там указать краткое название вашего сайта',
                                                     'type': 'text',
-                                                    'name': 'smtp[subject]',
+                                                    'name': 'mail[subject]',
                                                 } %}
 
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Хост SMTP сервера',
-                                                    'description': 'Обычно — localhost',
-                                                    'type': 'text',
-                                                    'name': 'smtp[host]',
-                                                    'args': {
-                                                        'placeholder': 'smtp.yandex.ru'
-                                                    }
-                                                } %}
+                                                <ul class="nav nav-pills nav-info justify-content-end" role="tablist">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link active show" data-toggle="pill" href="#other-mail-smtp" role="tab">
+                                                            {{ 'SMTP'|locale }}
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="nav-link" data-toggle="pill" href="#other-mail-sendpulse" role="tab">
+                                                            {{ 'SendPulse'|locale }}
+                                                        </a>
+                                                    </li>
+                                                </ul>
 
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Порт SMTP сервера',
-                                                    'description': 'Обычно — 465',
-                                                    'type': 'select',
-                                                    'name': 'smtp[port]',
-                                                    'args': {
-                                                        'option': {'25':25, '587':587, '465':465}
-                                                    }
-                                                } %}
+                                                <hr>
 
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Использовать защищенный протокол для отправки писем через SMTP сервер',
-                                                    'description': 'Выберите протокол шифрования при отправке писем с использованием SMTP сервера',
-                                                    'type': 'select',
-                                                    'name': 'smtp[secure]',
-                                                    'args': {
-                                                        'option': {'':'---', 'ssl':'SSL', 'tls':'TLS'}
-                                                    }
-                                                } %}
+                                                <div class="tab-content">
 
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'SMTP имя пользователя',
-                                                    'description': 'Не требуется в большинстве случаев, когда используется "localhost"',
-                                                    'type': 'text',
-                                                    'name': 'smtp[login]',
-                                                } %}
+                                                    {# TAB: SMTP #}
+                                                    <div class="tab-pane fade show active" id="other-mail-smtp" role="tabpanel">
+                                                        <p>
+                                                            {% locale %}
+                                                                Настроить SMTP сервер для своего домена можно в сервисе
+                                                            {% endlocale %}
+                                                            <a href="https://360.yandex.ru/business/" target="_blank">{{ 'Яндекс 360 для бизнеса'|locale }}</a>.
+                                                        </p>
 
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'SMTP пароль',
-                                                    'description': 'Не требуется в большинстве случаев, когда используется "localhost"',
-                                                    'type': 'text',
-                                                    'name': 'smtp[pass]',
-                                                } %}
+                                                        {% include 'cup/parameters/field.twig' with {
+                                                            'label': 'Хост SMTP сервера',
+                                                            'description': 'Обычно — localhost',
+                                                            'type': 'text',
+                                                            'name': 'smtp[host]',
+                                                            'args': {
+                                                                'placeholder': 'smtp.yandex.ru'
+                                                            }
+                                                        } %}
+
+                                                        {% include 'cup/parameters/field.twig' with {
+                                                            'label': 'Порт SMTP сервера',
+                                                            'description': 'Обычно — 465',
+                                                            'type': 'select',
+                                                            'name': 'smtp[port]',
+                                                            'args': {
+                                                                'option': {'25':25, '587':587, '465':465}
+                                                            }
+                                                        } %}
+
+                                                        {% include 'cup/parameters/field.twig' with {
+                                                            'label': 'Использовать защищенный протокол для отправки писем через SMTP сервер',
+                                                            'description': 'Выберите протокол шифрования при отправке писем с использованием SMTP сервера',
+                                                            'type': 'select',
+                                                            'name': 'smtp[secure]',
+                                                            'args': {
+                                                                'option': {'':'---', 'ssl':'SSL', 'tls':'TLS'}
+                                                            }
+                                                        } %}
+
+                                                        {% include 'cup/parameters/field.twig' with {
+                                                            'label': 'SMTP имя пользователя',
+                                                            'description': 'Не требуется в большинстве случаев, когда используется "localhost"',
+                                                            'type': 'text',
+                                                            'name': 'smtp[login]',
+                                                        } %}
+
+                                                        {% include 'cup/parameters/field.twig' with {
+                                                            'label': 'SMTP пароль',
+                                                            'description': 'Не требуется в большинстве случаев, когда используется "localhost"',
+                                                            'type': 'text',
+                                                            'name': 'smtp[pass]',
+                                                        } %}
+                                                    </div>
+
+                                                    {# TAB: SendPulse #}
+                                                    <div class="tab-pane fade" id="other-mail-sendpulse" role="tabpanel">
+                                                        <p>
+                                                            {% locale %}
+                                                            Необходимые параметры можно найти в настройках аккаунта, во
+                                                            {% endlocale %}
+                                                            <a href="https://login.sendpulse.com/settings/#api" target="_blank">{{ 'вкладке API'|locale }}</a>.
+                                                        </p>
+
+                                                        {% include 'cup/parameters/field.twig' with {
+                                                            'label': 'Client ID',
+                                                            'type': 'text',
+                                                            'name': 'sendpulse[id]',
+                                                            'args': {
+                                                                'placeholder': '70e07ce45532e8acae69f385de908449'
+                                                            }
+                                                        } %}
+
+                                                        {% include 'cup/parameters/field.twig' with {
+                                                            'label': 'Client Secret',
+                                                            'type': 'password',
+                                                            'name': 'sendpulse[secret]',
+                                                            'args': {
+                                                                'placeholder': '5d8f75e2ea712abccc5b9bfcc9453acc'
+                                                            }
+                                                        } %}
+                                                    </div>
+                                                </div>
                                             </div>
 
                                             {# TAB: Other Files and Image #}
@@ -494,7 +550,7 @@
                                                     'label': 'Ключи доступа к API',
                                                     'description': [
                                                             'Возможность вносить изменения по API есть только при наличии ключа<br>',
-                                                            '<button class="btn btn-outline-info btn-sm mr-1" type="button" data-entity-click="add">Добавить новый</button>',
+                                                            '<button class="btn btn-outline-info btn-sm" type="button" data-entity-click="add">Добавить новый</button>',
                                                         ]|join(''),
                                                     'message': 'Каждый ключ с новой строки',
                                                     'type': 'textarea',

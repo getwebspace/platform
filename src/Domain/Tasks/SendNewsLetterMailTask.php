@@ -36,18 +36,21 @@ class SendNewsLetterMailTask extends AbstractTask
         $args = array_merge(
             $this->parameter(
                 [
-                    'smtp_from', 'smtp_from_name',
+                    'mail_from', 'mail_from_name',
+                    'sendpulse_id', 'sendpulse_secret',
                     'smtp_login', 'smtp_pass',
                     'smtp_host', 'smtp_port',
                     'smtp_secure',
-                    'subject',
                 ]
             ),
-            $args,
-            ['auto_send' => true]
+            ['subject' => $this->parameter('mail_subject', 'WebSpaceEngine | Default subject')],
+            $args
         );
 
-        if ($args['smtp_host'] && $args['smtp_login'] && $args['smtp_pass']) {
+        if (
+            ($args['smtp_host'] && $args['smtp_login'] && $args['smtp_pass']) ||
+            ($args['sendpulse_id'] && $args['sendpulse_secret'])
+        ) {
             $userService = $this->container->get(UserService::class);
             $userSubscriberService = $this->container->get(UserSubscriberService::class);
 
@@ -55,7 +58,7 @@ class SendNewsLetterMailTask extends AbstractTask
             switch ($args['type']) {
                 case 'all':
                     $list = collect()
-                        ->merge($userService->read(['allow_mail' => true])->pluck('email')->all())
+                        ->merge($userService->read(['status' => \App\Domain\Types\UserStatusType::STATUS_WORK, 'allow_mail' => true])->pluck('email')->all())
                         ->merge($userSubscriberService->read()->pluck('email')->all())
                         ->unique();
 
@@ -69,7 +72,7 @@ class SendNewsLetterMailTask extends AbstractTask
 
                 case 'users':
                     $list = collect()
-                        ->merge($userService->read(['allow_mail' => true])->pluck('email')->all());
+                        ->merge($userService->read(['status' => \App\Domain\Types\UserStatusType::STATUS_WORK, 'allow_mail' => true])->pluck('email')->all());
 
                     break;
             }
@@ -83,18 +86,14 @@ class SendNewsLetterMailTask extends AbstractTask
                         $mail = Mail::send(array_merge($args, ['to' => $email]));
 
                         if ($mail !== false) {
-                            if (!$mail->isError()) {
-                                $this->logger->info('Mail newsletter is sent', ['mailto' => $email]);
-                            } else {
-                                $this->logger->warning('Mail newsletter will not sent', ['mailto' => $email, 'error' => $mail->ErrorInfo]);
-                            }
+                            $this->logger->info('Mail newsletter is sent', ['mailto' => $email]);
+                        } else {
+                            $this->logger->warning('Mail newsletter will not sent', ['mailto' => $email]);
                         }
                     }
 
-                    if ($i < $count) {
-                        $this->setProgress($i, $count);
-                        sleep(10);
-                    }
+                    $this->setProgress($i, $count);
+                    sleep(10);
                 }
 
                 $this->setStatusDone();

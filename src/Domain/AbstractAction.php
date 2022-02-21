@@ -134,35 +134,6 @@ abstract class AbstractAction
         $this->error = array_merge($this->error, $check);
     }
 
-    /**
-     * Produces sending E-Mail
-     *
-     * @throws \PHPMailer\PHPMailer\Exception
-     *
-     * @return bool|\PHPMailer\PHPMailer\PHPMailer
-     */
-    protected function send_mail(array $data = [])
-    {
-        $data = array_merge(
-            $this->parameter(
-                [
-                    'smtp_from', 'smtp_from_name',
-                    'smtp_login', 'smtp_pass',
-                    'smtp_host', 'smtp_port',
-                    'smtp_secure',
-                    'subject',
-                ]
-            ),
-            $data
-        );
-
-        if ($data['smtp_host'] && $data['smtp_login'] && $data['smtp_pass']) {
-            return Mail::send($data);
-        }
-
-        return false;
-    }
-
     public function __invoke(Request $request, Response $response, array $args): Response
     {
         $this->request = $request;

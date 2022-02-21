@@ -36,14 +36,15 @@ class SendMailTask extends AbstractTask
         $args = array_merge(
             $this->parameter(
                 [
-                    'smtp_from', 'smtp_from_name',
+                    'mail_from', 'mail_from_name',
+                    'sendpulse_id', 'sendpulse_secret',
                     'smtp_login', 'smtp_pass',
                     'smtp_host', 'smtp_port',
                     'smtp_secure',
                 ]
             ),
             [
-                'subject' => $args['subject'] ? $args['subject'] : $this->parameter('smtp_subject', 'WebSpaceEngine | Default subject'),
+                'subject' => $args['subject'] ?: $this->parameter('mail_subject', 'WebSpaceEngine | Default subject'),
                 'to' => $args['to'],
                 'cc' => $args['cc'],
                 'bcc' => $args['bcc'],
@@ -54,20 +55,21 @@ class SendMailTask extends AbstractTask
             ]
         );
 
-        if ($args['smtp_host'] && $args['smtp_login'] && $args['smtp_pass']) {
+        if (
+            ($args['smtp_host'] && $args['smtp_login'] && $args['smtp_pass']) ||
+            ($args['sendpulse_id'] && $args['sendpulse_secret'])
+        ) {
             $mail = Mail::send($args);
 
             if ($mail !== false) {
-                if (!$mail->isError()) {
-                    $this->logger->info('Mail is sent', ['mailto' => $args['to']]);
-                    $this->setStatusDone('ok');
-                } else {
-                    $this->logger->warning('Mail will not sent', ['mailto' => $args['to'], 'error' => $mail->ErrorInfo]);
-                    $this->setStatusFail($mail->ErrorInfo);
-                }
-
-                return;
+                $this->logger->info('Mail is sent', ['mailto' => $args['to']]);
+                $this->setStatusDone('ok');
+            } else {
+                $this->logger->warning('Mail will not sent', ['mailto' => $args['to']]);
+                $this->setStatusFail();
             }
+
+            return;
         }
 
         $this->setStatusFail();

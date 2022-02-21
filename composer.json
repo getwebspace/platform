@@ -28,6 +28,7 @@
         "ramsey/uuid": "^4.2",
         "ramsey/uuid-doctrine": "^1.8.0",
         "phpmailer/phpmailer": "^v6.0",
+        "sendpulse/rest-api": "^1.0",
         "pragmarx/google2fa": "^v4.0",
         "phpoffice/phpspreadsheet": "^1.21",
         "bacon/bacon-qr-code": "^1.0",

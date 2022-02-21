@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "aae3a22a510af3ca246a5f03dc741b63",
+    "content-hash": "9713b4b925a241fae58c8a1c3f09e4e3",
     "packages": [
         {
             "name": "alksily/support",
@@ -3461,6 +3461,55 @@
                 }
             ],
             "time": "2021-09-17T21:39:05+00:00"
+        },
+        {
+            "name": "sendpulse/rest-api",
+            "version": "1.0.26",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sendpulse/sendpulse-rest-api-php.git",
+                "reference": "e20b957c9b3e88563f449622c1f963f81e47c2d8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sendpulse/sendpulse-rest-api-php/zipball/e20b957c9b3e88563f449622c1f963f81e47c2d8",
+                "reference": "e20b957c9b3e88563f449622c1f963f81e47c2d8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sendpulse\\RestApi\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Maksym Ustymenko",
+                    "email": "m.ustymenko@sendpulse.com"
+                },
+                {
+                    "name": "Alexey Moroz",
+                    "email": "a.moroz@sendpulse.com"
+                }
+            ],
+            "description": "Sendpulse REST API client library",
+            "keywords": [
+                "api",
+                "rest",
+                "sendpulse"
+            ],
+            "support": {
+                "issues": "https://github.com/sendpulse/sendpulse-rest-api-php/issues",
+                "source": "https://github.com/sendpulse/sendpulse-rest-api-php/tree/1.0.26"
+            },
+            "time": "2021-09-28T11:23:20+00:00"
         },
         {
             "name": "slim/http-cache",
