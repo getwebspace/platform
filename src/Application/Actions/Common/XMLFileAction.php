@@ -10,13 +10,13 @@ class XMLFileAction extends AbstractAction
     {
         $name = $this->resolveArg('name');
 
-        if ($name && in_array($name, ['yml', 'gmf', 'sitemap'], true)) {
+        if (in_array($name, ['yml', 'gmf', 'sitemap'], true)) {
             $path = VAR_DIR . '/xml/' . $name . '.xml';
 
             if (file_exists($path)) {
-                return $this->response
-                    ->withAddedHeader('Content-type', 'text/xml; charset=utf-8')
-                    ->write(file_get_contents(VAR_DIR . '/xml/' . $name . '.xml'));
+                $this->response->getBody()->write(file_get_contents(VAR_DIR . '/xml/' . $name . '.xml'));
+
+                return $this->response->withAddedHeader('Content-type', 'text/xml; charset=utf-8');
             }
         }
 

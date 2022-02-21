@@ -57,6 +57,8 @@ class PublicationRSS extends AbstractAction
             }
         }
 
-        return $this->response->withAddedHeader('Content-Type', 'application/rss+xml')->write($feed->render());
+        $this->response->getBody()->write($feed->render());
+
+        return $this->response->withAddedHeader('Content-Type', 'application/rss+xml');
     }
 }
