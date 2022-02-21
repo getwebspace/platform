@@ -17,7 +17,9 @@ class DataPreviewAction extends FormAction
             ]);
 
             if ($data) {
-                return $this->response->write($this->renderer->fetchFromString($data->getMessage()));
+                $this->response->getBody()->write($this->renderer->fetchFromString($data->getMessage()));
+
+                return $this->response;
             }
         }
 
