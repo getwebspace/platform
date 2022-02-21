@@ -235,10 +235,12 @@ class CatalogExportAction extends CatalogAction
                 ++$row;
             }
 
-            return $this->response
-                ->withAddedHeader('Content-type', 'application/vnd.ms-excel')
-                ->withAddedHeader('Content-Disposition', 'attachment; filename="export ' . date(\App\Domain\References\Date::DATETIME) . '.xls"')
-                ->write(\PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx')->save('php://output'));
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment; filename="export ' . date(\App\Domain\References\Date::DATETIME) . '.xls"');
+
+            \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx')->save('php://output');
+
+            exit;
         }
 
         return $this->response->withAddedHeader('Location', $_SERVER['HTTP_REFERER'] ?? '/cup/catalog/product')->withStatus(301);
