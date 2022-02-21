@@ -47,59 +47,52 @@ class SendNewsLetterMailTask extends AbstractTask
             $args
         );
 
-        if (
-            ($args['smtp_host'] && $args['smtp_login'] && $args['smtp_pass']) ||
-            ($args['sendpulse_id'] && $args['sendpulse_secret'])
-        ) {
-            $userService = $this->container->get(UserService::class);
-            $userSubscriberService = $this->container->get(UserSubscriberService::class);
+        $userService = $this->container->get(UserService::class);
+        $userSubscriberService = $this->container->get(UserSubscriberService::class);
 
-            // address list select
-            switch ($args['type']) {
-                case 'all':
-                    $list = collect()
-                        ->merge($userService->read(['status' => \App\Domain\Types\UserStatusType::STATUS_WORK, 'allow_mail' => true])->pluck('email')->all())
-                        ->merge($userSubscriberService->read()->pluck('email')->all())
-                        ->unique();
+        // address list select
+        switch ($args['type']) {
+            case 'all':
+                $list = collect()
+                    ->merge($userService->read(['status' => \App\Domain\Types\UserStatusType::STATUS_WORK, 'allow_mail' => true])->pluck('email')->all())
+                    ->merge($userSubscriberService->read()->pluck('email')->all())
+                    ->unique();
 
-                    break;
+                break;
 
-                case 'subscribers':
-                    $list = collect()
-                        ->merge($userSubscriberService->read()->pluck('email')->all());
+            case 'subscribers':
+                $list = collect()
+                    ->merge($userSubscriberService->read()->pluck('email')->all());
 
-                    break;
+                break;
 
-                case 'users':
-                    $list = collect()
-                        ->merge($userService->read(['status' => \App\Domain\Types\UserStatusType::STATUS_WORK, 'allow_mail' => true])->pluck('email')->all());
+            case 'users':
+                $list = collect()
+                    ->merge($userService->read(['status' => \App\Domain\Types\UserStatusType::STATUS_WORK, 'allow_mail' => true])->pluck('email')->all());
 
-                    break;
-            }
+                break;
+        }
 
-            if (isset($list)) {
-                $perPage = 5;
-                $count = ceil($list->count() / $perPage);
+        if (isset($list)) {
+            $perPage = 5;
+            $count = ceil($list->count() / $perPage);
 
-                for ($i = 0; $i < $count; ++$i) {
-                    foreach ($list->forPage($i, $perPage) as $email) {
-                        $mail = Mail::send(array_merge($args, ['to' => $email]));
+            for ($i = 0; $i < $count; ++$i) {
+                foreach ($list->forPage($i, $perPage) as $email) {
+                    $mail = Mail::send(array_merge($args, ['to' => $email]));
 
-                        if ($mail !== false) {
-                            $this->logger->info('Mail newsletter is sent', ['mailto' => $email]);
-                        } else {
-                            $this->logger->warning('Mail newsletter will not sent', ['mailto' => $email]);
-                        }
+                    if ($mail !== false) {
+                        $this->logger->info('Mail newsletter is sent', ['mailto' => $email]);
+                    } else {
+                        $this->logger->warning('Mail newsletter will not sent', ['mailto' => $email]);
                     }
-
-                    $this->setProgress($i, $count);
-                    sleep(10);
                 }
 
-                $this->setStatusDone();
+                $this->setProgress($i, $count);
+                sleep(10);
             }
-        } else {
-            $this->setStatusFail();
+
+            $this->setStatusDone();
         }
     }
 }

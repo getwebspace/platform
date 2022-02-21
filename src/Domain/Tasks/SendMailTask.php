@@ -55,23 +55,14 @@ class SendMailTask extends AbstractTask
             ]
         );
 
-        if (
-            ($args['smtp_host'] && $args['smtp_login'] && $args['smtp_pass']) ||
-            ($args['sendpulse_id'] && $args['sendpulse_secret'])
-        ) {
-            $mail = Mail::send($args);
+        $mail = Mail::send($args);
 
-            if ($mail !== false) {
-                $this->logger->info('Mail is sent', ['mailto' => $args['to']]);
-                $this->setStatusDone('ok');
-            } else {
-                $this->logger->warning('Mail will not sent', ['mailto' => $args['to']]);
-                $this->setStatusFail();
-            }
-
-            return;
+        if ($mail !== false) {
+            $this->logger->info('Mail is sent', ['mailto' => $args['to']]);
+            $this->setStatusDone('ok');
+        } else {
+            $this->logger->warning('Mail will not sent', ['mailto' => $args['to']]);
+            $this->setStatusFail();
         }
-
-        $this->setStatusFail();
     }
 }
