@@ -35,6 +35,7 @@ class FormService extends AbstractService
             'title' => '',
             'address' => '',
             'template' => '',
+            'templateFile' => '',
             'authorSend' => false,
             'recaptcha' => true,
             'origin' => [],
@@ -57,6 +58,7 @@ class FormService extends AbstractService
             ->setTitle($data['title'])
             ->setAddress($data['address'])
             ->setTemplate($data['template'])
+            ->setTemplateFile($data['templateFile'])
             ->setAuthorSend($data['authorSend'])
             ->setRecaptcha($data['recaptcha'])
             ->setOrigin($data['origin'])
@@ -146,6 +148,7 @@ class FormService extends AbstractService
                 'title' => null,
                 'address' => null,
                 'template' => null,
+                'templateFile' => null,
                 'authorSend' => null,
                 'recaptcha' => null,
                 'origin' => null,
@@ -175,6 +178,9 @@ class FormService extends AbstractService
                 }
                 if ($data['template'] !== null) {
                     $entity->setTemplate($data['template']);
+                }
+                if ($data['templateFile'] !== null) {
+                    $entity->setTemplateFile($data['templateFile']);
                 }
                 if ($data['authorSend'] !== null) {
                     $entity->setAuthorSend($data['authorSend']);

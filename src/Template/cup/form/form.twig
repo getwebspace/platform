@@ -64,10 +64,25 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         {% include 'cup/editor.twig' with {
-                                            'label': 'Шаблон письма',
+                                            'label': 'Шаблон письма'|locale,
                                             'name': 'template',
                                             'args': {
                                                 'value': item.template
+                                            }
+                                        } %}
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Шаблон письма'|locale,
+                                            'type': 'text',
+                                            'name': 'templateFile',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('Укажите название шаблона, который хотите использовать для данной формы или оставьте поле пустым')|locale ~ '"></i>',
+                                            'args': {
+                                                'value': item.templateFile,
+                                                'required': true,
+                                                'placeholder': 'mail.contact-form.twig',
+                                                'autocomplete':'off',
                                             }
                                         } %}
                                     </div>

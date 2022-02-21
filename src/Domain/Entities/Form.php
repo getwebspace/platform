@@ -90,6 +90,28 @@ class Form extends AbstractEntity
     }
 
     /**
+     * @ORM\Column(type="string", length=50, options={"default": ""})
+     */
+    protected string $templateFile = '';
+
+    /**
+     * @return $this
+     */
+    public function setTemplateFile(string $template): self
+    {
+        if ($this->checkStrLenMax($template, 50)) {
+            $this->templateFile = $template;
+        }
+
+        return $this;
+    }
+
+    public function getTemplateFile(): string
+    {
+        return $this->templateFile;
+    }
+
+    /**
      * @ORM\Column(type="boolean", options={"default": true})
      */
     protected bool $recaptcha = true;
