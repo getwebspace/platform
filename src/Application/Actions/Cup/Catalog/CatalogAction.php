@@ -92,7 +92,7 @@ const INVOICE_TEMPLATE = <<<'EOD'
                 Доставка: <b>{{ order.shipping|df('d.m.Y H:i') }}</b>
             </div>
             <div class="col-6 text-right">
-                {{ qr_code(base_url() ~ '/cart/done/' ~ order.uuid, 100, 100) }}
+                {{ qr_code(base_url() ~ '/cart/done/' ~ order.uuid, 100) }}
             </div>
         </div>
 
