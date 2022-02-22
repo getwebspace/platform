@@ -359,11 +359,9 @@ if (!function_exists('blank')) {
 
 if (!function_exists('__')) {
     /**
-     * @param array|Collection|string $singular
-     *
-     * @return array|string
+     * Locale helper
      */
-    function __($singular, ?string $plural = null, ?int $count = null)
+    function __(array|string|Collection $singular, ?string $plural = null, ?int $count = null): array|string|Collection
     {
         $string = $plural && $count > 1 ? $plural : $singular;
 
