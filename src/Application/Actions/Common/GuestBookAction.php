@@ -9,23 +9,33 @@ use App\Domain\Service\GuestBook\Exception\MissingMessageValueException;
 use App\Domain\Service\GuestBook\Exception\MissingNameValueException;
 use App\Domain\Service\GuestBook\Exception\WrongEmailValueException;
 use App\Domain\Service\GuestBook\GuestBookService;
+use App\Domain\Service\Notification\NotificationService;
 
 class GuestBookAction extends AbstractAction
 {
     protected function action(): \Slim\Psr7\Response
     {
         $guestBookService = $this->container->get(GuestBookService::class);
+        $notificationService = $this->container->get(NotificationService::class);
 
         if ($this->isPost()) {
             if ($this->isRecaptchaChecked()) {
                 try {
-                    $guestBookService->create([
+                    $item = $guestBookService->create([
                         'name' => $this->getParam('name'),
                         'email' => $this->getParam('email'),
                         'message' => $this->getParam('message'),
                     ]);
 
-                    // todo add admin notify
+                    // add notification
+                    if ($this->parameter('notification_is_enabled', 'yes') === 'yes') {
+                        $notificationService->create([
+                            'title' => 'Новый отзыв в гостевой книге',
+                            'params' => [
+                                'guestbook_uuid' => $item->getUuid(),
+                            ],
+                        ]);
+                    }
 
                     if (
                         (

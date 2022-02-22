@@ -9,6 +9,7 @@ use App\Domain\Entities\Form\Data as FromData;
 use App\Domain\Exceptions\HttpNotFoundException;
 use App\Domain\Service\Form\DataService as FormDataService;
 use App\Domain\Service\Form\FormService;
+use App\Domain\Service\Notification\NotificationService;
 
 class FormAction extends AbstractAction
 {
@@ -16,6 +17,8 @@ class FormAction extends AbstractAction
     {
         $formService = $this->container->get(FormService::class);
         $formDataService = $this->container->get(FormDataService::class);
+        $notificationService = $this->container->get(NotificationService::class);
+
         $form = $formService->read(['address' => $this->resolveArg('unique')]);
 
         /** @var Form $form */
@@ -113,6 +116,17 @@ class FormAction extends AbstractAction
                             'public' => $file->getPublicPath(),
                         ];
                     }
+                }
+
+                // add notification
+                if ($this->parameter('notification_is_enabled', 'yes') === 'yes') {
+                    $notificationService->create([
+                        'title' => 'Новый ответ в форме: ' . $form->getTitle(),
+                        'params' => [
+                            'form_uuid' => $form->getUuid(),
+                            'form_data_uuid' => $formData->getUuid(),
+                        ],
+                    ]);
                 }
 
                 // check if duplication is enabled
