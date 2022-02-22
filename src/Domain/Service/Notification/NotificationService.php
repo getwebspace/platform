@@ -5,7 +5,6 @@ namespace App\Domain\Service\Notification;
 use App\Domain\AbstractService;
 use App\Domain\Entities\Notification;
 use App\Domain\Repository\NotificationRepository;
-use App\Domain\Service\Notification\Exception\MissingMessageValueException;
 use App\Domain\Service\Notification\Exception\MissingTitleValueException;
 use App\Domain\Service\Notification\Exception\MissingUserUuidValueException;
 use App\Domain\Service\Notification\Exception\NotificationNotFoundException;
@@ -27,7 +26,6 @@ class NotificationService extends AbstractService
     /**
      * @throws MissingUserUuidValueException
      * @throws MissingTitleValueException
-     * @throws MissingMessageValueException
      */
     public function create(array $data = []): Notification
     {
@@ -45,9 +43,6 @@ class NotificationService extends AbstractService
         }
         if (!$data['title']) {
             throw new MissingTitleValueException();
-        }
-        if (!$data['message']) {
-            throw new MissingMessageValueException();
         }
 
         $file = (new Notification())
