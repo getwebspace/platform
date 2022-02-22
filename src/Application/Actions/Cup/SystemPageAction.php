@@ -14,76 +14,29 @@ class SystemPageAction extends AbstractAction
 
     protected function action(): \Slim\Psr7\Response
     {
-        /** @var User $user */
+        $access = false;
+
+        /** @var User|false $user */
         $user = $this->request->getAttribute('user', false);
-        $allow = false;
 
         // first install
         if (!file_exists(self::$lock_file)) {
-            $allow = true;
-        } else {
-            // need auth user, redirect
-            if ($user === false) {
-                return $this->respondWithRedirect('/cup/login?redirect=/cup/system');
-            }
+            $access = true;
         }
 
-        // already exist user
-        if (!$allow) {
+        // exist user
+        if (!$access) {
             if ($user->getGroup() !== null && in_array('cup:main', $user->getGroup()->getAccess(), true)) {
-                $allow = true;
+                $access = true;
             }
         }
 
         // ok, allow access to page
-        if ($allow) {
+        if ($access) {
             if ($this->isPost()) {
-                // database
-                if ($databaseAction = $this->getParam('database', '')) {
-                    $schema = new \Doctrine\ORM\Tools\SchemaTool($this->entityManager);
-
-                    switch ($databaseAction) {
-                        case 'create':
-                            $schema->createSchema($this->entityManager->getMetadataFactory()->getAllMetadata());
-
-                            break;
-
-                        case 'update':
-                            $schema->updateSchema($this->entityManager->getMetadataFactory()->getAllMetadata());
-
-                            break;
-
-                        case 'delete':
-                            $schema->dropSchema($this->entityManager->getMetadataFactory()->getAllMetadata());
-
-                            break;
-                    }
-                }
-
-                // user
-                if ($userData = $this->getParam('user', [])) {
-                    $userGroupService = $this->container->get(UserGroupService::class);
-                    $userService = $this->container->get(UserService::class);
-
-                    // create or read group
-                    try {
-                        $userData['group'] = $userGroupService->create([
-                            'title' => 'Администраторы',
-                            'access' => $this->getRoutes()->values()->all(),
-                        ]);
-                    } catch (TitleAlreadyExistsException $e) {
-                        $userData['group'] = $userGroupService->read([
-                            'title' => 'Администраторы',
-                        ]);
-                    }
-
-                    // create or update database
-                    if ($user !== false) {
-                        $userService->update($user, $userData);
-                    } else {
-                        $userService->create($userData);
-                    }
-                }
+                $this->setup_database();
+                $this->setup_user();
+                $this->setup_data();
 
                 // write lock file
                 file_put_contents(self::$lock_file, time());
@@ -100,6 +53,57 @@ class SystemPageAction extends AbstractAction
         return $this->respondWithRedirect('/cup/login?redirect=/cup/system');
     }
 
+    protected function setup_database()
+    {
+        if ($databaseAction = $this->getParam('database', '')) {
+            $schema = new \Doctrine\ORM\Tools\SchemaTool($this->entityManager);
+
+            switch ($databaseAction) {
+                case 'create':
+                    $schema->createSchema($this->entityManager->getMetadataFactory()->getAllMetadata());
+
+                    break;
+
+                case 'update':
+                    $schema->updateSchema($this->entityManager->getMetadataFactory()->getAllMetadata());
+
+                    break;
+
+                case 'delete':
+                    $schema->dropSchema($this->entityManager->getMetadataFactory()->getAllMetadata());
+
+                    break;
+            }
+        }
+    }
+
+    protected function setup_user()
+    {
+        if ($userData = $this->getParam('user', [])) {
+            $userGroupService = $this->container->get(UserGroupService::class);
+            $userService = $this->container->get(UserService::class);
+
+            // create or read group
+            try {
+                $userData['group'] = $userGroupService->create([
+                    'title' => 'Администраторы',
+                    'access' => $this->getRoutes()->values()->all(),
+                ]);
+            } catch (TitleAlreadyExistsException $e) {
+                $userData['group'] = $userGroupService->read([
+                    'title' => 'Администраторы',
+                ]);
+            }
+
+            // create user with administrator group
+            $userService->create($userData);
+        }
+    }
+
+    protected function setup_data()
+    {
+    }
+
     protected function self_check(): array
     {
         $fileAccess = [
@@ -114,7 +118,7 @@ class SystemPageAction extends AbstractAction
             SRC_LOCALE_DIR => 0o755,
             VIEW_DIR => 0o755,
             VIEW_ERROR_DIR => 0o755,
-            THEME_DIR => 0o776,
+            THEME_DIR => 0o777,
             VAR_DIR => 0o777,
             CACHE_DIR => 0o777,
             LOG_DIR => 0o777,

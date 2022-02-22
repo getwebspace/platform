@@ -1,57 +1,59 @@
 <form action="/cup/system/3" method="post" onsubmit="return confirm('Вы уверены?');">
-    <div class="card-body">
-        <h5 class="text-center">База данных</h5>
+    {% if user == null %}
+        <div class="card-body">
+            <h5 class="text-center">Пользователь</h5>
 
-        <div class="row justify-content-center my-3">
-            <div class="col-12">
-                <p class="text-center">
-                    Настройка нового (или обновление текущего) пользователя<br>
-                    с правами администратора.
-                </p>
+            <div class="row justify-content-center my-3">
+                <div class="col-12">
+                    <p class="text-center">
+                        Настройка нового пользователя<br>
+                        с правами администратора.
+                    </p>
 
-                {% include 'cup/form.twig' with {
-                    'label': 'Логин',
-                    'type': 'text',
-                    'name': 'user[username]',
-                    'args': {
-                        'required': true,
-                        'placeholder': 'administrator',
-                        'value': user.username ?? 'administrator'
-                    }
-                } %}
-                {% include 'cup/form.twig' with {
-                    'label': 'E-Mail',
-                    'type': 'email',
-                    'name': 'user[email]',
-                    'args': {
-                        'required': true,
-                        'placeholder': 'administrator@example.com',
-                        'value': user.email
-                    }
-                } %}
-                {% include 'cup/form.twig' with {
-                    'label': 'Пароль',
-                    'type': 'password',
-                    'name': 'user[password]',
-                    'args': {
-                        'required': true,
-                    }
-                } %}
+                    {% include 'cup/form.twig' with {
+                        'label': 'Логин',
+                        'type': 'text',
+                        'name': 'user[username]',
+                        'args': {
+                            'required': true,
+                            'placeholder': 'administrator',
+                            'value': user.username ?? 'administrator'
+                        }
+                    } %}
+                    {% include 'cup/form.twig' with {
+                        'label': 'E-Mail',
+                        'type': 'email',
+                        'name': 'user[email]',
+                        'args': {
+                            'required': true,
+                            'placeholder': 'administrator@example.com',
+                            'value': user.email
+                        }
+                    } %}
+                    {% include 'cup/form.twig' with {
+                        'label': 'Пароль',
+                        'type': 'password',
+                        'name': 'user[password]',
+                        'args': {
+                            'required': true,
+                        }
+                    } %}
+                </div>
             </div>
         </div>
-    </div>
+    {% endif %}
 
     <div class="card-footer text-center">
         <p>Действия с базой данных</p>
 
         <div class="d-flex justify-content-center">
-            <button type="submit" name="database" value="create" class="btn btn-primary mr-1">
+            <button type="submit" name="database" value="create" class="btn {{ user == null ? 'btn-primary' : 'btn-secondary' }} mx-1">
                 Создать
             </button>
-            <button type="submit" name="database" value="update" class="btn btn-secondary mr-1">
+            <button type="submit" name="database" value="update" class="btn {{ user == null ? 'btn-secondary' : 'btn-primary' }} mx-1">
                 Обновить
             </button>
-            <button type="submit" name="database" value="delete" class="btn btn-danger">
+            <button type="submit" name="database" value="delete" class="btn btn-danger mx-1">
                 Удалить
             </button>
         </div>
