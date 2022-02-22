@@ -53,7 +53,7 @@ class GuestBookService extends AbstractService
             throw new MissingMessageValueException();
         }
 
-        $file = (new GuestBook())
+        $item = (new GuestBook())
             ->setName($data['name'])
             ->setEmail($data['email'])
             ->setMessage($data['message'])
@@ -61,10 +61,10 @@ class GuestBookService extends AbstractService
             ->setStatus($data['status'])
             ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
 
-        $this->entityManager->persist($file);
+        $this->entityManager->persist($item);
         $this->entityManager->flush();
 
-        return $file;
+        return $item;
     }
 
     /**
