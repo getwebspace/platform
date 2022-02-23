@@ -77,11 +77,11 @@
                             {% embed 'mixin/datatable.twig' %}
                                 {% block thead %}
                                     <tr>
-                                        <th width="10%">№ Заказа</th>
+                                        <th width="10%">#</th>
                                         <th>Клиент</th>
-                                        <th width="10%">Статус</th>
-                                        <th width="15%">Дата добавления</th>
-                                        <th width="15%" class="text-center no-sorting"></th>
+                                        <th width="15%">Статус</th>
+                                        <th width="15%" class="d-none d-md-table-cell">Дата добавления</th>
+                                        <th width="30%" class="text-right"></th>
                                     </tr>
                                 {% endblock %}
 
@@ -96,11 +96,11 @@
                                                 {% endif %}
                                             </td>
                                             <td>{{ item.user and item.user.getName() ? item.user.getName() : item.delivery.client }}</td>
-                                            <td width="10%">
-                                                <span class="badge badge-secondary">{{ item.status }}</span>
+                                            <td width="15%">
+                                                <span class="badge badge-secondary">{{ item.status|locale }}</span>
                                             </td>
-                                            <td width="15%" data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i') }}</td>
-                                            <td width="15%" class="text-center">
+                                            <td width="15%" class="d-none d-md-table-cell" data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i') }}</td>
+                                            <td width="30%" class="text-right">
                                                 <form action="/cup/catalog/order/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить заказ?');">
                                                     <div class="btn-group">
                                                         <a href="/cup/catalog/order/{{ item.uuid }}/invoice" class="btn btn-sm btn-outline-info">

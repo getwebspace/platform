@@ -28,8 +28,8 @@
                         {% block thead %}
                             <tr>
                                 <th>E-Mail</th>
-                                <th width="20%">Дата добавления</th>
-                                <th width="15%" class="text-center"></th>
+                                <th width="15%" class="d-none d-md-table-cell">Дата добавления</th>
+                                <th width="20%" class="text-right"></th>
                             </tr>
                         {% endblock %}
 
@@ -37,8 +37,8 @@
                             {% for item in list.sortByDesc('date') %}
                                 <tr>
                                     <td>{{ item.email }}</td>
-                                    <td width="20%" data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i:s') }}</td>
-                                    <td width="15%" class="text-center">
+                                    <td width="15%" class="d-none d-md-table-cell">{{ item.date|df('d.m.Y H:i:s') }}</td>
+                                    <td width="20%" class="text-right">
                                         <form action="/cup/user/subscriber/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить адрес подписчика?');">
                                             <div class="btn-group">
                                                 <button type="submit" class="btn btn-sm btn-danger">

@@ -28,8 +28,8 @@
                         {% block thead %}
                             <tr>
                                 <th>{{ 'Заголовок'|locale }}</th>
-                                <th width="15%">{{ 'Дата публикации'|locale }}</th>
-                                <th width="15%" class="text-center"></th>
+                                <th width="15%" class="d-none d-md-table-cell">{{ 'Дата публикации'|locale }}</th>
+                                <th width="25%" class="text-right"></th>
                             </tr>
                         {% endblock %}
 
@@ -37,8 +37,8 @@
                             {% for item in list.sortByDesc('date') %}
                                 <tr>
                                     <td>{{ item.title }}</td>
-                                    <td width="15%" data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i') }}</td>
-                                    <td width="15%" class="text-center">
+                                    <td width="15%" class="d-none d-md-table-cell">{{ item.date|df('d.m.Y H:i') }}</td>
+                                    <td width="25%" class="text-right">
                                         <form action="/cup/page/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Вы действительно хотите удалить страницу?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/page/{{ item.uuid }}/edit" class="btn btn-sm btn-info">

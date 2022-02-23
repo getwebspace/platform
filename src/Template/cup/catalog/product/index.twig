@@ -41,20 +41,17 @@
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
                             <tr>
-                                <th class="d-none">#</th>
                                 <th>Наименование</th>
-                                <th width="10%">Цена</th>
+                                <th width="10%" class="text-right">Цена</th>
                                 <th width="7%" class="text-center"><i class="fas fa-boxes" data-toggle="tooltip" data-placement="top" title="Объем упаковки"></i></th>
-                                <th width="7%" class="text-center"><i class="fas fa-warehouse" data-toggle="tooltip" data-placement="top" title="Количество на складе"></i></th>
                                 <th width="10%">Артикул</th>
-                                <th width="15%" class="text-center"></th>
+                                <th width="25%" class="text-right"></th>
                             </tr>
                         {% endblock %}
 
                         {% block tbody %}
                             {% for item in products.sortBy('order') %}
                                 <tr>
-                                    <td class="text-center d-none">{{ item.order }}</td>
                                     <td>
                                         {{ item.title }}
 
@@ -64,11 +61,10 @@
                                             {% endif %}
                                         </div>
                                     </td>
-                                    <td width="10%" class="text-right text-nowrap" data-order="{{ item.price }}">
+                                    <td width="10%" class="text-right" data-order="{{ item.price }}">
                                         {{ item.price|number_format(2, '.', ' ') }} {{ item.tax ? '[+'~ item.tax ~'%]'}}
                                     </td>
                                     <td width="7%" class="text-center" data-order="{{ item.volume }}">{{ item.getVolumeWithUnit() }}</td>
-                                    <td width="7%" class="text-center" data-order="{{ item.stock }}">{{ item.stock|format_number({fraction_digit: 2}) }}</td>
                                     <td width="10%">
                                         {% if item.vendorcode %}
                                             <div>{{ item.vendorcode }}</div>
@@ -80,7 +76,7 @@
                                             </div>
                                         {% endif %}
                                     </td>
-                                    <td width="15%" class="text-center">
+                                    <td width="25%" class="text-right">
                                         <form action="/cup/catalog/product/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить продукт?');">
                                             <div class="btn-group">
                                                 <a href="/cup/catalog/product/{{ item.uuid }}/edit" class="btn btn-sm btn-info">

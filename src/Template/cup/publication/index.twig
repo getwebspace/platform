@@ -28,10 +28,10 @@
                         {% block thead %}
                             <tr>
                                 <th>Заголовок</th>
-                                <th width="15%">Категория</th>
-                                <th width="15%">Автор</th>
-                                <th width="15%">Дата публикации</th>
-                                <th width="15%" class="text-center"></th>
+                                <th width="20%">Категория</th>
+                                <th width="15%" class="d-none d-md-table-cell">Автор</th>
+                                <th width="15%" class="d-none d-md-table-cell">Дата публикации</th>
+                                <th width="25%" class="text-right"></th>
                             </tr>
                         {% endblock %}
 
@@ -39,10 +39,10 @@
                             {% for item in publications.sortByDesc('date') %}
                                 <tr>
                                     <td>{{ item.title }}</td>
-                                    <td width="15%">{{ item.category.title }}</td>
-                                    <td width="15%">{{ item.user.getName('short') }}</td>
-                                    <td width="15%" data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i') }}</td>
-                                    <td width="15%" class="text-center">
+                                    <td width="20%">{{ item.category.title }}</td>
+                                    <td width="15%" class="d-none d-md-table-cell">{{ item.user.getName('short') }}</td>
+                                    <td width="15%" class="d-none d-md-table-cell">{{ item.date|df('d.m.Y H:i') }}</td>
+                                    <td width="25%" class="text-right">
                                         <form action="/cup/publication/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить публикацию?');">
                                             <div class="btn-group">
                                                 <a href="/cup/publication/{{ item.uuid }}/edit" class="btn btn-sm btn-info">

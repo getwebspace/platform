@@ -28,8 +28,8 @@
                         {% block thead %}
                             <tr>
                                 <th>Наименование</th>
-                                <th width="20%">Адрес</th>
-                                <th width="15%" class="text-center no-sorting"></th>
+                                <th width="35%" class="d-none d-md-table-cell">Адрес</th>
+                                <th width="25%" class="text-right"></th>
                             </tr>
                         {% endblock %}
 
@@ -37,7 +37,7 @@
                             {% for item in attributes %}
                                 <tr>
                                     <td>{{ item.title }}</td>
-                                    <td width="20%">
+                                    <td width="35%" class="d-none d-md-table-cell">
                                         {% include 'cup/form.twig' with {
                                             'type': 'text',
                                             'args': {
@@ -46,7 +46,7 @@
                                             }
                                         } %}
                                     </td>
-                                    <td width="15%" class="text-center">
+                                    <td width="25%" class="text-right">
                                         <form action="/cup/catalog/attribute/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить аттрибут?');">
                                             <div class="btn-group">
                                                 <a href="/cup/catalog/attribute/{{ item.uuid }}/edit" class="btn btn-sm btn-info">

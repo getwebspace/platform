@@ -24,23 +24,18 @@
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
                             <tr>
-                                <th width="10%" class="text-center">Статус</th>
+                                <th width="15%" class="text-left">Статус</th>
                                 <th>Имя</th>
-                                <th width="15%">Дата создания</th>
-                                <th width="15%" class="text-center"></th>
+                                <th width="15%" class="d-none d-md-table-cell">Дата создания</th>
+                                <th width="25%" class="text-right"></th>
                             </tr>
                         {% endblock %}
 
                         {% block tbody %}
                             {% for item in list.sortByDesc('date') %}
                                 <tr>
-                                    <td width="10%" class="text-center">
-                                        {% if item.status == 'work' %}
-                                            <span class="badge badge-default">Активный</span>
-                                        {% endif %}
-                                        {% if item.status == 'moderate' %}
-                                            <span class="badge badge-secondary">Новый</span>
-                                        {% endif %}
+                                    <td width="15%" class="text-left">
+                                        <span class="badge badge-default">{{item.status|locale}}</span>
                                     </td>
                                     <td>
                                         {{ item.name }}
@@ -51,8 +46,8 @@
                                             </a>
                                         {% endif %}
                                     </td>
-                                    <td width="15%" data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i:s') }}</td>
-                                    <td width="15%" class="text-center">
+                                    <td width="15%" class="d-none d-md-table-cell">{{ item.date|df('d.m.Y H:i:s') }}</td>
+                                    <td width="25%" class="text-right">
                                         <form action="/cup/guestbook/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить запись?');">
                                             <div class="btn-group">
                                                 <a href="/cup/guestbook/{{ item.uuid }}/edit" class="btn btn-sm btn-info">

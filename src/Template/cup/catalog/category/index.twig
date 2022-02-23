@@ -32,20 +32,18 @@
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
                             <tr>
-                                <th class="d-none">#</th>
                                 <th>Наименование</th>
                                 <th width="15%">Категория</th>
-                                <th width="15%" class="text-center no-sorting"></th>
+                                <th width="40%" class="text-right"></th>
                             </tr>
                         {% endblock %}
 
                         {% block tbody %}
                             {% for category in categories.where('parent', category ? category.uuid : NIL).sortBy('order') %}
                                 <tr>
-                                    <td class="text-center d-none">{{ category.order }}</td>
                                     <td>{{ category.title }}</td>
                                     <td width="15%">{{ categories.where('uuid', category.parent).first().title ?? '&mdash;' }}</td>
-                                    <td width="15%" class="text-center">
+                                    <td width="40%" class="text-right">
                                         <form action="/cup/catalog/category/{{ category.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить категорию?');">
                                             <div class="btn-group">
                                                 <a href="/cup/catalog/category/{{ category.uuid }}" class="btn btn-sm btn-outline-info">

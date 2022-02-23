@@ -29,32 +29,20 @@
                         {% block thead %}
                             <tr>
                                 <th>Название</th>
-                                <th width="20%">E-Mail адреса получателей</th>
-                                <th width="20%">Обработчик формы</th>
-                                <th width="15%" class="text-center"></th>
+                                <th width="20%" class="d-none d-md-table-cell">E-Mail адреса получателей</th>
+                                <th width="35%" class="text-right"></th>
                             </tr>
                         {% endblock %}
 
                         {% block tbody %}
                             {% for item in list %}
                                 <tr>
-                                    <td>
-                                        {{ item.title }}
-                                    </td>
-                                    <td width="20%">
+                                    <td>{{ item.title }}</td>
+                                    <td width="20%" class="d-none d-md-table-cell">
                                         {{ item.mailto|join('<br>+ ')|raw }}
                                         {{ item.authorSend ? '<br>+ заявитель' }}
                                     </td>
-                                    <td width="20%">
-                                        {% include 'cup/form.twig' with {
-                                            'type': 'text',
-                                            'args': {
-                                                'value': '/form/' ~ item.address,
-                                                'readonly': true
-                                            }
-                                        } %}
-                                    </td>
-                                    <td width="15%" class="text-center">
+                                    <td width="35%" class="text-right">
                                         <form action="/cup/form/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить форму?');">
                                             <div class="btn-group">
                                                 <a href="/cup/form/{{ item.uuid }}/view" class="btn btn-sm btn-outline-info">

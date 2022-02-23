@@ -28,9 +28,9 @@
                         {% block thead %}
                             <tr>
                                 <th>Название</th>
-                                <th width="10%">Пользователей</th>
-                                <th width="20%">Права доступа</th>
-                                <th width="15%" class="text-center"></th>
+                                <th width="10%" class="d-none d-md-table-cell">Пользователей</th>
+                                <th width="20%" class="d-none d-md-table-cell">Права доступа</th>
+                                <th width="25%" class="text-right"></th>
                             </tr>
                         {% endblock %}
 
@@ -39,8 +39,8 @@
                                 {% set users_in_group = users.where('group', group)|count %}
                                 <tr>
                                     <td>{{ group.title }}</td>
-                                    <td width="10%" class="text-center">{{ users_in_group }}</td>
-                                    <td width="20%">
+                                    <td width="10%" class="text-center d-none d-md-table-cell">{{ users_in_group }}</td>
+                                    <td width="20%" class="d-none d-md-table-cell">
                                         <code>
                                             {% if group.access %}
                                                 Прав доступно: {{ group.access|count }}
@@ -49,7 +49,7 @@
                                             {% endif %}
                                         </code>
                                     </td>
-                                    <td width="15%" class="text-center">
+                                    <td width="25%" class="text-right">
                                         <form action="/cup/user/group/{{ group.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить группу?');">
                                             <div class="btn-group">
                                                 <a href="/cup/user/group/{{ group.uuid }}/edit" class="btn btn-sm btn-info">
