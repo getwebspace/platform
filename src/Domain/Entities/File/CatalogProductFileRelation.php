@@ -14,7 +14,7 @@ class CatalogProductFileRelation extends FileRelation
 {
     /**
      * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Catalog\Product", inversedBy="files")
-     * @ORM\JoinColumn(name="entity_uuid", referencedColumnName="uuid", nullable=true)
+     * @ORM\JoinColumn(name="entity_uuid", referencedColumnName="uuid")
      */
     protected CatalogProduct $catalog_product;
 

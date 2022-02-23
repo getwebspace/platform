@@ -84,7 +84,7 @@ class ProductUpdateAction extends CatalogAction
                     'category' => $categories->firstWhere('uuid', $product->getCategory()),
                     'categories' => $categories,
                     'attributes' => $attributes,
-                    'measure' => $this->getMeasure(),
+                    'measure' => $this->catalogMeasureService->read(),
                     'item' => $product,
                 ]);
             }

@@ -5,6 +5,7 @@ namespace App\Application\Actions\Cup\Catalog;
 use App\Domain\AbstractAction;
 use App\Domain\Service\Catalog\AttributeService as CatalogAttributeService;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
+use App\Domain\Service\Catalog\MeasureService as CatalogMeasureService;
 use App\Domain\Service\Catalog\OrderProductService as CatalogOrderProductService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
 use App\Domain\Service\Catalog\ProductAttributeService as CatalogProductAttributeService;
@@ -12,7 +13,6 @@ use App\Domain\Service\Catalog\ProductRelationService as CatalogProductRelationS
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\Notification\NotificationService;
 use App\Domain\Service\User\UserService;
-use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 
 abstract class CatalogAction extends AbstractAction
@@ -33,6 +33,8 @@ abstract class CatalogAction extends AbstractAction
 
     protected CatalogOrderProductService $catalogOrderProductService;
 
+    protected CatalogMeasureService $catalogMeasureService;
+
     protected NotificationService $notificationService;
 
     /**
@@ -50,30 +52,8 @@ abstract class CatalogAction extends AbstractAction
         $this->catalogProductRelationService = $container->get(CatalogProductRelationService::class);
         $this->catalogOrderService = $container->get(CatalogOrderService::class);
         $this->catalogOrderProductService = $container->get(CatalogOrderProductService::class);
+        $this->catalogMeasureService = $container->get(CatalogMeasureService::class);
         $this->notificationService = $container->get(NotificationService::class);
-    }
-
-    /**
-     * @param bool $list
-     * if false return key:value
-     * if true return key:list
-     *
-     * @return Collection
-     */
-    protected function getMeasure($list = false)
-    {
-        $measure = $this->parameter('catalog_measure');
-        $result = [];
-
-        if ($measure) {
-            preg_match_all('/([\w\d]+)\:\s?([\w\d]+)\;\s?([\w\d]+)\;\s?([\w\d]+)(?>\s|$)/u', $measure, $matches);
-
-            foreach ($matches[1] as $index => $key) {
-                $result[$key] = $list ? [$matches[2][$index], $matches[3][$index], $matches[4][$index]] : $matches[2][$index];
-            }
-        }
-
-        return collect($result);
     }
 }
 

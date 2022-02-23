@@ -80,7 +80,7 @@ class ProductCreateAction extends CatalogAction
             'category' => $categories->firstWhere('uuid', $category),
             'categories' => $categories,
             'attributes' => $attributes,
-            'measure' => $this->getMeasure(),
+            'measure' => $this->catalogMeasureService->read(),
         ]);
     }
 }

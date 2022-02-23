@@ -14,7 +14,7 @@ class PublicationFileRelation extends FileRelation
 {
     /**
      * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Publication", inversedBy="files")
-     * @ORM\JoinColumn(name="entity_uuid", referencedColumnName="uuid", nullable=true)
+     * @ORM\JoinColumn(name="entity_uuid", referencedColumnName="uuid")
      */
     protected Publication $publication;
 

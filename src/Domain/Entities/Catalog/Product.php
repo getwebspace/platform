@@ -21,7 +21,7 @@ use Ramsey\Uuid\UuidInterface as Uuid;
  *         @ORM\Index(name="catalog_product_order_idx", columns={"order"})
  *     },
  *     uniqueConstraints={
- *         @ORM\UniqueConstraint(name="catalog_product_unique", columns={"category", "address", "external_id"})
+ *         @ORM\UniqueConstraint(name="catalog_product_unique", columns={"category", "address", "volume", "unit", "external_id"})
  *     }
  * )
  */
@@ -48,12 +48,7 @@ class Product extends AbstractEntity
      */
     protected $category = \Ramsey\Uuid\Uuid::NIL;
 
-    /**
-     * @param string|Uuid $uuid
-     *
-     * @return $this
-     */
-    public function setCategory($uuid)
+    public function setCategory(mixed $uuid): self
     {
         $this->category = $this->getUuidByValue($uuid);
 
@@ -70,10 +65,7 @@ class Product extends AbstractEntity
      */
     protected string $title = '';
 
-    /**
-     * @return $this
-     */
-    public function setTitle(string $title)
+    public function setTitle(string $title): self
     {
         if ($this->checkStrLenMax($title, 255)) {
             $this->title = $title;
@@ -94,10 +86,7 @@ class Product extends AbstractEntity
      */
     protected string $type = \App\Domain\Types\Catalog\ProductTypeType::TYPE_PRODUCT;
 
-    /**
-     * @return $this
-     */
-    public function setType(string $type)
+    public function setType(string $type): self
     {
         if (in_array($type, \App\Domain\Types\Catalog\ProductTypeType::LIST, true)) {
             $this->type = $type;
@@ -116,10 +105,7 @@ class Product extends AbstractEntity
      */
     protected string $description = '';
 
-    /**
-     * @return $this
-     */
-    public function setDescription(string $description)
+    public function setDescription(string $description): self
     {
         if ($this->checkStrLenMax($description, 10000)) {
             $this->description = $description;
@@ -138,10 +124,7 @@ class Product extends AbstractEntity
      */
     protected string $extra = '';
 
-    /**
-     * @return $this
-     */
-    public function setExtra(string $extra)
+    public function setExtra(string $extra): self
     {
         if ($this->checkStrLenMax($extra, 10000)) {
             $this->extra = $extra;
@@ -160,10 +143,7 @@ class Product extends AbstractEntity
      */
     protected string $address = '';
 
-    /**
-     * @return $this
-     */
-    public function setAddress(string $address)
+    public function setAddress(string $address): self
     {
         if ($this->checkStrLenMax($address, 1000)) {
             $this->address = $this->getAddressByValue($address, str_replace('/', '-', $this->getTitle()));
@@ -182,10 +162,7 @@ class Product extends AbstractEntity
      */
     protected string $vendorcode = '';
 
-    /**
-     * @return $this
-     */
-    public function setVendorCode(string $value)
+    public function setVendorCode(string $value): self
     {
         if ($this->checkStrLenMax($value, 255)) {
             $this->vendorcode = $value;
@@ -194,10 +171,7 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getVendorCode()
+    public function getVendorCode(): string
     {
         return $this->vendorcode;
     }
@@ -207,10 +181,7 @@ class Product extends AbstractEntity
      */
     protected string $barcode = '';
 
-    /**
-     * @return $this
-     */
-    public function setBarCode(string $value)
+    public function setBarCode(string $value): self
     {
         if ($this->checkStrLenMax($value, 255)) {
             $this->barcode = $value;
@@ -219,10 +190,7 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getBarCode()
+    public function getBarCode(): string
     {
         return $this->barcode;
     }
@@ -232,10 +200,7 @@ class Product extends AbstractEntity
      */
     protected float $tax = .00;
 
-    /**
-     * @return $this
-     */
-    public function setTax(float $value)
+    public function setTax(float $value): self
     {
         $this->tax = $value;
 
@@ -254,10 +219,7 @@ class Product extends AbstractEntity
      */
     protected float $priceFirst = .00;
 
-    /**
-     * @return $this
-     */
-    public function setPriceFirst(float $value)
+    public function setPriceFirst(float $value): self
     {
         $this->priceFirst = $value;
 
@@ -274,10 +236,7 @@ class Product extends AbstractEntity
      */
     protected float $price = .00;
 
-    /**
-     * @return $this
-     */
-    public function setPrice(float $value)
+    public function setPrice(float $value): self
     {
         $this->price = $value;
 
@@ -296,10 +255,7 @@ class Product extends AbstractEntity
      */
     protected float $priceWholesale = .00;
 
-    /**
-     * @return $this
-     */
-    public function setPriceWholesale(float $value)
+    public function setPriceWholesale(float $value): self
     {
         $this->priceWholesale = $value;
 
@@ -316,12 +272,7 @@ class Product extends AbstractEntity
      */
     protected bool $special = false;
 
-    /**
-     * @param mixed $value
-     *
-     * @return $this
-     */
-    public function setSpecial($value)
+    public function setSpecial(mixed $value): self
     {
         $this->special = $this->getBooleanByValue($value);
 
@@ -338,10 +289,7 @@ class Product extends AbstractEntity
      */
     protected float $volume = 1.00;
 
-    /**
-     * @return $this
-     */
-    public function setVolume(float $value)
+    public function setVolume(float $value): self
     {
         $this->volume = $value;
 
@@ -354,14 +302,11 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="string", options={"default": "kg"})
+     * @ORM\Column(type="string", length=64, options={"default": ""})
      */
-    protected string $unit = 'kg';
+    protected string $unit = '';
 
-    /**
-     * @return $this
-     */
-    public function setUnit(string $value)
+    public function setUnit(string $value): self
     {
         if ($this->checkStrLenMax($value, 255)) {
             $this->unit = $value;
@@ -375,15 +320,17 @@ class Product extends AbstractEntity
         return $this->unit;
     }
 
+    public function getVolumeWithUnit(): string
+    {
+        return ($this->volume ?? .0) . ($this->unit ?: '');
+    }
+
     /**
      * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
      */
     protected float $stock = .00;
 
-    /**
-     * @return $this
-     */
-    public function setStock(float $value)
+    public function setStock(float $value): self
     {
         $this->stock = $value;
 
@@ -400,10 +347,7 @@ class Product extends AbstractEntity
      */
     protected string $field1 = '';
 
-    /**
-     * @return $this
-     */
-    public function setField1(string $value)
+    public function setField1(string $value): self
     {
         if ($this->checkStrLenMax($value, 512)) {
             $this->field1 = $value;
@@ -422,10 +366,7 @@ class Product extends AbstractEntity
      */
     protected string $field2 = '';
 
-    /**
-     * @return $this
-     */
-    public function setField2(string $value)
+    public function setField2(string $value): self
     {
         if ($this->checkStrLenMax($value, 512)) {
             $this->field2 = $value;
@@ -444,10 +385,7 @@ class Product extends AbstractEntity
      */
     protected string $field3 = '';
 
-    /**
-     * @return $this
-     */
-    public function setField3(string $value)
+    public function setField3(string $value): self
     {
         if ($this->checkStrLenMax($value, 512)) {
             $this->field3 = $value;
@@ -466,10 +404,7 @@ class Product extends AbstractEntity
      */
     protected string $field4 = '';
 
-    /**
-     * @return $this
-     */
-    public function setField4(string $value)
+    public function setField4(string $value): self
     {
         if ($this->checkStrLenMax($value, 512)) {
             $this->field4 = $value;
@@ -488,10 +423,7 @@ class Product extends AbstractEntity
      */
     protected string $field5 = '';
 
-    /**
-     * @return $this
-     */
-    public function setField5(string $value)
+    public function setField5(string $value): self
     {
         if ($this->checkStrLenMax($value, 512)) {
             $this->field5 = $value;
@@ -514,7 +446,7 @@ class Product extends AbstractEntity
     /**
      * @return int
      */
-    public function hasAttributes()
+    public function hasAttributes(): int
     {
         return count($this->attributes);
     }
@@ -534,10 +466,7 @@ class Product extends AbstractEntity
      */
     protected string $country = '';
 
-    /**
-     * @return $this
-     */
-    public function setCountry(string $value)
+    public function setCountry(string $value): self
     {
         if ($this->checkStrLenMax($value, 255)) {
             $this->country = $value;
@@ -556,10 +485,7 @@ class Product extends AbstractEntity
      */
     protected string $manufacturer = '';
 
-    /**
-     * @return $this
-     */
-    public function setManufacturer(string $value)
+    public function setManufacturer(string $value): self
     {
         if ($this->checkStrLenMax($value, 255)) {
             $this->manufacturer = $value;
@@ -578,12 +504,7 @@ class Product extends AbstractEntity
      */
     protected array $tags = [];
 
-    /**
-     * @param array|string $tags
-     *
-     * @return $this
-     */
-    public function setTags(array|string $tags)
+    public function setTags(array|string $tags): self
     {
         if (is_string($tags)) {
             $tags = explode(',', $tags);
@@ -600,8 +521,7 @@ class Product extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\ProductRelation", mappedBy="product",
-     *                                                                            orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\ProductRelation", mappedBy="product", orphanRemoval=true)
      */
     protected $relation = [];
 
@@ -610,15 +530,14 @@ class Product extends AbstractEntity
         return $raw ? $this->relation : collect($this->relation);
     }
 
-    public function hasRelations()
+    public function hasRelations(): int
     {
         return count($this->relation);
     }
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\ProductRelation", mappedBy="related",
-     *                                                                            orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\ProductRelation", mappedBy="related", orphanRemoval=true)
      */
     protected $related = [];
 
@@ -627,7 +546,7 @@ class Product extends AbstractEntity
         return $raw ? $this->related : collect($this->related);
     }
 
-    public function hasRelated()
+    public function hasRelated(): int
     {
         return count($this->related);
     }
@@ -637,10 +556,7 @@ class Product extends AbstractEntity
      */
     protected int $order = 1;
 
-    /**
-     * @return $this
-     */
-    public function setOrder(int $order)
+    public function setOrder(int $order): self
     {
         $this->order = $order;
 
@@ -659,10 +575,7 @@ class Product extends AbstractEntity
      */
     protected string $status = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
 
-    /**
-     * @return $this
-     */
-    public function setStatus(string $status)
+    public function setStatus(string $status): self
     {
         if (in_array($status, \App\Domain\Types\Catalog\ProductStatusType::LIST, true)) {
             $this->status = $status;
@@ -671,10 +584,7 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getStatus()
+    public function getStatus(): string
     {
         return $this->status;
     }
@@ -684,25 +594,14 @@ class Product extends AbstractEntity
      */
     protected DateTime $date;
 
-    /**
-     * @param       $date
-     * @param mixed $timezone
-     *
-     * @throws \Exception
-     *
-     * @return $this
-     */
-    public function setDate($date, $timezone = 'UTC')
+    public function setDate($date, mixed $timezone = 'UTC'): self
     {
         $this->date = $this->getDateTimeByValue($date, $timezone);
 
         return $this;
     }
 
-    /**
-     * @return DateTime
-     */
-    public function getDate()
+    public function getDate(): DateTime
     {
         return $this->date;
     }
@@ -716,10 +615,7 @@ class Product extends AbstractEntity
         'keywords' => '',
     ];
 
-    /**
-     * @return $this
-     */
-    public function setMeta(array $data)
+    public function setMeta(array $data): self
     {
         $default = [
             'title' => '',
@@ -747,10 +643,7 @@ class Product extends AbstractEntity
      */
     protected string $external_id = '';
 
-    /**
-     * @return $this
-     */
-    public function setExternalId(string $external_id)
+    public function setExternalId(string $external_id): self
     {
         if ($this->checkStrLenMax($external_id, 255)) {
             $this->external_id = $external_id;
@@ -769,10 +662,7 @@ class Product extends AbstractEntity
      */
     protected string $export = 'manual';
 
-    /**
-     * @return Product
-     */
-    public function setExport(string $export)
+    public function setExport(string $export): self
     {
         $this->export = $export;
 
@@ -785,9 +675,9 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @var mixed буфурное поле для обработки интеграций
+     * @var mixed temp variable
      */
-    public $buf;
+    public mixed $buf;
 
     /**
      * @var array
@@ -796,12 +686,4 @@ class Product extends AbstractEntity
      * @ORM\OrderBy({"order": "ASC"})
      */
     protected $files = [];
-
-    /**
-     * @return string
-     */
-    public function getVolumeWithUnit()
-    {
-        return ($this->volume ?? .0) . ($this->unit !== 'null' ? $this->unit : '');
-    }
 }

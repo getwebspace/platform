@@ -4,11 +4,14 @@ namespace App\Domain\Entities\Catalog;
 
 use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\UuidInterface as Uuid;
 
 /**
  * @ORM\Entity(repositoryClass="App\Domain\Repository\Catalog\MeasureRepository")
- * @ORM\Table(name="catalog_measure")
+ * @ORM\Table(name="catalog_measure",
+ *     uniqueConstraints={
+ *         @ORM\UniqueConstraint(name="catalog_measure_contraction_unique", columns={"contraction"})
+ *     }
+ * )
  */
 class Measure extends AbstractEntity
 {
@@ -30,10 +33,7 @@ class Measure extends AbstractEntity
      */
     protected string $title = '';
 
-    /**
-     * @return $this
-     */
-    public function setTitle(string $title)
+    public function setTitle(string $title): self
     {
         if ($this->checkStrLenMax($title, 255)) {
             $this->title = $title;
@@ -52,10 +52,7 @@ class Measure extends AbstractEntity
      */
     protected string $contraction = '';
 
-    /**
-     * @return $this
-     */
-    public function setContraction(string $contraction)
+    public function setContraction(string $contraction): self
     {
         if ($this->checkStrLenMax($contraction, 255)) {
             $this->contraction = $contraction;
@@ -74,10 +71,7 @@ class Measure extends AbstractEntity
      */
     public float $value = 1.00;
 
-    /**
-     * @return $this
-     */
-    public function setValue(float $value)
+    public function setValue(float $value): self
     {
         $this->value = $value;
 

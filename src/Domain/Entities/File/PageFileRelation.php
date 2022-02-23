@@ -14,7 +14,7 @@ class PageFileRelation extends FileRelation
 {
     /**
      * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Page", inversedBy="files")
-     * @ORM\JoinColumn(name="entity_uuid", referencedColumnName="uuid", nullable=true)
+     * @ORM\JoinColumn(name="entity_uuid", referencedColumnName="uuid")
      */
     protected Page $page;
 

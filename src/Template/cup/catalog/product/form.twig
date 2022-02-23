@@ -248,13 +248,19 @@
                                     <div class="col-md-3">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Размерность',
-                                            'type': 'select',
+                                            'type': 'text',
                                             'name': 'unit',
                                             'args': {
-                                                'option': {'null': '---'}|merge(measure),
-                                                'selected': item.unit
+                                                'value': item.unit,
+                                                'list': 'unit',
                                             }
                                         } %}
+
+                                        <datalist id="unit">
+                                            {% for unit in measure %}
+                                                <option value="{{ unit.contraction }}">{{ unit.title }}</option>
+                                            {% endfor %}
+                                        </datalist>
                                     </div>
                                     <div class="col-md-3">
                                         {% include 'cup/form.twig' with {
