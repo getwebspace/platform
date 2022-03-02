@@ -119,6 +119,13 @@ class OrderProduct extends AbstractEntity
         return $this->priceWholesale;
     }
 
+    protected string $vendorCode = '';
+
+    public function getVendorCode(): string
+    {
+        return $this->vendorCode;
+    }
+
     protected string $external_id = '';
 
     public function getExternalId(): string
@@ -155,6 +162,7 @@ class OrderProduct extends AbstractEntity
             'priceFirst' => $this->product->getPriceFirst(),
             'price' => $this->product->getPrice(),
             'priceWholesale' => $this->product->getPriceWholesale(),
+            'vendorCode' => $this->product->getVendorCode(),
             'external_id' => $this->product->getExternalId(),
             'files' => $this->product->getFiles(),
             'count' => $this->getCount(),
@@ -171,6 +179,7 @@ class OrderProduct extends AbstractEntity
         $this->priceFirst = $this->product->getPriceFirst();
         $this->price = $this->product->getPrice();
         $this->priceWholesale = $this->product->getPriceWholesale();
+        $this->vendorCode = $this->product->getVendorCode();
         $this->external_id = $this->product->getExternalId();
     }
 
