@@ -1,56 +1,14 @@
-<a href="#" class="nav-link" data-click="alert-donate"><i class="fa fa-donate"></i></a>
+<a href="#btn-modal-donate" rel="modal:open" class="nav-link"><i class="fa fa-donate"></i></a>
 
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        $('[data-click="alert-donate"]').on('click', () => {
-            Swal.fire({
-                closeOnEsc: true,
-                closeOnClickOutside: true,
-                title: `Поддержите разработку<br>WebSpace Engine`,
-                html: `
-                    <div id="donate" class="my-2">
-                        <div class="accordion-group">
-                            <div class="collapse show" id="donate-description" data-parent="#donate">
-                                <p class="text-justify">
-                                    WSE является программным продуктом с <b>открытым исходным кодом</b>, распространяемым по лицензии MIT
-                                    полностью <b>бесплатно</b>.
-                                    Однако, стабильная поддержка проекта и разработка новых возможностей
-                                    требует усилий, невозможных без должной финансовой поддержки.
-                                </p>
-                                <p class="text-justify">
-                                    Если вы являетесь владельцем бизнеса который приносит доход, то спонсирование разработки WSE
-                                    имеет смысл с точки зрения пользы: <b>это гарантирует, что проект, на который полагается ваш
-                                    бизнес, остаётся здоровым и активно поддерживаемым</b>.
-                                </p>
-                                <p class="text-justify">
-                                    Если вы — индивидуальный разработчик и используете WSE эффективно и с удовольствием,
-                                    взгляните на пожертвование как на выражение признательности — как если бы вы угощали меня
-                                     кофе время от времени :)
-                                </p>
-                            </div>
-                        </div>
+<div id="btn-modal-donate" class="modal pt-2 pb-0 px-0 text-center">
+    <iframe src="https://getwebspace.github.io/platform-donate/" style="width: 100%; height: 90%; padding: 0; border: 0;"></iframe>
+</div>
 
-                        <p class="text-justify">
-                            Мы принимаем пожертвования следующими способами:
-                        </p>
-                        <div class="row">
-                            <div class="col-12 col-md-6">
-                                <a href="https://yoomoney.ru/to/410011144467012" target="_blank" class="btn btn-link">
-                                    <img src="/assets/img/iomoney.png" style="height: 30px;" alt="yoomoney">
-                                </a>
-                            </div>
-                            <div class="col-12 col-md-6">
-                                <a href="https://www.paypal.com/donate?hosted_button_id=9DLZFRE3RPH3S" target="_blank" class="btn btn-link">
-                                    <img src="/assets/img/paypal.png" style="height: 30px;" alt="paypal">
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                `,
-                showCancelButton: true,
-                showConfirmButton: false,
-                cancelButtonText: 'Закрыть',
-            });
-        });
-    });
-</script>
+<style>
+    #btn-modal-donate {
+        width: 700px !important;
+        max-width: 700px !important;
+        height: 510px !important;
+        max-height: 510px !important;
+    }
+</style>
