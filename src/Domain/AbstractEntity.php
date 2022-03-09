@@ -115,7 +115,7 @@ abstract class AbstractEntity implements JsonSerializable
 
     protected function getPasswordHashByValue(string $value): string
     {
-        return crypta_hash($value, ($_ENV['SALT'] ?? 'Li8.1Ej2-<Cid3[bE'));
+        return password_hash($value, PASSWORD_ARGON2ID);
     }
 
     protected function getDateTimeByValue($value, string $timezone = 'UTC'): DateTime
