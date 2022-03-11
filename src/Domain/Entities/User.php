@@ -93,7 +93,7 @@ class User extends AbstractEntity
             return $this->getFiles()->first()->getPublicPath();
         }
 
-        return 'https://www.gravatar.com/avatar/' . md5(mb_strtolower(trim($this->email))) . '?s=' . $size;
+        return 'https://www.gravatar.com/avatar/' . md5(mb_strtolower(trim($this->email))) . '?d=identicon&s=' . $size;
     }
 
     /**
@@ -194,19 +194,112 @@ class User extends AbstractEntity
         return $this->lastname;
     }
 
+    /**
+     * @ORM\Column(type="string", length=50, options={"default": ""})
+     */
+    protected string $patronymic = '';
+
+    /**
+     * @return $this
+     */
+    public function setPatronymic(string $patronymic): self
+    {
+        if ($this->checkStrLenMax($patronymic, 50)) {
+            $this->patronymic = $patronymic;
+        }
+
+        return $this;
+    }
+
+    public function getPatronymic(): string
+    {
+        return $this->patronymic;
+    }
+
     public function getName(string $type = 'full'): string
     {
-        if ($this->lastname || $this->firstname) {
+        if ($this->lastname || $this->patronymic || $this->firstname) {
             switch ($type) {
                 case 'full':
-                    return implode(' ', [$this->lastname, $this->firstname]);
+                    return trim(implode(' ', [$this->lastname, $this->firstname, $this->patronymic]));
+
+                case 'name':
+                    return trim(implode(' ', [$this->lastname, $this->firstname]));
+
+                case 'initials':
+                    return trim(
+                        implode(' ', [
+                            $this->lastname ? mb_substr($this->lastname, 0, 1) . '.' : '',
+                            $this->patronymic ? mb_substr($this->patronymic, 0, 1) . '.' : '',
+                            $this->firstname ?: '',
+                        ])
+                    );
 
                 case 'short':
-                    return implode(' ', [mb_substr($this->lastname, 0, 1) . '.', $this->firstname]);
+                    return trim(
+                        implode(' ', [
+                            $this->lastname ? mb_substr($this->lastname, 0, 1) . '.' : '',
+                            $this->firstname,
+                        ])
+                    );
             }
         }
 
+        if ($this->username) {
+            return $this->username;
+        }
+
         return '';
+    }
+
+    /**
+     * @ORM\Column(type="date", nullable=true)
+     */
+    protected ?DateTime $birthdate = null;
+
+    /**
+     * @param $birthdate
+     * @param mixed $timezone
+     *
+     * @throws \Exception
+     *
+     * @return $this
+     */
+    public function setBirthdate($birthdate, $timezone = 'UTC')
+    {
+        $this->birthdate = $this->getDateTimeByValue($birthdate, $timezone);
+
+        return $this;
+    }
+
+    /**
+     * @return ?DateTime
+     */
+    public function getBirthdate(): ?DateTime
+    {
+        return $this->birthdate;
+    }
+
+    /**
+     * @ORM\Column(type="string", length=25, options={"default": ""})
+     */
+    protected string $gender = '';
+
+    /**
+     * @return $this
+     */
+    public function setGender(string $gender): self
+    {
+        if ($this->checkStrLenMax($gender, 25)) {
+            $this->gender = $gender;
+        }
+
+        return $this;
+    }
+
+    public function getGender(): string
+    {
+        return $this->gender;
     }
 
     /**
@@ -273,6 +366,107 @@ class User extends AbstractEntity
     public function getAllowMail(): bool
     {
         return $this->allow_mail;
+    }
+
+    /**
+     * @ORM\Column(type="array")
+     */
+    protected array $company = [
+        'title' => '',
+        'position' => '',
+    ];
+
+    public function setCompany(array $data): self
+    {
+        $default = [
+            'title' => '',
+            'position' => '',
+        ];
+        $data = array_merge($default, $data);
+
+        $this->company = [
+            'title' => $data['title'],
+            'position' => $data['position'],
+        ];
+
+        return $this;
+    }
+
+    public function getCompany(): array
+    {
+        return $this->company;
+    }
+
+    /**
+     * @ORM\Column(type="array")
+     */
+    protected array $legal = [
+        'code' => '',
+        'number' => '',
+    ];
+
+    public function setLegal(array $data): self
+    {
+        $default = [
+            'code' => '',
+            'number' => '',
+        ];
+        $data = array_merge($default, $data);
+
+        $this->legal = [
+            'code' => $data['code'],
+            'number' => $data['number'],
+        ];
+
+        return $this;
+    }
+
+    public function getLegal(): array
+    {
+        return $this->legal;
+    }
+    /**
+     * @ORM\Column(type="array")
+     */
+    protected array $messenger = [
+        'skype' => '',
+        'telegram' => '',
+        'whatsapp' => '',
+        'viber' => '',
+        'facebook' => '',
+        'instagram' => '',
+        'signal' => '',
+    ];
+
+    public function setMessanger(array $data): self
+    {
+        $default = [
+            'skype' => '',
+            'telegram' => '',
+            'whatsapp' => '',
+            'viber' => '',
+            'facebook' => '',
+            'instagram' => '',
+            'signal' => '',
+        ];
+        $data = array_merge($default, $data);
+
+        $this->messenger = [
+            'skype' => $data['skype'],
+            'telegram' => $data['telegram'],
+            'whatsapp' => $data['whatsapp'],
+            'viber' => $data['viber'],
+            'facebook' => $data['facebook'],
+            'instagram' => $data['instagram'],
+            'signal' => $data['signal'],
+        ];
+
+        return $this;
+    }
+
+    public function getMessanger(): array
+    {
+        return $this->messenger;
     }
 
     /**
@@ -384,6 +578,50 @@ class User extends AbstractEntity
     public function getChange()
     {
         return $this->change;
+    }
+
+    /**
+     * @ORM\Column(type="string", length=100, options={"default": ""})
+     */
+    protected string $website = '';
+
+    /**
+     * @return $this
+     */
+    public function setWebsite(string $url): self
+    {
+        if ($this->checkStrLenMax($url, 100)) {
+            $this->website = $url;
+        }
+
+        return $this;
+    }
+
+    public function getWebsite(): string
+    {
+        return $this->website;
+    }
+
+    /**
+     * @ORM\Column(type="string", length=500, options={"default": ""})
+     */
+    protected string $source = '';
+
+    /**
+     * @return $this
+     */
+    public function setSource(string $text): self
+    {
+        if ($this->checkStrLenMax($text, 500)) {
+            $this->source = $text;
+        }
+
+        return $this;
+    }
+
+    public function getSource(): string
+    {
+        return $this->source;
     }
 
     /**

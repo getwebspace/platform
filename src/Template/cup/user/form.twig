@@ -6,180 +6,321 @@
             <div>
                 <h2 class="text-white pb-2 fw-bold">Пользователи</h2>
             </div>
+            {% if item %}
+                <div class="ml-md-auto py-2 py-md-0">
+                    <a href="/cup/user/{{ item.uuid }}/view" class="btn btn-secondary">
+                        Посмотреть
+                    </a>
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
 
 {% block content %}
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-12">
             <div class="card">
                 <form method="post" enctype="multipart/form-data">
                     <div class="card-header">
-                        <div class="card-head-row">
-                            <div class="card-title">{{ item ? 'Редактирование пользователя ' ~ item.username : 'Добавление пользователя' }}</div>
+                        <div class="d-flex align-items-center">
+                            <h4 class="card-title">{{ item ? 'Редактирование пользователя ' ~ item.username : 'Добавление пользователя' }}</h4>
+
+                            <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link {{ item ? '' : 'active show' }}" data-toggle="pill" href="#user" role="tab">
+                                        Пользователь
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link {{ item ? 'active show' : '' }}" data-toggle="pill" href="#contact" role="tab">
+                                        Контакт
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Логин',
-                                    'type': 'text',
-                                    'name': 'username',
-                                    'args': {
-                                        'value': item.username,
-                                        'required': true,
-                                    }
-                                } %}
+                        <div class="tab-content">
+
+                            {# Tab: Пользователь #}
+                            <div class="tab-pane fade {{ item ? '' : 'active show' }}" id="user" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Логин',
+                                            'type': 'text',
+                                            'name': 'username',
+                                            'args': {
+                                                'value': item.username,
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Новый пароль',
+                                            'type': 'text',
+                                            'name': 'password',
+                                            'postfix': item ? '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Оставьте пустым, если не хотите менять"></i>' : null,
+                                            'args': {
+                                                'required': user ? false : true,
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Группа',
+                                            'type': 'select',
+                                            'name': 'group_uuid',
+                                            'args': {
+                                                'option': _({(NIL): 'WITHOUT_GROUP'}|merge(groups.pluck('title', 'uuid').all())),
+                                                'selected': item.group_uuid ?? parameter('user_group')
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% if item.uuid %}
+                                            {% include 'cup/form.twig' with {
+                                                'label': 'Статус',
+                                                'type': 'select',
+                                                'name': 'status',
+                                                'args': {
+                                                    'option': _(reference('/App/Domain/Types/UserStatusType::LIST')),
+                                                    'selected': item.status
+                                                }
+                                            } %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Внешний ID',
+                                            'type': 'text',
+                                            'name': 'external_id',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
+                                            'args': {
+                                                'value': item.external_id,
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                {% include 'cup/form-image.twig' with { 'entity': item, 'multiple': false } %}
                             </div>
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Новый пароль',
-                                    'type': 'text',
-                                    'name': 'password','postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Оставьте пустым, если не хотите менять"></i>',
-                                    'args': {
-                                        'required': user ? false : true,
-                                    }
-                                } %}
+
+                            {# Tab: Контакт #}
+                            <div class="tab-pane fade {{ item ? 'active show' : '' }}" id="contact" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Имя',
+                                            'type': 'text',
+                                            'name': 'firstname',
+                                            'args': {
+                                                'value': item.firstname,
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Фамилия',
+                                            'type': 'text',
+                                            'name': 'lastname',
+                                            'args': {
+                                                'value': item.lastname,
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Отчество',
+                                            'type': 'text',
+                                            'name': 'patronymic',
+                                            'args': {
+                                                'value': item.patronymic,
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Пол',
+                                            'type': 'text',
+                                            'name': 'gender',
+                                            'args': {
+                                                'value': item.gender,
+                                                'list': 'unit',
+                                            }
+                                        } %}
+
+                                        <datalist id="unit">
+                                            <option value="Мужской">Мужской</option>
+                                            <option value="Женский">Женский</option>
+                                        </datalist>
+                                    </div>
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Дата рождения',
+                                            'type': 'date',
+                                            'name': 'birthdate',
+                                            'args': {
+                                                'value': item.birthdate|df('Y-m-d'),
+                                                'placeholder': '30.09.1991',
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Телефон',
+                                            'type': 'tel',
+                                            'name': 'phone',
+                                            'args': {
+                                                'value': item.phone,
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'E-Mail',
+                                            'type': 'email',
+                                            'name': 'email',
+                                            'args': {
+                                                'value': item.email,
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Подписан на рассылку',
+                                            'type': 'select',
+                                            'name': 'allow_mail',
+                                            'args': {
+                                                'option': _(['yes', 'no']),
+                                                'selected': item.getAllowMail() ? 'yes' : 'no'
+                                            }
+                                        } %}
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Адрес',
+                                            'type': 'textarea',
+                                            'name': 'address',
+                                            'args': {
+                                                'value': item.address,
+                                                'style': 'min-height: 133px;'
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Доп. инфо',
+                                            'message': 'Можно указать любую информацию до 250 символов.',
+                                            'type': 'textarea',
+                                            'name': 'additional',
+                                            'args': {
+                                                'value': item.additional,
+                                                'style': 'min-height: 133px;'
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Компания',
+                                            'type': 'text',
+                                            'name': 'company[title]',
+                                            'args': {
+                                                'value': item.company.title,
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Должность',
+                                            'type': 'text',
+                                            'name': 'company[position]',
+                                            'args': {
+                                                'value': item.company.position,
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Регистрационный номер',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="ОГРН, ОГРНИП, ЄДРПОУ"></i>',
+                                            'type': 'text',
+                                            'name': 'legal[code]',
+                                            'args': {
+                                                'value': item.legal.code,
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Налоговый номер',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="ИНН"></i>',
+                                            'type': 'text',
+                                            'name': 'legal[number]',
+                                            'args': {
+                                                'value': item.legal.number,
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Веб-сайт',
+                                            'type': 'text',
+                                            'name': 'website',
+                                            'args': {
+                                                'value': item.website,
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Источник контакта',
+                                            'type': 'textarea',
+                                            'name': 'source',
+                                            'args': {
+                                                'value': item.source,
+                                                'style': 'min-height: 75px;'
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Имя',
-                                    'type': 'text',
-                                    'name': 'firstname',
-                                    'args': {
-                                        'value': item.firstname,
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Фамилия',
-                                    'type': 'text',
-                                    'name': 'lastname',
-                                    'args': {
-                                        'value': item.lastname,
-                                    }
-                                } %}
-                            </div>
-                        </div>
-
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'E-Mail',
-                                    'type': 'email',
-                                    'name': 'email',
-                                    'args': {
-                                        'value': item.email,
-                                        'required': true,
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Подписан на рассылку',
-                                    'type': 'select',
-                                    'name': 'allow_mail',
-                                    'args': {
-                                        'option': _(['yes', 'no']),
-                                        'selected': item.getAllowMail() ? 'yes' : 'no'
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Телефон',
-                                    'type': 'tel',
-                                    'name': 'phone',
-                                    'args': {
-                                        'value': item.phone,
-                                    }
-                                } %}
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Адрес',
-                                    'type': 'textarea',
-                                    'name': 'address',
-                                    'args': {
-                                        'value': item.address,
-                                        'style': 'min-height: 133px;'
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Доп. инфо',
-                                    'message': 'Можно указать любую информацию до 250 символов.',
-                                    'type': 'textarea',
-                                    'name': 'additional',
-                                    'args': {
-                                        'value': item.additional,
-                                        'style': 'min-height: 133px;'
-                                    }
-                                } %}
-                            </div>
-                        </div>
-
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Группа',
-                                    'type': 'select',
-                                    'name': 'group_uuid',
-                                    'args': {
-                                        'option': _({(NIL): 'WITHOUT_GROUP'}|merge(groups.pluck('title', 'uuid').all())),
-                                        'selected': item.group_uuid ?? parameter('user_group')
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% if item.uuid %}
-                                    {% include 'cup/form.twig' with {
-                                        'label': 'Статус',
-                                        'type': 'select',
-                                        'name': 'status',
-                                        'args': {
-                                            'option': _(reference('/App/Domain/Types/UserStatusType::LIST')),
-                                            'selected': item.status
-                                        }
-                                    } %}
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Внешний ID',
-                                    'type': 'text',
-                                    'name': 'external_id',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
-                                    'args': {
-                                        'value': item.external_id,
-                                    }
-                                } %}
-                            </div>
-                        </div>
-
-                        <hr>
-
-                        {% include 'cup/form-image.twig' with { 'entity': item, 'multiple': false } %}
                     </div>
 
                     <div class="card-action">
@@ -188,56 +329,5 @@
                 </form>
             </div>
         </div>
-
-        {% if item.uuid %}
-            <div class="col-md-4">
-                <div class="card card-round">
-                    <div class="card-body">
-                        <div class="user-profile text-center">
-                            <div class="avatar avatar-xl mb-3">
-                                <img src="{{ item.avatar(80) }}" alt="{{ item.name('full') }}" class="avatar-img rounded-circle">
-                            </div>
-                            <div class="name">{{ item.username }}</div>
-                            <div class="text-muted">{{ item.uuid }}</div>
-                            <div class="text-muted">{{ item.external_id ? '['~ item.external_id ~']' }}</div>
-                        </div>
-                    </div>
-                    <div class="card-footer">
-                        <ul class="list-group list-group-bordered">
-                            {% if item.firstname or item.lastname %}
-                                <li class="list-group-item">Полное имя: {{ item.getName('full') }}</li>
-                            {% endif %}
-
-                            {% if item.publications|count > 0 %}
-                                <li class="list-group-item">Публикаций: {{ item.publications|count }}</li>
-                            {% endif %}
-                            {% if item.orders|count > 0 %}
-                                <li class="list-group-item">Заказов: {{ item.orders|count }}</li>
-                            {% endif %}
-
-                            <li class="list-group-item">E-Mail: {{ item.email }}</li>
-                            <li class="list-group-item">Зарегистрирован: {{ item.register|df('d.m.Y H:i:s') }}</li>
-                            <li class="list-group-item">Последнее редактирование: {{ item.change|df('d.m.Y H:i:s') }}</li>
-
-                            {% for integration in item.getIntegrations() %}
-                                <li class="list-group-item">Подключена социальная сеть: {{ integration.provider|capitalize }}</li>
-                            {% endfor %}
-
-                            {% if item.session.date.getTimestamp() %}
-                                <li class="list-group-item">Последняя активность: {{ item.session.date|df('d.m.Y H:i:s') }}</li>
-                            {% endif %}
-
-                            {% if item.auth_code %}
-                                <li class="list-group-item">Код авторизации: {{ item.auth_code }}</li>
-                            {% endif %}
-
-                            {% if item.session.ip %}
-                                <li class="list-group-item">IP: {{ item.session.ip }}</li>
-                            {% endif %}
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        {% endif %}
     </div>
 {% endblock %}

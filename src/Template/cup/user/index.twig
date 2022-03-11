@@ -96,64 +96,70 @@
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
                             <tr>
-                                <th width="20%">Логин</th>
+                                <th width="15%" class="d-none d-md-table-cell">Логин</th>
                                 <th>Фамилия и имя</th>
+                                <th>Телефон и Email</th>
                                 <th width="15%" class="d-none d-md-table-cell">Группа</th>
-                                <th width="15%" class="d-none d-md-table-cell">Дата регистрации /<br> посещения</th>
-                                <th width="25%" class="text-right"></th>
+                                <th width="30%" class="text-right"></th>
                             </tr>
                         {% endblock %}
 
                         {% block tbody %}
                             {% for user in list.sortByDesc('session.date') %}
-                                    <tr class="
-                                        {{
-                                            user.status == reference('/App/Domain/Types/UserStatusType::STATUS_DELETE')
-                                            ? 'bg-danger'
-                                            : (
-                                                user.status == reference('/App/Domain/Types/UserStatusType::STATUS_BLOCK')
-                                                ? 'bg-warning'
-                                                : ''
-                                            )
-                                        }}
-                                    ">
-                                        <td width="20%">{{ user.username ?: '<code>Без логина</code>'|raw }}</td>
-                                        <td>
-                                            {{ user.getName() ?: '<code>Без имени</code>'|raw }}
-                                            {{ user.getEmail() ? ('<br>' ~ user.getEmail())|raw : '' }}
+                                <tr class="
+                                    {{
+                                        user.status == reference('/App/Domain/Types/UserStatusType::STATUS_DELETE')
+                                        ? 'bg-danger'
+                                        : (
+                                            user.status == reference('/App/Domain/Types/UserStatusType::STATUS_BLOCK')
+                                            ? 'bg-warning'
+                                            : ''
+                                        )
+                                    }}
+                                ">
+                                    <td width="15%" class="d-none d-md-table-cell">{{ user.username ?: '<code>&mdash;</code>'|raw }}</td>
+                                    <td>
+                                        <span class="d-none d-xl-inline">{{ user.getName('full') ?: '<code>&mdash;</code>'|raw }}</span>
+                                        <span class="d-xl-none">{{ user.getName('name') ?: '<code>&mdash;</code>'|raw }}</span>
+                                    </td>
+                                    <td>
+                                        <div class="float-left">
+                                            {{ user.getPhone() ? (user.getPhone() ~ '<br>')|raw : '' }}
+                                            {{ user.getEmail() ? (user.getEmail() ~ '<br>')|raw : '' }}
+                                        </div>
 
-                                            <div class="text-black-50 float-right">
-                                                {% for integration in user.getIntegrations() %}
-                                                    <i class="fab fa-{{ integration.provider }}"></i>
-                                                {% endfor %}
-                                                {% if user.getAllowMail() %}
-                                                    <i class="fa fa-envelope" data-toggle="tooltip" data-placement="right" title="Подписан на рассылку"></i>
+                                        <div class="text-black-50 float-right d-none d-lg-inline">
+                                            {% for integration in user.getIntegrations() %}
+                                                <i class="fab fa-{{ integration.provider }}"></i>
+                                            {% endfor %}
+                                            {% if user.getAllowMail() %}
+                                                <i class="fa fa-envelope" data-toggle="tooltip" data-placement="right" title="Подписан на рассылку"></i>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td width="15%" class="d-none d-md-table-cell">{{ user.group.title ?? '<code>Без группы</code>' }}</td>
+                                    <td width="30%" class="text-right">
+                                        <form action="/cup/user/{{ user.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить пользователя?');">
+                                            <div class="btn-group">
+                                                <a href="/cup/user/{{ user.uuid }}/view" class="btn btn-sm btn-outline-info">
+                                                    <i class="fas fa-address-card"></i>
+                                                    <span class="d-none d-md-inline-block">Подробней</span>
+                                                </a>
+                                                <a href="/cup/user/{{ user.uuid }}/edit" class="btn btn-sm btn-info">
+                                                    <i class="fas fa-fw fa-edit"></i>
+                                                    <span class="d-none d-md-inline-block">Изменить</span>
+                                                </a>
+                                                {% if user.status != reference('/App/Domain/Types/UserStatusType::STATUS_DELETE') %}
+                                                    <button type="submit" class="btn btn-sm btn-danger">
+                                                        <i class="fas fa-fw fa-trash-alt"></i>
+                                                        <span class="d-none d-md-inline-block">Удалить</span>
+                                                    </button>
                                                 {% endif %}
                                             </div>
-                                        </td>
-                                        <td width="15%" class="d-none d-md-table-cell">{{ user.group.title ?? '<code>Без группы</code>' }}</td>
-                                        <td width="15%" class="d-none d-md-table-cell">
-                                            {{ user.register|df('d.m.Y H:i:s') }}
-                                            {{ user.session.date ? ('/<br>' ~ user.session.date|df('d.m.Y H:i:s'))|raw : '' }}
-                                        </td>
-                                        <td width="25%" class="text-right">
-                                            <form action="/cup/user/{{ user.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить пользователя?');">
-                                                <div class="btn-group">
-                                                    <a href="/cup/user/{{ user.uuid }}/edit" class="btn btn-sm btn-info">
-                                                        <i class="fas fa-fw fa-edit"></i>
-                                                        <span class="d-none d-md-inline-block">Изменить</span>
-                                                    </a>
-                                                    {% if user.status != reference('/App/Domain/Types/UserStatusType::STATUS_DELETE') %}
-                                                        <button type="submit" class="btn btn-sm btn-danger">
-                                                            <i class="fas fa-fw fa-trash-alt"></i>
-                                                            <span class="d-none d-md-inline-block">Удалить</span>
-                                                        </button>
-                                                    {% endif %}
-                                                </div>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
                         {% endblock %}
                     {% endembed %}
                 </div>

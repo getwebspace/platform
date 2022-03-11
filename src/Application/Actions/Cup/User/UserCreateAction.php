@@ -4,9 +4,11 @@ namespace App\Application\Actions\Cup\User;
 
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\EmailBannedException;
+use App\Domain\Service\User\Exception\MissingUniqueValueException;
 use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\Exception\WrongEmailValueException;
+use App\Domain\Service\User\Exception\WrongPasswordException;
 use App\Domain\Service\User\Exception\WrongPhoneValueException;
 
 class UserCreateAction extends UserAction
@@ -20,14 +22,21 @@ class UserCreateAction extends UserAction
                 $group_uuid = $this->getParam('group_uuid');
                 $user = $this->userService->create([
                     'username' => $this->getParam('username'),
-                    'password' => $this->getParam('password'),
                     'firstname' => $this->getParam('firstname'),
                     'lastname' => $this->getParam('lastname'),
+                    'patronymic' => $this->getParam('patronymic'),
+                    'gender' => $this->getParam('gender'),
+                    'birthdate' => $this->getParam('birthdate'),
                     'address' => $this->getParam('address'),
                     'additional' => $this->getParam('additional'),
                     'email' => $this->getParam('email'),
                     'allow_mail' => $this->getParam('allow_mail'),
                     'phone' => $this->getParam('phone'),
+                    'password' => $this->getParam('password'),
+                    'company' => $this->getParam('company'),
+                    'legal' => $this->getParam('legal'),
+                    'website' => $this->getParam('website'),
+                    'source' => $this->getParam('source'),
                     'group' => $group_uuid !== \Ramsey\Uuid\Uuid::NIL ? $userGroups->firstWhere('uuid', $group_uuid) : '',
                     'external_id' => $this->getParam('external_id'),
                 ]);
@@ -40,6 +49,12 @@ class UserCreateAction extends UserAction
                     default:
                         return $this->respondWithRedirect('/cup/user/' . $user->getUuid() . '/edit');
                 }
+            } catch (MissingUniqueValueException $e) {
+                $this->addError('username', $e->getMessage());
+                $this->addError('email', $e->getMessage());
+                $this->addError('phone', $e->getMessage());
+            } catch (WrongPasswordException $e) {
+                $this->addError('password', $e->getMessage());
             } catch (UsernameAlreadyExistsException $e) {
                 $this->addError('username', $e->getMessage());
             } catch (WrongEmailValueException|EmailAlreadyExistsException|EmailBannedException $e) {

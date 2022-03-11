@@ -47,10 +47,18 @@ class UserService extends AbstractService
             'password' => '',
             'firstname' => '',
             'lastname' => '',
+            'patronymic' => '',
+            'gender' => '',
+            'birthdate' => '',
             'address' => '',
             'additional' => '',
             'allow_mail' => true,
             'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
+            'company' => [],
+            'legal' => [],
+            'messenger' => [],
+            'website' => '',
+            'source' => '',
             'group' => null,
             'auth_code' => '',
             'external_id' => '',
@@ -86,10 +94,18 @@ class UserService extends AbstractService
             ->setPassword($data['password'])
             ->setFirstname($data['firstname'])
             ->setLastname($data['lastname'])
+            ->setPatronymic($data['patronymic'])
+            ->setGender($data['gender'])
+            ->setBirthdate($data['birthdate'], $this->parameter('common_timezone', 'UTC'))
             ->setAddress($data['address'])
             ->setAdditional($data['additional'])
             ->setAllowMail($data['allow_mail'])
             ->setStatus($data['status'])
+            ->setCompany($data['company'])
+            ->setLegal($data['legal'])
+            ->setMessanger($data['messenger'])
+            ->setWebsite($data['website'])
+            ->setSource($data['source'])
             ->setGroup($data['group'])
             ->setAuthCode($data['auth_code'])
             ->setExternalId($data['external_id'])
@@ -249,10 +265,18 @@ class UserService extends AbstractService
                 'password' => null,
                 'firstname' => null,
                 'lastname' => null,
+                'patronymic' => null,
+                'gender' => null,
+                'birthdate' => null,
                 'address' => null,
                 'additional' => null,
                 'allow_mail' => null,
                 'status' => null,
+                'company' => null,
+                'legal' => null,
+                'messenger' => null,
+                'website' => null,
+                'source' => null,
                 'group' => null,
                 'auth_code' => null,
                 'external_id' => null,
@@ -301,6 +325,15 @@ class UserService extends AbstractService
                 if ($data['lastname'] !== null) {
                     $entity->setLastname($data['lastname']);
                 }
+                if ($data['patronymic'] !== null) {
+                    $entity->setPatronymic($data['patronymic']);
+                }
+                if ($data['gender'] !== null) {
+                    $entity->setGender($data['gender']);
+                }
+                if ($data['birthdate'] !== null) {
+                    $entity->setBirthdate($data['birthdate'], $this->parameter('common_timezone', 'UTC'));
+                }
                 if ($data['address'] !== null) {
                     $entity->setAddress($data['address']);
                 }
@@ -312,6 +345,21 @@ class UserService extends AbstractService
                 }
                 if ($data['status'] !== null) {
                     $entity->setStatus($data['status']);
+                }
+                if ($data['company'] !== null) {
+                    $entity->setCompany($data['company']);
+                }
+                if ($data['legal'] !== null) {
+                    $entity->setLegal($data['legal']);
+                }
+                if ($data['messenger'] !== null) {
+                    $entity->setMessanger($data['messenger']);
+                }
+                if ($data['website'] !== null) {
+                    $entity->setWebsite($data['website']);
+                }
+                if ($data['source'] !== null) {
+                    $entity->setSource($data['source']);
                 }
                 if ($data['group'] !== null) {
                     $entity->setGroup($data['group']);

@@ -37,6 +37,18 @@ class UserServiceTest extends TestCase
             'phone' => $this->getFaker()->e164PhoneNumber,
             'firstname' => $this->getFaker()->firstName,
             'lastname' => $this->getFaker()->lastName,
+            'patronymic' => $this->getFaker()->word,
+            'gender' => $this->getFaker()->word,
+            'company' => [
+                'title' => $this->getFaker()->word,
+                'position' => $this->getFaker()->word,
+            ],
+            'legal' => [
+                'code' => $this->getFaker()->word,
+                'number' => $this->getFaker()->word,
+            ],
+            'website' => $this->getFaker()->url,
+            'source' => $this->getFaker()->word,
             'address' => $this->getFaker()->address,
             'additional' => $this->getFaker()->text,
             'auth_code' => (string) $this->getFaker()->numberBetween(0, 10000),
@@ -49,6 +61,12 @@ class UserServiceTest extends TestCase
         $this->assertSame($data['phone'], $user->getPhone());
         $this->assertSame($data['firstname'], $user->getFirstname());
         $this->assertSame($data['lastname'], $user->getLastname());
+        $this->assertSame($data['patronymic'], $user->getPatronymic());
+        $this->assertSame($data['gender'], $user->getGender());
+        $this->assertSame($data['company'], $user->getCompany());
+        $this->assertSame($data['legal'], $user->getLegal());
+        $this->assertSame($data['website'], $user->getWebsite());
+        $this->assertSame($data['source'], $user->getSource());
         $this->assertSame($data['address'], $user->getAddress());
         $this->assertSame($data['additional'], $user->getAdditional());
         $this->assertSame($data['auth_code'], $user->getAuthCode());
@@ -290,6 +308,18 @@ class UserServiceTest extends TestCase
             'phone' => $this->getFaker()->e164PhoneNumber,
             'firstname' => $this->getFaker()->firstName,
             'lastname' => $this->getFaker()->lastName,
+            'patronymic' => $this->getFaker()->word,
+            'gender' => $this->getFaker()->word,
+            'company' => [
+                'title' => $this->getFaker()->word,
+                'position' => $this->getFaker()->word,
+            ],
+            'legal' => [
+                'code' => $this->getFaker()->word,
+                'number' => $this->getFaker()->word,
+            ],
+            'website' => $this->getFaker()->url,
+            'source' => $this->getFaker()->word,
             'address' => $this->getFaker()->address,
             'additional' => $this->getFaker()->text,
             'email' => $this->getFaker()->email,
@@ -301,6 +331,12 @@ class UserServiceTest extends TestCase
         $this->assertSame($data['username'], $user->getUsername());
         $this->assertSame($data['firstname'], $user->getFirstname());
         $this->assertSame($data['lastname'], $user->getLastname());
+        $this->assertSame($data['patronymic'], $user->getPatronymic());
+        $this->assertSame($data['gender'], $user->getGender());
+        $this->assertSame($data['company'], $user->getCompany());
+        $this->assertSame($data['legal'], $user->getLegal());
+        $this->assertSame($data['website'], $user->getWebsite());
+        $this->assertSame($data['source'], $user->getSource());
         $this->assertSame($data['address'], $user->getAddress());
         $this->assertSame($data['additional'], $user->getAdditional());
         $this->assertSame($data['email'], $user->getEmail());

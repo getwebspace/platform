@@ -1,0 +1,173 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">Пользователи</h2>
+            </div>
+            <div class="ml-md-auto py-2 py-md-0">
+                <a href="/cup/user/{{ item.uuid }}/edit" class="btn btn-secondary">
+                    Изменить контакт
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="user-profile text-center">
+                        <div class="avatar avatar-xl mb-3">
+                            <img src="{{ item.avatar(80) }}" alt="{{ item.name('full') }}" class="avatar-img rounded-circle">
+                        </div>
+                        <div class="font-weight-bold">{{ item.getName('full') }}</div>
+                        {% if item.company.title %}
+                            <div class="text-muted">{{ item.company.title ?: '&mdash;' }}</div>
+                            <div class="text-muted">{{ item.company.position ?: '&mdash;' }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xl-6">
+            <div class="card">
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-4">Имя</dt>
+                        <dd class="col-8">{{ item.firstname ?: '&mdash;' }}</dd>
+                        <dt class="col-4">Фамилия</dt>
+                        <dd class="col-8">{{ item.lastname ?: '&mdash;' }}</dd>
+                        <dt class="col-4">Отчество</dt>
+                        <dd class="col-8">{{ item.patronymic ?: '&mdash;' }}</dd>
+                        <dt class="col-4">Пол</dt>
+                        <dd class="col-8">{{ item.gender ?: '&mdash;' }}</dd>
+                        <dt class="col-4">Дата рождения</dt>
+                        <dd class="col-8">{{ item.birthdate|df('d.m.Y') }}</dd>
+
+                        {% if item.company.title or item.company.position %}
+                            <dt class="col-4">Компания</dt>
+                            <dd class="col-8">{{ item.company.title ?: '&mdash;' }}</dd>
+                            <dt class="col-4">Должность</dt>
+                            <dd class="col-8">{{ item.company.position ?: '&mdash;' }}</dd>
+                        {% endif %}
+
+                        {% if item.source %}
+                            <dt class="col-4">Источник контакта</dt>
+                            <dd class="col-8">{{ item.source ?: '&mdash;' }}</dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-6">
+            <div class="card">
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        {% if item.phone %}
+                            <dt class="col-4">Телефон</dt>
+                            <dd class="col-8">
+                                <a href="tel:{{ item.phone }}" class="pl-1">{{ item.phone }}</a>
+                                <a href="sms:{{ item.phone }}" class="pl-1">SMS</a>
+                            </dd>
+                        {% endif %}
+                        {% if item.email %}
+                            <dt class="col-4">E-Mail</dt>
+                            <dd class="col-8"><a href="mailto:{{ item.email }}" class="pl-1">{{ item.email }}</a></dd>
+                            <dt class="col-4">Подписан на рассылку</dt>
+                            <dd class="col-8">{{ (item.allow_mail ? 'yes' : 'no')|locale }}</dd>
+                        {% endif %}
+                        <dt class="col-4">Адрес</dt>
+                        <dd class="col-8">{{ item.address ?: '&mdash;' }}</dd>
+                        <dt class="col-4">Доп. инфо</dt>
+                        <dd class="col-8">{{ item.additional ?: '&mdash;' }}</dd>
+                        {% if item.website %}
+                            <dt class="col-4">Веб-сайт</dt>
+                            <dd class="col-8"><a href="{{ item.website }}" class="pl-1" target="_blank">{{ item.website }}</a></dd>
+                        {% endif %}
+                        {% if item.messengers %}
+                            <dt class="col-4">Мессенджеры</dt>
+                            <dd class="col-8">{{ item.messengers.implode(', ') }}</dd>
+                        {% endif %}
+                        {% if item.legal.code or item.legal.number %}
+                            <dt class="col-4">Регистрационный номер</dt>
+                            <dd class="col-8">{{ item.legal.code ?: '&mdash;' }}</dd>
+
+                            <dt class="col-4">Налоговый номер</dt>
+                            <dd class="col-8">{{ item.legal.number ?: '&mdash;' }}</dd>
+                        {% endif %}
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-6">
+            <div class="card">
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-4">UUID</dt>
+                        <dd class="col-8">{{ item.uuid }}</dd>
+                        <dt class="col-4">Логин</dt>
+                        <dd class="col-8">{{ item.username ?: '&mdash;' }}</dd>
+                        <dt class="col-4">Группа</dt>
+                        <dd class="col-8">{{ item.group ? item.group.title : '&mdash;' }}</dd>
+                        <dt class="col-4">Внешний ID</dt>
+                        <dd class="col-8">{{ item.external_id ?: '&mdash;' }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-6">
+            <div class="card">
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-4">Публикаций</dt>
+                        <dd class="col-8">{{ item.publications|count  ?: '&mdash;' }}</dd>
+                        <dt class="col-4">Заказов</dt>
+                        <dd class="col-8">{{ item.orders|count ?: '&mdash;' }}</dd>
+                        <dt class="col-4">Социальные сети</dt>
+                        <dd class="col-8">{{ item.getIntegrations()|count ? item.getIntegrations().pluck('provider').implode(', ') : '&mdash;' }}</dd>
+                        <dt class="col-4">Код авторизации</dt>
+                        <dd class="col-8">{{ item.auth_code ?: '&mdash;' }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12 col-xl-6">
+                            <dl class="row mb-0">
+                                <dt class="col-4">Зарегистрирован</dt>
+                                <dd class="col-8">{{ item.register|df('d.m.Y H:i:s') }}</dd>
+                                <dt class="col-4">Последнее ред.</dt>
+                                <dd class="col-8">{{ item.change|df('d.m.Y H:i:s') }}</dd>
+                            </dl>
+                        </div>
+                        <div class="col-12 col-xl-6">
+                            <dl class="row mb-0">
+                                {% if item.session.date.getTimestamp() %}
+                                    <dt class="col-4">Последняя акт.</dt>
+                                    <dd class="col-8">{{ item.session.date|df('d.m.Y H:i:s') }}</dd>
+                                {% endif %}
+                                {% if item.session.ip %}
+                                    <dt class="col-4">Последний IP</dt>
+                                    <dd class="col-8">{{ item.session.ip }}</dd>
+                                {% endif %}
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

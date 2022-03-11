@@ -78,6 +78,8 @@ return function (App $app, Container $container): void {
                             ->setName('cup:user:list');
                         $group->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\User\UserCreateAction::class)
                             ->setName('cup:user:add');
+                        $group->map(['GET', 'POST'], '/{uuid}/view', \App\Application\Actions\Cup\User\UserViewAction::class)
+                            ->setName('cup:user:view');
                         $group->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\User\UserUpdateAction::class)
                             ->setName('cup:user:edit');
                         $group->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\User\UserDeleteAction::class)
