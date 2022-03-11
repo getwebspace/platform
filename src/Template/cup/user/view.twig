@@ -73,14 +73,14 @@
                         {% if item.phone %}
                             <dt class="col-4">Телефон</dt>
                             <dd class="col-8">
-                                <a href="tel:{{ item.phone }}" class="pl-1">{{ item.phone }}</a>
+                                <a href="tel:{{ item.phone }}">{{ item.phone }}</a>
                                 <a href="sms:{{ item.phone }}" class="pl-1">SMS</a>
                             </dd>
                         {% endif %}
                         {% if item.email %}
                             <dt class="col-4">E-Mail</dt>
-                            <dd class="col-8"><a href="mailto:{{ item.email }}" class="pl-1">{{ item.email }}</a></dd>
-                            <dt class="col-4">Подписан на рассылку</dt>
+                            <dd class="col-8"><a href="mailto:{{ item.email }}">{{ item.email }}</a></dd>
+                            <dt class="col-4">Под.на рассылку</dt>
                             <dd class="col-8">{{ (item.allow_mail ? 'yes' : 'no')|locale }}</dd>
                         {% endif %}
                         <dt class="col-4">Адрес</dt>
@@ -89,14 +89,14 @@
                         <dd class="col-8">{{ item.additional ?: '&mdash;' }}</dd>
                         {% if item.website %}
                             <dt class="col-4">Веб-сайт</dt>
-                            <dd class="col-8"><a href="{{ item.website }}" class="pl-1" target="_blank">{{ item.website }}</a></dd>
+                            <dd class="col-8"><a href="{{ item.website }}" target="_blank">{{ item.website }}</a></dd>
                         {% endif %}
                         {% if item.messengers %}
                             <dt class="col-4">Мессенджеры</dt>
                             <dd class="col-8">{{ item.messengers.implode(', ') }}</dd>
                         {% endif %}
                         {% if item.legal.code or item.legal.number %}
-                            <dt class="col-4">Регистрационный номер</dt>
+                            <dt class="col-4">Рег. номер</dt>
                             <dd class="col-8">{{ item.legal.code ?: '&mdash;' }}</dd>
 
                             <dt class="col-4">Налоговый номер</dt>

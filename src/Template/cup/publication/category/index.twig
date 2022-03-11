@@ -29,8 +29,8 @@
                             <tr>
                                 <th>Название</th>
                                 <th width="25%">Категория</th>
-                                <th width="7%" class="d-none d-md-table-cell">Публичная</th>
-                                <th width="7%" class="d-none d-md-table-cell">Вложенные</th>
+                                <th width="8%" class="d-none d-md-table-cell">Публичная</th>
+                                <th width="8%" class="d-none d-md-table-cell">Вложенные</th>
                                 <th width="25%" class="text-right"></th>
                             </tr>
                         {% endblock %}
@@ -40,10 +40,10 @@
                                 <tr>
                                     <td>{{ item.title }}</td>
                                     <td width="25%">{{ list.where('uuid', item.parent).first().title ?? '&mdash;' }}</td>
-                                    <td width="7%" class="d-none d-md-table-cell text-center" data-order="{{ item.public }}">
+                                    <td width="8%" class="d-none d-md-table-cell text-center" data-order="{{ item.public }}">
                                         {{ item.public ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>' }}
                                     </td>
-                                    <td width="7%" class="d-none d-md-table-cell text-center" data-order="{{ item.children }}">
+                                    <td width="8%" class="d-none d-md-table-cell text-center" data-order="{{ item.children }}">
                                         {{ item.children ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>' }}
                                     </td>
                                     <td width="25%" class="text-right">

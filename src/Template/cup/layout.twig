@@ -138,7 +138,7 @@
                                 {% endblock %}
                             </div>
 
-                            <div class="page-inner mt--5">
+                            <div class="page-inner container-xl float-left mt--5">
                                 {% if _error is not empty %}
                                     <div class="row">
                                         <div class="col-md-12">
@@ -424,7 +424,7 @@
                                                             <div class="row">
                                                                 <div class="col-md-12">
                                                                     <form action="/cup/parameters?return=/cup" method="post">
-                                                                        <p class="text-muted text-center">{{ 'Здесь вы можете сохранять собственные заметки и памятки'|locale }}</p>
+                                                                        <p class="text-muted text-center mb-0">{{ 'Здесь вы можете сохранять собственные заметки и памятки'|locale }}</p>
 
                                                                         {% include 'cup/editor.twig' with {
                                                                             'name': 'notepad[' ~ user.username ~ ']',
@@ -433,7 +433,7 @@
                                                                                 'required': true,
                                                                             }
                                                                         } %}
-                                                                        <button type="submit" class="btn btn-success">{{ 'Сохранить'|locale }}</button>
+                                                                        <button type="submit" class="btn btn-success ml-2">{{ 'Сохранить'|locale }}</button>
                                                                     </form>
                                                                 </div>
                                                             </div>
