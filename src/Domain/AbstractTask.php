@@ -126,6 +126,9 @@ abstract class AbstractTask
     abstract protected function action(array $args = []);
 
     /**
+     * @param mixed $value
+     * @param mixed $count
+     *
      * @throws Service\Task\Exception\TaskNotFoundException
      */
     public function setProgress($value, $count = 0): void
@@ -149,6 +152,8 @@ abstract class AbstractTask
     }
 
     /**
+     * @param mixed $output
+     *
      * @throws Service\Task\Exception\TaskNotFoundException
      */
     public function setStatusDone($output = ''): bool
@@ -159,6 +164,8 @@ abstract class AbstractTask
     }
 
     /**
+     * @param mixed $output
+     *
      * @throws Service\Task\Exception\TaskNotFoundException
      */
     public function setStatusFail($output = ''): bool
@@ -169,6 +176,8 @@ abstract class AbstractTask
     }
 
     /**
+     * @param mixed $output
+     *
      * @throws Service\Task\Exception\TaskNotFoundException
      */
     public function setStatusCancel($output = ''): bool
@@ -179,6 +188,8 @@ abstract class AbstractTask
     }
 
     /**
+     * @param mixed $output
+     *
      * @throws Service\Task\Exception\TaskNotFoundException
      */
     public function setStatusDelete($output = ''): bool

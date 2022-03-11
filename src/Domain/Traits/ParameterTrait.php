@@ -3,7 +3,6 @@
 namespace App\Domain\Traits;
 
 use App\Domain\Service\Parameter\ParameterService;
-use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 
 /**

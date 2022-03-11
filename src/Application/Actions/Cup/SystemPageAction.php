@@ -16,7 +16,7 @@ class SystemPageAction extends AbstractAction
     {
         $access = false;
 
-        /** @var User|false $user */
+        /** @var false|User $user */
         $user = $this->request->getAttribute('user', false);
 
         // first install
@@ -53,7 +53,7 @@ class SystemPageAction extends AbstractAction
         return $this->respondWithRedirect('/cup/login?redirect=/cup/system');
     }
 
-    protected function setup_database()
+    protected function setup_database(): void
     {
         if ($databaseAction = $this->getParam('database', '')) {
             $schema = new \Doctrine\ORM\Tools\SchemaTool($this->entityManager);
@@ -77,7 +77,7 @@ class SystemPageAction extends AbstractAction
         }
     }
 
-    protected function setup_user()
+    protected function setup_user(): void
     {
         if ($userData = $this->getParam('user', [])) {
             $userGroupService = $this->container->get(UserGroupService::class);
@@ -100,7 +100,7 @@ class SystemPageAction extends AbstractAction
         }
     }
 
-    protected function setup_data()
+    protected function setup_data(): void
     {
     }
 

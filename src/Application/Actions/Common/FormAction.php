@@ -71,10 +71,12 @@ class FormAction extends AbstractAction
                 switch (true) {
                     case $form->getTemplate() && $form->getTemplate() !== '<p><br></p>':
                         $body = $this->renderer->fetchFromString($form->getTemplate(), $data);
+
                         break;
 
                     case $form->getTemplateFile():
                         $body = $this->render($form->getTemplateFile(), $data);
+
                         break;
 
                     default:
@@ -86,6 +88,7 @@ class FormAction extends AbstractAction
                             $body = json_encode(str_escape($data), JSON_UNESCAPED_UNICODE);
                             $isHtml = false;
                         }
+
                         break;
                 }
 

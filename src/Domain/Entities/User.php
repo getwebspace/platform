@@ -425,6 +425,7 @@ class User extends AbstractEntity
     {
         return $this->legal;
     }
+
     /**
      * @ORM\Column(type="array")
      */

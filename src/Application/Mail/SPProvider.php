@@ -54,7 +54,7 @@ class SPProvider implements MailProviderInterface
         }
 
         foreach ((array) $data['attachments'] as $name => $file) {
-            $email['attachments'] = $email['attachments'] ?? [];
+            $email['attachments'] ??= [];
             $email['attachments'][$name] = $file;
         }
 

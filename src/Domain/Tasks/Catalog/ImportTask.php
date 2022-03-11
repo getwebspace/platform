@@ -225,12 +225,8 @@ class ImportTask extends AbstractTask
     }
 
     /**
-     * @param string $path
-     *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
-     *
-     * @return array
      */
     protected function getParsedExcelData(string $path = ''): array
     {
@@ -306,8 +302,6 @@ class ImportTask extends AbstractTask
      *
      * @param $sheet
      * @param $cell
-     *
-     * @return bool
      */
     protected function isMergedCell($sheet, $cell): bool
     {

@@ -3,7 +3,6 @@
 namespace App\Domain;
 
 use App\Application\i18n;
-use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Traits\ParameterTrait;
 use App\Domain\Traits\StorageTrait;
 use Psr\Container\ContainerInterface;

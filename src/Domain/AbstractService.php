@@ -36,10 +36,7 @@ abstract class AbstractService
     abstract protected function init();
 
     /**
-     * @param string      $alias
-     * @param string|null $indexBy the index for the from
-     *
-     * @return \Doctrine\ORM\QueryBuilder
+     * @param null|string $indexBy the index for the from
      */
     public function createQueryBuilder(string $alias, ?string $indexBy = null): \Doctrine\ORM\QueryBuilder
     {

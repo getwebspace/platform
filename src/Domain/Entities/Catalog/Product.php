@@ -81,8 +81,7 @@ class Product extends AbstractEntity
 
     /**
      * @see \App\Domain\Types\ProductTypeType::LIST
-     * @ORM\Column(type="CatalogProductTypeType", options={"default":
-     *                                            \App\Domain\Types\Catalog\ProductTypeType::TYPE_PRODUCT})
+     * @ORM\Column(type="CatalogProductTypeType", options={"default": \App\Domain\Types\Catalog\ProductTypeType::TYPE_PRODUCT})
      */
     protected string $type = \App\Domain\Types\Catalog\ProductTypeType::TYPE_PRODUCT;
 
@@ -443,9 +442,6 @@ class Product extends AbstractEntity
      */
     protected $attributes = [];
 
-    /**
-     * @return int
-     */
     public function hasAttributes(): int
     {
         return count($this->attributes);
@@ -570,8 +566,7 @@ class Product extends AbstractEntity
 
     /**
      * @see \App\Domain\Types\ProductStatusType::LIST
-     * @ORM\Column(type="CatalogProductStatusType", options={"default":
-     *                                              \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK})
+     * @ORM\Column(type="CatalogProductStatusType", options={"default": \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK})
      */
     protected string $status = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
 
@@ -682,7 +677,7 @@ class Product extends AbstractEntity
     /**
      * @var array
      * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\CatalogProductFileRelation", mappedBy="catalog_product",
-     *                                                                                     orphanRemoval=true)
+     * orphanRemoval=true)
      * @ORM\OrderBy({"order": "ASC"})
      */
     protected $files = [];

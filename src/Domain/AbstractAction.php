@@ -2,7 +2,6 @@
 
 namespace App\Domain;
 
-use App\Application\Mail;
 use App\Domain\Entities\File;
 use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Exceptions\HttpForbiddenException;
