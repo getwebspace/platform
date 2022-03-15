@@ -12,7 +12,7 @@ class CatalogImportAction extends CatalogAction
 
             if ($fields) {
                 /** @var \App\Domain\Entities\File $file */
-                $file = array_first($this->getUploadedFiles('excel'));
+                $file = array_first($this->getUploadedFiles('excel', 0));
 
                 if ($file) {
                     // add import task

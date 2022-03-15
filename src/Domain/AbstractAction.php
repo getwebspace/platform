@@ -17,6 +17,7 @@ use Psr\Container\ContainerInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Views\Twig;
+use function PHPUnit\Framework\isNull;
 
 abstract class AbstractAction extends AbstractComponent
 {
@@ -244,7 +245,7 @@ abstract class AbstractAction extends AbstractComponent
      *
      * @return File[]
      */
-    protected function getUploadedFiles(string $field = 'files'): array
+    protected function getUploadedFiles(string $field = 'files', mixed $return = null): array
     {
         $uploaded = [];
 
@@ -289,7 +290,7 @@ abstract class AbstractAction extends AbstractComponent
             }
         }
 
-        return $uploaded;
+        return $return === null ? $uploaded : $uploaded[$return];
     }
 
     /**
