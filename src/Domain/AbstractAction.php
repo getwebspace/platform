@@ -245,7 +245,7 @@ abstract class AbstractAction extends AbstractComponent
      *
      * @return File[]
      */
-    protected function getUploadedFiles(string $field = 'files', mixed $return = null): array
+    protected function getUploadedFiles(string $field = 'files', $return = null): array
     {
         $uploaded = [];
 
