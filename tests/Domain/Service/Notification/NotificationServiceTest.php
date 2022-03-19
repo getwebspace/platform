@@ -70,16 +70,6 @@ class NotificationServiceTest extends TestCase
         ]);
     }
 
-    public function testCreateWithMissingMessageValue(): void
-    {
-        $this->expectException(MissingMessageValueException::class);
-
-        $this->service->create([
-            'user_uuid' => $this->getFaker()->uuid,
-            'title' => $this->getFaker()->title,
-        ]);
-    }
-
     public function testReadSuccess(): void
     {
         $data = [
