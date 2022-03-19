@@ -197,7 +197,7 @@ class Product extends AbstractEntity
     /**
      * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
      */
-    protected float $tax = .00;
+    protected float $tax = 20.00;
 
     public function setTax(float $value): self
     {
@@ -284,9 +284,41 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 1.0})
+     * @ORM\Column(type="array")
      */
-    protected float $volume = 1.00;
+    protected array $dimension = [
+        'width' => 0.0,
+        'height' => 0.0,
+        'length' => 0.0,
+    ];
+
+    public function setDimension(array $data): self
+    {
+        $default = [
+            'width' => 0.0,
+            'height' => 0.0,
+            'length' => 0.0,
+        ];
+        $data = array_merge($default, $data);
+
+        $this->dimension = [
+            'width' => floatval($data['width']),
+            'height' => floatval($data['height']),
+            'length' => floatval($data['length']),
+        ];
+
+        return $this;
+    }
+
+    public function getDimension(): array
+    {
+        return $this->dimension;
+    }
+
+    /**
+     * @ORM\Column(type="float", scale=3, precision=10, options={"default": 1.0})
+     */
+    protected float $volume = 0.000;
 
     public function setVolume(float $value): self
     {

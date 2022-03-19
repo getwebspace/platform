@@ -1079,6 +1079,27 @@
                                                         'value': 'Поле 3'
                                                     }
                                                 } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Объёмный вес',
+                                                    'description': [
+                                                        'Коэффициент-делителя',
+                                                        'Ш(см) &times; В(см) &times; Д(см) / X = ОВ(кг)'
+                                                    ]|join('<br>'),
+                                                    'type': 'number',
+                                                    'name': 'catalog[dimensional_weight]',
+                                                    'prefix': 'X',
+                                                    'args': {
+                                                        'value': '5000',
+                                                        'list': 'dimensional_weight',
+                                                    }
+                                                } %}
+
+                                                <datalist id="dimensional_weight">
+                                                    <option value="4000">4000 cm3/kg</option>
+                                                    <option value="5000">5000 cm3/kg</option>
+                                                    <option value="6000">6000 cm3/kg</option>
+                                                </datalist>
                                             </div>
                                         </div>
                                     </div>

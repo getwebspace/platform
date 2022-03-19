@@ -34,6 +34,7 @@ class ProductUpdateAction extends CatalogAction
                             'price' => $this->getParam('price'),
                             'priceWholesale' => $this->getParam('priceWholesale'),
                             'special' => $this->getParam('special'),
+                            'dimension' => $this->getParam('dimension'),
                             'volume' => $this->getParam('volume'),
                             'unit' => $this->getParam('unit'),
                             'stock' => $this->getParam('stock'),
