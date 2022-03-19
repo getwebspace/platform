@@ -146,13 +146,19 @@ class ProductServiceTest extends TestCase
         $data = [
             'title' => $this->getFaker()->title,
             'address' => 'some-custom-address',
+            'volume' => $this->getFaker()->randomFloat(2),
+            'unit' => $this->getFaker()->word,
             'date' => 'now',
+            'external_id' => $this->getFaker()->word,
         ];
 
         $product = (new Product())
             ->setTitle($data['title'] . '-miss')
             ->setAddress($data['address'])
-            ->setDate($data['date']);
+            ->setVolume($data['volume'])
+            ->setUnit($data['unit'])
+            ->setDate($data['date'])
+            ->setExternalId($data['external_id']);
 
         $this->em->persist($product);
         $this->em->flush();
