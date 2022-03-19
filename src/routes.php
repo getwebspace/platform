@@ -326,7 +326,7 @@ return function (App $app, Container $container): void {
             // publication
             $group
                 ->group('', function (Group $group) use ($container): void {
-                    $publicationCategoryService = $container->get(\App\Domain\Service\Catalog\CategoryService::class);
+                    $publicationCategoryService = $container->get(\App\Domain\Service\Publication\CategoryService::class);
 
                     if (($categories = $publicationCategoryService->read()) !== null) {
                         $categoryPath = $categories->pluck('address')->implode('|');

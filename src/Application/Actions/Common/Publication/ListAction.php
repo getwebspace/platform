@@ -45,7 +45,7 @@ class ListAction extends AbstractAction
                 default:
                     try {
                         $publication = $publicationService->read(['address' => $params['address']]);
-                        $category = $categories->firstWhere('uuid', $publication->getCategory());
+                        $category = $categories->firstWhere('uuid', $publication->getCategory()->getUuid());
 
                         return $this->respond($category->template['full'] ?? 'publication.full.twig', [
                             'categories' => $categories->where('public', true),

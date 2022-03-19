@@ -57,7 +57,8 @@ class PublicationRSS extends AbstractAction
             }
         }
 
-        $this->response->getBody()->write($feed->render());
+        // todo replace RSS lib
+        $this->response->getBody()->write(@$feed->render());
 
         return $this->response->withAddedHeader('Content-Type', 'application/rss+xml');
     }
