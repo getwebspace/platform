@@ -34,7 +34,7 @@
                             <tr>
                                 <th>Наименование</th>
                                 <th width="15%">Категория</th>
-                                <th width="40%" class="text-right"></th>
+                                <th width="45%" class="text-right"></th>
                             </tr>
                         {% endblock %}
 
@@ -43,7 +43,7 @@
                                 <tr>
                                     <td>{{ category.title }}</td>
                                     <td width="15%">{{ categories.where('uuid', category.parent).first().title ?? '&mdash;' }}</td>
-                                    <td width="40%" class="text-right">
+                                    <td width="45%" class="text-right">
                                         <form action="/cup/catalog/category/{{ category.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить категорию?');">
                                             <div class="btn-group">
                                                 <a href="/cup/catalog/category/{{ category.uuid }}" class="btn btn-sm btn-outline-info">
