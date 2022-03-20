@@ -17,9 +17,9 @@ class FileUploadAction extends FileAction
                 }
 
                 $uuids = [];
-                foreach ($files as $el) {
-                    if (!$el->getError()) {
-                        $model = $this->fileService->createFromPath($el->file, $el->getClientFilename());
+                foreach ($files as $file) {
+                    if (!$file->getError()) {
+                        $model = $this->fileService->createFromPath($file->getFilePath(), $file->getClientFilename());
 
                         // is image
                         if (str_start_with($model->getType(), 'image/')) {
