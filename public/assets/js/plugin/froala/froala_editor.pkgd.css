@@ -227,14 +227,14 @@ iframe.fr-iframe {
     .fr-box.fr-document {
         min-width: 21cm
     }
-    
+
     .fr-box.fr-document .fr-wrapper {
         text-align: center;
         padding: 30px;
         min-width: 21cm;
         background: #efefef
     }
-    
+
     .fr-box.fr-document .fr-wrapper .fr-element {
         text-align: left;
         background: #ffffff;
@@ -247,7 +247,7 @@ iframe.fr-iframe {
         box-shadow: 0 1px 3px rgba(0, 0, 0, .12), 0 1px 1px 1px rgba(0, 0, 0, .16);
         overflow: visible
     }
-    
+
     .fr-box.fr-document .fr-wrapper .fr-element hr {
         margin-left: -2cm;
         margin-right: -2cm;
@@ -996,6 +996,9 @@ body.prevent-scroll.fr-mobile {
 
 .fr-popup .fr-buttons .fr-btn i {
     float: left
+}
+.fr-popup .fr-buttons .fr-btn i.fa.fa-external-link:before {
+    content: "\f35d";
 }
 
 .fr-popup .fr-buttons .fr-separator {
@@ -2187,22 +2190,22 @@ body.fr-fullscreen {
         width: 10px;
         height: 10px
     }
-    
+
     .fr-image-resizer .fr-handler.fr-hnw {
         left: -5px;
         top: -5px
     }
-    
+
     .fr-image-resizer .fr-handler.fr-hne {
         right: -5px;
         top: -5px
     }
-    
+
     .fr-image-resizer .fr-handler.fr-hsw {
         left: -5px;
         bottom: -5px
     }
-    
+
     .fr-image-resizer .fr-handler.fr-hse {
         right: -5px;
         bottom: -5px
@@ -3146,22 +3149,22 @@ div.fr-modal-body div.fr-image-list div.fr-image-container .fr-insert-img {
         width: 10px;
         height: 10px
     }
-    
+
     .fr-box .fr-video-resizer .fr-handler.fr-hnw {
         left: -5px;
         top: -5px
     }
-    
+
     .fr-box .fr-video-resizer .fr-handler.fr-hne {
         right: -5px;
         top: -5px
     }
-    
+
     .fr-box .fr-video-resizer .fr-handler.fr-hsw {
         left: -5px;
         bottom: -5px
     }
-    
+
     .fr-box .fr-video-resizer .fr-handler.fr-hse {
         right: -5px;
         bottom: -5px
