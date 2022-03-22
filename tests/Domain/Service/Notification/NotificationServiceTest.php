@@ -4,7 +4,6 @@ namespace tests\Domain\Service\Notification;
 
 use App\Domain\Entities\Notification;
 use App\Domain\Repository\NotificationRepository;
-use App\Domain\Service\Notification\Exception\MissingMessageValueException;
 use App\Domain\Service\Notification\Exception\MissingTitleValueException;
 use App\Domain\Service\Notification\Exception\MissingUserUuidValueException;
 use App\Domain\Service\Notification\Exception\NotificationNotFoundException;

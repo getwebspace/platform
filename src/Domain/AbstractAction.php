@@ -23,7 +23,6 @@ use Slim\Interfaces\RouteCollectorInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 use Slim\Views\Twig;
-use function PHPUnit\Framework\isNull;
 
 abstract class AbstractAction
 {
