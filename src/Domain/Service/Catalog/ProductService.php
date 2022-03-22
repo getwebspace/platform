@@ -284,7 +284,6 @@ class ProductService extends AbstractService
                 'manufacturer' => null,
                 'tags' => null,
                 'order' => null,
-                'date' => null,
                 'meta' => null,
                 'external_id' => null,
                 'export' => null,
@@ -385,9 +384,6 @@ class ProductService extends AbstractService
                 if ($data['order'] !== null) {
                     $entity->setOrder((int) $data['order']);
                 }
-                if ($data['date'] !== null) {
-                    $entity->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
-                }
                 if ($data['meta'] !== null) {
                     $entity->setMeta($data['meta']);
                 }
@@ -397,6 +393,8 @@ class ProductService extends AbstractService
                 if ($data['export'] !== null) {
                     $entity->setExport($data['export']);
                 }
+
+                $entity->setDate('now', $this->parameter('common_timezone', 'UTC'));
 
                 $this->entityManager->flush();
             }
