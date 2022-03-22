@@ -317,7 +317,7 @@ class ProductServiceTest extends TestCase
         $this->assertSame($data['manufacturer'], $product->getManufacturer());
         $this->assertEquals($data['tags'], $product->getTags());
         $this->assertSame($data['order'], $product->getOrder());
-        $this->assertEquals($data['date'], $product->getDate());
+        $this->assertNotEquals($data['date'], $product->getDate());
         $this->assertEquals($data['meta'], $product->getMeta());
         $this->assertSame($data['external_id'], $product->getExternalId());
         $this->assertSame($data['export'], $product->getExport());
