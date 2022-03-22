@@ -16,9 +16,9 @@ class Catalog
     public const IMPORT_FIELDS = [
         'uuid', 'external_id',
         'title', 'description', 'extra',
-        'address',
+        'address', 'type',
         'barcode', 'vendorcode',
-        'priceFirst', 'price', 'priceWholesale',
+        'priceFirst', 'price', 'priceWholesale', 'tax', 'special',
         'volume', 'unit', 'stock',
         'field1', 'field2', 'field3', 'field4', 'field5',
         'country', 'manufacturer',
@@ -28,9 +28,9 @@ class Catalog
     public const EXPORT_FIELDS = [
         'uuid', 'external_id',
         'title', 'description', 'extra',
-        'address',
+        'address', 'type',
         'barcode', 'vendorcode',
-        'priceFirst', 'price', 'priceWholesale',
+        'priceFirst', 'price', 'priceWholesale', 'tax', 'special',
         'volume', 'unit', 'stock',
         'field1', 'field2', 'field3', 'field4', 'field5',
         'country', 'manufacturer',
