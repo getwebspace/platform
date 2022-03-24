@@ -4,8 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Формы</h2>
-                <h5 class="text-white op-7 mb-2">Функционал форм позволяет принимать данные с сайта или форм встроенных в удаленные сайты.</h5>
+                <h2 class="text-white pb-2 fw-bold">{{ item.uuid ? 'Редактирование формы ' ~ item.title : 'Создание новой формы' }}</h2>
             </div>
         </div>
     </div>
@@ -18,8 +17,6 @@
                 <form method="post">
                     <div class="card-header">
                         <div class="card-head-row">
-                            <div class="card-title">{{ item.uuid ? 'Редактирование формы ' ~ item.title : 'Создание новой формы' }}</div>
-
                             <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
                                 <li class="nav-item">
                                     <a class="nav-link active show" data-toggle="pill" href="#form" role="tab">

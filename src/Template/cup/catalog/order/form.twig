@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Заказы</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ order.uuid ? 'Редактирование заказа ' ~ order.serial : 'Создание нового заказа' }}</h2>
             </div>
             <div class="ml-md-auto py-2 py-md-0">
                 <a href="/cup/catalog/order/{{ order.uuid }}/invoice" class="btn btn-secondary">
@@ -22,8 +22,6 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="card-head-row">
-                            <div class="card-title">{{ order.uuid ? 'Редактирование заказа ' ~ order.serial : 'Создание нового заказа' }}</div>
-
                             <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
                                 <li class="nav-item">
                                     <a class="nav-link active show" data-toggle="pill" href="#client" role="tab">

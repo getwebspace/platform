@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Каталог</h2>
+                <h2 class="text-white pb-2 fw-bold">Список категорий {{ category ? 'вложенный в ' ~ category.title : '' }} ({{ categories.where('parent', category ? category.uuid : NIL).count() }})</h2>
             </div>
         </div>
     </div>
@@ -21,7 +21,7 @@
                                 <i class="fas fa-arrow-left"></i>
                             </a>
                         {% endif %}
-                        <h4 class="card-title">Список категорий {{ category ? 'вложенный в ' ~ category.title : '' }} ({{ categories.where('parent', category ? category.uuid : NIL).count() }})</h4>
+
                         <a href="/cup/catalog/category/add{{ category ? '?parent=' ~ category.uuid : '' }}" class="btn btn-primary btn-round ml-auto">
                             <i class="fa fa-plus"></i>
                             Добавить категорию

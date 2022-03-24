@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Категории публикаций</h2>
+                <h2 class="text-white pb-2 fw-bold">Список категорий ({{ list.count() }})</h2>
             </div>
         </div>
     </div>
@@ -16,7 +16,6 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
-                        <h4 class="card-title">Список категорий ({{ list.count() }})</h4>
                         <a href="/cup/publication/category/add" class="btn btn-primary btn-round ml-auto">
                             <i class="fa fa-plus"></i>
                             Добавить категорию

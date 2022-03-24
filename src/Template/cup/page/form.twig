@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">{{ 'Страницы'|locale }}</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ item.uuid ? 'Редактирование страницы '|locale ~ item.title : 'Создание новой страницы'|locale }}</h2>
             </div>
         </div>
     </div>
@@ -17,8 +17,6 @@
                 <form method="post" enctype="multipart/form-data">
                     <div class="card-header">
                         <div class="card-head-row">
-                            <div class="card-title">{{ item.uuid ? 'Редактирование страницы '|locale ~ item.title : 'Создание новой страницы'|locale }}</div>
-
                             <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
                                 <li class="nav-item">
                                     <a class="nav-link active show" data-toggle="pill" href="#page" role="tab">

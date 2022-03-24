@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Пользователи</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ item ? 'Редактирование пользователя ' ~ item.getName('full') : 'Добавление пользователя' }}</h2>
             </div>
             {% if item %}
                 <div class="ml-md-auto py-2 py-md-0">
@@ -24,8 +24,6 @@
                 <form method="post" enctype="multipart/form-data">
                     <div class="card-header">
                         <div class="d-flex align-items-center">
-                            <h4 class="card-title">{{ item ? 'Редактирование пользователя ' ~ item.username : 'Добавление пользователя' }}</h4>
-
                             <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
                                 <li class="nav-item">
                                     <a class="nav-link {{ item ? '' : 'active show' }}" data-toggle="pill" href="#user" role="tab">

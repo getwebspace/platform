@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Гостевая книга</h2>
+                <h2 class="text-white pb-2 fw-bold">Список записей ({{ list.count() }})</h2>
             </div>
         </div>
     </div>
@@ -14,12 +14,6 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">
-                    <div class="d-flex align-items-center">
-                        <h4 class="card-title">Список записей ({{ list.count() }})</h4>
-                    </div>
-                </div>
-
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}

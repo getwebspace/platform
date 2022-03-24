@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Пользователи</h2>
+                <h2 class="text-white pb-2 fw-bold">Контакт</h2>
             </div>
             <div class="ml-md-auto py-2 py-md-0">
                 <a href="/cup/user/{{ item.uuid }}/edit" class="btn btn-secondary">
@@ -129,7 +129,7 @@
                 <div class="card-body">
                     <dl class="row mb-0">
                         <dt class="col-4">Публикаций</dt>
-                        <dd class="col-8">{{ item.publications|count  ?: '&mdash;' }}</dd>
+                        <dd class="col-8">{{ item.publications|count ?: '&mdash;' }}</dd>
                         <dt class="col-4">Заказов</dt>
                         <dd class="col-8">{{ item.orders|count ?: '&mdash;' }}</dd>
                         <dt class="col-4">Социальные сети</dt>

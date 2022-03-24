@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Публикации</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ publication.uuid ? 'Редактирование публикации ' ~ publication.title : 'Добавление новой публикации' }}</h2>
             </div>
         </div>
     </div>
@@ -17,8 +17,6 @@
                 <form method="post" enctype="multipart/form-data">
                     <div class="card-header">
                         <div class="d-flex align-items-center">
-                            <h4 class="card-title">{{ publication.uuid ? 'Редактирование публикации ' ~ publication.title : 'Добавление новой публикации' }}</h4>
-
                             <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
                                 <li class="nav-item">
                                     <a class="nav-link active show" data-toggle="pill" href="#publication" role="tab">

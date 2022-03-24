@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Пользователи</h2>
+                <h2 class="text-white pb-2 fw-bold">Список пользователей ({{ list.count() }})</h2>
             </div>
         </div>
     </div>
@@ -15,11 +15,6 @@
         <div class="col-md-12">
             <div class="card">
                 <form method="post">
-                    <div class="card-header">
-                        <div class="card-head-row">
-                            <div class="card-title">Поиск пользователя</div>
-                        </div>
-                    </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
@@ -85,7 +80,6 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
-                        <h4 class="card-title">Список пользователей ({{ list.count() }})</h4>
                         <a href="/cup/user/add" class="btn btn-primary btn-round ml-auto">
                             <i class="fa fa-plus"></i>
                             Добавить пользователя
