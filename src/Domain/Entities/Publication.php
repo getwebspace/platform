@@ -75,7 +75,7 @@ class Publication extends AbstractEntity
     public function setAddress(string $address)
     {
         if ($this->checkStrLenMax($address, 1000)) {
-            $this->address = $this->getAddressByValue($address, $this->getTitle());
+            $this->address = $this->getAddressByValue($address, str_replace('/', '-', $this->getTitle()));
         }
 
         return $this;
