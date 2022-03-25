@@ -14,7 +14,6 @@ use Slim\Interfaces\RouteInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 use Slim\Views\Twig;
-use Twig\Extension\ExtensionInterface;
 
 abstract class AbstractPlugin
 {
@@ -216,7 +215,7 @@ abstract class AbstractPlugin
             $params['methods'] = [$params['methods']];
         }
 
-        return $this->router->map($params['methods'], $params['pattern'], $params['handler']);
+        return $this->router->map(array_map('mb_strtoupper', $params['methods']), $params['pattern'], $params['handler']);
     }
 
     /**
