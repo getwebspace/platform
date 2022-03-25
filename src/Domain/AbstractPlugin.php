@@ -107,7 +107,7 @@ abstract class AbstractPlugin
     /**
      * Register twig specific extension
      */
-    protected function addTwigExtension(ExtensionInterface $extension): void
+    protected function addTwigExtension(string $extension): void
     {
         $this->renderer->addExtension(new $extension($this->container));
     }
