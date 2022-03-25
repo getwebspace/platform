@@ -6,11 +6,13 @@
             <div>
                 <h2 class="text-white pb-2 fw-bold">{{ order.uuid ? 'Редактирование заказа' : 'Создание нового заказа' }}</h2>
             </div>
-            <div class="ml-md-auto py-2 py-md-0">
-                <a href="/cup/catalog/order/{{ order.uuid }}/invoice" class="btn btn-secondary">
-                    Инвойс
-                </a>
-            </div>
+            {% if order %}
+                <div class="ml-md-auto py-2 py-md-0">
+                    <a href="/cup/catalog/order/{{ order.uuid }}/invoice" class="btn btn-secondary">
+                        Инвойс
+                    </a>
+                </div>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
