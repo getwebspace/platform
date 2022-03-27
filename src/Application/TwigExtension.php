@@ -54,6 +54,7 @@ class TwigExtension extends AbstractExtension
             new TwigFilter('count', [$this, 'count']),
             new TwigFilter('df', [$this, 'df']),
             new TwigFilter('locale', '__', ['is_safe' => ['html']]),
+            new TwigFilter('trans', [$this, 'trans'], ['is_safe' => ['html']]),
         ];
     }
 
@@ -175,6 +176,14 @@ class TwigExtension extends AbstractExtension
     }
 
     // wse functions
+
+    public function trans($obj) {
+        if (!is_array($obj)) {
+            return $obj;
+        }
+
+        return $obj[i18n::$localeCode] ?? '';
+    }
 
     public function form($type, $name, $args = [])
     {
