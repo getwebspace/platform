@@ -177,7 +177,8 @@ class TwigExtension extends AbstractExtension
 
     // wse functions
 
-    public function trans($obj) {
+    public function trans($obj)
+    {
         if (!is_array($obj)) {
             return $obj;
         }
