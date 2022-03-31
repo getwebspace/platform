@@ -16,18 +16,18 @@
         document.addEventListener('DOMContentLoaded', async () => {
             await window.loader([
                 '/assets/js/plugin/codemirror/lib/codemirror.css?v={{ sha }}',
-                '/assets/js/plugin/codemirror/theme/darcula.css?v={{ sha }}',
                 '/assets/js/plugin/froala/froala_editor.pkgd.css?v={{ sha }}',
                 '/assets/js/plugin/froala/froala_style.css?v={{ sha }}',
                 '/assets/js/plugin/codemirror/lib/codemirror.js?v={{ sha }}',
                 '/assets/js/plugin/codemirror/addon/mode/overlay.js?v={{ sha }}',
                 '/assets/js/plugin/codemirror/addon/selection/selection-pointer.js?v={{ sha }}',
                 '/assets/js/plugin/codemirror/mode/css/css.js?v={{ sha }}',
-                '/assets/js/plugin/codemirror/mode/xml/xml.js?v={{ sha }}',
-                '/assets/js/plugin/codemirror/mode/javascript/javascript.js?v={{ sha }}',
-                '/assets/js/plugin/codemirror/mode/vbscript/vbscript.js?v={{ sha }}',
                 '/assets/js/plugin/codemirror/mode/htmlmixed/htmlmixed.js?v={{ sha }}',
+                '/assets/js/plugin/codemirror/mode/javascript/javascript.js?v={{ sha }}',
+                '/assets/js/plugin/codemirror/mode/markdown/markdown.js?v={{ sha }}',
                 '/assets/js/plugin/codemirror/mode/twig/twig.js?v={{ sha }}',
+                '/assets/js/plugin/codemirror/mode/vbscript/vbscript.js?v={{ sha }}',
+                '/assets/js/plugin/codemirror/mode/xml/xml.js?v={{ sha }}',
                 '/assets/js/plugin/froala/froala_editor.pkgd.js?v={{ sha }}',
                 '/assets/js/plugin/froala/ru.js?v={{ sha }}',
             ]);
@@ -50,7 +50,7 @@
                             htmlRemoveTags: [],
                             htmlAllowedAttrs: ['.*'],
 
-                            toolbarButtons: ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineClass', 'inlineStyle', 'paragraphStyle', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', '-', 'insertLink', 'insertImage', 'insertVideo', 'embedly', 'insertFile', 'insertTable', '|', 'emoticons', 'fontAwesome', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'html', '|', 'undo', 'redo'],
+                            toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineClass', 'inlineStyle', 'paragraphStyle', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'fullscreen', '-', 'insertLink', 'insertImage', 'insertVideo', 'embedly', 'insertFile', 'insertTable', '|', 'emoticons', 'fontAwesome', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'html', '|', 'undo', 'redo'],
 
                             fileMaxSize: 1024 * 1024 * 3,
                             fileUploadMethod: 'POST',
