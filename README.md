@@ -2,6 +2,7 @@
 # WebSpace Engine
 
 ![Docker builder](https://github.com/getwebspace/platform/workflows/Docker%20builder/badge.svg)
+![](https://visitor-badge.glitch.me/badge?page_id=getwebspace.platform)
 
 WebSpace Engine - is a free open source multi-user site engine with great functionality, primarily intended for: organization of mass media; blogs; online stores;
 
