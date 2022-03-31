@@ -28,10 +28,10 @@ return function (ContainerBuilder $containerBuilder): void {
             'types' => require CONFIG_DIR . '/types.php',
 
             // connection to DB settings
-            'connection' => !empty($_ENV['DATABASE']) ? ['url' => $_ENV['DATABASE']] : [
-                'driver' => 'pdo_sqlite',
-                'path' => VAR_DIR . '/database.sqlite',
-            ],
+            'connection' => array_merge(
+                $_ENV['DATABASE'] ? ['url' => $_ENV['DATABASE']] : ['driver' => 'pdo_sqlite', 'path' => VAR_DIR . '/database.sqlite'],
+                ['charset' => 'utf8mb4', 'collate' => 'utf8mb4_unicode_ci'],
+            ),
         ],
     ]);
 
