@@ -20,7 +20,7 @@ class CatalogImportAction extends CatalogAction
                     $task->execute(['file' => $file->getUuid()->toString()]);
 
                     // run worker
-                    \App\Domain\AbstractTask::worker(); // run all queue
+                    \App\Domain\AbstractTask::worker($task);
                 }
             }
         }
