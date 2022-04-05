@@ -155,7 +155,7 @@ $(() => {
                 params = JSON.parse(sessionStorage.getItem(key) ?? '{}')
             ;
     
-            $('.nav.nav-pills').each((i, el) => {
+            $navs.each((i, el) => {
                 params[pathname] = params[pathname] ?? {};
                 
                 $(el).find('.nav-item a.nav-link, a.nav-link').on('click', (el) => {
