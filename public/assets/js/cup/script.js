@@ -144,6 +144,34 @@ $(() => {
         fadeDelay: 1.0            // Point during the overlay's fade-in that the modal begins to fade in (.5 = 50%, 1.5 = 150%, etc.)
     };
     
+    // tabs save position
+    {
+        let key = 'nav-tabs',
+            $navs = $('.nav.nav-pills');
+        
+        if ($navs.length) {
+            let
+                pathname = location.pathname,
+                params = JSON.parse(sessionStorage.getItem(key) ?? '{}')
+            ;
+    
+            $('.nav.nav-pills').each((i, el) => {
+                params[pathname] = params[pathname] ?? {};
+                
+                $(el).find('.nav-item a.nav-link, a.nav-link').on('click', (el) => {
+                    params[pathname][i] = $(el.currentTarget).attr('href');
+                    sessionStorage.setItem(key, JSON.stringify(params));
+                });
+            });
+            
+            if (params[pathname]) {
+                for (let i in params[pathname]) {
+                    $('a[href="' + params[pathname][i] + '"]').click();
+                }
+            }
+        }
+    }
+    
     // parameters guest user && user group
     {
         let $select = $('select[name="access[]"], [name="user[access][]"]'),
