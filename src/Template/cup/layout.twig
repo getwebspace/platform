@@ -39,7 +39,7 @@
 
                             {% if user and ('cup:main' in user.group.access) %}
                                 <ul class="navbar-nav topbar-nav mr-md-auto align-items-center">
-                                    <li class="nav-item submenu">
+                                    <li class="nav-item">
                                         {% include 'cup/donate.twig' %}
                                     </li>
                                 </ul>
@@ -61,7 +61,7 @@
                                         {% endfor %}
                                     {% endfor %}
 
-                                    <li class="nav-item submenu">
+                                    <li class="nav-item">
                                         <a href="#" class="nav-link quick-sidebar-toggler">
                                             <i class="fa fa-th"></i>
                                         </a>
