@@ -1,0 +1,55 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5"></div>
+{% endblock %}
+
+{% block panelinner %}
+    <div class="container container-full">
+        <div class="page-inner page-inner-fill">
+            <div class="card mb-0">
+                <div class="card-header">
+                    <ul class="nav nav-pills nav-secondary nav-pills-no-bd justify-content-center" role="tablist">
+                        {% for file, lines in files %}
+                            <li class="nav-item">
+                                <a class="nav-link {{ loop.index0 == 0 ? 'active show' : '' }}" data-toggle="pill" href="#file-{{ file|replace({'.': '-'}) }}" role="tab">
+                                    {{ file }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="card-body p-0">
+                    <style>
+                        .CodeMirror {
+                            width: 100% !important;
+                            min-height: 89vh !important;
+                        }
+                        [data-input] {
+                            padding: 0;
+                        }
+                    </style>
+
+                    <div class="tab-content">
+                        {% for file, lines in files %}
+                            <div class="tab-pane fade {{ loop.index0 == 0 ? 'active show' : '' }}" id="file-{{ file|replace({'.': '-'}) }}" role="tabpanel">
+                                <div>
+                                    {% include 'cup/editor.twig' with {
+                                        'name': 'template',
+                                        'args': {
+                                            'id': 'editor-' ~ file,
+                                            'value': lines,
+                                            'text_mode': true,
+                                            'readonly': true,
+                                        }
+                                    } %}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

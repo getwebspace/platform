@@ -243,6 +243,10 @@ return function (App $app, Container $container): void {
                             ->setName('cup:editor');
                     });
 
+                    // log viewer
+                    $group->get('/logs', \App\Application\Actions\Cup\LogPageAction::class)
+                        ->setName('cup:logs');
+
                     // task add to queue
                     $group->post('/task/run', \App\Application\Actions\Cup\Task\TaskRunAction::class)
                         ->setName('cup:task:run');
