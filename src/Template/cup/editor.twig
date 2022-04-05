@@ -37,7 +37,8 @@
                 if ($editor.length) {
                     if ('{{ item.type }}' === 'text' || '{{ args.text_mode }}') {
                         CodeMirror.fromTextArea($editor.get(0), {
-                            lineNumbers: true
+                            lineNumbers: true,
+                            readOnly: '{{ args.readonly }}',
                         });
                     } else {
                         $editor.froalaEditor({
