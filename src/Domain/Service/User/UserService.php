@@ -96,7 +96,7 @@ class UserService extends AbstractService
             ->setLastname($data['lastname'])
             ->setPatronymic($data['patronymic'])
             ->setGender($data['gender'])
-            ->setBirthdate($data['birthdate'], $this->parameter('common_timezone', 'UTC'))
+            ->setBirthdate($data['birthdate'])
             ->setAddress($data['address'])
             ->setAdditional($data['additional'])
             ->setAllowMail($data['allow_mail'])
@@ -332,7 +332,7 @@ class UserService extends AbstractService
                     $entity->setGender($data['gender']);
                 }
                 if ($data['birthdate'] !== null) {
-                    $entity->setBirthdate($data['birthdate'], $this->parameter('common_timezone', 'UTC'));
+                    $entity->setBirthdate($data['birthdate']);
                 }
                 if ($data['address'] !== null) {
                     $entity->setAddress($data['address']);

@@ -135,6 +135,15 @@ abstract class AbstractEntity implements JsonSerializable
         return $value;
     }
 
+    protected function getDateByValue($value): DateTime
+    {
+        return match (true) {
+            is_string($value), is_numeric($value) => new DateTime($value),
+            is_a($value, DateTime::class) => clone $value,
+            default => new DateTime('now'),
+        };
+    }
+
     protected function getUuidByValue(mixed $value): string|\Ramsey\Uuid\UuidInterface
     {
         if (\Ramsey\Uuid\Uuid::isValid((string) $value)) {

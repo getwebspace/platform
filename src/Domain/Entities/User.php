@@ -265,9 +265,9 @@ class User extends AbstractEntity
      *
      * @return $this
      */
-    public function setBirthdate($birthdate, $timezone = 'UTC')
+    public function setBirthdate($birthdate)
     {
-        $this->birthdate = $this->getDateTimeByValue($birthdate, $timezone);
+        $this->birthdate = $this->getDateByValue($birthdate);
 
         return $this;
     }
