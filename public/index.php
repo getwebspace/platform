@@ -35,10 +35,11 @@ $settings = $container->get('settings');
 $displayErrorDetails = $settings['displayErrorDetails'];
 $logError = $settings['logError'];
 $logErrorDetails = $settings['logErrorDetails'];
+$logger = $container->get(\Psr\Log\LoggerInterface::class);
 
 $app->add(\Slim\Views\TwigMiddleware::createFromContainer($app));
 $app->addRoutingMiddleware();
-$app->addErrorMiddleware($displayErrorDetails, $logError, $logErrorDetails);
+$app->addErrorMiddleware($displayErrorDetails, $logError, $logErrorDetails, $logger);
 $app->run();
 
 // And nothing more :)
