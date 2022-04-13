@@ -447,3 +447,38 @@ if (!function_exists('array_serialize')) {
         return $array;
     }
 }
+
+if (!function_exists('ErrorHandler')) {
+    function ErrorHandler(\Psr\Container\ContainerInterface $container)
+    {
+        /**
+         * @var $logger \Psr\Log\LoggerInterface
+         */
+        $logger = $container->get(\Psr\Log\LoggerInterface::class);
+
+        return function ($code, $str, $file, $line) use ($logger) {
+            $level = match ($code) {
+                E_PARSE, E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR => \Monolog\Logger::ERROR,
+                E_WARNING, E_USER_WARNING, E_COMPILE_WARNING, E_RECOVERABLE_ERROR => \Monolog\Logger::WARNING,
+                E_NOTICE, E_USER_NOTICE, E_STRICT, E_DEPRECATED, E_USER_DEPRECATED => \Monolog\Logger::NOTICE,
+                default => \Monolog\Logger::INFO,
+            };
+
+            $logger->log($level, "{$str} ({$file}:{$line})");
+        };
+    }
+}
+
+if (!function_exists('ExceptionHandler')) {
+    function ExceptionHandler(\Psr\Container\ContainerInterface $container)
+    {
+        /**
+         * @var $logger \Psr\Log\LoggerInterface
+         */
+        $logger = $container->get(\Psr\Log\LoggerInterface::class);
+
+        return function (Throwable $ex) use ($logger) {
+            $logger->critical("{$ex->getMessage()} ({$ex->getFile()}:{$ex->getLine()})");
+        };
+    }
+}

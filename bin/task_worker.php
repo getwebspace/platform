@@ -22,6 +22,10 @@ if (\App\Domain\AbstractTask::workerHasPidFile($action)) {
 // app container
 $container = $app->getContainer();
 
+// bind error/exception handler
+set_error_handler(ErrorHandler($container));
+set_exception_handler(ExceptionHandler($container));
+
 /** @var \Monolog\Logger $logger */
 $logger = $container->get(\Psr\Log\LoggerInterface::class);
 
