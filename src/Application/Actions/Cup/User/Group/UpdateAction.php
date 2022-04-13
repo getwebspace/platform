@@ -15,11 +15,13 @@ class UpdateAction extends UserAction
             if ($userGroup) {
                 if ($this->isPost()) {
                     try {
-                        $this->userGroupService->update($userGroup, [
+                        $userGroup = $this->userGroupService->update($userGroup, [
                             'title' => $this->getParam('title'),
                             'description' => $this->getParam('description'),
                             'access' => $this->getParam('access', []),
                         ]);
+
+                        $this->container->get(\App\Application\PubSub::class)->publish('cup:user:group:edit', $userGroup);
 
                         switch (true) {
                             case $this->getParam('save', 'exit') === 'exit':

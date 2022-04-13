@@ -20,6 +20,11 @@ return function (ContainerBuilder $containerBuilder): void {
         \Slim\Interfaces\RouteCollectorInterface::class => function (ContainerInterface $container) {
             return $container->get(\Slim\App::class)->getRouteCollector();
         },
+
+        // pubsub component
+        \App\Application\PubSub::class => function (ContainerInterface $container) {
+            return new \App\Application\PubSub($container);
+        },
     ]);
 
     // doctrine
@@ -133,7 +138,7 @@ return function (ContainerBuilder $containerBuilder): void {
         \Psr\Log\LoggerInterface::class => function (ContainerInterface $c) {
             $settings = $c->get('logger');
 
-            $logger = new Monolog\Logger($settings['name']);
+            $logger = new \Monolog\Logger($settings['name']);
             $logger->pushProcessor(new Monolog\Processor\UidProcessor());
             $logger->pushHandler(new Monolog\Handler\StreamHandler($settings['path'], $settings['level']));
 

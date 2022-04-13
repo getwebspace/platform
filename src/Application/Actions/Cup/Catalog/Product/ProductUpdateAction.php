@@ -60,6 +60,8 @@ class ProductUpdateAction extends CatalogAction
                         );
                         $product = $this->processEntityFiles($product);
 
+                        $this->container->get(\App\Application\PubSub::class)->publish('cup:catalog:product:edit', $product);
+
                         switch (true) {
                             case $this->getParam('save', 'exit') === 'exit':
                                 return $this->respondWithRedirect('/cup/catalog/product');

@@ -21,6 +21,8 @@ class GuestBookUpdateAction extends GuestBookAction
                         'status' => $this->getParam('status'),
                     ]);
 
+                    $this->container->get(\App\Application\PubSub::class)->publish('cup:guestbook:edit', $entry);
+
                     switch (true) {
                         case $this->getParam('save', 'exit') === 'exit':
                             return $this->respondWithRedirect('/cup/guestbook');

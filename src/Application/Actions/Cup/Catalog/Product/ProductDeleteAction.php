@@ -19,6 +19,8 @@ class ProductDeleteAction extends CatalogAction
             if ($product) {
                 $product->setStatus(\App\Domain\Types\Catalog\ProductStatusType::STATUS_DELETE);
                 $this->catalogProductService->write($product);
+
+                $this->container->get(\App\Application\PubSub::class)->publish('cup:catalog:product:delete', $product);
             }
         }
 

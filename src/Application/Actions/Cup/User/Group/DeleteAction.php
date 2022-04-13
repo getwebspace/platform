@@ -9,7 +9,15 @@ class DeleteAction extends UserAction
     protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            $this->userGroupService->delete($this->resolveArg('uuid'));
+            $userGroup = $this->userGroupService->read([
+                'uuid' => $this->resolveArg('uuid'),
+            ]);
+
+            if ($userGroup) {
+                $this->userGroupService->delete($userGroup);
+
+                $this->container->get(\App\Application\PubSub::class)->publish('cup:user:group:delete', $userGroup);
+            }
         }
 
         return $this->respondWithRedirect('/cup/user/group');

@@ -27,6 +27,8 @@ class PublicationCreateAction extends PublicationAction
                 ]);
                 $publication = $this->processEntityFiles($publication);
 
+                $this->container->get(\App\Application\PubSub::class)->publish('cup:publication:create', $publication);
+
                 switch (true) {
                     case $this->getParam('save', 'exit') === 'exit':
                         return $this->response->withAddedHeader('Location', '/cup/publication')->withStatus(301);

@@ -33,6 +33,8 @@ class OrderUpdateAction extends CatalogAction
                         $this->getParam('products', [])
                     );
 
+                    $this->container->get(\App\Application\PubSub::class)->publish('cup:catalog:order:edit', $order);
+
                     switch (true) {
                         case $this->getParam('save', 'exit') === 'exit':
                             return $this->respondWithRedirect('/cup/catalog/order');

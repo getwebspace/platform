@@ -21,7 +21,7 @@ class UserUpdateAction extends UserAction
                 if ($this->isPost()) {
                     try {
                         $group_uuid = $this->getParam('group_uuid');
-                        $this->userService->update($user, [
+                        $user = $this->userService->update($user, [
                             'username' => $this->getParam('username'),
                             'firstname' => $this->getParam('firstname'),
                             'lastname' => $this->getParam('lastname'),
@@ -43,6 +43,8 @@ class UserUpdateAction extends UserAction
                             'external_id' => $this->getParam('external_id'),
                         ]);
                         $user = $this->processEntityFiles($user);
+
+                        $this->container->get(\App\Application\PubSub::class)->publish('cup:user:edit', $user);
 
                         switch (true) {
                             case $this->getParam('save', 'exit') === 'exit':

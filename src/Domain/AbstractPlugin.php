@@ -235,6 +235,36 @@ abstract class AbstractPlugin
     }
 
     /**
+     * Publish a data to a channel
+     *
+     * @param string $channel
+     * @param mixed  $data
+     *
+     * @return self
+     */
+    public function publish(string $channel, mixed $data = []): self
+    {
+        $this->container->get(\App\Application\PubSub::class)->publish($channel, $data);
+
+        return $this;
+    }
+
+    /**
+     * Subscribe a handler to a channel
+     *
+     * @param string|array $channels
+     * @param callable     $handler
+     *
+     * @return self
+     */
+    public function subscribe(string|array $channels, callable $handler): self
+    {
+        $this->container->get(\App\Application\PubSub::class)->subscribe($channels, $handler);
+
+        return $this;
+    }
+
+    /**
      * The function will be executed BEFORE processing the selected group of routes
      */
     public function before(Request $request, string $routeName): void

@@ -119,7 +119,9 @@ abstract class AbstractTask
     public function run(): void
     {
         $this->setStatusWork();
+        $this->container->get(\App\Application\PubSub::class)->publish(static::class . ':start', $this->entity);
         $this->action($this->entity->getParams());
+        $this->container->get(\App\Application\PubSub::class)->publish(static::class . ':finish', $this->entity);
         $this->logger->info('Task: done', ['action' => static::class]);
     }
 

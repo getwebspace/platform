@@ -18,6 +18,8 @@ class CreateAction extends UserAction
                     'access' => $this->getParam('access', []),
                 ]);
 
+                $this->container->get(\App\Application\PubSub::class)->publish('cup:user:group:create', $userGroup);
+
                 switch (true) {
                     case $this->getParam('save', 'exit') === 'exit':
                         return $this->respondWithRedirect('/cup/user/group');

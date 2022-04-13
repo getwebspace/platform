@@ -18,6 +18,8 @@ class AttributeCreateAction extends CatalogAction
                     'type' => $this->getParam('type'),
                 ]);
 
+                $this->container->get(\App\Application\PubSub::class)->publish('cup:catalog:attribute:create', $attribute);
+
                 switch (true) {
                     case $this->getParam('save', 'exit') === 'exit':
                         return $this->respondWithRedirect('/cup/catalog/attribute');

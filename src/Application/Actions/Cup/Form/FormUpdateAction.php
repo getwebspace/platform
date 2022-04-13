@@ -27,6 +27,8 @@ class FormUpdateAction extends FormAction
                             'duplicate' => $this->getParam('duplicate'),
                         ]);
 
+                        $this->container->get(\App\Application\PubSub::class)->publish('cup:form:edit', $form);
+
                         switch (true) {
                             case $this->getParam('save', 'exit') === 'exit':
                                 return $this->respondWithRedirect('/cup/form');

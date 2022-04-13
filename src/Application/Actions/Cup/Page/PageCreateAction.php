@@ -23,6 +23,8 @@ class PageCreateAction extends PageAction
                 ]);
                 $page = $this->processEntityFiles($page);
 
+                $this->container->get(\App\Application\PubSub::class)->publish('cup:page:create', $page);
+
                 switch (true) {
                     case $this->getParam('save', 'exit') === 'exit':
                         return $this->respondWithRedirect('/cup/page');

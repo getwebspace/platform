@@ -42,6 +42,8 @@ class UserCreateAction extends UserAction
                 ]);
                 $user = $this->processEntityFiles($user);
 
+                $this->container->get(\App\Application\PubSub::class)->publish('cup:user:create', $user);
+
                 switch (true) {
                     case $this->getParam('save', 'exit') === 'exit':
                         return $this->respondWithRedirect('/cup/user');

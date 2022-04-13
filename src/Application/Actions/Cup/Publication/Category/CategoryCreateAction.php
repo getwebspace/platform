@@ -27,6 +27,8 @@ class CategoryCreateAction extends PublicationAction
                 ]);
                 $publicationCategory = $this->processEntityFiles($publicationCategory);
 
+                $this->container->get(\App\Application\PubSub::class)->publish('cup:publication:category:create', $publicationCategory);
+
                 switch (true) {
                     case $this->getParam('save', 'exit') === 'exit':
                         return $this->response->withAddedHeader('Location', '/cup/publication/category')->withStatus(301);

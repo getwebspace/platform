@@ -40,6 +40,8 @@ class OrderCreateAction extends CatalogAction
                 ]);
             }
 
+            $this->container->get(\App\Application\PubSub::class)->publish('cup:catalog:order:create', $order);
+
             switch (true) {
                 case $this->getParam('save', 'exit') === 'exit':
                     return $this->respondWithRedirect('/cup/catalog/order');
