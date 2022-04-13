@@ -2,11 +2,6 @@
 
 namespace App\Domain\Traits;
 
-use Psr\Container\ContainerInterface;
-
-/**
- * @property ContainerInterface[] $container
- */
 trait StorageTrait
 {
     /**
@@ -17,7 +12,7 @@ trait StorageTrait
     /**
      * @return mixed
      */
-    protected static function setStorage(string $key, mixed $value, ?string $namespace = null)
+    protected static function setStorage(string $key, mixed $value, ?string $namespace = null): mixed
     {
         self::$storage[$namespace][$key] = $value;
 
@@ -25,11 +20,13 @@ trait StorageTrait
     }
 
     /**
+     * @param string      $key
      * @param mixed       $default
+     * @param string|null $namespace
      *
-     * @return null|mixed
+     * @return mixed
      */
-    protected static function getStorage(string $key, mixed $default = null, ?string $namespace = null)
+    protected static function getStorage(string $key, mixed $default = null, ?string $namespace = null): mixed
     {
         return self::$storage[$namespace][$key] ?? $default;
     }
