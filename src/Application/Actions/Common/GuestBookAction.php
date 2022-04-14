@@ -21,7 +21,7 @@ class GuestBookAction extends AbstractAction
         if ($this->isPost()) {
             if ($this->isRecaptchaChecked()) {
                 try {
-                    $item = $guestBookService->create([
+                    $entry = $guestBookService->create([
                         'name' => $this->getParam('name'),
                         'email' => $this->getParam('email'),
                         'message' => $this->getParam('message'),
@@ -32,7 +32,7 @@ class GuestBookAction extends AbstractAction
                         $notificationService->create([
                             'title' => 'Новый отзыв в гостевой книге',
                             'params' => [
-                                'guestbook_uuid' => $item->getUuid(),
+                                'guestbook_uuid' => $entry->getUuid(),
                             ],
                         ]);
                     }
@@ -44,6 +44,8 @@ class GuestBookAction extends AbstractAction
                     ) {
                         $this->response = $this->response->withHeader('Location', $_SERVER['HTTP_REFERER'])->withStatus(301);
                     }
+
+                    $this->container->get(\App\Application\PubSub::class)->publish('common:guestbook:create', $entry);
 
                     return $this->respondWithJson(['description' => 'Message added']);
                 } catch (MissingNameValueException $e) {

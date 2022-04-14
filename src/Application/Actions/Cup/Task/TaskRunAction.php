@@ -20,6 +20,8 @@ class TaskRunAction extends AbstractAction
                 // run worker
                 \App\Domain\AbstractTask::worker($task);
 
+                $this->container->get(\App\Application\PubSub::class)->publish('cup:task:run', $task);
+
                 $this->response = $this->response->withAddedHeader('Location', '/cup')->withStatus(301);
             }
         }

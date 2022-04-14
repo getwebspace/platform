@@ -68,6 +68,8 @@ class SearchIndexTask extends AbstractTask
 
         file_put_contents(Search::CACHE_FILE, implode(PHP_EOL, $index));
 
+        $this->container->get(\App\Application\PubSub::class)->publish('task:search:indexed');
+
         $this->setStatusDone((string) count($index));
     }
 

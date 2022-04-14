@@ -210,6 +210,8 @@ class ImportTask extends AbstractTask
         // rm excel file
         $fileService->delete($file);
 
+        $this->container->get(\App\Application\PubSub::class)->publish('task:catalog:import');
+
         return $this->setStatusDone();
     }
 

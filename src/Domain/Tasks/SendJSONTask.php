@@ -41,6 +41,8 @@ class SendJSONTask extends AbstractTask
         ]));
 
         if ($result !== false) {
+            $this->container->get(\App\Application\PubSub::class)->publish('task:json:send');
+
             $this->setStatusDone($result);
         } else {
             $this->setStatusFail();

@@ -33,7 +33,7 @@ class UserRegisterAction extends UserAction
                 if ($data['password'] === $data['password_again']) {
                     try {
                         $groupUuid = $this->parameter('user_group');
-                        $this->userService->create([
+                        $user = $this->userService->create([
                             'firstname' => $data['firstname'],
                             'lastname' => $data['lastname'],
                             'username' => $data['username'],
@@ -46,6 +46,8 @@ class UserRegisterAction extends UserAction
                             'group' => $groupUuid ? $this->userGroupService->read(['uuid' => $groupUuid]) : null,
                             'external_id' => $data['external_id'],
                         ]);
+
+                        $this->container->get(\App\Application\PubSub::class)->publish('common:user:register', $user);
 
                         return $this->respondWithRedirect('/user/login');
                     } catch (MissingUniqueValueException $e) {

@@ -111,6 +111,8 @@ class CartAction extends CatalogAction
                     \App\Domain\AbstractTask::worker($isNeedRunWorker);
                 }
 
+                $this->container->get(\App\Application\PubSub::class)->publish('common:catalog:order:create', $order);
+
                 if (
                     (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') && !empty($_SERVER['HTTP_REFERER'])
                 ) {

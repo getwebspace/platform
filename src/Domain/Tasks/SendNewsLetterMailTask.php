@@ -92,6 +92,8 @@ class SendNewsLetterMailTask extends AbstractTask
                 sleep(10);
             }
 
+            $this->container->get(\App\Application\PubSub::class)->publish('task:mail:send');
+
             $this->setStatusDone();
         }
     }

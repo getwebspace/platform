@@ -20,6 +20,8 @@ class DeleteAction extends FileAction
 
             if ($file) {
                 $this->fileService->delete($file);
+
+                $this->container->get(\App\Application\PubSub::class)->publish('cup:file:delete', $file);
             }
         }
 

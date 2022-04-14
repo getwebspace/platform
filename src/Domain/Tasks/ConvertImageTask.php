@@ -109,6 +109,8 @@ class ConvertImageTask extends AbstractTask
             $this->setProgress($index, count($args['uuid']));
         }
 
+        $this->container->get(\App\Application\PubSub::class)->publish('task:file:convert');
+
         $this->setStatusDone();
     }
 }

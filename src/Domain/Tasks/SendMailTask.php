@@ -57,6 +57,8 @@ class SendMailTask extends AbstractTask
 
         $mail = Mail::send($args);
 
+        $this->container->get(\App\Application\PubSub::class)->publish('task:mail:send');
+
         if ($mail !== false) {
             $this->logger->info('Mail is sent', ['mailto' => $args['to']]);
             $this->setStatusDone('ok');

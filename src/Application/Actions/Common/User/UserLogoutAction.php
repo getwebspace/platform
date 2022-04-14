@@ -20,6 +20,8 @@ class UserLogoutAction extends UserAction
 
             setcookie('uuid', '-1', time(), '/');
             setcookie('session', '-1', time(), '/');
+
+            $this->container->get(\App\Application\PubSub::class)->publish('common:user:logout', $user);
         }
 
         return $this->respondWithRedirect('/');

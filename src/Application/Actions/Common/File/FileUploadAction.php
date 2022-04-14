@@ -41,6 +41,8 @@ class FileUploadAction extends FileAction
             }
 
             $this->entityManager->flush();
+
+            $this->container->get(\App\Application\PubSub::class)->publish('common:file:upload', $models);
         }
 
         if ($models && $path_only) {

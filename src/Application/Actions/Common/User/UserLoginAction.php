@@ -43,6 +43,8 @@ class UserLoginAction extends UserAction
             setcookie('uuid', $user->getUuid()->toString(), time() + \App\Domain\References\Date::YEAR, '/');
             setcookie('session', $session->getHash(), time() + \App\Domain\References\Date::YEAR, '/');
 
+            $this->container->get(\App\Application\PubSub::class)->publish('common:user:login', $user);
+
             return $this->respondWithRedirect($this->getParam('redirect', '/user/profile'));
         }
 

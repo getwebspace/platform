@@ -186,6 +186,8 @@ class EntityAction extends ActionApi
                                     $result[$index] = $service->update($item, $this->getParams());
                                 }
                                 $status = 202;
+
+                                $this->container->get(\App\Application\PubSub::class)->publish('api:' . str_replace('/', ':', $params['entity']) . ':edit', $result);
                             }
 
                             break;
@@ -193,6 +195,8 @@ class EntityAction extends ActionApi
                         case 404:
                             $result = $service->create($this->getParams());
                             $status = 201;
+
+                            $this->container->get(\App\Application\PubSub::class)->publish('api:' . str_replace('/', ':', $params['entity']) . ':create', $result);
 
                             break;
                     }
