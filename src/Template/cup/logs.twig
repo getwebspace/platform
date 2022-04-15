@@ -9,15 +9,17 @@
         <div class="page-inner page-inner-fill">
             <div class="card mb-0">
                 <div class="card-header">
-                    <ul class="nav nav-pills nav-secondary nav-pills-no-bd justify-content-center" role="tablist">
-                        {% for file, lines in files %}
-                            <li class="nav-item">
-                                <a class="nav-link {{ loop.index0 == 0 ? 'active show' : '' }}" data-toggle="pill" href="#file-{{ file|replace({'.': '-'}) }}" role="tab">
-                                    {{ file }}
-                                </a>
-                            </li>
-                        {% endfor %}
-                    </ul>
+                    <div class="d-flex align-items-center">
+                        <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
+                            {% for file, lines in files %}
+                                <li class="nav-item">
+                                    <a class="nav-link {{ loop.index0 == 0 ? 'active show' : '' }}" data-toggle="pill" href="#file-{{ file|replace({'.': '-'}) }}" role="tab">
+                                        {{ file }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                 </div>
                 <div class="card-body p-0">
                     <style>

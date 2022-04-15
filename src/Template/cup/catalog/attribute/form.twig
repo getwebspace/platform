@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Атрибуты</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ attribute.uuid ? 'Редактирование атрибута' : 'Создание нового атрибута' }}</h2>
             </div>
         </div>
     </div>
@@ -15,11 +15,6 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">
-                        <div class="card-head-row">
-                            <div class="card-title">{{ attribute.uuid ? 'Редактирование атрибута ' ~ attribute.title : 'Создание нового атрибута' }}</div>
-                        </div>
-                    </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
