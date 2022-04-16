@@ -6,8 +6,8 @@ use App\Domain\AbstractAction;
 use App\Domain\Entities\FileRelation;
 use App\Domain\Entities\Form;
 use App\Domain\Entities\Form\Data as FromData;
-use App\Domain\Exceptions\HttpNotFoundException;
 use App\Domain\Service\Form\DataService as FormDataService;
+use App\Domain\Service\Form\Exception\FormNotFoundException;
 use App\Domain\Service\Form\FormService;
 use App\Domain\Service\Notification\NotificationService;
 
@@ -19,10 +19,10 @@ class FormAction extends AbstractAction
         $formDataService = $this->container->get(FormDataService::class);
         $notificationService = $this->container->get(NotificationService::class);
 
-        $form = $formService->read(['address' => $this->resolveArg('unique')]);
+        try {
+            /** @var Form $form */
+            $form = $formService->read(['address' => $this->resolveArg('unique')]);
 
-        /** @var Form $form */
-        if ($form) {
             if (
                 (
                     empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest'
@@ -164,8 +164,9 @@ class FormAction extends AbstractAction
             }
 
             $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
-        } else {
-            throw new HttpNotFoundException();
+        } catch (FormNotFoundException $e) {
+            // 404
+            return $this->respond('p404.twig')->withStatus(404);
         }
 
         return $this->response->withStatus(500);
