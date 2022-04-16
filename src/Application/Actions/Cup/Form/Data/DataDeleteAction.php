@@ -13,7 +13,7 @@ class DataDeleteAction extends FormAction
             && $this->resolveArg('data') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('data'))
         ) {
             $data = $this->formDataService->read([
-                'uuid' => $this->resolveArg('uuid'),
+                'uuid' => $this->resolveArg('data'),
             ]);
 
             if ($data) {

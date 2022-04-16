@@ -2,10 +2,17 @@
 
 return [
     // ***
+    // Common texts
+    // ***
+    'Например' => 'For example',
+    'Название' => 'Title',
+    'Статус' => 'Status',
+    'Дата' => 'Date',
+    'Другое' => 'Other',
+
+    // ***
     // Select variants
     // ***
-
-    'Например' => 'For example',
 
     // status
     'work' => 'Work',
@@ -36,6 +43,7 @@ return [
     // btn
     'Изменить' => 'Change',
     'Удалить' => 'Delete',
+    'Посмотреть' => 'View',
     'Сохранить' => 'Save',
     'Установка и обновление' => 'Installation and update',
     'Добавить' => 'Add',

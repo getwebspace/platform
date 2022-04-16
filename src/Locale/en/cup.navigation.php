@@ -26,6 +26,6 @@ return [
     'Гостевая книга' => 'Guest book',
     'Файлы' => 'Files',
     'Настройки' => 'Settings',
-    'Другое' => 'Other',
     'Редактор шаблона' => 'Template editor',
+    'Журнал системы' => 'System log',
 ];

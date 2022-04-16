@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Список файлов ({{ list.count() }})</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Список файлов'|locale }} ({{ list.count() }})</h2>
             </div>
         </div>
     </div>
@@ -18,9 +18,9 @@
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
                             <tr>
-                                <th>Имя</th>
-                                <th width="15%">Размер</th>
-                                <th width="15%" class="d-none d-md-table-cell">Дата создания</th>
+                                <th>{{ 'Имя'|locale }}</th>
+                                <th width="15%">{{ 'Размер'|locale }}</th>
+                                <th width="15%" class="d-none d-md-table-cell">{{ 'Дата создания'|locale }}</th>
                                 <th width="20%" class="text-right"></th>
                             </tr>
                         {% endblock %}
@@ -35,13 +35,13 @@
                                         </a>
                                     </td>
                                     <td width="15%">{{ item.getFileSize() }}</td>
-                                    <td width="15%" class="d-none d-md-table-cell">{{ item.date|df('d.m.Y H:i:s') }}</td>
+                                    <td width="15%" class="d-none d-md-table-cell">{{ item.date|df }}</td>
                                     <td width="20%" class="text-right">
-                                        <form action="/cup/file/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить файл?');">
+                                        <form action="/cup/file/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Вы действительно хотите удалить файл?'|locale }}');">
                                             <div class="btn-group">
                                                 <button type="submit" class="btn btn-sm btn-danger">
                                                     <i class="fas fa-fw fa-trash-alt"></i>
-                                                    <span class="d-none d-md-inline-block">Удалить</span>
+                                                    <span class="d-none d-md-inline-block">{{ 'Удалить'|locale }}</span>
                                                 </button>
                                             </div>
                                         </form>

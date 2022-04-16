@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Полученные данные</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Полученные данные'|locale }}</h2>
             </div>
         </div>
     </div>
@@ -61,9 +61,9 @@
                     </div>
                 </div>
                 <div class="card-footer">
-                    <form action="/cup/form/{{ item.form_uuid }}/view/{{ item.uuid }}/delete" method="post" onsubmit="return confirm('Вы действительно хотите удалить запись?');">
+                    <form action="/cup/form/{{ item.form_uuid }}/view/{{ item.uuid }}/delete" method="post" onsubmit="return confirm('{{ 'Вы действительно хотите удалить запись?'|locale }}');">
                         <button type="submit" class="btn btn-danger btn-round">
-                            <i class="fas fa-fw fa-trash-alt"></i> Удалить
+                            <i class="fas fa-fw fa-trash-alt"></i> {{ 'Удалить'|locale }}
                         </button>
                     </form>
                 </div>

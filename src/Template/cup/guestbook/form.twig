@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Редактирование записи</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Редактирование записи'|locale }}</h2>
             </div>
         </div>
     </div>
@@ -19,10 +19,10 @@
                         <div class="row">
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Имя',
+                                    'label': 'Автор'|locale,
                                     'type': 'text',
                                     'name': 'name',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Нельзя изменять значение поля"></i>',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Нельзя изменять значение поля'|locale) ~ '"></i>',
                                     'args': {
                                         'value': item.name,
                                         'readonly': true
@@ -34,7 +34,7 @@
                                     'label': 'E-Mail',
                                     'type': 'email',
                                     'name': 'email',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Нельзя изменять значение поля"></i>',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Нельзя изменять значение поля'|locale) ~ '"></i>',
                                     'args': {
                                         'value': item.email,
                                         'readonly': true
@@ -46,7 +46,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 {% include 'cup/editor.twig' with {
-                                    'label': 'Сообщение',
+                                    'label': 'Сообщение'|locale,
                                     'name': 'message',
                                     'args': {
                                         'value': item.message,
@@ -56,7 +56,7 @@
                             </div>
                             <div class="col-md-6">
                                 {% include 'cup/editor.twig' with {
-                                    'label': 'Ответ',
+                                    'label': 'Ответ'|locale,
                                     'name': 'response',
                                     'args': {
                                         'value': item.response,
@@ -69,10 +69,10 @@
                         <div class="row">
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Дата',
+                                    'label': 'Дата'|locale,
                                     'type': 'datetime',
                                     'name': 'date',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Нельзя изменять значение поля"></i>',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Нельзя изменять значение поля'|locale) ~ '"></i>',
                                     'args': {
                                         'value': item.date|df('Y-m-d\\TH:i'),
                                         'readonly': true
@@ -81,7 +81,7 @@
                             </div>
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Статус',
+                                    'label': 'Статус'|locale,
                                     'type': 'select',
                                     'name': 'status',
                                     'args': {

@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Список форм ({{ list.count() }})</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Список форм'|locale }} ({{ list.count() }})</h2>
             </div>
         </div>
     </div>
@@ -18,7 +18,7 @@
                     <div class="d-flex align-items-center">
                         <a href="/cup/form/add" class="btn btn-primary btn-round ml-auto">
                             <i class="fa fa-plus"></i>
-                            Создать форму
+                            {{ 'Создать форму'|locale }}
                         </a>
                     </div>
                 </div>
@@ -26,8 +26,8 @@
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
                             <tr>
-                                <th>Название</th>
-                                <th width="20%" class="d-none d-md-table-cell">E-Mail адреса получателей</th>
+                                <th>{{ 'Название'|locale }}</th>
+                                <th width="20%" class="d-none d-md-table-cell">{{ 'E-Mail адреса получателей'|locale }}</th>
                                 <th width="35%" class="text-right"></th>
                             </tr>
                         {% endblock %}
@@ -38,22 +38,22 @@
                                     <td>{{ item.title }}</td>
                                     <td width="20%" class="d-none d-md-table-cell">
                                         {{ item.mailto|join('<br>+ ')|raw }}
-                                        {{ item.authorSend ? '<br>+ заявитель' }}
+                                        {{ item.authorSend ? '<br>+ ' ~ 'заявитель'|locale }}
                                     </td>
                                     <td width="35%" class="text-right">
-                                        <form action="/cup/form/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить форму?');">
+                                        <form action="/cup/form/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Вы действительно хотите удалить форму?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/form/{{ item.uuid }}/view" class="btn btn-sm btn-outline-info">
                                                     <i class="fas fa-fw fa-eye"></i>
-                                                    <span class="d-none d-md-inline-block">Заявки</span>
+                                                    <span class="d-none d-md-inline-block">{{ 'Заявки'|locale }}</span>
                                                 </a>
                                                 <a href="/cup/form/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
                                                     <i class="fas fa-fw fa-edit"></i>
-                                                    <span class="d-none d-md-inline-block">Изменить</span>
+                                                    <span class="d-none d-md-inline-block">{{ 'Изменить'|locale }}</span>
                                                 </a>
                                                 <button type="submit" class="btn btn-sm btn-danger">
                                                     <i class="fas fa-fw fa-trash-alt"></i>
-                                                    <span class="d-none d-md-inline-block">Удалить</span>
+                                                    <span class="d-none d-md-inline-block">{{ 'Удалить'|locale }}</span>
                                                 </button>
                                             </div>
                                         </form>

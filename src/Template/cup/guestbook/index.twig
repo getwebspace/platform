@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Список записей ({{ list.count() }})</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Список записей'|locale }} ({{ list.count() }})</h2>
             </div>
         </div>
     </div>
@@ -18,9 +18,9 @@
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
                             <tr>
-                                <th width="15%" class="text-left">Статус</th>
-                                <th>Имя</th>
-                                <th width="15%" class="d-none d-md-table-cell">Дата создания</th>
+                                <th width="15%" class="text-left">{{ 'Статус'|locale }}</th>
+                                <th>{{ 'Автор'|locale }}</th>
+                                <th width="15%" class="d-none d-md-table-cell">{{ 'Дата добавления'|locale }}</th>
                                 <th width="25%" class="text-right"></th>
                             </tr>
                         {% endblock %}
@@ -42,15 +42,15 @@
                                     </td>
                                     <td width="15%" class="d-none d-md-table-cell">{{ item.date|df('d.m.Y H:i:s') }}</td>
                                     <td width="25%" class="text-right">
-                                        <form action="/cup/guestbook/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить запись?');">
+                                        <form action="/cup/guestbook/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Вы действительно хотите удалить запись?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/guestbook/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
                                                     <i class="fas fa-fw fa-edit"></i>
-                                                    <span class="d-none d-md-inline-block">Изменить</span>
+                                                    <span class="d-none d-md-inline-block">{{ 'Изменить'|locale }}</span>
                                                 </a>
                                                 <button type="submit" class="btn btn-sm btn-danger">
                                                     <i class="fas fa-fw fa-trash-alt"></i>
-                                                    <span class="d-none d-md-inline-block">Удалить</span>
+                                                    <span class="d-none d-md-inline-block">{{ 'Удалить'|locale }}</span>
                                                 </button>
                                             </div>
                                         </form>

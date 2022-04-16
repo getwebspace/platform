@@ -5,8 +5,6 @@ return [
     // Parameters
     // ***
 
-    'Всевозможные поля для ввода и каждое за что-то отвечает' => 'All kinds of input fields and each is responsible for something',
-
     // tabs
     'Общие' => 'Common',
     'Плагины' => 'Plugins',
