@@ -1,14 +1,14 @@
 ![Docker builder](https://github.com/getwebspace/platform/workflows/Docker%20builder/badge.svg)
 ![License](https://img.shields.io/github/license/getwebspace/platform)
 ![](https://visitor-badge.glitch.me/badge?page_id=getwebspace.platform)
-[![Telegram](https://img.shields.io/badge/chat-on%20Telegram-2ba2d9.svg)](https://t.me/YDBPlatform)
+[![Telegram](https://img.shields.io/badge/chat-on%20Telegram-2ba2d9.svg)](https://t.me/WSEPlatform)
 
 ## WebSpace Engine
 
 [Website](https://getwebspace.org/) |
 [Documentation](https://github.com/getwebspace/platform/wiki) |
 [Official Repository](https://github.com/getwebspace/platform) |
-[Demo shop](https://getwebspace.org)
+[Demo shop](https://demo.getwebspace.org)
 
 WSE is a free open source multi-user site engine with great functionality, primarily intended for: organization of mass media; blogs; online stores;
 
