@@ -4,11 +4,14 @@ use DI\ContainerBuilder;
 
 return function (ContainerBuilder $containerBuilder): void {
     $_DEBUG = (bool) ($_ENV['DEBUG'] ?? false);
+    $_SALT = (bool) ($_ENV['SALT'] ?? false);
+    $_DATABASE = (bool) ($_ENV['DATABASE'] ?? false);
+    $_DOCKER = (bool) ($_ENV['DOCKER'] ?? false);
 
     // secret salt
     $containerBuilder->addDefinitions([
         'secret' => [
-            'salt' => ($_ENV['SALT'] ?? 'Li8.1Ej2-<Cid3[bE'),
+            'salt' => ($_SALT ?? 'Li8.1Ej2-<Cid3[bE'),
         ],
     ]);
 
@@ -29,7 +32,7 @@ return function (ContainerBuilder $containerBuilder): void {
 
             // connection to DB settings
             'connection' => array_merge(
-                $_ENV['DATABASE'] ? ['url' => $_ENV['DATABASE']] : ['driver' => 'pdo_sqlite', 'path' => VAR_DIR . '/database.sqlite'],
+                $_DATABASE ? ['url' => $_DATABASE] : ['driver' => 'pdo_sqlite', 'path' => VAR_DIR . '/database.sqlite'],
                 ['charset' => 'utf8mb4', 'collate' => 'utf8mb4_unicode_ci'],
             ),
         ],
@@ -46,7 +49,7 @@ return function (ContainerBuilder $containerBuilder): void {
     $containerBuilder->addDefinitions([
         'logger' => [
             'name' => 'WSE',
-            'path' => isset($_ENV['DOCKER']) ? 'php://stdout' : LOG_DIR . '/app.log',
+            'path' => $_DOCKER ? 'php://stdout' : LOG_DIR . '/app.log',
             'level' => \Monolog\Logger::DEBUG,
         ],
     ]);
