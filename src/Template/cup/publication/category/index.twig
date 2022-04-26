@@ -38,7 +38,7 @@
                             {% for item in list.sortBy('title') %}
                                 <tr>
                                     <td>{{ item.title }}</td>
-                                    <td width="25%">{{ list.where('uuid', item.parent).first().title ?? '&mdash;' }}</td>
+                                    <td width="25%">{{ list.where('uuid', item.parent).first().title ?? '<code>&mdash;</code>'|raw }}</td>
                                     <td width="8%" class="d-none d-md-table-cell text-center" data-order="{{ item.public }}">
                                         {{ item.public ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>' }}
                                     </td>
