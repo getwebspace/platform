@@ -1,6 +1,9 @@
 {% set tableId = random() %}
 
 <div class="row">
+    <div class="col-12 col-sm-6 col-md-5 col-lg-4 col-xl-3" style="padding-top: 11px">
+        {% block tbutton '' %}
+    </div>
     <div class="col-12 col-sm-6 col-md-5 col-lg-4 col-xl-3 ml-sm-auto">
         {% include 'cup/form.twig' with {
             'type': 'search',
@@ -43,40 +46,40 @@
 </style>
 
 <script type="text/javascript">
-    let $rows;
     document.addEventListener('DOMContentLoaded', () => {
-        $rows = $('[data-table-content="{{ tableId }}"] tr:not(.clusterize-no-data)').detach();
-    });
-    document.addEventListener('DOMContentLoaded', async () => {
-        await window.loader([
-            'https://cdnjs.cloudflare.com/ajax/libs/clusterize.js/0.19.0/clusterize.min.css',
-            'https://cdnjs.cloudflare.com/ajax/libs/clusterize.js/0.19.0/clusterize.min.js',
-        ]);
+        let $rows = $('[data-table-content="{{ tableId }}"] tr:not(.clusterize-no-data)').detach();
 
-        let $scroll = $('[data-table-scroll="{{ tableId }}"]'),
-            $content = $('[data-table-content="{{ tableId }}"]');
+        (async () => {
+            await window.loader([
+                'https://cdnjs.cloudflare.com/ajax/libs/clusterize.js/0.19.0/clusterize.min.css',
+                'https://cdnjs.cloudflare.com/ajax/libs/clusterize.js/0.19.0/clusterize.min.js',
+            ]);
 
-        // init table
-        let clusterize = new Clusterize({
-            rows: $rows.map((i, el) => el.outerHTML).toArray(),
-            scrollElem: $scroll.get(0),
-            contentElem: $content.show().get(0),
-            rows_in_block: 10,
-            blocks_in_cluster: 3,
-            no_data_text: '{{ 'Нет данных'|locale }}'
-        });
+            let $scroll = $('[data-table-scroll="{{ tableId }}"]'),
+                $content = $('[data-table-content="{{ tableId }}"]');
 
-        $('[data-table-search="{{ tableId }}"]').on('keyup', (e) => {
-            let query = e.currentTarget.value.toLowerCase(),
-                result = [];
+            // init table
+            let clusterize = new Clusterize({
+                rows: $rows.map((i, el) => el.outerHTML).toArray(),
+                scrollElem: $scroll.get(0),
+                contentElem: $content.show().get(0),
+                rows_in_block: 10,
+                blocks_in_cluster: 3,
+                no_data_text: '{{ 'Нет данных'|locale }}'
+            });
 
-            for (let i = 0; i < $rows.length; i++) {
-                if ($rows[i].innerText.toLowerCase().includes(query)) {
-                    result.push($rows[i].outerHTML);
+            $('[data-table-search="{{ tableId }}"]').on('keyup', (e) => {
+                let query = e.currentTarget.value.toLowerCase(),
+                    result = [];
+
+                for (let i = 0; i < $rows.length; i++) {
+                    if ($rows[i].innerText.toLowerCase().includes(query)) {
+                        result.push($rows[i].outerHTML);
+                    }
                 }
-            }
 
-            clusterize.update(result);
-        });
+                clusterize.update(result);
+            });
+        })();
     });
 </script>
