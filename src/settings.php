@@ -4,8 +4,8 @@ use DI\ContainerBuilder;
 
 return function (ContainerBuilder $containerBuilder): void {
     $_DEBUG = (bool) ($_ENV['DEBUG'] ?? false);
-    $_SALT = (bool) ($_ENV['SALT'] ?? false);
-    $_DATABASE = (bool) ($_ENV['DATABASE'] ?? false);
+    $_SALT = ($_ENV['SALT'] ?? false);
+    $_DATABASE = ($_ENV['DATABASE'] ?? false);
     $_DOCKER = (bool) ($_ENV['DOCKER'] ?? false);
 
     // secret salt
