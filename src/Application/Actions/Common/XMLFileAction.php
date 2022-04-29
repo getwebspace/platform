@@ -9,15 +9,12 @@ class XMLFileAction extends AbstractAction
     protected function action(): \Slim\Psr7\Response
     {
         $name = $this->resolveArg('name');
+        $path = VAR_DIR . '/xml/' . $name . '.xml';
 
-        if (in_array($name, ['yml', 'gmf', 'sitemap'], true)) {
-            $path = VAR_DIR . '/xml/' . $name . '.xml';
+        if (file_exists($path)) {
+            $this->response->getBody()->write(file_get_contents(VAR_DIR . '/xml/' . $name . '.xml'));
 
-            if (file_exists($path)) {
-                $this->response->getBody()->write(file_get_contents(VAR_DIR . '/xml/' . $name . '.xml'));
-
-                return $this->response->withAddedHeader('Content-type', 'text/xml; charset=utf-8');
-            }
+            return $this->response->withAddedHeader('Content-type', 'text/xml; charset=utf-8');
         }
 
         return $this->respond('p404.twig')->withStatus(404);
