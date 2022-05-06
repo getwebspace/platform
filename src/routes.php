@@ -177,13 +177,13 @@ return function (App $app, Container $container): void {
                         // attribute
                         $group->group('/attribute', function (Group $group): void {
                             $group->get('', \App\Application\Actions\Cup\Catalog\Attribute\AttributeListAction::class)
-                                ->setName('cup:attribute:order:list');
+                                ->setName('cup:catalog:attribute:list');
                             $group->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\Catalog\Attribute\AttributeCreateAction::class)
-                                ->setName('cup:attribute:order:add');
+                                ->setName('cup:catalog:attribute:add');
                             $group->map(['GET', 'POST'], '/{attribute}/edit', \App\Application\Actions\Cup\Catalog\Attribute\AttributeUpdateAction::class)
-                                ->setName('cup:attribute:order:edit');
+                                ->setName('cup:catalog:attribute:edit');
                             $group->map(['GET', 'POST'], '/{attribute}/delete', \App\Application\Actions\Cup\Catalog\Attribute\AttributeDeleteAction::class)
-                                ->setName('cup:attribute:order:delete');
+                                ->setName('cup:catalog:attribute:delete');
                         });
 
                         // order
