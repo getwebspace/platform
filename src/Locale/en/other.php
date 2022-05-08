@@ -19,6 +19,7 @@ return [
     'delete' => 'Delete',
     'moderate' => 'Moderate',
     'block' => 'Block',
+    'cancel' => 'Canceled',
 
     // ***
     // boolean

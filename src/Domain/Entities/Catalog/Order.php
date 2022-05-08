@@ -12,7 +12,8 @@ use RuntimeException;
 /**
  * @ORM\Entity(repositoryClass="App\Domain\Repository\Catalog\OrderRepository")
  * @ORM\Table(name="catalog_order", indexes={
- *     @ORM\Index(name="catalog_order_status_idx", columns={"status"}),
+ *     @ORM\Index(name="catalog_order_serial_idx", columns={"serial"}),
+ *     @ORM\Index(name="catalog_order_status_idx", columns={"status_uuid"}),
  * })
  */
 class Order extends AbstractEntity
@@ -258,27 +259,33 @@ class Order extends AbstractEntity
     }
 
     /**
-     * @see \App\Domain\Types\OrderStatusType::LIST
-     * @ORM\Column(type="CatalogOrderStatusType", options={"default": \App\Domain\Types\Catalog\OrderStatusType::STATUS_NEW})
+     * @ORM\Column(type="uuid", nullable=true, options={"default": null})
      */
-    protected string $status = \App\Domain\Types\Catalog\OrderStatusType::STATUS_NEW;
+    protected ?\Ramsey\Uuid\UuidInterface $status_uuid;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Catalog\OrderStatus")
+     * @ORM\JoinColumn(name="status_uuid", referencedColumnName="uuid")
+     */
+    protected ?OrderStatus $status = null;
 
     /**
      * @return $this
      */
-    public function setStatus(string $status)
+    public function setStatus(?OrderStatus $status)
     {
-        if (in_array($status, \App\Domain\Types\Catalog\OrderStatusType::LIST, true)) {
+        if (is_a($status, OrderStatus::class)) {
+            $this->status_uuid = $status->getUuid();
             $this->status = $status;
+        } else {
+            $this->user_uuid = null;
+            $this->user = null;
         }
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getStatus()
+    public function getStatus(): ?OrderStatus
     {
         return $this->status;
     }

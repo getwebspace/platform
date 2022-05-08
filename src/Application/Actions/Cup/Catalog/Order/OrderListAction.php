@@ -9,13 +9,12 @@ class OrderListAction extends CatalogAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        $list = $this->catalogOrderService->read([
-            'limit' => 1000,
-            'order' => ['date' => 'desc'],
-        ]);
-
         return $this->respondWithTemplate('cup/catalog/order/index.twig', [
-            'orders' => $list,
+            'order_list' => $this->catalogOrderService->read([
+                'limit' => 1000,
+                'order' => ['date' => 'desc'],
+            ]),
+            'status_list' => $this->catalogOrderStatusService->read(),
             'invoice' => INVOICE_TEMPLATE,
         ]);
     }

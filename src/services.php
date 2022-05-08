@@ -5,6 +5,7 @@ use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\MeasureService as CatalogMeasureService;
 use App\Domain\Service\Catalog\OrderProductService as CatalogOrderProductService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
+use App\Domain\Service\Catalog\OrderStatusService as CatalogOrderStatusService;
 use App\Domain\Service\Catalog\ProductAttributeService as CatalogProductAttributeService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\File\FileRelationService;
@@ -33,6 +34,7 @@ return function (ContainerBuilder $containerBuilder): void {
         CatalogMeasureService::class => \DI\autowire(CatalogMeasureService::class),
         CatalogOrderProductService::class => \DI\autowire(CatalogOrderProductService::class),
         CatalogOrderService::class => \DI\autowire(CatalogOrderService::class),
+        CatalogOrderStatusService::class => \DI\autowire(CatalogOrderStatusService::class),
         CatalogProductAttributeService::class => \DI\autowire(CatalogProductAttributeService::class),
         CatalogProductService::class => \DI\autowire(CatalogProductService::class),
 

@@ -8,6 +8,8 @@ use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 
 return function (App $app, Container $container): void {
+    $_DEBUG = (bool) ($_ENV['DEBUG'] ?? false);
+
     // API section
     $app
         ->group('/api', function (Group $group): void {
@@ -188,6 +190,16 @@ return function (App $app, Container $container): void {
 
                         // order
                         $group->group('/order', function (Group $group): void {
+                            // order status
+                            $group->group('/status', function (Group $group): void {
+                                $group->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\Catalog\Order\Status\OrderStatusCreateAction::class)
+                                    ->setName('cup:catalog:order:status:add');
+                                $group->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\Catalog\Order\Status\OrderStatusUpdateAction::class)
+                                    ->setName('cup:catalog:order:status:edit');
+                                $group->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\Catalog\Order\Status\OrderStatusDeleteAction::class)
+                                    ->setName('cup:catalog:order:status:delete');
+                            });
+
                             $group->get('', \App\Application\Actions\Cup\Catalog\Order\OrderListAction::class)
                                 ->setName('cup:catalog:order:list');
                             $group->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\Catalog\Order\OrderCreateAction::class)
@@ -260,7 +272,7 @@ return function (App $app, Container $container): void {
         ->get('/', \App\Application\Actions\Common\MainPageAction::class)
         ->setName('common:main')
         ->add(
-            ($_ENV['DEBUG'] ?? false) ?
+            $_DEBUG ?
                 new \Slim\HttpCache\Cache('private', 0, false) :
                 new \Slim\HttpCache\Cache('public', 60, true)
         );
@@ -393,7 +405,7 @@ return function (App $app, Container $container): void {
                 ->setName('common:page');
         })
         ->add(
-            ($_ENV['DEBUG'] ?? false) ?
+            $_DEBUG ?
                 new \Slim\HttpCache\Cache('private', 0, false) :
                 new \Slim\HttpCache\Cache('public', 60, true)
         );

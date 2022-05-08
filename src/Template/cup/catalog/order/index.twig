@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Список заказов ({{ orders.count() }})</h2>
+                <h2 class="text-white pb-2 fw-bold">Список заказов ({{ order_list.count() }})</h2>
             </div>
         </div>
     </div>
@@ -23,8 +23,13 @@
                                 </a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link" data-toggle="pill" href="#status" role="tab">
+                                    Статусы заказа
+                                </a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link active show" data-toggle="pill" href="#list" role="tab">
-                                    Список
+                                    Список заказов
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -42,7 +47,7 @@
                         {# Tab: Шаблон инвойса #}
                         <div class="tab-pane fade" id="invoice" role="tabpanel">
                             <form action="/cup/parameters?return=/cup/catalog/order" method="post">
-                                <div class="row">
+                                <div class="row p-0">
                                     <div class="col-12">
                                         <style>
                                             #invoice .fr-toolbar {
@@ -64,13 +69,51 @@
                                             }
                                         } %}
 
-                                        <button type="submit" class="btn btn-success mt-3">Сохранить</button>
+                                        <button type="submit" class="btn btn-outline-primary mt-3">{{ 'Сохранить'|locale }}</button>
                                     </div>
                                 </div>
                             </form>
                         </div>
 
-                        {# Tab: Список #}
+                        {# Tab: Статусы заказа #}
+                        <div class="tab-pane fade" id="status" role="tabpanel">
+                            {% embed 'mixin/datatable.twig' %}
+                                {% block thead %}
+                                    <tr>
+                                        <th width="5%" class="d-none d-md-table-cell">#</th>
+                                        <th>Наименование</th>
+                                        <th width="25%" class="text-right"></th>
+                                    </tr>
+                                {% endblock %}
+
+                                {% block tbody %}
+                                    {% for item in status_list.sortBy('order') %}
+                                        <tr>
+                                            <td width="5%" class="d-none d-md-table-cell">{{ item.order }}</td>
+                                            <td>{{ item.title }}</td>
+                                            <td width="25%" class="text-right">
+                                                <form action="/cup/catalog/order/status/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить статус заказа?');">
+                                                    <div class="btn-group">
+                                                        <a href="/cup/catalog/order/status/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
+                                                            <i class="fas fa-fw fa-edit"></i>
+                                                            <span class="d-none d-md-inline-block">Изменить</span>
+                                                        </a>
+                                                        <button type="submit" class="btn btn-sm btn-danger">
+                                                            <i class="fas fa-fw fa-trash-alt"></i>
+                                                            <span class="d-none d-md-inline-block">Удалить</span>
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endblock %}
+                            {% endembed %}
+
+                            <a href="/cup/catalog/order/status/add" class="btn btn-outline-primary mt-3">Добавить статус</a>
+                        </div>
+
+                        {# Tab: Список заказов #}
                         <div class="tab-pane fade show active" id="list" role="tabpanel">
                             {% embed 'mixin/datatable.twig' %}
                                 {% block thead %}
@@ -84,20 +127,27 @@
                                 {% endblock %}
 
                                 {% block tbody %}
-                                    {% for item in orders.sortByDesc('date') %}
+                                    {% for item in order_list.sortByDesc('date') %}
                                         <tr>
-                                            <td width="10%" data-order="{{ item.external_id ? item.external_id : item.date.getTimestamp() }}">
+                                            <td width="10%">
                                                 {% if item.external_id %}
                                                     {{ item.external_id }} ({{ item.serial }})
                                                 {% else %}
                                                     {{ item.serial }}
                                                 {% endif %}
                                             </td>
-                                            <td>{{ item.user and item.user.getName() ? item.user.getName() : item.delivery.client }}</td>
-                                            <td width="15%">
-                                                <span class="badge badge-secondary">{{ item.status|locale }}</span>
+                                            <td>
+                                                {{ item.user and item.user.getName() ? item.user.getName() : item.delivery.client }}
+                                                {{ item.user and item.user.getName() ? item.user.getName() : item.delivery.client }}
                                             </td>
-                                            <td width="15%" class="d-none d-md-table-cell" data-order="{{ item.date.getTimestamp() }}">{{ item.date|df('d.m.Y H:i') }}</td>
+                                            <td width="15%">
+                                                {% if item.status_uuid %}
+                                                    <span class="badge badge-secondary">{{ item.status.title }}</span>
+                                                {% else %}
+                                                    <code>&mdash;</code>
+                                                {% endif %}
+                                            </td>
+                                            <td width="15%" class="d-none d-md-table-cell">{{ item.date|df('d.m.Y H:i') }}</td>
                                             <td width="30%" class="text-right">
                                                 <form action="/cup/catalog/order/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить заказ?');">
                                                     <div class="btn-group">

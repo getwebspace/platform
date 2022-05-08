@@ -38,7 +38,7 @@ class OrderService extends AbstractService
             'user' => null,
             'phone' => '',
             'email' => '',
-            'status' => \App\Domain\Types\Catalog\OrderStatusType::STATUS_NEW,
+            'status' => null,
             'comment' => '',
             'shipping' => '',
             'date' => 'now',

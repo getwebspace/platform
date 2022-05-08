@@ -5,16 +5,11 @@ return [
     // Common | other
     // ***
 
-    // status & order status
+    // status
     'work' => 'Активный',
     'delete' => 'Удалён',
     'moderate' => 'Модерация',
     'block' => 'Заблокирован',
-    'new' => 'Новый',
-    'process' => 'В работе',
-    'payment' => 'Оплачен',
-    'ready' => 'Готов',
-    'complete' => 'Выполнен',
     'cancel' => 'Отменён',
 
     // attributes
@@ -89,6 +84,7 @@ return [
     'EXCEPTION_CATEGORY_NOT_FOUND' => 'Категория не найдена',
     'EXCEPTION_MEASURE_NOT_FOUND' => 'Размер не найден',
     'EXCEPTION_ORDER_NOT_FOUND' => 'Заказ не найден',
+    'EXCEPTION_ORDER_STATUS_NOT_FOUND' => 'Статус заказа не найден',
     'EXCEPTION_PRODUCT_NOT_FOUND' => 'Продукт не найден',
     'EXCEPTION_RELATION_NOT_FOUND' => 'Связь не найдена',
     'EXCEPTION_FILE_NOT_FOUND' => 'Файл не найден',

@@ -137,10 +137,11 @@
                                         {% include 'cup/form.twig' with {
                                             'label': 'Статус',
                                             'type': 'select',
-                                            'name': 'status',
+                                            'name': 'status_uuid',
+                                            'message': '<a href="/cup/catalog/order/status/add" class="btn btn-xs btn-info float-right" onclick="return confirm(\'Вы действительно хотите перейти на другую страницу?\');"><i class="fa fa-plus"></i> Добавить статус</a>',
                                             'args': {
-                                                'option': _(reference('/App/Domain/Types/Catalog/OrderStatusType::LIST')),
-                                                'selected': order.status ? order.status : reference('/App/Domain/Types/Catalog/OrderStatusType::STATUS_PROCESS')
+                                                'option': status_list.sortBy('order').pluck('title', 'uuid').all(),
+                                                'selected': order.status_uuid ? order.status_uuid : status_list.sortBy('order').first.uuid
                                             }
                                         } %}
                                     </div>

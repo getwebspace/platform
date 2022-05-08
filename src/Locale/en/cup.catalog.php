@@ -15,11 +15,11 @@ return [
     'product' => 'Product',
     'service' => 'Service',
 
-    // order status
-    'new' => 'New',
-    'process' => 'In process',
-    'payment' => 'Patment',
-    'ready' => 'Ready',
-    'complete' => 'Complete',
-    'cancel' => 'Cancel',
+    // order invoice
+    'Инвойс' => 'Invoice',
+    'Позиция' => 'Item',
+    'Цена' => 'Price',
+    'Количество' => 'Quantity',
+    'Сумма' => 'Sum',
+    'Общая сумма' => 'Total price',
 ];

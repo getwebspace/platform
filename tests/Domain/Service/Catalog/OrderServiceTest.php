@@ -3,9 +3,11 @@
 namespace tests\Domain\Service\Catalog;
 
 use App\Domain\Entities\Catalog\Order;
+use App\Domain\Entities\Catalog\OrderStatus;
 use App\Domain\Repository\Catalog\OrderRepository;
 use App\Domain\Service\Catalog\Exception\OrderNotFoundException;
 use App\Domain\Service\Catalog\OrderService;
+use App\Domain\Service\Catalog\OrderStatusService;
 use Illuminate\Support\Collection;
 use tests\TestCase;
 
@@ -24,6 +26,14 @@ class OrderServiceTest extends TestCase
         $this->service = $this->getService(OrderService::class);
     }
 
+    protected function getRandomStatus(): OrderStatus
+    {
+        return $this->getService(OrderStatusService::class)->create([
+            'title' => $this->getFaker()->word,
+            'order' => $this->getFaker()->numberBetween(0, 1000),
+        ]);
+    }
+
     public function testCreateSuccess(): void
     {
         $data = [
@@ -33,7 +43,7 @@ class OrderServiceTest extends TestCase
             ],
             'phone' => $this->getFaker()->e164PhoneNumber,
             'email' => $this->getFaker()->email,
-            'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\OrderStatusType::LIST),
+            'status' => $this->getRandomStatus(),
             'comment' => $this->getFaker()->text,
             'shipping' => $this->getFaker()->dateTime,
             'date' => $this->getFaker()->dateTime,
@@ -68,7 +78,7 @@ class OrderServiceTest extends TestCase
         $this->assertEquals($data['date'], $o->getDate());
         $this->assertSame($data['external_id'], $o->getExternalId());
         $this->assertSame($data['export'], $o->getExport());
-        $this->assertSame($data['system'], $order->getSystem());
+        $this->assertSame($data['system'], $o->getSystem());
     }
 
     public function testReadSuccess1(): void
@@ -80,7 +90,7 @@ class OrderServiceTest extends TestCase
             ],
             'phone' => $this->getFaker()->e164PhoneNumber,
             'email' => $this->getFaker()->email,
-            'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\OrderStatusType::LIST),
+            'status' => $this->getRandomStatus(),
             'comment' => $this->getFaker()->text,
             'shipping' => $this->getFaker()->dateTime,
             'date' => $this->getFaker()->dateTime,
@@ -104,7 +114,7 @@ class OrderServiceTest extends TestCase
             ],
             'phone' => $this->getFaker()->e164PhoneNumber,
             'email' => $this->getFaker()->email,
-            'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\OrderStatusType::LIST),
+            'status' => $this->getRandomStatus(),
             'comment' => $this->getFaker()->text,
             'shipping' => $this->getFaker()->dateTime,
             'date' => $this->getFaker()->dateTime,
@@ -134,7 +144,7 @@ class OrderServiceTest extends TestCase
             ],
             'phone' => $this->getFaker()->e164PhoneNumber,
             'email' => $this->getFaker()->email,
-            'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\OrderStatusType::LIST),
+            'status' => $this->getRandomStatus(),
             'comment' => $this->getFaker()->text,
             'shipping' => $this->getFaker()->dateTime,
             'date' => $this->getFaker()->dateTime,
@@ -150,7 +160,7 @@ class OrderServiceTest extends TestCase
             ],
             'phone' => $this->getFaker()->e164PhoneNumber,
             'email' => $this->getFaker()->email,
-            'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\OrderStatusType::LIST),
+            'status' => $this->getRandomStatus(),
             'comment' => $this->getFaker()->text,
             'shipping' => $this->getFaker()->dateTime,
             'date' => $this->getFaker()->dateTime,
@@ -185,7 +195,7 @@ class OrderServiceTest extends TestCase
         $order = $this->service->create([
             'title' => $this->getFaker()->title,
             'address' => 'some-custom-address',
-            'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\OrderStatusType::LIST),
+            'status' => $this->getRandomStatus(),
         ]);
 
         $result = $this->service->delete($order);
