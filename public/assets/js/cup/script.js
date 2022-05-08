@@ -365,7 +365,6 @@ $(() => {
     {
         let
             $table = $('[data-table="order"]'),
-            //table = $table.DataTable(),
             $modal = $('[data-order-modal-products].modal'),
             $category = $modal.find('[type="select"][name="category"]'),
             $product = $modal.find('[type="select"][name="product"]'),
@@ -437,15 +436,19 @@ $(() => {
                     $find = $('[name="products[' + $selected.attr('value') + ']"]');
                 
                 if ($find.length === 0) {
-                    let $input = $('<input class="form-control" type="number" placeholder="1" min="0" step="any">')
-                        .attr('name', 'products[' + $selected.attr('value') + ']')
-                        .val($quantity.val())
-                    ;
-                    
-                    // table.row.add([$selected.text(), $selected.data('price'), $quantity.val()])
-                    //     .draw(true)
-                    //     .nodes().to$()
-                    //     .find('td:last-child').html($('<div class="form-group">').append($input));
+                    let $tr = $('<tr>');
+    
+                    $tr.append(
+                        $('<td>').text($selected.text()),
+                        $('<td>').text($selected.data('price')),
+                        $('<td>').html(
+                            $('<input class="form-control" type="number" placeholder="1" min="0" step="any">')
+                                .attr('name', 'products[' + $selected.attr('value') + ']')
+                                .val($quantity.val())
+                        ),
+                    )
+    
+                    $tr.appendTo($table);
                 } else {
                     $find.val(parseFloat($find.val()) + parseFloat($quantity.val()));
                 }
