@@ -3,8 +3,6 @@
 namespace App\Application\Actions\Cup\Catalog\Order\Status;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
-use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
-use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 
 class OrderStatusCreateAction extends CatalogAction

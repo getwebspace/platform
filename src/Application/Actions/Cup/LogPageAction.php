@@ -3,7 +3,6 @@
 namespace App\Application\Actions\Cup;
 
 use App\Domain\AbstractAction;
-use DirectoryIterator;
 
 class LogPageAction extends AbstractAction
 {
@@ -14,7 +13,7 @@ class LogPageAction extends AbstractAction
                 'app.log' => $this->getFileContents('app.log'),
                 'nginx.access.log' => $this->getFileContents('nginx.access.log'),
                 'nginx.error.log' => $this->getFileContents('nginx.error.log'),
-            ]
+            ],
         ]);
     }
 

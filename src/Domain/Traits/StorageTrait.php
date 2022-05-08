@@ -9,9 +9,6 @@ trait StorageTrait
      */
     protected static array $storage = [];
 
-    /**
-     * @return mixed
-     */
     protected static function setStorage(string $key, mixed $value, ?string $namespace = null): mixed
     {
         self::$storage[$namespace][$key] = $value;
@@ -20,11 +17,7 @@ trait StorageTrait
     }
 
     /**
-     * @param string      $key
      * @param mixed       $default
-     * @param string|null $namespace
-     *
-     * @return mixed
      */
     protected static function getStorage(string $key, mixed $default = null, ?string $namespace = null): mixed
     {

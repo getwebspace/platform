@@ -3,12 +3,10 @@
 namespace App\Application\Actions\Cup\Catalog\Order;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
-use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Service\Catalog\Exception\OrderNotFoundException;
 use App\Domain\Service\Catalog\Exception\WrongEmailValueException;
 use App\Domain\Service\Catalog\Exception\WrongPhoneValueException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
-use App\Domain\Service\User\Exception\WrongPasswordException;
 
 class OrderUpdateAction extends CatalogAction
 {

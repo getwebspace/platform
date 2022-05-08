@@ -17,9 +17,6 @@ class PubSub
 
     /**
      * Publish a data to a channel
-     *
-     * @param string $channel
-     * @param mixed  $data
      */
     public function publish(string $channel, mixed $data = []): void
     {
@@ -31,14 +28,11 @@ class PubSub
     /**
      * Subscribe a handler to a channel
      *
-     * @param string|array $channels
-     * @param callable     $handler
-     *
      * @return PubSub
      */
     public function subscribe(string|array $channels, callable $handler): self
     {
-        foreach ((array)$channels as $channel) {
+        foreach ((array) $channels as $channel) {
             if (!isset($this->subscribers[$channel])) {
                 $this->subscribers[$channel] = [];
             }
@@ -50,10 +44,6 @@ class PubSub
 
     /**
      * Return all subscribers on the given channel.
-     *
-     * @param string $channel
-     *
-     * @return array
      */
     protected function getSubscribersForChannel(string $channel): array
     {

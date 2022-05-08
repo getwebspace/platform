@@ -10,7 +10,7 @@ class AttributeDeleteAction extends CatalogAction
     {
         if ($this->resolveArg('attribute') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('attribute'))) {
             $attribute = $this->catalogAttributeService->read([
-                'uuid' => $this->resolveArg('attribute')
+                'uuid' => $this->resolveArg('attribute'),
             ]);
 
             if ($attribute) {
@@ -18,7 +18,6 @@ class AttributeDeleteAction extends CatalogAction
 
                 $this->container->get(\App\Application\PubSub::class)->publish('cup:catalog:attribute:delete', $attribute);
             }
-
         }
 
         return $this->respondWithRedirect('/cup/catalog/attribute');
