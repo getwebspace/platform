@@ -1,19 +1,19 @@
 {% extends 'cup/layout.twig' %}
 
-{% block title %}Инвойс #{{ order.external_id ?: order.serial }}{% endblock %}
+{% block title %}{{ 'Инвойс'|locale }} #{{ order.external_id ?: order.serial }}{% endblock %}
 
 {% block breadcrumb %}
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Заказы</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Инвойс'|locale }}</h2>
             </div>
             <div class="ml-md-auto py-2 py-md-0">
                 <a href="#" onclick="print_element('#invoice')" class="btn btn-light">
-                    Печать
+                    {{ 'Печать'|locale }}
                 </a>
                 <a href="/cup/catalog/order/{{ order.uuid }}/edit" class="btn btn-secondary">
-                    Изменить заказ
+                    {{ 'Изменить заказ'|locale }}
                 </a>
             </div>
         </div>
@@ -21,15 +21,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="row justify-content-center">
-        <div class="col-12 col-lg-10 col-xl-9">
-            <div class="row">
-                <div class="col-md-12">
-                    <div id="invoice" class="card card-invoice">
-                        {{ include(template_from_string(parameter('catalog_invoice') ?: invoice)) }}
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div id="invoice" class="card card-invoice">
+        {{ include(template_from_string(parameter('catalog_invoice') ?: invoice)) }}
     </div>
 {% endblock %}

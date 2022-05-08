@@ -18,6 +18,7 @@ return [
     // order invoice
     'Инвойс' => 'Invoice',
     'Заказ' => 'Order',
+    'Изменить заказ' => 'Edit order',
     'Доставка' => 'Delivery',
     'Позиция' => 'Item',
     'Цена' => 'Price',

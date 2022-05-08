@@ -9,6 +9,7 @@ return [
     'Статус' => 'Status',
     'Дата' => 'Date',
     'Другое' => 'Other',
+    'Печать' => 'Print',
 
     // ***
     // Select variants
