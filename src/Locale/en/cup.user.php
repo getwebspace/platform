@@ -5,6 +5,9 @@ return [
     // User
     // ***
 
+    // system install
+    'Администраторы' => 'Administrators',
+
     // user without group
     'WITHOUT_GROUP' => 'Without group',
 

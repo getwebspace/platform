@@ -4,6 +4,8 @@ namespace App\Application\Actions\Cup;
 
 use App\Domain\AbstractAction;
 use App\Domain\Entities\User;
+use App\Domain\Service\Catalog\MeasureService as CatalogMeasureService;
+use App\Domain\Service\Catalog\OrderStatusService as CatalogOrderStatusService;
 use App\Domain\Service\User\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\UserService;
@@ -86,12 +88,12 @@ class SystemPageAction extends AbstractAction
             // create or read group
             try {
                 $userData['group'] = $userGroupService->create([
-                    'title' => 'Администраторы',
+                    'title' => __('Администраторы'),
                     'access' => $this->getRoutes()->values()->all(),
                 ]);
             } catch (TitleAlreadyExistsException $e) {
                 $userData['group'] = $userGroupService->read([
-                    'title' => 'Администраторы',
+                    'title' => __('Администраторы'),
                 ]);
             }
 
@@ -102,6 +104,28 @@ class SystemPageAction extends AbstractAction
 
     protected function setup_data(): void
     {
+        if ('system_default' === $this->getParam('fill', 'no')) {
+            $order_status = [
+                ['title' => __('Новый'), 'order' => 1],
+                ['title' => __('В обработке'), 'order' => 2],
+                ['title' => __('Отправлен'), 'order' => 3],
+                ['title' => __('Доставлен'), 'order' => 4],
+                ['title' => __('Отменён'), 'order' => 5],
+            ];
+            foreach ($order_status as $el) {
+                $this->container->get(CatalogOrderStatusService::class)->create($el);
+            }
+
+            $product_measure = [
+                ['title' => __('Килограмм'), 'contraction' => __('кг'), 'value' => '1000'],
+                ['title' => __('Грамм'), 'contraction' => __('г'), 'value' => '1'],
+                ['title' => __('Литр'), 'contraction' => __('л'), 'value' => '1000'],
+                ['title' => __('Миллилитр'), 'contraction' => __('мл'), 'value' => '1'],
+            ];
+            foreach ($product_measure as $el) {
+                $this->container->get(CatalogMeasureService::class)->create($el);
+            }
+        }
     }
 
     protected function self_check(): array

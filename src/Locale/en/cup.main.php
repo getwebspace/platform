@@ -33,6 +33,7 @@ return [
     'Количество категорий и товаров' => 'Number of categories and products',
     'Количество заказов' => 'The number of orders',
     'Количество файлов' => 'Number of files',
+    'Количество плагинов' => 'Number of plugins',
     'Здесь собрана техническая информация о движке и сервере' => 'Here is a collection of technical information about the engine and server',
     'Сборка' => 'Build',
     'Операционная система' => 'Operating system',
@@ -46,4 +47,19 @@ return [
 
     'Документация' => 'Documentation',
     'Поддержка' => 'Support',
+
+    // system install
+    'Установка' => 'Install',
+    'Обновление' => 'Update',
+    'платформы WebSpace Engine' => 'platform WebSpace Engine',
+    'Лицензионное соглашение' => 'License agreement',
+    'Самопроверка системы' => 'Self system check',
+    'Если любой из этих пунктов не прошел проверку' => 'If any of these items fail the test',
+    'то пожалуйста выполните действия для исправления этого' => 'then please follow the steps to fix it',
+    'Настройка нового пользователя' => 'Setting up a new user',
+    'с правами администратора' => 'with administrator rights',
+    'Действия с базой данных' => 'Database Actions',
+    'Заполнение базы' => 'Filling the base',
+    'system_demo' => 'Demo + Default data',
+    'system_default' => 'Default data',
 ];

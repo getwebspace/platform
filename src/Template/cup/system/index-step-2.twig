@@ -1,5 +1,5 @@
 <div class="card-body">
-    <h5 class="text-center">Самопроверка системы</h5>
+    <h5 class="text-center">{{ 'Самопроверка системы'|locale }}</h5>
 
     <div class="row my-3">
         <div class="col-12">
@@ -19,7 +19,7 @@
                 <div class="col-5">
                     <table class="w-100">
                         <tr>
-                            <td>Версия PHP</td>
+                            <td>{{ 'Версия PHP'|locale }}</td>
                             <td>
                                 <span class="badge {{ health.php ? 'badge-success' : 'badge-danger' }} badge-pill">{{ health.php ? 'Ok' : 'Fail' }}</span>
                             </td>
@@ -39,12 +39,12 @@
     </div>
 
     <p class="text-center text-muted">
-        Если любой из этих пунктов не прошел проверку,<br>
-        то пожалуйста выполните действия для исправления этого.
+        {{ 'Если любой из этих пунктов не прошел проверку'|locale }},<br>
+        {{ 'то пожалуйста выполните действия для исправления этого'|locale }}.
     </p>
 </div>
 
 <div class="card-footer d-flex justify-content-center">
-    <a href="/cup/system/1" class="btn btn-secondary">Назад</a>
-    <a href="/cup/system/3" class="btn btn-primary ml-1">Далее</a>
+    <a href="/cup/system/1" class="btn btn-secondary">{{ 'Назад'|locale }}</a>
+    <a href="/cup/system/3" class="btn btn-primary ml-1">{{ 'Далее'|locale }}</a>
 </div>

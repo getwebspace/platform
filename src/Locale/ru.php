@@ -57,6 +57,11 @@ return [
     'html' => 'HTML',
     'text' => 'Текст',
 
+    // system install
+
+    'system_demo' => 'Демо данные + по-умолчанию',
+    'system_default' => 'По-умолчанию',
+
     // ***
     // Exceptions
     // ***

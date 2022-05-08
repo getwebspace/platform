@@ -1,17 +1,17 @@
-<form action="/cup/system/3" method="post" onsubmit="return confirm('Вы уверены?');">
+<form action="/cup/system/3" method="post" onsubmit="return confirm('{{ 'Вы уверены?'|locale }}');">
     {% if user == null %}
         <div class="card-body">
-            <h5 class="text-center">Пользователь</h5>
+            <h5 class="text-center">{{ 'Пользователь'|locale }}</h5>
 
             <div class="row justify-content-center my-3">
                 <div class="col-12">
                     <p class="text-center">
-                        Настройка нового пользователя<br>
-                        с правами администратора.
+                        {{ 'Настройка нового пользователя'|locale }}<br>
+                        {{ 'с правами администратора'|locale }}
                     </p>
 
                     {% include 'cup/form.twig' with {
-                        'label': 'Логин',
+                        'label': 'Логин'|locale,
                         'type': 'text',
                         'name': 'user[username]',
                         'args': {
@@ -31,11 +31,23 @@
                         }
                     } %}
                     {% include 'cup/form.twig' with {
-                        'label': 'Пароль',
+                        'label': 'Пароль'|locale,
                         'type': 'password',
                         'name': 'user[password]',
                         'args': {
                             'required': true,
+                        }
+                    } %}
+                </div>
+
+                <div class="col-12">
+                    {% include 'cup/form.twig' with {
+                        'label': 'Заполнение базы'|locale,
+                        'type': 'select',
+                        'name': 'fill',
+                        'args': {
+                            'option': _(['no', 'system_default']),
+                            'selected': 'no'
                         }
                     } %}
                 </div>
@@ -44,17 +56,17 @@
     {% endif %}
 
     <div class="card-footer text-center">
-        <p>Действия с базой данных</p>
+        <p>{{ 'Действия с базой данных'|locale }}</p>
 
         <div class="d-flex justify-content-center">
             <button type="submit" name="database" value="create" class="btn {{ user == null ? 'btn-primary' : 'btn-secondary' }} mx-1">
-                Создать
+                {{ 'Создать'|locale }}
             </button>
             <button type="submit" name="database" value="update" class="btn {{ user == null ? 'btn-secondary' : 'btn-primary' }} mx-1">
-                Обновить
+                {{ 'Обновить'|locale }}
             </button>
             <button type="submit" name="database" value="delete" class="btn btn-danger mx-1">
-                Удалить
+                {{ 'Удалить'|locale }}
             </button>
         </div>
     </div>

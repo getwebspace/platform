@@ -5,8 +5,8 @@
         <div class="card card-block" style="width: 630px;">
             <div class="card-header text-center">
                 <h4 class="card-title">
-                    {{ user == null ? 'Установка' : 'Обновление' }}
-                    платформы WebSpace Engine
+                    {{ (user == null ? 'Установка' : 'Обновление')|locale }}
+                    {{ 'платформы WebSpace Engine'|locale }}
                 </h4>
             </div>
 
@@ -14,8 +14,8 @@
 
             <div class="card-footer">
                 <div>
-                    Copyright &copy; 2011-{{ 'now'|df('Y') }} <a href="https://getwebspace.org" target="_blank">WebSpace Engine</a> &mdash; платформа для управления контентом на сайте.<br>
-                    Сборка: <span class="text-muted">{{ sha }}</span>
+                    Copyright &copy; 2011-{{ 'now'|df('Y') }} <a href="https://getwebspace.org" target="_blank">WebSpace Engine</a> &mdash; {{ 'платформа для управления контентом на сайте'|locale }}.<br>
+                    {{ 'Сборка'|locale }}: <span class="text-muted">{{ sha }}</span>
                 </div>
             </div>
         </div>

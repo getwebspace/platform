@@ -44,11 +44,15 @@ return [
 
     // btn
     'Изменить' => 'Change',
+    'Создать' => 'Create',
+    'Обновить' => 'Update',
     'Удалить' => 'Delete',
     'Посмотреть' => 'View',
     'Сохранить' => 'Save',
     'Установка и обновление' => 'Installation and update',
     'Добавить' => 'Add',
+    'Далее' => 'Next',
+    'Назад' => 'Back',
 
     // ***
     // Image\images

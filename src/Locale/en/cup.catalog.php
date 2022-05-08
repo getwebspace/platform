@@ -5,6 +5,17 @@ return [
     // Catalog
     // ***
 
+    // system install
+    'Новый' => 'New',
+    'В обработке' => 'Processing',
+    'Отправлен' => 'Sent',
+    'Доставлен' => 'Delivered',
+    'Отменён' => 'Canceled',
+    'Килограмм' => 'Kilogram', 'кг' => 'kg',
+    'Грамм' => 'Gram', 'г' => 'g',
+    'Литр' => 'Liter', 'л' => 'l',
+    'Миллилитр' => 'Milliliter', 'мл' => 'ml',
+
     // attributes
     'string' => 'String',
     'integer' => 'Integer',
