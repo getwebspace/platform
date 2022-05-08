@@ -17,6 +17,8 @@ return [
 
     // order invoice
     'Инвойс' => 'Invoice',
+    'Заказ' => 'Order',
+    'Доставка' => 'Delivery',
     'Позиция' => 'Item',
     'Цена' => 'Price',
     'Количество' => 'Quantity',
