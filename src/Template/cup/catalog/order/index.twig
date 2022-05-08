@@ -137,8 +137,11 @@
                                                 {% endif %}
                                             </td>
                                             <td>
-                                                {{ item.user and item.user.getName() ? item.user.getName() : item.delivery.client }}
-                                                {{ item.user and item.user.getName() ? item.user.getName() : item.delivery.client }}
+                                                {% if item.user %}
+                                                    <a href="/cup/user/{{ item.user_uuid }}/view">{{ item.user.getName() ? item.user.getName() : item.delivery.client }}</a>
+                                                {% else %}
+                                                    {{ item.delivery.client }}
+                                                {% endif %}
                                             </td>
                                             <td width="15%">
                                                 {% if item.status_uuid %}
