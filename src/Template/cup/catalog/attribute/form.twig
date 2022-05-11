@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">{{ attribute.uuid ? 'Редактирование атрибута' : 'Создание нового атрибута' }}</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ (attribute.uuid ? 'Редактирование атрибута' : 'Создание нового атрибута')|locale }}</h2>
             </div>
         </div>
     </div>
@@ -19,7 +19,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Наименование',
+                                    'label': 'Наименование'|locale,
                                     'type': 'text',
                                     'name': 'title',
                                     'args': {
@@ -30,10 +30,10 @@
                             </div>
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Адрес',
+                                    'label': 'Адрес'|locale,
                                     'type': 'text',
                                     'name': 'address',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Название атрибута. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов"></i>',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Название атрибута. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов'|locale) ~ '"></i>',
                                     'args': {
                                         'value': attribute.address
                                     }
@@ -41,10 +41,10 @@
                             </div>
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Тип',
+                                    'label': 'Тип'|locale,
                                     'type': 'select',
                                     'name': 'type',
-                                    'message': '<b>Внимание</b>: тип "Булево" может быть добавлен только к категории.',
+                                    'message': '<b>Внимание</b>: тип "Булево" может быть добавлен только к категории.'|locale,
                                     'args': {
                                         'option': _(reference('/App/Domain/Types/Catalog/AttributeTypeType::LIST')),
                                         'selected': attribute.type,

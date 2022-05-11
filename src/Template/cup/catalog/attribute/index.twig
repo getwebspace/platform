@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Атрибуты</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Атрибуты'|locale }}</h2>
             </div>
         </div>
     </div>
@@ -16,10 +16,10 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
-                        <h4 class="card-title">Список атрибутов ({{ attributes.count() }})</h4>
+                        <h4 class="card-title">{{ 'Список атрибутов'|locale }} ({{ attributes.count() }})</h4>
                         <a href="/cup/catalog/attribute/add" class="btn btn-primary btn-round ml-auto">
                             <i class="fa fa-plus"></i>
-                            Добавить атрибут
+                            {{ 'Создать атрибут'|locale }}
                         </a>
                     </div>
                 </div>
@@ -27,8 +27,8 @@
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
                             <tr>
-                                <th>Наименование</th>
-                                <th width="35%" class="d-none d-md-table-cell">Адрес</th>
+                                <th>{{ 'Наименование'|locale }}</th>
+                                <th width="35%" class="d-none d-md-table-cell">{{ 'Адрес'|locale }}</th>
                                 <th width="25%" class="text-right"></th>
                             </tr>
                         {% endblock %}
@@ -47,15 +47,15 @@
                                         } %}
                                     </td>
                                     <td width="25%" class="text-right">
-                                        <form action="/cup/catalog/attribute/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить аттрибут?');">
+                                        <form action="/cup/catalog/attribute/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Вы действительно хотите удалить аттрибут?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/catalog/attribute/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
                                                     <i class="fas fa-fw fa-edit"></i>
-                                                    <span class="d-none d-md-inline-block">Изменить</span>
+                                                    <span class="d-none d-md-inline-block">{{ 'Изменить'|locale }}</span>
                                                 </a>
                                                 <button type="submit" class="btn btn-sm btn-danger">
                                                     <i class="fas fa-fw fa-trash-alt"></i>
-                                                    <span class="d-none d-md-inline-block">Удалить</span>
+                                                    <span class="d-none d-md-inline-block">{{ 'Удалить'|locale }}</span>
                                                 </button>
                                             </div>
                                         </form>

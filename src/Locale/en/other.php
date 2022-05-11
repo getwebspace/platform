@@ -6,10 +6,12 @@ return [
     // ***
     'Например' => 'For example',
     'Название' => 'Title',
+    'Наименование' => 'Title',
     'Статус' => 'Status',
     'Дата' => 'Date',
     'Другое' => 'Other',
     'Печать' => 'Print',
+    'Тип' => 'Type',
 
     // ***
     // Select variants
