@@ -32,7 +32,7 @@
                             <div class="quick-content notif-center">
                                 <div data-notif-empty>
                                     <div class="text-center my-3">
-                                        Уведомлений пока нет
+                                        {{ 'Уведомлений пока нет'|locale }}
                                     </div>
                                 </div>
 
@@ -56,11 +56,11 @@
                             <div class="list-group list-group-file-item list-group-reflow list-group-flush list-group-divider">
                                 <div data-task-empty>
                                     <div class="text-center my-3">
-                                        Нет данных о фоновых задачах
+                                        {{ 'Нет данных о фоновых задачах'|locale }}
                                     </div>
                                 </div>
 
-                                <div class="list-group-item align-items-start" data-task-item>
+                                <div class="list-group-item" data-task-item>
                                     <div class="list-group-item-body">
                                         <h5 class="list-group-item-title text-truncate m-0"></h5>
                                         <div class="progress mt-2" style="display: none; height: 10px">
@@ -82,11 +82,11 @@
                 <div class="quick-wrapper">
                     <div class="quick-scroll scrollbar-outer">
                         <div class="quick-content">
-                            <form action="/cup/task/run" method="post" class="row m-0" onsubmit="return confirm('Вы действительно хотите выполнить это действие сейчас?');">
+                            <form action="/cup/task/run" method="post" class="row m-0" onsubmit="return confirm('{{ 'Вы действительно хотите выполнить это действие сейчас?'|locale }}');">
                                 <button type="submit" name="task" value="App\Domain\Tasks\SearchIndexTask" class="col-12 btn btn-dark">
                                     <div class="quick-actions-item">
                                         <i class="fas fa-search"></i>
-                                        <span class="text">Обновить поисковый индекс</span>
+                                        <span class="text">{{ 'Обновить поисковый индекс'|locale }}</span>
                                     </div>
                                 </button>
                             </form>
@@ -143,32 +143,32 @@
                             switch (task.status) {
                                 case 'queue': {
                                     color = 'text-muted';
-                                    text = 'Очередь';
+                                    text = '{{ 'Очередь'|locale }}';
                                     break;
                                 }
                                 case 'work': {
                                     color = 'text-info';
-                                    text = 'Работает';
+                                    text = '{{ 'Работает'|locale }}';
                                     break;
                                 }
                                 case 'done': {
                                     color = 'text-success';
-                                    text = 'Выполнено';
+                                    text = '{{ 'Выполнено'|locale }}';
                                     break;
                                 }
                                 case 'fail': {
                                     color = 'text-danger';
-                                    text = 'Ошибка';
+                                    text = '{{ 'Ошибка'|locale }}';
                                     break;
                                 }
                                 case 'cancel': {
                                     color = 'text-warning';
-                                    text = 'Отменено';
+                                    text = '{{ 'Отменено'|locale }}';
                                     break;
                                 }
                                 case 'delete': {
                                     color = 'text-warning';
-                                    text = 'Удалено';
+                                    text = '{{ 'Удалено'|locale }}';
                                     break;
                                 }
                             }

@@ -100,7 +100,7 @@ abstract class AbstractTask
     {
         if (!$this->entity) {
             $this->entity = $this->taskService->create([
-                'title' => static::TITLE,
+                'title' => __(static::TITLE),
                 'action' => static::class,
                 'params' => $params,
                 'status' => \App\Domain\Types\TaskStatusType::STATUS_QUEUE,

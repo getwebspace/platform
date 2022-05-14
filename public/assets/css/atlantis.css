@@ -8198,7 +8198,6 @@ label.error {
 .list-group .list-group-item {
     display: flex;
     align-items: stretch;
-    border-width: 1px 0;
     border-color: #ebecec;
 }
 

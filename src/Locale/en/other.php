@@ -14,6 +14,32 @@ return [
     'Тип' => 'Type',
 
     // ***
+    // Sidebar
+    // ***
+    'Уведомлений пока нет' => 'Notifications yet',
+    'Нет данных о фоновых задачах' => 'No data about background tasks',
+    'Обновить поисковый индекс' => 'Update search index',
+    'Вы действительно хотите выполнить это действие сейчас?' => 'Are you sure you want to perform this action now?',
+
+    // ***
+    // Tasks name
+    // ***
+    'Обработка изображений' => 'Image processing',
+    'Импорт каталога из Excel файла' => 'Import catalog from Excel file',
+    'Поисковая индексация' => 'Search indexing',
+    'Отправка JSON' => 'Sending JSON',
+    'Отправка почты' => 'Sending mail',
+    'Рассылка писем' => 'Sending mail letters',
+
+    // task status
+    'Очередь' => 'Queue',
+    'Работает' => 'Work',
+    'Выполнено' => 'Done',
+    'Ошибка' => 'Error',
+    'Отменено' => 'Canceled',
+    'Удалено' => 'Deleted',
+
+    // ***
     // Select variants
     // ***
 
