@@ -16,7 +16,7 @@ return [
     'Пользователи' => 'Users',
     'Список' => 'List',
     'Группы' => 'Groups',
-    'Подписчики' => 'Followers',
+    'Подписчики' => 'Subscribers',
     'Рассылка' => 'Newsletter',
     'Формы' => 'Forms',
     'Каталог' => 'Catalog',

@@ -62,7 +62,12 @@ return [
     'WITHOUT_GROUP' => 'Without group',
 
     // newsletters
+    'Новая рассылка' => 'New newsletter',
+    'Текст сообщения' => 'Message',
+    'Список подписчиков' => 'List of subscribers',
+    'Добавить адрес' => 'Add address',
+    'Вы действительно хотите удалить адрес подписчика?' => "Are you sure you want to delete the subscriber address?",
     'all' => 'To all',
     'users' => 'Members',
-    'subscribers' => 'Followers',
+    'subscribers' => 'Subscribers',
 ];

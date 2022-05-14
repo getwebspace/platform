@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Новая рассылка</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Новая рассылка'|locale }}</h2>
             </div>
         </div>
     </div>
@@ -19,7 +19,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Заголовок',
+                                    'label': 'Заголовок'|locale,
                                     'type': 'text',
                                     'name': 'subject',
                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Название письма"></i>',
@@ -30,7 +30,7 @@
                             </div>
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Получатели',
+                                    'label': 'Получатели'|locale,
                                     'type': 'select',
                                     'name': 'type',
                                     'args': {
@@ -44,7 +44,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 {% include 'cup/editor.twig' with {
-                                    'label': 'Текст сообщения',
+                                    'label': 'Текст сообщения'|locale,
                                     'name': 'body'
                                 } %}
                             </div>
@@ -53,7 +53,7 @@
 
                     <div class="card-action">
                         <button type="submit" name="save" value="exit" class="btn btn-primary">
-                            Отправить
+                            {{ 'Отправить'|locale }}
                         </button>
                     </div>
                 </form>

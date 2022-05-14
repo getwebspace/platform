@@ -87,6 +87,7 @@ return [
     'Назад' => 'Back',
     'Найти' => 'Search',
     'Сбросить' => 'Reset',
+    'Отправить' => 'Submit',
 
     // ***
     // Image\images
