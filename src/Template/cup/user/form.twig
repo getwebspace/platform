@@ -4,12 +4,12 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">{{ item ? 'Редактирование пользователя' : 'Добавление пользователя' }}</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ (item ? 'Редактирование пользователя' : 'Создание пользователя')|locale }}</h2>
             </div>
             {% if item %}
                 <div class="ml-md-auto py-2 py-md-0">
                     <a href="/cup/user/{{ item.uuid }}/view" class="btn btn-secondary">
-                        Посмотреть
+                        {{ 'Посмотреть'|locale }}
                     </a>
                 </div>
             {% endif %}
@@ -27,12 +27,12 @@
                             <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
                                 <li class="nav-item">
                                     <a class="nav-link {{ item ? '' : 'active show' }}" data-toggle="pill" href="#user" role="tab">
-                                        Пользователь
+                                        {{ 'Пользователь'|locale }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link {{ item ? 'active show' : '' }}" data-toggle="pill" href="#contact" role="tab">
-                                        Контакт
+                                        {{ 'Контакт'|locale }}
                                     </a>
                                 </li>
                             </ul>
@@ -46,7 +46,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Логин',
+                                            'label': 'Логин'|locale,
                                             'type': 'text',
                                             'name': 'username',
                                             'args': {
@@ -56,10 +56,10 @@
                                     </div>
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Новый пароль',
+                                            'label': 'Новый пароль'|locale,
                                             'type': 'text',
                                             'name': 'password',
-                                            'postfix': item ? '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Оставьте пустым, если не хотите менять"></i>' : null,
+                                            'postfix': item ? '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Оставьте пустым, если не хотите менять'|locale) ~ '"></i>' : null,
                                             'args': {
                                                 'required': user ? false : true,
                                             }
@@ -72,7 +72,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Группа',
+                                            'label': 'Группа'|locale,
                                             'type': 'select',
                                             'name': 'group_uuid',
                                             'args': {
@@ -84,7 +84,7 @@
                                     <div class="col-md-6">
                                         {% if item.uuid %}
                                             {% include 'cup/form.twig' with {
-                                                'label': 'Статус',
+                                                'label': 'Статус'|locale,
                                                 'type': 'select',
                                                 'name': 'status',
                                                 'args': {
@@ -101,10 +101,10 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Внешний ID',
+                                            'label': 'Внешний ID'|locale,
                                             'type': 'text',
                                             'name': 'external_id',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать.'|locale) ~ '"></i>',
                                             'args': {
                                                 'value': item.external_id,
                                             }
@@ -122,7 +122,7 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Имя',
+                                            'label': 'Имя'|locale,
                                             'type': 'text',
                                             'name': 'firstname',
                                             'args': {
@@ -132,7 +132,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Фамилия',
+                                            'label': 'Фамилия'|locale,
                                             'type': 'text',
                                             'name': 'lastname',
                                             'args': {
@@ -142,7 +142,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Отчество',
+                                            'label': 'Отчество'|locale,
                                             'type': 'text',
                                             'name': 'patronymic',
                                             'args': {
@@ -155,7 +155,7 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Пол',
+                                            'label': 'Пол'|locale,
                                             'type': 'text',
                                             'name': 'gender',
                                             'args': {
@@ -171,7 +171,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Дата рождения',
+                                            'label': 'Дата рождения'|locale,
                                             'type': 'date',
                                             'name': 'birthdate',
                                             'args': {
@@ -187,7 +187,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Телефон',
+                                            'label': 'Телефон'|locale,
                                             'type': 'tel',
                                             'name': 'phone',
                                             'args': {
@@ -207,7 +207,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Подписан на рассылку',
+                                            'label': 'Подписан на рассылку'|locale,
                                             'type': 'select',
                                             'name': 'allow_mail',
                                             'args': {
@@ -222,7 +222,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Адрес',
+                                            'label': 'Адрес'|locale,
                                             'type': 'textarea',
                                             'name': 'address',
                                             'args': {
@@ -233,7 +233,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Доп. инфо',
+                                            'label': 'Доп. инфо'|locale,
                                             'message': 'Можно указать любую информацию до 250 символов.',
                                             'type': 'textarea',
                                             'name': 'additional',
@@ -250,7 +250,7 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Компания',
+                                            'label': 'Компания'|locale,
                                             'type': 'text',
                                             'name': 'company[title]',
                                             'args': {
@@ -260,7 +260,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Должность',
+                                            'label': 'Должность'|locale,
                                             'type': 'text',
                                             'name': 'company[position]',
                                             'args': {
@@ -270,8 +270,8 @@
                                     </div>
                                     <div class="col-md-3">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Регистрационный номер',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="ОГРН, ОГРНИП, ЄДРПОУ"></i>',
+                                            'label': 'Регистрационный номер'|locale,
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('ОГРН, ОГРНИП'|locale) ~ '"></i>',
                                             'type': 'text',
                                             'name': 'legal[code]',
                                             'args': {
@@ -281,8 +281,8 @@
                                     </div>
                                     <div class="col-md-3">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Налоговый номер',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="ИНН"></i>',
+                                            'label': 'Налоговый номер'|locale,
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('ИНН'|locale) ~ '"></i>',
                                             'type': 'text',
                                             'name': 'legal[number]',
                                             'args': {
@@ -297,7 +297,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Веб-сайт',
+                                            'label': 'Веб-сайт'|locale,
                                             'type': 'text',
                                             'name': 'website',
                                             'args': {
@@ -307,7 +307,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Источник контакта',
+                                            'label': 'Источник контакта'|locale,
                                             'type': 'textarea',
                                             'name': 'source',
                                             'args': {

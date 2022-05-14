@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Список пользователей ({{ list.count() }})</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Список пользователей'|locale }} ({{ list.count() }})</h2>
             </div>
         </div>
     </div>
@@ -19,7 +19,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Логин',
+                                    'label': 'Логин'|locale,
                                     'type': 'text',
                                     'name': 'username',
                                     'args': {
@@ -28,7 +28,7 @@
                                 } %}
 
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Точное совпадение логина',
+                                    'label': 'Точное совпадение логина'|locale,
                                     'type': 'checkbox',
                                     'name': 'username_strong',
                                     'args': {
@@ -47,7 +47,7 @@
                                 } %}
 
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Забанен',
+                                    'label': 'Забанен'|locale,
                                     'type': 'checkbox',
                                     'name': 'status_block',
                                     'args': {
@@ -56,7 +56,7 @@
                                 } %}
 
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Удален',
+                                    'label': 'Удален'|locale,
                                     'type': 'checkbox',
                                     'name': 'status_delete',
                                     'args': {
@@ -67,8 +67,8 @@
                         </div>
                     </div>
                     <div class="card-action">
-                        <button type="submit" class="btn btn-primary">Найти</button>
-                        <button type="reset" class="btn btn-danger">Сбросить</button>
+                        <button type="submit" class="btn btn-primary">{{ 'Найти'|locale }}</button>
+                        <button type="reset" class="btn btn-danger">{{ 'Сбросить'|locale }}</button>
                     </div>
                 </form>
             </div>
@@ -82,7 +82,7 @@
                     <div class="d-flex align-items-center">
                         <a href="/cup/user/add" class="btn btn-primary btn-round ml-auto">
                             <i class="fa fa-plus"></i>
-                            Добавить пользователя
+                            {{ 'Создать пользователя'|locale }}
                         </a>
                     </div>
                 </div>
@@ -90,10 +90,10 @@
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
                             <tr>
-                                <th width="15%" class="d-none d-md-table-cell">Логин</th>
-                                <th>Фамилия и имя</th>
-                                <th>Телефон и Email</th>
-                                <th width="15%" class="d-none d-md-table-cell">Группа</th>
+                                <th width="15%" class="d-none d-md-table-cell">{{ 'Логин'|locale }}</th>
+                                <th>{{ 'Фамилия и имя'|locale }}</th>
+                                <th>{{ 'Телефон и E-Mail'|locale }}</th>
+                                <th width="15%" class="d-none d-md-table-cell">{{ 'Группа'|locale }}</th>
                                 <th width="30%" class="text-right"></th>
                             </tr>
                         {% endblock %}
@@ -127,26 +127,26 @@
                                                 <i class="fab fa-{{ integration.provider }}"></i>
                                             {% endfor %}
                                             {% if user.getAllowMail() %}
-                                                <i class="fa fa-envelope" data-toggle="tooltip" data-placement="right" title="Подписан на рассылку"></i>
+                                                <i class="fa fa-envelope" data-toggle="tooltip" data-placement="right" title="{{ 'Подписан на рассылку'|locale }}"></i>
                                             {% endif %}
                                         </div>
                                     </td>
-                                    <td width="15%" class="d-none d-md-table-cell">{{ user.group.title ?? '<code>Без группы</code>' }}</td>
+                                    <td width="15%" class="d-none d-md-table-cell">{{ user.group.title ?? ('<code>' ~ ('WITHOUT_GROUP'|locale) ~ '</code>')|raw }}</td>
                                     <td width="30%" class="text-right">
-                                        <form action="/cup/user/{{ user.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить пользователя?');">
+                                        <form action="/cup/user/{{ user.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Вы действительно хотите удалить пользователя?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/user/{{ user.uuid }}/view" class="btn btn-sm btn-outline-info">
                                                     <i class="fas fa-address-card"></i>
-                                                    <span class="d-none d-md-inline-block">Подробней</span>
+                                                    <span class="d-none d-md-inline-block">{{ 'Подробней'|locale }}</span>
                                                 </a>
                                                 <a href="/cup/user/{{ user.uuid }}/edit" class="btn btn-sm btn-info">
                                                     <i class="fas fa-fw fa-edit"></i>
-                                                    <span class="d-none d-md-inline-block">Изменить</span>
+                                                    <span class="d-none d-md-inline-block">{{ 'Изменить'|locale }}</span>
                                                 </a>
                                                 {% if user.status != reference('/App/Domain/Types/UserStatusType::STATUS_DELETE') %}
                                                     <button type="submit" class="btn btn-sm btn-danger">
                                                         <i class="fas fa-fw fa-trash-alt"></i>
-                                                        <span class="d-none d-md-inline-block">Удалить</span>
+                                                        <span class="d-none d-md-inline-block">{{ 'Удалить'|locale }}</span>
                                                     </button>
                                                 {% endif %}
                                             </div>

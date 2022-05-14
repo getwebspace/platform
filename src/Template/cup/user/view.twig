@@ -4,11 +4,11 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Контакт</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Контакт'|locale }}</h2>
             </div>
             <div class="ml-md-auto py-2 py-md-0">
                 <a href="/cup/user/{{ item.uuid }}/edit" class="btn btn-secondary">
-                    Изменить контакт
+                    {{ 'Изменить контакт'|locale }}
                 </a>
             </div>
         </div>
@@ -40,26 +40,26 @@
             <div class="card">
                 <div class="card-body">
                     <dl class="row mb-0">
-                        <dt class="col-4">Имя</dt>
+                        <dt class="col-4">{{ 'Имя'|locale }}</dt>
                         <dd class="col-8">{{ item.firstname ?: '&mdash;' }}</dd>
-                        <dt class="col-4">Фамилия</dt>
+                        <dt class="col-4">{{ 'Фамилия'|locale }}</dt>
                         <dd class="col-8">{{ item.lastname ?: '&mdash;' }}</dd>
-                        <dt class="col-4">Отчество</dt>
+                        <dt class="col-4">{{ 'Отчество'|locale }}</dt>
                         <dd class="col-8">{{ item.patronymic ?: '&mdash;' }}</dd>
-                        <dt class="col-4">Пол</dt>
+                        <dt class="col-4">{{ 'Пол'|locale }}</dt>
                         <dd class="col-8">{{ item.gender ?: '&mdash;' }}</dd>
-                        <dt class="col-4">Дата рождения</dt>
+                        <dt class="col-4">{{ 'Дата рождения'|locale }}</dt>
                         <dd class="col-8">{{ item.birthdate|df('d.m.Y') }}</dd>
 
                         {% if item.company.title or item.company.position %}
-                            <dt class="col-4">Компания</dt>
+                            <dt class="col-4">{{ 'Компания'|locale }}</dt>
                             <dd class="col-8">{{ item.company.title ?: '&mdash;' }}</dd>
-                            <dt class="col-4">Должность</dt>
+                            <dt class="col-4">{{ 'Должность'|locale }}</dt>
                             <dd class="col-8">{{ item.company.position ?: '&mdash;' }}</dd>
                         {% endif %}
 
                         {% if item.source %}
-                            <dt class="col-4">Источник контакта</dt>
+                            <dt class="col-4">{{ 'Источник контакта'|locale }}</dt>
                             <dd class="col-8">{{ item.source ?: '&mdash;' }}</dd>
                         {% endif %}
                     </dl>
@@ -71,7 +71,7 @@
                 <div class="card-body">
                     <dl class="row mb-0">
                         {% if item.phone %}
-                            <dt class="col-4">Телефон</dt>
+                            <dt class="col-4">{{ 'Телефон'|locale }}</dt>
                             <dd class="col-8">
                                 <a href="tel:{{ item.phone }}">{{ item.phone }}</a>
                                 <a href="sms:{{ item.phone }}" class="pl-1">SMS</a>
@@ -80,26 +80,26 @@
                         {% if item.email %}
                             <dt class="col-4">E-Mail</dt>
                             <dd class="col-8"><a href="mailto:{{ item.email }}">{{ item.email }}</a></dd>
-                            <dt class="col-4">Под.на рассылку</dt>
+                            <dt class="col-4">{{ 'Подписан на рассылку'|locale }}</dt>
                             <dd class="col-8">{{ (item.allow_mail ? 'yes' : 'no')|locale }}</dd>
                         {% endif %}
-                        <dt class="col-4">Адрес</dt>
+                        <dt class="col-4">{{ 'Адрес'|locale }}</dt>
                         <dd class="col-8">{{ item.address ?: '&mdash;' }}</dd>
-                        <dt class="col-4">Доп. инфо</dt>
+                        <dt class="col-4">{{ 'Доп. инфо'|locale }}</dt>
                         <dd class="col-8">{{ item.additional ?: '&mdash;' }}</dd>
                         {% if item.website %}
-                            <dt class="col-4">Веб-сайт</dt>
+                            <dt class="col-4">{{ 'Веб-сайт'|locale }}</dt>
                             <dd class="col-8"><a href="{{ item.website }}" target="_blank">{{ item.website }}</a></dd>
                         {% endif %}
                         {% if item.messengers %}
-                            <dt class="col-4">Мессенджеры</dt>
+                            <dt class="col-4">{{ 'Мессенджеры'|locale }}</dt>
                             <dd class="col-8">{{ item.messengers.implode(', ') }}</dd>
                         {% endif %}
                         {% if item.legal.code or item.legal.number %}
-                            <dt class="col-4">Рег. номер</dt>
+                            <dt class="col-4">{{ 'Рег. номер'|locale }}</dt>
                             <dd class="col-8">{{ item.legal.code ?: '&mdash;' }}</dd>
 
-                            <dt class="col-4">Налоговый номер</dt>
+                            <dt class="col-4">{{ 'Налоговый номер'|locale }}</dt>
                             <dd class="col-8">{{ item.legal.number ?: '&mdash;' }}</dd>
                         {% endif %}
                     </dl>
@@ -113,11 +113,11 @@
                     <dl class="row mb-0">
                         <dt class="col-4">UUID</dt>
                         <dd class="col-8">{{ item.uuid }}</dd>
-                        <dt class="col-4">Логин</dt>
+                        <dt class="col-4">{{ 'Логин'|locale }}</dt>
                         <dd class="col-8">{{ item.username ?: '&mdash;' }}</dd>
-                        <dt class="col-4">Группа</dt>
+                        <dt class="col-4">{{ 'Группа'|locale }}</dt>
                         <dd class="col-8">{{ item.group ? item.group.title : '&mdash;' }}</dd>
-                        <dt class="col-4">Внешний ID</dt>
+                        <dt class="col-4">{{ 'Внешний ID'|locale }}</dt>
                         <dd class="col-8">{{ item.external_id ?: '&mdash;' }}</dd>
                     </dl>
                 </div>
@@ -128,13 +128,13 @@
             <div class="card">
                 <div class="card-body">
                     <dl class="row mb-0">
-                        <dt class="col-4">Публикаций</dt>
+                        <dt class="col-4">{{ 'Публикаций'|locale }}</dt>
                         <dd class="col-8">{{ item.publications|count ?: '&mdash;' }}</dd>
-                        <dt class="col-4">Заказов</dt>
+                        <dt class="col-4">{{ 'Заказов'|locale }}</dt>
                         <dd class="col-8">{{ item.orders|count ?: '&mdash;' }}</dd>
-                        <dt class="col-4">Социальные сети</dt>
+                        <dt class="col-4">{{ 'Социальные сети'|locale }}</dt>
                         <dd class="col-8">{{ item.getIntegrations()|count ? item.getIntegrations().pluck('provider').implode(', ') : '&mdash;' }}</dd>
-                        <dt class="col-4">Код авторизации</dt>
+                        <dt class="col-4">{{ 'Код авторизации'|locale }}</dt>
                         <dd class="col-8">{{ item.auth_code ?: '&mdash;' }}</dd>
                     </dl>
                 </div>
@@ -147,20 +147,20 @@
                     <div class="row">
                         <div class="col-12 col-xl-6">
                             <dl class="row mb-0">
-                                <dt class="col-4">Зарегистрирован</dt>
+                                <dt class="col-4">{{ 'Зарегистрирован'|locale }}</dt>
                                 <dd class="col-8">{{ item.register|df('d.m.Y H:i:s') }}</dd>
-                                <dt class="col-4">Последнее ред.</dt>
+                                <dt class="col-4">{{ 'Последнее ред.'|locale }}</dt>
                                 <dd class="col-8">{{ item.change|df('d.m.Y H:i:s') }}</dd>
                             </dl>
                         </div>
                         <div class="col-12 col-xl-6">
                             <dl class="row mb-0">
                                 {% if item.session.date.getTimestamp() %}
-                                    <dt class="col-4">Последняя акт.</dt>
+                                    <dt class="col-4">{{ 'Последняя акт.'|locale }}</dt>
                                     <dd class="col-8">{{ item.session.date|df('d.m.Y H:i:s') }}</dd>
                                 {% endif %}
                                 {% if item.session.ip %}
-                                    <dt class="col-4">Последний IP</dt>
+                                    <dt class="col-4">{{ 'Последний IP'|locale }}</dt>
                                     <dd class="col-8">{{ item.session.ip }}</dd>
                                 {% endif %}
                             </dl>

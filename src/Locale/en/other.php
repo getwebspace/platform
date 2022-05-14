@@ -12,6 +12,9 @@ return [
     'Другое' => 'Other',
     'Печать' => 'Print',
     'Тип' => 'Type',
+    'Внешний ID' => 'External ID',
+    'Телефон' => 'Phone',
+    'Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать.' => 'System field. If you don\'t know what this field is for, it\'s best not to touch it.',
 
     // ***
     // Sidebar
@@ -71,6 +74,7 @@ return [
     'ASC' => 'Asc',
 
     // btn
+    'Подробней' => 'View',
     'Изменить' => 'Change',
     'Создать' => 'Create',
     'Обновить' => 'Update',
@@ -81,6 +85,8 @@ return [
     'Добавить' => 'Add',
     'Далее' => 'Next',
     'Назад' => 'Back',
+    'Найти' => 'Search',
+    'Сбросить' => 'Reset',
 
     // ***
     // Image\images
