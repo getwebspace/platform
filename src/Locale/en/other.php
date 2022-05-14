@@ -15,6 +15,7 @@ return [
     'Внешний ID' => 'External ID',
     'Телефон' => 'Phone',
     'Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать.' => 'System field. If you don\'t know what this field is for, it\'s best not to touch it.',
+    'Ничего' => 'Nothing',
 
     // ***
     // Sidebar

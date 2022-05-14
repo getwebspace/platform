@@ -61,6 +61,23 @@ return [
     // user without group
     'WITHOUT_GROUP' => 'Without group',
 
+    // user group
+    'Список групп пользователей' => 'List of user groups',
+    'Создать группу' => 'Create group',
+    'Пользователей' => 'Count users',
+    'Права доступа' => 'Permissions',
+    'Прав доступно' => 'Count',
+    'Без прав' => 'No permissions',
+    'Вы действительно хотите удалить группу?' => 'Are you sure you want to delete the group?',
+    'Нельзя удалить группу, пока в ней есть пользователи' => 'You can\'t delete a group while it has users',
+
+    // user group form
+    'Создание группы' => 'Create a group',
+    'Редактирование группы' => 'Editing a group',
+    'Краткое название группы' => 'Short name of the group',
+    'Журналисты' => 'Journalists',
+    'Описание группы' => 'Group description',
+
     // newsletters
     'Новая рассылка' => 'New newsletter',
     'Текст сообщения' => 'Message',

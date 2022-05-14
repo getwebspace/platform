@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Список групп пользователей ({{ groups.count() }})</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Список групп пользователей'|locale }} ({{ groups.count() }})</h2>
             </div>
         </div>
     </div>
@@ -18,7 +18,7 @@
                     <div class="d-flex align-items-center">
                         <a href="/cup/user/group/add" class="btn btn-primary btn-round ml-auto">
                             <i class="fa fa-plus"></i>
-                            Добавить группу
+                            {{ 'Создать группу'|locale }}
                         </a>
                     </div>
                 </div>
@@ -26,9 +26,9 @@
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
                             <tr>
-                                <th>Название</th>
-                                <th width="15%" class="d-none d-md-table-cell">Пользователей</th>
-                                <th width="20%" class="d-none d-md-table-cell">Права доступа</th>
+                                <th>{{ 'Название'|locale }}</th>
+                                <th width="15%" class="d-none d-md-table-cell">{{ 'Пользователей'|locale }}</th>
+                                <th width="20%" class="d-none d-md-table-cell">{{ 'Права доступа'|locale }}</th>
                                 <th width="25%" class="text-right"></th>
                             </tr>
                         {% endblock %}
@@ -42,22 +42,22 @@
                                     <td width="20%" class="d-none d-md-table-cell">
                                         <code>
                                             {% if group.access %}
-                                                Прав доступно: {{ group.access|count }}
+                                                {{ 'Прав доступно'|locale }}: {{ group.access|count }}
                                             {% else %}
-                                                Без прав
+                                                {{ 'Без прав'|locale }}
                                             {% endif %}
                                         </code>
                                     </td>
                                     <td width="25%" class="text-right">
-                                        <form action="/cup/user/group/{{ group.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('Вы действительно хотите удалить группу?');">
+                                        <form action="/cup/user/group/{{ group.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Вы действительно хотите удалить группу?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/user/group/{{ group.uuid }}/edit" class="btn btn-sm btn-info">
                                                     <i class="fas fa-fw fa-edit"></i>
-                                                    <span class="d-none d-md-inline-block">Изменить</span>
+                                                    <span class="d-none d-md-inline-block">{{ 'Изменить'|locale }}</span>
                                                 </a>
-                                                <button type="{{ users_in_group ? 'button' : 'submit' }}" class="btn btn-sm btn-danger" {{ users_in_group ? 'data-toggle="tooltip" data-placement="left" title="Нельзя удалить группу, пока в ней есть пользователи"' }}>
+                                                <button type="{{ users_in_group ? 'button' : 'submit' }}" class="btn btn-sm btn-danger" {{ users_in_group ? ('data-toggle="tooltip" data-placement="left" title="' ~ ('Нельзя удалить группу, пока в ней есть пользователи'|locale) ~ '"')|raw : '' }}>
                                                     <i class="fas fa-fw fa-trash-alt"></i>
-                                                    <span class="d-none d-md-inline-block">Удалить</span>
+                                                    <span class="d-none d-md-inline-block">{{ 'Удалить'|locale }}</span>
                                                 </button>
                                             </div>
                                         </form>
