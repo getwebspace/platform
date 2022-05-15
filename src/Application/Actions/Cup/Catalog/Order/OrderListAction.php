@@ -11,7 +11,6 @@ class OrderListAction extends CatalogAction
     {
         return $this->respondWithTemplate('cup/catalog/order/index.twig', [
             'order_list' => $this->catalogOrderService->read([
-                'limit' => 1000,
                 'order' => ['date' => 'desc'],
             ]),
             'status_list' => $this->catalogOrderStatusService->read(),
