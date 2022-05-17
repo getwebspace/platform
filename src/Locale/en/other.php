@@ -7,11 +7,15 @@ return [
     'Например' => 'For example',
     'Название' => 'Title',
     'Наименование' => 'Title',
+    'Категория' => 'Category',
+    'Дата публикации' => 'Date of publication',
     'Статус' => 'Status',
     'Дата' => 'Date',
     'Другое' => 'Other',
     'Печать' => 'Print',
     'Тип' => 'Type',
+    'Адрес' => 'Address',
+    'Описание' => 'Description',
     'Внешний ID' => 'External ID',
     'Телефон' => 'Phone',
     'Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать.' => 'System field. If you don\'t know what this field is for, it\'s best not to touch it.',
@@ -65,6 +69,8 @@ return [
     // ***
     // Sorts by
     // ***
+    'Критерий сортировки' => 'Sorting criteria',
+    'Порядок сортировки' => 'Sorting order',
 
     'title' => 'Title',
     'price' => 'Price',
@@ -93,7 +99,6 @@ return [
     // ***
     // Image\images
     // ***
-
     'Изображение' => 'Image',
     'Изображения' => 'Images',
     'Здесь можно выбрать несколько изображений' => 'Multiple images can be selected here',
@@ -101,14 +106,12 @@ return [
     // ***
     // Content type
     // ***
-
     'html' => 'HTML',
     'text' => 'Text',
 
     // ***
     // Meta tags
     // ***
-
     'Метатег Title' => 'Meta tag Title',
     'Метатег Description' => 'Meta tag Description',
     'Метатег Keywords' => 'Meta tag Keywords',

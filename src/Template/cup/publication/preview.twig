@@ -408,7 +408,7 @@
 {% block bodyinner %}
     <fieldset style="border-style:solid; border-width:1; border-color:black; margin: 20px;">
         <legend>
-            <span style="font-size: 10px; font-family: Verdana">Краткое содержание:</span>
+            <span style="font-size: 10px; font-family: Verdana">{{ 'Краткое содержимое'|locale }}:</span>
         </legend>
         <article class="box story">
             <div class="box_in">
@@ -420,7 +420,7 @@
             <div class="meta">
                 <ul class="left">
                     <li class="grey">
-                        <time><a href=#>{{ _request.date }}</a></time>
+                        <time><a href=#>{{ _request.date|df }}</a></time>
                     </li>
                 </ul>
             </div>
@@ -429,7 +429,7 @@
 
     <fieldset style="border-style:solid; border-width:1; border-color:black; margin: 20px;">
         <legend>
-            <span style="font-size: 10px; font-family: Verdana">Подробное содержание:</span>
+            <span style="font-size: 10px; font-family: Verdana">{{ 'Полное содержимое'|locale }}:</span>
         </legend>
 
         <article class="box story">
@@ -442,7 +442,7 @@
             <div class="meta">
                 <ul class="left">
                     <li class="grey">
-                        <time><a href=#>{{ _request.date }}</a></time>
+                        <time><a href=#>{{ _request.date|df }}</a></time>
                     </li>
                 </ul>
             </div>

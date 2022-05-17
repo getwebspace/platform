@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">{{ item.uuid ? 'Редактирование категории' : 'Добавление новой категории' }}</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ (item.uuid ? 'Редактирование категории' : 'Создание новой категории')|locale }}</h2>
             </div>
         </div>
     </div>
@@ -19,7 +19,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Название',
+                                    'label': 'Название'|locale,
                                     'type': 'text',
                                     'name': 'title',
                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Название новой категории"></i>',
@@ -32,7 +32,7 @@
                             </div>
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Адрес',
+                                    'label': 'Адрес'|locale,
                                     'type': 'text',
                                     'name': 'address',
                                     'prefix': base_url() ~ '/',
@@ -48,7 +48,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 {% include 'cup/editor.twig' with {
-                                    'label': 'Описание',
+                                    'label': 'Описание'|locale,
                                     'name': 'description',
                                     'args': {
                                         'value': item.description
@@ -60,7 +60,7 @@
                         <div class="row">
                             <div class="col-md-3">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Основная категория',
+                                    'label': 'Основная категория'|locale,
                                     'type': 'select',
                                     'name': 'parent',
                                     'args': {
@@ -71,7 +71,7 @@
                             </div>
                             <div class="col-md-3">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Показывать вложенные категории',
+                                    'label': 'Показывать вложенные категории'|locale,
                                     'type': 'select',
                                     'name': 'children',
                                     'args': {
@@ -82,7 +82,7 @@
                             </div>
                             <div class="col-md-3">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Количество записей на страницу',
+                                    'label': 'Количество записей на страницу'|locale,
                                     'type': 'text',
                                     'name': 'pagination',
                                     'args': {
@@ -92,8 +92,8 @@
                             </div>
                             <div class="col-md-3">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Публичная категория',
-                                    'message': 'Отображать ли категорию в общем списке',
+                                    'label': 'Публичная категория'|locale,
+                                    'message': 'Отображать ли категорию в общем списке'|locale,
                                     'type': 'select',
                                     'name': 'public',
                                     'args': {
@@ -113,7 +113,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Критерий сортировки',
+                                    'label': 'Критерий сортировки'|locale,
                                     'type': 'select',
                                     'name': 'sort[by]',
                                     'args': {
@@ -124,7 +124,7 @@
                             </div>
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Порядок сортировки',
+                                    'label': 'Порядок сортировки'|locale,
                                     'type': 'select',
                                     'name': 'sort[direction]',
                                     'args': {
@@ -140,7 +140,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Метатег Title',
+                                    'label': 'Метатег Title'|locale,
                                     'type': 'text',
                                     'name': 'meta[title]',
                                     'args': {
@@ -151,7 +151,7 @@
 
                             <div class="col-md-4">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Метатег Description',
+                                    'label': 'Метатег Description'|locale,
                                     'type': 'text',
                                     'name': 'meta[description]',
                                     'args': {
@@ -162,7 +162,7 @@
 
                             <div class="col-md-4">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Метатег Keywords',
+                                    'label': 'Метатег Keywords'|locale,
                                     'type': 'text',
                                     'name': 'meta[keywords]',
                                     'args': {
@@ -177,10 +177,10 @@
                         <div class="row">
                             <div class="col-md-4">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Шаблон для категории',
+                                    'label': 'Шаблон для категории'|locale,
                                     'type': 'text',
                                     'name': 'template[list]',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="Вы можете установить для данной категории отдельный шаблон или оставить <b>publication.list.twig</b>"></i>',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('Вы можете установить для данной категории отдельный шаблон или оставить <b>publication.list.twig</b>'|locale) ~ '"></i>',
                                     'args': {
                                         'value': item.template.list is not empty ? item.template.list : 'publication.list.twig',
                                     }
@@ -189,10 +189,10 @@
 
                             <div class="col-md-4">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Шаблон краткой версии',
+                                    'label': 'Шаблон краткой версии'|locale,
                                     'type': 'text',
                                     'name': 'template[short]',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="Укажите название шаблона, который хотите использовать для отображения краткой версии публикации или оставьте <b>publication.short.twig</b>"></i>',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('Укажите название шаблона, который хотите использовать для отображения краткой версии публикации или оставьте <b>publication.short.twig</b>'|locale) ~ '"></i>',
                                     'args': {
                                         'value': item.template.short is not empty ? item.template.short : 'publication.short.twig',
                                     }
@@ -201,10 +201,10 @@
 
                             <div class="col-md-4">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Шаблон полной версии',
+                                    'label': 'Шаблон полной версии'|locale,
                                     'type': 'text',
                                     'name': 'template[full]',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="Укажите название шаблона, который хотите использовать для отображения полной версии публикации или оставьте <b>publication.full.twig</b>"></i>',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('Укажите название шаблона, который хотите использовать для отображения полной версии публикации или оставьте <b>publication.full.twig</b>'|locale) ~ '"></i>',
                                     'args': {
                                         'value': item.template.full is not empty ? item.template.full : 'publication.full.twig',
                                     }
