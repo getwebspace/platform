@@ -5,6 +5,9 @@ return [
     // Guestbook
     // ***
 
+    // sidebar
+    'Новый отзыв в гостевой книге' => 'New review in guest book',
+
     // list
     'Список записей' => 'List of records',
     'Автор' => 'Author',

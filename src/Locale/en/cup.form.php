@@ -5,6 +5,9 @@ return [
     // Form
     // ***
 
+    // sidebar
+    'Новый ответ в форме' => 'New response in the form',
+
     // list
     'Список форм' => 'List of forms',
     'Создать форму' => 'Create form',
