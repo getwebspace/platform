@@ -14,11 +14,11 @@ return function (App $app): void {
     // check user access
     $app->add(new \App\Application\Middlewares\AccessCheckerMiddleware($c));
 
-    // check user auth
-    $app->add(new \App\Application\Middlewares\AuthorizationMiddleware($c));
-
     // plugin functions
     $app->add(new \App\Application\Middlewares\PluginMiddleware($c));
+
+    // check user auth
+    $app->add(new \App\Application\Middlewares\AuthorizationMiddleware($c));
 
     // check is site disabled
     $app->add(new \App\Application\Middlewares\IsSiteEnabledMiddleware($c));
