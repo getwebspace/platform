@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">{{ category.uuid ? 'Редактирование категории' : 'Создание новой категории' }}</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ (category.uuid ? 'Редактирование категории' : 'Создание новой категории')|locale }}</h2>
             </div>
         </div>
     </div>
@@ -24,22 +24,22 @@
                             <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
                                 <li class="nav-item">
                                     <a class="nav-link active show" data-toggle="pill" href="#category" role="tab">
-                                        Категория
+                                        {{ 'Категория'|locale }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="pill" href="#attributes" role="tab">
-                                        Атрибуты
+                                        {{ 'Атрибуты'|locale }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="pill" href="#fields" role="tab">
-                                        Поля
+                                        {{ 'Поля'|locale }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="pill" href="#other" role="tab">
-                                        Дополнительно
+                                        {{ 'Дополнительно'|locale }}
                                     </a>
                                 </li>
                             </ul>
@@ -52,10 +52,10 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Наименование',
+                                            'label': 'Наименование'|locale,
                                             'type': 'text',
                                             'name': 'title',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Краткое описание категории"></i>',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Краткое описание категории'|locale) ~ '"></i>',
                                             'args': {
                                                 'value': category.title,
                                                 'required': true,
@@ -65,7 +65,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Основная категория',
+                                            'label': 'Основная категория'|locale,
                                             'type': 'select',
                                             'name': 'parent',
                                             'args': {
@@ -81,7 +81,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         {% include 'cup/editor.twig' with {
-                                            'label': 'Описание категории',
+                                            'label': 'Описание категории'|locale,
                                             'name': 'description',
                                             'args': {
                                                 'value': category.description
@@ -95,7 +95,7 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Показывать вложенные категории',
+                                            'label': 'Показывать вложенные категории'|locale,
                                             'type': 'select',
                                             'name': 'children',
                                             'args': {
@@ -106,7 +106,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Количество товаров на страницу',
+                                            'label': 'Количество товаров на страницу'|locale,
                                             'type': 'text',
                                             'name': 'pagination',
                                             'args': {
@@ -117,7 +117,7 @@
 
                                     <div class="col-md-3">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Критерий сортировки',
+                                            'label': 'Критерий сортировки'|locale,
                                             'type': 'select',
                                             'name': 'sort[by]',
                                             'args': {
@@ -128,7 +128,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Порядок сортировки',
+                                            'label': 'Порядок сортировки'|locale,
                                             'type': 'select',
                                             'name': 'sort[direction]',
                                             'args': {
@@ -149,11 +149,11 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Атрибуты',
+                                            'label': 'Атрибуты'|locale,
                                             'type': 'select',
                                             'name': 'attributes[]',
-                                            'message': 'Укажите индивидуальные атрибуты для категории' ~
-                                                       '<a href="/cup/catalog/attribute/add" class="btn btn-xs btn-info mr-1 float-right" onclick="return confirm(\'Вы действительно хотите перейти на другую страницу?\');"><i class="fa fa-plus"></i> Добавить атрибут</a>',
+                                            'message': 'Укажите индивидуальные атрибуты для категории'|locale ~
+                                                       '<a href="/cup/catalog/attribute/add" class="btn btn-xs btn-info mr-1 float-right" onclick="return confirm(\'' ~ ('Вы действительно хотите перейти на другую страницу?'|locale) ~ '\');"><i class="fa fa-plus"></i> ' ~ ('Создать атрибут'|locale) ~ '</a>',
                                             'args': {
                                                 'multiple': true,
                                                 'option': attributes.pluck('title', 'uuid').all(),
@@ -169,10 +169,10 @@
                                 <div class="row">
                                     <div class="col-md-4">
                                         {% include 'cup/form.twig' with {
-                                            'label': fields.catalog_category_field_1 ?? 'Поле 1',
+                                            'label': fields.catalog_category_field_1 ?? ('Поле'|locale ~ ' 1'),
                                             'type': 'text',
                                             'name': 'field1',
-                                            'message': 'Индивидуальное поле',
+                                            'message': 'Индивидуальное поле'|locale,
                                             'args': {
                                                 'value': category.field1,
                                             }
@@ -180,10 +180,10 @@
                                     </div>
                                     <div class="col-md-4">
                                         {% include 'cup/form.twig' with {
-                                            'label': fields.catalog_category_field_2 ?? 'Поле 2',
+                                            'label': fields.catalog_category_field_2 ?? ('Поле'|locale ~ ' 2'),
                                             'type': 'text',
                                             'name': 'field2',
-                                            'message': 'Индивидуальное поле',
+                                            'message': 'Индивидуальное поле'|locale,
                                             'args': {
                                                 'value': category.field2,
                                             }
@@ -191,10 +191,10 @@
                                     </div>
                                     <div class="col-md-4">
                                         {% include 'cup/form.twig' with {
-                                            'label': fields.catalog_category_field_3 ?? 'Поле 3',
+                                            'label': fields.catalog_category_field_3 ?? ('Поле'|locale ~ ' 3'),
                                             'type': 'text',
                                             'name': 'field3',
-                                            'message': 'Индивидуальное поле',
+                                            'message': 'Индивидуальное поле'|locale,
                                             'args': {
                                                 'value': category.field3,
                                             }
@@ -209,61 +209,61 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 {% include 'cup/form.twig' with {
-                                                    'label': 'Название поля 1',
+                                                    'label': ('Название поля'|locale ~ ' 1'),
                                                     'type': 'text',
                                                     'name': 'product[field_1]',
-                                                    'message': 'Индивидуальное поле продукта',
+                                                    'message': 'Индивидуальное поле продукта'|locale,
                                                     'args': {
                                                         'value': category.product.field_1 is not empty ? category.product.field_1 : '',
-                                                        'placeholder': 'Поле 1',
+                                                        'placeholder': ('Поле'|locale ~ ' 1'),
                                                     }
                                                 } %}
                                             </div>
                                             <div class="col-md-4">
                                                 {% include 'cup/form.twig' with {
-                                                    'label': 'Название поля 2',
+                                                    'label': ('Название поля'|locale ~ ' 2'),
                                                     'type': 'text',
                                                     'name': 'product[field_2]',
-                                                    'message': 'Индивидуальное поле продукта',
+                                                    'message': 'Индивидуальное поле продукта'|locale,
                                                     'args': {
                                                         'value': category.product.field_2 is not empty ? category.product.field_2 : '',
-                                                        'placeholder': 'Поле 2',
+                                                        'placeholder': ('Поле'|locale ~ ' 2'),
                                                     }
                                                 } %}
                                             </div>
                                             <div class="col-md-4">
                                                 {% include 'cup/form.twig' with {
-                                                    'label': 'Название поля 3',
+                                                    'label': ('Название поля'|locale ~ ' 3'),
                                                     'type': 'text',
                                                     'name': 'product[field_3]',
-                                                    'message': 'Индивидуальное поле продукта',
+                                                    'message': 'Индивидуальное поле продукта'|locale,
                                                     'args': {
                                                         'value': category.product.field_3 is not empty ? category.product.field_3 : '',
-                                                        'placeholder': 'Поле 3',
+                                                        'placeholder': ('Поле'|locale ~ ' 3'),
                                                     }
                                                 } %}
                                             </div>
                                             <div class="col-md-4">
                                                 {% include 'cup/form.twig' with {
-                                                    'label': 'Название поля 4',
+                                                    'label': ('Название поля'|locale ~ ' 4'),
                                                     'type': 'text',
                                                     'name': 'product[field_4]',
-                                                    'message': 'Индивидуальное поле продукта',
+                                                    'message': 'Индивидуальное поле продукта'|locale,
                                                     'args': {
                                                         'value': category.product.field_4 is not empty ? category.product.field_4 : '',
-                                                        'placeholder': 'Поле 4',
+                                                        'placeholder': ('Поле'|locale ~ ' 4'),
                                                     }
                                                 } %}
                                             </div>
                                             <div class="col-md-4">
                                                 {% include 'cup/form.twig' with {
-                                                    'label': 'Название поля 5',
+                                                    'label': ('Название поля'|locale ~ ' 5'),
                                                     'type': 'text',
                                                     'name': 'product[field_5]',
-                                                    'message': 'Индивидуальное поле продукта',
+                                                    'message': 'Индивидуальное поле продукта'|locale,
                                                     'args': {
                                                         'value': category.product.field_5 is not empty ? category.product.field_5 : '',
-                                                        'placeholder': 'Поле 5',
+                                                        'placeholder': ('Поле'|locale ~ ' 5'),
                                                     }
                                                 } %}
                                             </div>
@@ -277,11 +277,11 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Адрес',
+                                            'label': 'Адрес'|locale,
                                             'type': 'text',
                                             'name': 'address',
                                             'prefix': base_url() ~ '/' ~ parameter('catalog_address', 'catalog') ~ '/',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Название категории. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов"></i>',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Название категории. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов'|locale) ~ '"></i>',
                                             'args': {
                                                 'value': category.address,
                                                 'placeholder': 'food',
@@ -290,7 +290,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Порядок',
+                                            'label': 'Порядок'|locale,
                                             'type': 'number',
                                             'name': 'order',
                                             'args': {
@@ -302,10 +302,10 @@
                                     </div>
                                     <div class="col-md-3">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Внешний ID',
+                                            'label': 'Внешний ID'|locale,
                                             'type': 'text',
                                             'name': 'external_id',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать.'|locale) ~ '"></i>',
                                             'args': {
                                                 'value': category.external_id,
                                             }
@@ -318,10 +318,10 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Шаблон категории',
+                                            'label': 'Шаблон категории'|locale,
                                             'type': 'text',
                                             'name': 'template[category]',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="Укажите название шаблона, который хотите использовать для данной категории или оставьте <b>catalog.category.twig</b>"></i>',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('Укажите название шаблона, который хотите использовать для данной категории или оставьте <b>catalog.category.twig</b>'|locale) ~ '"></i>',
                                             'args': {
                                                 'value': category.template.category is not empty ? category.template.category : (params.catalog_category_template ?? 'catalog.category.twig'),
                                                 'required': true,
@@ -330,10 +330,10 @@
                                     </div>
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Шаблон товара',
+                                            'label': 'Шаблон товара'|locale,
                                             'type': 'text',
                                             'name': 'template[product]',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="Укажите название шаблона, который хотите использовать для товаров в данной категории или оставьте <b>catalog.product.twig</b>"></i>',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('Укажите название шаблона, который хотите использовать для товаров в данной категории или оставьте <b>catalog.product.twig</b>'|locale) ~ '"></i>',
                                             'args': {
                                                 'value': category.template.product is not empty ? category.template.product : (params.catalog_product_template ?? 'catalog.product.twig'),
                                                 'required': true,
@@ -344,40 +344,7 @@
 
                                 <hr>
 
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Метатег Title',
-                                            'type': 'text',
-                                            'name': 'meta[title]',
-                                            'args': {
-                                                'value': category.meta.title,
-                                            }
-                                        } %}
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Метатег Description',
-                                            'type': 'text',
-                                            'name': 'meta[description]',
-                                            'args': {
-                                                'value': category.meta.description,
-                                            }
-                                        } %}
-                                    </div>
-
-                                    <div class="col-md-4">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Метатег Keywords',
-                                            'type': 'text',
-                                            'name': 'meta[keywords]',
-                                            'args': {
-                                                'value': category.meta.keywords,
-                                            }
-                                        } %}
-                                    </div>
-                                </div>
+                                {% include "cup/form-meta.twig" with { 'entity': category } %}
                             </div>
                         </div>
                     </div>

@@ -2,6 +2,7 @@
 
 return array_merge(
     require_once 'en/cup.catalog.php',
+    require_once 'en/cup.category.php',
     require_once 'en/cup.editor.php',
     require_once 'en/cup.file.php',
     require_once 'en/cup.form.php',

@@ -8,6 +8,7 @@ return [
     'Название' => 'Title',
     'Наименование' => 'Title',
     'Категория' => 'Category',
+    'Подкатегории' => 'Subcategories',
     'Дата публикации' => 'Date of publication',
     'Статус' => 'Status',
     'Дата' => 'Date',
@@ -18,8 +19,9 @@ return [
     'Описание' => 'Description',
     'Внешний ID' => 'External ID',
     'Телефон' => 'Phone',
-    'Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать.' => 'System field. If you don\'t know what this field is for, it\'s best not to touch it.',
     'Ничего' => 'Nothing',
+    'Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать.' => 'System field. If you don\'t know what this field is for, it\'s best not to touch it.',
+    'Вы действительно хотите перейти на другую страницу?' => 'Are you sure you want to go to another page?',
 
     // ***
     // Sidebar
