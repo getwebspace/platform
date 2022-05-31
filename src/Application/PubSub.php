@@ -21,7 +21,7 @@ class PubSub
     public function publish(string $channel, mixed $data = []): void
     {
         foreach (static::getSubscribersForChannel($channel) as $handler) {
-            call_user_func($handler, $data);
+            call_user_func($handler, $data, $this->container);
         }
     }
 
@@ -30,7 +30,7 @@ class PubSub
      *
      * @return PubSub
      */
-    public function subscribe(string|array $channels, callable $handler): self
+    public function subscribe(string|array $channels, callable|array $handler): self
     {
         foreach ((array) $channels as $channel) {
             if (!isset($this->subscribers[$channel])) {

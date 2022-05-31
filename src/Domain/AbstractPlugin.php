@@ -247,7 +247,7 @@ abstract class AbstractPlugin
     /**
      * Subscribe a handler to a channel
      */
-    public function subscribe(string|array $channels, callable $handler): self
+    public function subscribe(string|array $channels, callable|array $handler): self
     {
         $this->container->get(\App\Application\PubSub::class)->subscribe($channels, $handler);
 
