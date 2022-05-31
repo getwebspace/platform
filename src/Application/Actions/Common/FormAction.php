@@ -163,7 +163,7 @@ class FormAction extends AbstractAction
                 return $this->respondWithJson(['status' => 'ok']);
             }
 
-            $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
+            $this->addError('grecaptcha', 'EXCEPTION_WRONG_GRECAPTCHA');
         } catch (FormNotFoundException $e) {
             // 404
             return $this->respond('p404.twig')->withStatus(404);

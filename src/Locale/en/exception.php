@@ -52,4 +52,5 @@ return [
     'EXCEPTION_WRONG_CODE' => 'Incorrect code',
     'EXCEPTION_WRONG_CODE_TIMEOUT' => 'You can update the authorization code every 10 minutes',
     'EXCEPTION_WRONG_PASSWORD' => 'Wrong password',
+    'EXCEPTION_WRONG_GRECAPTCHA' => 'Error validating Google Recaptcha token',
 ];

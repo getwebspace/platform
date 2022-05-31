@@ -80,7 +80,7 @@ class UserLoginAction extends UserAction
                         }
                     }
 
-                    $this->addError('grecaptcha', \App\Domain\References\Errors\Common::WRONG_GRECAPTCHA);
+                    $this->addError('grecaptcha', 'EXCEPTION_WRONG_GRECAPTCHA');
                 }
 
                 break;

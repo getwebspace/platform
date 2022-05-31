@@ -113,4 +113,5 @@ return [
     'EXCEPTION_WRONG_CODE' => 'Неверный код',
     'EXCEPTION_WRONG_CODE_TIMEOUT' => 'Обновить код авторизации можно раз в 10 минут',
     'EXCEPTION_WRONG_PASSWORD' => 'Неверный пароль',
+    'EXCEPTION_WRONG_GRECAPTCHA' => 'Ошибка при проверке Google Recaptcha токена',
 ];
