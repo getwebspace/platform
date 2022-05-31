@@ -135,11 +135,11 @@ abstract class AbstractTask
      */
     public function setProgress($value, $count = 0): void
     {
-        if ($count !== 0) {
+        if ($count > 0) {
             $value = round(min($value, $count) / $count * 100);
         }
         if ($value !== $this->entity->getProgress()) {
-            $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_WORK, $value);
+            $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_WORK, (int) $value);
         }
     }
 
