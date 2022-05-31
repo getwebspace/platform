@@ -8,13 +8,6 @@ return function (ContainerBuilder $containerBuilder): void {
     $_DATABASE = ($_ENV['DATABASE'] ?? false);
     $_DOCKER = (bool) ($_ENV['DOCKER'] ?? false);
 
-    // secret salt
-    $containerBuilder->addDefinitions([
-        'secret' => [
-            'salt' => ($_SALT ?? 'Li8.1Ej2-<Cid3[bE'),
-        ],
-    ]);
-
     // doctrine
     $containerBuilder->addDefinitions([
         'doctrine' => [
