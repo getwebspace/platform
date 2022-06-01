@@ -6,7 +6,6 @@ return function (ContainerBuilder $containerBuilder): void {
     $_DEBUG = (bool) ($_ENV['DEBUG'] ?? false);
     $_SALT = ($_ENV['SALT'] ?? false);
     $_DATABASE = ($_ENV['DATABASE'] ?? false);
-    $_DOCKER = (bool) ($_ENV['DOCKER'] ?? false);
 
     // doctrine
     $containerBuilder->addDefinitions([
@@ -42,7 +41,7 @@ return function (ContainerBuilder $containerBuilder): void {
     $containerBuilder->addDefinitions([
         'logger' => [
             'name' => 'WSE',
-            'path' => $_DOCKER ? 'php://stdout' : LOG_DIR . '/app.log',
+            'path' => LOG_DIR . '/app.log',
             'level' => \Monolog\Logger::DEBUG,
         ],
     ]);
