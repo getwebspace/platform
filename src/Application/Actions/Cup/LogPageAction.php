@@ -23,7 +23,7 @@ class LogPageAction extends AbstractAction
             $file = file(LOG_DIR . '/' . $filename);
 
             if ($file) {
-                return implode(PHP_EOL, array_map('trim', array_slice($file, 0 - $lines)));
+                return implode(PHP_EOL, array_reverse(array_map('trim', array_slice($file, 0 - $lines))));
             }
         }
 
