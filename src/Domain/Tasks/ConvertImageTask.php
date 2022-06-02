@@ -65,6 +65,7 @@ class ConvertImageTask extends AbstractTask
                     if (str_start_with($file->getType(), 'image/')) {
                         $folder = $file->getDir('');
                         $original = $file->getInternalPath();
+                        $log = [];
 
                         foreach (
                             [
@@ -77,18 +78,19 @@ class ConvertImageTask extends AbstractTask
 
                                 if (!file_exists($path . '/' . $file->getName() . '.jpg')) {
                                     $buf = array_merge($params, ['-resize x' . $pixels . '\>']);
-                                    $this->logger->info('Task: convert image', ['size' => $size, 'params' => $buf]);
+                                    $log[$size] = 'convert image';
 
                                     @mkdir($path, 0o777, true);
                                     @exec($command . " '" . $original . "' " . implode(' ', $buf) . " '" . $path . '/' . $file->getName() . ".jpg'");
                                 } else {
-                                    $this->logger->info('Task: skip, converted file already exists');
+                                    $log[$size] = 'skip, converted file already exists';
                                 }
                             }
                         }
 
                         @exec($command . " '" . $original . "' " . implode(' ', $params) . " '" . $folder . '/' . $file->getName() . ".jpg'");
-                        $this->logger->info('Task: convert image', ['size' => 'original', 'params' => $params]);
+                        $log['original'] = 'convert image';
+                        $this->logger->info('Task: convert image', array_merge($log, ['params' => $params]));
 
                         // set file type and ext
                         if ($file->getExt() !== 'jpg') {
@@ -103,7 +105,7 @@ class ConvertImageTask extends AbstractTask
                     $this->logger->info('Task: convert skipped, small file size');
                 }
             } catch (FileNotFoundException $e) {
-                $this->logger->alert('Task: file not found', $e);
+                $this->logger->alert('Task: file not found', ['message' => $e->getMessage()]);
             }
 
             $this->setProgress($index, count($args['uuid']));
