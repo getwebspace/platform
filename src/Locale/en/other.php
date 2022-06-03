@@ -22,6 +22,12 @@ return [
     'Ничего' => 'Nothing',
     'Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать.' => 'System field. If you don\'t know what this field is for, it\'s best not to touch it.',
     'Вы действительно хотите перейти на другую страницу?' => 'Are you sure you want to go to another page?',
+    'вложенный в' => 'embedded in',
+    'в категории' => 'in category',
+    'Обнаружены ошибки' => 'Errors found',
+    'В форме обнаружены ошибки, пожалуйста, проверьте поля выделенные красным цветом, исправьте ошибки и попробуйте снова.' => 'Errors were found in the form, please check the fields highlighted in red, correct the errors and try again.',
+    'Теги' => 'Tags',
+    'Добавьте теги' => 'Add tags',
 
     // ***
     // Sidebar

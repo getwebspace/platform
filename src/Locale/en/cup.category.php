@@ -5,6 +5,8 @@ return [
     // Catalog/Publication category
     // ***
 
+    'Создать категорию' => 'Create category',
+    'Изменить категорию' => 'Change category',
     'Создание новой категории' => 'Create a new category',
     'Редактирование категории' => 'Category editing',
     'Основная категория' => 'Primary category',

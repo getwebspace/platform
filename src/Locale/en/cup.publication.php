@@ -29,7 +29,6 @@ return [
 
     // list
     'Список категорий' => 'List of categories',
-    'Создать категорию' => 'Create category',
     'Публичная' => 'Is public',
     'Вложенные' => 'With nested',
     'Вы действительно хотите удалить категорию публикаций?' => 'Are you sure you want to delete a post category?',
