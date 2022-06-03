@@ -69,6 +69,10 @@ return [
     'block' => 'Block',
     'cancel' => 'Canceled',
 
+    // api access
+    'key' => 'Only keys',
+    'user' => 'Users and Keys',
+
     // ***
     // boolean
     // ***

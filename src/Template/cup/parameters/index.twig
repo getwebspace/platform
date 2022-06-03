@@ -224,13 +224,6 @@
 
                                                     {# TAB: SMTP #}
                                                     <div class="tab-pane fade show active" id="other-mail-smtp" role="tabpanel">
-                                                        <p>
-                                                            {% locale %}
-                                                                Настроить SMTP сервер для своего домена можно в сервисе
-                                                            {% endlocale %}
-                                                            <a href="https://360.yandex.ru/business/" target="_blank">{{ 'Яндекс 360 для бизнеса'|locale }}</a>.
-                                                        </p>
-
                                                         {% include 'cup/parameters/field.twig' with {
                                                             'label': 'Хост SMTP сервера',
                                                             'description': 'Обычно — localhost',
@@ -499,7 +492,7 @@
                                                 <hr>
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Шаблон раздела',
+                                                    'label': 'Шаблон гостевой книги',
                                                     'type': 'text',
                                                     'name': 'guestbook[template]',
                                                     'args': {
@@ -509,7 +502,7 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Количество товаров на страницу',
+                                                    'label': 'Количество записей на страницу',
                                                     'type': 'number',
                                                     'name': 'guestbook[pagination]',
                                                     'args': {
@@ -550,9 +543,12 @@
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Ключи доступа к API',
                                                     'description': [
-                                                            'Возможность вносить изменения по API есть только при наличии ключа<br>',
-                                                            '<button class="btn btn-outline-info btn-sm" type="button" data-entity-click="add">Добавить новый</button>',
-                                                        ]|join(''),
+                                                        'Возможность вносить изменения по API есть только при наличии ключа',
+                                                        '<br>',
+                                                        '<button class="btn btn-outline-info btn-sm" type="button" data-entity-click="add">',
+                                                        'Сгенерировать новый',
+                                                        '</button>',
+                                                    ]|locale|join(''),
                                                     'message': 'Каждый ключ с новой строки',
                                                     'type': 'textarea',
                                                     'name': 'entity[keys]',
@@ -655,11 +651,18 @@
                                                     'type': 'select',
                                                     'name': 'user[access][]',
                                                     'description': [
-                                                        'Указанные права доступа так же будут применены для незарегистрированного пользователя<br>',
-                                                        '<button class="btn btn-outline-success btn-sm mr-1" type="button" data-access-click="common">Общие</button>',
-                                                        '<button class="btn btn-outline-secondary btn-sm mr-1" type="button" data-access-click="cup">Панель управления</button>',
-                                                        '<button class="btn btn-outline-danger btn-sm mr-1" type="button" data-access-click="none">Ничего</button>',
-                                                    ]|join(''),
+                                                        'Указанные права доступа также будут применены для незарегистрированного пользователя',
+                                                        '<br>',
+                                                        '<button class="btn btn-outline-success btn-sm mr-1" type="button" data-access-click="common">',
+                                                        'Общие',
+                                                        '</button>',
+                                                        '<button class="btn btn-outline-secondary btn-sm mr-1" type="button" data-access-click="cup">',
+                                                        'Панель управления',
+                                                        '</button>',
+                                                        '<button class="btn btn-outline-danger btn-sm mr-1" type="button" data-access-click="none">',
+                                                        'Ничего',
+                                                        '</button>',
+                                                    ]|locale|join(''),
                                                     'args': {
                                                         'multiple': true,
                                                         'option': routes.all,
@@ -673,7 +676,7 @@
                                             <div class="tab-pane fade" id="user-auth">
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Метод авторизации на сайте',
-                                                    'description': 'Вы можете выбрать, каким способом будет производиться авторизация пользователей на сайте. Доступно два варианта, либо с использованием своего логина или с использованием E-mail',
+                                                    'description': 'Вы можете выбрать, каким способом будет производиться авторизация пользователей на сайте. Доступно два варианта, либо с использованием своего логина или с использованием E-Mail',
                                                     'type': 'select',
                                                     'name': 'user[login_type]',
                                                     'args': {
@@ -828,7 +831,7 @@
 
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Шаблон раздела',
-                                                    'description': 'Значение по-умолчанию, так же это значение будет использовано для главной страницы каталога',
+                                                    'description': 'Значение по-умолчанию, также это значение будет использовано для главной страницы каталога',
                                                     'type': 'text',
                                                     'name': 'catalog[category_template]',
                                                     'args': {
@@ -850,7 +853,6 @@
 
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Шаблон корзины',
-                                                    'description': 'Значение по-умолчанию',
                                                     'type': 'text',
                                                     'name': 'catalog[cart_template]',
                                                     'args': {
@@ -861,7 +863,6 @@
 
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Шаблон заказа',
-                                                    'description': 'Значение по-умолчанию',
                                                     'type': 'text',
                                                     'name': 'catalog[cart_complete_template]',
                                                     'args': {
@@ -988,8 +989,8 @@
 
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Ключевое поле',
-                                                    'description': 'Данное поле будет использовано для поиска товара<br>' ~
-                                                                   '<b>Важно</b>: значение поля должно быть уникально!',
+                                                    'description': ('Данное поле будет использовано для поиска товара'|locale) ~ '<br>' ~
+                                                                   ('<b>Важно</b>: значение поля должно быть уникально!'|locale),
                                                     'type': 'select',
                                                     'name': 'catalog[import_key]',
                                                     'args': {
@@ -1011,8 +1012,8 @@
 
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Порядок колонок <b>Импорта</b>',
-                                                    'description': 'Возможные колонки: <i>' ~ reference('/App/Domain/References/Catalog::IMPORT_FIELDS')|merge(attributes.pluck('address'))|join(', ') ~ '</i><br>' ~
-                                                                   'Пропустить колонку: <i>empty</i>',
+                                                    'description': ('Возможные колонки:'|locale) ~ ' <i>' ~ reference('/App/Domain/References/Catalog::IMPORT_FIELDS')|merge(attributes.pluck('address'))|join(', ') ~ '</i><br>' ~
+                                                                   ('Пропустить колонку:'|locale) ~ ' <i>empty</i>',
                                                     'message': 'Алиас каждой колонки с новой строки',
                                                     'type': 'textarea',
                                                     'name': 'catalog[import_columns]',
@@ -1024,7 +1025,7 @@
 
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Порядок колонок <b>Экспорта</b>',
-                                                    'description': 'Возможные колонки: <i>' ~ reference('/App/Domain/References/Catalog::EXPORT_FIELDS')|merge(attributes.pluck('address'))|join(', ') ~ '</i><br>',
+                                                    'description': ('Возможные колонки:'|locale) ~ ' <i>' ~ reference('/App/Domain/References/Catalog::EXPORT_FIELDS')|merge(attributes.pluck('address'))|join(', ') ~ '</i><br>',
                                                     'message': 'Алиас каждой колонки с новой строки',
                                                     'type': 'textarea',
                                                     'name': 'catalog[export_columns]',
@@ -1050,34 +1051,34 @@
 
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Дополнительное поле',
-                                                    'description': 'Поле 1',
+                                                    'description': ('Поле'|locale) ~ ' 1',
                                                     'type': 'text',
                                                     'name': 'catalog[category_field_1]',
                                                     'args': {
-                                                        'placeholder': 'Поле 1',
-                                                        'value': 'Поле 1'
+                                                        'placeholder': ('Поле'|locale) ~ ' 1',
+                                                        'value': ('Поле'|locale) ~ ' 1'
                                                     }
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Дополнительное поле',
-                                                    'description': 'Поле 2',
+                                                    'description': ('Поле'|locale) ~ ' 2',
                                                     'type': 'text',
                                                     'name': 'catalog[category_field_2]',
                                                     'args': {
-                                                        'placeholder': 'Поле 2',
-                                                        'value': 'Поле 2'
+                                                        'placeholder': ('Поле'|locale) ~ ' 2',
+                                                        'value': ('Поле'|locale) ~ ' 2'
                                                     }
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Дополнительное поле',
-                                                    'description': 'Поле 3',
+                                                    'description': ('Поле'|locale) ~ ' 3',
                                                     'type': 'text',
                                                     'name': 'catalog[category_field_3]',
                                                     'args': {
-                                                        'placeholder': 'Поле 3',
-                                                        'value': 'Поле 3'
+                                                        'placeholder': ('Поле'|locale) ~ ' 3',
+                                                        'value': ('Поле'|locale) ~ ' 3'
                                                     }
                                                 } %}
 
@@ -1086,7 +1087,7 @@
                                                     'description': [
                                                         'Коэффициент-делителя',
                                                         'Ш(см) &times; В(см) &times; Д(см) / X = ОВ(кг)'
-                                                    ]|join('<br>'),
+                                                    ]|locale|join('<br>'),
                                                     'type': 'number',
                                                     'name': 'catalog[dimensional_weight]',
                                                     'prefix': 'X',
@@ -1273,7 +1274,7 @@
                     </div>
                     <div class="card-action">
                         <button type="submit" class="btn btn-primary">{{ 'Сохранить'|locale }}</button>
-                        <a href="/cup/system" class="btn btn-outline-danger btn-round float-right">{{ 'Установка и обновление'|locale }}</a>
+                        <a href="/cup/system" class="btn btn-outline-danger btn-round float-right" target="_blank">{{ 'Установка и обновление'|locale }}</a>
                     </div>
                 </form>
             </div>
