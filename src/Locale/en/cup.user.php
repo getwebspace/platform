@@ -33,6 +33,8 @@ return [
     'Фамилия' => 'Lastname',
     'Отчество' => 'Patronymic',
     'Пол' => 'Gender',
+    'Мужской' => 'Male',
+    'Женский' => 'Female',
     'Дата рождения' => 'Birthdate',
     'Компания' => 'Company',
     'Должность' => 'Position',
