@@ -40,6 +40,7 @@ return [
     'Должность' => 'Position',
     'Источник контакта' => 'Contact source',
     'Доп. инфо' => 'Other/Note',
+    'Можно указать любую информацию до 250 символов' => 'Allows to specify any information up to 250 characters',
     'Веб-сайт' => 'Web-site',
     'Мессенджеры' => 'Messengers',
     'Регистрационный номер' => 'Registration No',

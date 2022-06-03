@@ -22,11 +22,11 @@
                                     'label': 'Название'|locale,
                                     'type': 'text',
                                     'name': 'title',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Название новой категории"></i>',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Название новой категории'|locale) ~ '"></i>',
                                     'args': {
                                         'value': item.title,
                                         'required': true,
-                                        'placeholder': 'Новости',
+                                        'placeholder': 'Новости'|locale,
                                     }
                                 } %}
                             </div>
@@ -36,7 +36,7 @@
                                     'type': 'text',
                                     'name': 'address',
                                     'prefix': base_url() ~ '/',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Используется для просмотра всех статей в данной категории. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов"></i>',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Используется для просмотра всех статей в данной категории. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов'|locale) ~ '"></i>',
                                     'args': {
                                         'value': item.address,
                                         'placeholder': 'news',

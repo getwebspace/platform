@@ -32,6 +32,7 @@ return [
     'В форме обнаружены ошибки, пожалуйста, проверьте поля выделенные красным цветом, исправьте ошибки и попробуйте снова.' => 'Errors were found in the form, please check the fields highlighted in red, correct the errors and try again.',
     'Теги' => 'Tags',
     'Добавьте теги' => 'Add tags',
+    'Требуется внимательная проверка значения!' => 'A careful check of the value is required!',
 
     // ***
     // Sidebar
