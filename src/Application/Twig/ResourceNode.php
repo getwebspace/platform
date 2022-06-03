@@ -2,16 +2,17 @@
 
 namespace App\Application\Twig;
 
+use App\Domain\Traits\StorageTrait;
 use Twig\Compiler;
 use Twig\Node\Node;
 
 class ResourceNode extends Node
 {
-    private static array $storage = [];
+    use StorageTrait;
 
-    private string $name = '';
+    private string $name;
 
-    private string $version = '';
+    private string $version;
 
     public function __construct($name, $version, $line, $tag = null)
     {
@@ -23,41 +24,50 @@ class ResourceNode extends Node
 
     public function compile(Compiler $compiler): void
     {
-        $compiler
-            ->addDebugInfo($this)
-            ->raw('echo ')
-            ->string($this->resource($this->name, $this->version))
-            ->raw(";\n");
+        $resource = $this->getResource($this->name, $this->version);
+
+        if ($resource) {
+            $compiler
+                ->addDebugInfo($this)
+                ->raw('echo ')
+                ->string($resource)
+                ->raw(";\n");
+        }
     }
 
-    protected function resource($search, $version)
+    protected function getResource($search, $version): ?string
     {
-        $cdn = '';
+        $cdn = null;
         $search = explode(':', $search);
         $name = $search[0];
 
-        if (!in_array($name, static::$storage, true)) {
-            $result = json_decode(file_get_contents('https://api.cdnjs.com/libraries?search=' . $name), true);
+        if (!static::hasStorage($name, true)) {
+            $result = @file_get_contents('https://api.cdnjs.com/libraries?search=' . $name);
 
-            if ($result['total'] >= 1) {
-                $index = +array_search($name, array_column($result['results'], 'name'), true);
-                $libname = $result['results'][$index]['name'];
-                $cdn = file_get_contents('https://api.cdnjs.com/libraries/' . $libname . ($version ? '/' . $version : '') . '?fields=name,version,files');
+            if ($result) {
+                $result = json_decode($result, true);
 
-                static::$storage[$name] = $cdn;
+                if ($result && $result['total'] >= 1) {
+                    $index = +array_search($name, array_column($result['results'], 'name'), true);
+                    $result = @file_get_contents('https://api.cdnjs.com/libraries/' . $result['results'][$index]['name'] . '/' . $version . '?fields=name,version,files');
+
+                    if ($result) {
+                        $cdn = static::setStorage($name, $result);
+                    }
+                }
             }
         } else {
-            $cdn = static::$storage[$name];
+            $cdn = static::getStorage($name);
         }
 
         if ($cdn) {
             $cdn = json_decode($cdn, true);
+            $libname = $cdn['name'];
 
             if (!in_array($name, $cdn['files'], true)) {
                 foreach ($cdn['files'] as $item) {
-                    if (str_end_with($item, $search)) {
+                    if (str_end_with($item, $search[1])) {
                         $name = $item;
-
                         break;
                     }
                 }
@@ -74,6 +84,6 @@ class ResourceNode extends Node
             }
         }
 
-        return '';
+        return null;
     }
 }
