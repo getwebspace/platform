@@ -34,8 +34,7 @@ class RefreshAction extends AbstractAction
                     in_array($task->getUuid()->toString(), array_keys($exists), true)
                     && (
                         $task->getStatus() !== $exists[$task->getUuid()->toString()]['status']
-                        ||
-                        $task->getProgress() !== (float) ($exists[$task->getUuid()->toString()]['progress'] ?? .0)
+                        || $task->getProgress() !== (float) ($exists[$task->getUuid()->toString()]['progress'] ?? .0)
                     )
                 ) {
                     $output['update'][] = array_except($task->toArray(), ['params', 'output']);

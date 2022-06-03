@@ -68,6 +68,7 @@ class ResourceNode extends Node
                 foreach ($cdn['files'] as $item) {
                     if (str_end_with($item, $search)) {
                         $name = $item;
+
                         break;
                     }
                 }

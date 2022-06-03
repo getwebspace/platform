@@ -151,7 +151,6 @@ return [
     'Пропустить колонку:' => 'Skip column:',
     'Алиас каждой колонки с новой строки' => 'Alias each column on a new line',
 
-
     'Обработка полей корзины' => 'Handling cart fields',
     'Дополнительные поля, переданные с корзиной, будут добавлены в конец поля комментария' => 'Additional fields passed with the cart will be added to the end of the comment field',
     'Дополнительное поле' => 'Additional field',

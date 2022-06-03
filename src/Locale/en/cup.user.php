@@ -83,7 +83,7 @@ return [
     'Текст сообщения' => 'Message',
     'Список подписчиков' => 'List of subscribers',
     'Добавить адрес' => 'Add address',
-    'Вы действительно хотите удалить адрес подписчика?' => "Are you sure you want to delete the subscriber address?",
+    'Вы действительно хотите удалить адрес подписчика?' => 'Are you sure you want to delete the subscriber address?',
     'all' => 'To all',
     'users' => 'Members',
     'subscribers' => 'Subscribers',
