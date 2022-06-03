@@ -66,7 +66,7 @@ class ResourceNode extends Node
 
             if (!in_array($name, $cdn['files'], true)) {
                 foreach ($cdn['files'] as $item) {
-                    if (str_end_with($item, $search[1])) {
+                    if (str_end_with($item, $search)) {
                         $name = $item;
                         break;
                     }
