@@ -3,7 +3,6 @@
 namespace App\Application\Actions\Cup\Catalog\Order;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
-use const App\Application\Actions\Cup\Catalog\INVOICE_TEMPLATE;
 
 class OrderListAction extends CatalogAction
 {
@@ -14,7 +13,7 @@ class OrderListAction extends CatalogAction
                 'order' => ['date' => 'desc'],
             ]),
             'status_list' => $this->catalogOrderStatusService->read(),
-            'invoice' => INVOICE_TEMPLATE,
+            'invoice' => $this->parameter('catalog_invoice', ''),
         ]);
     }
 }

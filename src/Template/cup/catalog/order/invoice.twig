@@ -22,6 +22,6 @@
 
 {% block content %}
     <div id="invoice" class="card card-invoice">
-        {{ include(template_from_string(parameter('catalog_invoice') ?: invoice)) }}
+        {{ include(template_from_string(invoice)) }}
     </div>
 {% endblock %}
