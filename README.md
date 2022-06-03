@@ -8,6 +8,7 @@
 [Website](https://getwebspace.org/) |
 [Documentation](https://github.com/getwebspace/platform/wiki) |
 [Official Repository](https://github.com/getwebspace/platform) |
+[Doker template](https://github.com/getwebspace/platform-template) |
 [Demo shop](https://demo.getwebspace.org)
 
 WSE is a free open source multi-user site engine with great functionality, primarily intended for: organization of mass media; blogs; online stores;
