@@ -51,10 +51,8 @@ class ListAction extends CatalogAction
 
     /**
      * @throws \App\Domain\Exceptions\HttpBadRequestException
-     *
-     * @return Response
      */
-    protected function prepareMain(array $params, Collection $categories): ?Response
+    protected function prepareMain(array $params, ?Collection $categories): ?Response
     {
         if ($params['address'] === '') {
             $pagination = $this->parameter('catalog_category_pagination', 10);
@@ -186,10 +184,8 @@ class ListAction extends CatalogAction
 
     /**
      * @throws \App\Domain\Exceptions\HttpBadRequestException
-     *
-     * @return Response
      */
-    protected function prepareCategory(array $params, Collection $categories): ?Response
+    protected function prepareCategory(array $params, ?Collection $categories): ?Response
     {
         /**
          * @var \App\Domain\Entities\Catalog\Category $category
@@ -336,10 +332,8 @@ class ListAction extends CatalogAction
 
     /**
      * @throws \App\Domain\Exceptions\HttpBadRequestException
-     *
-     * @return Response
      */
-    protected function prepareProduct(array $params, Collection $categories): ?Response
+    protected function prepareProduct(array $params, ?Collection $categories): ?Response
     {
         $products = $this->catalogProductService->read([
             'address' => [$params['address']],
