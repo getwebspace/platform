@@ -49,16 +49,7 @@
                             <form action="/cup/parameters?return=/cup/catalog/order" method="post">
                                 <div class="row p-0">
                                     <div class="col-12">
-                                        <style>
-                                            #invoice .fr-toolbar {
-                                                display: none;
-                                            }
-                                            #invoice .fr-wrapper,
-                                            #invoice .fr-wrapper .CodeMirror-wrap {
-                                                height: 500px!important;
-                                                width: 100%;
-                                            }
-                                        </style>
+                                        <style>#invoice [data-input] {padding: 0;}</style>
 
                                         {% include 'cup/editor.twig' with {
                                             'name': 'catalog[invoice]',
