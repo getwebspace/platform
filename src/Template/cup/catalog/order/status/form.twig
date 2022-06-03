@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">{{ item.uuid ? 'Редактирование статуса заказа' : 'Создание нового статуса заказа' }}</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ (item.uuid ? 'Редактирование статуса заказа' : 'Создание нового статуса заказа')|locale }}</h2>
             </div>
         </div>
     </div>
@@ -19,7 +19,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Наименование',
+                                    'label': 'Наименование'|locale,
                                     'type': 'text',
                                     'name': 'title',
                                     'args': {
@@ -29,7 +29,7 @@
                             </div>
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Порядок',
+                                    'label': 'Порядок'|locale,
                                     'type': 'number',
                                     'name': 'order',
                                     'args': {

@@ -60,8 +60,8 @@ return [
     'Создать продукт' => 'Create product',
     'Объем упаковки' => 'Packing volume',
     'Вы действительно хотите удалить продукт?' => 'Are you sure you want to uninstall the product?',
-    'Редактирование продукта' => '',
     'Создание нового продукта' => '',
+    'Редактирование продукта' => '',
     'Продукт' => 'Product',
     'Сопутствующие' => 'Related',
     'Краткое описание товара' => 'Brief product description',
@@ -92,6 +92,28 @@ return [
     'Укажите индивидуальные атрибуты товара' => 'Specify individual attributes of the product',
     'Название товара. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов' => 'Product Name. You can leave it blank, then the value will be generated automatically. It is allowed to use only Latin characters and numbers without spaces',
     'Дополнительное описание товара' => 'Additional description',
+
+    // order
+    'Шаблон инвойса' => 'Invoice template',
+    'Статусы заказа' => 'Order statuses',
+    'Список заказов' => 'List of orders',
+    'Создать заказ' => 'Create order',
+    'Клиент' => 'Client',
+    'Доставка и статус' => 'Delivery and status',
+    'Вы действительно хотите удалить заказ?' => 'Are you sure you want to delete the order?',
+    'Создание нового заказа' => 'Create a new order',
+    'Редактирование заказа' => 'Edit order',
+    'ФИО клиента' => 'Client name',
+    'Адрес доставки' => 'Delivery address',
+    'Дата доставки' => 'Delivery date',
+    'Техническая информация' => 'Technical information',
+    'Состав заказа' => 'Order list',
+
+    // order status
+    'Создать статус' => 'Create status',
+    'Вы действительно хотите удалить статус заказа?' => 'Are you sure you want to delete the order status?',
+    'Создание нового статуса заказа' => 'Create a new order status',
+    'Редактирование статуса заказа' => 'Edit order status',
 
     // order invoice
     'Инвойс' => 'Invoice',
