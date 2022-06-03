@@ -28,6 +28,8 @@ WSE is a free open source multi-user site engine with great functionality, prima
 - Guestbook
 - Users and User groups with permissions
 - User mailing list
+- SMTP & SendPulse
+- reCAPTCHA
 - OAuth (facebook, vk)
 - Files and image optimization (imagemagick)
 - Background tasks
@@ -37,16 +39,12 @@ and more..
 ## Plugins
 
 - Search optimization (robots.txt, sitemap, Yandex.Market, Google Merchant)
-- Clear cache
 - Import products from CommerceML
-- 1C Bitrix CRM integration
 - TradeMaster
 
 ## Roadmap
 
-- english language support
 - ukrainian language support
-- more plugins
 
 ## Installation
 #### Production mode
