@@ -41,7 +41,7 @@
                         {% block tbody %}
                             {% for category in categories.where('parent', category ? category.uuid : NIL).sortBy('order') %}
                                 <tr>
-                                    <td>{{ category.title }}</td>
+                                    <td>{{ category.title|u.truncate(50, '...') }}</td>
                                     <td width="15%">{{ categories.where('uuid', category.parent).first().title ?? '<code>&mdash;</code>'|raw }}</td>
                                     <td width="45%" class="text-right">
                                         <form action="/cup/catalog/category/{{ category.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Вы действительно хотите удалить категорию?'|locale }}');">

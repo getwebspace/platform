@@ -52,7 +52,7 @@
                             {% for item in products.sortBy('order') %}
                                 <tr>
                                     <td>
-                                        {{ item.title }}
+                                        {{ item.title|u.truncate(50, '...') }}
 
                                         <div class="text-black-50 float-right">
                                             {% if item.special %}
@@ -70,7 +70,7 @@
                                         {% endif %}
                                         {% if item.barcode %}
                                             <div class="text-nowrap">
-                                                <i class="fas fa-barcode d-inline pr-1" data-toggle="tooltip" data-placement="right" title="Штрих код"></i>
+                                                <i class="fas fa-barcode d-inline pr-1" data-toggle="tooltip" data-placement="right" title="{{ 'Штрих код'|locale }}"></i>
                                                 {{ item.barcode }}
                                             </div>
                                         {% endif %}

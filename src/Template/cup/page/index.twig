@@ -35,7 +35,7 @@
                         {% block tbody %}
                             {% for item in list.sortByDesc('date') %}
                                 <tr>
-                                    <td>{{ item.title }}</td>
+                                    <td>{{ item.title|u.truncate(50, '...') }}</td>
                                     <td width="15%" class="d-none d-md-table-cell">{{ item.date|df('d.m.Y H:i') }}</td>
                                     <td width="25%" class="text-right">
                                         <form action="/cup/page/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Вы действительно хотите удалить страницу?'|locale }}');">

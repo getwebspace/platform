@@ -30,7 +30,7 @@
                                 <tr>
                                     <td>
                                         <a href="{{ item.getPublicPath() }}" target="_blank">
-                                            {{ item.getFileName() }}
+                                            {{ item.getFileName()|u.truncate(50, '...') }}
                                             <i class="fas fa-external-link-alt"></i>
                                         </a>
                                     </td>
