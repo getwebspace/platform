@@ -77,6 +77,15 @@
                                     }
                                 } %}
 
+                                {% include 'mixin/form.twig' with {
+                                    'label': 'Язык сайта',
+                                    'type': 'text',
+                                    'name': 'language',
+                                    'args': {
+                                        'value': user.language ?? _language
+                                    }
+                                } %}
+
                                 {% include 'user.profile.social.twig' %}
                             </div>
                             <div class="col-12 col-md-6">

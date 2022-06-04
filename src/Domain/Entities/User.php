@@ -648,6 +648,28 @@ class User extends AbstractEntity
     }
 
     /**
+     * @ORM\Column(type="string", length=5, options={"default": ""})
+     */
+    protected string $language = '';
+
+    /**
+     * @return $this
+     */
+    public function setLanguage(string $code): self
+    {
+        if ($this->checkStrLenMax($code, 5)) {
+            $this->language = $code;
+        }
+
+        return $this;
+    }
+
+    public function getLanguage(): string
+    {
+        return $this->language;
+    }
+
+    /**
      * @ORM\Column(type="string", length=255, options={"default": ""})
      */
     protected string $external_id = '';

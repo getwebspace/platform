@@ -61,6 +61,7 @@ class UserService extends AbstractService
             'source' => '',
             'group' => null,
             'auth_code' => '',
+            'language' => '',
             'external_id' => '',
             'token' => [],
         ];
@@ -108,6 +109,7 @@ class UserService extends AbstractService
             ->setSource($data['source'])
             ->setGroup($data['group'])
             ->setAuthCode($data['auth_code'])
+            ->setLanguage($data['language'])
             ->setExternalId($data['external_id'])
             ->setToken($data['token'])
             ->setRegister('now', $this->parameter('common_timezone', 'UTC'))
@@ -279,6 +281,7 @@ class UserService extends AbstractService
                 'source' => null,
                 'group' => null,
                 'auth_code' => null,
+                'language' => null,
                 'external_id' => null,
                 'token' => null,
             ];
@@ -366,6 +369,9 @@ class UserService extends AbstractService
                 }
                 if ($data['auth_code'] !== null) {
                     $entity->setAuthCode($data['auth_code']);
+                }
+                if ($data['language'] !== null) {
+                    $entity->setLanguage($data['language']);
                 }
                 if ($data['external_id'] !== null) {
                     $entity->setExternalId($data['external_id']);

@@ -110,6 +110,18 @@
                                             }
                                         } %}
                                     </div>
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Код языка сайта'|locale,
+                                            'message': 'Например: <code>ru</code>, <code>ua</code>, <code>en</code>'|locale,
+                                            'type': 'text',
+                                            'name': 'language',
+                                            'args': {
+                                                'placeholder': 'ru',
+                                                'value': item.language ? item.language : _language,
+                                            }
+                                        } %}
+                                    </div>
                                 </div>
 
                                 <hr>

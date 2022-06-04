@@ -14,20 +14,22 @@ class LocaleMiddleware extends AbstractMiddleware
      */
     public function __invoke(Request $request, RequestHandlerInterface $handler): \Slim\Psr7\Response
     {
-        $default_locale = $this->parameter('common_lang', 'ru');
-        $user_locale = $request->getCookieParams()['lang'] ?? null;
+        $default_locale = $this->parameter('common_language', 'ru');
+        $user_locale = $request->getCookieParams()['language'] ?? null;
         $query_locale = $request->getQueryParams()['lang'] ?? null;
 
         // change lang by cookie
         if ($query_locale !== null) {
             $user_locale = $query_locale;
-            setcookie('lang', $query_locale, time() + \App\Domain\References\Date::YEAR, '/');
+            setcookie('language', $query_locale, time() + \App\Domain\References\Date::YEAR, '/');
         }
 
         // change lang by user settings
-        /*if (!$user_locale && ($user = $request->getAttribute('user')) !== null) {
-            // todo user locale
-        }*/
+        if (!$user_locale && ($user = $request->getAttribute('user')) !== null) {
+            if ($code = $user->getLanguage()) {
+                $user_locale = $code;
+            }
+        }
 
         i18n::init([
             'locale' => i18n::getLanguageFromHeader($request->getHeaderLine('Accept-Language'), $default_locale),

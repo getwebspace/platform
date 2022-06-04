@@ -52,6 +52,7 @@ class UserServiceTest extends TestCase
             'address' => $this->getFaker()->address,
             'additional' => $this->getFaker()->text,
             'auth_code' => (string) $this->getFaker()->numberBetween(0, 10000),
+            'language' => $this->getFaker()->languageCode,
             'external_id' => $this->getFaker()->uuid,
         ];
 
@@ -70,6 +71,7 @@ class UserServiceTest extends TestCase
         $this->assertSame($data['address'], $user->getAddress());
         $this->assertSame($data['additional'], $user->getAdditional());
         $this->assertSame($data['auth_code'], $user->getAuthCode());
+        $this->assertSame($data['language'], $user->getLanguage());
         $this->assertSame($data['external_id'], $user->getExternalId());
 
         /** @var UserRepository $userRepo */
@@ -299,6 +301,7 @@ class UserServiceTest extends TestCase
             'address' => $this->getFaker()->address,
             'additional' => $this->getFaker()->text,
             'auth_code' => (string) $this->getFaker()->numberBetween(0, 10000),
+            'language' => $this->getFaker()->languageCode,
             'external_id' => $this->getFaker()->uuid,
         ]);
 
@@ -324,6 +327,7 @@ class UserServiceTest extends TestCase
             'additional' => $this->getFaker()->text,
             'email' => $this->getFaker()->email,
             'auth_code' => (string) $this->getFaker()->numberBetween(0, 10000),
+            'language' => $this->getFaker()->languageCode,
             'external_id' => $this->getFaker()->uuid,
         ];
 
@@ -341,6 +345,7 @@ class UserServiceTest extends TestCase
         $this->assertSame($data['additional'], $user->getAdditional());
         $this->assertSame($data['email'], $user->getEmail());
         $this->assertSame($data['auth_code'], $user->getAuthCode());
+        $this->assertSame($data['language'], $user->getLanguage());
         $this->assertSame($data['external_id'], $user->getExternalId());
     }
 

@@ -38,6 +38,7 @@ class UserCreateAction extends UserAction
                     'website' => $this->getParam('website'),
                     'source' => $this->getParam('source'),
                     'group' => $group_uuid !== \Ramsey\Uuid\Uuid::NIL ? $userGroups->firstWhere('uuid', $group_uuid) : '',
+                    'language' => $this->getParam('language'),
                     'external_id' => $this->getParam('external_id'),
                 ]);
                 $user = $this->processEntityFiles($user);

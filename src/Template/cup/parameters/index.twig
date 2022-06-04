@@ -157,12 +157,14 @@
 
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Код языка сайта',
-                                                    'description': 'Используется для значения атрибута <code>&lt;html lang="ru"&gt;</code><br>' ~
-                                                    'Например: <code>ru</code>, <code>ua</code>, <code>en</code>',
+                                                    'description': [
+                                                        'Задаёт язык сайта и значение атрибута <code>&lt;html lang="ru"&gt;</code>',
+                                                        'Например: <code>ru</code>, <code>ua</code>, <code>en</code>'
+                                                    ]|locale|join('<br>'),
                                                     'type': 'text',
-                                                    'name': 'common[lang]',
+                                                    'name': 'common[language]',
                                                     'args': {
-                                                        'value': 'ru'
+                                                        'value': _language ?? 'ru'
                                                     }
                                                 } %}
 

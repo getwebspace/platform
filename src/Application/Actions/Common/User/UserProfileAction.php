@@ -27,6 +27,7 @@ class UserProfileAction extends UserAction
                         'allow_mail' => $this->getParam('allow_mail'),
                         'phone' => $this->getParam('phone'),
                         'password' => $this->getParam('password'),
+                        'language' => $this->getParam('language'),
                     ]
                 );
 

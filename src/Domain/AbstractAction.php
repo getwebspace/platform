@@ -384,7 +384,7 @@ abstract class AbstractAction
                 [
                     '_request' => &$_REQUEST,
                     '_error' => \Alksily\Support\Form::$globalError = $this->error,
-                    '_lang' => \App\Application\i18n::$localeCode ?? 'ru',
+                    '_language' => \App\Application\i18n::$localeCode ?? 'ru',
                     'sha' => mb_substr($_ENV['COMMIT_SHA'] ?? 'specific', 0, 7),
                     'NIL' => \Ramsey\Uuid\Uuid::NIL,
                     'plugins' => $this->container->get('plugin')->get(),

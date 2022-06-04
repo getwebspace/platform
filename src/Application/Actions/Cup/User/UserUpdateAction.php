@@ -40,6 +40,7 @@ class UserUpdateAction extends UserAction
                             'source' => $this->getParam('source'),
                             'group' => $group_uuid !== \Ramsey\Uuid\Uuid::NIL ? $userGroups->firstWhere('uuid', $group_uuid) : '',
                             'status' => $this->getParam('status'),
+                            'language' => $this->getParam('language'),
                             'external_id' => $this->getParam('external_id'),
                         ]);
                         $user = $this->processEntityFiles($user);
