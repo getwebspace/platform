@@ -369,7 +369,7 @@ class User extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="array", options={"default": "a:0:{}"})
      */
     protected array $company = [
         'title' => '',
@@ -398,7 +398,7 @@ class User extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="array", options={"default": "a:0:{}"})
      */
     protected array $legal = [
         'code' => '',
@@ -427,7 +427,7 @@ class User extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="array", options={"default": "a:0:{}"})
      */
     protected array $messenger = [
         'skype' => '',

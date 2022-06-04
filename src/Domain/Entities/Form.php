@@ -156,7 +156,7 @@ class Form extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="array", options={"default": "a:0:{}"})
      */
     protected array $origin = [];
 
@@ -178,7 +178,7 @@ class Form extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="array", options={"default": "a:0:{}"})
      */
     protected array $mailto = [];
 

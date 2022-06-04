@@ -169,7 +169,7 @@ class Publication extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="array", options={"default": "a:0:{}"})
      */
     protected array $content = [
         'short' => '',
@@ -201,7 +201,7 @@ class Publication extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="array", options={"default": "a:0:{}"})
      */
     protected array $poll = [
         // 'question' => '',
@@ -209,7 +209,7 @@ class Publication extends AbstractEntity
     ];
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="array", options={"default": "a:0:{}"})
      */
     protected array $meta = [
         'title' => '',

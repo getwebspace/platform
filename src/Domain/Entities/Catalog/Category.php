@@ -185,7 +185,7 @@ class Category extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="array", options={"default": "a:0:{}"})
      */
     protected array $product = [
         'field_1' => '',
@@ -314,7 +314,7 @@ class Category extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="array", options={"default": "a:0:{}"})
      */
     protected array $sort = [
         'by' => \App\Domain\References\Catalog::ORDER_BY_DATE,
@@ -348,7 +348,7 @@ class Category extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="array", options={"default": "a:0:{}"})
      */
     protected array $meta = [
         'title' => '',
@@ -383,7 +383,7 @@ class Category extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="array", options={"default": "a:0:{}"})
      */
     protected array $template = [
         'category' => '',

@@ -88,7 +88,7 @@ class Order extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="array", options={"default": "a:0:{}"})
      */
     protected array $delivery = [
         'client' => '',

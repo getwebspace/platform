@@ -284,7 +284,7 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="array", options={"default": "a:0:{}"})
      */
     protected array $dimension = [
         'width' => 0.0,
@@ -528,7 +528,7 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="array", options={"default": "a:0:{}"})
      */
     protected array $tags = [];
 
@@ -634,7 +634,7 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="array", options={"default": "a:0:{}"})
      */
     protected array $meta = [
         'title' => '',

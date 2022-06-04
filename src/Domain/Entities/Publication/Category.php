@@ -189,7 +189,7 @@ class Category extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="array", options={"default": "a:0:{}"})
      */
     protected array $sort = [
         'by' => \App\Domain\References\Publication::ORDER_BY_DATE,
@@ -223,7 +223,7 @@ class Category extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="array", options={"default": "a:0:{}"})
      */
     protected array $meta = [
         'title' => '',
@@ -258,7 +258,7 @@ class Category extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="array", options={"default": "a:0:{}"})
      */
     protected array $template = [
         'list' => '',
