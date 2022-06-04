@@ -71,7 +71,7 @@ WORKDIR ${PLATFORM_HOME}
 # Install PHP libs
 COPY composer.json ${PLATFORM_HOME}/composer.json
 COPY composer.lock ${PLATFORM_HOME}/composer.lock
-RUN composer install ${NO_DEV} --no-progress --ignore-platform-reqs
+RUN composer install ${NO_DEV} --no-suggest --no-progress --ignore-platform-reqs
 
 # Copy platform
 ADD bin ${PLATFORM_HOME}/bin
