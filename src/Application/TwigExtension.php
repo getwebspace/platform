@@ -114,11 +114,10 @@ class TwigExtension extends AbstractExtension
 
     public function currentUrl(): string
     {
-        return implode('', [
-            $_SERVER['REQUEST_SCHEME'], '://',
-            $_SERVER['HTTP_HOST'],
-            $_SERVER['REQUEST_URI'],
-        ]);
+        $url = $this->parseUrl();
+        $host = ($url['scheme'] ? $url['scheme'] . ':' : '') . ($url['host'] ? '//' . $url['host'] : '');
+
+        return $host . $_SERVER['REQUEST_URI'];
     }
 
     public function parseUrl(): array
