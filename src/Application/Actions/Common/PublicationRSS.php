@@ -39,7 +39,7 @@ class PublicationRSS extends AbstractAction
                 ->title($category->getTitle())
                 ->description(strip_tags($category->getDescription()))
                 ->url($url . $category->getAddress())
-                ->atomLinkSelf($url . 'rss/' . $category->getAddress())
+                ->atomLinkSelf($url . '/rss/' . $category->getAddress())
                 ->appendTo($feed);
 
             /** @var \App\Domain\Entities\Publication $publication */
