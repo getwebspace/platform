@@ -42,6 +42,7 @@ class Catalog
     public const ORDER_BY_PRICE = 'price';
     public const ORDER_BY_STOCK = 'stock';
     public const ORDER_BY_DATE = 'date';
+    public const ORDER_BY_ORDER = 'order';
 
     // list of order by
     public const ORDER_BY = [
@@ -49,6 +50,7 @@ class Catalog
         self::ORDER_BY_PRICE,
         self::ORDER_BY_STOCK,
         self::ORDER_BY_DATE,
+        self::ORDER_BY_ORDER,
     ];
 
     // possible order directions
