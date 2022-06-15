@@ -32,7 +32,7 @@ class Order extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="string", length=7, options={"default": ""})
+     * @ORM\Column(type="string", length=12, options={"default": ""})
      */
     protected string $serial = '';
 

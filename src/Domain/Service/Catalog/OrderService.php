@@ -48,11 +48,8 @@ class OrderService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        // get last order
-        $lastOrder = $this->service->findOneBy([], ['date' => 'desc']);
-
         $order = (new Order())
-            ->setSerial($lastOrder ? ((int) $lastOrder->getSerial()) + 1 : 1)
+            ->setSerial(intval(microtime(true)))
             ->setDelivery($data['delivery'])
             ->setUser($data['user'])
             ->setPhone($data['phone'])
