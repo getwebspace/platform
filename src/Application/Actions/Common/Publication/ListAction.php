@@ -12,7 +12,10 @@ class ListAction extends AbstractAction
 {
     protected function action(): \Slim\Psr7\Response
     {
+        /** @var PublicationCategoryService $publicationCategoryService */
         $publicationCategoryService = $this->container->get(PublicationCategoryService::class);
+
+        /** @var PublicationService $publicationService */
         $publicationService = $this->container->get(PublicationService::class);
 
         try {
@@ -24,18 +27,29 @@ class ListAction extends AbstractAction
                 case '':
                     $category = $categories->firstWhere('address', $params['category']);
                     $childrenCategories = $category->getNested($categories)->pluck('uuid')->all();
+                    $order = $category->sort['by'] ?? \App\Domain\References\Publication::ORDER_BY_DATE;
+                    $direction = $category->sort['direction'] ?? \App\Domain\References\Publication::ORDER_DIRECTION_ASC;
+
+                    $qb = $this->entityManager->createQueryBuilder();
+                    $query = $qb
+                        ->from(\App\Domain\Entities\Publication::class, 'p')
+                        ->where('p.category IN (:category)')
+                        ->andWhere('p.date <= :now')
+                        ->setParameter('category', $childrenCategories)
+                        ->setParameter('now', datetime('now', 'UTC'))
+                        ->orderBy('p.' . $order, $direction)
+                        ->setFirstResult($params['offset'] * $category->pagination)
+                        ->setMaxResults($category->pagination);
+
+                    $publications = collect($query->select('p')->getQuery()->getResult());
+                    $count = $query->select('COUNT(p)')->getQuery()->getSingleScalarResult();
 
                     return $this->respond($category->template['list'] ?? 'publication.list.twig', [
                         'categories' => $categories->where('public', true),
                         'category' => $category,
-                        'publications' => $publicationService->read([
-                            'category' => $childrenCategories,
-                            'order' => [$category->sort['by'] => $category->sort['direction']],
-                            'limit' => $category->pagination,
-                            'offset' => $category->pagination * $params['offset'],
-                        ]),
+                        'publications' => $publications,
                         'pagination' => [
-                            'count' => $publicationService->count(['category' => $childrenCategories]),
+                            'count' => $count,
                             'page' => $category->pagination,
                             'offset' => $params['offset'],
                         ],
