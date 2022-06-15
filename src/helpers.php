@@ -448,6 +448,19 @@ if (!function_exists('array_serialize')) {
     }
 }
 
+if (!function_exists(('datetime'))) {
+    function datetime($value = 'now', $timezone = 'UTC'): DateTime
+    {
+        date_default_timezone_set($timezone);
+
+        return match (true) {
+            is_string($value), is_numeric($value) => new DateTime($value),
+            is_a($value, DateTime::class) => clone $value,
+            default => new DateTime('now'),
+        };
+    }
+}
+
 if (!function_exists('ErrorHandler')) {
     function ErrorHandler(\Psr\Container\ContainerInterface $container)
     {

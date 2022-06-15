@@ -120,13 +120,7 @@ abstract class AbstractEntity implements JsonSerializable
 
     protected function getDateTimeByValue($value, string $timezone = 'UTC'): DateTime
     {
-        date_default_timezone_set($timezone);
-
-        $value = match (true) {
-            is_string($value), is_numeric($value) => new DateTime($value),
-            is_a($value, DateTime::class) => clone $value,
-            default => new DateTime('now'),
-        };
+        $value = datetime($value, $timezone);
 
         if ($value->getTimezone()->getName() !== 'UTC') {
             $value->setTimeZone(new \DateTimeZone('UTC'));
