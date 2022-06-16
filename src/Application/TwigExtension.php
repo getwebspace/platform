@@ -112,12 +112,26 @@ class TwigExtension extends AbstractExtension
         ];
     }
 
+    protected function currentHost() {
+        // from nginx
+        if ($_SERVER['HTTP_X_FORWARDED_PROTO'] && $_SERVER['HTTP_X_FORWARDED_HOST']) {
+            return $_SERVER['HTTP_X_FORWARDED_PROTO'] . '://' . $_SERVER['HTTP_X_FORWARDED_HOST'];
+        }
+        // from params
+        if (($host = $this->parameter('common_homepage', false))) {
+            return $host;
+        }
+        // from request
+        if ($_SERVER['REQUEST_SCHEME'] && $_SERVER['HTTP_HOST']) {
+            return $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
+        }
+
+        return 'http://localhost';
+    }
+
     public function currentUrl(): string
     {
-        $url = $this->parseUrl();
-        $host = ($url['scheme'] ? $url['scheme'] . ':' : '') . ($url['host'] ? '//' . $url['host'] : '');
-
-        return $host . $_SERVER['REQUEST_URI'];
+        return $this->currentHost() . $_SERVER['REQUEST_URI'];
     }
 
     public function parseUrl(): array
@@ -143,10 +157,7 @@ class TwigExtension extends AbstractExtension
      */
     public function fullUrlFor($name, $data = [], $queryParams = [])
     {
-        $url = $this->parseUrl();
-        $host = ($url['scheme'] ? $url['scheme'] . ':' : '') . ($url['host'] ? '//' . $url['host'] : '');
-
-        return $host . $this->pathFor($name, $data, $queryParams);
+        return $this->currentHost() . $this->pathFor($name, $data, $queryParams);
     }
 
     // base address without slash in end
