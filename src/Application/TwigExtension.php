@@ -3,7 +3,6 @@
 namespace App\Application;
 
 use App\Application\Twig\LocaleParser;
-use App\Application\Twig\ResourceParser;
 use App\Domain\AbstractExtension;
 use App\Domain\OAuth\FacebookOAuthProvider;
 use App\Domain\OAuth\VKOAuthProvider;
@@ -43,7 +42,6 @@ class TwigExtension extends AbstractExtension
     public function getTokenParsers()
     {
         return [
-            new ResourceParser(),
             new LocaleParser(),
         ];
     }
