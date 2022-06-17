@@ -109,7 +109,7 @@
                             {% embed 'mixin/datatable.twig' %}
                                 {% block thead %}
                                     <tr>
-                                        <th width="10%">#</th>
+                                        <th width="20%">#</th>
                                         <th>{{ 'Клиент'|locale }}</th>
                                         <th width="15%">{{ 'Статус'|locale }}</th>
                                         <th width="15%" class="d-none d-md-table-cell">{{ 'Дата добавления'|locale }}</th>
@@ -120,11 +120,10 @@
                                 {% block tbody %}
                                     {% for item in order_list.sortByDesc('date') %}
                                         <tr>
-                                            <td width="10%">
+                                            <td width="20%">
+                                                {{ item.serial }}
                                                 {% if item.external_id %}
-                                                    {{ item.external_id }} ({{ item.serial }})
-                                                {% else %}
-                                                    {{ item.serial }}
+                                                    <br/>{{ item.external_id }}
                                                 {% endif %}
                                             </td>
                                             <td>
