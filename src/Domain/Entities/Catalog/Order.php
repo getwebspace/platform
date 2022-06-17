@@ -278,8 +278,8 @@ class Order extends AbstractEntity
             $this->status_uuid = $status->getUuid();
             $this->status = $status;
         } else {
-            $this->user_uuid = null;
-            $this->user = null;
+            $this->status_uuid = null;
+            $this->status = null;
         }
 
         return $this;
