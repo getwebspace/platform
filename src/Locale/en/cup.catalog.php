@@ -16,6 +16,9 @@ return [
     'Литр' => 'Liter', 'л' => 'l',
     'Миллилитр' => 'Milliliter', 'мл' => 'ml',
 
+    // sidebar
+    'Добавлен заказ' => 'Order added',
+
     // attributes
     'string' => 'String',
     'integer' => 'Integer',

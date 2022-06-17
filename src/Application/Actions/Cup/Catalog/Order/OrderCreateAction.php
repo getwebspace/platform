@@ -37,7 +37,7 @@ class OrderCreateAction extends CatalogAction
                 if ($user_uuid && $this->parameter('notification_is_enabled', 'yes') === 'yes') {
                     $this->notificationService->create([
                         'user_uuid' => $user_uuid,
-                        'title' => 'Добавлен заказ: ' . $order->getSerial(),
+                        'title' => __('Добавлен заказ') . ': ' . $order->getSerial(),
                         'params' => [
                             'order_uuid' => $order->getUuid(),
                         ],

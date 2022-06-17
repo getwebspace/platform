@@ -55,7 +55,7 @@ class CartAction extends CatalogAction
                 // notify to admin and user
                 if ($this->parameter('notification_is_enabled', 'yes') === 'yes') {
                     $this->notificationService->create([
-                        'title' => 'Добавлен заказ: ' . $order->getSerial(),
+                        'title' => __('Добавлен заказ') . ': ' . $order->getSerial(),
                         'params' => [
                             'order_uuid' => $order->getUuid(),
                         ],
@@ -64,7 +64,7 @@ class CartAction extends CatalogAction
                     if ($user) {
                         $this->notificationService->create([
                             'user_uuid' => $user->getUuid(),
-                            'title' => 'Добавлен заказ: ' . $order->getSerial(),
+                            'title' => __('Добавлен заказ') . ': ' . $order->getSerial(),
                             'params' => [
                                 'order_uuid' => $order->getUuid(),
                             ],
