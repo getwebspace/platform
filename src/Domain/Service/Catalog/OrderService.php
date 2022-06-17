@@ -31,6 +31,7 @@ class OrderService extends AbstractService
     public function create(array $data = []): Order
     {
         $default = [
+            'serial' => intval(microtime(true)),
             'delivery' => [
                 'client' => '',
                 'address' => '',
@@ -49,7 +50,7 @@ class OrderService extends AbstractService
         $data = array_merge($default, $data);
 
         $order = (new Order())
-            ->setSerial(intval(microtime(true)))
+            ->setSerial($data['serial'])
             ->setDelivery($data['delivery'])
             ->setUser($data['user'])
             ->setPhone($data['phone'])
@@ -158,6 +159,7 @@ class OrderService extends AbstractService
 
         if (is_object($entity) && is_a($entity, Order::class)) {
             $default = [
+                'serial' => null,
                 'delivery' => null,
                 'user' => null,
                 'phone' => null,
@@ -173,6 +175,9 @@ class OrderService extends AbstractService
             $data = array_merge($default, $data);
 
             if ($data !== $default) {
+                if ($data['serial'] !== null) {
+                    $entity->setSerial($data['serial']);
+                }
                 if ($data['delivery'] !== null) {
                     $entity->setDelivery($data['delivery']);
                 }
