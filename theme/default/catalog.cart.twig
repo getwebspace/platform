@@ -6,9 +6,39 @@
     <script>
         window.catalog = {
             cart: {
-                price_precision: 5,
-                count_precision: 3,
+                // cart column headers
+                columns: [
+                    {label: '', attr: 'thumb', view: null, class: null, style: 'width: 10%; text-align: center;'},
+                    {label: 'Title', attr: 'title', view: null, class: null, style: null},
+                    {label: 'Vendor code', attr: 'vendorcode', view: null, class: null, style: null},
+                    {label: '-', attr: 'decrement', view: null, class: null, style: 'width: 10%; text-align: center;'},
+                    {label: 'Quantity', attr: 'quantity', view: null, class: null, style: 'width: 15%;'},
+                    {label: '+', attr: 'increment', view: null, class: null, style: 'width: 10%; text-align: center;'},
+                    {label: 'Cost', attr: 'price', view: null, class: null, style: 'text-align: right;'},
+                    {label: 'Total', attr: 'total', view: null, class: null, style: 'text-align: right;'},
+                    {label: 'Remove', attr: 'remove', view: null, class: null, style: 'text-align: center;'},
+                ],
+
+                // showing header
+                columns_header: true,
+
+                // showing items group title
+                group_header: true,
+
+                // table style ('table' or 'div')
+                style: 'table',
+
+                // cart handler url
+                url: '',
             },
+
+            // precision settings
+            // count of zeros after the decimal point
+            precision: {
+                count: 5, // in item counts
+                price: 3, // in item prices and totals
+            },
+
             events: {
                 'on:ready': (cart) => {
                     $('[data-cart-not-empty]').toggle(cart.length !== 0);
@@ -159,8 +189,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-6 order-1 order-md-0">
-                            <button class="site-btn" data-catalog-cart-checkout style="margin-bottom: 16px;">Отправить
-                            </button>
+                            <button class="site-btn" data-catalog-cart-data name="type" value="reserve" data-catalog-cart-checkout style="margin-bottom: 16px;">Отправить</button>
                         </div>
                         <div class="col-md-6 order-0 order-md-1">
                             <div>
