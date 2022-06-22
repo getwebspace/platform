@@ -308,6 +308,11 @@ return function (App $app, Container $container): void {
 
                     return $handler->handle($request);
                 });
+
+            $group
+                ->map(['GET', 'POST'], '/subscriber', \App\Application\Actions\Common\User\UserSubscribeAction::class)
+                ->setName('common:user:subscriber')
+                ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
         })
         ->add(new \Slim\HttpCache\Cache('private', 0, true));
 
