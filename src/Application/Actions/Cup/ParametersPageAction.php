@@ -19,7 +19,7 @@ class ParametersPageAction extends AbstractAction
             foreach ($this->request->getParsedBody() as $group => $params) {
                 foreach ($params as $key => $value) {
                     $data = [
-                        'key' => $group . '_' . $key,
+                        'key' => trim($group . '_' . $key),
                         'value' => is_array($value) ? implode(',', $value) : $value,
                     ];
 
