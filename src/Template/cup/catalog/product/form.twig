@@ -212,7 +212,20 @@
                                             }
                                         } %}
                                     </div>
-                                    <div class="col-6 col-md-3 offset-md-9">
+                                    <div class="col-6 col-md-3 offset-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Скидка'|locale,
+                                            'type': 'number',
+                                            'name': 'discount',
+                                            'args': {
+                                                'value': item.discount ? item.discount|number_format(2, '.', '') : '',
+                                                'placeholder': '0.00',
+                                                'step': 'any',
+                                                'min': '0',
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-6 col-md-3">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Акция'|locale,
                                             'type': 'select',

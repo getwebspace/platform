@@ -41,6 +41,7 @@ class ProductServiceTest extends TestCase
             'priceFirst' => $this->getFaker()->randomFloat(),
             'price' => $this->getFaker()->randomFloat(),
             'priceWholesale' => $this->getFaker()->randomFloat(),
+            'discount' => $this->getFaker()->randomFloat(),
             'special' => $this->getFaker()->boolean(),
             'dimension' => [
                 'width' => $this->getFaker()->randomFloat(),
@@ -84,6 +85,7 @@ class ProductServiceTest extends TestCase
         $this->assertSame($data['priceFirst'], $product->getPriceFirst());
         $this->assertSame($data['price'], $product->getPrice());
         $this->assertSame($data['priceWholesale'], $product->getPriceWholesale());
+        $this->assertSame($data['discount'], $product->getDiscount());
         $this->assertSame($data['special'], $product->getSpecial());
         $this->assertSame($data['dimension'], $product->getDimension());
         $this->assertSame($data['volume'], $product->getVolume());
@@ -119,6 +121,8 @@ class ProductServiceTest extends TestCase
         $this->assertSame($data['priceFirst'], $p->getPriceFirst());
         $this->assertSame($data['price'], $p->getPrice());
         $this->assertSame($data['priceWholesale'], $p->getPriceWholesale());
+        $this->assertSame($data['discount'], $p->getDiscount());
+        $this->assertSame($data['special'], $p->getSpecial());
         $this->assertSame($data['volume'], $p->getVolume());
         $this->assertSame($data['unit'], $p->getUnit());
         $this->assertSame($data['stock'], $p->getStock());
@@ -222,6 +226,8 @@ class ProductServiceTest extends TestCase
             'priceFirst' => $this->getFaker()->randomFloat(),
             'price' => $this->getFaker()->randomFloat(),
             'priceWholesale' => $this->getFaker()->randomFloat(),
+            'discount' => $this->getFaker()->randomFloat(),
+            'special' => $this->getFaker()->boolean(),
             'dimension' => [
                 'width' => $this->getFaker()->randomFloat(),
                 'height' => $this->getFaker()->randomFloat(),
@@ -262,6 +268,8 @@ class ProductServiceTest extends TestCase
             'priceFirst' => $this->getFaker()->randomFloat(),
             'price' => $this->getFaker()->randomFloat(),
             'priceWholesale' => $this->getFaker()->randomFloat(),
+            'discount' => $this->getFaker()->randomFloat(),
+            'special' => $this->getFaker()->boolean(),
             'dimension' => [
                 'width' => $this->getFaker()->randomFloat(),
                 'height' => $this->getFaker()->randomFloat(),
@@ -303,6 +311,8 @@ class ProductServiceTest extends TestCase
         $this->assertSame($data['priceFirst'], $product->getPriceFirst());
         $this->assertSame($data['price'], $product->getPrice());
         $this->assertSame($data['priceWholesale'], $product->getPriceWholesale());
+        $this->assertSame($data['discount'], $product->getDiscount());
+        $this->assertSame($data['special'], $product->getSpecial());
         $this->assertSame($data['dimension'], $product->getDimension());
         $this->assertSame($data['volume'], $product->getVolume());
         $this->assertSame($data['unit'], $product->getUnit());

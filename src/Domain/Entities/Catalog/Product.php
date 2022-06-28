@@ -267,6 +267,23 @@ class Product extends AbstractEntity
     }
 
     /**
+     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
+     */
+    protected float $discount = .00;
+
+    public function setDiscount(float $value): self
+    {
+        $this->discount = $value;
+
+        return $this;
+    }
+
+    public function getDiscount(): float
+    {
+        return $this->discount;
+    }
+
+    /**
      * @ORM\Column(type="boolean", options={"default": false})
      */
     protected bool $special = false;
