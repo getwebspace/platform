@@ -54,7 +54,7 @@ class Category extends AbstractEntity
 
     public function rss(): string
     {
-        return '/' . implode('/', ['rss', $this->address]);
+        return implode('/', ['rss', $this->address]);
     }
 
     /**
