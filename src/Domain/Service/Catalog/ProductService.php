@@ -343,7 +343,7 @@ class ProductService extends AbstractService
                     $entity->setPriceWholesale((float) $data['priceWholesale']);
                 }
                 if ($data['discount'] !== null) {
-                    $entity->setDiscount($data['discount']);
+                    $entity->setDiscount((float) $data['discount']);
                 }
                 if ($data['special'] !== null) {
                     $entity->setSpecial($data['special']);
