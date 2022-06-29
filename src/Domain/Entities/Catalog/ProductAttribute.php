@@ -181,6 +181,17 @@ class ProductAttribute extends AbstractEntity
             ->pluck('product');
     }
 
+    /**
+     * Return count products with current attribute value
+     */
+    public function getCount(): int
+    {
+        return $this->attribute
+            ->getProductAttributes()
+            ->where('value', $this->value)
+            ->count();
+    }
+
     public function toArray(): array
     {
         return [
@@ -188,6 +199,7 @@ class ProductAttribute extends AbstractEntity
             'type' => $this->type,
             'address' => $this->address,
             'value' => $this->value,
+            'count' => $this->getCount(),
         ];
     }
 
