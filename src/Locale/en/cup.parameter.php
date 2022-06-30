@@ -154,6 +154,8 @@ return [
 
     'Обработка полей корзины' => 'Handling cart fields',
     'Дополнительные поля, переданные с корзиной, будут добавлены в конец поля комментария' => 'Additional fields passed with the cart will be added to the end of the comment field',
+    'Строки адреса в корзине' => 'Address lines in cart',
+    'Позволяет передавать адрес в виде нумерованного массива строк' => 'Allows you to pass the address as a numbered array of strings',
     'Дополнительное поле' => 'Additional field',
     'Объёмный вес' => 'Volumetric weight',
     'Коэффициент-делителя' => 'Divisor',

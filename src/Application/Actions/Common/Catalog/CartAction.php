@@ -44,6 +44,14 @@ class CartAction extends CatalogAction
                 $data['comment'] = implode(PHP_EOL, $data['comment']);
             }
 
+            // for receive address in multiple lines
+            if (is_array($data['delivery']['address'])) {
+                if ($this->parameter('catalog_order_address', 'off') === 'on') {
+                    ksort($data['delivery']['address']);
+                }
+                $data['delivery']['address'] = implode(', ', $data['delivery']['address']);
+            }
+
             if ($this->isRecaptchaChecked()) {
                 // todo try/catch
                 $order = static::$storage['order'] = $this->catalogOrderService->create($data);

@@ -1052,6 +1052,17 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Строки адреса в корзине',
+                                                    'description': 'Позволяет передавать адрес в виде нумерованного массива строк',
+                                                    'type': 'select',
+                                                    'name': 'catalog[order_address]',
+                                                    'args': {
+                                                        'option': _(['yes', 'no']),
+                                                        'selected': 'no'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Дополнительное поле',
                                                     'description': ('Поле'|locale) ~ ' 1',
                                                     'type': 'text',

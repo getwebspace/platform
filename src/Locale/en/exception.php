@@ -11,7 +11,7 @@ return [
     'EXCEPTION_FILE_ALREADY_EXISTS' => 'File already exists',
     'EXCEPTION_PARAMETER_ALREADY_EXISTS' => 'Parameter already exists',
     'EXCEPTION_EMAIL_ALREADY_EXISTS' => 'E-Mail already exists',
-    'EXCEPTION_PHONE_ALREADY_EXISTS' => 'Pgone already exists',
+    'EXCEPTION_PHONE_ALREADY_EXISTS' => 'Phone already exists',
     'EXCEPTION_USERNAME_ALREADY_EXISTS' => 'Username already exists',
 
     // missing
@@ -47,8 +47,8 @@ return [
     // other
     'EXCEPTION_EMAIL_BANNED' => 'This domain cannot be used',
     'EXCEPTION_WRONG_EMAIL' => 'Wrong format E-Mail',
-    'EXCEPTION_WRONG_PHONE' => 'Wrong format телефона',
-    'EXCEPTION_WRONG_IP' => 'Wrong format IP адреса',
+    'EXCEPTION_WRONG_PHONE' => 'Wrong format phone',
+    'EXCEPTION_WRONG_IP' => 'Wrong format IP address',
     'EXCEPTION_WRONG_CODE' => 'Incorrect code',
     'EXCEPTION_WRONG_CODE_TIMEOUT' => 'You can update the authorization code every 10 minutes',
     'EXCEPTION_WRONG_PASSWORD' => 'Wrong password',
