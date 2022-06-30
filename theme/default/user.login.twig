@@ -125,7 +125,7 @@
 
                             {% if provider == 'code' and parameter('user_auth_code_is_enabled', 'no') == 'yes' %}
                                 <div class="form-label-group">
-                                    {% include 'cup/form.twig' with {
+                                    {% include 'mixin/form.twig' with {
                                         'label': 'Код-пароль',
                                         'type': 'text',
                                         'name': 'code',
