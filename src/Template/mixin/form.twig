@@ -25,7 +25,7 @@
     <div data-input class="{{ type == 'checkbox' or type == 'radio' ? type : 'form-group' }} {{ error }}">
         {# COMMON LABEL #}
         {% if label is not empty and type not in ['checkbox', 'radio'] %}
-            <label class="placeholder">
+            <label>
                 <b>{{ label }}</b>
 
                 {% if args.required is not empty %}
