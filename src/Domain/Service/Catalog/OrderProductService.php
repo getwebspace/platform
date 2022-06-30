@@ -7,6 +7,7 @@ use App\Domain\Entities\Catalog\Order;
 use App\Domain\Entities\Catalog\OrderProduct;
 use App\Domain\Entities\Catalog\Product;
 use App\Domain\Repository\Catalog\ProductRepository;
+use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\Catalog\Exception\RelationNotFoundException;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
@@ -17,9 +18,12 @@ class OrderProductService extends AbstractService
      */
     protected mixed $service;
 
+    protected CatalogProductService $catalogProductService;
+
     protected function init(): void
     {
-        $this->service = $this->entityManager->getRepository(Product::class);
+        $this->service = $this->entityManager->getRepository(OrderProduct::class);
+        $this->catalogProductService = $this->container->get(CatalogProductService::class);
     }
 
     public function proccess(Order $order, array $products): array
@@ -32,13 +36,19 @@ class OrderProductService extends AbstractService
 
         foreach ($products as $uuid => $count) {
             if ($count > 0) {
-                $result[] = $this->create([
-                    'order' => $order,
-                    'product' => $this->service->findOneByUuid($uuid),
-                    'count' => (float) $count,
-                ]);
+                try {
+                    $result[] = $op = $this->create([
+                        'order' => $order,
+                        'product' => $this->catalogProductService->read(['uuid' => $uuid]),
+                        'count' => (float) $count,
+                    ]);
+                } catch (Exception\ProductNotFoundException $e) {
+                    // skip
+                }
             }
         }
+
+        $this->entityManager->refresh($order);
 
         return $result;
     }
@@ -59,6 +69,9 @@ class OrderProductService extends AbstractService
             ->setOrder($data['order'])
             ->setProduct($data['product'])
             ->setCount($data['count']);
+
+        // trigger populate fields
+        $productRelation->_populate_fields();
 
         $this->entityManager->persist($productRelation);
         $this->entityManager->flush();

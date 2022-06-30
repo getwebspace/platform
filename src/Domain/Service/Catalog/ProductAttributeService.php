@@ -74,6 +74,9 @@ class ProductAttributeService extends AbstractService
             ->setAttribute($data['attribute'])
             ->setValue($data['value']);
 
+        // trigger populate fields
+        $productAttribute->_populate_fields();
+
         $this->entityManager->persist($productAttribute);
         $this->entityManager->flush();
 
