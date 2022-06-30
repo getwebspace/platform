@@ -232,6 +232,36 @@
                                 </div>
 
                                 <div class="row">
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Страна'|locale,
+                                            'type': 'text',
+                                            'name': 'country',
+                                            'args': {
+                                                'value': item.country,
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Город'|locale,
+                                            'type': 'text',
+                                            'name': 'city',
+                                            'args': {
+                                                'value': item.city,
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Индекс'|locale,
+                                            'type': 'text',
+                                            'name': 'postcode',
+                                            'args': {
+                                                'value': item.postcode,
+                                            }
+                                        } %}
+                                    </div>
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Адрес'|locale,

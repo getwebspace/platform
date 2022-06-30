@@ -303,6 +303,50 @@ class User extends AbstractEntity
     }
 
     /**
+     * @ORM\Column(type="string", length=100, options={"default": ""})
+     */
+    protected string $country = '';
+
+    /**
+     * @return $this
+     */
+    public function setCountry(string $country): self
+    {
+        if ($this->checkStrLenMax($country, 100)) {
+            $this->country = $country;
+        }
+
+        return $this;
+    }
+
+    public function getCountry(): string
+    {
+        return $this->country;
+    }
+
+    /**
+     * @ORM\Column(type="string", length=100, options={"default": ""})
+     */
+    protected string $city = '';
+
+    /**
+     * @return $this
+     */
+    public function setCity(string $city): self
+    {
+        if ($this->checkStrLenMax($city, 100)) {
+            $this->city = $city;
+        }
+
+        return $this;
+    }
+
+    public function getCity(): string
+    {
+        return $this->city;
+    }
+
+    /**
      * @ORM\Column(type="string", length=500, options={"default": ""})
      */
     protected string $address = '';
@@ -322,6 +366,28 @@ class User extends AbstractEntity
     public function getAddress(): string
     {
         return $this->address;
+    }
+
+    /**
+     * @ORM\Column(type="string", length=50, options={"default": ""})
+     */
+    protected string $postcode = '';
+
+    /**
+     * @return $this
+     */
+    public function setPostcode(string $postcode): self
+    {
+        if ($this->checkStrLenMax($postcode, 50)) {
+            $this->postcode = $postcode;
+        }
+
+        return $this;
+    }
+
+    public function getPostcode(): string
+    {
+        return $this->postcode;
     }
 
     /**

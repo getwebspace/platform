@@ -49,7 +49,10 @@ class UserServiceTest extends TestCase
             ],
             'website' => $this->getFaker()->url,
             'source' => $this->getFaker()->word,
+            'country' => $this->getFaker()->country,
+            'city' => $this->getFaker()->city,
             'address' => $this->getFaker()->address,
+            'postcode' => $this->getFaker()->postcode,
             'additional' => $this->getFaker()->text,
             'auth_code' => (string) $this->getFaker()->numberBetween(0, 10000),
             'language' => $this->getFaker()->languageCode,
@@ -68,7 +71,10 @@ class UserServiceTest extends TestCase
         $this->assertSame($data['legal'], $user->getLegal());
         $this->assertSame($data['website'], $user->getWebsite());
         $this->assertSame($data['source'], $user->getSource());
+        $this->assertSame($data['country'], $user->getCountry());
+        $this->assertSame($data['city'], $user->getCity());
         $this->assertSame($data['address'], $user->getAddress());
+        $this->assertSame($data['postcode'], $user->getPostcode());
         $this->assertSame($data['additional'], $user->getAdditional());
         $this->assertSame($data['auth_code'], $user->getAuthCode());
         $this->assertSame($data['language'], $user->getLanguage());
@@ -298,7 +304,10 @@ class UserServiceTest extends TestCase
             'username' => $this->getFaker()->userName,
             'email' => $this->getFaker()->email,
             'password' => $this->getFaker()->password,
+            'country' => $this->getFaker()->country,
+            'city' => $this->getFaker()->city,
             'address' => $this->getFaker()->address,
+            'postcode' => $this->getFaker()->postcode,
             'additional' => $this->getFaker()->text,
             'auth_code' => (string) $this->getFaker()->numberBetween(0, 10000),
             'language' => $this->getFaker()->languageCode,
@@ -323,7 +332,10 @@ class UserServiceTest extends TestCase
             ],
             'website' => $this->getFaker()->url,
             'source' => $this->getFaker()->word,
+            'country' => $this->getFaker()->country,
+            'city' => $this->getFaker()->city,
             'address' => $this->getFaker()->address,
+            'postcode' => $this->getFaker()->postcode,
             'additional' => $this->getFaker()->text,
             'email' => $this->getFaker()->email,
             'auth_code' => (string) $this->getFaker()->numberBetween(0, 10000),
@@ -341,7 +353,10 @@ class UserServiceTest extends TestCase
         $this->assertSame($data['legal'], $user->getLegal());
         $this->assertSame($data['website'], $user->getWebsite());
         $this->assertSame($data['source'], $user->getSource());
+        $this->assertSame($data['country'], $user->getCountry());
+        $this->assertSame($data['city'], $user->getCity());
         $this->assertSame($data['address'], $user->getAddress());
+        $this->assertSame($data['postcode'], $user->getPostcode());
         $this->assertSame($data['additional'], $user->getAdditional());
         $this->assertSame($data['email'], $user->getEmail());
         $this->assertSame($data['auth_code'], $user->getAuthCode());

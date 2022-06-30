@@ -50,7 +50,10 @@ class UserService extends AbstractService
             'patronymic' => '',
             'gender' => '',
             'birthdate' => '',
+            'country' => '',
+            'city' => '',
             'address' => '',
+            'postcode' => '',
             'additional' => '',
             'allow_mail' => true,
             'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
@@ -98,7 +101,10 @@ class UserService extends AbstractService
             ->setPatronymic($data['patronymic'])
             ->setGender($data['gender'])
             ->setBirthdate($data['birthdate'])
+            ->setCountry($data['country'])
+            ->setCity($data['city'])
             ->setAddress($data['address'])
+            ->setPostcode($data['postcode'])
             ->setAdditional($data['additional'])
             ->setAllowMail($data['allow_mail'])
             ->setStatus($data['status'])
@@ -135,6 +141,9 @@ class UserService extends AbstractService
             'username' => null,
             'email' => null,
             'phone' => null,
+            'country' => null,
+            'city' => null,
+            'postcode' => null,
             'additional' => null,
             'allow_mail' => null,
             'status' => null,
@@ -158,6 +167,15 @@ class UserService extends AbstractService
         }
         if ($data['phone'] !== null) {
             $criteria['phone'] = $data['phone'];
+        }
+        if ($data['country'] !== null) {
+            $criteria['country'] = $data['country'];
+        }
+        if ($data['city'] !== null) {
+            $criteria['city'] = $data['city'];
+        }
+        if ($data['postcode'] !== null) {
+            $criteria['postcode'] = $data['postcode'];
         }
         if ($data['additional'] !== null) {
             $criteria['additional'] = $data['additional'];
@@ -270,7 +288,10 @@ class UserService extends AbstractService
                 'patronymic' => null,
                 'gender' => null,
                 'birthdate' => null,
+                'country' => null,
+                'city' => null,
                 'address' => null,
+                'postcode' => null,
                 'additional' => null,
                 'allow_mail' => null,
                 'status' => null,
@@ -337,8 +358,17 @@ class UserService extends AbstractService
                 if ($data['birthdate'] !== null) {
                     $entity->setBirthdate($data['birthdate']);
                 }
+                if ($data['country'] !== null) {
+                    $entity->setCountry($data['country']);
+                }
+                if ($data['city'] !== null) {
+                    $entity->setCity($data['city']);
+                }
                 if ($data['address'] !== null) {
                     $entity->setAddress($data['address']);
+                }
+                if ($data['postcode'] !== null) {
+                    $entity->setPostcode($data['postcode']);
                 }
                 if ($data['additional'] !== null) {
                     $entity->setAdditional($data['additional']);

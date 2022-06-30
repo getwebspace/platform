@@ -70,7 +70,6 @@ return [
     'Краткое описание товара' => 'Brief product description',
     'Еда' => 'Food',
     'Описание товара' => 'Description',
-    'Страна' => 'Country',
     'Производитель' => 'Manufacturer',
     'Артикул' => 'Vendor code',
     'Штрих код' => 'Barcode',

@@ -83,8 +83,14 @@
                             <dt class="col-4">{{ 'Подписан на рассылку'|locale }}</dt>
                             <dd class="col-8">{{ (item.allow_mail ? 'yes' : 'no')|locale }}</dd>
                         {% endif %}
+                        <dt class="col-4">{{ 'Страна'|locale }}</dt>
+                        <dd class="col-8">{{ item.country ?: '&mdash;' }}</dd>
+                        <dt class="col-4">{{ 'Город'|locale }}</dt>
+                        <dd class="col-8">{{ item.city ?: '&mdash;' }}</dd>
                         <dt class="col-4">{{ 'Адрес'|locale }}</dt>
                         <dd class="col-8">{{ item.address ?: '&mdash;' }}</dd>
+                        <dt class="col-4">{{ 'Индекс'|locale }}</dt>
+                        <dd class="col-8">{{ item.postcode ?: '&mdash;' }}</dd>
                         <dt class="col-4">{{ 'Доп. инфо'|locale }}</dt>
                         <dd class="col-8">{{ item.additional ?: '&mdash;' }}</dd>
                         {% if item.website %}
