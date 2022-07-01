@@ -1,113 +1,265 @@
 {% extends 'main.twig' %}
 
-{% block title %}Профиль пользователя | {{ parent() }}{% endblock %}
+{% block title %}User profile | {{ parent() }}{% endblock %}
 
 {% block page %}
-    <section class="contact-section">
+    {% include 'common/breadcrumbs.twig' with {
+        'title': 'Profile'
+    } %}
+
+    <!-- Start Account Area -->
+    <section class="section">
         <div class="container">
-            <h4 class="mb-2">Личный профиль</h4>
-            <p>
-                Привет, {{ user.getName('full') ?? user.username }}!<br>
-                Здесь вы можете изменять информацию о себе.
-            </p>
-            <div class="row" style="margin-top: 50px;">
-                <div class="col-md-12">
-                    <h4 class="mb-2">Данные аккаунта</h4>
-                    <form method="post" class="contact-form" data-grecaptcha>
-                        <div class="row mb-2">
-                            <div class="col-12 col-md-6">
-                                {% include 'mixin/form.twig' with {
-                                    'label': 'Имя',
-                                    'type': 'text',
-                                    'name': 'firstname',
-                                    'args': {
-                                        'value': user.firstname
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-12 col-md-6">
-                                {% include 'mixin/form.twig' with {
-                                    'label': 'Фамилия',
-                                    'type': 'text',
-                                    'name': 'lastname',
-                                    'args': {
-                                        'value': user.lastname
-                                    }
-                                } %}
-                            </div>
-                        </div>
-                        <div class="row mb-2">
-                            <div class="col-12 col-md-6">
-                                {% include 'mixin/form.twig' with {
-                                    'label': 'E-Mail',
-                                    'type': 'email',
-                                    'name': 'email',
-                                    'args': {
-                                        'value': user.email
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-12 col-md-6">
-                                {% include 'mixin/form.twig' with {
-                                    'label': 'Телефон',
-                                    'type': 'tel',
-                                    'name': 'phone',
-                                    'args': {
-                                        'value': user.phone
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-12 col-md-6">
-                                {% include 'mixin/form.twig' with {
-                                    'label': 'Адрес',
-                                    'type': 'textarea',
-                                    'name': 'address',
-                                    'args': {
-                                        'value': user.address
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-12 col-md-6">
-                                {% include 'mixin/form.twig' with {
-                                    'label': 'Доп. инфо',
-                                    'type': 'text',
-                                    'name': 'additional',
-                                    'args': {
-                                        'value': user.additional
-                                    }
-                                } %}
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="checkout-steps-form-style-1">
+                        <ul id="accordionExample">
+                            <li>
+                                <h6 class="title" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">Account Details </h6>
+                                <section class="checkout-steps-form-content collapse show" id="collapseThree" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                    <form method="post" class="contact-form" data-grecaptcha>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="single-form form-default">
+                                                    <label>User Name</label>
+                                                    <div class="row">
+                                                        <div class="col-md-6 form-input form">
+                                                            {% include 'mixin/form.twig' with {
+                                                                'type': 'text',
+                                                                'name': 'firstname',
+                                                                'args': {
+                                                                    'value': user.firstname,
+                                                                    'placeholder': 'First Name'
+                                                                }
+                                                            } %}
+                                                        </div>
+                                                        <div class="col-md-6 form-input form">
+                                                            {% include 'mixin/form.twig' with {
+                                                                'type': 'text',
+                                                                'name': 'lastname',
+                                                                'args': {
+                                                                    'value': user.lastname,
+                                                                    'placeholder': 'Last Name'
+                                                                }
+                                                            } %}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="single-form form-default">
+                                                    <label>Email Address</label>
+                                                    <div class="form-input form">
+                                                        {% include 'mixin/form.twig' with {
+                                                            'type': 'email',
+                                                            'name': 'email',
+                                                            'args': {
+                                                                'value': user.email,
+                                                                'placeholder': 'Email Address'
+                                                            }
+                                                        } %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="single-form form-default">
+                                                    <label>Phone Number</label>
+                                                    <div class="form-input form">
+                                                        {% include 'mixin/form.twig' with {
+                                                            'type': 'tel',
+                                                            'name': 'phone',
+                                                            'args': {
+                                                                'value': user.phone,
+                                                                'placeholder': 'Phone Number',
+                                                            }
+                                                        } %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="single-form form-default">
+                                                    <label>Country</label>
+                                                    <div class="form-input form">
+                                                        {% include 'mixin/form.twig' with {
+                                                            'type': 'text',
+                                                            'name': 'country',
+                                                            'args': {
+                                                                'value': user.country,
+                                                                'placeholder': 'Country'
+                                                            }
+                                                        } %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="single-form form-default">
+                                                    <label>City</label>
+                                                    <div class="form-input form">
+                                                        {% include 'mixin/form.twig' with {
+                                                            'type': 'text',
+                                                            'name': 'city',
+                                                            'args': {
+                                                                'value': user.city,
+                                                                'placeholder': 'City'
+                                                            }
+                                                        } %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="single-form form-default">
+                                                    <label>Post Code</label>
+                                                    <div class="form-input form">
+                                                        {% include 'mixin/form.twig' with {
+                                                            'type': 'text',
+                                                            'name': 'postcode',
+                                                            'args': {
+                                                                'value': user.postcode,
+                                                                'placeholder': 'Post Code'
+                                                            }
+                                                        } %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="single-form form-default">
+                                                    <label>Address</label>
+                                                    <div class="form-input form">
+                                                        {% include 'mixin/form.twig' with {
+                                                            'type': 'textarea',
+                                                            'name': 'address',
+                                                            'args': {
+                                                                'value': user.address,
+                                                                'placeholder': 'Address'
+                                                            }
+                                                        } %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="single-form form-default">
+                                                    <label>Additional</label>
+                                                    <div class="form-input form">
+                                                        {% include 'mixin/form.twig' with {
+                                                            'type': 'text',
+                                                            'name': 'additional',
+                                                            'args': {
+                                                                'value': user.additional,
+                                                                'placeholder': 'Additional'
+                                                            }
+                                                        } %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="single-form form-default">
+                                                    <label>Allow mail</label>
+                                                    <div class="form-input form">
+                                                        {% include 'cup/form.twig' with {
+                                                            'type': 'select',
+                                                            'name': 'allow_mail',
+                                                            'args': {
+                                                                'option': _(['yes', 'no']),
+                                                                'selected': user.getAllowMail() ? 'yes' : 'no'
+                                                            }
+                                                        } %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="single-form form-default">
+                                                    <label>Language</label>
+                                                    <div class="form-input form">
+                                                        {% include 'mixin/form.twig' with {
+                                                            'type': 'text',
+                                                            'name': 'language',
+                                                            'args': {
+                                                                'value': user.language ?? _language,
+                                                                'placeholder': 'Language',
+                                                                'readonly': true
+                                                            }
+                                                        } %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="single-form form-default">
+                                                    <label>New Password</label>
+                                                    <div class="form-input form">
+                                                        {% include 'mixin/form.twig' with {
+                                                            'type': 'text',
+                                                            'name': 'password',
+                                                            'args': {
+                                                                'placeholder': 'Leave blank if you don\'t want to change'
+                                                            }
+                                                        } %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="single-form button">
+                                                    <button class="btn" type="submit">Save</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </section>
+                            </li>
 
-                                {% include 'mixin/form.twig' with {
-                                    'label': 'Язык сайта',
-                                    'type': 'text',
-                                    'name': 'language',
-                                    'args': {
-                                        'value': user.language ?? _language
-                                    }
-                                } %}
+                            {% if parameter('user_auth_facebook_is_enabled', 'no') == 'yes' or parameter('user_auth_vk_is_enabled', 'no') == 'yes' %}
+                                <li>
+                                    <h6 class="title collapsed" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">Social networks</h6>
+                                    <section class="checkout-steps-form-content collapse" id="collapseFour" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                                        <div class="row pt-4">
+                                            {% for type in ['facebook', 'vk'] %}
+                                                {% if parameter('user_auth_' ~ type ~ '_is_enabled', 'no') == 'yes' %}
+                                                    <div class="col-md-6">
+                                                        <a class="btn btn-primary w-100" href="{{ user.getIntegrations().firstWhere('provider', type) ? '#' : oauth_url(type) }}">
+                                                            <span class="d-block">{{ type }}</span>
+                                                            <small class="d-block">{{ user.getIntegrations().firstWhere('provider', type) ? 'Connected' : 'Connect' }}</small>
+                                                        </a>
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </section>
+                                </li>
+                            {% endif %}
 
-                                {% include 'user.profile.social.twig' %}
-                            </div>
-                            <div class="col-12 col-md-6">
-                                {% include 'mixin/form.twig' with {
-                                    'label': 'Новый пароль',
-                                    'type': 'text',
-                                    'name': 'password',
-                                    'args': {
-                                        'placeholder': 'Оставьте пустым, если не нужно менять'
-                                    }
-                                } %}
-                            </div>
-                        </div>
-
-                        <div class="col-12 text-center">
-                            <button class="site-btn">Сохранить</button>
-                        </div>
-                    </form>
+                            {% if user.orders.count() %}
+                                <li>
+                                    <h6 class="title collapsed" data-bs-toggle="collapse" data-bs-target="#collapsefive" aria-expanded="false" aria-controls="collapsefive">Orders</h6>
+                                    <section class="checkout-steps-form-content collapse p-0" id="collapsefive" aria-labelledby="headingFive" data-bs-parent="#accordionExample">
+                                        <table class="table table-striped">
+                                            <tr>
+                                                <th class="text-center">#</th>
+                                                <th class="text-center">Status</th>
+                                                <th class="text-center">Order date</th>
+                                                <th class="text-center">Shipping date</th>
+                                                <th class="text-center">Count products</th>
+                                                <th class="text-center">Total</th>
+                                            </tr>
+                                            {% for order in user.orders %}
+                                                <tr>
+                                                    <td class="text-center">{{ order.serial }}</td>
+                                                    <td class="text-center">{{ order.status ? order.status.title : '&mdash;'|raw }}</td>
+                                                    <td class="text-center">{{ order.date|df }}</td>
+                                                    <td class="text-center">{{ order.shipping|df }}</td>
+                                                    <td class="text-center">{{ order.hasProducts() }}</td>
+                                                    <td class="text-center text-nowrap">{{ order.getTotalPrice()|number_format(2, '.', ' ') }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        </table>
+                                    </section>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
+    <!-- End Account Area -->
 
-    {% include 'user.profile.orders.twig' %}
+    {#{% include 'user.profile.orders.twig' %}#}
 {% endblock %}

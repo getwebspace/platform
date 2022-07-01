@@ -1,174 +1,102 @@
 {% extends 'main.twig' %}
 
-{% block title %}Вход | {{ parent() }}{% endblock %}
+{% block title %}Login | {{ parent() }}{% endblock %}
 
-{% block head %}
-    {{ parent() }}
+{% block page %}
+    {% include 'common/breadcrumbs.twig' with {
+        'title': 'Login'
+    } %}
 
-    {% htmlcompress %}
-        <style>
-            body {
-                background: #007bff;
-                background: linear-gradient(to right, #0062E6, #33AEFF);
-            }
+    <!-- Start Account Area -->
+    <div class="account-login section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-12">
+                    <form class="card login-form" method="post">
+                        <div class="card-body">
+                            <div class="title">
+                                <h3>Login Now</h3>
+                                <p>You can login using your social media account or email address.</p>
+                            </div>
 
-            .card-signin {
-                border: 0;
-                border-radius: 1rem;
-                box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.1);
-            }
+                            {% if provider == 'self' %}
+                                {% set another = false %}
+                                {% if parameter('user_auth_code_is_enabled', 'no') == 'yes' %}
+                                    {% set another = true %}
+                                    <a href="?provider=code" class="btn btn-info btn-block text-uppercase">Login via Code</a>
+                                {% endif %}
 
-            .card-signin .card-title {
-                margin-bottom: 2rem;
-                font-weight: 300;
-                font-size: 1.5rem;
-            }
+                                <div class="social-login">
+                                    <div class="row">
+                                        {% for type in ['facebook', 'vk'] %}
+                                            {% if parameter('user_auth_' ~ type ~ '_is_enabled', 'no') == 'yes' %}
+                                                {% set another = true %}
+                                                <div class="col-lg-6 col-md-6 col-12">
+                                                    <a href="{{ oauth_url(type) }}" class="btn {{ type }}-btn" >
+                                                        {{ type }} login
+                                                    </a>
+                                                </div>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
 
-            .card-signin .card-body {
-                padding: 2rem;
-            }
+                                {% if another %}
+                                    <div class="alt-option">
+                                        <span>Or</span>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
 
-            .form-signin {
-                width: 100%;
-            }
-
-            .form-signin .btn {
-                border-radius: 5rem;
-                letter-spacing: .1rem;
-                font-weight: bold;
-                transition: all 0.2s;
-                font-size: 15px;
-                padding: 15px 0 10px 0;
-            }
-
-            .form-label-group {
-                position: relative;
-                margin-bottom: 1rem;
-            }
-
-            .form-label-group input {
-                height: auto;
-                border-radius: 2rem;
-            }
-
-            .form-label-group>label {
-                position: absolute;
-                top: 0;
-                left: 0;
-                display: block;
-                width: 100%;
-                margin-bottom: 0;
-                /* Override default `<label>` margin */
-                line-height: 1.5;
-                color: #495057;
-                border: 1px solid transparent;
-                border-radius: .25rem;
-                transition: all .1s ease-in-out;
-            }
-
-            .form-label-group input::-webkit-input-placeholder {
-                color: transparent;
-            }
-
-            .form-label-group input:-ms-input-placeholder {
-                color: transparent;
-            }
-
-            .form-label-group input::-ms-input-placeholder {
-                color: transparent;
-            }
-
-            .form-label-group input::-moz-placeholder {
-                color: transparent;
-            }
-
-            .form-label-group input::placeholder {
-                color: transparent;
-            }
-        </style>
-    {% endhtmlcompress %}
-{% endblock %}
-
-{% block bodyinner %}
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
-                <div class="card card-signin my-5">
-                    <div class="card-body">
-                        <h5 class="card-title text-center">Вход</h5>
-                        <form class="form-signin" method="post" enctype="multipart/form-data" data-grecaptcha>
                             {% if identifier == 'email' %}
-                                <div class="form-label-group">
-                                    {% include 'mixin/form.twig' with {
-                                        'label': 'E-Mail',
-                                        'type': 'email',
-                                        'name': 'email',
-                                    } %}
-                                </div>
+                                {% include 'mixin/form.twig' with {
+                                    'label': 'E-Mail',
+                                    'type': 'email',
+                                    'name': 'email',
+                                } %}
                             {% elseif identifier == 'username' %}
-                                <div class="form-label-group">
-                                    {% include 'mixin/form.twig' with {
-                                        'label': 'Логин',
-                                        'type': 'text',
-                                        'name': 'username',
-                                    } %}
-                                </div>
+                                {% include 'mixin/form.twig' with {
+                                    'label': 'Username',
+                                    'type': 'text',
+                                    'name': 'username',
+                                } %}
                             {% else %}
-                                <div class="form-label-group">
-                                    {% include 'mixin/form.twig' with {
-                                        'label': 'Телефон',
-                                        'type': 'text',
-                                        'name': 'phone',
-                                    } %}
-                                </div>
+                                {% include 'mixin/form.twig' with {
+                                    'label': 'Phone',
+                                    'type': 'tel',
+                                    'name': 'phone',
+                                } %}
                             {% endif %}
 
                             {% if provider == 'code' and parameter('user_auth_code_is_enabled', 'no') == 'yes' %}
-                                <div class="form-label-group">
-                                    {% include 'mixin/form.twig' with {
-                                        'label': 'Код-пароль',
-                                        'type': 'text',
-                                        'name': 'code',
-                                        'postfix_btn': '<button class="btn btn-info btn-block text-uppercase px-2" type="submit" name="sendcode">Выслать код</button>',
-                                        'args': {
-                                            'placeholder': '000-000-000',
-                                            'autocomplete': false,
-                                        },
-                                    } %}
-                                </div>
+                                {% include 'mixin/form.twig' with {
+                                    'label': 'Code',
+                                    'type': 'text',
+                                    'name': 'code',
+                                    'postfix_btn': '<button class="btn btn-info btn-block text-uppercase px-2" type="submit" name="sendcode">Send code</button>',
+                                    'args': {
+                                        'placeholder': '000-000-000',
+                                        'autocomplete': false,
+                                    },
+                                } %}
                             {% else %}
-                                <div class="form-label-group">
-                                    {% include 'mixin/form.twig' with {
-                                        'label': 'Пароль',
-                                        'type': 'password',
-                                        'name': 'password',
-                                    } %}
-                                </div>
+                                {% include 'mixin/form.twig' with {
+                                    'label': 'Password',
+                                    'type': 'password',
+                                    'name': 'password',
+                                } %}
                             {% endif %}
 
-                            <button class="btn btn-primary btn-block text-uppercase" type="submit">Войти</button>
-
-                            {% if provider == 'self' %}
-                                {% if parameter('user_auth_code_is_enabled', 'no') == 'yes' %}
-                                    <a href="?provider=code" class="btn btn-info btn-block text-uppercase">Войти через код</a>
-                                {% endif %}
-
-                                <div class="row d-flex justify-content-center mt-2">
-                                    {% for type in ['facebook', 'vk'] %}
-                                        {% if parameter('user_auth_' ~ type ~ '_is_enabled', 'no') == 'yes' %}
-                                            <div class="col-4">
-                                                <a href="{{ oauth_url(type) }}" class="btn btn-icon btn-block btn-info">
-                                                    <i class="fab fa-{{ type }}" style="font-size:x-large;"></i>
-                                                </a>
-                                            </div>
-                                        {% endif %}
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
-                        </form>
-                    </div>
+                            <div class="button">
+                                <button class="btn" type="submit">Login</button>
+                            </div>
+                            <p class="outer-link">Don't have an account? <a href="/user/register">Register here </a>
+                            </p>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+    <!-- End Account Area -->
 {% endblock %}

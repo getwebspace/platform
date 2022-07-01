@@ -1,0 +1,113 @@
+{% extends 'main.twig' %}
+
+{% block title %}Профиль пользователя | {{ parent() }}{% endblock %}
+
+{% block page %}
+    <section class="contact-section">
+        <div class="container">
+            <h4 class="mb-2">Личный профиль</h4>
+            <p>
+                Привет, {{ user.getName('full') ?? user.username }}!<br>
+                Здесь вы можете изменять информацию о себе.
+            </p>
+            <div class="row" style="margin-top: 50px;">
+                <div class="col-md-12">
+                    <h4 class="mb-2">Данные аккаунта</h4>
+                    <form method="post" class="contact-form" data-grecaptcha>
+                        <div class="row mb-2">
+                            <div class="col-12 col-md-6">
+                                {% include 'mixin/form.twig' with {
+                                    'label': 'Имя',
+                                    'type': 'text',
+                                    'name': 'firstname',
+                                    'args': {
+                                        'value': user.firstname
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-12 col-md-6">
+                                {% include 'mixin/form.twig' with {
+                                    'label': 'Фамилия',
+                                    'type': 'text',
+                                    'name': 'lastname',
+                                    'args': {
+                                        'value': user.lastname
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-12 col-md-6">
+                                {% include 'mixin/form.twig' with {
+                                    'label': 'E-Mail',
+                                    'type': 'email',
+                                    'name': 'email',
+                                    'args': {
+                                        'value': user.email
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-12 col-md-6">
+                                {% include 'mixin/form.twig' with {
+                                    'label': 'Телефон',
+                                    'type': 'tel',
+                                    'name': 'phone',
+                                    'args': {
+                                        'value': user.phone
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-12 col-md-6">
+                                {% include 'mixin/form.twig' with {
+                                    'label': 'Адрес',
+                                    'type': 'textarea',
+                                    'name': 'address',
+                                    'args': {
+                                        'value': user.address
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-12 col-md-6">
+                                {% include 'mixin/form.twig' with {
+                                    'label': 'Доп. инфо',
+                                    'type': 'text',
+                                    'name': 'additional',
+                                    'args': {
+                                        'value': user.additional
+                                    }
+                                } %}
+
+                                {% include 'mixin/form.twig' with {
+                                    'label': 'Язык сайта',
+                                    'type': 'text',
+                                    'name': 'language',
+                                    'args': {
+                                        'value': user.language ?? _language
+                                    }
+                                } %}
+
+                                {% include 'user.profile.social.twig' %}
+                            </div>
+                            <div class="col-12 col-md-6">
+                                {% include 'mixin/form.twig' with {
+                                    'label': 'Новый пароль',
+                                    'type': 'text',
+                                    'name': 'password',
+                                    'args': {
+                                        'placeholder': 'Оставьте пустым, если не нужно менять'
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <div class="col-12 text-center">
+                            <button class="site-btn">Сохранить</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    {% include 'user.profile.orders.twig' %}
+{% endblock %}

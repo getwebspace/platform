@@ -1,6 +1,6 @@
 {% extends 'main.twig' %}
 
-{% block title %}{{ product.meta.title ? product.meta.title : (product.title ?? 'Товар') }} | {{ parent() }}{% endblock %}
+{% block title %}{{ product.meta.title ? product.meta.title : (product.title ?? 'Product') }} | {{ parent() }}{% endblock %}
 
 {% block head %}
     {{ parent() }}
@@ -13,158 +13,197 @@
         window.catalog = {
             events: {
                 'on:cart:add': (new_item) => {
-                    Swal.fire('Товар добавлен', new_item.title + ' (x' + new_item.quantity + ') теперь в корзине.', 'success');
+                    Swal.fire({
+                        title: 'Product added to cart',
+                        text: new_item.title + ' (x' + new_item.quantity + ') now in cart.',
+                        icon: 'success',
+                        showCancelButton: true,
+                        cancelButtonText: 'Continue shopping',
+                        cancelButtonColor: '#0167F3',
+                        confirmButtonText: 'Checkout',
+                        confirmButtonColor: '#081828'
+                    }).then((result) => {
+                        if (result.value) {
+                            location.href = '/cart';
+                        }
+                    });
                 },
                 'on:cart:update': (updated_item) => {
-                    Swal.fire('Товар обновлен', updated_item.title + ' (x' + updated_item.quantity + ')', 'success');
+                    Swal.fire({
+                        title: 'Cart updated',
+                        text: updated_item.title + ' (x' + updated_item.quantity + ')',
+                        icon: 'success',
+                        showCancelButton: true,
+                        cancelButtonText: 'Continue shopping',
+                        cancelButtonColor: '#0167F3',
+                        confirmButtonText: 'Checkout',
+                        confirmButtonColor: '#081828'
+                    }).then((result) => {
+                        if (result.value) {
+                            location.href = '/cart';
+                        }
+                    });
                 }
             }
         }
     </script>
 
-    <div class="page-top-info">
-        <div class="container">
-            <h4>{{ category.meta.title ? category.meta.title : (category.title ?? 'Каталог') }}</h4>
-            <div class="site-pagination">
-                <a href="/">Главная</a> /
-                <a href="/{{ parameter('catalog_address', 'catalog') }}">Каталог</a>
-                {% for breadcrumb in catalog_category_parents(category) %}
-                    / <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ breadcrumb.address }}">{{ breadcrumb.meta.title ? breadcrumb.meta.title : breadcrumb.title }}</a>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            $('a.img').fancybox();
+        })
+    </script>
 
-    <section class="product-section" data-catalog-item>
-        <div class="container">
-            <div class="back-link">
-                <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ category.address }}">&lt;&lt; В категорию "{{ category.title }}"</a>
-            </div>
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="product-pic-zoom">
-                        {% include 'mixin/img.twig' with {
-                            'src': product.hasFiles() ? product.getFiles().first().getPublicPath('middle') : '/assets/img/no_image.png',
-                            'placeholder': product.hasFiles() ? product.getFiles().first().getPublicPath('small') : '',
-                            'class': 'product-big-img',
-                            'title': product.title,
-                            'alt': product.title,
-                            'style': 'display:block; height: 300px; width: 100%; object-fit: contain; object-position: center center;'
-                        } only %}
-                    </div>
-                    <div class="product-thumbs" tabindex="1" style="overflow: hidden; outline: none;">
-                        <div class="product-thumbs-track">
-                            {% for index, file in product.getFiles().sortBy('date') %}
-                                <div class="pt {{ index == 0 ? 'active' : '' }}" data-imgbigurl="{{ file.getPublicPath() }}">
+    {% include 'common/breadcrumbs.twig' with {
+        'catalog': 'Catalog',
+        'parents': catalog_category_parents(category),
+        'title': product.meta.title ? product.meta.title : (product.title ?? 'Product')
+    } %}
+
+    <!-- Start Item Details -->
+    <section class="item-details section">
+        <div class="container" data-catalog-item>
+            <div class="top-area">
+                <div class="row align-items-center">
+                    <div class="col-lg-6 col-md-12 col-12">
+                        <div class="product-images">
+                            <main id="gallery">
+                                <div class="main-img">
                                     {% include 'mixin/img.twig' with {
-                                        'src': file.getPublicPath('small'),
+                                        'src': product.hasFiles() ? product.getFiles().first().getPublicPath('middle') : 'https://via.placeholder.com/1000x670',
+                                        'placeholder': product.hasFiles() ? product.getFiles().first().getPublicPath('small') : '',
+                                        'id': 'current',
                                         'title': product.title,
-                                        'alt': product.title ~ ' ' ~ index
+                                        'alt': product.title,
                                     } only %}
                                 </div>
-                            {% endfor %}
+                                <div class="images">
+                                    {% for index, file in product.getFiles().sortBy('date') %}
+                                        <a href="{{ file.getPublicPath('full') }}" data-fancybox="group" class="img">
+                                            {% include 'mixin/img.twig' with {
+                                                'src': file.getPublicPath('full'),
+                                                'title': product.title,
+                                                'alt': product.title ~ ' ' ~ index
+                                            } only %}
+                                        </a>
+                                    {% endfor %}
+                                </div>
+                            </main>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-6 product-details">
-                    <h2 class="p-title">{{ product.title }} {% if product.special %}[Акция]{% endif %}</h2>
-                    <h3 class="p-price">{{ product.price }}</h3>
-                    <h4 class="p-stock">Наличие: {{ product.stock > 0 ? '<span>На складе</span>' : '<span>Отсутствует</span>' }}</h4>
-                    <h4 class="p-stock">Налог: {{ product.tax }}%</h4>
+                    <div class="col-lg-6 col-md-12 col-12">
+                        <div class="product-info">
+                            <h2 class="title">{{ product.title }} {% if product.special %}[Акция]{% endif %}</h2>
+                            <p class="category">
+                                {% for tag in product.tags %}
+                                    <i class="lni lni-tag"></i>
+                                    {{ tag }}
+                                {% endfor %}
 
-                    {# add class item_quantity to quantity input #}
-                    <div class="quantity">
-                        <p>Количество</p>
-                        <div class="pro-qty">
-                            <input type="text" class="item_quantity" data-catalog-item-attr="quantity" value="1">
-                        </div>
-                    </div>
+                                <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ category.address }}">{{ category.title }}</a>
+                            </p>
 
-                    {# add class item_add to btn #}
-                    <a href="javascript:;" class="site-btn" data-catalog-item-add>В корзину</a>
+                            <h3 class="price">
+                                {% if product.discount %}
+                                    ${{ product.price - product.discount }}
+                                    <span>${{ product.price }}</span>
+                                {% else %}
+                                    ${{ product.price }}
+                                {% endif %}
+                            </h3>
 
-                    <div id="accordion" class="accordion-area">
-                        <div class="panel">
-                            <div class="panel-header" id="headingOne">
-                                <button class="panel-link active" data-toggle="collapse" data-target="#collapse1" aria-expanded="true" aria-controls="collapse1">Информация</button>
-                            </div>
-                            <div id="collapse1" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
-                                <div class="panel-body">{{ product.description|raw }}</div>
-                            </div>
-                        </div>
-                        {% if product.extra is not empty %}
-                            <div class="panel">
-                                <div class="panel-header" id="headingTwo">
-                                    <button class="panel-link" data-toggle="collapse" data-target="#collapse2" aria-expanded="false" aria-controls="collapse2">Дополнительно</button>
-                                </div>
-                                <div id="collapse2" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-                                    <div class="panel-body">{{ product.extra|raw }}</div>
-                                </div>
-                            </div>
-                        {% endif %}
-                        <div class="panel">
-                            <div class="panel-header" id="headingTwo">
-                                <button class="panel-link" data-toggle="collapse" data-target="#collapse3" aria-expanded="false" aria-controls="collapse2">Характеристики</button>
-                            </div>
-                            <div id="collapse3" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-                                <div class="panel-body">
-                                    <p>
-                                        {% if product.country %}<b>Страна</b>: {{ product.country|raw }}<br/>{% endif %}
-                                        {% if product.manufacturer %}<b>Производитель</b>: {{ product.manufacturer|raw }}<br/>{% endif %}
-                                        {% if product.field1 %}<b>{{ category.product.field_1 }}</b>: {{ product.field1|raw }}<br/>{% endif %}
-                                        {% if product.field2 %}<b>{{ category.product.field_2 }}</b>: {{ product.field2|raw }}<br/>{% endif %}
-                                        {% if product.field3 %}<b>{{ category.product.field_3 }}</b>: {{ product.field3|raw }}<br/>{% endif %}
-                                        {% if product.field4 %}<b>{{ category.product.field_4 }}</b>: {{ product.field4|raw }}<br/>{% endif %}
-                                        {% if product.field5 %}<b>{{ category.product.field_5 }}</b>: {{ product.field5|raw }}<br/>{% endif %}
-                                        {% if product.volume and product.unit %}<b>Цена за</b>: {{ product.getVolumeWithUnit() }}<br/>{% endif %}
+                            {% if product.extra is not empty %}
+                                <p class="info-text">{{ product.extra|raw }}</p>
+                            {% endif %}
 
-                                        {% for attribute in product.getAttributes() %}
-                                            <b>{{ attribute.title }}</b>: {{ attribute.value }}<br/>
-                                        {% endfor %}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        {% if product.hasRelations() %}
-                            <div class="panel">
-                                <div class="panel-header" id="headingTwo">
-                                    <button class="panel-link" data-toggle="collapse" data-target="#collapse4" aria-expanded="false" aria-controls="collapse2">Сопутствующие товары</button>
-                                </div>
-                                <div id="collapse4" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
-                                    <div class="panel-body">
-                                        <div class="row">
-                                            {% for relative in product.getRelations() %}
-                                                <div class="col-4">
-                                                    <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ relative.related.address }}">
-                                                        {% include 'mixin/img.twig' with {
-                                                            'src': relative.related.hasFiles() ? relative.related.getFiles().first().getPublicPath('middle') : '/assets/img/no_image.png',
-                                                            'class': 'product-big-img',
-                                                            'title': relative.related.title,
-                                                            'alt': relative.related.title,
-                                                            'style': 'display:block; height: auto; width: 100%; object-fit: contain; object-position: center center;'
-                                                        } only %}
-                                                    </a>
-
-                                                    <h2 class="p-title">
-                                                        <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ relative.related.address }}">{{ relative.related.title }}</a>
-                                                    </h2>
-                                                    <h4 class="p-price">{{ relative.related.price }} * {{ relative.count }} = {{ relative.related.price * relative.count }}</h4>
-                                                </div>
-                                            {% endfor %}
+                            <div class="bottom-content">
+                                <div class="row align-items-end">
+                                    <div class="col-lg-4 col-md-4 col-12">
+                                        <div class="form-group quantity">
+                                            <label for="quantity">Quantity</label>
+                                            {# add attr data-catalog-item-attr="quantity" to quantity input #}
+                                            <select class="form-control" id="quantity" data-catalog-item-attr="quantity">
+                                                <option>1</option>
+                                                <option>2</option>
+                                                <option>3</option>
+                                                <option>4</option>
+                                                <option>5</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-4 col-12">
+                                        <div class="button cart-button">
+                                            {# add attr data-catalog-item-add to btn #}
+                                            <button class="btn" style="width: 100%;" data-catalog-item-add>Add to Cart</button>
                                         </div>
                                     </div>
                                 </div>
+
+                                {# include product options #}
+                                {% include 'catalog.product.options.twig' with {'categories': categories, 'product': product} only %}
                             </div>
-                        {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {# include product options #}
-            {% include 'catalog.product.options.twig' with {'categories': categories, 'product': product} only %}
+            <div class="product-details-info">
+                <div class="single-block">
+                    <div class="row">
+                        <div class="col-lg-6 col-12">
+                            <div class="info-body custom-responsive-margin">
+                                <h4>Details</h4>
+                                <p>{{ product.description|raw }}</p>
+
+                                <h4>Features</h4>
+                                <ul class="normal-list">
+                                    {% if product.field1 %}<li><span>{{ category.product.field_1 }}</span>: {{ product.field1 }}</li>{% endif %}
+                                    {% if product.field2 %}<li><span>{{ category.product.field_2 }}</span>: {{ product.field2 }}</li>{% endif %}
+                                    {% if product.field3 %}<li><span>{{ category.product.field_3 }}</span>: {{ product.field3 }}</li>{% endif %}
+                                    {% if product.field4 %}<li><span>{{ category.product.field_4 }}</span>: {{ product.field4 }}</li>{% endif %}
+                                    {% if product.field5 %}<li><span>{{ category.product.field_5 }}</span>: {{ product.field5 }}</li>{% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-12">
+                            <div class="info-body">
+                                <h4>Specifications</h4>
+                                <ul class="normal-list">
+                                    {% if product.country %}<li><span>Country:</span> {{ product.country }}</li>{% endif %}
+                                    {% if product.manufacturer %}<li><span>Manufacturer:</span> {{ product.manufacturer }}</li>{% endif %}
+                                    {% if product.vendorcode %}<li><span>Vendorcode:</span> {{ product.vendorcode }}</li>{% endif %}
+                                    {% if product.barcode %}<li><span>Barcode:</span> {{ product.barcode }}</li>{% endif %}
+                                    {% if product.volume %}<li><span>Volume:</span> {{ product.getVolumeWithUnit() }}</li>{% endif %}
+                                    {% if product.tax %}<li><span>Stock</span>: {{ product.stock > 0 ? '<span>На складе</span>' : '<span>Отсутствует</span>' }}</li>{% endif %}
+                                    {% if product.stock %}<li><span>Tax</span>: {{ product.tax }}</li>{% endif %}
+                                    {% if product.dimension %}<li><span>Dimension</span>: {{ product.dimension|join('&times;')|raw }} cm</li>{% endif %}
+                                </ul>
+                                <h4>Attributes:</h4>
+                                <ul class="normal-list">
+                                    {% for attribute in product.getAttributes() %}
+                                        <li><span>{{ attribute.title }}</span>: {{ attribute.value }}</li>
+                                    {% endfor %}
+                                </ul>
+                                {% if product.hasRelations() %}
+                                    <h4>Related products:</h4>
+                                    <ul class="normal-list">
+                                        {% for relative in product.getRelations() %}
+                                            <li>
+                                                <span>
+                                                    <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ relative.related.address }}">
+                                                        {{ relative.related.title }}
+                                                    </a>
+                                                </span>: ${{ relative.related.price }} &times; {{ relative.count }} &equals; ${{ relative.related.price * relative.count }}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
-
-    {% include 'catalog.product.viewed.twig' %}
+    <!-- End Item Details -->
 {% endblock %}

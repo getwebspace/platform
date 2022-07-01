@@ -4,6 +4,7 @@
 
 /theme/*
 !/theme/default
+!/theme/older
 
 /plugin/*
 !/plugin/installed.php

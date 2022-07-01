@@ -1,0 +1,174 @@
+{% extends 'main.twig' %}
+
+{% block title %}Вход | {{ parent() }}{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+
+    {% htmlcompress %}
+        <style>
+            body {
+                background: #007bff;
+                background: linear-gradient(to right, #0062E6, #33AEFF);
+            }
+
+            .card-signin {
+                border: 0;
+                border-radius: 1rem;
+                box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.1);
+            }
+
+            .card-signin .card-title {
+                margin-bottom: 2rem;
+                font-weight: 300;
+                font-size: 1.5rem;
+            }
+
+            .card-signin .card-body {
+                padding: 2rem;
+            }
+
+            .form-signin {
+                width: 100%;
+            }
+
+            .form-signin .btn {
+                border-radius: 5rem;
+                letter-spacing: .1rem;
+                font-weight: bold;
+                transition: all 0.2s;
+                font-size: 15px;
+                padding: 15px 0 10px 0;
+            }
+
+            .form-label-group {
+                position: relative;
+                margin-bottom: 1rem;
+            }
+
+            .form-label-group input {
+                height: auto;
+                border-radius: 2rem;
+            }
+
+            .form-label-group>label {
+                position: absolute;
+                top: 0;
+                left: 0;
+                display: block;
+                width: 100%;
+                margin-bottom: 0;
+                /* Override default `<label>` margin */
+                line-height: 1.5;
+                color: #495057;
+                border: 1px solid transparent;
+                border-radius: .25rem;
+                transition: all .1s ease-in-out;
+            }
+
+            .form-label-group input::-webkit-input-placeholder {
+                color: transparent;
+            }
+
+            .form-label-group input:-ms-input-placeholder {
+                color: transparent;
+            }
+
+            .form-label-group input::-ms-input-placeholder {
+                color: transparent;
+            }
+
+            .form-label-group input::-moz-placeholder {
+                color: transparent;
+            }
+
+            .form-label-group input::placeholder {
+                color: transparent;
+            }
+        </style>
+    {% endhtmlcompress %}
+{% endblock %}
+
+{% block bodyinner %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+                <div class="card card-signin my-5">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Вход</h5>
+                        <form class="form-signin" method="post" enctype="multipart/form-data" data-grecaptcha>
+                            {% if identifier == 'email' %}
+                                <div class="form-label-group">
+                                    {% include 'mixin/form.twig' with {
+                                        'label': 'E-Mail',
+                                        'type': 'email',
+                                        'name': 'email',
+                                    } %}
+                                </div>
+                            {% elseif identifier == 'username' %}
+                                <div class="form-label-group">
+                                    {% include 'mixin/form.twig' with {
+                                        'label': 'Логин',
+                                        'type': 'text',
+                                        'name': 'username',
+                                    } %}
+                                </div>
+                            {% else %}
+                                <div class="form-label-group">
+                                    {% include 'mixin/form.twig' with {
+                                        'label': 'Телефон',
+                                        'type': 'text',
+                                        'name': 'phone',
+                                    } %}
+                                </div>
+                            {% endif %}
+
+                            {% if provider == 'code' and parameter('user_auth_code_is_enabled', 'no') == 'yes' %}
+                                <div class="form-label-group">
+                                    {% include 'mixin/form.twig' with {
+                                        'label': 'Код-пароль',
+                                        'type': 'text',
+                                        'name': 'code',
+                                        'postfix_btn': '<button class="btn btn-info btn-block text-uppercase px-2" type="submit" name="sendcode">Выслать код</button>',
+                                        'args': {
+                                            'placeholder': '000-000-000',
+                                            'autocomplete': false,
+                                        },
+                                    } %}
+                                </div>
+                            {% else %}
+                                <div class="form-label-group">
+                                    {% include 'mixin/form.twig' with {
+                                        'label': 'Пароль',
+                                        'type': 'password',
+                                        'name': 'password',
+                                    } %}
+                                </div>
+                            {% endif %}
+
+                            <button class="btn btn-primary btn-block text-uppercase" type="submit">Войти</button>
+
+                            {% if provider == 'self' %}
+                                {% if parameter('user_auth_code_is_enabled', 'no') == 'yes' %}
+                                    <a href="?provider=code" class="btn btn-info btn-block text-uppercase">Войти через код</a>
+                                {% endif %}
+
+                                <div class="row d-flex justify-content-center mt-2">
+                                    {% for type in ['facebook', 'vk'] %}
+                                        {% if parameter('user_auth_' ~ type ~ '_is_enabled', 'no') == 'yes' %}
+                                            <div class="col-4">
+                                                <a href="{{ oauth_url(type) }}" class="btn btn-icon btn-block btn-info">
+                                                    <i class="fab fa-{{ type }}" style="font-size:x-large;"></i>
+                                                </a>
+                                            </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

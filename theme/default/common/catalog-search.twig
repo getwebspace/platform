@@ -1,0 +1,19 @@
+<form action="/search">
+    {% include 'mixin/form.twig' with {
+        'type': 'hidden',
+        'name': 't',
+        'args': {
+            'value': 'catalog_product',
+        }
+    } %}
+    {% include 'mixin/form.twig' with {
+        'type': 'text',
+        'name': 'q',
+        'args': {
+            'required': true,
+            'value': _request.q,
+            'placeholder': 'Search Here...',
+        }
+    } %}
+    <button type="submit"><i class="lni lni-search-alt"></i></button>
+</form>

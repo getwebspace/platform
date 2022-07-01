@@ -1,0 +1,38 @@
+<form action="/search">
+    <!-- navbar search start -->
+    <div class="navbar-search search-style-5">
+        <div class="search-select">
+            <div class="select-position">
+                {% include 'mixin/form.twig' with {
+                    'type': 'select',
+                    'name': 't',
+                    'args': {
+                        'selected': _request.t,
+                        'option': {
+                            '': 'All',
+                            'page': 'Pages',
+                            'publication': 'Publications',
+                            'catalog_product': 'Products'
+                        },
+                    }
+                } %}
+            </div>
+        </div>
+        <div class="search-input">
+            {% include 'mixin/form.twig' with {
+                'type': 'text',
+                'name': 'q',
+                'args': {
+                    'required': true,
+                    'value': _request.q,
+                    'placeholder': 'Search',
+                }
+            } %}
+        </div>
+        <div class="search-btn">
+            <button><i class="lni lni-search-alt"></i></button>
+        </div>
+    </div>
+    <!-- navbar search Ends -->
+
+</form>

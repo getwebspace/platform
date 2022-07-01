@@ -1,60 +1,109 @@
 {% extends 'main.twig' %}
 
-{% block title %}Гостевая книга | {{ parent() }}{% endblock %}
+{% block title %}Guestbook | {{ parent() }}{% endblock %}
 
 {% block page %}
-    <section class="contact-section">
-        <div class="container">
-            <h4 class="mb-2">Напишите нам</h4>
-            <p>
-                Мнение будет отправлено администрации, а после проверки модератором появится на этой странице.<br/>
-                Если у вас был вопрос, то так же будет дан и ответ, мы приложим все усилия для того, чтобы ответить вам максимально быстро.
-            </p>
-            <div class="row" style="margin-top: 50px;">
-                <div class="col-md-12">
-                    <form method="post" class="contact-form" data-grecaptcha>
+    {% include 'common/breadcrumbs.twig' with {
+        'title': 'Guestbook',
+    } %}
+
+    <section class="section">
+        <di class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <h4 class="mb-2">Write to us</h4>
+                    <p>
+                        The opinion will be sent to the administration, and after verification by the moderator, it will appear on this page.<br/>
+                        If you had a question, then the answer will also be given, we will make every effort to answer you as quickly as possible.
+                    </p>
+
+                    <form method="post" class="contact-form pt-4" data-grecaptcha>
                         <div class="row">
                             <div class="col-md-6">
-                                <input type="text" name="name" placeholder="Ваше имя *" required>
-                                <input type="email" name="email" placeholder="Ваш E-Mail *" required>
-                                <button class="site-btn">Отправить отзыв</button>
+                                <div class="single-form form-default">
+                                    <label>Your name (*)</label>
+                                    <div class="form-input form">
+                                        {% include 'mixin/form.twig' with {
+                                            'type': 'text',
+                                            'name': 'name',
+                                            'args': {
+                                                'required': true,
+                                                'placeholder': 'Your name'
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-md-6">
-                                <textarea name="message" placeholder="Ваше сообщение или отзыв или предложение или пожелание.. *" required></textarea>
+                                <div class="single-form form-default">
+                                    <label>Your E-Mail (*)</label>
+                                    <div class="form-input form">
+                                        {% include 'mixin/form.twig' with {
+                                            'type': 'email',
+                                            'name': 'email',
+                                            'args': {
+                                                'required': true,
+                                                'placeholder': 'Your E-Mail (*)'
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="single-form form-default">
+                                    <label>Your message (*)</label>
+                                    {% include 'mixin/form.twig' with {
+                                        'type': 'textarea',
+                                        'name': 'message',
+                                        'args': {
+                                            'required': true,
+                                            'placeholder': 'Your message or feedback or suggestion or wish.. *',
+                                            'style': 'height: 105px; margin-bottom: 16px;',
+                                        }
+                                    } %}
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="steps-form-btn button">
+                                    <button class="btn btn-alt" type="submit">Send</button>
+                                </div>
                             </div>
                         </div>
                     </form>
                 </div>
-            </div>
 
-            {% if messages.count() %}
-                <h4 class="mt-5 mb-2">Другие отзывы</h4>
-                <p>Новые комментарии сверху</p>
+                <div class="col-md-8 mt-5">
+                    <div class="row">
+                        {% if messages.count() %}
+                            <h4 class="mt-5 mb-2">Other reviews</h4>
+                            <p>New comments above</p>
 
-                <div id="accordion" class="accordion-area">
-                    {% for item in messages.sortByDesc('date') %}
-                        <div class="panel">
-                            <div class="panel-header" id="headingOne">
-                                <button class="panel-link {{ loop.index < 3 ? 'active' : '' }}" data-toggle="collapse" data-target="#comment{{ loop.index }}" aria-expanded="false" aria-controls="collapse">
-                                    {{ item.name }} ({{ item.email }})
-                                    <span class="float-right" style="margin-right: 30px;">{{ item.date|df }}</span>
-                                </button>
-                            </div>
-                            <div id="comment{{ loop.index }}" class="collapse {{ loop.index < 3 ? 'show' : 'collapsed' }}" aria-labelledby="headingOne" data-parent="#accordion">
-                                <div class="panel-body">
-                                    <p>{{ item.message|raw|nl2br }}</p>
+                            <div class="col-lg-8 col-md-12 col-12 mt-3">
+                                <div class="row">
+                                    {% for item in messages.sortByDesc('date') %}
+                                        <!-- Start -->
+                                        <div class="col-lg-6 col-md-6 col-12">
+                                            <h4 class="mt-0 mb-1">{{ item.name }}</h4>
+                                            {{ item.date|df }} ({{ item.email }})
 
-                                    <div class="alert alert-light">
-                                        <p style="margin: 0; padding: 0;">
-                                            <b>Ответ:</b> {{ item.response|raw|nl2br }}
-                                        </p>
-                                    </div>
+                                            <p>{{ item.message|raw|nl2br }}</p>
+
+                                            {% if item.response %}
+                                                <div class="alert alert-light">
+                                                    <p style="margin: 0; padding: 0;">
+                                                        <b>Response:</b> {{ item.response|raw|nl2br }}
+                                                    </p>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <!-- End -->
+                                    {% endfor %}
                                 </div>
                             </div>
-                        </div>
-                    {% endfor %}
+                        {% endif %}
+                    </div>
                 </div>
-            {% endif %}
+            </div>
         </div>
     </section>
 {% endblock %}

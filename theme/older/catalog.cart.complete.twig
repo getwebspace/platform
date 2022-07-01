@@ -1,0 +1,101 @@
+{% extends 'main.twig' %}
+
+{% block title %}Заказ {{ order.serial }} {{ order.external_id ? '(' ~ order.external_id ~ ')' : '' }} | {{ parent() }}{% endblock %}
+
+{% block page %}
+    <script>
+        window.catalog = {
+            events: {
+                'on:ready': (cart) => {
+                    window.catalog.cartRemoveAll();
+                }
+            }
+        }
+    </script>
+
+    <div class="page-top-info">
+        <div class="container">
+            <h4>Заказ</h4>
+            <div class="site-pagination">
+                <a href="/">Главная</a> /
+                <a href="/{{ parameter('catalog_address', 'catalog') }}">Каталог</a> /
+                <a href="/cart">Корзина</a> /
+                <a href="/cart/done/{{ order.uuid }}">Заказ</a>
+            </div>
+        </div>
+    </div>
+
+    <section class="">
+        <div class="container pt-5">
+            <div class="row pt-5 pb-5">
+                <div class="col-md-12 text-center">
+                    <h3 class="pb-3">
+                        Информация о заказе {{ order.serial }} {{ order.external_id ? '(' ~ order.external_id ~ ')' : '' }}
+                    </h3>
+                    <p>Благодарим вас за заказ</p>
+                </div>
+            </div>
+
+            <div class="row pb-5">
+                <div class="col-md-6">
+                    <h4>Заказчик</h4>
+
+                    <table class="table mt-3 mb-5">
+                        <tr>
+                            <td style="width: 50%">Имя</td>
+                            <td style="width: 50%">{{ order.user ? order.user.getName() : order.delivery.client }}</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Телефон</td>
+                            <td>{{ order.user and order.user.phone ? order.user.phone : order.phone }}</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>E-Mail</td>
+                            <td>{{ order.user and order.user.email ? order.user.email : order.email }}</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Адрес доставки</td>
+                            <td>{{ order.delivery.address }}</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>Дата доставки</td>
+                            <td>{{ order.shipping|df('d.m.Y H:i') }}</td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="col-md-6">
+                    <h4>Состав заказа</h4>
+
+                    <table class="table mt-3 mb-5" style="width: 100%;">
+                        <tr>
+                            <td>Название</td>
+                            <td class="text-right">Цена</td>
+                            <td class="text-right">Кол-во</td>
+                            <td class="text-right">Сумма</td>
+                        </tr>
+
+                        {% for item in order.products %}
+                            <tr>
+                                <td>{{ item.title }}</td>
+                                <td class="text-right">{{ item.price|number_format(2, '.', ' ') }}</td>
+                                <td class="text-right">{{ item.count }}</td>
+                                <td class="text-right">{{ (item.price * item.count)|number_format(2, '.', ' ') }}</td>
+                            </tr>
+                        {% endfor %}
+
+                        <tr>
+                            <td colspan="3">Всего</td>
+                            <td class="text-right">{{ order.getTotalPrice()|number_format(2, '.', ' ') }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

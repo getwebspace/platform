@@ -1,0 +1,38 @@
+<!-- Start Widget -->
+<div class="single-widget range">
+    <h3>Price Range</h3>
+    <input id="price-range"
+           type="range"
+           class="form-range"
+           step="1"
+           min="{{ products.all.min('price') }}"
+           max="{{ products.all.max('price') }}"
+           value="{{ _request.price.min ?? products.all.avg('price')|number_format(2, '.', ',') }}"
+           onchange="(() => {location = '{{ non_page_path() }}{{ page ? '/' ~ page : '' }}{{ current_query(attribute.address, attr.value|trim) }}'})()"
+    >
+    <div class="range-inner">
+        <label>$</label>
+        <input type="number" id="rangePrimary" placeholder="{{ _request.price.min ?? products.all.avg('price')|number_format(2, '.', ',') }}" />
+    </div>
+</div>
+<!-- End Widget -->
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        let $inp = $('#rangePrimary');
+
+        // change min price
+        $('#price-range')
+            .on('input', (e) => {
+                $inp.val($(e.currentTarget).val());
+            })
+            .on('change', (e) => {
+                let val = $(e.currentTarget).val();
+
+                let queryParams = new URLSearchParams(window.location.search);
+                    queryParams.set('price[min]', val);
+
+                location = location.pathname + '/?' + queryParams.toString();
+            });
+    });
+</script>

@@ -1,6 +1,6 @@
 {% extends 'main.twig' %}
 
-{% block title %}{{ category.meta.title ? category.meta.title : (category.title ?? 'Каталог') }} | {{ parent() }}{% endblock %}
+{% block title %}{{ category.meta.title ? category.meta.title : (category.title ?? 'Catalog') }} | {{ parent() }}{% endblock %}
 
 {% block head %}
     {{ parent() }}
@@ -13,96 +13,146 @@
         window.catalog = {
             events: {
                 'on:cart:add': (new_item) => {
-                    Swal.fire('Товар добавлен', new_item.title + ' (x' + new_item.quantity + ') теперь в корзине.', 'success');
+                    Swal.fire({
+                        title: 'Product added to cart',
+                        text: new_item.title + ' (x' + new_item.quantity + ') now in cart.',
+                        icon: 'success',
+                        showCancelButton: true,
+                        cancelButtonText: 'Continue shopping',
+                        cancelButtonColor: '#0167F3',
+                        confirmButtonText: 'Checkout',
+                        confirmButtonColor: '#081828'
+                    }).then((result) => {
+                        if (result.value) {
+                            location.href = '/cart';
+                        }
+                    });
                 },
                 'on:cart:update': (updated_item) => {
-                    Swal.fire('Товар обновлен', updated_item.title + ' (x' + updated_item.quantity + ')', 'success');
+                    Swal.fire({
+                        title: 'Cart updated',
+                        text: updated_item.title + ' (x' + updated_item.quantity + ')',
+                        icon: 'success',
+                        showCancelButton: true,
+                        cancelButtonText: 'Continue shopping',
+                        cancelButtonColor: '#0167F3',
+                        confirmButtonText: 'Checkout',
+                        confirmButtonColor: '#081828'
+                    }).then((result) => {
+                        if (result.value) {
+                            location.href = '/cart';
+                        }
+                    });
                 }
             }
         }
     </script>
 
-    <div class="page-top-info">
-        <div class="container">
-            <h4>{{ category.meta.title ? category.meta.title : (category.title ?? 'Каталог') }}</h4>
-            <div class="site-pagination">
-                <a href="/">Главная</a> /
-                <a href="/{{ parameter('catalog_address', 'catalog') }}">Каталог</a>
-                {% for breadcrumb in catalog_category_parents(category) %}
-                    / <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ breadcrumb.address }}">{{ breadcrumb.meta.title ? breadcrumb.meta.title : breadcrumb.title }}</a>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
+    {% include 'common/breadcrumbs.twig' with {
+        'catalog': 'Catalog',
+        'parents': catalog_category_parents(category),
+    } %}
 
-    <section class="category-section spad">
+    <!-- Start Product Grids -->
+    <section class="product-grids section">
         <div class="container">
             <div class="row">
-                <div class="col-lg-3 order-2 order-lg-1">
-                    <div class="filter-widget">
-                        <h2 class="fw-title">Категории</h2>
-                        <ul class="category-menu">
-                            {% include 'catalog.category.menu.twig' with {'categories':categories,'NIL':NIL} only %}
-                        </ul>
-                    </div>
+                <div class="col-lg-3 col-12">
+                    <!-- Start Product Sidebar -->
+                    <div class="product-sidebar">
+                        <!-- Start Widget -->
+                        <div class="single-widget search">
+                            <h3>Search Product</h3>
+                            {% include 'common/catalog-search.twig' %}
+                        </div>
+                        <!-- End Widget -->
 
-                    <div class="filter-widget mb-0">
-                        <h2 class="fw-title">Цена</h2>
-                        <div class="price-range-wrap">
-                            <div class="price-range ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content" data-min="{{ products.all.min('price') }}" data-max="{{ products.all.max('price') }}">
-                                <div class="ui-slider-range ui-corner-all ui-widget-header" style="left: 0%; width: 100%;"></div>
-                                <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default" style="left: 0%;"></span>
-                                <span tabindex="0" class="ui-slider-handle ui-corner-all ui-state-default" style="left: 100%;"></span>
-                                <div class="ui-slider-range ui-corner-all ui-widget-header" style="left: 0%; width: 100%;"></div>
+                        {% include 'catalog.category.menu.twig' with {'categories':categories,'NIL':NIL} %}
+                        {% include 'catalog.category.price.twig' with {'products': products} %}
+                        {% include 'catalog.category.attributes.twig' with {'category': category, 'products': products} %}
+                        {% include 'catalog.category.filter.twig' with {'category': category, 'products': products} %}
+                    </div>
+                    <!-- End Product Sidebar -->
+                </div>
+                <div class="col-lg-9 col-12">
+                    <div class="product-grids-head">
+                        <div class="product-grid-topbar">
+                            <div class="row align-items-center">
+                                <div class="col-lg-7 col-md-8 col-12">
+                                    {% include 'catalog.category.sort.twig' %}
+                                </div>
+                                <div class="col-lg-5 col-md-4 col-12">
+                                    <nav>
+                                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                            <button class="nav-link active" id="nav-grid-tab" data-bs-toggle="tab" data-bs-target="#nav-grid" type="button" role="tab" aria-controls="nav-grid" aria-selected="true"><i class="lni lni-grid-alt"></i></button>
+                                            <button class="nav-link" id="nav-list-tab" data-bs-toggle="tab" data-bs-target="#nav-list" type="button" role="tab" aria-controls="nav-list" aria-selected="false"><i class="lni lni-list"></i></button>
+                                        </div>
+                                    </nav>
+                                </div>
                             </div>
-                            <div class="range-slider">
-                                <div class="price-input">
-                                    <input type="text" id="minamount">
-                                    <input type="text" id="maxamount">
+                        </div>
+
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="nav-grid" role="tabpanel" aria-labelledby="nav-grid-tab">
+                                <div class="row">
+                                    {% if products.filtered.count() %}
+                                        {% for product in products.filtered %}
+                                            <div class="col-lg-4 col-md-6 col-12">
+                                                {% include 'catalog.category.product.grid.twig' with {'categories':categories,'product':product} only %}
+                                            </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div class="col-12 py-5 text-center">
+                                            <h4>Здесь ничего нет</h4>
+                                            <p>
+                                                Try to <a href="{{ non_page_path() }}{{ page ? '/' ~ page : '' }}">remove filters</a>
+                                                {% if category %}
+                                                    or return to a
+                                                    <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ categories.firstWhere('uuid', category.parent).address }}">category above</a>
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        {% include 'pagination.twig' with {'pagination':pagination} only %}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="nav-list" role="tabpanel" aria-labelledby="nav-list-tab">
+                                <div class="row">
+                                    {% if products.filtered.count() %}
+                                        {% for product in products.filtered %}
+                                            <div class="col-lg-12 col-md-12 col-12">
+                                                {% include 'catalog.category.product.inline.twig' with {'categories':categories,'product':product} only %}
+                                            </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <div class="col-12 py-5 text-center">
+                                            <h4>There's nothing here</h4>
+                                            <p>
+                                                Try to <a href="{{ non_page_path() }}{{ page ? '/' ~ page : '' }}">remove filters</a>
+                                                {% if category %}
+                                                    or return to a
+                                                    <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ categories.firstWhere('uuid', category.parent).address }}">category above</a>
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="row">
+                                    <div class="col-12">
+                                        {% include 'pagination.twig' with {'pagination':pagination} only %}
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="col-lg-9 order-1 order-lg-2 mb-5 mb-lg-0">
-                    <div class="row">
-                        {% if products.filtered.count() %}
-                            {% for product in products.filtered %}
-                                {% include 'catalog.category.product.twig' with {'categories':categories,'product':product} only %}
-                            {% endfor %}
-                        {% else %}
-                            <div class="col-12 text-center">
-                                <h4>Здесь ничего нет</h4>
-                                <p>
-                                    Попробуйте <a href="{{ non_page_path() }}{{ page ? '/' ~ page : '' }}">убрать фильтры</a>
-                                    {% if category.parent != NIL %}
-                                        или вернуться в <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ categories.firstWhere('uuid', category.parent).address }}">категорию выше</a>
-                                    {% endif %}
-                                </p>
-                            </div>
-                        {% endif %}
-                    </div>
-                    <div class="row justify-content-center">
-                        <div class="col-6">
-                            {% include 'pagination.twig' with {'pagination':pagination} only %}
-                        </div>
-                    </div>
-
-                    {% if category.description is not empty %}
-                        <hr class="mt-5 mb-5">
-
-                        <div class="row">
-                            <div class="col-12">
-                                {{ category.description|raw }}
-                            </div>
-                        </div>
-                    {% endif %}
-
-                    {#{% include 'catalog.category.filter.twig' with {'category': category, 'products': products} only %}#}
-                    {% include 'catalog.category.attributes.twig' with {'category': category, 'products': products} only %}
-                </div>
             </div>
         </div>
     </section>
+    <!-- End Product Grids -->
 {% endblock %}

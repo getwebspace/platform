@@ -1,13 +1,15 @@
 {% set pages = (pagination.count / pagination.page)|round(0, 'ceil') %}
 
 {% if pages > 1 %}
-    <nav>
-        <ul class="pagination justify-content-center">
+    <!-- Pagination -->
+    <div class="pagination left blog-grid-page">
+        <ul class="pagination-list">
             {% for page in 0..pages-1 %}
-                <li class="page-item {{ is_current_page_number(page) ? 'active' : '' }}">
-                    <a class="page-link" href="{{ non_page_path() }}{{ page ? '/' ~ page : '' }}{{ current_query() }}">{{ page + 1 }}</a>
+                <li class="{{ is_current_page_number(page) ? 'active' : '' }}">
+                    <a href="{{ non_page_path() }}{{ page ? '/' ~ page : '' }}{{ current_query() }}">{{ page + 1 }}</a>
                 </li>
             {% endfor %}
         </ul>
-    </nav>
+    </div>
+    <!--/ End Pagination -->
 {% endif %}

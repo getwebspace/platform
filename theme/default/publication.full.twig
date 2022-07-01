@@ -6,53 +6,61 @@
     {{ parent() }}
     <meta name="description" content="{{ category.meta.description }}">
     <meta name="keywords" content="{{ category.meta.keywords }}">
+
+    <link rel="alternate" type="application/rss+xml" title="{{ parameter('common_title') }}" href="{{ parameter('common_homepage') }}/{{ category.rss() }}">
 {% endblock %}
 
 {% block page %}
-    <div class="page-top-info">
-        <div class="container">
-            <h4>{{ category.title }}</h4>
-            <div class="site-pagination">
-                <a href="/">Главная</a> /
-                <a href="/{{ category.address }}">{{ category.title }}</a> /
-                <a href="/{{ category.address }}/{{ publication.address }}">{{ publication.title }}</a>
-            </div>
-            <div>
-                {{ category.description }}
-            </div>
-        </div>
-    </div>
+    {% include 'common/breadcrumbs.twig' with {
+        'parents': [category.meta.title ? category.meta.title : category.title],
+        'title': publication.meta.title ? publication.meta.title : publication.title
+    } %}
 
-    <section class="page-section">
+    <!-- Start Blog Singel Area -->
+    <section class="section blog-single">
         <div class="container">
             <div class="row">
-                <div class="col-lg-3 order-2 order-lg-1">
-                    <div class="filter-widget">
-                        <h2 class="fw-title">Категории</h2>
-                        <ul class="category-menu">
-                            {% include 'publication.menu.twig' with {'categories':categories,'NIL':NIL} only %}
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="col-lg-9 order-1 order-lg-2 mb-5 mb-lg-0">
-                    <div class="row">
-                        <article class="publication" data-uuid="{{ publication.uuid }}">
-                            <h2>{{ publication.title }}</h2>
-                            <div>
-                                <ul class="meta">
-                                    <li><a href="/{{ publication.category.address }}">{{ publication.category.title }}</a></li>
-                                    <li>{{ publication.date|df }}</a></li>
-                                    <li>{{ publication.user.getName('short') }}</li>
-                                </ul>
+                <div class="col-lg-10 offset-lg-1 col-md-12 col-12">
+                    <div class="single-inner">
+                        <div class="post-details">
+                            <div class="main-content-head">
+                                <div class="post-thumbnils">
+                                    {% include 'mixin/img.twig' with {
+                                        'src': publication.hasFiles() ? publication.getFiles().first().getPublicPath('middle') : 'https://via.placeholder.com/850x460',
+                                        'placeholder': publication.hasFiles() ? publication.getFiles().first().getPublicPath('small') : '',
+                                        'title': publication.title,
+                                        'alt': publication.title,
+                                        'style': 'display:block; height: 460px; width: 100%; object-fit: cover; object-position: center center;'
+                                    } only %}
+                                </div>
+                                <div class="meta-information">
+                                    <h2 class="post-title">
+                                        <a href="/{{ publication.address }}">{{ publication.title }}</a>
+                                    </h2>
+                                    <!-- End Meta Info -->
+                                    <ul class="meta-info">
+                                        <li>
+                                            <a href="#"><i class="lni lni-user"></i> {{ publication.user.getName('short') }}</a>
+                                        </li>
+                                        <li>
+                                            <a href="#"><i class="lni lni-calendar"></i> {{ publication.date|df }}
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="/{{ publication.category.address }}"><i class="lni lni-tag"></i> {{ publication.category.title }}</a>
+                                        </li>
+                                    </ul>
+                                    <!-- End Meta Info -->
+                                </div>
+                                <div class="detail-inner">
+                                    {{ publication.content.full|raw }}
+                                </div>
                             </div>
-                            <div>
-                                {{ publication.content.full|raw }}
-                            </div>
-                        </article>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
+    <!-- End Blog Singel Area -->
 {% endblock %}

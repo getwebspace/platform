@@ -1,51 +1,71 @@
 {% extends 'main.twig' %}
 
-{% block title %}Поиск | {{ parent() }}{% endblock %}
+{% block title %}Search | {{ parent() }}{% endblock %}
 
 {% block page %}
-    <section class="contact-section">
+    {% include 'common/breadcrumbs.twig' with {'title': 'Search'} %}
+
+    <section class="section">
         <div class="container">
             <form method="get">
-                <div class="row">
-                    <div class="col-12 col-md-8 offset-md-2">
-                        {% include 'mixin/form.twig' with {
-                            'type': 'select',
-                            'name': 't',
-                            'args': {
-                                'selected': _request.t,
-                                'option': {
-                                    '': 'Везде',
-                                    'page': 'Страницы',
-                                    'publication': 'Публикации',
-                                    'catalog_product': 'Товары'
-                                },
-                                'class': ['form-control'],
-                            }
-                        } %}
-
-                        {% include 'mixin/form.twig' with {
-                            'type': 'text',
-                            'name': 'q',
-                            'args': {
-                                'required': true,
-                                'value': _request.q,
-                                'placeholder': 'Что ищем?',
-                                'class': ['form-control'],
-                            }
-                        } %}
-
-                        {% include 'cup/form.twig' with {
-                            'label': 'Точное совпадение',
-                            'type': 'checkbox',
-                            'name': 'qs',
-                            'args': {
-                                'value': 1,
-                                'checked': _request.qs ? true : false
-                            }
-                        } %}
+                <div class="row justify-content-center">
+                    <div class="col-md-7">
+                        <div class="single-form form-default">
+                            <label>Type</label>
+                            <div class="form-input form">
+                                {% include 'mixin/form.twig' with {
+                                    'type': 'select',
+                                    'name': 't',
+                                    'args': {
+                                        'selected': _request.t,
+                                        'option': {
+                                            '': 'All',
+                                            'page': 'Pages',
+                                            'publication': 'Publications',
+                                            'catalog_product': 'Products'
+                                        },
+                                    }
+                                } %}
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-12 text-center">
-                        <button class="site-btn" style="margin-bottom: 16px;">Искать</button>
+
+                    <div class="col-md-7">
+                        <div class="single-form form-default">
+                            <label>Query</label>
+                            <div class="form-input form">
+                                {% include 'mixin/form.twig' with {
+                                    'type': 'text',
+                                    'name': 'q',
+                                    'args': {
+                                        'required': true,
+                                        'value': _request.q,
+                                        'placeholder': 'What are we looking for?',
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-7">
+                        <div class="single-form form-default">
+                            <div class="form-input form">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Exact match',
+                                    'type': 'checkbox',
+                                    'name': 'qs',
+                                    'args': {
+                                        'value': 1,
+                                        'checked': _request.qs ? true : false
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="single-form button">
+                            <button class="btn" type="submit">Search</button>
+                        </div>
                     </div>
                 </div>
 
@@ -53,16 +73,16 @@
                     {% if count %}
                         <div class="row mt-3">
                             {% for type, list in result %}
-                                <div class="col-12 col-md-8 offset-md-2">
+                                <div class="col-md-12">
                                     <h5>
                                         {% if type == 'page' %}
-                                            Страницы
+                                            Pages
                                         {% elseif type == 'publication' %}
-                                            Публикации
+                                            Publications
                                         {% elseif type == 'catalog_category' %}
-                                            Категории товаров
+                                            Product categories
                                         {% elseif type == 'catalog_product' %}
-                                            Товары в каталоге
+                                            Products in the catalog
                                         {% endif %}
 
                                         ({{ list|count }})
@@ -98,8 +118,8 @@
                     {% else %}
                         <div class="row mt-5">
                             <div class="col-12 text-center">
-                                <h4>Ничего нет</h4>
-                                <p>Попробуйте изменить запрос</p>
+                                <h4>There is nothing</h4>
+                                <p>Try changing the query</p>
                             </div>
                         </div>
                     {% endif %}

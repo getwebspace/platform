@@ -1,0 +1,12 @@
+{% for node in categories.where('parent', '=', parent ?? NIL).sortBy('order') %}
+    <li class="">
+        <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ node.address }}">{{ node.title }}</a>
+        {% set subNodes = categories.where('parent', '=', node.uuid).sortBy('order') %}
+
+        {% if subNodes.count() %}
+            <ul class="sub-menu">
+                {% include 'catalog.category.menu.twig' with {'categories':categories,'parent':node.uuid,'NIL':NIL} only %}
+            </ul>
+        {% endif %}
+    </li>
+{% endfor %}

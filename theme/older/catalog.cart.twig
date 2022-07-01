@@ -1,0 +1,214 @@
+{% extends 'main.twig' %}
+
+{% block title %}Корзина | {{ parent() }}{% endblock %}
+
+{% block page %}
+    <script>
+        window.catalog = {
+            cart: {
+                // cart column headers
+                columns: [
+                    {label: '', attr: 'thumb', view: null, class: null, style: 'width: 10%; text-align: center;'},
+                    {label: 'Title', attr: 'title', view: null, class: null, style: null},
+                    {label: 'Vendor code', attr: 'vendorcode', view: null, class: null, style: null},
+                    {label: '-', attr: 'decrement', view: null, class: null, style: 'width: 10%; text-align: center;'},
+                    {label: 'Quantity', attr: 'quantity', view: null, class: null, style: 'width: 15%;'},
+                    {label: '+', attr: 'increment', view: null, class: null, style: 'width: 10%; text-align: center;'},
+                    {label: 'Cost', attr: 'price', view: null, class: null, style: 'text-align: right;'},
+                    {label: 'Total', attr: 'total', view: null, class: null, style: 'text-align: right;'},
+                    {label: 'Remove', attr: 'remove', view: null, class: null, style: 'text-align: center;'},
+                ],
+
+                // showing header
+                columns_header: true,
+
+                // showing items group title
+                group_header: true,
+
+                // table style ('table' or 'div')
+                style: 'table',
+
+                // cart handler url
+                url: '',
+            },
+
+            // precision settings
+            // count of zeros after the decimal point
+            precision: {
+                count: 5, // in item counts
+                price: 3, // in item prices and totals
+            },
+
+            events: {
+                'on:ready': (cart) => {
+                    $('[data-cart-not-empty]').toggle(cart.length !== 0);
+                    $('[data-cart-empty]').toggle(cart.length === 0);
+                },
+                'on:cart:update': (updated_item, cart) => {
+                    $('[data-cart-not-empty]').toggle(cart.length !== 0);
+                    $('[data-cart-empty]').toggle(cart.length === 0);
+                },
+            }
+        }
+    </script>
+
+    <style>
+        [data-catalog-cart] [data-attr="quantity"] input {
+            text-align: center;
+        }
+
+        [data-catalog-cart] [data-attr="increment"] button,
+        [data-catalog-cart] [data-attr="decrement"] button,
+        [data-catalog-cart] [data-attr="remove"] button {
+            display: inline-block;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 10px 15px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            background: #f51167;
+            color: #fff;
+            line-height: normal;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        [data-catalog-cart] td {
+            vertical-align: middle;
+        }
+
+        [data-catalog-cart] img {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+            object-position: center center;
+        }
+
+        [data-catalog-cart-data].check-error {
+            border: 1px solid #f51167;
+        }
+    </style>
+
+    <div class="page-top-info">
+        <div class="container">
+            <h4>Корзина</h4>
+            <div class="site-pagination">
+                <a href="/">Главная</a> /
+                <a href="/{{ parameter('catalog_address', 'catalog') }}">Каталог</a> /
+                <a href="/cart">Корзина</a>
+            </div>
+        </div>
+    </div>
+
+    <section class="">
+        <div class="container pt-5">
+            <div class="row pt-5 pb-5" style="display: none" data-cart-empty>
+                <div class="col-md-12 text-center">
+                    <h3 class="pb-3">Ваша корзина еще пуста, почему?</h3>
+                    <p>Посомотрите наш <a href="/{{ parameter('catalog_address', 'catalog') }}">каталог</a>, может быть
+                        вам что-то понравится!</p>
+                </div>
+            </div>
+
+            <div style="display: none" data-cart-not-empty>
+                <div class="row pt-5 pb-5">
+                    <div class="col-md-12" data-catalog-cart></div>
+                </div>
+
+                <div class="contact-form">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div>
+                                {% include 'mixin/form.twig' with {
+                                    'type': 'text',
+                                    'name': 'delivery[client]',
+                                    'args': {
+                                        'value': user.getName(),
+                                        'required': true,
+                                        'placeholder': 'Ваше имя *',
+                                        'class': ['form-control'],
+                                        'data': {'catalog-cart-data': ''}
+                                    }
+                                } %}
+                            </div>
+                            <div>
+                                {% include 'mixin/form.twig' with {
+                                    'type': 'tel',
+                                    'name': 'phone',
+                                    'args': {
+                                        'value': user.getPhone(),
+                                        'required': true,
+                                        'placeholder': 'Ваш телефон *',
+                                        'class': ['form-control'],
+                                        'data': {'catalog-cart-data': ''}
+                                    }
+                                } %}
+                            </div>
+                            <div>
+                                {% include 'mixin/form.twig' with {
+                                    'type': 'email',
+                                    'name': 'email',
+                                    'args': {
+                                        'value': user.getEmail(),
+                                        'placeholder': 'Ваш E-Mail',
+                                        'class': ['form-control'],
+                                        'data': {'catalog-cart-data': ''}
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div>
+                                {% include 'mixin/form.twig' with {
+                                    'type': 'datetime',
+                                    'name': 'shipping',
+                                    'args': {
+                                        'value': 'now'|date_modify('+1 day')|df('d.m.Y, H:00'),
+                                        'placeholder': 'Дата и время доставки',
+                                        'class': ['form-control'],
+                                        'data': {'catalog-cart-data': ''}
+                                    }
+                                } %}
+                            </div>
+                            <div>
+                                {% include 'mixin/form.twig' with {
+                                    'type': 'textarea',
+                                    'name': 'delivery[address]',
+                                    'args': {
+                                        'value': user.getAddress(),
+                                        'required': true,
+                                        'placeholder': 'Адрес доставки.. *',
+                                        'style': 'height: 105px; margin-bottom: 16px;',
+                                        'class': ['form-control'],
+                                        'data': {'catalog-cart-data': ''}
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 order-1 order-md-0">
+                            <button class="site-btn" data-catalog-cart-data name="type" value="reserve" data-catalog-cart-checkout style="margin-bottom: 16px;">Отправить</button>
+                        </div>
+                        <div class="col-md-6 order-0 order-md-1">
+                            <div>
+                                {% include 'mixin/form.twig' with {
+                                    'type': 'textarea',
+                                    'name': 'comment',
+                                    'args': {
+                                        'placeholder': 'Комментарий',
+                                        'style': 'height: 70px; margin-bottom: 16px;',
+                                        'class': ['form-control'],
+                                        'data': {'catalog-cart-data': ''}
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+{% endblock %}

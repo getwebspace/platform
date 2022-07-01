@@ -1,7 +1,5 @@
 {% if category is not empty and categories.where('parent', category.uuid).count() == 0 %}
-    <hr class="mt-5 mb-5">
 
-    <div class="row">
         {% set buf = products.all %}
         {% for index, value in products.params.field %}{% set buf = buf.where('field' ~ index, value) %}{% endfor %}
 
@@ -18,9 +16,11 @@
             {% set variants = variants.unique() %}
 
             {% if variants.count() %}
-                <div class="col-6 col-md-4 col-lg-3 filter-widget">
-                    <h2 class="fw-title">{{ name }}</h2>
-                    <ul class="category-menu">
+                <!-- Start Widget -->
+                <div class="single-widget condition">
+                    <h3>{{ name }}</h3>
+
+                    <ul class="list">
                         {% for variant in variants.unique() %}
                             <li>
                                 <a href="{{ non_page_path() }}{{ page ? '/' ~ page : '' }}{{ current_query('field' ~ field, variant|trim) }}">
@@ -30,7 +30,7 @@
                         {% endfor %}
                     </ul>
                 </div>
+                <!-- End Widget -->
             {% endif %}
         {% endfor %}
-    </div>
 {% endif %}

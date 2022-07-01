@@ -1,0 +1,29 @@
+{% extends 'main.twig' %}
+
+{% block title %}{{ page.meta.title ? page.meta.title : page.title }} | {{ parent() }}{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+    <meta name="description" content="{{ page.meta.description }}">
+    <meta name="keywords" content="{{ page.meta.keywords }}">
+{% endblock %}
+
+{% block page %}
+    <div class="page-top-info">
+        <div class="container">
+            <h4>{{ page.title }}</h4>
+            <div class="site-pagination">
+                <a href="/">Главная</a> /
+                <a href="/{{ page.address }}">{{ page.title }}</a>
+            </div>
+        </div>
+    </div>
+
+    {% block content %}
+        <section class="page-section">
+            <div class="container">
+                {{ page.content|raw }}
+            </div>
+        </section>
+    {% endblock %}
+{% endblock %}

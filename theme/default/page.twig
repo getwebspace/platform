@@ -9,21 +9,15 @@
 {% endblock %}
 
 {% block page %}
-    <div class="page-top-info">
-        <div class="container">
-            <h4>{{ page.title }}</h4>
-            <div class="site-pagination">
-                <a href="/">Главная</a> /
-                <a href="/{{ page.address }}">{{ page.title }}</a>
-            </div>
-        </div>
-    </div>
+    {% include 'common/breadcrumbs.twig' with {'title': page.title} %}
 
+    <!-- Start Page Area -->
     {% block content %}
-        <section class="page-section">
+        <section class="section">
             <div class="container">
                 {{ page.content|raw }}
             </div>
         </section>
     {% endblock %}
+    <!-- End Page Area -->
 {% endblock %}

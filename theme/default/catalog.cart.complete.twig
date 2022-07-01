@@ -3,81 +3,70 @@
 {% block title %}Заказ {{ order.serial }} {{ order.external_id ? '(' ~ order.external_id ~ ')' : '' }} | {{ parent() }}{% endblock %}
 
 {% block page %}
-    <script>
-        window.catalog = {
-            events: {
-                'on:ready': (cart) => {
-                    window.catalog.cartRemoveAll();
-                }
-            }
-        }
-    </script>
-
-    <div class="page-top-info">
-        <div class="container">
-            <h4>Заказ</h4>
-            <div class="site-pagination">
-                <a href="/">Главная</a> /
-                <a href="/{{ parameter('catalog_address', 'catalog') }}">Каталог</a> /
-                <a href="/cart">Корзина</a> /
-                <a href="/cart/done/{{ order.uuid }}">Заказ</a>
-            </div>
-        </div>
-    </div>
+    {% include 'common/breadcrumbs.twig' with {
+        'catalog': 'Catalog',
+        'parents': ['Cart'],
+        'title': 'Order'
+    } %}
 
     <section class="">
         <div class="container pt-5">
             <div class="row pt-5 pb-5">
                 <div class="col-md-12 text-center">
                     <h3 class="pb-3">
-                        Информация о заказе {{ order.serial }} {{ order.external_id ? '(' ~ order.external_id ~ ')' : '' }}
+                        Order Information {{ order.serial }} {{ order.external_id ? '(' ~ order.external_id ~ ')' : '' }}
                     </h3>
-                    <p>Благодарим вас за заказ</p>
+                    <p>Thank you for your order</p>
                 </div>
             </div>
 
             <div class="row pb-5">
                 <div class="col-md-6">
-                    <h4>Заказчик</h4>
+                    <h4>Customer</h4>
 
-                    <table class="table mt-3 mb-5">
+                    <table class="table table-striped mt-3 mb-5">
                         <tr>
-                            <td style="width: 50%">Имя</td>
+                            <th style="width: 50%">Customer Name</th>
                             <td style="width: 50%">{{ order.user ? order.user.getName() : order.delivery.client }}</td>
-                            <td></td>
                         </tr>
                         <tr>
-                            <td>Телефон</td>
+                            <th>Phone</th>
                             <td>{{ order.user and order.user.phone ? order.user.phone : order.phone }}</td>
-                            <td></td>
                         </tr>
                         <tr>
-                            <td>E-Mail</td>
+                            <th>E-Mail</th>
                             <td>{{ order.user and order.user.email ? order.user.email : order.email }}</td>
-                            <td></td>
                         </tr>
                         <tr>
-                            <td>Адрес доставки</td>
+                            <th>Delivery address</th>
                             <td>{{ order.delivery.address }}</td>
-                            <td></td>
                         </tr>
                         <tr>
-                            <td>Дата доставки</td>
-                            <td>{{ order.shipping|df('d.m.Y H:i') }}</td>
-                            <td></td>
+                            <th>Shipping date</th>
+                            <td>{{ order.shipping|df }}</td>
                         </tr>
+                        <tr>
+                            <th>Comment</th>
+                            <td>{{ order.comment }}</td>
+                        </tr>
+                        {% if order.status_uuid %}
+                            <tr>
+                                <th>Status</th>
+                                <td>{{ order.status.title }}</td>
+                            </tr>
+                        {% endif %}
                     </table>
                 </div>
 
                 <div class="col-md-6">
-                    <h4>Состав заказа</h4>
+                    <h4>Order list</h4>
 
-                    <table class="table mt-3 mb-5" style="width: 100%;">
+                    <table class="table table-striped mt-3 mb-5" style="width: 100%;">
                         <tr>
-                            <td>Название</td>
-                            <td class="text-right">Цена</td>
-                            <td class="text-right">Кол-во</td>
-                            <td class="text-right">Сумма</td>
+                            <th>Product Name</th>
+                            <th class="text-right">Price</th>
+                            <th class="text-right">Quantity</th>
+                            <th class="text-right">Subtotal</th>
                         </tr>
 
                         {% for item in order.products %}
@@ -90,7 +79,7 @@
                         {% endfor %}
 
                         <tr>
-                            <td colspan="3">Всего</td>
+                            <th colspan="3">Total</th>
                             <td class="text-right">{{ order.getTotalPrice()|number_format(2, '.', ' ') }}</td>
                         </tr>
                     </table>

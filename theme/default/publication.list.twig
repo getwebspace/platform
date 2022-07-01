@@ -6,47 +6,76 @@
     {{ parent() }}
     <meta name="description" content="{{ category.meta.description }}">
     <meta name="keywords" content="{{ category.meta.keywords }}">
-    <link rel="alternate" type="application/rss+xml" title="{{ parameter('common_title') }}" href="{{ parameter('common_homepage') }}{{ category.rss() }}">
+
+    <link rel="alternate" type="application/rss+xml" title="{{ parameter('common_title') }}" href="{{ parameter('common_homepage') }}/{{ category.rss() }}">
 {% endblock %}
 
 {% block page %}
-    <div class="page-top-info">
-        <div class="container">
-            <h4>{{ category.title }}</h4>
-            <div class="site-pagination">
-                <a href="/">Главная</a> /
-                <a href="/{{ category.address }}">{{ category.title }}</a>
-            </div>
-            <div>
-                {{ category.description }}
-            </div>
-        </div>
-    </div>
+    {% include 'common/breadcrumbs.twig' with {'title': category.meta.title ? category.meta.title : category.title} %}
 
-    <section class="page-section">
+    <!-- Start Blog Singel Area -->
+    <section class="section blog-section blog-list">
         <div class="container">
             <div class="row">
-                <div class="col-lg-3 order-2 order-lg-1">
-                    <div class="filter-widget">
-                        <h2 class="fw-title">Категории</h2>
-                        <ul class="category-menu">
-                            {% include 'publication.menu.twig' with {'categories':categories,'NIL':NIL} only %}
-                        </ul>
+                <div class="col-lg-8 col-md-12 col-12">
+                    <div class="row">
+                        {% for item in publications %}
+                            {% include category.template.short with {'categories': categories, 'item': item} only %}
+                        {% endfor %}
                     </div>
+
+                    {% include 'pagination.twig' with {'pagination':pagination} only %}
                 </div>
 
-                <div class="col-lg-9 order-1 order-lg-2 mb-5 mb-lg-0">
-                    {% for item in publications %}
-                        {% include category.template.short with {'categories': categories, 'item': item} only %}
-                    {% endfor %}
-
-                    <div class="row justify-content-center">
-                        <div class="col-6">
-                            {% include 'pagination.twig' with {'pagination':pagination} only %}
+                <aside class="col-lg-4 col-md-12 col-12">
+                    <div class="sidebar blog-grid-page">
+                        <!-- Start Single Widget -->
+                        <div class="widget search-widget">
+                            <h5 class="widget-title">Search This Site</h5>
+                            {% include 'common/publication-search.twig' %}
                         </div>
+                        <!-- End Single Widget -->
+
+                        <!-- Start Single Widget -->
+                        <div class="widget popular-feeds">
+                            <h5 class="widget-title">Latest Posts</h5>
+                            <div class="popular-feed-loop">
+                                {% for publication in publication([], {'date': 'desc'}, 3) %}
+                                    <div class="single-popular-feed">
+                                        <div class="feed-desc">
+                                            <a class="feed-img" href="/{{ publication.address }}">
+                                                {% set category = categories.firstWhere('uuid', publication.category) %}
+                                                {% set obj = publication.hasFiles() ? publication: category %}
+                                                {% include 'mixin/img.twig' with {
+                                                    'src': obj.hasFiles() ? obj.getFiles().first().getPublicPath('small') : 'https://via.placeholder.com/100x100',
+                                                    'alt': 'thumb',
+                                                } only %}
+                                            </a>
+                                            <h6 class="post-title"><a href="/{{ publication.address }}" title="{{ publication.title }}">{{ publication.title }}</a></h6>
+                                            <span class="time"><i class="lni lni-calendar"></i> {{ publication.date|df }}</span>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <!-- End Single Widget -->
+
+                        <!-- Start Single Widget -->
+                        <div class="widget categories-widget">
+                            <h5 class="widget-title">Top Categories</h5>
+                            <ul class="custom">
+                                {% for node in categories.where('parent', '=', NIL).sortBy('title') %}
+                                    <li>
+                                        <a href="/{{ node.address }}">{{ node.title }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <!-- End Single Widget -->
                     </div>
-                </div>
+                </aside>
             </div>
         </div>
     </section>
+    <!-- End Blog Singel Area -->
 {% endblock %}

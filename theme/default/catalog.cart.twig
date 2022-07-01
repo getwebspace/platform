@@ -8,15 +8,12 @@
             cart: {
                 // cart column headers
                 columns: [
-                    {label: '', attr: 'thumb', view: null, class: null, style: 'width: 10%; text-align: center;'},
-                    {label: 'Title', attr: 'title', view: null, class: null, style: null},
-                    {label: 'Vendor code', attr: 'vendorcode', view: null, class: null, style: null},
-                    {label: '-', attr: 'decrement', view: null, class: null, style: 'width: 10%; text-align: center;'},
-                    {label: 'Quantity', attr: 'quantity', view: null, class: null, style: 'width: 15%;'},
-                    {label: '+', attr: 'increment', view: null, class: null, style: 'width: 10%; text-align: center;'},
-                    {label: 'Cost', attr: 'price', view: null, class: null, style: 'text-align: right;'},
-                    {label: 'Total', attr: 'total', view: null, class: null, style: 'text-align: right;'},
-                    {label: 'Remove', attr: 'remove', view: null, class: null, style: 'text-align: center;'},
+                    {label: '', attr: 'thumb', view: null, class: 'col-lg-1 col-md-1 col-12'},
+                    {label: 'Product Name', attr: 'url', view: null, class: 'col-lg-4 col-md-3 col-12'},
+                    {label: 'Quantity', attr: 'quantity', view: null, class: 'col-lg-2 col-md-2 col-12'},
+                    {label: 'Price', attr: 'price', view: null, class: 'col-lg-2 col-md-2 col-12'},
+                    {label: 'Subtotal', attr: 'total', view: null, class: 'col-lg-2 col-md-2 col-12'},
+                    {label: 'Remove', attr: 'remove', view: null, class: 'col-lg-1 col-md-2 col-12'},
                 ],
 
                 // showing header
@@ -26,7 +23,7 @@
                 group_header: true,
 
                 // table style ('table' or 'div')
-                style: 'table',
+                style: 'div',
 
                 // cart handler url
                 url: '',
@@ -35,8 +32,14 @@
             // precision settings
             // count of zeros after the decimal point
             precision: {
-                count: 5, // in item counts
-                price: 3, // in item prices and totals
+                count: 0, // in item counts
+                price: 2, // in item prices and totals
+            },
+
+            // currency
+            currency: {
+                position: 'before', // or 'after'
+                symbol: '$',
             },
 
             events: {
@@ -48,167 +51,299 @@
                     $('[data-cart-not-empty]').toggle(cart.length !== 0);
                     $('[data-cart-empty]').toggle(cart.length === 0);
                 },
+                'on:cart:remove': (updated_item, cart) => {
+                    $('[data-cart-not-empty]').toggle(cart.length !== 0);
+                    $('[data-cart-empty]').toggle(cart.length === 0);
+                },
             }
         }
     </script>
 
     <style>
-        [data-catalog-cart] [data-attr="quantity"] input {
+        .cart-container > .table {
+            margin: 0;
+        }
+        .cart-container > .table >:not(:first-child) {
+            border: none!important;
+        }
+        .cart-container > .table > .row,
+        .cart-container > .table [data-group] {
+            background-color: #fff;
+            padding: 18px 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .cart-container > .table [data-group] {
             text-align: center;
         }
-
-        [data-catalog-cart] [data-attr="increment"] button,
-        [data-catalog-cart] [data-attr="decrement"] button,
-        [data-catalog-cart] [data-attr="remove"] button {
+        .cart-container > .table [data-type="product"] {
+            padding: 30px 20px;
+            background-color: #fff;
+            border-bottom: 1px solid #eee;
+        }
+        .cart-container > .table [data-type="product"] [data-attr="thumb"] img {
+            height: 75px;
+        }
+        .cart-container > .table [data-type="product"] [data-attr="quantity"] input {
+            width: 120px;
+            height: 46px;
+            overflow: hidden;
+            border-radius: 4px;
+            color: #333;
+            padding: 0px 20px;
             display: inline-block;
-            border: none;
-            font-size: 14px;
-            font-weight: 600;
-            padding: 10px 15px;
-            border-radius: 50px;
-            text-transform: uppercase;
-            background: #f51167;
+            border: 1px solid #dbdbdb;
+        }
+        .cart-container > .table [data-type="product"] [data-attr="remove"] button {
+            width: 46px;
+            height: 46px;
+            display: inline-block;
             color: #fff;
-            line-height: normal;
-            cursor: pointer;
+            background-color: #f44336;
+            line-height: 20px;
             text-align: center;
-        }
-
-        [data-catalog-cart] td {
-            vertical-align: middle;
-        }
-
-        [data-catalog-cart] img {
-            width: 70px;
-            height: 70px;
-            object-fit: contain;
-            object-position: center center;
-        }
-
-        [data-catalog-cart-data].check-error {
-            border: 1px solid #f51167;
         }
     </style>
 
-    <div class="page-top-info">
+    {% include 'common/breadcrumbs.twig' with {
+        'catalog': 'Catalog',
+        'title': 'Cart'
+    } %}
+
+    <!-- Empty Cart -->
+    <div class="shopping-cart section" style="display: none" data-cart-empty>
         <div class="container">
-            <h4>Корзина</h4>
-            <div class="site-pagination">
-                <a href="/">Главная</a> /
-                <a href="/{{ parameter('catalog_address', 'catalog') }}">Каталог</a> /
-                <a href="/cart">Корзина</a>
+            <div class="row pt-5 pb-5" >
+                <div class="col-md-12 text-center">
+                    <h3 class="pb-3">Your cart is still empty, why?</h3>
+                    <p>
+                        Check out our <a href="/{{ parameter('catalog_address', 'catalog') }}">catalog</a>,
+                        you might like something!
+                    </p>
+                </div>
             </div>
         </div>
     </div>
+    <!--/ End Empty Cart -->
 
-    <section class="">
-        <div class="container pt-5">
-            <div class="row pt-5 pb-5" style="display: none" data-cart-empty>
-                <div class="col-md-12 text-center">
-                    <h3 class="pb-3">Ваша корзина еще пуста, почему?</h3>
-                    <p>Посомотрите наш <a href="/{{ parameter('catalog_address', 'catalog') }}">каталог</a>, может быть
-                        вам что-то понравится!</p>
+    <!-- Shopping Cart -->
+    <div class="shopping-cart section pb-3" style="display: none" data-cart-not-empty>
+        <div class="container">
+            <div class="cart-list-head" data-catalog-cart></div>
+        </div>
+    </div>
+    <!--/ End Shopping Cart -->
+
+    <!-- Checkout Form -->
+    <section class="checkout-wrapper section pt-3" style="display: none" data-cart-not-empty>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="checkout-steps-form-style-1">
+                        <ul id="accordionExample">
+                            <li>
+                                <h6 class="title" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">Your Personal Details </h6>
+                                <section class="checkout-steps-form-content collapse show" id="collapseThree" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="single-form form-default">
+                                                <label>User Name (*)</label>
+                                                {% include 'mixin/form.twig' with {
+                                                    'type': 'text',
+                                                    'name': 'delivery[client]',
+                                                    'args': {
+                                                        'value': user.getName(),
+                                                        'required': true,
+                                                        'placeholder': 'Ваше имя *',
+                                                        'class': ['form-control'],
+                                                        'data': {'catalog-cart-data': ''}
+                                                    }
+                                                } %}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="single-form form-default">
+                                                <label>Email Address</label>
+                                                {% include 'mixin/form.twig' with {
+                                                    'type': 'email',
+                                                    'name': 'email',
+                                                    'args': {
+                                                        'value': user.getEmail(),
+                                                        'placeholder': 'Ваш E-Mail',
+                                                        'class': ['form-control'],
+                                                        'data': {'catalog-cart-data': ''}
+                                                    }
+                                                } %}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="single-form form-default">
+                                                <label>Phone Number (*)</label>
+                                                {% include 'mixin/form.twig' with {
+                                                    'type': 'tel',
+                                                    'name': 'phone',
+                                                    'args': {
+                                                        'value': user.getPhone(),
+                                                        'required': true,
+                                                        'placeholder': 'Ваш телефон *',
+                                                        'class': ['form-control'],
+                                                        'data': {'catalog-cart-data': ''}
+                                                    }
+                                                } %}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="single-form button">
+                                                <button class="btn" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                                    next
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </li>
+
+                            <li>
+                                <h6 class="title collapsed" data-bs-toggle="collapse" data-bs-target="#collapseFour"
+                                    aria-expanded="false" aria-controls="collapseFour">Shipping Address</h6>
+                                <section class="checkout-steps-form-content collapse" id="collapseFour" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="single-form form-default">
+                                                <label>Country (*)</label>
+                                                <div class="form-input form">
+                                                    {% include 'mixin/form.twig' with {
+                                                        'type': 'text',
+                                                        'name': 'delivery[address][0]',
+                                                        'args': {
+                                                            'value': user.country,
+                                                            'required': true,
+                                                            'placeholder': 'Country',
+                                                            'data': {'catalog-cart-data': ''}
+                                                        }
+                                                    } %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="single-form form-default">
+                                                <label>City (*)</label>
+                                                <div class="form-input form">
+                                                    {% include 'mixin/form.twig' with {
+                                                        'type': 'text',
+                                                        'name': 'delivery[address][1]',
+                                                        'args': {
+                                                            'value': user.city,
+                                                            'required': true,
+                                                            'placeholder': 'City',
+                                                            'data': {'catalog-cart-data': ''}
+                                                        }
+                                                    } %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="single-form form-default">
+                                                <label>Post Code (*)</label>
+                                                <div class="form-input form">
+                                                    {% include 'mixin/form.twig' with {
+                                                        'type': 'text',
+                                                        'name': 'delivery[address][3]',
+                                                        'args': {
+                                                            'value': user.postcode,
+                                                            'required': true,
+                                                            'placeholder': 'Post Code',
+                                                            'data': {'catalog-cart-data': ''}
+                                                        }
+                                                    } %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="single-form form-default">
+                                                <label>Delivery address (*)</label>
+                                                {% include 'mixin/form.twig' with {
+                                                    'type': 'textarea',
+                                                    'name': 'delivery[address][2]',
+                                                    'args': {
+                                                        'value': user.getAddress(),
+                                                        'required': true,
+                                                        'placeholder': 'Delivery address',
+                                                        'style': 'height: 105px; margin-bottom: 16px;',
+                                                        'class': ['form-control'],
+                                                        'data': {'catalog-cart-data': ''}
+                                                    }
+                                                } %}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="single-form form-default">
+                                                <label>Shipping date</label>
+                                                {% include 'mixin/form.twig' with {
+                                                    'type': 'datetime',
+                                                    'name': 'shipping',
+                                                    'args': {
+                                                        'value': 'now'|date_modify('+1 day')|df('d.m.Y, H:00'),
+                                                        'placeholder': 'Datetime shipping',
+                                                        'class': ['form-control'],
+                                                        'data': {'catalog-cart-data': ''}
+                                                    }
+                                                } %}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="single-form form-default">
+                                                <label>Comment</label>
+                                                {% include 'mixin/form.twig' with {
+                                                    'type': 'textarea',
+                                                    'name': 'comment',
+                                                    'args': {
+                                                        'placeholder': 'Comment',
+                                                        'style': 'height: 70px; margin-bottom: 16px;',
+                                                        'class': ['form-control'],
+                                                        'data': {'catalog-cart-data': ''}
+                                                    }
+                                                } %}
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="steps-form-btn button">
+                                                <button class="btn" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">previous</button>
+                                                <a href="javascript:void(0)" class="btn btn-alt" data-catalog-cart-checkout>Checkout</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
 
-            <div style="display: none" data-cart-not-empty>
-                <div class="row pt-5 pb-5">
-                    <div class="col-md-12" data-catalog-cart></div>
-                </div>
+                <div class="col-lg-4">
+                    <div class="checkout-sidebar">
+                        <div class="checkout-sidebar-price-table">
+                            <h5 class="title">Total</h5>
 
-                <div class="contact-form">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div>
-                                {% include 'mixin/form.twig' with {
-                                    'type': 'text',
-                                    'name': 'delivery[client]',
-                                    'args': {
-                                        'value': user.getName(),
-                                        'required': true,
-                                        'placeholder': 'Ваше имя *',
-                                        'class': ['form-control'],
-                                        'data': {'catalog-cart-data': ''}
-                                    }
-                                } %}
+                            <div class="sub-total-price">
+                                <div class="total-price shipping">
+                                    <p class="value">Shipping:</p>
+                                    <p class="price">Free</p>
+                                </div>
                             </div>
-                            <div>
-                                {% include 'mixin/form.twig' with {
-                                    'type': 'tel',
-                                    'name': 'phone',
-                                    'args': {
-                                        'value': user.getPhone(),
-                                        'required': true,
-                                        'placeholder': 'Ваш телефон *',
-                                        'class': ['form-control'],
-                                        'data': {'catalog-cart-data': ''}
-                                    }
-                                } %}
+                            <div class="total-payable">
+                                <div class="payable-price">
+                                    <p class="value">Subotal Price:</p>
+                                    <p class="price" data-catalog-cart-total>$144.00</p>
+                                </div>
                             </div>
-                            <div>
-                                {% include 'mixin/form.twig' with {
-                                    'type': 'email',
-                                    'name': 'email',
-                                    'args': {
-                                        'value': user.getEmail(),
-                                        'placeholder': 'Ваш E-Mail',
-                                        'class': ['form-control'],
-                                        'data': {'catalog-cart-data': ''}
-                                    }
-                                } %}
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div>
-                                {% include 'mixin/form.twig' with {
-                                    'type': 'datetime',
-                                    'name': 'shipping',
-                                    'args': {
-                                        'value': 'now'|date_modify('+1 day')|df('d.m.Y, H:00'),
-                                        'placeholder': 'Дата и время доставки',
-                                        'class': ['form-control'],
-                                        'data': {'catalog-cart-data': ''}
-                                    }
-                                } %}
-                            </div>
-                            <div>
-                                {% include 'mixin/form.twig' with {
-                                    'type': 'textarea',
-                                    'name': 'delivery[address]',
-                                    'args': {
-                                        'value': user.getAddress(),
-                                        'required': true,
-                                        'placeholder': 'Адрес доставки.. *',
-                                        'style': 'height: 105px; margin-bottom: 16px;',
-                                        'class': ['form-control'],
-                                        'data': {'catalog-cart-data': ''}
-                                    }
-                                } %}
+                            <div class="price-table-btn button">
+                                <a href="javascript:void(0)" class="btn btn-alt" data-catalog-cart-checkout>Checkout</a>
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6 order-1 order-md-0">
-                            <button class="site-btn" data-catalog-cart-data name="type" value="reserve" data-catalog-cart-checkout style="margin-bottom: 16px;">Отправить</button>
-                        </div>
-                        <div class="col-md-6 order-0 order-md-1">
-                            <div>
-                                {% include 'mixin/form.twig' with {
-                                    'type': 'textarea',
-                                    'name': 'comment',
-                                    'args': {
-                                        'placeholder': 'Комментарий',
-                                        'style': 'height: 70px; margin-bottom: 16px;',
-                                        'class': ['form-control'],
-                                        'data': {'catalog-cart-data': ''}
-                                    }
-                                } %}
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
-
         </div>
     </section>
+    <!--/ End Checkout Form -->
 {% endblock %}

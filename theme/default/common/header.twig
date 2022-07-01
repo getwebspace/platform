@@ -1,52 +1,141 @@
-<!-- Header section -->
-<header class="header-section">
-    <div class="header-top">
+<!-- Start Header Area -->
+<header class="header navbar-area">
+    <!-- Start Topbar -->
+    <div class="topbar">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-2 text-center text-lg-left">
-                    <!-- logo -->
-                    <a href="/" class="site-logo" style="font-size: 28px;">
-                        Demo
-                    </a>
+            <div class="row align-items-center">
+                <div class="col-lg-4 col-md-4 col-12">
+                    <div class="top-left">
+                        {#<ul class="menu-top-link">
+                            <li>
+                                <div class="select-position">
+                                    <select id="change-language">
+                                        <option value="ru" {{ _language == 'ru' ? 'selected' : '' }}>Russian</option>
+                                        <option value="en" {{ _language == 'en' ? 'selected' : '' }}>English</option>
+                                    </select>
+                                </div>
+                            </li>
+                        </ul>#}
+                    </div>
                 </div>
-                <div class="col-xl-5 col-lg-5"></div>
-                <div class="col-xl-5 col-lg-5">
-                    <div class="user-panel">
-                        {% include 'common/user.switch.twig' %}
 
-                        <div class="up-item float-right ml-3">
-                            <div class="shopping-card">
-                                <i class="flaticon-bag"></i>
-                                <span data-catalog-cart-count>0</span>
-                            </div>
-                            <a href="/cart">Корзина</a>
+                <div class="col-lg-4 col-md-4 col-12">
+                    <div class="top-middle">
+                        <ul class="useful-links">
+                            <li><a href="/">Home</a></li>
+                            <li><a href="/about">About Us</a></li>
+                            <li><a href="/contacts">Contact Us</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                {% include 'common/user-switch.twig' %}
+            </div>
+        </div>
+    </div>
+    <!-- End Topbar -->
+
+    <!-- Start Header Middle -->
+    <div class="header-middle">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-3 col-md-3 col-7">
+                    <!-- Start Header Logo -->
+                    <a class="navbar-brand" href="/">Demo Shop</a>
+                    <!-- End Header Logo -->
+                </div>
+                <div class="col-lg-5 col-md-7 d-xs-none">
+                    <!-- Start Main Menu Search -->
+                    <div class="main-menu-search">
+                        {% include 'common/header-search.twig' %}
+                    </div>
+                    <!-- End Main Menu Search -->
+                </div>
+                <div class="col-lg-4 col-md-2 col-5">
+                    <div class="middle-right-area">
+                        <div class="nav-hotline">
+                            <i class="lni lni-phone"></i>
+                            <h3>
+                                Hotline:
+                                <span>(+100) 123 456 7890</span>
+                            </h3>
                         </div>
-
-                        <div class="up-item float-right">
-                            <i class="flaticon-search"></i>
-                            <a href="/search">
-                                Поиск
-                            </a>
+                        <div class="navbar-cart">
+                            <div class="cart-items">
+                                <a href="/cart" class="main-btn">
+                                    <i class="lni lni-cart"></i>
+                                    <span class="total-items" data-catalog-cart-count>0</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <nav class="main-navbar">
-        <div class="container" style="padding-left: 0; padding-right: 0;">
-            <!-- menu -->
-            <ul class="main-menu">
-                <li><a href="/">Главная</a></li>
-                <li><a href="/{{ parameter('catalog_address', 'catalog') }}">Каталог <span class="new">New</span></a></li>
-                <li><a href="/blog">Блог</a></li>
-                <li><a href="/guestbook">Гостевая книга</a></li>
-                <li><a href="/delivery">Доставка</a></li>
-                <li><a href="/about">О нас</a></li>
-                <li><a href="/quiz">Квиз</a></li>
-                <li><a href="/contacts">Контакты</a></li>
-            </ul>
+    <!-- End Header Middle -->
+    <!-- Start Header Bottom -->
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 col-md-6 col-12">
+                <div class="nav-inner">
+                    {% include 'common/header-navigation.twig' with {'categories': catalog_category()} %}
+
+                    <!-- Start Navbar -->
+                    <nav class="navbar navbar-expand-lg">
+                        <button class="navbar-toggler mobile-menu-btn" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                                aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="toggler-icon"></span>
+                            <span class="toggler-icon"></span>
+                            <span class="toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent">
+                            <ul id="nav" class="navbar-nav ms-auto">
+                                <li class="nav-item">
+                                    <a href="/" class="active" aria-label="Toggle navigation">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/blog" aria-label="Toggle navigation">Blog</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/delivery" aria-label="Toggle navigation">Delivery</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/quiz" aria-label="Toggle navigation">Quiz</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/contacts" aria-label="Toggle navigation">Contact Us</a>
+                                </li>
+                            </ul>
+                        </div> <!-- navbar collapse -->
+                    </nav>
+                    <!-- End Navbar -->
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 col-12">
+                <!-- Start Nav Social -->
+                <div class="nav-social">
+                    <h5 class="title">Follow Us:</h5>
+                    <ul>
+                        <li>
+                            <a href="javascript:void(0)"><i class="lni lni-facebook-filled"></i></a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)"><i class="lni lni-twitter-original"></i></a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)"><i class="lni lni-instagram"></i></a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)"><i class="lni lni-skype"></i></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- End Nav Social -->
+            </div>
         </div>
-    </nav>
+    </div>
+    <!-- End Header Bottom -->
 </header>
-<!-- Header section end -->
+<!-- End Header Area -->

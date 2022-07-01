@@ -1,0 +1,36 @@
+<!-- Start Product -->
+<div class="single-product" data-catalog-item>
+    <div class="product-image">
+        {% include 'mixin/img.twig' with {
+            'src': product.hasFiles() ? product.getFiles().first().getPublicPath('middle') : 'https://via.placeholder.com/335x335',
+            'title': product.title,
+            'alt': product.title,
+            'style': 'height: 288px; object-fit: contain;'
+        } only %}
+
+        {% if product.discount %}
+            <span class="sale-tag">$&dash;{{ product.discount }}</span>
+        {% endif %}
+        {% if product.special %}
+            <span class="new-tag">Special</span>
+        {% endif %}
+
+        <div class="button">
+            {# add attr data-catalog-item-add to btn #}
+            <a href="javascript:void(0)" class="btn" data-catalog-item-add><i class="lni lni-cart"></i> Add to Cart</a>
+        </div>
+    </div>
+    <div class="product-info">
+        <span class="category">{{ categories.firstWhere('uuid', product.category).title }}</span>
+        <h4 class="title">
+            <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ product.address }}">{{ product.title }}</a>
+        </h4>
+        <div class="price">
+            <span>${{ product.price }}</span>
+        </div>
+    </div>
+
+    {# include product options #}
+    {% include 'catalog.product.options.twig' with {'categories': categories, 'product': product} only %}
+</div>
+<!-- End Product -->

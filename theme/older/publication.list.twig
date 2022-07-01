@@ -1,0 +1,52 @@
+{% extends 'main.twig' %}
+
+{% block title %}{{ category.meta.title ? category.meta.title : category.title }} | {{ parent() }}{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+    <meta name="description" content="{{ category.meta.description }}">
+    <meta name="keywords" content="{{ category.meta.keywords }}">
+    <link rel="alternate" type="application/rss+xml" title="{{ parameter('common_title') }}" href="{{ parameter('common_homepage') }}{{ category.rss() }}">
+{% endblock %}
+
+{% block page %}
+    <div class="page-top-info">
+        <div class="container">
+            <h4>{{ category.title }}</h4>
+            <div class="site-pagination">
+                <a href="/">Главная</a> /
+                <a href="/{{ category.address }}">{{ category.title }}</a>
+            </div>
+            <div>
+                {{ category.description }}
+            </div>
+        </div>
+    </div>
+
+    <section class="page-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 order-2 order-lg-1">
+                    <div class="filter-widget">
+                        <h2 class="fw-title">Категории</h2>
+                        <ul class="category-menu">
+                            {% include 'publication.menu.twig' with {'categories':categories,'NIL':NIL} only %}
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-lg-9 order-1 order-lg-2 mb-5 mb-lg-0">
+                    {% for item in publications %}
+                        {% include category.template.short with {'categories': categories, 'item': item} only %}
+                    {% endfor %}
+
+                    <div class="row justify-content-center">
+                        <div class="col-6">
+                            {% include 'pagination.twig' with {'pagination':pagination} only %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

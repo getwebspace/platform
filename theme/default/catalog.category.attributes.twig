@@ -1,23 +1,23 @@
 {% if products.filtered.count() and category is not empty and category.hasAttributes() %}
-    <hr class="mt-5 mb-5">
+    {% set attributes = category.getAttributes() %}
+    {% set keys = attributes.pluck('uuid') %}
 
-    <div class="row">
-        {% set attributes = category.getAttributes() %}
-        {% set keys = attributes.pluck('uuid') %}
+    {% for attribute in attributes %}
+        <!-- Start Widget -->
+        <div class="single-widget condition">
+            <h3>{{ attribute.title }}</h3>
 
-        {% for attribute in attributes %}
-            <div class="col-6 col-md-4 col-lg-3 filter-widget">
-                <h2 class="fw-title">{{ attribute.title }}</h2>
-                <ul class="category-menu">
-                    {% for attr in attribute.getProductAttributes().unique('value') %}
-                        <li>
-                            <a href="{{ non_page_path() }}{{ page ? '/' ~ page : '' }}{{ current_query(attribute.address, attr.value|trim) }}">
-                                {{ attr.value }}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endfor %}
-    </div>
+            <ul class="list">
+                {% for attr in attribute.getProductAttributes().unique('value') %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="{{ attribute.uuid }}" value="{{ attr.value }}" id="{{ attr.uuid }}" {{ _request[attribute.address] == attr.value ? 'checked' : '' }} onchange="(() => {location = '{{ non_page_path() }}{{ page ? '/' ~ page : '' }}{{ current_query(attribute.address, attr.value|trim) }}'})()">
+                        <label class="form-check-label" for="{{ attr.uuid }}">
+                            {{ attr.value }} ({{ attr.getCount() }})
+                        </label>
+                    </div>
+                {% endfor %}
+            </ul>
+        </div>
+        <!-- End Widget -->
+    {% endfor %}
 {% endif %}

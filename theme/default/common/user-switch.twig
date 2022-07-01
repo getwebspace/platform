@@ -1,0 +1,31 @@
+<div class="col-lg-4 col-md-4 col-12">
+    <div class="top-end">
+        {% if user == false %}
+            <ul class="user-login">
+                <li>
+                    <a href="/user/login">Sign In</a>
+                </li>
+                <li>
+                    <a href="/user/register">Register</a>
+                </li>
+            </ul>
+        {% else %}
+            <ul class="user-login">
+                <li>
+                    <div class="user">
+                        <i class="lni lni-user"></i>
+                    </div>
+                    <a href="/user/profile">{{ user.getName('short') ?? user.username }}</a>
+                </li>
+                {% if user.group and 'cup:main' in user.group.access %}
+                    <li>
+                        <a href="/cup" target="_blank">CUP</a>
+                    </li>
+                {% endif %}
+                <li>
+                    <a href="/user/logout">Logout</a>
+                </li>
+            </ul>
+        {% endif %}
+    </div>
+</div>
