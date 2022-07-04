@@ -118,10 +118,10 @@ class SystemPageAction extends AbstractAction
             }
 
             $product_measure = [
-                ['title' => __('Килограмм'), 'contraction' => __('кг'), 'value' => '1000'],
-                ['title' => __('Грамм'), 'contraction' => __('г'), 'value' => '1'],
-                ['title' => __('Литр'), 'contraction' => __('л'), 'value' => '1000'],
-                ['title' => __('Миллилитр'), 'contraction' => __('мл'), 'value' => '1'],
+                ['title' => __('Килограмм'), 'contraction' => __('кг'), 'value' => 1000],
+                ['title' => __('Грамм'), 'contraction' => __('г'), 'value' => 1],
+                ['title' => __('Литр'), 'contraction' => __('л'), 'value' => 1000],
+                ['title' => __('Миллилитр'), 'contraction' => __('мл'), 'value' => 1],
             ];
             foreach ($product_measure as $el) {
                 $this->container->get(CatalogMeasureService::class)->create($el);
