@@ -7,8 +7,8 @@ use App\Domain\Entities\Catalog\Order;
 use App\Domain\Entities\Catalog\OrderProduct;
 use App\Domain\Entities\Catalog\Product;
 use App\Domain\Repository\Catalog\ProductRepository;
-use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\Catalog\Exception\RelationNotFoundException;
+use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class OrderProductService extends AbstractService

@@ -110,7 +110,8 @@ class TwigExtension extends AbstractExtension
         ];
     }
 
-    protected function currentHost() {
+    protected function currentHost()
+    {
         // from nginx
         if ($_SERVER['HTTP_X_FORWARDED_PROTO'] && $_SERVER['HTTP_X_FORWARDED_HOST']) {
             return $_SERVER['HTTP_X_FORWARDED_PROTO'] . '://' . $_SERVER['HTTP_X_FORWARDED_HOST'];
