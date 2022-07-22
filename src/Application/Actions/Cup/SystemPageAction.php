@@ -127,7 +127,10 @@ class SystemPageAction extends AbstractAction
                 $this->container->get(CatalogMeasureService::class)->create($el);
             }
 
-            $this->container->get(ParameterService::class)->create('catalog_invoice', INVOICE_TEMPLATE);
+            $this->container->get(ParameterService::class)->create([
+                'key' => 'catalog_invoice',
+                'value' => INVOICE_TEMPLATE,
+            ]);
         }
     }
 
