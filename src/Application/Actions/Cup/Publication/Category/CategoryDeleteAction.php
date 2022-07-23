@@ -14,6 +14,9 @@ class CategoryDeleteAction extends PublicationAction
             ]);
 
             if ($publicationCategory) {
+                foreach ($this->publicationService->read(['category' => $publicationCategory]) as $publication) {
+                    $this->publicationService->delete($publication);
+                }
                 $this->publicationCategoryService->delete($publicationCategory);
 
                 $this->container->get(\App\Application\PubSub::class)->publish('cup:publication:category:delete', $publicationCategory);
