@@ -81,7 +81,7 @@ class ListAction extends AbstractAction
     protected function parsePath(): array
     {
         $category = $this->resolveArg('category');
-        $path = ltrim(str_replace('/' . $category . '/', '', $this->request->getUri()->getPath()), '/');
+        $path = ltrim(str_replace('/' . $category, '', $this->request->getUri()->getPath()), '/');
         $parts = $path ? explode('/', $path) : [];
         $offset = 0;
 
