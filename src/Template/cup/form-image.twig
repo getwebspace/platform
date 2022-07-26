@@ -6,60 +6,64 @@
 {% endif %}
 
 {% block fileimage %}
-    <div data-fileimage class="row">
-        <div class="col-md-12">
-            {% include 'cup/form.twig' with {
-                'label': multiple ? 'Изображения'|locale : 'Изображение'|locale,
-                'type': 'file',
-                'name': 'files[]',
-                'postfix': multiple ? '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Здесь можно выбрать несколько изображений')|locale ~ '"></i>' : '',
-                'args': {
-                    'class': ['d-block', 'btn', 'btn-sm', 'bg-grey2'],
-                    'multiple': multiple,
-                    'accept': 'image/*'
-                }
-            } %}
+    {% if parameter('file_is_enabled', 'yes') == 'yes' %}
+        <hr>
 
-            {% for relation in entity.getFiles() %}
-                <div class="d-inline-block p-2 m-2 bg-grey2 text-center rounded">
-                    {% if multiple %}
-                        <div class="pb-2">
-                            {% include 'cup/form.twig' with {
-                                'type': 'number',
-                                'name': 'files[' ~ relation.uuid.toString() ~ '][order]',
-                                'args': {
-                                    'value': relation.order,
-                                }
-                            } %}
+        <div data-fileimage class="row">
+            <div class="col-md-12">
+                {% include 'cup/form.twig' with {
+                    'label': multiple ? 'Изображения'|locale : 'Изображение'|locale,
+                    'type': 'file',
+                    'name': 'files[]',
+                    'postfix': multiple ? '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Здесь можно выбрать несколько изображений')|locale ~ '"></i>' : '',
+                    'args': {
+                        'class': ['d-block', 'btn', 'btn-sm', 'bg-grey2'],
+                        'multiple': multiple,
+                        'accept': 'image/*'
+                    }
+                } %}
 
-                            {#<div class="col-12">
+                {% for relation in entity.getFiles() %}
+                    <div class="d-inline-block p-2 m-2 bg-grey2 text-center rounded">
+                        {% if multiple %}
+                            <div class="pb-2">
                                 {% include 'cup/form.twig' with {
-                                    'type': 'textarea',
-                                    'name': 'files[' ~ relation.uuid.toString() ~ '][comment]',
+                                    'type': 'number',
+                                    'name': 'files[' ~ relation.uuid.toString() ~ '][order]',
                                     'args': {
-                                        'placeholder': 'Комментарий к картинке..'
+                                        'value': relation.order,
                                     }
                                 } %}
-                            </div>#}
+
+                                {#<div class="col-12">
+                                    {% include 'cup/form.twig' with {
+                                        'type': 'textarea',
+                                        'name': 'files[' ~ relation.uuid.toString() ~ '][comment]',
+                                        'args': {
+                                            'placeholder': 'Комментарий к картинке..'
+                                        }
+                                    } %}
+                                </div>#}
+                            </div>
+                        {% endif %}
+
+                        <a href="{{ relation.getPublicPath() }}" target="_blank">
+                            <img class="rounded" height="100" src="{{ relation.getPublicPath('small') }}" alt="preview" data-toggle="tooltip" data-placement="top" title="{{ relation.getName() }} ({{ relation.getFileSize() }})" />
+                        </a>
+
+                        <div class="pt-2">
+                            {% include 'cup/form.twig' with {
+                                'label': '<i class="fa fa-trash"></i>',
+                                'type': 'checkbox',
+                                'name': 'files[' ~ relation.uuid.toString() ~ '][delete]',
+                                'args': {
+                                    'value': 1
+                                }
+                            } %}
                         </div>
-                    {% endif %}
-
-                    <a href="{{ relation.getPublicPath() }}" target="_blank">
-                        <img class="rounded" height="100" src="{{ relation.getPublicPath('small') }}" alt="preview" data-toggle="tooltip" data-placement="top" title="{{ relation.getName() }} ({{ relation.getFileSize() }})" />
-                    </a>
-
-                    <div class="pt-2">
-                        {% include 'cup/form.twig' with {
-                            'label': '<i class="fa fa-trash"></i>',
-                            'type': 'checkbox',
-                            'name': 'files[' ~ relation.uuid.toString() ~ '][delete]',
-                            'args': {
-                                'value': 1
-                            }
-                        } %}
                     </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
-    </div>
+    {% endif %}
 {% endblock %}
