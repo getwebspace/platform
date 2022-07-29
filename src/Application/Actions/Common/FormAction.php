@@ -65,50 +65,22 @@ class FormAction extends AbstractAction
                     }
                 }
 
-                $isHtml = true;
-
-                // prepare mail body
-                switch (true) {
-                    case $form->getTemplate() && $form->getTemplate() !== '<p><br></p>':
-                        $body = $this->renderer->fetchFromString($form->getTemplate(), $data);
-
-                        break;
-
-                    case $form->getTemplateFile():
-                        $body = $this->render($form->getTemplateFile(), $data);
-
-                        break;
-
-                    default:
-                        // no template, check post data for mail body
-                        if (($buf = $this->getParam('body', false)) !== false) {
-                            $body = $buf;
-                        } else {
-                            // json in mail
-                            $body = json_encode(str_escape($data), JSON_UNESCAPED_UNICODE);
-                            $isHtml = false;
-                        }
-
-                        break;
-                }
-
-                // prepare form data
+                // form data
                 $formData = $formDataService->create([
                     'form_uuid' => $form->getUuid(),
-                    'message' => $body,
+                    'data' => $data,
+                    'message' => $this->getParam('body', ''),
                 ]);
 
                 // prepare attachments
                 $attachments = [];
                 $json = [];
                 if ($this->parameter('file_is_enabled', 'yes') === 'yes') {
+                    /** @var FromData $formData */
                     $formData = $this->processEntityFiles($formData);
 
                     foreach ($formData->getFiles() as $file) {
-                        /**
-                         * @var FromData     $formData
-                         * @var FileRelation $file
-                         */
+                        /** @var FileRelation $file */
                         $attachments[$file->getFileName()] = $file->getPublicPath();
                         $json[] = [
                             'uuid' => $file->getUuid()->toString(),
@@ -146,16 +118,27 @@ class FormAction extends AbstractAction
                     \App\Domain\AbstractTask::worker($task);
                 }
 
-                // send mail task
-                $task = new \App\Domain\Tasks\SendMailTask($this->container);
-                $task->execute([
+                // prepare mail params
+                $params = [
                     'to' => $mailto,
                     'cc' => $form->getAuthorSend() && !empty($data['email']) ? $data['email'] : '',
                     'subject' => $form->getTitle(),
-                    'body' => $body,
-                    'isHtml' => $isHtml,
+                    'body' => '',
+                    'template' => '',
+                    'data' => [],
                     'attachments' => $attachments,
-                ]);
+                ];
+
+                if (($buf = $this->getParam('body', false)) !== false) {
+                    $params['body'] = $buf;
+                } else {
+                    $params['template'] = $form->getTemplateFile() ?: $form->getTemplate();
+                    $params['data'] = $data;
+                }
+
+                // send mail task
+                $task = new \App\Domain\Tasks\SendMailTask($this->container);
+                $task->execute($params);
 
                 // run worker
                 \App\Domain\AbstractTask::worker($task);

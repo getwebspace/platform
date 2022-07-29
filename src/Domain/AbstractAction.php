@@ -47,7 +47,7 @@ abstract class AbstractAction
 
     protected RouteCollectorInterface $routeCollector;
 
-    protected Twig $renderer;
+    private Twig $renderer;
 
     protected Request $request;
 

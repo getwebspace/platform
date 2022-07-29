@@ -53,6 +53,26 @@ class Data extends AbstractEntity
     }
 
     /**
+     * @ORM\Column(type="array", options={"default": "a:0:{}"})
+     */
+    protected array $data = [];
+
+    /**
+     * @return $this
+     */
+    public function setData(array $data)
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    public function getData(): array
+    {
+        return $this->data;
+    }
+
+    /**
      * @ORM\Column(type="text", options={"default": ""})
      */
     protected string $message = '';

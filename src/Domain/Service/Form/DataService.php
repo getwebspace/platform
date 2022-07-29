@@ -29,17 +29,19 @@ class DataService extends AbstractService
     {
         $default = [
             'form_uuid' => \Ramsey\Uuid\Uuid::NIL,
+            'data' => [],
             'message' => '',
             'date' => 'now',
         ];
         $data = array_merge($default, $data);
 
-        if (!$data['message']) {
+        if (!$data['message'] AND !$data['data']) {
             throw new MissingMessageValueException();
         }
 
         $form = (new FromData())
             ->setFormUuid($data['form_uuid'])
+            ->setData($data['data'])
             ->setMessage($data['message'])
             ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
 
@@ -108,6 +110,7 @@ class DataService extends AbstractService
         if (is_object($entity) && is_a($entity, FromData::class)) {
             $default = [
                 'form_uuid' => null,
+                'data' => null,
                 'message' => null,
                 'date' => null,
             ];
@@ -116,6 +119,9 @@ class DataService extends AbstractService
             if ($data !== $default) {
                 if ($data['form_uuid'] !== null) {
                     $entity->setFormUuid($data['form_uuid']);
+                }
+                if ($data['data'] !== null) {
+                    $entity->setData($data['data']);
                 }
                 if ($data['message'] !== null) {
                     $entity->setMessage($data['message']);

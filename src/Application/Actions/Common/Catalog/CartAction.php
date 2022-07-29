@@ -92,7 +92,8 @@ class CartAction extends CatalogAction
                     $task = new \App\Domain\Tasks\SendMailTask($this->container);
                     $task->execute([
                         'to' => $email,
-                        'body' => $this->render($tpl, ['order' => $order]),
+                        'template' => $tpl,
+                        'data' => ['order' => $order],
                         'isHtml' => true,
                     ]);
                     $isNeedRunWorker = $task;
@@ -108,7 +109,8 @@ class CartAction extends CatalogAction
                     $task = new \App\Domain\Tasks\SendMailTask($this->container);
                     $task->execute([
                         'to' => $order->getEmail(),
-                        'body' => $this->render($tpl, ['order' => $order]),
+                        'template' => $tpl,
+                        'data' => ['order' => $order],
                         'isHtml' => true,
                     ]);
                     $isNeedRunWorker = $task;
