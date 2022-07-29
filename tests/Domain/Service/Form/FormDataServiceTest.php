@@ -28,11 +28,16 @@ class FormDataServiceTest extends TestCase
     {
         $data = [
             'form_uuid' => $this->getFaker()->uuid,
+            'data' => [
+                'streetAddress' => $this->getFaker()->streetAddress,
+                'secondaryAddress' => $this->getFaker()->secondaryAddress,
+            ],
             'message' => $this->getFaker()->text(1000),
         ];
 
         $formData = $this->service->create($data);
         $this->assertInstanceOf(FromData::class, $formData);
+        $this->assertSame($data['data'], $formData->getData());
         $this->assertSame($data['message'], $formData->getMessage());
 
         /** @var FromDataRepository $formDataRepo */
@@ -53,6 +58,10 @@ class FormDataServiceTest extends TestCase
     {
         $data = [
             'form_uuid' => $this->getFaker()->uuid,
+            'data' => [
+                'streetAddress' => $this->getFaker()->streetAddress,
+                'secondaryAddress' => $this->getFaker()->secondaryAddress,
+            ],
             'message' => $this->getFaker()->text(1000),
         ];
 
@@ -60,6 +69,7 @@ class FormDataServiceTest extends TestCase
 
         $formData = $this->service->read(['uuid' => $fd->getUuid()]);
         $this->assertInstanceOf(FromData::class, $formData);
+        $this->assertSame($data['data'], $formData->getData());
         $this->assertSame($data['message'], $formData->getMessage());
     }
 
@@ -74,16 +84,25 @@ class FormDataServiceTest extends TestCase
     {
         $formData = $this->service->create([
             'form_uuid' => $this->getFaker()->uuid,
+            'data' => [
+                'streetAddress' => $this->getFaker()->streetAddress,
+                'secondaryAddress' => $this->getFaker()->secondaryAddress,
+            ],
             'message' => $this->getFaker()->text(1000),
         ]);
 
         $data = [
             'form_uuid' => $this->getFaker()->uuid,
+            'data' => [
+                'streetAddress' => $this->getFaker()->streetAddress,
+                'secondaryAddress' => $this->getFaker()->secondaryAddress,
+            ],
             'message' => $this->getFaker()->text(1000),
         ];
 
         $formData = $this->service->update($formData, $data);
         $this->assertInstanceOf(FromData::class, $formData);
+        $this->assertSame($data['data'], $formData->getData());
         $this->assertSame($data['message'], $formData->getMessage());
     }
 
