@@ -76,9 +76,6 @@ abstract class AbstractTask
         $this->renderer = $container->get('view');
     }
 
-    /**
-     * @throws HttpBadRequestException
-     */
     protected function render(string $template, array $data = []): string
     {
         try {
@@ -88,6 +85,15 @@ abstract class AbstractTask
 
             return $this->renderer->fetch($template, $data);
         } catch (\Twig\Error\LoaderError $exception) {
+            throw new \RuntimeException($exception->getMessage());
+        }
+    }
+
+    protected function renderFromString(string $template, array $data = []): string
+    {
+        try {
+            return $this->renderer->fetchFromString($template, $data);
+        } catch (\Twig\Error\SyntaxError|\Twig\Error\LoaderError $exception) {
             throw new \RuntimeException($exception->getMessage());
         }
     }

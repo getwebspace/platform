@@ -279,4 +279,13 @@ abstract class AbstractPlugin
     {
         return $this->renderer->fetch($template, $data);
     }
+
+    protected function renderFromString(string $template, array $data = []): string
+    {
+        try {
+            return $this->renderer->fetchFromString($template, $data);
+        } catch (\Twig\Error\SyntaxError|\Twig\Error\LoaderError $exception) {
+            throw new \RuntimeException($exception->getMessage());
+        }
+    }
 }
