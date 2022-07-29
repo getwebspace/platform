@@ -37,14 +37,14 @@ class Order extends AbstractEntity
     protected string $serial = '';
 
     /**
-     * @param int|string $serial
+     * @param string $serial
      *
      * @return $this
      */
     public function setSerial($serial)
     {
-        if (is_string($serial) && $this->checkStrLenMax($serial, 500) || is_int($serial)) {
-            $this->serial = (string) $serial;
+        if (is_string($serial) && $this->checkStrLenMax($serial, 12) || is_int($serial)) {
+            $this->serial = $serial;
         }
 
         return $this;
@@ -148,7 +148,7 @@ class Order extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="string", options={"default": ""})
+     * @ORM\Column(type="string", length=500, options={"default": ""})
      */
     protected string $comment;
 

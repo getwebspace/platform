@@ -157,7 +157,7 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="text", options={"default": ""})
+     * @ORM\Column(type="text", length=255, options={"default": ""})
      */
     protected string $vendorcode = '';
 
@@ -176,13 +176,13 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="text", options={"default": ""})
+     * @ORM\Column(type="text", length=100, options={"default": ""})
      */
     protected string $barcode = '';
 
     public function setBarCode(string $value): self
     {
-        if ($this->checkStrLenMax($value, 255)) {
+        if ($this->checkStrLenMax($value, 100)) {
             $this->barcode = $value;
         }
 
@@ -356,7 +356,7 @@ class Product extends AbstractEntity
 
     public function setUnit(string $value): self
     {
-        if ($this->checkStrLenMax($value, 255)) {
+        if ($this->checkStrLenMax($value, 64)) {
             $this->unit = $value;
         }
 
@@ -391,7 +391,7 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="text", options={"default": ""})
+     * @ORM\Column(type="text", length=512, options={"default": ""})
      */
     protected string $field1 = '';
 
@@ -410,7 +410,7 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="text", options={"default": ""})
+     * @ORM\Column(type="text", length=512, options={"default": ""})
      */
     protected string $field2 = '';
 
@@ -429,7 +429,7 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="text", options={"default": ""})
+     * @ORM\Column(type="text", length=512, options={"default": ""})
      */
     protected string $field3 = '';
 
@@ -448,7 +448,7 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="text", options={"default": ""})
+     * @ORM\Column(type="text", length=512, options={"default": ""})
      */
     protected string $field4 = '';
 
@@ -467,7 +467,7 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="text", options={"default": ""})
+     * @ORM\Column(type="text", length=512, options={"default": ""})
      */
     protected string $field5 = '';
 
@@ -507,7 +507,7 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="string", options={"default": ""})
+     * @ORM\Column(type="string", length=255, options={"default": ""})
      */
     protected string $country = '';
 
@@ -526,7 +526,7 @@ class Product extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="string", options={"default": ""})
+     * @ORM\Column(type="string", length=255, options={"default": ""})
      */
     protected string $manufacturer = '';
 

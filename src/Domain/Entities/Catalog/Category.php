@@ -128,7 +128,7 @@ class Category extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="text", options={"default": ""})
+     * @ORM\Column(type="text", length=255, options={"default": ""})
      */
     protected string $field1 = '';
 
@@ -147,7 +147,7 @@ class Category extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="text", options={"default": ""})
+     * @ORM\Column(type="text", length=255, options={"default": ""})
      */
     protected string $field2 = '';
 
@@ -166,7 +166,7 @@ class Category extends AbstractEntity
     }
 
     /**
-     * @ORM\Column(type="text", options={"default": ""})
+     * @ORM\Column(type="text", length=255, options={"default": ""})
      */
     protected string $field3 = '';
 
