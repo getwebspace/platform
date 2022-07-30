@@ -44,7 +44,7 @@ class Order extends AbstractEntity
     public function setSerial($serial)
     {
         if (is_string($serial) && $this->checkStrLenMax($serial, 12) || is_int($serial)) {
-            $this->serial = $serial;
+            $this->serial = (string) $serial;
         }
 
         return $this;
