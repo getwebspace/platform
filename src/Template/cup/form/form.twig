@@ -153,7 +153,7 @@
                                             'name': 'recaptcha',
                                             'args': {
                                                 'option': _(['yes', 'no']),
-                                                'selected': item.recaptcha ? 'yes' : 'no'
+                                                'selected': item ? (item.recaptcha ? 'yes' : 'no') : 'yes'
                                             }
                                         } %}
                                     </div>

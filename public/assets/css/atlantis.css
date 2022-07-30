@@ -5375,6 +5375,11 @@ label {
     padding: 10px;
 }
 
+.form-group + small , .form-check + small  {
+    margin-top: 0;
+    padding: 0 10px;
+}
+
 .form-group label, .form-check label {
     margin-bottom: .5rem;
     color: #495057;

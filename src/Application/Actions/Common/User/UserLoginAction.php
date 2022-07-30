@@ -114,10 +114,8 @@ class UserLoginAction extends UserAction
                                         $task = new \App\Domain\Tasks\SendMailTask($this->container);
                                         $task->execute([
                                             'to' => $user->getEmail(),
-                                            'body' => $this->render(
-                                                $this->parameter('user_auth_code_mail_template', 'user.mail.code.twig'),
-                                                ['code' => $code]
-                                            ),
+                                            'template' => $this->parameter('user_auth_code_mail_template', 'user.mail.code.twig'),
+                                            'data' => ['code' => $code],
                                             'isHtml' => true,
                                         ]);
                                         \App\Domain\AbstractTask::worker($task);

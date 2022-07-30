@@ -3,17 +3,17 @@
 namespace App\Domain;
 
 use App\Domain\Entities\Task;
-use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Service\Task\TaskService;
 use App\Domain\Traits\ParameterTrait;
+use App\Domain\Traits\RendererTrait;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
-use Slim\Views\Twig;
 
 abstract class AbstractTask
 {
     use ParameterTrait;
+    use RendererTrait;
 
     public const TITLE = '';
 
@@ -24,8 +24,6 @@ abstract class AbstractTask
     private ?Task $entity;
 
     private TaskService $taskService;
-
-    private Twig $renderer;
 
     /**
      * Start background worker
@@ -74,22 +72,6 @@ abstract class AbstractTask
         $this->entity = $entity;
         $this->taskService = $container->get(TaskService::class);
         $this->renderer = $container->get('view');
-    }
-
-    /**
-     * @throws HttpBadRequestException
-     */
-    protected function render(string $template, array $data = []): string
-    {
-        try {
-            if (($path = realpath(THEME_DIR . '/' . $this->parameter('common_theme', 'default'))) !== false) {
-                $this->renderer->getLoader()->addPath($path);
-            }
-
-            return $this->renderer->fetch($template, $data);
-        } catch (\Twig\Error\LoaderError $exception) {
-            throw new \RuntimeException($exception->getMessage());
-        }
     }
 
     /**

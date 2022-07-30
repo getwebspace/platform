@@ -28,7 +28,7 @@ class SystemPageAction extends AbstractAction
         }
 
         // exist user
-        if (!$access) {
+        if (!$access && $user) {
             if ($user->getGroup() !== null && in_array('cup:main', $user->getGroup()->getAccess(), true)) {
                 $access = true;
             }

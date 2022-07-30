@@ -3,7 +3,7 @@
 {% block head %}
     <meta name="description" content="{{ parameter('common_description') }}">
     <meta name="keywords" content="{{ parameter('common_keywords') }}">
-    <meta name="canonical" content="{{ parameter('common_homepage') }}">
+    <link rel="canonical" href="{{ parameter('common_homepage') }}"/>
 
     <!-- Favicon -->
     <link href="/shopgrid/favicon.svg" rel="shortcut icon" />
@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tiny-slider@2.9.4/dist/tiny-slider.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/css/glightbox.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.css">
-    <link rel="stylesheet" href="/shopgrid/css/main.css" />
+    <link rel="stylesheet" href="/default/css/main.css" />
 {% endblock %}
 
 {% block body %}
@@ -79,7 +79,7 @@
         <script src="https://cdn.jsdelivr.net/npm/glightbox@3.2.0/dist/js/glightbox.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.5.7/jquery.fancybox.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.1.9/sweetalert2.all.min.js"></script>
-        <script src="/shopgrid/js/main.js"></script>
+        <script src="/default/js/main.js"></script>
 
         {% include 'mixin/img-script.twig' %}
         {#{% include 'mixin/adbd.twig' %}#}

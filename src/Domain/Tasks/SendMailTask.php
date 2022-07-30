@@ -17,7 +17,9 @@ class SendMailTask extends AbstractTask
             'cc' => '', // string|array(address=>name)
             'bcc' => '', // string|array(address=>name)
             'body' => '',
-            'isHtml' => false,
+            'isHtml' => true,
+            'template' => '',
+            'data' => [],
             'attachments' => [],
         ];
         $params = array_merge($default, $params);
@@ -33,7 +35,7 @@ class SendMailTask extends AbstractTask
      */
     protected function action(array $args = []): void
     {
-        $args = array_merge(
+        $params = array_merge(
             $this->parameter(
                 [
                     'mail_from', 'mail_from_name',
@@ -55,7 +57,26 @@ class SendMailTask extends AbstractTask
             ]
         );
 
-        $mail = Mail::send($args);
+        // extension part
+        if ($args['template'] || $args['data']) {
+            if (str_end_with($args['template'], ['.twig', '.html'])) {
+                $params['body'] = $this->render($args['template'], $args['data']);
+                $params['isHtml'] = true;
+            } else {
+                if ($args['template']) {
+                    $params['body'] = $this->renderFromString($args['template'], $args['data']);
+                    $params['isHtml'] = true;
+                } elseif (is_array($args['data'])) {
+                    $params['body'] = json_encode(str_escape($args['data']), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+                    $params['isHtml'] = false;
+                } else {
+                    $params['body'] = $args['data'];
+                    $params['isHtml'] = false;
+                }
+            }
+        }
+
+        $mail = Mail::send($params);
 
         $this->container->get(\App\Application\PubSub::class)->publish('task:mail:send');
 
