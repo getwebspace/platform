@@ -12,12 +12,11 @@ use App\Domain\Service\File\FileRelationService;
 use App\Domain\Service\File\FileService;
 use App\Domain\Traits\FileTrait;
 use App\Domain\Traits\ParameterTrait;
+use App\Domain\Traits\RendererTrait;
 use App\Domain\Traits\StorageTrait;
 use Doctrine\ORM\EntityManager;
 use Illuminate\Support\Collection;
-use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Psr\Log\LoggerInterface;
 use Slim\Interfaces\RouteCollectorInterface;
 use Slim\Psr7\Request;
@@ -27,6 +26,7 @@ use Slim\Views\Twig;
 abstract class AbstractAction
 {
     use ParameterTrait;
+    use RendererTrait;
     use StorageTrait;
 
     // 40X
@@ -46,8 +46,6 @@ abstract class AbstractAction
     protected EntityManager $entityManager;
 
     protected RouteCollectorInterface $routeCollector;
-
-    private Twig $renderer;
 
     protected Request $request;
 
@@ -370,48 +368,6 @@ abstract class AbstractAction
         }
 
         return true;
-    }
-
-    /**
-     * @throws HttpBadRequestException
-     * @throws NotFoundExceptionInterface
-     * @throws ContainerExceptionInterface
-     */
-    protected function render(string $template, array $data = []): string
-    {
-        try {
-            $data = array_merge(
-                [
-                    '_request' => &$_REQUEST,
-                    '_error' => \Alksily\Support\Form::$globalError = $this->error,
-                    '_language' => \App\Application\i18n::$localeCode ?? 'ru',
-                    'sha' => mb_substr($_ENV['COMMIT_SHA'] ?? 'specific', 0, 7),
-                    'NIL' => \Ramsey\Uuid\Uuid::NIL,
-                    'plugins' => $this->container->get('plugin')->get(),
-                    'user' => $this->request->getAttribute('user', false),
-                ],
-                $data
-            );
-            if (($path = realpath(THEME_DIR . '/' . $this->parameter('common_theme', 'default'))) !== false) {
-                $this->renderer->getLoader()->addPath($path);
-            }
-
-            // add default errors pages
-            $this->renderer->getLoader()->addPath(VIEW_ERROR_DIR);
-
-            return $this->renderer->fetch($template, $data);
-        } catch (\Twig\Error\LoaderError $exception) {
-            throw new HttpBadRequestException($exception->getMessage());
-        }
-    }
-
-    protected function renderFromString(string $template, array $data = []): string
-    {
-        try {
-            return $this->renderer->fetchFromString($template, $data);
-        } catch (\Twig\Error\SyntaxError|\Twig\Error\LoaderError $exception) {
-            throw new \RuntimeException($exception->getMessage());
-        }
     }
 
     /**

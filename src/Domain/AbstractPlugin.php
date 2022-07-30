@@ -4,6 +4,7 @@ namespace App\Domain;
 
 use App\Application\i18n;
 use App\Domain\Traits\ParameterTrait;
+use App\Domain\Traits\RendererTrait;
 use App\Domain\Traits\StorageTrait;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -18,6 +19,7 @@ use Slim\Views\Twig;
 abstract class AbstractPlugin
 {
     use ParameterTrait;
+    use RendererTrait;
     use StorageTrait;
 
     public const NAME = 'UntitledPlugin';
@@ -33,8 +35,6 @@ abstract class AbstractPlugin
     protected LoggerInterface $logger;
 
     private RouteCollectorInterface $router;
-
-    private Twig $renderer;
 
     private array $handledRoutes = [];
 
@@ -268,24 +268,5 @@ abstract class AbstractPlugin
     public function after(Request $request, Response $response, string $routeName): Response
     {
         return $response;
-    }
-
-    /**
-     * @throws \Twig\Error\SyntaxError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\LoaderError
-     */
-    protected function render(string $template, array $data = []): string
-    {
-        return $this->renderer->fetch($template, $data);
-    }
-
-    protected function renderFromString(string $template, array $data = []): string
-    {
-        try {
-            return $this->renderer->fetchFromString($template, $data);
-        } catch (\Twig\Error\SyntaxError|\Twig\Error\LoaderError $exception) {
-            throw new \RuntimeException($exception->getMessage());
-        }
     }
 }

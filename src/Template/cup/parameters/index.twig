@@ -122,6 +122,18 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Автообновление темы',
+                                                    'description': 'Система будет проверять изменения в теме оформления',
+                                                    'type': 'select',
+                                                    'name': 'common[theme_reload]',
+                                                    'message': 'Может повысить нагрузку на сервер, не рекомендуется в режиме <code>Production</code>',
+                                                    'args': {
+                                                        'option': _(['off', 'on']),
+                                                        'selected': 'off'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Шаблон главной страницы',
                                                     'type': 'text',
                                                     'name': 'common[template]',
