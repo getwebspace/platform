@@ -21,7 +21,6 @@ use Psr\Log\LoggerInterface;
 use Slim\Interfaces\RouteCollectorInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
-use Slim\Views\Twig;
 
 abstract class AbstractAction
 {

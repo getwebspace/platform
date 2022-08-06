@@ -31,6 +31,10 @@ return [
     'email' => 'E-Mail',
     'phone' => 'Телефон',
 
+    // user email list mode
+    'blacklist' => 'Черный список',
+    'whitelist' => 'Белый список',
+
     // user without group
     'WITHOUT_GROUP' => 'Без группы',
 

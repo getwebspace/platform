@@ -77,7 +77,7 @@ class UserService extends AbstractService
             if ($this->service->findOneByEmail($data['email']) !== null) {
                 throw new EmailAlreadyExistsException();
             }
-            if (str_end_with($data['email'], array_map('trim', explode(PHP_EOL, $this->parameter('user_banned_email', ''))))) {
+            if ($this->check_email($data['email'])) {
                 throw new EmailBannedException();
             }
         }
@@ -262,6 +262,7 @@ class UserService extends AbstractService
      *
      * @throws UsernameAlreadyExistsException
      * @throws EmailAlreadyExistsException
+     * @throws EmailBannedException
      * @throws PhoneAlreadyExistsException
      * @throws WrongEmailValueException
      * @throws WrongPhoneValueException
@@ -319,6 +320,10 @@ class UserService extends AbstractService
                     }
                 }
                 if ($data['email'] !== null) {
+                    if ($this->check_email($data['email'])) {
+                        throw new EmailBannedException();
+                    }
+
                     $found = $this->service->findOneByEmail($data['email']);
 
                     if ($found === null || $found === $entity) {
@@ -475,5 +480,34 @@ class UserService extends AbstractService
         }
 
         throw new UserNotFoundException();
+    }
+
+    /**
+     * @param string $email
+     *
+     * @throws EmailBannedException
+     */
+    protected function check_email(string $email)
+    {
+        $list = array_map('trim', explode(PHP_EOL, $this->parameter('user_email_list', '')));
+
+        switch ($this->parameter('user_email_list_mode', 'blacklist')) {
+            case 'blacklist':
+                if (str_end_with($email, $list)) {
+                    return true;
+                }
+
+                break;
+
+            case 'whitelist':
+                if (!str_end_with($email, $list)) {
+                    return true;
+                }
+
+                break;
+
+        }
+
+        return false;
     }
 }

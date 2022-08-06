@@ -35,7 +35,7 @@ class DataService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        if (!$data['message'] AND !$data['data']) {
+        if (!$data['message'] && !$data['data']) {
             throw new MissingMessageValueException();
         }
 
