@@ -450,13 +450,17 @@ class TwigExtension extends AbstractExtension
     // catalog functions
 
     // fetch categories list
-    public function catalog_category()
+    public function catalog_category(array $criteria = [], $order = [])
     {
         $catalogCategoryService = $this->container->get(CatalogCategoryService::class);
 
-        return $catalogCategoryService->read([
-            'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
-        ]);
+        return $catalogCategoryService->read(array_merge(
+            $criteria,
+            [
+                'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+                'order' => $order,
+            ]
+        ));
     }
 
     // return parent categories
