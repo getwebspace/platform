@@ -52,8 +52,8 @@ register_shutdown_function(function () use ($queue, $action): void {
     // after work remove PID file
     \App\Domain\AbstractTask::workerRemovePidFile($action);
 
-    if ($queue->count()) {
-        \App\Domain\AbstractTask::worker($_SERVER['argv'][1] ?? '');
+    if ($queue->count() > 1) {
+        \App\Domain\AbstractTask::worker($action);
     }
 });
 
