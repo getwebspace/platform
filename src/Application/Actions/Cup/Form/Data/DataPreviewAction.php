@@ -22,7 +22,7 @@ class DataPreviewAction extends FormAction
                     $this->response->getBody()->write($message);
                 } else {
                     $form = $this->formService->read([
-                        'uuid' => $application->getFormUuid()
+                        'uuid' => $application->getFormUuid(),
                     ]);
 
                     // prepare preview

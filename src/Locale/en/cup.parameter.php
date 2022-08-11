@@ -113,7 +113,8 @@ return [
     'Указанные права доступа также будут применены для незарегистрированного пользователя' => 'The specified access rights will also be applied to an unregistered user',
     'Метод авторизации на сайте' => 'Authorization method on the site',
     'Вы можете выбрать, каким способом будет производиться авторизация пользователей на сайте. Доступно два варианта, либо с использованием своего логина или с использованием E-Mail' => 'You can choose how users will be authorized on the site. There are two options available, either using your login or using E-Mail',
-    'Запрещенные домены для регистрации' => 'Prohibited domains for registration',
+    'Вариант работы списка' => 'List mode',
+    'Список доменов для регистрации' => 'List of domains for registration',
     'Каждый домен с новой строки' => 'Each domain on a new line',
     'Включить вход через код' => 'Enable code sign-in',
     'При авторизации пользователя будет возможность подтверждения личности через высланный на почту код' => 'When authorizing the user, it will be possible to confirm the identity through the code sent to the mail',
@@ -168,6 +169,10 @@ return [
     'username' => 'Login',
     'email' => 'E-Mail',
     'phone' => 'Telephone',
+
+    // user email list mode
+    'blacklist' => 'Blacklist',
+    'whitelist' => 'Whitelist',
 
     // plugins
     'Включение и выключение reCAPTCHA' => 'Turning reCAPTCHA on and off',

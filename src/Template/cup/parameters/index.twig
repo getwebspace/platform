@@ -244,7 +244,7 @@
                                                             'type': 'text',
                                                             'name': 'smtp[host]',
                                                             'args': {
-                                                                'placeholder': 'smtp.yandex.ru'
+                                                                'placeholder': 'smtp.gmail.com'
                                                             }
                                                         } %}
 
@@ -698,14 +698,26 @@
                                                     }
                                                 } %}
 
+                                                <hr>
+
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Запрещенные домены для регистрации',
+                                                    'label': 'Вариант работы списка',
+                                                    'type': 'select',
+                                                    'name': 'user[email_list_mode]',
+                                                    'args': {
+                                                        'option': _(['blacklist', 'whitelist']),
+                                                        'selected': 'blacklist'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Список доменов для регистрации',
                                                     'type': 'textarea',
-                                                    'name': 'user[banned_email]',
+                                                    'name': 'user[email_list]',
                                                     'message': 'Каждый домен с новой строки',
                                                     'args': {
                                                         'style': 'height: 100px!important;',
-                                                        'placeholder': '@mail.ru'
+                                                        'placeholder': '@yahoo.com'
                                                     }
                                                 } %}
 
