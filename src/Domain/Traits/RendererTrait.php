@@ -31,7 +31,7 @@ trait RendererTrait
                     '_error' => \Alksily\Support\Form::$globalError = $this->error ?? [],
                     '_language' => \App\Application\i18n::$localeCode ?? 'ru',
                     'plugins' => $this->container->get('plugin')->get(),
-                    'user' => $this->request->getAttribute('user', false) ?? false,
+                    'user' => isset($this->request) ? $this->request->getAttribute('user', false) : false,
                 ],
                 $data
             );
