@@ -28,13 +28,13 @@ steps - collection
         </style>
         <div class="row">
             <div class="col-12 col-md-8 text-center text-md-left">
-                <h3 class="d-none d-md-inline">{{ title ?: 'Заголовок опроса' }}</h3>
-                <h4 class="d-inline d-md-none">{{ title ?: 'Заголовок опроса' }}</h4>
+                <h3 class="d-none d-md-inline">{{ title ?: 'Poll title' }}</h3>
+                <h4 class="d-inline d-md-none">{{ title ?: 'Poll title' }}</h4>
             </div>
             <div class="col-12 col-md-4 mt-2 mt-md-0">
                 <div class="row">
                     <div class="col-12 col-md-4 text-center text-md-left text-muted">
-                        Шаг <span data-progress="current">1</span> из <span data-progress="of">{{ steps|count }}</span>
+                        Шаг <span data-progress="current">1</span> of <span data-progress="of">{{ steps|count }}</span>
                     </div>
                     <div class="col-12 col-md-8 text-center text-md-right my-auto">
                         <div class="progress" data-progress="bar">
@@ -51,8 +51,8 @@ steps - collection
                     {% set button = (step.field is defined or (step.option is defined and 'checkbox' in collect(step.option).pluck('type'))) and loop.last == false %}
 
                     <section data-step="{{ loop.index }}" data-button="{{ button or loop.last ?: 0 }}" class="text-center text-md-left" {{ loop.first != true ? 'style="display: none"' }}>
-                        <h4 class="d-none d-md-inline">{{ step.title ?: 'Заголовок вопроса ' ~ loop.index }}</h4>
-                        <h5 class="d-inline d-md-none">{{ step.title ?: 'Заголовок вопроса ' ~ loop.index }}</h5>
+                        <h4 class="d-none d-md-inline">{{ step.title ?: 'Question title ' ~ loop.index }}</h4>
+                        <h5 class="d-inline d-md-none">{{ step.title ?: 'Question title ' ~ loop.index }}</h5>
                         <p class="py-2 text-justify">{{ step.description }}</p>
 
                         {% set count = step.option|count %}
@@ -94,14 +94,14 @@ steps - collection
                             {% if button %}
                                 <div class="col-12 text-center text-md-right mt-4">
                                     {% if loop.first != true %}
-                                        <button type="button" class="btn btn-secondary" data-click="back">{{ step.btn_back ?: 'Назад' }}</button>
+                                        <button type="button" class="btn btn-secondary" data-click="back">{{ step.btn_back ?: 'Prev' }}</button>
                                     {% endif %}
-                                    <button type="button" class="btn btn-primary" data-click="next">{{ step.btn_next ?: 'Далее' }}</button>
+                                    <button type="button" class="btn btn-primary" data-click="next">{{ step.btn_next ?: 'Next' }}</button>
                                 </div>
                             {% elseif loop.last %}
                                 <div class="col-12 text-center text-md-right mt-4">
-                                    <button type="button" class="btn btn-secondary" data-click="back">{{ step.btn_back ?: 'Назад' }}</button>
-                                    <button type="button" class="btn btn-primary" data-click="submit">{{ step.btn_submit ?: 'Отправить' }}</button>
+                                    <button type="button" class="btn btn-secondary" data-click="back">{{ step.btn_back ?: 'Back' }}</button>
+                                    <button type="button" class="btn btn-primary" data-click="submit">{{ step.btn_submit ?: 'Send' }}</button>
                                 </div>
                             {% endif %}
                         </div>
