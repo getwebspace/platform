@@ -3,10 +3,10 @@
 {% block title %}ЦУП CMS{% endblock %}
 
 {% block head %}
-    <link rel="stylesheet" href="/assets/css/bootstrap.min.css?v={{ sha }}">
-    <link rel="stylesheet" href="/assets/js/plugin/jquery.modal/jquery.modal.min.css?v={{ sha }}">
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css?v={{ SHA }}">
+    <link rel="stylesheet" href="/assets/js/plugin/jquery.modal/jquery.modal.min.css?v={{ SHA }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="/assets/css/atlantis.css?v={{ sha }}">
+    <link rel="stylesheet" href="/assets/css/atlantis.css?v={{ SHA }}">
     <meta name="theme-color" content="#1572e8">
 {% endblock %}
 
@@ -374,7 +374,7 @@
                                                                             <th width="50%">{{ 'Сборка'|locale }}:</th>
                                                                             <td width="50%" class="text-center">
                                                                                 {{ properties.version.branch }}
-                                                                                (<a href="https://github.com/getwebspace/platform/tree/{{ properties.version.commit }}" target="_blank">{{ sha }}</a>)
+                                                                                (<a href="https://github.com/getwebspace/platform/tree/{{ properties.version.commit }}" target="_blank">{{ SHA }}</a>)
                                                                             </td>
                                                                         </tr>
                                                                         <tr>
@@ -447,7 +447,7 @@
                         <div class="container-fluid">
                             <div class="copyright mr-auto">
                                 Copyright &copy; 2011-{{ 'now'|df('Y') }} <a href="https://getwebspace.org" target="_blank">WebSpace Engine</a> &mdash; {{ 'платформа для управления контентом на сайте'|locale }}.<br>
-                                {{ 'Сборка'|locale }}: <span class="text-muted">{{ sha }}</span>
+                                {{ 'Сборка'|locale }}: <span class="text-muted">{{ SHA }}</span>
                             </div>
                             <nav class="pull-right">
                                 <ul class="nav">
@@ -477,23 +477,23 @@
         {% endblock %}
     </body>
 
-    <script src="/assets/js/core/jquery.3.2.1.min.js?v={{ sha }}"></script>
-    <script src="/assets/js/core/popper.min.js?v={{ sha }}"></script>
-    <script src="/assets/js/core/tooltip.min.js?v={{ sha }}"></script>
-    <script src="/assets/js/core/bootstrap.min.js?v={{ sha }}"></script>
-    <script src="/assets/js/core/bootstrap-tagsinput.min.js?v={{ sha }}"></script>
-    <script src="/assets/js/core/moment.min.js?v={{ sha }}"></script>
-    <script src="/assets/js/core/moment-with-locales.min.js?v={{ sha }}"></script>
+    <script src="/assets/js/core/jquery.3.2.1.min.js?v={{ SHA }}"></script>
+    <script src="/assets/js/core/popper.min.js?v={{ SHA }}"></script>
+    <script src="/assets/js/core/tooltip.min.js?v={{ SHA }}"></script>
+    <script src="/assets/js/core/bootstrap.min.js?v={{ SHA }}"></script>
+    <script src="/assets/js/core/bootstrap-tagsinput.min.js?v={{ SHA }}"></script>
+    <script src="/assets/js/core/moment.min.js?v={{ SHA }}"></script>
+    <script src="/assets/js/core/moment-with-locales.min.js?v={{ SHA }}"></script>
 
-    <script src="/assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js?v={{ sha }}"></script>
-    <script src="/assets/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js?v={{ sha }}"></script>
-    <script src="/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js?v={{ sha }}"></script>
-    <script src="/assets/js/plugin/jquery.modal/jquery.modal.min.js?v={{ sha }}"></script>
-    <script src="/assets/js/plugin/sweetalert/sweetalert2.all.min.js?v={{ sha }}"></script>
-    <script src="/assets/js/plugin/select2/select2.full.min.js?v={{ sha }}"></script>
-    <script src="/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js?v={{ sha }}"></script>
+    <script src="/assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js?v={{ SHA }}"></script>
+    <script src="/assets/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js?v={{ SHA }}"></script>
+    <script src="/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js?v={{ SHA }}"></script>
+    <script src="/assets/js/plugin/jquery.modal/jquery.modal.min.js?v={{ SHA }}"></script>
+    <script src="/assets/js/plugin/sweetalert/sweetalert2.all.min.js?v={{ SHA }}"></script>
+    <script src="/assets/js/plugin/select2/select2.full.min.js?v={{ SHA }}"></script>
+    <script src="/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js?v={{ SHA }}"></script>
 
-    <script src="/assets/js/cup/script.js?v={{ sha }}"></script>
+    <script src="/assets/js/cup/script.js?v={{ SHA }}"></script>
 
     {% block script '' %}
 {% endblock %}
