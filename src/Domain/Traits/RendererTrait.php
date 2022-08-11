@@ -7,6 +7,10 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Slim\Views\Twig;
 
+/**
+ * @property \Slim\Psr7\Request $request
+ * @property array $error
+ */
 trait RendererTrait
 {
     protected Twig $renderer;
@@ -27,7 +31,7 @@ trait RendererTrait
                     '_error' => \Alksily\Support\Form::$globalError = $this->error ?? [],
                     '_language' => \App\Application\i18n::$localeCode ?? 'ru',
                     'plugins' => $this->container->get('plugin')->get(),
-                    'user' => $this->request->getAttribute('user', false),
+                    'user' => $this->request->getAttribute('user', false) ?? false,
                 ],
                 $data
             );
