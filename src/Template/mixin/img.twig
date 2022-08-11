@@ -12,7 +12,7 @@
     <img
         data-lazyload-image
         data-src="{{ src }}"
-        {{ placeholder ? ('src="' ~ placeholder ~ '"')|raw ? '' }}
+        {{ placeholder ? ('src="' ~ placeholder ~ '"')|raw : '' }}
         {{ id ? ('id="'~ id|trim ~ '"')|raw : '' }}
         {{ class ? ('class="'~ class|trim ~'"')|raw : '' }}
         {{ alt ? ('alt="'~ alt|trim ~'"')|raw : '' }}
