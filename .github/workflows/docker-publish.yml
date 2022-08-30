@@ -58,6 +58,10 @@ jobs:
                 file: docker/debian/Dockerfile
                 tags: ${{ steps.meta.outputs.tags }}
                 labels: ${{ steps.meta.outputs.labels }}
+                build-args: |
+                    BRANCH: ${GITHUB_REF##*/}
+                    COMMIT: ${{ github.sha }}
+
 
     # build debian based container WITH sqlsrv PDO driver
     debian-sqlsrv:
@@ -89,6 +93,6 @@ jobs:
                   tags: ${{ steps.meta.outputs.tags }}-sqlsrv
                   labels: ${{ steps.meta.outputs.labels }}
                   build-args: |
-                      BRANCH: ${{ $VERSION }}
+                      BRANCH: ${GITHUB_REF##*/}
                       COMMIT: ${{ github.sha }}
 
