@@ -64,8 +64,8 @@ jobs:
                     tags: ${{ steps.meta.outputs.tags }}
                     labels: ${{ steps.meta.outputs.labels }}
                     build-args: |
-                        BRANCH={{branch}}
-                        COMMIT={{sha}}
+                        BRANCH=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+                        COMMIT=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
 
     # build debian based container WITH sqlsrv PDO driver
     debian-sqlsrv:
@@ -102,5 +102,5 @@ jobs:
                     tags: ${{ steps.meta.outputs.tags }}-sqlsrv
                     labels: ${{ steps.meta.outputs.labels }}
                     build-args: |
-                        BRANCH={{branch}}
-                        COMMIT={{sha}}
+                        BRANCH=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
+                        COMMIT=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
