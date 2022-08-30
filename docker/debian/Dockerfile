@@ -1,4 +1,4 @@
-FROM php:8.1-fpm-bullseye
+FROM php:8.1-fpm-bullseye as build
 MAINTAINER Aleksey Ilyin <alksily@outlook.com>
 
 # Set args
@@ -64,14 +64,23 @@ COPY composer.json ${PLATFORM_HOME}/composer.json
 COPY composer.lock ${PLATFORM_HOME}/composer.lock
 RUN composer install ${NO_DEV} --no-suggest --no-progress --ignore-platform-reqs
 
+EXPOSE 80/tcp 443/tcp
+VOLUME ["${PLATFORM_HOME}/plugin", "${PLATFORM_HOME}/public/resource", "${PLATFORM_HOME}/theme", "${PLATFORM_HOME}/var", "${PLATFORM_HOME}/public/uploads"]
+
+STOPSIGNAL SIGTERM
+
+CMD ["/entrypoint.sh"]
+
+FROM build as platform
+
 # Copy platform
-ADD bin ${PLATFORM_HOME}/bin
-ADD config ${PLATFORM_HOME}/config
-ADD plugin ${PLATFORM_HOME}/plugin
-ADD public ${PLATFORM_HOME}/public
-ADD src ${PLATFORM_HOME}/src
-ADD theme ${PLATFORM_HOME}/theme
-ADD var ${PLATFORM_HOME}/var
+COPY bin ${PLATFORM_HOME}/bin
+COPY config ${PLATFORM_HOME}/config
+COPY plugin ${PLATFORM_HOME}/plugin
+COPY public ${PLATFORM_HOME}/public
+COPY src ${PLATFORM_HOME}/src
+COPY theme ${PLATFORM_HOME}/theme
+COPY var ${PLATFORM_HOME}/var
 
 # Final step
 RUN set -x \
@@ -85,10 +94,3 @@ RUN set -x \
     && chmod -R 0776 ${PLATFORM_HOME}/public/uploads \
     && chmod -R 0776 ${PLATFORM_HOME}/theme \
     && chmod -R 0777 ${PLATFORM_HOME}/var
-
-EXPOSE 80/tcp 443/tcp
-VOLUME ["${PLATFORM_HOME}/plugin", "${PLATFORM_HOME}/public/resource", "${PLATFORM_HOME}/theme", "${PLATFORM_HOME}/var", "${PLATFORM_HOME}/public/uploads"]
-
-STOPSIGNAL SIGTERM
-
-CMD ["/entrypoint.sh"]
