@@ -11,16 +11,12 @@ on:
         tags:
             - '*'
 
-env:
-    ACTIONS_ALLOW_UNSECURE_COMMANDS: true
-    DEFAULT_IMAGE_NAME: getwebspace/platform
-
 jobs:
     # Run tests.
     # See also https://docs.docker.com/docker-hub/builds/automated-testing/
     test:
-        runs-on: ubuntu-20.04
-
+        runs-on: ubuntu-latest
+        name: Testing
         steps:
             - uses: actions/checkout@v2
 
@@ -36,55 +32,57 @@ jobs:
     # build debian based container
     debian:
         needs: test
-
-        runs-on: ubuntu-20.04
-        if: github.event_name == 'push'
-
+        runs-on: ubuntu-latest
+        name: Build base container
         steps:
-            - uses: actions/checkout@v2
+            - name: Check out the repo
+              uses: actions/checkout@v3
 
-            - name: Definition version
-              run: |
-                  VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-                  [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-                  [ "$VERSION" == "master" ] && VERSION=latest
+            - name: Log in to Docker Hub
+              uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+              with:
+                username: ${{ secrets.DOCKER_HUB_USERNAME }}
+                password: ${{ secrets.DOCKER_HUB }}
 
-                  echo VERSION=$VERSION
-                  echo "::set-env name=VERSION::$VERSION"
+            - name: Extract metadata (tags, labels) for Docker
+              id: meta
+              uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+              with:
+                images: getwebspace/platform
 
-            - name: Build container
-              run: docker build . --build-arg=COMMIT=${{ github.sha }} --build-arg=BRANCH=${{ env.VERSION }} --file docker/debian/Dockerfile --tag $DEFAULT_IMAGE_NAME:${{ env.VERSION }}
-
-            - name: Log into registry
-              run: echo "${{ secrets.DOCKER_HUB }}" | docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
-
-            - name: Push container
-              run: docker push $DEFAULT_IMAGE_NAME:${{ env.VERSION }}
+            - name: Build and push Docker image
+              uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+              with:
+                context: .
+                push: true
+                tags: ${{ steps.meta.outputs.tags }}
+                labels: ${{ steps.meta.outputs.labels }}
 
     # build debian based container WITH sqlsrv PDO driver
     debian-sqlsrv:
         needs: test
-
-        runs-on: ubuntu-20.04
-        if: github.event_name == 'push'
-
+        runs-on: ubuntu-latest
+        name: Build sqlsrv container
         steps:
-            - uses: actions/checkout@v2
+            - name: Check out the repo
+              uses: actions/checkout@v3
 
-            - name: Definition version
-              run: |
-                  VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-                  [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-                  [ "$VERSION" == "master" ] && VERSION=latest
+            - name: Log in to Docker Hub
+              uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+              with:
+                  username: ${{ secrets.DOCKER_HUB_USERNAME }}
+                  password: ${{ secrets.DOCKER_HUB }}
 
-                  echo VERSION=$VERSION
-                  echo "::set-env name=VERSION::$VERSION"
+            - name: Extract metadata (tags, labels) for Docker
+              id: meta
+              uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+              with:
+                  images: getwebspace/platform
 
-            - name: Build container
-              run: docker build . --build-arg=COMMIT=${{ github.sha }} --build-arg=BRANCH=${{ env.VERSION }}-sqlsrv --file docker/debian-sqlsrv/Dockerfile --tag $DEFAULT_IMAGE_NAME:${{ env.VERSION }}-sqlsrv
-
-            - name: Log into registry
-              run: echo "${{ secrets.DOCKER_HUB }}" | docker login --username ${{ secrets.DOCKER_HUB_USERNAME }} --password-stdin
-
-            - name: Push container
-              run: docker push $DEFAULT_IMAGE_NAME:${{ env.VERSION }}-sqlsrv
+            - name: Build and push Docker image
+              uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+              with:
+                  context: .
+                  push: true
+                  tags: ${{ steps.meta.outputs.tags }}-sqlsrv
+                  labels: ${{ steps.meta.outputs.labels }}
