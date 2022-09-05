@@ -70,7 +70,7 @@ jobs:
 
     # build debian based container WITH sqlsrv PDO driver
     debian-sqlsrv:
-        needs: test
+        needs: debian
         runs-on: ubuntu-latest
         name: Build sqlsrv container
         steps:
@@ -97,7 +97,7 @@ jobs:
                 with:
                     context: .
                     push: true
-                    file: docker/debian-sqlsrv/Dockerfile
+                    file: docker/debian/Dockerfile.sqlsrv
                     tags: ${{ steps.meta.outputs.tags }}-sqlsrv
                     labels: ${{ steps.meta.outputs.labels }}
                     build-args: |

@@ -1,0 +1,34 @@
+FROM build as platform
+
+RUN set -x \
+    && curl http://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+    && curl http://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+    && apt-get update \
+    && ACCEPT_EULA=Y apt-get install --no-install-recommends -y \
+        msodbcsql17 \
+        unixodbc-dev \
+    && pecl install -f sqlsrv-5.10.0beta2 pdo_sqlsrv-5.10.0beta2 \
+    && docker-php-ext-enable sqlsrv pdo_sqlsrv \
+    && docker-php-source delete
+
+# Copy platform
+COPY bin ${PLATFORM_HOME}/bin
+COPY config ${PLATFORM_HOME}/config
+COPY plugin ${PLATFORM_HOME}/plugin
+COPY public ${PLATFORM_HOME}/public
+COPY src ${PLATFORM_HOME}/src
+COPY theme ${PLATFORM_HOME}/theme
+COPY var ${PLATFORM_HOME}/var
+
+# Final step
+RUN set -x \
+    && chmod 755 /entrypoint.sh \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && rm /var/log/lastlog /var/log/faillog \
+    && chown -R www-data:www-data ${PLATFORM_HOME} \
+    && chmod -R 0755 ${PLATFORM_HOME} \
+    && chmod -R 0777 ${PLATFORM_HOME}/plugin \
+    && chmod -R 0776 ${PLATFORM_HOME}/public/uploads \
+    && chmod -R 0776 ${PLATFORM_HOME}/theme \
+    && chmod -R 0777 ${PLATFORM_HOME}/var
