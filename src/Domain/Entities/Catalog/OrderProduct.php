@@ -6,19 +6,15 @@ use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="catalog_order_product")
- * @ORM\HasLifecycleCallbacks
- */
+#[ORM\Table(name: 'catalog_order_product')]
+#[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 class OrderProduct extends AbstractEntity
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'Ramsey\Uuid\Doctrine\UuidGenerator')]
     protected \Ramsey\Uuid\UuidInterface $uuid;
 
     public function getUuid(): \Ramsey\Uuid\UuidInterface
@@ -26,15 +22,11 @@ class OrderProduct extends AbstractEntity
         return $this->uuid;
     }
 
-    /**
-     * @ORM\Column(type="uuid")
-     */
+    #[ORM\Column(type: 'uuid')]
     protected \Ramsey\Uuid\UuidInterface $order_uuid;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Catalog\Order")
-     * @ORM\JoinColumn(name="order_uuid", referencedColumnName="uuid")
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\Catalog\Order')]
+    #[ORM\JoinColumn(name: 'order_uuid', referencedColumnName: 'uuid')]
     protected Order $order;
 
     /**
@@ -55,15 +47,11 @@ class OrderProduct extends AbstractEntity
         return $this->order;
     }
 
-    /**
-     * @ORM\Column(type="uuid")
-     */
+    #[ORM\Column(type: 'uuid')]
     protected \Ramsey\Uuid\UuidInterface $product_uuid;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Catalog\Product")
-     * @ORM\JoinColumn(name="product_uuid", referencedColumnName="uuid")
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\Catalog\Product')]
+    #[ORM\JoinColumn(name: 'product_uuid', referencedColumnName: 'uuid')]
     protected Product $product;
 
     /**
@@ -133,9 +121,7 @@ class OrderProduct extends AbstractEntity
         return $this->external_id;
     }
 
-    /**
-     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 1})
-     */
+    #[ORM\Column(type: 'float', scale: 2, precision: 10, options: ['default' => 1])]
     public float $count = 1;
 
     /**
@@ -169,9 +155,7 @@ class OrderProduct extends AbstractEntity
         ];
     }
 
-    /**
-     * @ORM\PostLoad
-     */
+    #[ORM\PostLoad]
     public function _populate_fields(): void
     {
         $this->title = $this->product->getTitle();

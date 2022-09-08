@@ -7,15 +7,11 @@ use App\Domain\Entities\Catalog\Category as CatalogCategory;
 use App\Domain\Entities\FileRelation;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class CatalogCategoryFileRelation extends FileRelation
 {
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Catalog\Category", inversedBy="files")
-     * @ORM\JoinColumn(name="entity_uuid", referencedColumnName="uuid")
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\Catalog\Category', inversedBy: 'files')]
+    #[ORM\JoinColumn(name: 'entity_uuid', referencedColumnName: 'uuid')]
     protected CatalogCategory $catalog_category;
 
     public function setEntity(AbstractEntity $entity): self

@@ -13,20 +13,16 @@ use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 use RuntimeException;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\Repository\UserRepository")
- * @ORM\Table(name="user")
- */
+#[ORM\Table(name: 'user')]
+#[ORM\Entity(repositoryClass: 'App\Domain\Repository\UserRepository')]
 class User extends AbstractEntity
 {
     use FileTrait;
 
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'Ramsey\Uuid\Doctrine\UuidGenerator')]
     protected \Ramsey\Uuid\UuidInterface $uuid;
 
     public function getUuid(): \Ramsey\Uuid\UuidInterface
@@ -34,9 +30,7 @@ class User extends AbstractEntity
         return $this->uuid;
     }
 
-    /**
-     * @ORM\Column(type="string", length=50, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 50, options: ['default' => ''])]
     protected string $username = '';
 
     /**
@@ -56,9 +50,7 @@ class User extends AbstractEntity
         return $this->username;
     }
 
-    /**
-     * @ORM\Column(type="string", length=120, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 120, options: ['default' => ''])]
     protected string $email = '';
 
     /**
@@ -96,9 +88,7 @@ class User extends AbstractEntity
         return 'https://www.gravatar.com/avatar/' . md5(mb_strtolower(trim($this->email))) . '?d=identicon&s=' . $size;
     }
 
-    /**
-     * @ORM\Column(type="string", length=25, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 25, options: ['default' => ''])]
     protected string $phone = '';
 
     /**
@@ -128,9 +118,7 @@ class User extends AbstractEntity
         return $this->phone;
     }
 
-    /**
-     * @ORM\Column(type="string", length=140, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 140, options: ['default' => ''])]
     protected string $password = '';
 
     /**
@@ -150,9 +138,7 @@ class User extends AbstractEntity
         return $this->password;
     }
 
-    /**
-     * @ORM\Column(type="string", length=50, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 50, options: ['default' => ''])]
     protected string $firstname = '';
 
     /**
@@ -172,9 +158,7 @@ class User extends AbstractEntity
         return $this->firstname;
     }
 
-    /**
-     * @ORM\Column(type="string", length=50, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 50, options: ['default' => ''])]
     protected string $lastname = '';
 
     /**
@@ -194,9 +178,7 @@ class User extends AbstractEntity
         return $this->lastname;
     }
 
-    /**
-     * @ORM\Column(type="string", length=50, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 50, options: ['default' => ''])]
     protected string $patronymic = '';
 
     /**
@@ -252,9 +234,7 @@ class User extends AbstractEntity
         return '';
     }
 
-    /**
-     * @ORM\Column(type="date", nullable=true)
-     */
+    #[ORM\Column(type: 'date', nullable: true)]
     protected ?DateTime $birthdate = null;
 
     /**
@@ -280,9 +260,7 @@ class User extends AbstractEntity
         return $this->birthdate;
     }
 
-    /**
-     * @ORM\Column(type="string", length=25, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 25, options: ['default' => ''])]
     protected string $gender = '';
 
     /**
@@ -302,9 +280,7 @@ class User extends AbstractEntity
         return $this->gender;
     }
 
-    /**
-     * @ORM\Column(type="string", length=100, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 100, options: ['default' => ''])]
     protected string $country = '';
 
     /**
@@ -324,9 +300,7 @@ class User extends AbstractEntity
         return $this->country;
     }
 
-    /**
-     * @ORM\Column(type="string", length=100, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 100, options: ['default' => ''])]
     protected string $city = '';
 
     /**
@@ -346,9 +320,7 @@ class User extends AbstractEntity
         return $this->city;
     }
 
-    /**
-     * @ORM\Column(type="string", length=500, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 500, options: ['default' => ''])]
     protected string $address = '';
 
     /**
@@ -368,9 +340,7 @@ class User extends AbstractEntity
         return $this->address;
     }
 
-    /**
-     * @ORM\Column(type="string", length=50, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 50, options: ['default' => ''])]
     protected string $postcode = '';
 
     /**
@@ -390,9 +360,7 @@ class User extends AbstractEntity
         return $this->postcode;
     }
 
-    /**
-     * @ORM\Column(type="string", length=250, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 250, options: ['default' => ''])]
     protected string $additional = '';
 
     /**
@@ -412,9 +380,7 @@ class User extends AbstractEntity
         return $this->additional;
     }
 
-    /**
-     * @ORM\Column(type="boolean", options={"default": true})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
     protected bool $allow_mail = true;
 
     /**
@@ -434,9 +400,7 @@ class User extends AbstractEntity
         return $this->allow_mail;
     }
 
-    /**
-     * @ORM\Column(type="array", options={"default": "a:0:{}"})
-     */
+    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
     protected array $company = [
         'title' => '',
         'position' => '',
@@ -463,9 +427,7 @@ class User extends AbstractEntity
         return $this->company;
     }
 
-    /**
-     * @ORM\Column(type="array", options={"default": "a:0:{}"})
-     */
+    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
     protected array $legal = [
         'code' => '',
         'number' => '',
@@ -492,9 +454,7 @@ class User extends AbstractEntity
         return $this->legal;
     }
 
-    /**
-     * @ORM\Column(type="array", options={"default": "a:0:{}"})
-     */
+    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
     protected array $messenger = [
         'skype' => '',
         'telegram' => '',
@@ -538,8 +498,8 @@ class User extends AbstractEntity
 
     /**
      * @see \App\Domain\Types\UserStatusType::LIST
-     * @ORM\Column(type="UserStatusType", options={"default": \App\Domain\Types\UserStatusType::STATUS_WORK})
      */
+    #[ORM\Column(type: 'UserStatusType', options: ['default' => \App\Domain\Types\UserStatusType::STATUS_WORK])]
     protected string $status = \App\Domain\Types\UserStatusType::STATUS_WORK;
 
     /**
@@ -559,15 +519,11 @@ class User extends AbstractEntity
         return $this->status;
     }
 
-    /**
-     * @ORM\Column(type="uuid", nullable=true, options={"default": NULL})
-     */
+    #[ORM\Column(type: 'uuid', nullable: true, options: ['default' => null])]
     protected ?\Ramsey\Uuid\UuidInterface $group_uuid;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\User\Group")
-     * @ORM\JoinColumn(name="group_uuid", referencedColumnName="uuid")
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\User\Group')]
+    #[ORM\JoinColumn(name: 'group_uuid', referencedColumnName: 'uuid')]
     protected ?UserGroup $group = null;
 
     /**
@@ -591,9 +547,7 @@ class User extends AbstractEntity
         return $this->group;
     }
 
-    /**
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
-     */
+    #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     protected DateTime $register;
 
     /**
@@ -619,9 +573,7 @@ class User extends AbstractEntity
         return $this->register;
     }
 
-    /**
-     * @ORM\Column(name="`change`", type="datetime", options={"default": "CURRENT_TIMESTAMP"})
-     */
+    #[ORM\Column(name: '`change`', type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     protected DateTime $change;
 
     /**
@@ -647,9 +599,7 @@ class User extends AbstractEntity
         return $this->change;
     }
 
-    /**
-     * @ORM\Column(type="string", length=100, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 100, options: ['default' => ''])]
     protected string $website = '';
 
     /**
@@ -669,9 +619,7 @@ class User extends AbstractEntity
         return $this->website;
     }
 
-    /**
-     * @ORM\Column(type="string", length=500, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 500, options: ['default' => ''])]
     protected string $source = '';
 
     /**
@@ -691,9 +639,7 @@ class User extends AbstractEntity
         return $this->source;
     }
 
-    /**
-     * @ORM\Column(type="string", length=12, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 12, options: ['default' => ''])]
     protected string $auth_code = '';
 
     /**
@@ -713,9 +659,7 @@ class User extends AbstractEntity
         return $this->auth_code;
     }
 
-    /**
-     * @ORM\Column(type="string", length=5, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 5, options: ['default' => ''])]
     protected string $language = '';
 
     /**
@@ -735,9 +679,7 @@ class User extends AbstractEntity
         return $this->language;
     }
 
-    /**
-     * @ORM\Column(type="string", length=255, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
     protected string $external_id = '';
 
     /**
@@ -757,9 +699,7 @@ class User extends AbstractEntity
         return $this->external_id;
     }
 
-    /**
-     * @ORM\Column(type="array", options={"default": "a:0:{}"})
-     */
+    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
     protected array $token = [];
 
     /**
@@ -796,9 +736,7 @@ class User extends AbstractEntity
         return $this->token;
     }
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Domain\Entities\User\Integration", mappedBy="user", orphanRemoval=true)
-     */
+    #[ORM\OneToMany(targetEntity: 'App\Domain\Entities\User\Integration', mappedBy: 'user', orphanRemoval: true)]
     protected $integrations = [];
 
     /**
@@ -822,9 +760,7 @@ class User extends AbstractEntity
         return $raw ? $this->integrations : collect($this->integrations);
     }
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Domain\Entities\User\Session", mappedBy="user", orphanRemoval=true)
-     */
+    #[ORM\OneToOne(targetEntity: 'App\Domain\Entities\User\Session', mappedBy: 'user', orphanRemoval: true)]
     protected ?UserSession $session = null;
 
     /**
@@ -845,23 +781,23 @@ class User extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\UserFileRelation", mappedBy="user", orphanRemoval=true)
-     * @ORM\OrderBy({"order": "ASC"})
      */
+    #[ORM\OneToMany(targetEntity: '\App\Domain\Entities\File\UserFileRelation', mappedBy: 'user', orphanRemoval: true)]
+    #[ORM\OrderBy(['order' => 'ASC'])]
     protected $files = [];
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\Publication", mappedBy="user", orphanRemoval=true)
-     * @ORM\OrderBy({"date": "ASC"})
      */
+    #[ORM\OneToMany(targetEntity: '\App\Domain\Entities\Publication', mappedBy: 'user', orphanRemoval: true)]
+    #[ORM\OrderBy(['date' => 'ASC'])]
     protected $publications = [];
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\Catalog\Order", mappedBy="user", orphanRemoval=true)
-     * @ORM\OrderBy({"date": "ASC"})
      */
+    #[ORM\OneToMany(targetEntity: '\App\Domain\Entities\Catalog\Order', mappedBy: 'user', orphanRemoval: true)]
+    #[ORM\OrderBy(['date' => 'ASC'])]
     protected $orders = [];
 
     /**

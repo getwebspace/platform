@@ -6,18 +6,14 @@ use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\Repository\Catalog\AttributeRepository")
- * @ORM\Table(name="catalog_attribute")
- */
+#[ORM\Table(name: 'catalog_attribute')]
+#[ORM\Entity(repositoryClass: 'App\Domain\Repository\Catalog\AttributeRepository')]
 class Attribute extends AbstractEntity
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'Ramsey\Uuid\Doctrine\UuidGenerator')]
     protected \Ramsey\Uuid\UuidInterface $uuid;
 
     public function getUuid(): \Ramsey\Uuid\UuidInterface
@@ -25,9 +21,7 @@ class Attribute extends AbstractEntity
         return $this->uuid;
     }
 
-    /**
-     * @ORM\Column(type="string", length=255, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
     protected string $title = '';
 
     /**
@@ -47,9 +41,7 @@ class Attribute extends AbstractEntity
         return $this->title;
     }
 
-    /**
-     * @ORM\Column(type="string", length=500, unique=true, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 500, unique: true, options: ['default' => ''])]
     protected string $address = '';
 
     /**
@@ -71,8 +63,8 @@ class Attribute extends AbstractEntity
 
     /**
      * @see \App\Domain\Types\Catalog\AttributeTypeType::LIST
-     * @ORM\Column(type="CatalogAttributeTypeType", options={"default": \App\Domain\Types\Catalog\AttributeTypeType::TYPE_STRING})
      */
+    #[ORM\Column(type: 'CatalogAttributeTypeType', options: ['default' => \App\Domain\Types\Catalog\AttributeTypeType::TYPE_STRING])]
     protected string $type = \App\Domain\Types\Catalog\AttributeTypeType::TYPE_STRING;
 
     /**
@@ -92,9 +84,7 @@ class Attribute extends AbstractEntity
         return $this->type;
     }
 
-    /**
-     * @ORM\ManyToMany(targetEntity="App\Domain\Entities\Catalog\Category", mappedBy="attributes")
-     */
+    #[ORM\ManyToMany(targetEntity: 'App\Domain\Entities\Catalog\Category', mappedBy: 'attributes')]
     protected $categories = [];
 
     /**
@@ -107,10 +97,8 @@ class Attribute extends AbstractEntity
         return $raw ? $this->categories : collect($this->categories);
     }
 
-    /**
-     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\ProductAttribute", mappedBy="attribute", orphanRemoval=true)
-     * @ORM\JoinColumn(name="uuid", referencedColumnName="attribute_uuid")
-     */
+    #[ORM\OneToMany(targetEntity: 'App\Domain\Entities\Catalog\ProductAttribute', mappedBy: 'attribute', orphanRemoval: true)]
+    #[ORM\JoinColumn(name: 'uuid', referencedColumnName: 'attribute_uuid')]
     protected $productAttributes = [];
 
     /**

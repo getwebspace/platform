@@ -7,18 +7,14 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\Repository\NotificationRepository")
- * @ORM\Table(name="notification")
- */
+#[ORM\Table(name: 'notification')]
+#[ORM\Entity(repositoryClass: 'App\Domain\Repository\NotificationRepository')]
 class Notification extends AbstractEntity
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'Ramsey\Uuid\Doctrine\UuidGenerator')]
     protected \Ramsey\Uuid\UuidInterface $uuid;
 
     public function getUuid(): \Ramsey\Uuid\UuidInterface
@@ -28,8 +24,8 @@ class Notification extends AbstractEntity
 
     /**
      * @var string|Uuid
-     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
+    #[ORM\Column(type: 'uuid', options: ['default' => \Ramsey\Uuid\Uuid::NIL])]
     protected $user_uuid = \Ramsey\Uuid\Uuid::NIL;
 
     /**
@@ -49,9 +45,7 @@ class Notification extends AbstractEntity
         return $this->user_uuid;
     }
 
-    /**
-     * @ORM\Column(type="string", length=255, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
     protected string $title = '';
 
     /**
@@ -71,9 +65,7 @@ class Notification extends AbstractEntity
         return $this->title;
     }
 
-    /**
-     * @ORM\Column(type="text", options={"default": ""})
-     */
+    #[ORM\Column(type: 'text', options: ['default' => ''])]
     protected string $message = '';
 
     /**
@@ -91,9 +83,7 @@ class Notification extends AbstractEntity
         return $this->message;
     }
 
-    /**
-     * @ORM\Column(type="array", options={"default": "a:0:{}"})
-     */
+    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
     protected array $params = [];
 
     /**
@@ -111,9 +101,7 @@ class Notification extends AbstractEntity
         return $this->params;
     }
 
-    /**
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
-     */
+    #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     protected DateTime $date;
 
     /**

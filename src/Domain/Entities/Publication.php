@@ -9,20 +9,16 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\Repository\PublicationRepository")
- * @ORM\Table(name="publication")
- */
+#[ORM\Table(name: 'publication')]
+#[ORM\Entity(repositoryClass: 'App\Domain\Repository\PublicationRepository')]
 class Publication extends AbstractEntity
 {
     use FileTrait;
 
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'Ramsey\Uuid\Doctrine\UuidGenerator')]
     protected \Ramsey\Uuid\UuidInterface $uuid;
 
     public function getUuid(): \Ramsey\Uuid\UuidInterface
@@ -30,15 +26,11 @@ class Publication extends AbstractEntity
         return $this->uuid;
     }
 
-    /**
-     * @ORM\Column(type="uuid", nullable=true, options={"default": null})
-     */
+    #[ORM\Column(type: 'uuid', nullable: true, options: ['default' => null])]
     protected ?\Ramsey\Uuid\UuidInterface $user_uuid;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\User")
-     * @ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid")
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\User')]
+    #[ORM\JoinColumn(name: 'user_uuid', referencedColumnName: 'uuid')]
     protected ?User $user;
 
     /**
@@ -64,9 +56,7 @@ class Publication extends AbstractEntity
         return $this->user;
     }
 
-    /**
-     * @ORM\Column(type="string", length=1000, unique=true, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 1000, unique: true, options: ['default' => ''])]
     protected string $address = '';
 
     /**
@@ -86,9 +76,7 @@ class Publication extends AbstractEntity
         return $this->address;
     }
 
-    /**
-     * @ORM\Column(type="string", length=255, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
     protected string $title = '';
 
     /**
@@ -108,15 +96,11 @@ class Publication extends AbstractEntity
         return $this->title;
     }
 
-    /**
-     * @ORM\Column(type="uuid", nullable=true, options={"default": \Ramsey\Uuid\Uuid::NIL})
-     */
+    #[ORM\Column(type: 'uuid', nullable: true, options: ['default' => \Ramsey\Uuid\Uuid::NIL])]
     protected ?\Ramsey\Uuid\UuidInterface $category_uuid;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Publication\Category")
-     * @ORM\JoinColumn(name="category_uuid", referencedColumnName="uuid")
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\Publication\Category')]
+    #[ORM\JoinColumn(name: 'category_uuid', referencedColumnName: 'uuid')]
     protected ?PublicationCategory $category;
 
     /**
@@ -140,9 +124,7 @@ class Publication extends AbstractEntity
         return $this->category;
     }
 
-    /**
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
-     */
+    #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     protected DateTime $date;
 
     /**
@@ -168,9 +150,7 @@ class Publication extends AbstractEntity
         return $this->date;
     }
 
-    /**
-     * @ORM\Column(type="array", options={"default": "a:0:{}"})
-     */
+    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
     protected array $content = [
         'short' => '',
         'full' => '',
@@ -200,17 +180,13 @@ class Publication extends AbstractEntity
         return $this->content;
     }
 
-    /**
-     * @ORM\Column(type="array", options={"default": "a:0:{}"})
-     */
+    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
     protected array $poll = [
         // 'question' => '',
         // 'answer' => '',
     ];
 
-    /**
-     * @ORM\Column(type="array", options={"default": "a:0:{}"})
-     */
+    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
     protected array $meta = [
         'title' => '',
         'description' => '',
@@ -243,9 +219,7 @@ class Publication extends AbstractEntity
         return $this->meta;
     }
 
-    /**
-     * @ORM\Column(type="string", length=255, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
     protected string $external_id = '';
 
     /**
@@ -267,9 +241,9 @@ class Publication extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\PublicationFileRelation", mappedBy="publication", orphanRemoval=true)
-     * @ORM\OrderBy({"order": "ASC"})
      */
+    #[ORM\OneToMany(targetEntity: '\App\Domain\Entities\File\PublicationFileRelation', mappedBy: 'publication', orphanRemoval: true)]
+    #[ORM\OrderBy(['order' => 'ASC'])]
     protected $files = [];
 
     /**

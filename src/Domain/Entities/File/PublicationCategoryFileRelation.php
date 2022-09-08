@@ -7,15 +7,11 @@ use App\Domain\Entities\FileRelation;
 use App\Domain\Entities\Publication\Category as PublicationCategory;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class PublicationCategoryFileRelation extends FileRelation
 {
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Publication\Category", inversedBy="files")
-     * @ORM\JoinColumn(name="entity_uuid", referencedColumnName="uuid")
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\Publication\Category', inversedBy: 'files')]
+    #[ORM\JoinColumn(name: 'entity_uuid', referencedColumnName: 'uuid')]
     protected PublicationCategory $publication_category;
 
     public function setEntity(AbstractEntity $entity): self

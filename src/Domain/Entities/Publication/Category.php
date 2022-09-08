@@ -8,21 +8,19 @@ use Doctrine\ORM\Mapping as ORM;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\Repository\Publication\CategoryRepository")
- * @ORM\Table(name="publication_category")
- */
+#[ORM\Table(name: 'publication_category')]
+#[ORM\Entity(repositoryClass: 'App\Domain\Repository\Publication\CategoryRepository')]
 class Category extends AbstractEntity
 {
     use FileTrait;
 
     /**
      * @var Uuid
-     * @ORM\Id
-     * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
      */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'Ramsey\Uuid\Doctrine\UuidGenerator')]
     protected $uuid;
 
     public function getUuid(): \Ramsey\Uuid\UuidInterface
@@ -30,9 +28,7 @@ class Category extends AbstractEntity
         return $this->uuid;
     }
 
-    /**
-     * @ORM\Column(type="string", length=1000, unique=true, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 1000, unique: true, options: ['default' => ''])]
     protected string $address = '';
 
     /**
@@ -57,9 +53,7 @@ class Category extends AbstractEntity
         return implode('/', ['rss', $this->address]);
     }
 
-    /**
-     * @ORM\Column(type="string", length=255, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
     protected string $title = '';
 
     /**
@@ -79,9 +73,7 @@ class Category extends AbstractEntity
         return $this->title;
     }
 
-    /**
-     * @ORM\Column(type="text", length=10000, options={"default": ""})
-     */
+    #[ORM\Column(type: 'text', length: 10000, options: ['default' => ''])]
     protected string $description = '';
 
     /**
@@ -103,8 +95,8 @@ class Category extends AbstractEntity
 
     /**
      * @var string|uuid
-     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
+    #[ORM\Column(type: 'uuid', options: ['default' => \Ramsey\Uuid\Uuid::NIL])]
     protected $parent = \Ramsey\Uuid\Uuid::NIL;
 
     /**
@@ -124,9 +116,7 @@ class Category extends AbstractEntity
         return $this->parent;
     }
 
-    /**
-     * @ORM\Column(type="integer", options={"default": 10})
-     */
+    #[ORM\Column(type: 'integer', options: ['default' => 10])]
     public int $pagination = 10;
 
     /**
@@ -144,9 +134,7 @@ class Category extends AbstractEntity
         return $this->pagination;
     }
 
-    /**
-     * @ORM\Column(type="boolean", options={"default": false})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
     protected bool $children = false;
 
     /**
@@ -166,9 +154,7 @@ class Category extends AbstractEntity
         return $this->children;
     }
 
-    /**
-     * @ORM\Column(type="boolean", options={"default": true})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
     protected bool $public = true;
 
     /**
@@ -188,9 +174,7 @@ class Category extends AbstractEntity
         return $this->public;
     }
 
-    /**
-     * @ORM\Column(type="array", options={"default": "a:0:{}"})
-     */
+    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
     protected array $sort = [
         'by' => \App\Domain\References\Publication::ORDER_BY_DATE,
         'direction' => \App\Domain\References\Publication::ORDER_DIRECTION_ASC,
@@ -222,9 +206,7 @@ class Category extends AbstractEntity
         return $this->sort;
     }
 
-    /**
-     * @ORM\Column(type="array", options={"default": "a:0:{}"})
-     */
+    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
     protected array $meta = [
         'title' => '',
         'description' => '',
@@ -257,9 +239,7 @@ class Category extends AbstractEntity
         return $this->meta;
     }
 
-    /**
-     * @ORM\Column(type="array", options={"default": "a:0:{}"})
-     */
+    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
     protected array $template = [
         'list' => '',
         'short' => '',
@@ -294,9 +274,9 @@ class Category extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\PublicationCategoryFileRelation", mappedBy="publication_category", orphanRemoval=true)
-     * @ORM\OrderBy({"order": "ASC"})
      */
+    #[ORM\OneToMany(targetEntity: '\App\Domain\Entities\File\PublicationCategoryFileRelation', mappedBy: 'publication_category', orphanRemoval: true)]
+    #[ORM\OrderBy(['order' => 'ASC'])]
     protected $files = [];
 
     /**

@@ -6,30 +6,17 @@ use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="file_related")
- * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="object_type", type="string")
- * @ORM\DiscriminatorMap({
- *     "common": "FileRelation",
- *     "catalog_product": "\App\Domain\Entities\File\CatalogProductFileRelation",
- *     "catalog_category": "\App\Domain\Entities\File\CatalogCategoryFileRelation",
- *     "form_data": "\App\Domain\Entities\File\FormDataFileRelation",
- *     "page": "\App\Domain\Entities\File\PageFileRelation",
- *     "publication_category": "\App\Domain\Entities\File\PublicationCategoryFileRelation",
- *     "publication": "\App\Domain\Entities\File\PublicationFileRelation",
- *     "user": "\App\Domain\Entities\File\UserFileRelation",
- * })
- */
+#[ORM\Table(name: 'file_related')]
+#[ORM\Entity]
+#[ORM\InheritanceType('SINGLE_TABLE')]
+#[ORM\DiscriminatorColumn(name: 'object_type', type: 'string')]
+#[ORM\DiscriminatorMap(['common' => 'FileRelation', 'catalog_product' => '\App\Domain\Entities\File\CatalogProductFileRelation', 'catalog_category' => '\App\Domain\Entities\File\CatalogCategoryFileRelation', 'form_data' => '\App\Domain\Entities\File\FormDataFileRelation', 'page' => '\App\Domain\Entities\File\PageFileRelation', 'publication_category' => '\App\Domain\Entities\File\PublicationCategoryFileRelation', 'publication' => '\App\Domain\Entities\File\PublicationFileRelation', 'user' => '\App\Domain\Entities\File\UserFileRelation'])]
 abstract class FileRelation extends AbstractEntity
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'Ramsey\Uuid\Doctrine\UuidGenerator')]
     protected \Ramsey\Uuid\UuidInterface $uuid;
 
     public function getUuid(): \Ramsey\Uuid\UuidInterface
@@ -37,9 +24,7 @@ abstract class FileRelation extends AbstractEntity
         return $this->uuid;
     }
 
-    /**
-     * @ORM\Column(type="uuid")
-     */
+    #[ORM\Column(type: 'uuid')]
     protected \Ramsey\Uuid\UuidInterface $entity_uuid;
 
     protected AbstractEntity $entity;
@@ -54,15 +39,11 @@ abstract class FileRelation extends AbstractEntity
         return $this->entity;
     }
 
-    /**
-     * @ORM\Column(type="uuid")
-     */
+    #[ORM\Column(type: 'uuid')]
     protected \Ramsey\Uuid\UuidInterface $file_uuid;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\File")
-     * @ORM\JoinColumn(name="file_uuid", referencedColumnName="uuid")
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\File')]
+    #[ORM\JoinColumn(name: 'file_uuid', referencedColumnName: 'uuid')]
     protected File $file;
 
     /**
@@ -83,9 +64,7 @@ abstract class FileRelation extends AbstractEntity
         return $this->file;
     }
 
-    /**
-     * @ORM\Column(name="`order`", type="integer", options={"default": 1})
-     */
+    #[ORM\Column(name: '`order`', type: 'integer', options: ['default' => 1])]
     public int $order = 1;
 
     /**
@@ -105,9 +84,7 @@ abstract class FileRelation extends AbstractEntity
         return $this->order;
     }
 
-    /**
-     * @ORM\Column(type="text", length=1000, options={"default": ""})
-     */
+    #[ORM\Column(type: 'text', length: 1000, options: ['default' => ''])]
     public string $comment = '';
 
     /**

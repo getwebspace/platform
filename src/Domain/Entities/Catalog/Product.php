@@ -8,33 +8,24 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\Repository\Catalog\ProductRepository")
- * @ORM\Table(name="catalog_product",
- *     indexes={
- *         @ORM\Index(name="catalog_product_address_idx", columns={"address"}),
- *         @ORM\Index(name="catalog_product_category_idx", columns={"category"}),
- *         @ORM\Index(name="catalog_product_price_idx", columns={"price", "priceFirst", "priceWholesale"}),
- *         @ORM\Index(name="catalog_product_volume_idx", columns={"volume", "unit"}),
- *         @ORM\Index(name="catalog_product_manufacturer_idx", columns={"manufacturer"}),
- *         @ORM\Index(name="catalog_product_country_idx", columns={"country"}),
- *         @ORM\Index(name="catalog_product_order_idx", columns={"order"})
- *     },
- *     uniqueConstraints={
- *         @ORM\UniqueConstraint(name="catalog_product_unique", columns={"category", "address", "volume", "unit", "external_id"})
- *     }
- * )
- */
+#[ORM\Table(name: 'catalog_product')]
+#[ORM\Index(name: 'catalog_product_address_idx', columns: ['address'])]
+#[ORM\Index(name: 'catalog_product_category_idx', columns: ['category'])]
+#[ORM\Index(name: 'catalog_product_price_idx', columns: ['price', 'priceFirst', 'priceWholesale'])]
+#[ORM\Index(name: 'catalog_product_volume_idx', columns: ['volume', 'unit'])]
+#[ORM\Index(name: 'catalog_product_manufacturer_idx', columns: ['manufacturer'])]
+#[ORM\Index(name: 'catalog_product_country_idx', columns: ['country'])]
+#[ORM\Index(name: 'catalog_product_order_idx', columns: ['order'])]
+#[ORM\UniqueConstraint(name: 'catalog_product_unique', columns: ['category', 'address', 'volume', 'unit', 'external_id'])]
+#[ORM\Entity(repositoryClass: 'App\Domain\Repository\Catalog\ProductRepository')]
 class Product extends AbstractEntity
 {
     use FileTrait;
 
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'Ramsey\Uuid\Doctrine\UuidGenerator')]
     protected \Ramsey\Uuid\UuidInterface $uuid;
 
     public function getUuid(): \Ramsey\Uuid\UuidInterface
@@ -44,8 +35,8 @@ class Product extends AbstractEntity
 
     /**
      * @var string|Uuid
-     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
+    #[ORM\Column(type: 'uuid', options: ['default' => \Ramsey\Uuid\Uuid::NIL])]
     protected $category = \Ramsey\Uuid\Uuid::NIL;
 
     public function setCategory(mixed $uuid): self
@@ -60,9 +51,7 @@ class Product extends AbstractEntity
         return $this->category;
     }
 
-    /**
-     * @ORM\Column(type="string", length=255, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
     protected string $title = '';
 
     public function setTitle(string $title): self
@@ -81,8 +70,8 @@ class Product extends AbstractEntity
 
     /**
      * @see \App\Domain\Types\ProductTypeType::LIST
-     * @ORM\Column(type="CatalogProductTypeType", options={"default": \App\Domain\Types\Catalog\ProductTypeType::TYPE_PRODUCT})
      */
+    #[ORM\Column(type: 'CatalogProductTypeType', options: ['default' => \App\Domain\Types\Catalog\ProductTypeType::TYPE_PRODUCT])]
     protected string $type = \App\Domain\Types\Catalog\ProductTypeType::TYPE_PRODUCT;
 
     public function setType(string $type): self
@@ -99,9 +88,7 @@ class Product extends AbstractEntity
         return $this->type;
     }
 
-    /**
-     * @ORM\Column(type="text", length=10000, options={"default": ""})
-     */
+    #[ORM\Column(type: 'text', length: 10000, options: ['default' => ''])]
     protected string $description = '';
 
     public function setDescription(string $description): self
@@ -118,9 +105,7 @@ class Product extends AbstractEntity
         return $this->description;
     }
 
-    /**
-     * @ORM\Column(type="text", length=10000, options={"default": ""})
-     */
+    #[ORM\Column(type: 'text', length: 10000, options: ['default' => ''])]
     protected string $extra = '';
 
     public function setExtra(string $extra): self
@@ -137,9 +122,7 @@ class Product extends AbstractEntity
         return $this->extra;
     }
 
-    /**
-     * @ORM\Column(type="string", length=1000, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 1000, options: ['default' => ''])]
     protected string $address = '';
 
     public function setAddress(string $address): self
@@ -156,9 +139,7 @@ class Product extends AbstractEntity
         return $this->address;
     }
 
-    /**
-     * @ORM\Column(type="text", length=255, options={"default": ""})
-     */
+    #[ORM\Column(type: 'text', length: 255, options: ['default' => ''])]
     protected string $vendorcode = '';
 
     public function setVendorCode(string $value): self
@@ -175,9 +156,7 @@ class Product extends AbstractEntity
         return $this->vendorcode;
     }
 
-    /**
-     * @ORM\Column(type="text", length=100, options={"default": ""})
-     */
+    #[ORM\Column(type: 'text', length: 100, options: ['default' => ''])]
     protected string $barcode = '';
 
     public function setBarCode(string $value): self
@@ -194,9 +173,7 @@ class Product extends AbstractEntity
         return $this->barcode;
     }
 
-    /**
-     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
-     */
+    #[ORM\Column(type: 'float', scale: 2, precision: 10, options: ['default' => 0])]
     protected float $tax = 20.00;
 
     public function setTax(float $value): self
@@ -213,9 +190,8 @@ class Product extends AbstractEntity
 
     /**
      * // себестоимость
-     *
-     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
      */
+    #[ORM\Column(type: 'float', scale: 2, precision: 10, options: ['default' => 0])]
     protected float $priceFirst = .00;
 
     public function setPriceFirst(float $value): self
@@ -230,9 +206,7 @@ class Product extends AbstractEntity
         return $this->priceFirst;
     }
 
-    /**
-     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
-     */
+    #[ORM\Column(type: 'float', scale: 2, precision: 10, options: ['default' => 0])]
     protected float $price = .00;
 
     public function setPrice(float $value): self
@@ -249,9 +223,8 @@ class Product extends AbstractEntity
 
     /**
      * // оптовая цена
-     *
-     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
      */
+    #[ORM\Column(type: 'float', scale: 2, precision: 10, options: ['default' => 0])]
     protected float $priceWholesale = .00;
 
     public function setPriceWholesale(float $value): self
@@ -266,9 +239,7 @@ class Product extends AbstractEntity
         return $this->priceWholesale;
     }
 
-    /**
-     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
-     */
+    #[ORM\Column(type: 'float', scale: 2, precision: 10, options: ['default' => 0])]
     protected float $discount = .00;
 
     public function setDiscount(float $value): self
@@ -283,9 +254,7 @@ class Product extends AbstractEntity
         return $this->discount;
     }
 
-    /**
-     * @ORM\Column(type="boolean", options={"default": false})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
     protected bool $special = false;
 
     public function setSpecial(mixed $value): self
@@ -300,9 +269,7 @@ class Product extends AbstractEntity
         return $this->special;
     }
 
-    /**
-     * @ORM\Column(type="array", options={"default": "a:0:{}"})
-     */
+    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
     protected array $dimension = [
         'width' => 0.0,
         'height' => 0.0,
@@ -332,9 +299,7 @@ class Product extends AbstractEntity
         return $this->dimension;
     }
 
-    /**
-     * @ORM\Column(type="float", scale=3, precision=10, options={"default": 1.0})
-     */
+    #[ORM\Column(type: 'float', scale: 3, precision: 10, options: ['default' => '1.0'])]
     protected float $volume = 0.000;
 
     public function setVolume(float $value): self
@@ -349,9 +314,7 @@ class Product extends AbstractEntity
         return $this->volume;
     }
 
-    /**
-     * @ORM\Column(type="string", length=64, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 64, options: ['default' => ''])]
     protected string $unit = '';
 
     public function setUnit(string $value): self
@@ -373,9 +336,7 @@ class Product extends AbstractEntity
         return ($this->volume ?? .0) . ($this->unit ?: '');
     }
 
-    /**
-     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
-     */
+    #[ORM\Column(type: 'float', scale: 2, precision: 10, options: ['default' => 0])]
     protected float $stock = .00;
 
     public function setStock(float $value): self
@@ -390,9 +351,7 @@ class Product extends AbstractEntity
         return $this->stock;
     }
 
-    /**
-     * @ORM\Column(type="text", length=512, options={"default": ""})
-     */
+    #[ORM\Column(type: 'text', length: 512, options: ['default' => ''])]
     protected string $field1 = '';
 
     public function setField1(string $value): self
@@ -409,9 +368,7 @@ class Product extends AbstractEntity
         return $this->field1;
     }
 
-    /**
-     * @ORM\Column(type="text", length=512, options={"default": ""})
-     */
+    #[ORM\Column(type: 'text', length: 512, options: ['default' => ''])]
     protected string $field2 = '';
 
     public function setField2(string $value): self
@@ -428,9 +385,7 @@ class Product extends AbstractEntity
         return $this->field2;
     }
 
-    /**
-     * @ORM\Column(type="text", length=512, options={"default": ""})
-     */
+    #[ORM\Column(type: 'text', length: 512, options: ['default' => ''])]
     protected string $field3 = '';
 
     public function setField3(string $value): self
@@ -447,9 +402,7 @@ class Product extends AbstractEntity
         return $this->field3;
     }
 
-    /**
-     * @ORM\Column(type="text", length=512, options={"default": ""})
-     */
+    #[ORM\Column(type: 'text', length: 512, options: ['default' => ''])]
     protected string $field4 = '';
 
     public function setField4(string $value): self
@@ -466,9 +419,7 @@ class Product extends AbstractEntity
         return $this->field4;
     }
 
-    /**
-     * @ORM\Column(type="text", length=512, options={"default": ""})
-     */
+    #[ORM\Column(type: 'text', length: 512, options: ['default' => ''])]
     protected string $field5 = '';
 
     public function setField5(string $value): self
@@ -487,8 +438,8 @@ class Product extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\ProductAttribute", mappedBy="product", orphanRemoval=true)
      */
+    #[ORM\OneToMany(targetEntity: 'App\Domain\Entities\Catalog\ProductAttribute', mappedBy: 'product', orphanRemoval: true)]
     protected $attributes = [];
 
     public function hasAttributes(): int
@@ -506,9 +457,7 @@ class Product extends AbstractEntity
         return $raw ? $this->attributes : collect($this->attributes);
     }
 
-    /**
-     * @ORM\Column(type="string", length=255, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
     protected string $country = '';
 
     public function setCountry(string $value): self
@@ -525,9 +474,7 @@ class Product extends AbstractEntity
         return $this->country;
     }
 
-    /**
-     * @ORM\Column(type="string", length=255, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
     protected string $manufacturer = '';
 
     public function setManufacturer(string $value): self
@@ -544,9 +491,7 @@ class Product extends AbstractEntity
         return $this->manufacturer;
     }
 
-    /**
-     * @ORM\Column(type="array", options={"default": "a:0:{}"})
-     */
+    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
     protected array $tags = [];
 
     public function setTags(array|string $tags): self
@@ -566,8 +511,8 @@ class Product extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\ProductRelation", mappedBy="product", orphanRemoval=true)
      */
+    #[ORM\OneToMany(targetEntity: 'App\Domain\Entities\Catalog\ProductRelation', mappedBy: 'product', orphanRemoval: true)]
     protected $relation = [];
 
     public function getRelations($raw = false)
@@ -582,8 +527,8 @@ class Product extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\ProductRelation", mappedBy="related", orphanRemoval=true)
      */
+    #[ORM\OneToMany(targetEntity: 'App\Domain\Entities\Catalog\ProductRelation', mappedBy: 'related', orphanRemoval: true)]
     protected $related = [];
 
     public function getRelated($raw = false)
@@ -596,9 +541,7 @@ class Product extends AbstractEntity
         return count($this->related);
     }
 
-    /**
-     * @ORM\Column(name="`order`", type="integer", options={"default": 1})
-     */
+    #[ORM\Column(name: '`order`', type: 'integer', options: ['default' => 1])]
     protected int $order = 1;
 
     public function setOrder(int $order): self
@@ -615,8 +558,8 @@ class Product extends AbstractEntity
 
     /**
      * @see \App\Domain\Types\ProductStatusType::LIST
-     * @ORM\Column(type="CatalogProductStatusType", options={"default": \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK})
      */
+    #[ORM\Column(type: 'CatalogProductStatusType', options: ['default' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK])]
     protected string $status = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
 
     public function setStatus(string $status): self
@@ -633,9 +576,7 @@ class Product extends AbstractEntity
         return $this->status;
     }
 
-    /**
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
-     */
+    #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     protected DateTime $date;
 
     public function setDate($date, mixed $timezone = 'UTC'): self
@@ -650,9 +591,7 @@ class Product extends AbstractEntity
         return $this->date;
     }
 
-    /**
-     * @ORM\Column(type="array", options={"default": "a:0:{}"})
-     */
+    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
     protected array $meta = [
         'title' => '',
         'description' => '',
@@ -682,9 +621,7 @@ class Product extends AbstractEntity
         return $this->meta;
     }
 
-    /**
-     * @ORM\Column(type="string", length=255, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
     protected string $external_id = '';
 
     public function setExternalId(string $external_id): self
@@ -701,9 +638,7 @@ class Product extends AbstractEntity
         return $this->external_id;
     }
 
-    /**
-     * @ORM\Column(type="string", length=50, options={"default": "manual"})
-     */
+    #[ORM\Column(type: 'string', length: 50, options: ['default' => 'manual'])]
     protected string $export = 'manual';
 
     public function setExport(string $export): self
@@ -725,9 +660,8 @@ class Product extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\CatalogProductFileRelation", mappedBy="catalog_product",
-     * orphanRemoval=true)
-     * @ORM\OrderBy({"order": "ASC"})
      */
+    #[ORM\OneToMany(targetEntity: '\App\Domain\Entities\File\CatalogProductFileRelation', mappedBy: 'catalog_product', orphanRemoval: true)]
+    #[ORM\OrderBy(['order' => 'ASC'])]
     protected $files = [];
 }

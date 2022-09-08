@@ -7,15 +7,11 @@ use App\Domain\Entities\FileRelation;
 use App\Domain\Entities\Page;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class PageFileRelation extends FileRelation
 {
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Page", inversedBy="files")
-     * @ORM\JoinColumn(name="entity_uuid", referencedColumnName="uuid")
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\Page', inversedBy: 'files')]
+    #[ORM\JoinColumn(name: 'entity_uuid', referencedColumnName: 'uuid')]
     protected Page $page;
 
     public function setEntity(AbstractEntity $entity): self

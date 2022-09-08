@@ -7,15 +7,11 @@ use App\Domain\Entities\FileRelation;
 use App\Domain\Entities\User;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class UserFileRelation extends FileRelation
 {
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\User", inversedBy="files")
-     * @ORM\JoinColumn(name="entity_uuid", referencedColumnName="uuid")
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\User', inversedBy: 'files')]
+    #[ORM\JoinColumn(name: 'entity_uuid', referencedColumnName: 'uuid')]
     protected User $user;
 
     public function setEntity(AbstractEntity $entity): self

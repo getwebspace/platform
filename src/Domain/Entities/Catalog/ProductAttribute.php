@@ -6,19 +6,15 @@ use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
 use RuntimeException;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="catalog_product_attributes")
- * @ORM\HasLifecycleCallbacks
- */
+#[ORM\Table(name: 'catalog_product_attributes')]
+#[ORM\Entity]
+#[ORM\HasLifecycleCallbacks]
 class ProductAttribute extends AbstractEntity
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'Ramsey\Uuid\Doctrine\UuidGenerator')]
     protected \Ramsey\Uuid\UuidInterface $uuid;
 
     public function getUuid(): \Ramsey\Uuid\UuidInterface
@@ -26,15 +22,11 @@ class ProductAttribute extends AbstractEntity
         return $this->uuid;
     }
 
-    /**
-     * @ORM\Column(type="uuid")
-     */
+    #[ORM\Column(type: 'uuid')]
     protected \Ramsey\Uuid\UuidInterface $product_uuid;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Catalog\Product")
-     * @ORM\JoinColumn(name="product_uuid", referencedColumnName="uuid")
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\Catalog\Product')]
+    #[ORM\JoinColumn(name: 'product_uuid', referencedColumnName: 'uuid')]
     protected Product $product;
 
     /**
@@ -55,15 +47,11 @@ class ProductAttribute extends AbstractEntity
         return $this->product;
     }
 
-    /**
-     * @ORM\Column(type="uuid")
-     */
+    #[ORM\Column(type: 'uuid')]
     protected \Ramsey\Uuid\UuidInterface $attribute_uuid;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Catalog\Attribute")
-     * @ORM\JoinColumn(name="attribute_uuid", referencedColumnName="uuid")
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\Catalog\Attribute')]
+    #[ORM\JoinColumn(name: 'attribute_uuid', referencedColumnName: 'uuid')]
     protected Attribute $attribute;
 
     /**
@@ -105,9 +93,7 @@ class ProductAttribute extends AbstractEntity
         return $this->address;
     }
 
-    /**
-     * @ORM\Column(type="string", length=1000, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 1000, options: ['default' => ''])]
     public string $value = '';
 
     /**
@@ -202,9 +188,7 @@ class ProductAttribute extends AbstractEntity
         ];
     }
 
-    /**
-     * @ORM\PostLoad
-     */
+    #[ORM\PostLoad]
     public function _populate_fields(): void
     {
         $this->title = $this->attribute->getTitle();

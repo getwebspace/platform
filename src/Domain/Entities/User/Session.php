@@ -9,18 +9,15 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface as Uuid;
 use RuntimeException;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="user_session", uniqueConstraints={@ORM\UniqueConstraint(name="unique_uuid", columns={"uuid"})})
- */
+#[ORM\Table(name: 'user_session')]
+#[ORM\UniqueConstraint(name: 'unique_uuid', columns: ['uuid'])]
+#[ORM\Entity]
 class Session extends AbstractEntity
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'Ramsey\Uuid\Doctrine\UuidGenerator')]
     protected \Ramsey\Uuid\UuidInterface $uuid;
 
     public function getUuid(): \Ramsey\Uuid\UuidInterface
@@ -28,10 +25,8 @@ class Session extends AbstractEntity
         return $this->uuid;
     }
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Domain\Entities\User", inversedBy="session")
-     * @ORM\JoinColumn(name="uuid", referencedColumnName="uuid")
-     */
+    #[ORM\OneToOne(targetEntity: 'App\Domain\Entities\User', inversedBy: 'session')]
+    #[ORM\JoinColumn(name: 'uuid', referencedColumnName: 'uuid')]
     protected User $user;
 
     /**
@@ -47,9 +42,7 @@ class Session extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @ORM\Column(type="string", length=16, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 16, options: ['default' => ''])]
     protected string $ip = '';
 
     /**
@@ -80,9 +73,7 @@ class Session extends AbstractEntity
         return $this->ip;
     }
 
-    /**
-     * @ORM\Column(type="string", length=256, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 256, options: ['default' => ''])]
     protected string $agent = '';
 
     public function setAgent(string $agent)
@@ -102,9 +93,7 @@ class Session extends AbstractEntity
         return $this->agent;
     }
 
-    /**
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
-     */
+    #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     protected DateTime $date;
 
     /**

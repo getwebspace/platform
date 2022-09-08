@@ -8,20 +8,16 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\Repository\Form\DataRepository")
- * @ORM\Table(name="form_data")
- */
+#[ORM\Table(name: 'form_data')]
+#[ORM\Entity(repositoryClass: 'App\Domain\Repository\Form\DataRepository')]
 class Data extends AbstractEntity
 {
     use FileTrait;
 
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'Ramsey\Uuid\Doctrine\UuidGenerator')]
     protected \Ramsey\Uuid\UuidInterface $uuid;
 
     public function getUuid(): \Ramsey\Uuid\UuidInterface
@@ -31,8 +27,8 @@ class Data extends AbstractEntity
 
     /**
      * @var string|Uuid
-     * @ORM\Column(type="uuid", options={"default": \Ramsey\Uuid\Uuid::NIL})
      */
+    #[ORM\Column(type: 'uuid', options: ['default' => \Ramsey\Uuid\Uuid::NIL])]
     protected $form_uuid = \Ramsey\Uuid\Uuid::NIL;
 
     /**
@@ -52,9 +48,7 @@ class Data extends AbstractEntity
         return $this->form_uuid;
     }
 
-    /**
-     * @ORM\Column(type="array", options={"default": "a:0:{}"})
-     */
+    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
     protected array $data = [];
 
     /**
@@ -72,9 +66,7 @@ class Data extends AbstractEntity
         return $this->data;
     }
 
-    /**
-     * @ORM\Column(type="text", options={"default": ""})
-     */
+    #[ORM\Column(type: 'text', options: ['default' => ''])]
     protected string $message = '';
 
     /**
@@ -92,9 +84,7 @@ class Data extends AbstractEntity
         return $this->message;
     }
 
-    /**
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
-     */
+    #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     protected DateTime $date;
 
     /**
@@ -122,8 +112,8 @@ class Data extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\FormDataFileRelation", mappedBy="form_data", orphanRemoval=true)
-     * @ORM\OrderBy({"order": "ASC"})
      */
+    #[ORM\OneToMany(targetEntity: '\App\Domain\Entities\File\FormDataFileRelation', mappedBy: 'form_data', orphanRemoval: true)]
+    #[ORM\OrderBy(['order' => 'ASC'])]
     protected $files = [];
 }

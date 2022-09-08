@@ -7,18 +7,14 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\Repository\TaskRepository")
- * @ORM\Table(name="task")
- */
+#[ORM\Table(name: 'task')]
+#[ORM\Entity(repositoryClass: 'App\Domain\Repository\TaskRepository')]
 class Task extends AbstractEntity
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'Ramsey\Uuid\Doctrine\UuidGenerator')]
     protected \Ramsey\Uuid\UuidInterface $uuid;
 
     public function getUuid(): \Ramsey\Uuid\UuidInterface
@@ -26,9 +22,7 @@ class Task extends AbstractEntity
         return $this->uuid;
     }
 
-    /**
-     * @ORM\Column(type="string", length=255, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
     protected string $title = '';
 
     /**
@@ -54,9 +48,7 @@ class Task extends AbstractEntity
         return end($action);
     }
 
-    /**
-     * @ORM\Column(type="string", options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', options: ['default' => ''])]
     protected string $action = '';
 
     /**
@@ -74,9 +66,7 @@ class Task extends AbstractEntity
         return $this->action;
     }
 
-    /**
-     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 0})
-     */
+    #[ORM\Column(type: 'float', scale: 2, precision: 10, options: ['default' => 0])]
     protected float $progress = .00;
 
     /**
@@ -96,8 +86,8 @@ class Task extends AbstractEntity
 
     /**
      * @see \App\Domain\Types\TaskStatusType::LIST
-     * @ORM\Column(type="TaskStatusType", options={"default": \App\Domain\Types\TaskStatusType::STATUS_QUEUE})
      */
+    #[ORM\Column(type: 'TaskStatusType', options: ['default' => \App\Domain\Types\TaskStatusType::STATUS_QUEUE])]
     public string $status = \App\Domain\Types\TaskStatusType::STATUS_QUEUE;
 
     /**
@@ -120,9 +110,7 @@ class Task extends AbstractEntity
         return $this->status;
     }
 
-    /**
-     * @ORM\Column(type="array", options={"default": "a:0:{}"})
-     */
+    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
     protected array $params = [];
 
     /**
@@ -140,9 +128,7 @@ class Task extends AbstractEntity
         return $this->params;
     }
 
-    /**
-     * @ORM\Column(type="string", length=1000, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 1000, options: ['default' => ''])]
     protected string $output = '';
 
     /**
@@ -162,9 +148,7 @@ class Task extends AbstractEntity
         return $this->output;
     }
 
-    /**
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
-     */
+    #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     protected DateTime $date;
 
     /**
