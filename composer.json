@@ -44,7 +44,8 @@
     "require-dev": {
         "fzaninotto/faker": "^1.9",
         "friendsofphp/php-cs-fixer": "^3.5",
-        "phpunit/phpunit": "^9.5"
+`        "phpunit/phpunit": "^9.5",
+        "rector/rector": "^0.14.2"
     },
     "autoload": {
         "psr-4": {
