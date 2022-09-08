@@ -4,7 +4,6 @@ namespace App\Domain\Entities\User;
 
 use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\UuidInterface as Uuid;
 
 #[ORM\Table(name: 'user_group')]
 #[ORM\Entity(repositoryClass: 'App\Domain\Repository\User\GroupRepository')]

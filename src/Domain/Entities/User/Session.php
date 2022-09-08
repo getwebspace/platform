@@ -6,7 +6,6 @@ use App\Domain\AbstractEntity;
 use App\Domain\Entities\User;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\UuidInterface as Uuid;
 use RuntimeException;
 
 #[ORM\Table(name: 'user_session')]

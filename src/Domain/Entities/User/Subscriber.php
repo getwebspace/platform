@@ -5,7 +5,6 @@ namespace App\Domain\Entities\User;
 use App\Domain\AbstractEntity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\UuidInterface as Uuid;
 use RuntimeException;
 
 #[ORM\Table(name: 'user_subscriber')]

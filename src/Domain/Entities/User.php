@@ -10,7 +10,6 @@ use App\Domain\Traits\FileTrait;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Illuminate\Support\Collection;
-use Ramsey\Uuid\UuidInterface as Uuid;
 use RuntimeException;
 
 #[ORM\Table(name: 'user')]
