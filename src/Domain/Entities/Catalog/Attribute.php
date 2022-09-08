@@ -4,7 +4,6 @@ namespace App\Domain\Entities\Catalog;
 
 use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\UuidInterface as Uuid;
 
 #[ORM\Table(name: 'catalog_attribute')]
 #[ORM\Entity(repositoryClass: 'App\Domain\Repository\Catalog\AttributeRepository')]

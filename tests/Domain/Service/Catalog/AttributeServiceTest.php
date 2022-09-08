@@ -3,7 +3,6 @@
 namespace tests\Domain\Service\Catalog;
 
 use App\Domain\Entities\Catalog\Attribute;
-use App\Domain\Repository\Catalog\AttributeRepository;
 use App\Domain\Service\Catalog\AttributeService;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;

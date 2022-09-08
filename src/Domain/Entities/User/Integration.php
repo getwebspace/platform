@@ -6,7 +6,6 @@ use App\Domain\AbstractEntity;
 use App\Domain\Entities\User;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\UuidInterface as Uuid;
 
 #[ORM\Table(name: 'user_integration')]
 #[ORM\UniqueConstraint(name: 'user_provider_unique', columns: ['user_uuid', 'provider', 'unique'])]

@@ -4,7 +4,6 @@ namespace App\Domain\Entities;
 
 use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\UuidInterface as Uuid;
 
 #[ORM\Table(name: 'form')]
 #[ORM\Entity(repositoryClass: 'App\Domain\Repository\FormRepository')]

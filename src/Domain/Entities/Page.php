@@ -6,7 +6,6 @@ use App\Domain\AbstractEntity;
 use App\Domain\Traits\FileTrait;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\UuidInterface as Uuid;
 
 #[ORM\Table(name: 'page')]
 #[ORM\Entity(repositoryClass: 'App\Domain\Repository\PageRepository')]

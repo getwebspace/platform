@@ -5,7 +5,6 @@ namespace App\Domain\Entities;
 use App\Domain\AbstractEntity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\UuidInterface as Uuid;
 
 #[ORM\Table(name: 'file')]
 #[ORM\Entity(repositoryClass: 'App\Domain\Repository\FileRepository')]
