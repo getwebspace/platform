@@ -95,9 +95,6 @@ class File extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getSize(): int
     {
         return $this->size;
@@ -197,7 +194,8 @@ class File extends AbstractEntity
     public static function info($path): array
     {
         $info = pathinfo($path);
-        $result = [
+
+        return [
             'dir' => $info['dirname'],
             'name' => isset($info['filename']) ? static::prepareName($info['filename']) : '',
             'ext' => isset($info['extension']) ? mb_strtolower($info['extension']) : '',
@@ -205,8 +203,6 @@ class File extends AbstractEntity
             'size' => filesize($path),
             'hash' => sha1_file($path),
         ];
-
-        return $result;
     }
 
     public static function prepareName($name)

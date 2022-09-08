@@ -40,7 +40,6 @@ class AttributeServiceTest extends TestCase
         $this->assertSame($data['address'], $attribute->getAddress());
         $this->assertSame($data['type'], $attribute->getType());
 
-        /** @var AttributeRepository $categoryRepo */
         $attributeRepo = $this->em->getRepository(Attribute::class);
         $a = $attributeRepo->findOneByTitle($data['title']);
         $this->assertInstanceOf(Attribute::class, $a);

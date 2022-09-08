@@ -483,8 +483,6 @@ class UserService extends AbstractService
     }
 
     /**
-     * @param string $email
-     *
      * @throws EmailBannedException
      */
     protected function check_email(string $email)

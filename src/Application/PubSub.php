@@ -27,8 +27,6 @@ class PubSub
 
     /**
      * Subscribe a handler to a channel
-     *
-     * @return PubSub
      */
     public function subscribe(string|array $channels, callable|array $handler): self
     {

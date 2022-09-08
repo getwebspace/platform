@@ -473,9 +473,6 @@ class TwigExtension extends AbstractExtension
             $breadcrumb[] = $category;
 
             while ($category->getParent()->toString() !== \Ramsey\Uuid\Uuid::NIL) {
-                /**
-                 * @var \App\Domain\Entities\Catalog\Category;
-                 */
                 $category = $categories->firstWhere('uuid', $category->getParent());
                 $breadcrumb[] = $category;
             }

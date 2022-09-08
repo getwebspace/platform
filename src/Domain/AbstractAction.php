@@ -280,9 +280,7 @@ abstract class AbstractAction
             $image_uuids = [];
 
             foreach ($files as $name => $file) {
-                if (!is_array($file)) {
-                    $file = [$file];
-                }
+                $file = [$file];
 
                 foreach ($file as $index => $item) {
                     if (!$item->getError()) {

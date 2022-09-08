@@ -262,8 +262,8 @@ class ImportTask extends AbstractTask
                         $output[] = [
                             'type' => 'category',
                             'raw' => $value,
-                            'formatted' => (string) $cell->getFormattedValue(),
-                            'trimmed' => trim((string) $cell->getFormattedValue()),
+                            'formatted' => $cell->getFormattedValue(),
+                            'trimmed' => trim($cell->getFormattedValue()),
                         ];
 
                         break;
@@ -282,8 +282,8 @@ class ImportTask extends AbstractTask
                     if ($column !== 'empty') {
                         $buf['data'][$fields[$column]] = [
                             'raw' => $value,
-                            'formatted' => (string) $cell->getFormattedValue(),
-                            'trimmed' => trim((string) $cell->getFormattedValue()),
+                            'formatted' => $cell->getFormattedValue(),
+                            'trimmed' => trim($cell->getFormattedValue()),
                         ];
                     }
                 }

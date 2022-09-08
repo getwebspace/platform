@@ -129,7 +129,7 @@ class ProductAttribute extends AbstractEntity
     {
         switch ($this->attribute->getType()) {
             case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_STRING:
-                return (string) $this->value;
+                return $this->value;
 
             case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_BOOLEAN:
             case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_INTEGER:

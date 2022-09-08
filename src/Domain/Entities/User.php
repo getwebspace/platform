@@ -252,9 +252,6 @@ class User extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return ?DateTime
-     */
     public function getBirthdate(): ?DateTime
     {
         return $this->birthdate;
