@@ -11,17 +11,10 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->paths([__DIR__ . '/src', __DIR__ . '/tests']);
     $rectorConfig->phpVersion(PhpVersion::PHP_82);
 
-    // here we can define, what sets of rules will be applied
-    // tip: use "SetList" class to autocomplete sets
     $rectorConfig->sets([
         DoctrineSetList::ANNOTATIONS_TO_ATTRIBUTES,
-        // SetList::CODE_QUALITY,
-        // SetList::CODING_STYLE,
-        // SetList::DEAD_CODE,
-        // SetList::TYPE_DECLARATION_STRICT,
-        // SetList::PHP_82,
+        SetList::DEAD_CODE,
     ]);
 
-    // register single rule
     $rectorConfig->rule(TypedPropertyRector::class);
 };
