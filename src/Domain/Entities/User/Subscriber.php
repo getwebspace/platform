@@ -8,18 +8,14 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface as Uuid;
 use RuntimeException;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\Repository\User\SubscriberRepository")
- * @ORM\Table(name="user_subscriber")
- */
+#[ORM\Table(name: 'user_subscriber')]
+#[ORM\Entity(repositoryClass: 'App\Domain\Repository\User\SubscriberRepository')]
 class Subscriber extends AbstractEntity
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'Ramsey\Uuid\Doctrine\UuidGenerator')]
     protected \Ramsey\Uuid\UuidInterface $uuid;
 
     public function getUuid(): \Ramsey\Uuid\UuidInterface
@@ -27,9 +23,7 @@ class Subscriber extends AbstractEntity
         return $this->uuid;
     }
 
-    /**
-     * @ORM\Column(type="string", length=120, unique=true, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 120, unique: true, options: ['default' => ''])]
     protected string $email = '';
 
     /**
@@ -55,9 +49,7 @@ class Subscriber extends AbstractEntity
         return $this->email;
     }
 
-    /**
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
-     */
+    #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     protected DateTime $date;
 
     /**

@@ -167,9 +167,6 @@ abstract class AbstractEntity implements JsonSerializable
         return [];
     }
 
-    /**
-     * @return AbstractEntity
-     */
     public function clone(): self
     {
         return clone $this;

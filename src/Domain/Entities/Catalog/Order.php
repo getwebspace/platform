@@ -9,21 +9,16 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface as Uuid;
 use RuntimeException;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\Repository\Catalog\OrderRepository")
- * @ORM\Table(name="catalog_order", indexes={
- *     @ORM\Index(name="catalog_order_serial_idx", columns={"serial"}),
- *     @ORM\Index(name="catalog_order_status_idx", columns={"status_uuid"}),
- * })
- */
+#[ORM\Table(name: 'catalog_order')]
+#[ORM\Index(name: 'catalog_order_serial_idx', columns: ['serial'])]
+#[ORM\Index(name: 'catalog_order_status_idx', columns: ['status_uuid'])]
+#[ORM\Entity(repositoryClass: 'App\Domain\Repository\Catalog\OrderRepository')]
 class Order extends AbstractEntity
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'Ramsey\Uuid\Doctrine\UuidGenerator')]
     protected \Ramsey\Uuid\UuidInterface $uuid;
 
     public function getUuid(): \Ramsey\Uuid\UuidInterface
@@ -31,9 +26,7 @@ class Order extends AbstractEntity
         return $this->uuid;
     }
 
-    /**
-     * @ORM\Column(type="string", length=12, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 12, options: ['default' => ''])]
     protected string $serial = '';
 
     /**
@@ -55,15 +48,11 @@ class Order extends AbstractEntity
         return $this->serial;
     }
 
-    /**
-     * @ORM\Column(type="uuid", nullable=true, options={"default": null})
-     */
+    #[ORM\Column(type: 'uuid', nullable: true, options: ['default' => null])]
     protected ?\Ramsey\Uuid\UuidInterface $user_uuid;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\User")
-     * @ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid")
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\User')]
+    #[ORM\JoinColumn(name: 'user_uuid', referencedColumnName: 'uuid')]
     protected ?User $user = null;
 
     /**
@@ -87,9 +76,7 @@ class Order extends AbstractEntity
         return $this->user;
     }
 
-    /**
-     * @ORM\Column(type="array", options={"default": "a:0:{}"})
-     */
+    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
     protected array $delivery = [
         'client' => '',
         'address' => '',
@@ -119,9 +106,7 @@ class Order extends AbstractEntity
         return $this->delivery;
     }
 
-    /**
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
-     */
+    #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     protected DateTime $shipping;
 
     /**
@@ -147,9 +132,7 @@ class Order extends AbstractEntity
         return $this->shipping;
     }
 
-    /**
-     * @ORM\Column(type="string", length=500, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 500, options: ['default' => ''])]
     protected string $comment;
 
     /**
@@ -169,9 +152,7 @@ class Order extends AbstractEntity
         return $this->comment;
     }
 
-    /**
-     * @ORM\Column(type="string", length=25, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 25, options: ['default' => ''])]
     protected string $phone = '';
 
     /**
@@ -201,9 +182,7 @@ class Order extends AbstractEntity
         return $this->phone;
     }
 
-    /**
-     * @ORM\Column(type="string", length=120, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 120, options: ['default' => ''])]
     protected string $email = '';
 
     /**
@@ -235,8 +214,8 @@ class Order extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="App\Domain\Entities\Catalog\OrderProduct", mappedBy="order", orphanRemoval=true)
      */
+    #[ORM\OneToMany(targetEntity: 'App\Domain\Entities\Catalog\OrderProduct', mappedBy: 'order', orphanRemoval: true)]
     protected $products = [];
 
     public function getProducts($raw = false)
@@ -258,15 +237,11 @@ class Order extends AbstractEntity
         return 0;
     }
 
-    /**
-     * @ORM\Column(type="uuid", nullable=true, options={"default": null})
-     */
+    #[ORM\Column(type: 'uuid', nullable: true, options: ['default' => null])]
     protected ?\Ramsey\Uuid\UuidInterface $status_uuid;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Catalog\OrderStatus")
-     * @ORM\JoinColumn(name="status_uuid", referencedColumnName="uuid")
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\Catalog\OrderStatus')]
+    #[ORM\JoinColumn(name: 'status_uuid', referencedColumnName: 'uuid')]
     protected ?OrderStatus $status = null;
 
     /**
@@ -290,9 +265,7 @@ class Order extends AbstractEntity
         return $this->status;
     }
 
-    /**
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
-     */
+    #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     protected DateTime $date;
 
     /**
@@ -318,9 +291,7 @@ class Order extends AbstractEntity
         return $this->date;
     }
 
-    /**
-     * @ORM\Column(type="string", length=255, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
     protected string $external_id = '';
 
     /**
@@ -340,9 +311,7 @@ class Order extends AbstractEntity
         return $this->external_id;
     }
 
-    /**
-     * @ORM\Column(type="string", length=50, options={"default": "manual"})
-     */
+    #[ORM\Column(type: 'string', length: 50, options: ['default' => 'manual'])]
     protected string $export = 'manual';
 
     /**
@@ -360,9 +329,7 @@ class Order extends AbstractEntity
         return $this->export;
     }
 
-    /**
-     * @ORM\Column(type="string", length=500, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 500, options: ['default' => ''])]
     protected string $system = '';
 
     /**

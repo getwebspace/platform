@@ -6,18 +6,14 @@ use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="catalog_product_related")
- */
+#[ORM\Table(name: 'catalog_product_related')]
+#[ORM\Entity]
 class ProductRelation extends AbstractEntity
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'Ramsey\Uuid\Doctrine\UuidGenerator')]
     protected \Ramsey\Uuid\UuidInterface $uuid;
 
     public function getUuid(): \Ramsey\Uuid\UuidInterface
@@ -25,15 +21,11 @@ class ProductRelation extends AbstractEntity
         return $this->uuid;
     }
 
-    /**
-     * @ORM\Column(type="uuid")
-     */
+    #[ORM\Column(type: 'uuid')]
     protected \Ramsey\Uuid\UuidInterface $product_uuid;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Catalog\Product")
-     * @ORM\JoinColumn(name="product_uuid", referencedColumnName="uuid")
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\Catalog\Product')]
+    #[ORM\JoinColumn(name: 'product_uuid', referencedColumnName: 'uuid')]
     protected Product $product;
 
     /**
@@ -54,15 +46,11 @@ class ProductRelation extends AbstractEntity
         return $this->product;
     }
 
-    /**
-     * @ORM\Column(type="uuid")
-     */
+    #[ORM\Column(type: 'uuid')]
     protected \Ramsey\Uuid\UuidInterface $related_uuid;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\Catalog\Product")
-     * @ORM\JoinColumn(name="related_uuid", referencedColumnName="uuid")
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\Catalog\Product')]
+    #[ORM\JoinColumn(name: 'related_uuid', referencedColumnName: 'uuid')]
     protected Product $related;
 
     /**
@@ -83,9 +71,7 @@ class ProductRelation extends AbstractEntity
         return $this->related;
     }
 
-    /**
-     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 1})
-     */
+    #[ORM\Column(type: 'float', scale: 2, precision: 10, options: ['default' => 1])]
     public float $count = 1;
 
     /**

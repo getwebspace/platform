@@ -5,16 +5,12 @@ namespace App\Domain\Entities;
 use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\Repository\ParameterRepository")
- * @ORM\Table(name="params")
- */
+#[ORM\Table(name: 'params')]
+#[ORM\Entity(repositoryClass: 'App\Domain\Repository\ParameterRepository')]
 class Parameter extends AbstractEntity
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(name="name", type="string", length=50, unique=true, options={"default": ""})
-     */
+    #[ORM\Id]
+    #[ORM\Column(name: 'name', type: 'string', length: 50, unique: true, options: ['default' => ''])]
     protected string $key = '';
 
     /**
@@ -34,9 +30,7 @@ class Parameter extends AbstractEntity
         return $this->key;
     }
 
-    /**
-     * @ORM\Column(type="text", length=10000, options={"default": ""})
-     */
+    #[ORM\Column(type: 'text', length: 10000, options: ['default' => ''])]
     public string $value = '';
 
     /**

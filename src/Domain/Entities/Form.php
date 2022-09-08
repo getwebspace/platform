@@ -6,18 +6,14 @@ use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\Repository\FormRepository")
- * @ORM\Table(name="form")
- */
+#[ORM\Table(name: 'form')]
+#[ORM\Entity(repositoryClass: 'App\Domain\Repository\FormRepository')]
 class Form extends AbstractEntity
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'Ramsey\Uuid\Doctrine\UuidGenerator')]
     protected \Ramsey\Uuid\UuidInterface $uuid;
 
     public function getUuid(): \Ramsey\Uuid\UuidInterface
@@ -25,9 +21,7 @@ class Form extends AbstractEntity
         return $this->uuid;
     }
 
-    /**
-     * @ORM\Column(type="string", length=255, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
     protected string $title = '';
 
     /**
@@ -47,9 +41,7 @@ class Form extends AbstractEntity
         return $this->title;
     }
 
-    /**
-     * @ORM\Column(type="string", length=1000, unique=true, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 1000, unique: true, options: ['default' => ''])]
     protected string $address = '';
 
     /**
@@ -69,9 +61,7 @@ class Form extends AbstractEntity
         return $this->address;
     }
 
-    /**
-     * @ORM\Column(type="text", options={"default": ""})
-     */
+    #[ORM\Column(type: 'text', options: ['default' => ''])]
     protected string $template = '';
 
     /**
@@ -89,9 +79,7 @@ class Form extends AbstractEntity
         return $this->template;
     }
 
-    /**
-     * @ORM\Column(type="string", length=50, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 50, options: ['default' => ''])]
     protected string $templateFile = '';
 
     /**
@@ -111,9 +99,7 @@ class Form extends AbstractEntity
         return $this->templateFile;
     }
 
-    /**
-     * @ORM\Column(type="boolean", options={"default": true})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
     protected bool $recaptcha = true;
 
     /**
@@ -133,9 +119,7 @@ class Form extends AbstractEntity
         return $this->recaptcha;
     }
 
-    /**
-     * @ORM\Column(type="boolean", options={"default": false})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
     protected bool $authorSend = false;
 
     /**
@@ -155,9 +139,7 @@ class Form extends AbstractEntity
         return $this->authorSend;
     }
 
-    /**
-     * @ORM\Column(type="array", options={"default": "a:0:{}"})
-     */
+    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
     protected array $origin = [];
 
     /**
@@ -177,9 +159,7 @@ class Form extends AbstractEntity
         return $this->origin;
     }
 
-    /**
-     * @ORM\Column(type="array", options={"default": "a:0:{}"})
-     */
+    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
     protected array $mailto = [];
 
     /**
@@ -199,9 +179,7 @@ class Form extends AbstractEntity
         return $this->mailto;
     }
 
-    /**
-     * @ORM\Column(type="string", length=250, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 250, options: ['default' => ''])]
     protected string $duplicate = '';
 
     /**

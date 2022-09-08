@@ -8,18 +8,14 @@ use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface as Uuid;
 use RuntimeException;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\Repository\GuestBookRepository")
- * @ORM\Table(name="guestbook")
- */
+#[ORM\Table(name: 'guestbook')]
+#[ORM\Entity(repositoryClass: 'App\Domain\Repository\GuestBookRepository')]
 class GuestBook extends AbstractEntity
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'Ramsey\Uuid\Doctrine\UuidGenerator')]
     protected \Ramsey\Uuid\UuidInterface $uuid;
 
     public function getUuid(): \Ramsey\Uuid\UuidInterface
@@ -27,9 +23,7 @@ class GuestBook extends AbstractEntity
         return $this->uuid;
     }
 
-    /**
-     * @ORM\Column(type="string", options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', options: ['default' => ''])]
     protected string $name = '';
 
     /**
@@ -49,9 +43,7 @@ class GuestBook extends AbstractEntity
         return $this->name;
     }
 
-    /**
-     * @ORM\Column(type="string", length=120, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 120, options: ['default' => ''])]
     protected string $email = '';
 
     /**
@@ -77,9 +69,7 @@ class GuestBook extends AbstractEntity
         return $this->email;
     }
 
-    /**
-     * @ORM\Column(type="text", options={"default": ""})
-     */
+    #[ORM\Column(type: 'text', options: ['default' => ''])]
     protected string $message = '';
 
     /**
@@ -97,9 +87,7 @@ class GuestBook extends AbstractEntity
         return $this->message;
     }
 
-    /**
-     * @ORM\Column(type="text", options={"default": ""})
-     */
+    #[ORM\Column(type: 'text', options: ['default' => ''])]
     protected string $response = '';
 
     /**
@@ -119,8 +107,8 @@ class GuestBook extends AbstractEntity
 
     /**
      * @see \App\Domain\Types\GuestBookStatusType::LIST
-     * @ORM\Column(type="GuestBookStatusType", options={"default": \App\Domain\Types\GuestBookStatusType::STATUS_WORK})
      */
+    #[ORM\Column(type: 'GuestBookStatusType', options: ['default' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK])]
     protected string $status = \App\Domain\Types\GuestBookStatusType::STATUS_WORK;
 
     /**
@@ -143,9 +131,7 @@ class GuestBook extends AbstractEntity
         return $this->status;
     }
 
-    /**
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
-     */
+    #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     protected DateTime $date;
 
     /**

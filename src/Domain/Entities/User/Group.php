@@ -6,18 +6,14 @@ use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\Repository\User\GroupRepository")
- * @ORM\Table(name="user_group")
- */
+#[ORM\Table(name: 'user_group')]
+#[ORM\Entity(repositoryClass: 'App\Domain\Repository\User\GroupRepository')]
 class Group extends AbstractEntity
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'Ramsey\Uuid\Doctrine\UuidGenerator')]
     protected \Ramsey\Uuid\UuidInterface $uuid;
 
     public function getUuid(): \Ramsey\Uuid\UuidInterface
@@ -25,9 +21,7 @@ class Group extends AbstractEntity
         return $this->uuid;
     }
 
-    /**
-     * @ORM\Column(type="string", length=255, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
     protected string $title = '';
 
     /**
@@ -47,9 +41,7 @@ class Group extends AbstractEntity
         return $this->title;
     }
 
-    /**
-     * @ORM\Column(type="text", length=1000, options={"default": ""})
-     */
+    #[ORM\Column(type: 'text', length: 1000, options: ['default' => ''])]
     protected string $description = '';
 
     /**
@@ -69,9 +61,7 @@ class Group extends AbstractEntity
         return $this->description;
     }
 
-    /**
-     * @ORM\Column(type="array", options={"default": "a:0:{}"})
-     */
+    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
     protected array $access = [];
 
     /**

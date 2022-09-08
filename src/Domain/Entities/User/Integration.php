@@ -8,22 +8,15 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
-/**
- * @ORM\Entity
- * @ORM\Table(name="user_integration",
- *     uniqueConstraints={
- *         @ORM\UniqueConstraint(name="user_provider_unique", columns={"user_uuid", "provider", "unique"}),
- *     }
- * )
- */
+#[ORM\Table(name: 'user_integration')]
+#[ORM\UniqueConstraint(name: 'user_provider_unique', columns: ['user_uuid', 'provider', 'unique'])]
+#[ORM\Entity]
 class Integration extends AbstractEntity
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'Ramsey\Uuid\Doctrine\UuidGenerator')]
     protected \Ramsey\Uuid\UuidInterface $uuid;
 
     public function getUuid(): \Ramsey\Uuid\UuidInterface
@@ -31,15 +24,11 @@ class Integration extends AbstractEntity
         return $this->uuid;
     }
 
-    /**
-     * @ORM\Column(type="uuid")
-     */
+    #[ORM\Column(type: 'uuid')]
     protected ?\Ramsey\Uuid\UuidInterface $user_uuid;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Domain\Entities\User")
-     * @ORM\JoinColumn(name="user_uuid", referencedColumnName="uuid")
-     */
+    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\User')]
+    #[ORM\JoinColumn(name: 'user_uuid', referencedColumnName: 'uuid')]
     protected ?User $user = null;
 
     /**
@@ -62,9 +51,7 @@ class Integration extends AbstractEntity
         return $this->user;
     }
 
-    /**
-     * @ORM\Column(type="text", options={"default": ""})
-     */
+    #[ORM\Column(type: 'text', options: ['default' => ''])]
     protected string $provider = '';
 
     /**
@@ -84,9 +71,7 @@ class Integration extends AbstractEntity
         return $this->provider;
     }
 
-    /**
-     * @ORM\Column(name="`unique`", type="string", length=20, options={"default": ""})
-     */
+    #[ORM\Column(name: '`unique`', type: 'string', length: 20, options: ['default' => ''])]
     protected string $unique = '';
 
     /**
@@ -106,9 +91,7 @@ class Integration extends AbstractEntity
         return $this->unique;
     }
 
-    /**
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
-     */
+    #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     protected DateTime $date;
 
     /**

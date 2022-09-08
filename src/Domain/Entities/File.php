@@ -7,18 +7,14 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\Repository\FileRepository")
- * @ORM\Table(name="file")
- */
+#[ORM\Table(name: 'file')]
+#[ORM\Entity(repositoryClass: 'App\Domain\Repository\FileRepository')]
 class File extends AbstractEntity
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'Ramsey\Uuid\Doctrine\UuidGenerator')]
     protected \Ramsey\Uuid\UuidInterface $uuid;
 
     public function getUuid(): \Ramsey\Uuid\UuidInterface
@@ -26,9 +22,7 @@ class File extends AbstractEntity
         return $this->uuid;
     }
 
-    /**
-     * @ORM\Column(type="string", options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', options: ['default' => ''])]
     protected string $name = '';
 
     /**
@@ -48,9 +42,7 @@ class File extends AbstractEntity
         return $this->name;
     }
 
-    /**
-     * @ORM\Column(type="string", options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', options: ['default' => ''])]
     protected string $ext = '';
 
     /**
@@ -70,9 +62,7 @@ class File extends AbstractEntity
         return $this->ext;
     }
 
-    /**
-     * @ORM\Column(type="string", options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', options: ['default' => ''])]
     protected string $type = '';
 
     /**
@@ -92,9 +82,7 @@ class File extends AbstractEntity
         return $this->type;
     }
 
-    /**
-     * @ORM\Column(type="integer", options={"default": 0})
-     */
+    #[ORM\Column(type: 'integer', options: ['default' => 0])]
     protected int $size = 0;
 
     /**
@@ -107,17 +95,12 @@ class File extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getSize(): int
     {
         return $this->size;
     }
 
-    /**
-     * @ORM\Column(type="string", options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', options: ['default' => ''])]
     protected string $salt = '';
 
     /**
@@ -137,9 +120,7 @@ class File extends AbstractEntity
         return $this->salt;
     }
 
-    /**
-     * @ORM\Column(type="string", options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', options: ['default' => ''])]
     protected string $hash = '';
 
     /**
@@ -159,9 +140,7 @@ class File extends AbstractEntity
         return $this->hash;
     }
 
-    /**
-     * @ORM\Column(type="boolean", options={"default": false})
-     */
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
     protected bool $private = false;
 
     /**
@@ -181,9 +160,7 @@ class File extends AbstractEntity
         return $this->private;
     }
 
-    /**
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
-     */
+    #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     protected DateTime $date;
 
     /**
@@ -217,7 +194,8 @@ class File extends AbstractEntity
     public static function info($path): array
     {
         $info = pathinfo($path);
-        $result = [
+
+        return [
             'dir' => $info['dirname'],
             'name' => isset($info['filename']) ? static::prepareName($info['filename']) : '',
             'ext' => isset($info['extension']) ? mb_strtolower($info['extension']) : '',
@@ -225,8 +203,6 @@ class File extends AbstractEntity
             'size' => filesize($path),
             'hash' => sha1_file($path),
         ];
-
-        return $result;
     }
 
     public static function prepareName($name)

@@ -5,22 +5,15 @@ namespace App\Domain\Entities\Catalog;
 use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\Repository\Catalog\MeasureRepository")
- * @ORM\Table(name="catalog_measure",
- *     uniqueConstraints={
- *         @ORM\UniqueConstraint(name="catalog_measure_contraction_unique", columns={"contraction"})
- *     }
- * )
- */
+#[ORM\Table(name: 'catalog_measure')]
+#[ORM\UniqueConstraint(name: 'catalog_measure_contraction_unique', columns: ['contraction'])]
+#[ORM\Entity(repositoryClass: 'App\Domain\Repository\Catalog\MeasureRepository')]
 class Measure extends AbstractEntity
 {
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'Ramsey\Uuid\Doctrine\UuidGenerator')]
     protected \Ramsey\Uuid\UuidInterface $uuid;
 
     public function getUuid(): \Ramsey\Uuid\UuidInterface
@@ -28,9 +21,7 @@ class Measure extends AbstractEntity
         return $this->uuid;
     }
 
-    /**
-     * @ORM\Column(type="string", length=255, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
     protected string $title = '';
 
     public function setTitle(string $title): self
@@ -47,9 +38,7 @@ class Measure extends AbstractEntity
         return $this->title;
     }
 
-    /**
-     * @ORM\Column(type="string", length=255, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
     protected string $contraction = '';
 
     public function setContraction(string $contraction): self
@@ -66,9 +55,7 @@ class Measure extends AbstractEntity
         return $this->contraction;
     }
 
-    /**
-     * @ORM\Column(type="float", scale=2, precision=10, options={"default": 1.00})
-     */
+    #[ORM\Column(type: 'float', scale: 2, precision: 10, options: ['default' => '1.00'])]
     public float $value = 1.00;
 
     public function setValue(float $value): self

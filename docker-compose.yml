@@ -26,5 +26,6 @@ services:
             - ./composer.json:/var/container/composer.json:rw
             - ./composer.lock:/var/container/composer.lock:rw
             - ./phpunit.xml:/var/container/phpunit.xml:ro
+            - ./rector.php:/var/container/rector.php:rw
         ports:
             - 9000:80

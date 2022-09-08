@@ -55,7 +55,7 @@ class FormAction extends AbstractAction
 
                 // prepare mailto
                 $mailto = [];
-                foreach (array_map('trim', $form->getMailto()) as $key => $value) {
+                foreach (array_map('trim', $form->getMailto()) as $value) {
                     $buf = array_map('trim', explode(':', $value));
 
                     if (count($buf) === 2) {

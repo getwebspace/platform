@@ -8,20 +8,16 @@ use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
-/**
- * @ORM\Entity(repositoryClass="App\Domain\Repository\PageRepository")
- * @ORM\Table(name="page")
- */
+#[ORM\Table(name: 'page')]
+#[ORM\Entity(repositoryClass: 'App\Domain\Repository\PageRepository')]
 class Page extends AbstractEntity
 {
     use FileTrait;
 
-    /**
-     * @ORM\Id
-     * @ORM\Column(type="uuid")
-     * @ORM\GeneratedValue(strategy="CUSTOM")
-     * @ORM\CustomIdGenerator(class="Ramsey\Uuid\Doctrine\UuidGenerator")
-     */
+    #[ORM\Id]
+    #[ORM\Column(type: 'uuid')]
+    #[ORM\GeneratedValue(strategy: 'CUSTOM')]
+    #[ORM\CustomIdGenerator(class: 'Ramsey\Uuid\Doctrine\UuidGenerator')]
     protected \Ramsey\Uuid\UuidInterface $uuid;
 
     public function getUuid(): \Ramsey\Uuid\UuidInterface
@@ -29,9 +25,7 @@ class Page extends AbstractEntity
         return $this->uuid;
     }
 
-    /**
-     * @ORM\Column(type="string", length=255, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
     protected string $title = '';
 
     /**
@@ -51,9 +45,7 @@ class Page extends AbstractEntity
         return $this->title;
     }
 
-    /**
-     * @ORM\Column(type="string", length=1000, unique=true, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 1000, unique: true, options: ['default' => ''])]
     protected string $address = '';
 
     /**
@@ -73,9 +65,7 @@ class Page extends AbstractEntity
         return $this->address;
     }
 
-    /**
-     * @ORM\Column(type="datetime", options={"default": "CURRENT_TIMESTAMP"})
-     */
+    #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     protected DateTime $date;
 
     /**
@@ -101,9 +91,7 @@ class Page extends AbstractEntity
         return $this->date;
     }
 
-    /**
-     * @ORM\Column(type="text", options={"default": ""})
-     */
+    #[ORM\Column(type: 'text', options: ['default' => ''])]
     protected string $content = '';
 
     /**
@@ -123,8 +111,8 @@ class Page extends AbstractEntity
 
     /**
      * @see \App\Domain\Types\PageTypeType::LIST
-     * @ORM\Column(type="PageTypeType")
      */
+    #[ORM\Column(type: 'PageTypeType')]
     protected string $type = \App\Domain\Types\PageTypeType::TYPE_HTML;
 
     /**
@@ -147,9 +135,7 @@ class Page extends AbstractEntity
         return $this->type;
     }
 
-    /**
-     * @ORM\Column(type="array", options={"default": "a:0:{}"})
-     */
+    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
     protected array $meta = [
         'title' => '',
         'description' => '',
@@ -182,9 +168,7 @@ class Page extends AbstractEntity
         return $this->meta;
     }
 
-    /**
-     * @ORM\Column(type="string", length=50, options={"default": ""})
-     */
+    #[ORM\Column(type: 'string', length: 50, options: ['default' => ''])]
     protected string $template = '';
 
     /**
@@ -206,8 +190,8 @@ class Page extends AbstractEntity
 
     /**
      * @var array
-     * @ORM\OneToMany(targetEntity="\App\Domain\Entities\File\PageFileRelation", mappedBy="page", orphanRemoval=true)
-     * @ORM\OrderBy({"order": "ASC"})
      */
+    #[ORM\OneToMany(targetEntity: '\App\Domain\Entities\File\PageFileRelation', mappedBy: 'page', orphanRemoval: true)]
+    #[ORM\OrderBy(['order' => 'ASC'])]
     protected $files = [];
 }
