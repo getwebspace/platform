@@ -2,11 +2,6 @@ name: Docker builder
 
 on:
     push:
-        # Publish `master` as Docker `latest` image.
-        branches:
-            - master
-
-        # Publish `1.2.3` tags as releases.
         tags:
             - '*'
 
