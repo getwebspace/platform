@@ -69,7 +69,7 @@ jobs:
 
     # build debian based container WITH sqlsrv PDO driver
     debian-sqlsrv:
-        needs: debian
+        needs: test
         runs-on: ubuntu-latest
         name: Build sqlsrv container
         steps:
@@ -98,7 +98,6 @@ jobs:
                     push: true
                     file: docker/debian/Dockerfile.sqlsrv
                     tags: ${{ steps.meta.outputs.tags }}-sqlsrv
-                    labels: ${{ steps.meta.outputs.labels }}
                     build-args: |
                         BRANCH=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
                         COMMIT=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
