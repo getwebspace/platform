@@ -119,9 +119,8 @@ return [
     'Включить вход через код' => 'Enable code sign-in',
     'При авторизации пользователя будет возможность подтверждения личности через высланный на почту код' => 'When authorizing the user, it will be possible to confirm the identity through the code sent to the mail',
     'Шаблон письма для авторизации с кодом' => 'Authorization letter template with code',
-    'Включить вход через Facebook' => 'Enable login via Facebook',
-    'Включить вход через VK' => 'Enable login via VK',
-    'Позволяет пользователям регистрироваться и входить на сайт с помощью социальной сети' => 'Allows users to register and login to the site using a social network',
+    'Открытый протокол авторизации' => 'Open authorization protocol',
+    'Перед заполнением см. <a href="https://github.com/getwebspace/platform/wiki/oAuth" target="_blank">документацию</a>' => 'Before filling, see the <a href="https://github.com/getwebspace/platform/wiki/oAuth" target="_blank">documentation</a>',
 
     // catalog
     'Включить каталог' => 'Enable Catalog',

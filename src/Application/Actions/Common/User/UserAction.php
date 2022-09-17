@@ -4,6 +4,7 @@ namespace App\Application\Actions\Common\User;
 
 use App\Domain\AbstractAction;
 use App\Domain\Service\User\GroupService as UserGroupService;
+use App\Domain\Service\User\IntegrationService as UserIntegrationService;
 use App\Domain\Service\User\SessionService as UserSessionService;
 use App\Domain\Service\User\SubscriberService as UserSubscriberService;
 use App\Domain\Service\User\UserService;
@@ -19,6 +20,8 @@ abstract class UserAction extends AbstractAction
 
     protected UserSubscriberService $userSubscriberService;
 
+    protected UserIntegrationService $userIntegrationService;
+
     /**
      * {@inheritdoc}
      */
@@ -30,5 +33,31 @@ abstract class UserAction extends AbstractAction
         $this->userSessionService = $container->get(UserSessionService::class);
         $this->userGroupService = $container->get(UserGroupService::class);
         $this->userSubscriberService = $container->get(UserSubscriberService::class);
+        $this->userIntegrationService = $container->get(UserIntegrationService::class);
+    }
+
+    protected function getOAuthProviders($only_keys = false)
+    {
+        $list = json_decode($this->parameter('user_oauth', '[]'), true);
+
+        return $only_keys ? array_keys($list) : $list;
+    }
+
+    protected function getOAuthService(): \SocialConnect\Auth\Service
+    {
+        return new \SocialConnect\Auth\Service(
+            new \SocialConnect\Common\HttpStack(
+                new \SocialConnect\HttpClient\Curl([
+                    CURLOPT_USERAGENT => 'WebSpaceEngine\Client ' . ($_ENV['COMMIT_SHA'] ?? 'specific'),
+                ]),
+                new \SocialConnect\HttpClient\RequestFactory(),
+                new \SocialConnect\HttpClient\StreamFactory()
+            ),
+            new \SocialConnect\Provider\Session\Session(),
+            [
+                'redirectUri' => $this->parameter('common_homepage') . '/user/oauth/cb/${provider}/',
+                'provider' => $this->getOAuthProviders(),
+            ]
+        );
     }
 }

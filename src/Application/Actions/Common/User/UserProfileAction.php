@@ -41,6 +41,7 @@ class UserProfileAction extends UserAction
 
         return $this->respond($this->parameter('user_profile_template', 'user.profile.twig'), [
             'user' => $user,
+            'oauth' => $this->getOAuthProviders(true),
         ]);
     }
 }

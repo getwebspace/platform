@@ -51,6 +51,7 @@ class UserLoginAction extends UserAction
         return $this->respond($this->parameter('user_login_template', 'user.login.twig'), [
             'identifier' => $identifier,
             'provider' => $provider,
+            'oauth' => $this->getOAuthProviders(true),
         ]);
     }
 
@@ -140,43 +141,6 @@ class UserLoginAction extends UserAction
                         }
                     }
                 }
-
-                break;
-
-            // via facebook
-            case 'facebook':
-                $provider = new FacebookOAuthProvider($this->container);
-                $token = $provider->getToken($this->getParam('code'));
-
-                if ($token) {
-                    try {
-                        if (($integration = $provider->callback($token, $this->request->getAttribute('user'))) !== null) {
-                            return $integration->getUser();
-                        }
-                        $this->addError($identifier, 'EXCEPTION_USER_NOT_FOUND');
-                    } catch (EmailAlreadyExistsException|EmailBannedException|WrongEmailValueException $e) {
-                        $this->addError($identifier, $e->getMessage());
-                    }
-                }
-
-                break;
-
-            // via vk
-            case 'vk':
-                $provider = new VKOAuthProvider($this->container);
-                $token = $provider->getToken($this->getParam('code'));
-
-                if ($token) {
-                    try {
-                        if (($integration = $provider->callback($token, $this->request->getAttribute('user'))) !== null) {
-                            return $integration->getUser();
-                        }
-                        $this->addError($identifier, 'EXCEPTION_USER_NOT_FOUND');
-                    } catch (EmailAlreadyExistsException|EmailBannedException|WrongEmailValueException $e) {
-                        $this->addError($identifier, $e->getMessage());
-                    }
-                }
-
                 break;
         }
 

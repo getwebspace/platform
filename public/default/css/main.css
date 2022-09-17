@@ -7043,6 +7043,282 @@ blockquote span {
   color: #fff;
 }
 
+.account-login .login-form .social-login .vk-btn {
+  border-color: #45668e;
+  background-color: transparent;
+  color: #45668e;
+}
+
+.account-login .login-form .social-login .vk-btn:hover {
+  background-color: #45668e;
+  border-color: transparent;
+  color: #fff;
+}
+
+.account-login .login-form .social-login .paypal-btn {
+  border-color: #003087;
+  background-color: transparent;
+  color: #003087;
+}
+
+.account-login .login-form .social-login .paypal-btn:hover {
+  background-color: #003087;
+  border-color: transparent;
+  color: #fff;
+}
+
+.account-login .login-form .social-login .github-btn {
+  border-color: #333;
+  background-color: transparent;
+  color: #333;
+}
+
+.account-login .login-form .social-login .github-btn:hover {
+  background-color: #333;
+  border-color: transparent;
+  color: #fff;
+}
+
+.account-login .login-form .social-login .instagram-btn {
+  border-color: #405de6;
+  background-color: transparent;
+  color: #405de6;
+}
+
+.account-login .login-form .social-login .instagram-btn:hover {
+  background-color: #405de6;
+  border-color: transparent;
+  color: #fff;
+}
+
+.account-login .login-form .social-login .slack-btn {
+  border-color: #e01563;
+  background-color: transparent;
+  color: #e01563;
+}
+
+.account-login .login-form .social-login .slack-btn:hover {
+  background-color: #e01563;
+  border-color: transparent;
+  color: #fff;
+}
+
+.account-login .login-form .social-login .twitch-btn {
+  border-color: #9146ff;
+  background-color: transparent;
+  color: #9146ff;
+}
+
+.account-login .login-form .social-login .twitch-btn:hover {
+  background-color: #9146ff;
+  border-color: transparent;
+  color: #fff;
+}
+
+.account-login .login-form .social-login .bitbucket-btn {
+  border-color: #205081;
+  background-color: transparent;
+  color: #205081;
+}
+
+.account-login .login-form .social-login .bitbucket-btn:hover {
+  background-color: #205081;
+  border-color: transparent;
+  color: #fff;
+}
+
+.account-login .login-form .social-login .amazon-btn {
+  border-color: #ff9900;
+  background-color: transparent;
+  color: #ff9900;
+}
+
+.account-login .login-form .social-login .amazon-btn:hover {
+  background-color: #ff9900;
+  border-color: transparent;
+  color: #fff;
+}
+
+.account-login .login-form .social-login .gitlab-btn {
+  border-color: #fca326;
+  background-color: transparent;
+  color: #fca326;
+}
+
+.account-login .login-form .social-login .gitlab-btn:hover {
+  background-color: #fca326;
+  border-color: transparent;
+  color: #fff;
+}
+
+.account-login .login-form .social-login .vimeo-btn {
+  border-color: #162221;
+  background-color: transparent;
+  color: #162221;
+}
+
+.account-login .login-form .social-login .vimeo-btn:hover {
+  background-color: #162221;
+  border-color: transparent;
+  color: #fff;
+}
+
+.account-login .login-form .social-login .digital-ocean-btn {
+  border-color: #008bcf;
+  background-color: transparent;
+  color: #008bcf;
+}
+
+.account-login .login-form .social-login .digital-ocean-btn:hover {
+  background-color: #008bcf;
+  border-color: transparent;
+  color: #fff;
+}
+
+.account-login .login-form .social-login .yandex-btn {
+  border-color: #ffcc00;
+  background-color: transparent;
+  color: #ffcc00;
+}
+
+.account-login .login-form .social-login .yandex-btn:hover {
+  background-color: #ffcc00;
+  border-color: transparent;
+  color: #fff;
+}
+
+.account-login .login-form .social-login .mail-ru-btn {
+  border-color: #168de2;
+  background-color: transparent;
+  color: #168de2;
+}
+
+.account-login .login-form .social-login .mail-ru-btn:hover {
+  background-color: #168de2;
+  border-color: transparent;
+  color: #fff;
+}
+
+.account-login .login-form .social-login .odnoklassniki-btn {
+  border-color: #ed812b;
+  background-color: transparent;
+  color: #ed812b;
+}
+
+.account-login .login-form .social-login .odnoklassniki-btn:hover {
+  background-color: #ed812b;
+  border-color: transparent;
+  color: #fff;
+}
+
+.account-login .login-form .social-login .steam-btn {
+  border-color: #000000;
+  background-color: transparent;
+  color: #000000;
+}
+
+.account-login .login-form .social-login .steam-btn:hover {
+  background-color: #000000;
+  border-color: transparent;
+  color: #fff;
+}
+
+.account-login .login-form .social-login .tumblr-btn {
+  border-color: #35465c;
+  background-color: transparent;
+  color: #35465c;
+}
+
+.account-login .login-form .social-login .tumblr-btn:hover {
+  background-color: #35465c;
+  border-color: transparent;
+  color: #fff;
+}
+
+.account-login .login-form .social-login .discord-btn {
+  border-color: #7289da;
+  background-color: transparent;
+  color: #7289da;
+}
+
+.account-login .login-form .social-login .discord-btn:hover {
+  background-color: #7289da;
+  border-color: transparent;
+  color: #fff;
+}
+
+.account-login .login-form .social-login .microsoft-btn {
+  border-color: #f65314;
+  background-color: transparent;
+  color: #f65314;
+}
+
+.account-login .login-form .social-login .microsoft-btn:hover {
+  background-color: #f65314;
+  border-color: transparent;
+  color: #fff;
+}
+
+.account-login .login-form .social-login .reddit-btn {
+  border-color: #ff4500;
+  background-color: transparent;
+  color: #ff4500;
+}
+
+.account-login .login-form .social-login .reddit-btn:hover {
+  background-color: #ff4500;
+  border-color: transparent;
+  color: #fff;
+}
+
+.account-login .login-form .social-login .linkedin-btn {
+  border-color: #0077b5;
+  background-color: transparent;
+  color: #0077b5;
+}
+
+.account-login .login-form .social-login .linkedin-btn:hover {
+  background-color: #0077b5;
+  border-color: transparent;
+  color: #fff;
+}
+
+.account-login .login-form .social-login .wordpress-btn {
+  border-color: #21759b;
+  background-color: transparent;
+  color: #21759b;
+}
+
+.account-login .login-form .social-login .wordpress-btn:hover {
+  background-color: #21759b;
+  border-color: transparent;
+  color: #fff;
+}
+
+.account-login .login-form .social-login .yahoo-btn {
+  border-color: #410093;
+  background-color: transparent;
+  color: #410093;
+}
+
+.account-login .login-form .social-login .yahoo-btn:hover {
+  background-color: #410093;
+  border-color: transparent;
+  color: #fff;
+}
+
+.account-login .login-form .social-login .trello-btn {
+  border-color: #70b500;
+  background-color: transparent;
+  color: #70b500;
+}
+
+.account-login .login-form .social-login .trello-btn:hover {
+  background-color: #70b500;
+  border-color: transparent;
+  color: #fff;
+}
+
 .account-login .bottom-content {
   margin-top: 25px;
 }

@@ -746,69 +746,16 @@
                                                 <hr>
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Включить вход через Facebook',
-                                                    'description': 'Позволяет пользователям регистрироваться и входить на сайт с помощью социальной сети',
-                                                    'type': 'select',
-                                                    'name': 'user[auth_facebook_is_enabled]',
+                                                    'label': 'oAuth',
+                                                    'description': 'Открытый протокол авторизации',
+                                                    'postfix': '<i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="top" title="' ~ ('Требуется внимательная проверка значения!'|locale) ~ '"></i>',
+                                                    'message': 'Перед заполнением см. <a href="https://github.com/getwebspace/platform/wiki/oAuth" target="_blank">документацию</a>',
+                                                    'type': 'textarea',
+                                                    'name': 'user[oauth]',
                                                     'args': {
-                                                        'option': _(['yes', 'no']),
-                                                        'selected': 'no'
-                                                    }
-                                                } %}
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'App ID',
-                                                    'postfix': '<i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="top" title="' ~ ('Требуется внимательная проверка значения!'|locale) ~ '"></i>',
-                                                    'type': 'text',
-                                                    'name': 'user[auth_facebook_app_id]'
-                                                } %}
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'App Secret',
-                                                    'postfix': '<i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="top" title="' ~ ('Требуется внимательная проверка значения!'|locale) ~ '"></i>',
-                                                    'type': 'text',
-                                                    'name': 'user[auth_facebook_app_secret]'
-                                                } %}
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Proxy URL',
-                                                    'postfix': '<i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="top" title="' ~ ('Требуется внимательная проверка значения!'|locale) ~ '"></i>',
-                                                    'type': 'text',
-                                                    'name': 'user[auth_facebook_proxy]',
-                                                    'args': {
-                                                        'value': base_url() ~ '/user/login?provider=facebook'
-                                                    }
-                                                } %}
-
-                                                <hr>
-
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Включить вход через VK',
-                                                    'description': 'Позволяет пользователям регистрироваться и входить на сайт с помощью социальной сети',
-                                                    'type': 'select',
-                                                    'name': 'user[auth_vk_is_enabled]',
-                                                    'args': {
-                                                        'option': _(['yes', 'no']),
-                                                        'selected': 'no'
-                                                    }
-                                                } %}
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'App ID',
-                                                    'postfix': '<i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="top" title="' ~ ('Требуется внимательная проверка значения!'|locale) ~ '"></i>',
-                                                    'type': 'text',
-                                                    'name': 'user[auth_vk_app_id]'
-                                                } %}
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'App Secret',
-                                                    'postfix': '<i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="top" title="' ~ ('Требуется внимательная проверка значения!'|locale) ~ '"></i>',
-                                                    'type': 'text',
-                                                    'name': 'user[auth_vk_app_secret]'
-                                                } %}
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Proxy URL',
-                                                    'postfix': '<i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="top" title="' ~ ('Требуется внимательная проверка значения!'|locale) ~ '"></i>',
-                                                    'type': 'text',
-                                                    'name': 'user[auth_vk_proxy]',
-                                                    'args': {
-                                                        'value': base_url() ~ '/user/login?provider=vk'
-                                                    }
+                                                        'placeholder': '[]',
+                                                        'style': 'height: 200px!important;',
+                                                    },
                                                 } %}
                                             </div>
 

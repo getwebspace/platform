@@ -20,28 +20,28 @@
                             </div>
 
                             {% if provider == 'self' %}
-                                {% set another = false %}
+                                {% set other = false %}
                                 {% if parameter('user_auth_code_is_enabled', 'no') == 'yes' %}
-                                    {% set another = true %}
+                                    {% set other = true %}
                                     <a href="?provider=code" class="btn btn-info btn-block text-uppercase">Login via Code</a>
                                 {% endif %}
 
-                                <div class="social-login">
-                                    <div class="row">
-                                        {% for type in ['facebook', 'vk'] %}
-                                            {% if parameter('user_auth_' ~ type ~ '_is_enabled', 'no') == 'yes' %}
-                                                {% set another = true %}
-                                                <div class="col-lg-6 col-md-6 col-12">
-                                                    <a href="{{ oauth_url(type) }}" class="btn {{ type }}-btn" >
-                                                        {{ type }} login
+                                {% if oauth %}
+                                    <div class="social-login">
+                                        <div class="row">
+                                            {% for type in oauth %}
+                                                {% set other = true %}
+                                                <div class="col-lg-4 col-md-6 col-12 mb-1">
+                                                    <a href="/user/oauth/{{ type }}" class="btn {{ type }}-btn" >
+                                                        {{ type }}
                                                     </a>
                                                 </div>
-                                            {% endif %}
-                                        {% endfor %}
+                                            {% endfor %}
+                                        </div>
                                     </div>
-                                </div>
+                                {% endif %}
 
-                                {% if another %}
+                                {% if other %}
                                     <div class="alt-option">
                                         <span>Or</span>
                                     </div>

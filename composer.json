@@ -15,6 +15,7 @@
         "ext-json": "*",
         "ext-yaml": "*",
         "ext-soap": "*",
+        "ext-curl": "*",
         "slim/slim": "^4.10.0",
         "slim/psr7": "^1.5",
         "slim/twig-view": "^3.3.0",
@@ -39,13 +40,15 @@
         "symfony/var-dumper": "^v6.1.0",
         "voku/html-compress-twig": "^4.0.2",
         "rybakit/twig-deferred-extension": "^v3.0.1",
-        "bhaktaraz/php-rss-generator": "dev-master"
+        "bhaktaraz/php-rss-generator": "dev-master",
+        "socialconnect/http-client": "^1.0",
+        "socialconnect/auth": "^3.0.0"
     },
     "require-dev": {
-        "fzaninotto/faker": "^1.9",
+        "fakerphp/faker": "^1.20.0",
         "friendsofphp/php-cs-fixer": "^3.5",
         "phpunit/phpunit": "^9.5",
-        "rector/rector": "^0.14.2"
+        "rector/rector": "0.14.0"
     },
     "autoload": {
         "psr-4": {

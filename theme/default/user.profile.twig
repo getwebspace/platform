@@ -206,20 +206,18 @@
                                 </section>
                             </li>
 
-                            {% if parameter('user_auth_facebook_is_enabled', 'no') == 'yes' or parameter('user_auth_vk_is_enabled', 'no') == 'yes' %}
+                            {% if oauth %}
                                 <li>
                                     <h6 class="title collapsed" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">Social networks</h6>
                                     <section class="checkout-steps-form-content collapse" id="collapseFour" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
                                         <div class="row pt-4">
-                                            {% for type in ['facebook', 'vk'] %}
-                                                {% if parameter('user_auth_' ~ type ~ '_is_enabled', 'no') == 'yes' %}
-                                                    <div class="col-md-6">
-                                                        <a class="btn btn-primary w-100" href="{{ user.getIntegrations().firstWhere('provider', type) ? '#' : oauth_url(type) }}">
-                                                            <span class="d-block">{{ type }}</span>
-                                                            <small class="d-block">{{ user.getIntegrations().firstWhere('provider', type) ? 'Connected' : 'Connect' }}</small>
-                                                        </a>
-                                                    </div>
-                                                {% endif %}
+                                            {% for type in oauth %}
+                                                <div class="col-md-6 mb-2">
+                                                    <a class="btn btn-primary w-100" href="/user/oauth/{{ type }}">
+                                                        <span class="d-block">{{ type }}</span>
+                                                        <small class="d-block">{{ user.getIntegrations().firstWhere('provider', type) ? 'Connected' : 'Disconnected' }}</small>
+                                                    </a>
+                                                </div>
                                             {% endfor %}
                                         </div>
                                     </section>

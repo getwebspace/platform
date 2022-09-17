@@ -62,7 +62,7 @@ WORKDIR ${PLATFORM_HOME}
 # Install PHP libs
 COPY composer.json ${PLATFORM_HOME}/composer.json
 COPY composer.lock ${PLATFORM_HOME}/composer.lock
-RUN composer install ${NO_DEV} --no-suggest --no-progress --ignore-platform-reqs
+RUN composer install ${NO_DEV} --no-suggest --no-progress
 
 EXPOSE 80/tcp 443/tcp
 VOLUME ["${PLATFORM_HOME}/plugin", "${PLATFORM_HOME}/public/resource", "${PLATFORM_HOME}/theme", "${PLATFORM_HOME}/var", "${PLATFORM_HOME}/public/uploads"]

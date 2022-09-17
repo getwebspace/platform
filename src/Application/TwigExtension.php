@@ -88,7 +88,6 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('json_encode', [$this, 'json_encode']),
             new TwigFunction('json_decode', [$this, 'json_decode']),
             new TwigFunction('qr_code', [$this, 'qr_code'], ['is_safe' => ['html']]),
-            new TwigFunction('oauth_url', [$this, 'oauth_url'], ['is_safe' => ['html']]),
 
             // files functions
             new TwigFunction('files', [$this, 'files']),
@@ -368,19 +367,6 @@ class TwigExtension extends AbstractExtension
         $writer = new \BaconQrCode\Writer($renderer);
 
         return '<img src="data:image/svg+xml;base64,' . base64_encode($writer->writeString($value)) . '" height="' . $size . '" width="' . $size . '">';
-    }
-
-    public function oauth_url(string $provider): string
-    {
-        switch ($provider) {
-            case 'facebook':
-                return (new FacebookOAuthProvider($this->container))->getAuthUrl();
-
-            case 'vk':
-                return (new VKOAuthProvider($this->container))->getAuthUrl();
-        }
-
-        return '';
     }
 
     // files functions

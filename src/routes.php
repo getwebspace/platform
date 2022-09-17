@@ -313,6 +313,18 @@ return function (App $app, Container $container): void {
                 ->map(['GET', 'POST'], '/subscriber', \App\Application\Actions\Common\User\UserSubscribeAction::class)
                 ->setName('common:user:subscriber')
                 ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
+
+            // auth
+            $group
+                ->group('/oauth', function (Group $group): void {
+                    $group
+                        ->map(['GET', 'POST'], '/{provider}', \App\Application\Actions\Common\User\OAuth\InitAction::class)
+                        ->setName('common:user:auth');
+
+                    $group
+                        ->map(['GET', 'POST'], '/cb/{provider}', \App\Application\Actions\Common\User\OAuth\CallbackAction::class)
+                        ->setName('common:user:auth:cb');
+                });
         })
         ->add(new \Slim\HttpCache\Cache('private', 0, true));
 
