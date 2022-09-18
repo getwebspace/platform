@@ -27,9 +27,12 @@ class CallbackAction extends UserAction
 
                 $user = $this->userService->create([
                     'email' => $identity['email'],
+                    'username' => $identity['username'] ?? '',
+                    'birthdate' => $identity['bdate'] ?? '',
+                    'gender' => $identity['sex'] ?? '',
                     'password' => uniqid(),
-                    'firstname' => $identity['firstname'],
-                    'lastname' => $identity['lastname'],
+                    'firstname' => $identity['firstname'] ?? '',
+                    'lastname' => $identity['lastname'] ?? '',
                     'group' => $groupUuid ? $this->userGroupService->read(['uuid' => $groupUuid]) : null,
                 ]);
             }

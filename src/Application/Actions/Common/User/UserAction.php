@@ -40,7 +40,7 @@ abstract class UserAction extends AbstractAction
     {
         $list = json_decode($this->parameter('user_oauth', '[]'), true);
 
-        return $only_keys ? array_keys($list) : $list;
+        return !json_last_error() ? ($only_keys ? array_keys($list) : $list) : [];
     }
 
     protected function getOAuthService(): \SocialConnect\Auth\Service
