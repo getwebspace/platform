@@ -55,7 +55,7 @@ abstract class UserAction extends AbstractAction
             ),
             new \SocialConnect\Provider\Session\Session(),
             [
-                'redirectUri' => $this->parameter('common_homepage') . '/user/oauth/cb/${provider}/',
+                'redirectUri' => $this->parameter('common_homepage') . '/user/oauth/${provider}',
                 'provider' => $this->getOAuthProviders(),
             ]
         );
