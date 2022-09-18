@@ -35,7 +35,6 @@ class CreateAction extends UserAction
         return $this->respondWithTemplate('cup/user/group/form.twig', [
             'routes' => [
                 'all' => $this->getRoutes()->all(),
-                'default' => explode(',', $this->parameter('user_access', '')),
             ],
         ]);
     }
