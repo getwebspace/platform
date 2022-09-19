@@ -215,13 +215,21 @@ abstract class AbstractPlugin
             $params['methods'] = [$params['methods']];
         }
 
-        return $this->router->map(array_map('mb_strtoupper', $params['methods']), $params['pattern'], $params['handler']);
+        return $this->router->map(array_map('mb_strtoupper', $params['methods']), (string) $params['pattern'], $params['handler']);
     }
 
     /**
      * Add new line in current locale table
      */
-    public function addLocale(string $original, string $translated): void
+    public function addLocaleCode(string $code): void
+    {
+        i18n::addLanguage($code);
+    }
+
+    /**
+     * Add new line in current locale table
+     */
+    public function addLocaleString(string $original, string $translated): void
     {
         i18n::addStrings([$original => $translated]);
     }
@@ -229,8 +237,36 @@ abstract class AbstractPlugin
     /**
      * Add new array of lines in current locale table
      */
-    public function addLocales(array $strings): void
+    public function addLocaleStrings(array $strings): void
     {
+        i18n::addStrings($strings);
+    }
+
+    /**
+     * Add new array of lines in current locale table
+     */
+    public function addLocaleStringsFromFile(string $path): void
+    {
+        $strings = [];
+
+        if (file_exists($path)) {
+            $info = pathinfo($path);
+
+            switch ($info['extension']) {
+                case 'json':
+                    $strings = json_decode(file_get_contents($path), true);
+                    break;
+
+                case 'ini':
+                    $strings = parse_ini_file($path, true);
+                    break;
+
+                case 'php':
+                    $strings = require_once $path;
+                    break;
+            }
+        }
+
         i18n::addStrings($strings);
     }
 

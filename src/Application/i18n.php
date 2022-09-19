@@ -18,6 +18,11 @@ class i18n
     public static array $locale = [];
 
     /**
+     * Buffer storage of added strings from plugins
+     */
+    private static array $strings = [];
+
+    /**
      * Locale code
      */
     public static string $localeCode = 'ru';
@@ -52,7 +57,8 @@ class i18n
             throw new NullPointException('Locale list is empty');
         }
 
-        static::$locale = static::load($priority);
+        static::$locale = array_merge(static::load($priority), static::$strings);
+        static::$strings = [];
     }
 
     /**
@@ -63,13 +69,16 @@ class i18n
         while ($priority->valid()) {
             $locale = $priority->current();
 
-            foreach (['php', 'ini'] as $type) {
+            foreach (['php', 'json', 'ini'] as $type) {
                 $path = SRC_LOCALE_DIR . '/' . trim($locale) . '.' . $type;
 
                 if (file_exists($path)) {
                     static::$localeCode = $locale;
 
                     switch ($type) {
+                        case 'json':
+                            return json_decode(file_get_contents($path), true);
+
                         case 'ini':
                             return parse_ini_file($path, true);
 
@@ -86,11 +95,20 @@ class i18n
     }
 
     /**
+     * Add new lang-code
+     */
+    public static function addLanguage(string $code): void
+    {
+        static::$locale[] = $code;
+        static::$locale = array_unique(static::$locale);
+    }
+
+    /**
      * For add new strings via plugin
      */
     public static function addStrings(array $strings): void
     {
-        static::$locale = array_merge(static::$locale, $strings);
+        static::$strings = array_merge(static::$strings, $strings);
     }
 
     /**
