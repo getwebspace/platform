@@ -82,7 +82,7 @@ $(() => {
     
     // navigation highlight
     let buf = 0, $active = null;
-    $('.sidebar a').each((i, el) => {
+    $($('.sidebar a').get().reverse()).each((i, el) => {
         let $el = $(el), href = $el.attr('href');
         
         if (location.pathname.startsWith(href) && href.length > buf) {
