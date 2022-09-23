@@ -5,11 +5,15 @@
         {% set args = {} %}
     {% endif %}
 
+    <div id="spinner-{{ editorId }}" class="spinner-grow text-primary mx-auto mt-5" role="status" style="display: block;">
+        <span class="sr-only">Loading...</span>
+    </div>
+
     {% include 'cup/form.twig' with {
         'label': label,
         'type': 'textarea',
         'name': name,
-        'args': args|merge({'id': 'wysiwygeditor-' ~ editorId, 'method': null})
+        'args': args|merge({'id': 'wysiwygeditor-' ~ editorId, 'method': null, 'style': 'opacity: 0;'})
     } %}
 
     <script type="text/javascript">
@@ -35,6 +39,9 @@
                 let $editor = $('#wysiwygeditor-{{ editorId }}:visible');
 
                 if ($editor.length) {
+                    $('#spinner-{{ editorId }}').hide();
+                    $editor.css('opacity', 1);
+
                     if ('{{ item.type }}' === 'text' || '{{ args.text_mode }}') {
                         CodeMirror.fromTextArea($editor.get(0), {
                             lineNumbers: true,

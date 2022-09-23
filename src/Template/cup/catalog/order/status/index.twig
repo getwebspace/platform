@@ -1,0 +1,56 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Статусы заказа'|locale }} ({{ list.count() }})</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    {% embed 'mixin/datatable.twig' %}
+                        {% block thead %}
+                            <tr>
+                                <th width="5%" class="d-none d-md-table-cell">#</th>
+                                <th>{{ 'Наименование'|locale }}</th>
+                                <th width="25%" class="text-right"></th>
+                            </tr>
+                        {% endblock %}
+
+                        {% block tbody %}
+                            {% for item in list.sortBy('order') %}
+                                <tr>
+                                    <td width="5%" class="d-none d-md-table-cell">{{ item.order }}</td>
+                                    <td>{{ item.title }}</td>
+                                    <td width="25%" class="text-right">
+                                        <form action="/cup/catalog/order/status/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Вы действительно хотите удалить статус заказа?'|locale }}');">
+                                            <div class="btn-group">
+                                                <a href="/cup/catalog/order/status/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
+                                                    <i class="fas fa-fw fa-edit"></i>
+                                                    <span class="d-none d-md-inline-block">{{ 'Изменить'|locale }}</span>
+                                                </a>
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-fw fa-trash-alt"></i>
+                                                    <span class="d-none d-md-inline-block">{{ 'Удалить'|locale }}</span>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
+
+                    <a href="/cup/catalog/order/status/add" class="btn btn-outline-primary mt-3">{{ 'Создать статус'|locale }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

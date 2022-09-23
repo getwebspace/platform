@@ -190,8 +190,13 @@ return function (App $app, Container $container): void {
 
                         // order
                         $group->group('/order', function (Group $group): void {
+                            $group->get('/invoice', \App\Application\Actions\Cup\Catalog\Order\Invoice\OrderInviceEditorAction::class)
+                                ->setName('cup:catalog:order:invoice:editor');
+
                             // order status
                             $group->group('/status', function (Group $group): void {
+                                $group->get('', \App\Application\Actions\Cup\Catalog\Order\Status\OrderStatusListAction::class)
+                                    ->setName('cup:catalog:order:status:list');
                                 $group->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\Catalog\Order\Status\OrderStatusCreateAction::class)
                                     ->setName('cup:catalog:order:status:add');
                                 $group->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\Catalog\Order\Status\OrderStatusUpdateAction::class)

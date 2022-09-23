@@ -56,12 +56,12 @@
                             <span class="sub-item">{{ 'Список'|locale }}</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="/cup/user/group">
+                            <span class="sub-item">{{ 'Группы'|locale }}</span>
+                        </a>
+                    </li>
                     {% if parameter('user_is_enabled', 'yes') != 'no' %}
-                        <li>
-                            <a href="/cup/user/group">
-                                <span class="sub-item">{{ 'Группы'|locale }}</span>
-                            </a>
-                        </li>
                         <li>
                             <a href="/cup/user/subscriber">
                                 <span class="sub-item">{{ 'Подписчики'|locale }}</span>
@@ -113,6 +113,16 @@
                         <li>
                             <a href="/cup/catalog/order">
                                 <span class="sub-item">{{ 'Заказы'|locale }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/cup/catalog/order/status">
+                                <span class="sub-item">{{ 'Статусы заказа'|locale }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/cup/catalog/order/invoice">
+                                <span class="sub-item">{{ 'Шаблон инвойса'|locale }}</span>
                             </a>
                         </li>
                     </ul>

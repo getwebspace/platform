@@ -1,0 +1,40 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Шаблон инвойса'|locale }}</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <form action="/cup/parameters?return=/cup/catalog/order/invoice" method="post">
+                        <div class="row p-0">
+                            <div class="col-12">
+                                <style>#invoice [data-input] {padding: 0;}</style>
+
+                                {% include 'cup/editor.twig' with {
+                                    'name': 'catalog[invoice]',
+                                    'args': {
+                                        'id': 'code',
+                                        'text_mode': true,
+                                        'value': invoice,
+                                    }
+                                } %}
+
+                                <button type="submit" class="btn btn-outline-primary mt-3">{{ 'Сохранить'|locale }}</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

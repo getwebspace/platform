@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">{{ 'Список заказов'|locale }} ({{ order_list.count() }})</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Список заказов'|locale }} ({{ list.count() }})</h2>
             </div>
         </div>
     </div>
@@ -17,16 +17,6 @@
                 <div class="card-header">
                     <div class="d-flex align-items-center">
                         <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="pill" href="#invoice" role="tab">
-                                    {{ 'Шаблон инвойса'|locale }}
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="pill" href="#status" role="tab">
-                                    {{ 'Статусы заказа'|locale }}
-                                </a>
-                            </li>
                             <li class="nav-item">
                                 <a class="nav-link active show" data-toggle="pill" href="#list" role="tab">
                                     {{ 'Список заказов'|locale }}
@@ -44,66 +34,6 @@
 
                 <div class="card-body">
                     <div class="tab-content">
-                        {# Tab: Шаблон инвойса #}
-                        <div class="tab-pane fade" id="invoice" role="tabpanel">
-                            <form action="/cup/parameters?return=/cup/catalog/order" method="post">
-                                <div class="row p-0">
-                                    <div class="col-12">
-                                        <style>#invoice [data-input] {padding: 0;}</style>
-
-                                        {% include 'cup/editor.twig' with {
-                                            'name': 'catalog[invoice]',
-                                            'args': {
-                                                'id': 'code',
-                                                'text_mode': true,
-                                                'value': invoice,
-                                            }
-                                        } %}
-
-                                        <button type="submit" class="btn btn-outline-primary mt-3">{{ 'Сохранить'|locale }}</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-
-                        {# Tab: Статусы заказа #}
-                        <div class="tab-pane fade" id="status" role="tabpanel">
-                            {% embed 'mixin/datatable.twig' %}
-                                {% block thead %}
-                                    <tr>
-                                        <th width="5%" class="d-none d-md-table-cell">#</th>
-                                        <th>{{ 'Наименование'|locale }}</th>
-                                        <th width="25%" class="text-right"></th>
-                                    </tr>
-                                {% endblock %}
-
-                                {% block tbody %}
-                                    {% for item in status_list.sortBy('order') %}
-                                        <tr>
-                                            <td width="5%" class="d-none d-md-table-cell">{{ item.order }}</td>
-                                            <td>{{ item.title }}</td>
-                                            <td width="25%" class="text-right">
-                                                <form action="/cup/catalog/order/status/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Вы действительно хотите удалить статус заказа?'|locale }}');">
-                                                    <div class="btn-group">
-                                                        <a href="/cup/catalog/order/status/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
-                                                            <i class="fas fa-fw fa-edit"></i>
-                                                            <span class="d-none d-md-inline-block">{{ 'Изменить'|locale }}</span>
-                                                        </a>
-                                                        <button type="submit" class="btn btn-sm btn-danger">
-                                                            <i class="fas fa-fw fa-trash-alt"></i>
-                                                            <span class="d-none d-md-inline-block">{{ 'Удалить'|locale }}</span>
-                                                        </button>
-                                                    </div>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                {% endblock %}
-                            {% endembed %}
-
-                            <a href="/cup/catalog/order/status/add" class="btn btn-outline-primary mt-3">{{ 'Создать статус'|locale }}</a>
-                        </div>
-
                         {# Tab: Список заказов #}
                         <div class="tab-pane fade show active" id="list" role="tabpanel">
                             {% embed 'mixin/datatable.twig' %}
@@ -118,7 +48,7 @@
                                 {% endblock %}
 
                                 {% block tbody %}
-                                    {% for item in order_list.sortByDesc('date') %}
+                                    {% for item in list.sortByDesc('date') %}
                                         <tr>
                                             <td width="20%">
                                                 {{ item.serial }}
