@@ -10,7 +10,7 @@ class i18n
     /**
      * Current possible locale options
      */
-    public static array $accept = ['ru', 'en'];
+    public static array $accept = ['ru', 'ua', 'en'];
 
     /**
      * Buffer storage of the language file
@@ -122,7 +122,7 @@ class i18n
 
         $data = [];
         foreach (array_combine($list['lang'], $list['q']) as $key => $priority) {
-            $data[$key] = (float) ($priority ? $priority : 1);
+            $data[$key] = (float) ($priority ?: 1);
         }
         arsort($data, SORT_NUMERIC);
 
