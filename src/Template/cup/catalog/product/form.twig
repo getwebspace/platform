@@ -112,7 +112,7 @@
                                 <hr>
 
                                 <div class="row">
-                                    <div class="col-6 col-md-3">
+                                    <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Страна'|locale,
                                             'type': 'text',
@@ -121,8 +121,7 @@
                                                 'value': item.country,
                                             }
                                         } %}
-                                    </div>
-                                    <div class="col-6 col-md-3">
+
                                         {% include 'cup/form.twig' with {
                                             'label': 'Производитель'|locale,
                                             'type': 'text',
@@ -131,9 +130,7 @@
                                                 'value': item.manufacturer,
                                             }
                                         } %}
-                                    </div>
 
-                                    <div class="col-6 col-md-3">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Артикул'|locale,
                                             'type': 'text',
@@ -143,8 +140,7 @@
                                                 'placeholder': 'KB162309',
                                             }
                                         } %}
-                                    </div>
-                                    <div class="col-6 col-md-3">
+
                                         {% include 'cup/form.twig' with {
                                             'label': 'Штрих код'|locale,
                                             'type': 'number',
@@ -155,12 +151,8 @@
                                             }
                                         } %}
                                     </div>
-                                </div>
 
-                                <hr>
-
-                                <div class="row">
-                                    <div class="col-4 col-md-3">
+                                    <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Цена закупки'|locale,
                                             'type': 'number',
@@ -172,8 +164,7 @@
                                                 'min': '0',
                                             }
                                         } %}
-                                    </div>
-                                    <div class="col-4 col-md-3">
+
                                         {% include 'cup/form.twig' with {
                                             'label': 'Цена продажи'|locale,
                                             'type': 'number',
@@ -185,9 +176,7 @@
                                                 'min': '0',
                                             }
                                         } %}
-                                    </div>
 
-                                    <div class="col-4 col-md-3">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Цена оптовая'|locale,
                                             'type': 'number',
@@ -200,50 +189,13 @@
                                             }
                                         } %}
                                     </div>
-                                    <div class="col-6 col-md-3">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Налог'|locale,
-                                            'type': 'number',
-                                            'name': 'tax',
-                                            'postfix': '%',
-                                            'args': {
-                                                'value': item.tax ? item.tax|number_format(2, '.', '') : '',
-                                                'placeholder': '20.00',
-                                                'step': 'any',
-                                                'min': '0',
-                                            }
-                                        } %}
-                                    </div>
-                                    <div class="col-6 col-md-3 offset-md-6">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Скидка'|locale,
-                                            'type': 'number',
-                                            'name': 'discount',
-                                            'args': {
-                                                'value': item.discount ? item.discount|number_format(2, '.', '') : '',
-                                                'placeholder': '0.00',
-                                                'step': 'any',
-                                                'min': '0',
-                                            }
-                                        } %}
-                                    </div>
-                                    <div class="col-6 col-md-3">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Акция'|locale,
-                                            'type': 'select',
-                                            'name': 'special',
-                                            'args': {
-                                                'option': _(['no', 'yes']),
-                                                'selected': item.special ? 'yes' : 'no'
-                                            }
-                                        } %}
-                                    </div>
                                 </div>
 
                                 <hr>
 
                                 <div class="row">
-                                    <div class="col-4 col-md-3">
+                                    <div class="col-12 col-md-6">
+
                                         {% include 'cup/form.twig' with {
                                             'label': 'Ширина (см)'|locale,
                                             'type': 'number',
@@ -253,8 +205,7 @@
                                                 'placeholder': '0.00'
                                             }
                                         } %}
-                                    </div>
-                                    <div class="col-4 col-md-3">
+
                                         {% include 'cup/form.twig' with {
                                             'label': 'Высота (см)'|locale,
                                             'type': 'number',
@@ -264,8 +215,7 @@
                                                 'placeholder': '0.00'
                                             }
                                         } %}
-                                    </div>
-                                    <div class="col-4 col-md-3">
+
                                         {% include 'cup/form.twig' with {
                                             'label': 'Длинна (см)'|locale,
                                             'type': 'number',
@@ -275,10 +225,7 @@
                                                 'placeholder': '0.00'
                                             }
                                         } %}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-6 col-md-3">
+
                                         {% include 'cup/form.twig' with {
                                             'label': 'Объем'|locale,
                                             'type': 'number',
@@ -291,8 +238,7 @@
                                                 'min': '0',
                                             }
                                         } %}
-                                    </div>
-                                    <div class="col-6 col-md-3">
+
                                         {% include 'cup/form.twig' with {
                                             'label': 'Размерность'|locale,
                                             'type': 'text',
@@ -309,7 +255,43 @@
                                             {% endfor %}
                                         </datalist>
                                     </div>
-                                    <div class="col-md-3 offset-md-3">
+
+                                    <div class="col-12 col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Налог'|locale,
+                                            'type': 'number',
+                                            'name': 'tax',
+                                            'postfix': '%',
+                                            'args': {
+                                                'value': item.tax ? item.tax|number_format(2, '.', '') : '',
+                                                'placeholder': '20.00',
+                                                'step': 'any',
+                                                'min': '0',
+                                            }
+                                        } %}
+
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Скидка'|locale,
+                                            'type': 'number',
+                                            'name': 'discount',
+                                            'args': {
+                                                'value': item.discount ? item.discount|number_format(2, '.', '') : '',
+                                                'placeholder': '0.00',
+                                                'step': 'any',
+                                                'min': '0',
+                                            }
+                                        } %}
+
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Акция'|locale,
+                                            'type': 'select',
+                                            'name': 'special',
+                                            'args': {
+                                                'option': _(['no', 'yes']),
+                                                'selected': item.special ? 'yes' : 'no'
+                                            }
+                                        } %}
+
                                         {% include 'cup/form.twig' with {
                                             'label': 'На складе'|locale,
                                             'type': 'number',
@@ -383,23 +365,21 @@
                             {# Tab: Атрибуты #}
                             <div class="tab-pane fade" id="attributes" role="tabpanel">
                                 {% if category.hasAttributes() %}
-                                    <div class="row">
-                                        {% for attribute in category.getAttributes().where('type', '!=', 'boolean') %}
-                                            <div class="col-12 col-sm-6 col-md-4">
-                                                {% include 'cup/form.twig' with {
-                                                    'label': attribute.title,
-                                                    'type': attribute.type == 'string' ? 'text' : 'number',
-                                                    'name': 'attributes[' ~ attribute.uuid ~ ']',
-                                                    'postfix': '<i class="fas fa-certificate" data-toggle="tooltip" data-placement="top" title="' ~ ('Атрибут категории'|locale) ~ '"></i>',
-                                                    'args': {
-                                                        'value': item.hasAttributes() ? item.getAttributes().firstWhere('attribute_uuid', attribute.uuid).value : '',
-                                                    }
-                                                } %}
-                                            </div>
-                                        {% endfor %}
+                                    {% for attribute in category.getAttributes().where('type', '!=', 'boolean') %}
+                                        {% include 'cup/field.twig' with {
+                                            'label': attribute.title,
+                                            'type': attribute.type == 'string' ? 'text' : 'number',
+                                            'name': 'attributes[' ~ attribute.uuid ~ ']',
+                                            'message': 'Атрибут категории'|locale,
+                                            'args': {
+                                                'value': item.hasAttributes() ? item.getAttributes().firstWhere('attribute_uuid', attribute.uuid).value : '',
+                                            }
+                                        } %}
+                                    {% endfor %}
 
+                                    <div class="row">
                                         {% for attribute in category.getAttributes().where('type', '==', 'boolean') %}
-                                            <div class="col-12 col-sm-6 col-md-4">
+                                            <div class="col-12 col-sm-6">
                                                 <div data-input="" class="form-group ">
                                                     <label class="placeholder">
                                                         <b>{{ attribute.title }}</b>
@@ -419,7 +399,7 @@
                                 {% endif %}
 
                                 <div class="row">
-                                    <div class="col-12 col-md-6">
+                                    <div class="col-12 col-md-4">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Атрибуты'|locale,
                                             'type': 'select',
@@ -433,96 +413,78 @@
                                         } %}
                                     </div>
 
-                                    <div class="col-12 col-md-6">
-                                        <div class="row">
-                                            <div class="col-12 col-md-6" style="display: none">
-                                                {% include 'cup/form.twig' with { 'label': 'template' } %}
-                                            </div>
+                                    <div class="col-12 col-md-8" data-place="attribute">
+                                        {% include 'cup/field.twig' with { 'label': 'attribute-template' } %}
 
-                                            {% for attribute in item.getAttributes().whereNotIn('attribute_uuid', category.getAttributes().pluck('uuid')) %}
-                                                {% if attribute.value %}
-                                                    {% if attribute.type != 'boolean' %}
-                                                        <div class="col-12 col-md-6">
-                                                            {% include 'cup/form.twig' with {
-                                                                'label': attribute.title,
-                                                                'type': attribute.type == 'string' ? 'text' : 'number',
-                                                                'name': 'attributes[' ~ attribute.attribute_uuid ~ ']',
-                                                                'args': {
-                                                                    'value': attribute.value,
-                                                                }
-                                                            } %}
-                                                        </div>
-                                                    {% endif %}
+                                        {% for attribute in item.getAttributes().whereNotIn('attribute_uuid', category.getAttributes().pluck('uuid')) %}
+                                            {% if attribute.value %}
+                                                {% if attribute.type != 'boolean' %}
+                                                    {% include 'cup/field.twig' with {
+                                                        'label': attribute.title,
+                                                        'type': attribute.type == 'string' ? 'text' : 'number',
+                                                        'name': 'attributes[' ~ attribute.attribute_uuid ~ ']',
+                                                        'args': {
+                                                            'value': attribute.value,
+                                                        }
+                                                    } %}
                                                 {% endif %}
-                                            {% endfor %}
-                                        </div>
+                                            {% endif %}
+                                        {% endfor %}
                                     </div>
                                 </div>
                             </div>
 
                             {# Tab: Поля #}
                             <div class="tab-pane fade" id="fields" role="tabpanel">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        {% include 'cup/form.twig' with {
-                                            'label': category.product.field_1 ? category.product.field_1 : ('Поле'|locale ~ ' 1'),
-                                            'type': 'text',
-                                            'name': 'field1',
-                                            'message': 'Индивидуальное поле'|locale,
-                                            'args': {
-                                                'value': item.field1,
-                                            }
-                                        } %}
-                                    </div>
+                                {% include 'cup/field.twig' with {
+                                    'label': category.product.field_1 ? category.product.field_1 : ('Поле'|locale ~ ' 1'),
+                                    'type': 'text',
+                                    'name': 'field1',
+                                    'message': 'Индивидуальное поле'|locale,
+                                    'args': {
+                                        'value': item.field1,
+                                    }
+                                } %}
 
-                                    <div class="col-md-4">
-                                        {% include 'cup/form.twig' with {
-                                            'label': category.product.field_2 ? category.product.field_2 : ('Поле'|locale ~ ' 2'),
-                                            'type': 'text',
-                                            'name': 'field2',
-                                            'message': 'Индивидуальное поле'|locale,
-                                            'args': {
-                                                'value': item.field2,
-                                            }
-                                        } %}
-                                    </div>
+                                {% include 'cup/field.twig' with {
+                                    'label': category.product.field_2 ? category.product.field_2 : ('Поле'|locale ~ ' 2'),
+                                    'type': 'text',
+                                    'name': 'field2',
+                                    'message': 'Индивидуальное поле'|locale,
+                                    'args': {
+                                        'value': item.field2,
+                                    }
+                                } %}
 
-                                    <div class="col-md-4">
-                                        {% include 'cup/form.twig' with {
-                                            'label': category.product.field_3 ? category.product.field_3 : ('Поле'|locale ~ ' 3'),
-                                            'type': 'text',
-                                            'name': 'field3',
-                                            'message': 'Индивидуальное поле'|locale,
-                                            'args': {
-                                                'value': item.field3,
-                                            }
-                                        } %}
-                                    </div>
+                                {% include 'cup/field.twig' with {
+                                    'label': category.product.field_3 ? category.product.field_3 : ('Поле'|locale ~ ' 3'),
+                                    'type': 'text',
+                                    'name': 'field3',
+                                    'message': 'Индивидуальное поле'|locale,
+                                    'args': {
+                                        'value': item.field3,
+                                    }
+                                } %}
 
-                                    <div class="col-md-4">
-                                        {% include 'cup/form.twig' with {
-                                            'label': category.product.field_4 ? category.product.field_4 : ('Поле'|locale ~ ' 4'),
-                                            'type': 'text',
-                                            'name': 'field4',
-                                            'message': 'Индивидуальное поле'|locale,
-                                            'args': {
-                                                'value': item.field4,
-                                            }
-                                        } %}
-                                    </div>
+                                {% include 'cup/field.twig' with {
+                                    'label': category.product.field_4 ? category.product.field_4 : ('Поле'|locale ~ ' 4'),
+                                    'type': 'text',
+                                    'name': 'field4',
+                                    'message': 'Индивидуальное поле'|locale,
+                                    'args': {
+                                        'value': item.field4,
+                                    }
+                                } %}
 
-                                    <div class="col-md-4">
-                                        {% include 'cup/form.twig' with {
-                                            'label': category.product.field_5 ? category.product.field_5 : ('Поле'|locale ~ ' 5'),
-                                            'type': 'text',
-                                            'name': 'field5',
-                                            'message': 'Индивидуальное поле'|locale,
-                                            'args': {
-                                                'value': item.field5,
-                                            }
-                                        } %}
-                                    </div>
-                                </div>
+                                {% include 'cup/field.twig' with {
+                                    'label': category.product.field_5 ? category.product.field_5 : ('Поле'|locale ~ ' 5'),
+                                    'type': 'text',
+                                    'name': 'field5',
+                                    'message': 'Индивидуальное поле'|locale,
+                                    'args': {
+                                        'value': item.field5,
+                                    }
+                                } %}
                             </div>
 
                             {# Tab: Дополнительно #}

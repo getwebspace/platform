@@ -265,18 +265,23 @@ $(() => {
     // product attribute
     {
         let $that = $('[id="attributes"]'),
-            $row = $that.find('div.col-12.col-md-6 .row'),
-            $template = $that.find('div[style="display: none"]').show().detach(),
+            $row = $that.find('[data-place="attribute"]'),
+            $template = $that.find('[data-place="attribute"] [data-input]:first-child').show().detach(),
             $select = $that.find('select');
         
         $that.find('button').on('click', () => {
-            if ($row.find('[name="attributes[' + $select.val() + ']"]').length === 0) {
-                let $buf = $template.clone();
+            let $find = $that.find('[name="attributes[' + $select.val() + ']"]');
+            
+            if ($find.length === 0) {
+                let $buf = $template.clone().removeAttr('data-template');
                 
                 $buf.find('label').text($select.find(':selected').text());
                 $buf.find('input').attr('name', 'attributes[' + $select.val() + ']');
                 
                 $buf.appendTo($row);
+            } else {
+                $find.focus().addClass('border-danger');
+                setTimeout(() => $find.removeClass('border-danger'), 2000);
             }
         });
     }
