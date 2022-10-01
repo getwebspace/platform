@@ -34,7 +34,7 @@ $(() => {
     // toolbar
     let topbar_open = 0,
         $topbar = $('.topbar-toggler');
-    $topbar.on('click', function () {
+    $topbar.on('click', () => {
         if (topbar_open === 1) {
             $('html').removeClass('topbar_open');
             $topbar.removeClass('toggled');
@@ -49,7 +49,7 @@ $(() => {
     // sidenav
     let nav_open = 0,
         $nav_el = $('.sidenav-toggler');
-    $nav_el.on('click', function () {
+    $nav_el.on('click', () => {
         if (nav_open === 1) {
             $('html').removeClass('nav_open');
             $nav_el.removeClass('toggled');
@@ -108,7 +108,7 @@ $(() => {
     });
     
     // publication preview
-    $('form [data-click="preview"]').on('click', function (e) {
+    $('form [data-click="preview"]').on('click', (e) => {
         e.preventDefault();
         
         let $form = $(e.currentTarget).parents('form'),
@@ -124,6 +124,23 @@ $(() => {
             $form.attr('action', '');
             $form.attr('target', '_self');
         }, 500);
+    });
+    
+    // icon copy (uuid) to clipboard
+    $('i[data-copy]').on('click', (e) => {
+        let $el = $(e.currentTarget),
+            value = $el.attr('data-value');
+        
+        if (value) {
+            navigator.clipboard.writeText(value).then(
+                () => $el.toggleClass('fa-copy fa-check'),
+                () => $el.toggleClass('fa-copy fa-times')
+            );
+        } else {
+            $el.toggleClass('fa-copy fa-smile');
+        }
+
+        setTimeout(() => $el.removeClass('fa-check fa-times fa-smile').addClass('fa-copy'), 2500);
     });
     
     moment.locale('ru');

@@ -3,9 +3,11 @@
 {% block breadcrumb %}
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
-            <div>
-                <h2 class="text-white pb-2 fw-bold">{{ (publication.uuid ? 'Редактирование публикации' : 'Создание новой публикации')|locale }}</h2>
-            </div>
+            {% include 'cup/form-header.twig' with {
+                'item': publication,
+                'create': 'Создание новой публикации',
+                'update': 'Редактирование публикации'
+            } only %}
         </div>
     </div>
 {% endblock %}

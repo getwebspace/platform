@@ -3,9 +3,11 @@
 {% block breadcrumb %}
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
-            <div>
-                <h2 class="text-white pb-2 fw-bold">{{ (attribute.uuid ? 'Редактирование атрибута' : 'Создание нового атрибута')|locale }}</h2>
-            </div>
+            {% include 'cup/form-header.twig' with {
+                'item': attribute,
+                'create': 'Создание нового атрибута',
+                'update': 'Редактирование атрибута'
+            } only %}
         </div>
     </div>
 {% endblock %}
