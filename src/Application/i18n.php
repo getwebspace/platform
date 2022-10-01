@@ -10,7 +10,7 @@ class i18n
     /**
      * Current possible locale options
      */
-    public static array $accept = ['ru', 'ua', 'en'];
+    public static array $accept = ['en-US', 'ru-RU', 'uk-UA'];
 
     /**
      * Buffer storage of the language file
@@ -25,7 +25,7 @@ class i18n
     /**
      * Locale code
      */
-    public static string $localeCode = 'ru';
+    public static string $localeCode = 'en-US';
 
     /**
      * i18n constructor

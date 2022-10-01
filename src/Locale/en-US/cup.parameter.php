@@ -46,7 +46,7 @@ return [
     'Формат времени' => 'Time format',
     'Код языка сайта' => 'Site language (code)',
     'Задаёт язык сайта и значение атрибута <code>&lt;html lang="ru"&gt;</code>' => 'Sets the language of the site and the value of the attribute <code>&lt;html lang="en"&gt;</code>',
-    'Например: <code>ru</code>, <code>ua</code>, <code>en</code>' => 'For example: <code>ru</code>, <code>ua</code>, <code>en</code>',
+    'Например: <code>ru-RU</code>, <code>uk-UA</code>, <code>en-US</code>' => 'For example: <code>en-US</code>, <code>uk-UA</code>, <code>ru-RU</code>',
     'Автоматически генерировать адреса' => 'Automatically generate addresses',
     'Адреса некоторых сущностей будут автоматически включать адрес категории' => 'Some entity addresses will automatically include the category address',
     'Системный E-Mail адрес' => 'System E-Mail Address',
