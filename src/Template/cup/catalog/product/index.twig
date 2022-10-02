@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">{{ 'Номенклатура'|locale }} {{ category ? 'в категории'|locale ~ ' ' ~ category.title : '' }} ({{ products.count() }})</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Nomenclature'|locale }} {{ category ? 'in category'|locale ~ ' ' ~ category.title : '' }} ({{ products.count() }})</h2>
             </div>
         </div>
     </div>
@@ -22,17 +22,17 @@
                             </a>
                         {% endif %}
 
-                        <a href="#btn-modal-import" rel="modal:open" class="btn btn-secondary btn-icon ml-auto text-white" data-toggle="tooltip" data-placement="top" title="{{ 'Импорт продуктов'|locale }}">
+                        <a href="#btn-modal-import" rel="modal:open" class="btn btn-secondary btn-icon ml-auto text-white" data-toggle="tooltip" data-placement="top" title="{{ 'Import products'|locale }}">
                             <i class="fas fa-file-import"></i>
                         </a>
                         {% include "cup/catalog/import-modal.twig" %}
-                        <a href="/cup/catalog/data/export{{ category.uuid ? '?category=' ~ category.uuid : '' }}" class="btn btn-secondary btn-icon ml-1 text-white" data-toggle="tooltip" data-placement="top" title="{{ 'Экспорт текущего списка продуктов'|locale }}">
+                        <a href="/cup/catalog/data/export{{ category.uuid ? '?category=' ~ category.uuid : '' }}" class="btn btn-secondary btn-icon ml-1 text-white" data-toggle="tooltip" data-placement="top" title="{{ 'Export current product list'|locale }}">
                             <i class="fas fa-file-export"></i>
                         </a>
 
                         <a href="/cup/catalog/product/add{{ category ? '?category=' ~ category.uuid : '' }}" class="btn btn-primary btn-round ml-1">
                             <i class="fa fa-plus"></i>
-                            {{ 'Создать продукт'|locale }}
+                            {{ 'Create product'|locale }}
                         </a>
                     </div>
                 </div>
@@ -40,10 +40,10 @@
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
                             <tr>
-                                <th>{{ 'Наименование'|locale }}</th>
-                                <th width="10%" class="text-right">{{ 'Цена'|locale }}</th>
-                                <th width="7%" class="text-center"><i class="fas fa-boxes" data-toggle="tooltip" data-placement="top" title="{{ 'Объем упаковки'|locale }}"></i></th>
-                                <th width="10%">{{ 'Артикул'|locale }}</th>
+                                <th>{{ 'Title'|locale }}</th>
+                                <th width="10%" class="text-right">{{ 'Price'|locale }}</th>
+                                <th width="7%" class="text-center"><i class="fas fa-boxes" data-toggle="tooltip" data-placement="top" title="{{ 'Packing volume'|locale }}"></i></th>
+                                <th width="10%">{{ 'Vendor code'|locale }}</th>
                                 <th width="25%" class="text-right"></th>
                             </tr>
                         {% endblock %}
@@ -70,21 +70,21 @@
                                         {% endif %}
                                         {% if item.barcode %}
                                             <div class="text-nowrap">
-                                                <i class="fas fa-barcode d-inline pr-1" data-toggle="tooltip" data-placement="right" title="{{ 'Штрих код'|locale }}"></i>
+                                                <i class="fas fa-barcode d-inline pr-1" data-toggle="tooltip" data-placement="right" title="{{ 'Barcode'|locale }}"></i>
                                                 {{ item.barcode }}
                                             </div>
                                         {% endif %}
                                     </td>
                                     <td width="25%" class="text-right">
-                                        <form action="/cup/catalog/product/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Вы действительно хотите удалить продукт?'|locale }}');">
+                                        <form action="/cup/catalog/product/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to uninstall the product?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/catalog/product/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
                                                     <i class="fas fa-fw fa-edit"></i>
-                                                    <span class="d-none d-md-inline-block">{{ 'Изменить'|locale }}</span>
+                                                    <span class="d-none d-md-inline-block">{{ 'Change'|locale }}</span>
                                                 </a>
                                                 <button type="submit" class="btn btn-sm btn-danger">
                                                     <i class="fas fa-fw fa-trash-alt"></i>
-                                                    <span class="d-none d-md-inline-block">{{ 'Удалить'|locale }}</span>
+                                                    <span class="d-none d-md-inline-block">{{ 'Delete'|locale }}</span>
                                                 </button>
                                             </div>
                                         </form>
@@ -100,7 +100,7 @@
                         <div class="d-flex align-items-center">
                             <a href="/cup/catalog/category/{{ category.uuid }}/edit" class="btn btn-info btn-round ml-1">
                                 <i class="fa fa-edit"></i>
-                                {{ 'Изменить категорию'|locale }}
+                                {{ 'Change category'|locale }}
                             </a>
                         </div>
                     </div>

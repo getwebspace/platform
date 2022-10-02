@@ -5,8 +5,8 @@
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             {% include 'cup/form-header.twig' with {
                 'item': item,
-                'create': 'Создание группы',
-                'update': 'Редактирование группы'
+                'create': 'Create a group',
+                'update': 'Editing a group'
             } only %}
         </div>
     </div>
@@ -21,14 +21,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Название'|locale,
+                                    'label': 'Title'|locale,
                                     'type': 'text',
                                     'name': 'title',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Краткое название группы'|locale) ~ '"></i>',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Short name of the group'|locale) ~ '"></i>',
                                     'args': {
                                         'value': item.title,
                                         'required': true,
-                                        'placeholder': 'Журналисты'|locale,
+                                        'placeholder': 'Journalists'|locale,
                                     }
                                 } %}
                             </div>
@@ -39,7 +39,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 {% include 'cup/editor.twig' with {
-                                    'label': 'Описание группы'|locale,
+                                    'label': 'Group description'|locale,
                                     'name': 'description',
                                     'args': {
                                         'value': item.description
@@ -53,13 +53,13 @@
                         <div class="row">
                             <div class="col-md-12">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Права доступа'|locale,
+                                    'label': 'Permissions'|locale,
                                     'type': 'select',
                                     'name': 'access[]',
                                     'message': [
-                                           '<button class="btn btn-outline-success btn-sm mr-1" type="button" data-access-click="common">' ~ ('Общие'|locale) ~ '</button>',
-                                           '<button class="btn btn-outline-secondary btn-sm mr-1" type="button" data-access-click="cup">' ~ ('Панель управления'|locale) ~ '</button>',
-                                           '<button class="btn btn-outline-danger btn-sm mr-1" type="button" data-access-click="none">' ~ ('Ничего'|locale) ~ '</button>',
+                                           '<button class="btn btn-outline-success btn-sm mr-1" type="button" data-access-click="common">' ~ ('Common'|locale) ~ '</button>',
+                                           '<button class="btn btn-outline-secondary btn-sm mr-1" type="button" data-access-click="cup">' ~ ('Control Panel'|locale) ~ '</button>',
+                                           '<button class="btn btn-outline-danger btn-sm mr-1" type="button" data-access-click="none">' ~ ('Nothing'|locale) ~ '</button>',
                                        ]|join(''),
                                     'args': {
                                         'multiple': true,

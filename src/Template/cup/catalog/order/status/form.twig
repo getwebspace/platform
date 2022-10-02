@@ -5,8 +5,8 @@
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             {% include 'cup/form-header.twig' with {
                 'item': item,
-                'create': 'Создание нового статуса заказа',
-                'update': 'Редактирование статуса заказа'
+                'create': 'Create a new order status',
+                'update': 'Edit order status'
             } only %}
         </div>
     </div>
@@ -21,7 +21,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Наименование'|locale,
+                                    'label': 'Title'|locale,
                                     'type': 'text',
                                     'name': 'title',
                                     'args': {
@@ -31,7 +31,7 @@
                             </div>
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Порядок'|locale,
+                                    'label': 'Order'|locale,
                                     'type': 'number',
                                     'name': 'order',
                                     'args': {

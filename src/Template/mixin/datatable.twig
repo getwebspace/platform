@@ -8,7 +8,7 @@
         {% include 'cup/form.twig' with {
             'type': 'search',
             'args': {
-                'placeholder': 'Поиск'|locale,
+                'placeholder': 'Search'|locale,
                 'data': {'table-search': tableId}
             }
         } %}
@@ -30,7 +30,7 @@
             <tbody data-table-content="{{ tableId }}" class="clusterize-content text-nowrap" style="display: none;">
                 {% block tbody %}
                     <tr class="clusterize-no-data">
-                        <td>{{ 'Нет данных'|locale }}</td>
+                        <td>{{ 'No data'|locale }}</td>
                     </tr>
                 {% endblock %}
             </tbody>
@@ -65,7 +65,7 @@
                 contentElem: $content.show().get(0),
                 rows_in_block: 10,
                 blocks_in_cluster: 3,
-                no_data_text: '{{ 'Нет данных'|locale }}'
+                no_data_text: '{{ 'No data'|locale }}'
             });
 
             $('[data-table-search="{{ tableId }}"]').on('keyup', (e) => {

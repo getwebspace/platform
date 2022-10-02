@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">{{ 'Список страниц'|locale }} ({{ list.count() }})</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ 'List of pages'|locale }} ({{ list.count() }})</h2>
             </div>
         </div>
     </div>
@@ -18,7 +18,7 @@
                     <div class="d-flex align-items-center">
                         <a href="/cup/page/add" class="btn btn-primary btn-round ml-auto">
                             <i class="fa fa-plus"></i>
-                            {{ 'Создать страницу'|locale }}
+                            {{ 'Create page'|locale }}
                         </a>
                     </div>
                 </div>
@@ -26,8 +26,8 @@
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
                             <tr>
-                                <th>{{ 'Заголовок'|locale }}</th>
-                                <th width="15%" class="d-none d-md-table-cell">{{ 'Дата публикации'|locale }}</th>
+                                <th>{{ 'Title'|locale }}</th>
+                                <th width="15%" class="d-none d-md-table-cell">{{ 'Date of publication'|locale }}</th>
                                 <th width="25%" class="text-right"></th>
                             </tr>
                         {% endblock %}
@@ -38,15 +38,15 @@
                                     <td>{{ item.title|u.truncate(50, '...') }}</td>
                                     <td width="15%" class="d-none d-md-table-cell">{{ item.date|df('d.m.Y H:i') }}</td>
                                     <td width="25%" class="text-right">
-                                        <form action="/cup/page/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Вы действительно хотите удалить страницу?'|locale }}');">
+                                        <form action="/cup/page/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the page?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/page/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
                                                     <i class="fas fa-fw fa-edit"></i>
-                                                    <span class="d-none d-md-inline-block">{{ 'Изменить'|locale }}</span>
+                                                    <span class="d-none d-md-inline-block">{{ 'Change'|locale }}</span>
                                                 </a>
                                                 <button type="submit" class="btn btn-sm btn-danger">
                                                     <i class="fas fa-fw fa-trash-alt"></i>
-                                                    <span class="d-none d-md-inline-block">{{ 'Удалить'|locale }}</span>
+                                                    <span class="d-none d-md-inline-block">{{ 'Delete'|locale }}</span>
                                                 </button>
                                             </div>
                                         </form>

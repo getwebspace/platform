@@ -5,8 +5,8 @@
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             {% include 'cup/form-header.twig' with {
                 'item': item,
-                'create': 'Создание нового продукта',
-                'update': 'Редактирование продукта'
+                'create': 'Creation of a new product',
+                'update': 'Product editing'
             } only %}
         </div>
     </div>
@@ -26,27 +26,27 @@
                             <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
                                 <li class="nav-item">
                                     <a class="nav-link active show" data-toggle="pill" href="#product" role="tab">
-                                        {{ 'Продукт'|locale }}
+                                        {{ 'Product'|locale }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="pill" href="#related" role="tab">
-                                        {{ 'Сопутствующие'|locale }}
+                                        {{ 'Related'|locale }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="pill" href="#attributes" role="tab">
-                                        {{ 'Атрибуты'|locale }}
+                                        {{ 'Attributes'|locale }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="pill" href="#fields" role="tab">
-                                        {{ 'Поля'|locale }}
+                                        {{ 'Fields'|locale }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="pill" href="#other" role="tab">
-                                        {{ 'Дополнительно'|locale }}
+                                        {{ 'Additionally'|locale }}
                                     </a>
                                 </li>
                             </ul>
@@ -59,23 +59,23 @@
                                 <div class="row">
                                     <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Наименование'|locale,
+                                            'label': 'Title'|locale,
                                             'type': 'text',
                                             'name': 'title',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Краткое описание товара'|locale) ~ '"></i>',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Brief product description'|locale) ~ '"></i>',
                                             'args': {
                                                 'value': item.title,
                                                 'required': true,
-                                                'placeholder': 'Еда'|locale,
+                                                'placeholder': 'Food'|locale,
                                             }
                                         } %}
                                     </div>
                                     <div class="col-6 col-md-3">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Категория'|locale,
+                                            'label': 'Category'|locale,
                                             'type': 'select',
                                             'name': 'category',
-                                            'message': '<a href="/cup/catalog/category/add" class="btn btn-xs btn-info float-right" onclick="return confirm(\'' ~ ('Вы действительно хотите перейти на другую страницу?'|locale) ~ '\');"><i class="fa fa-plus"></i> ' ~ ('Создать категорию'|locale) ~ '</a>',
+                                            'message': '<a href="/cup/catalog/category/add" class="btn btn-xs btn-info float-right" onclick="return confirm(\'' ~ ('Are you sure you want to go to another page?'|locale) ~ '\');"><i class="fa fa-plus"></i> ' ~ ('Create category'|locale) ~ '</a>',
                                             'args': {
                                                 'option': categories.pluck('title', 'uuid').all(),
                                                 'selected': item.category ?? category.uuid
@@ -84,7 +84,7 @@
                                     </div>
                                     <div class="col-6 col-md-3">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Тип'|locale,
+                                            'label': 'Type'|locale,
                                             'type': 'select',
                                             'name': 'type',
                                             'args': {
@@ -100,7 +100,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         {% include 'cup/editor.twig' with {
-                                            'label': 'Описание товара'|locale,
+                                            'label': 'Description'|locale,
                                             'name': 'description',
                                             'args': {
                                                 'value': item.description
@@ -114,7 +114,7 @@
                                 <div class="row">
                                     <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Страна'|locale,
+                                            'label': 'Country'|locale,
                                             'type': 'text',
                                             'name': 'country',
                                             'args': {
@@ -123,7 +123,7 @@
                                         } %}
 
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Производитель'|locale,
+                                            'label': 'Manufacturer'|locale,
                                             'type': 'text',
                                             'name': 'manufacturer',
                                             'args': {
@@ -132,7 +132,7 @@
                                         } %}
 
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Артикул'|locale,
+                                            'label': 'Vendor code'|locale,
                                             'type': 'text',
                                             'name': 'vendorcode',
                                             'args': {
@@ -142,7 +142,7 @@
                                         } %}
 
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Штрих код'|locale,
+                                            'label': 'Barcode'|locale,
                                             'type': 'number',
                                             'name': 'barcode',
                                             'args': {
@@ -154,7 +154,7 @@
 
                                     <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Цена закупки'|locale,
+                                            'label': 'First price'|locale,
                                             'type': 'number',
                                             'name': 'priceFirst',
                                             'args': {
@@ -166,7 +166,7 @@
                                         } %}
 
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Цена продажи'|locale,
+                                            'label': 'Selling price'|locale,
                                             'type': 'number',
                                             'name': 'price',
                                             'args': {
@@ -178,7 +178,7 @@
                                         } %}
 
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Цена оптовая'|locale,
+                                            'label': 'Price wholesale'|locale,
                                             'type': 'number',
                                             'name': 'priceWholesale',
                                             'args': {
@@ -195,9 +195,8 @@
 
                                 <div class="row">
                                     <div class="col-12 col-md-6">
-
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Ширина (см)'|locale,
+                                            'label': 'Width (cm)'|locale,
                                             'type': 'number',
                                             'name': 'dimension[width]',
                                             'args': {
@@ -207,7 +206,7 @@
                                         } %}
 
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Высота (см)'|locale,
+                                            'label': 'Height (cm)'|locale,
                                             'type': 'number',
                                             'name': 'dimension[height]',
                                             'args': {
@@ -217,7 +216,7 @@
                                         } %}
 
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Длинна (см)'|locale,
+                                            'label': 'Length (cm)'|locale,
                                             'type': 'number',
                                             'name': 'dimension[length]',
                                             'args': {
@@ -227,10 +226,10 @@
                                         } %}
 
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Объем'|locale,
+                                            'label': 'Volume'|locale,
                                             'type': 'number',
                                             'name': 'volume',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Зависит от выбранной размерности'|locale) ~ '"></i>',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Depends on the chosen dimension'|locale) ~ '"></i>',
                                             'args': {
                                                 'value': item.volume ? item.volume|number_format(3, '.', '') : '',
                                                 'placeholder': '1.000',
@@ -240,7 +239,7 @@
                                         } %}
 
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Размерность'|locale,
+                                            'label': 'Dimension'|locale,
                                             'type': 'text',
                                             'name': 'unit',
                                             'args': {
@@ -258,7 +257,7 @@
 
                                     <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Налог'|locale,
+                                            'label': 'Tax'|locale,
                                             'type': 'number',
                                             'name': 'tax',
                                             'postfix': '%',
@@ -271,7 +270,7 @@
                                         } %}
 
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Скидка'|locale,
+                                            'label': 'Discount'|locale,
                                             'type': 'number',
                                             'name': 'discount',
                                             'args': {
@@ -283,7 +282,7 @@
                                         } %}
 
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Акция'|locale,
+                                            'label': 'Special'|locale,
                                             'type': 'select',
                                             'name': 'special',
                                             'args': {
@@ -293,7 +292,7 @@
                                         } %}
 
                                         {% include 'cup/form.twig' with {
-                                            'label': 'На складе'|locale,
+                                            'label': 'In stock'|locale,
                                             'type': 'number',
                                             'name': 'stock',
                                             'args': {
@@ -316,17 +315,17 @@
                                         <small class="form-text text-muted">
                                             <p>
                                                 {% locale %}
-                                                    <b>Сопутствующие товары</b> - это те товары, которые покупатель
-                                                    использует вместе с уже купленным товаром, которые помогают им
-                                                    пользоваться, дополняют его, устраняют последствия от использования
-                                                    товара, являются его сменными деталями, расходными материалами и т.п.
+                                                    <b>Related products</b> are those products that the buyer uses
+                                                    together with already purchased goods that help them use,
+                                                    complement it, eliminate the consequences of using goods, are its
+                                                    replaceable parts, consumables, etc.
                                                 {% endlocale %}
                                             </p>
                                         </small>
 
                                         <button type="button" data-btn-related-modal-products class="btn btn-secondary">
                                             <i class="fa fa-plus"></i>
-                                            {{ 'Добавить продукт'|locale }}
+                                            {{ 'Add product'|locale }}
                                         </button>
                                     </div>
 
@@ -370,7 +369,7 @@
                                             'label': attribute.title,
                                             'type': attribute.type == 'string' ? 'text' : 'number',
                                             'name': 'attributes[' ~ attribute.uuid ~ ']',
-                                            'message': 'Атрибут категории'|locale,
+                                            'message': 'Attribute from category'|locale,
                                             'args': {
                                                 'value': item.hasAttributes() ? item.getAttributes().firstWhere('attribute_uuid', attribute.uuid).value : '',
                                             }
@@ -401,11 +400,11 @@
                                 <div class="row">
                                     <div class="col-12 col-md-4">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Атрибуты'|locale,
+                                            'label': 'Attributes'|locale,
                                             'type': 'select',
-                                            'message': '<p class="float-left">' ~ ('Укажите индивидуальные атрибуты товара'|locale) ~ '</p>'~
-                                                       '<button class="btn btn-xs btn-secondary float-right" type="button">' ~ ('Добавить аттрибут'|locale) ~ '</button>' ~
-                                                       '<a href="/cup/catalog/attribute/add" class="btn btn-xs btn-info float-right" onclick="return confirm(\'Вы действительно хотите перейти на другую страницу?\');"><i class="fa fa-plus"></i> ' ~ ('Создать атрибут'|locale) ~ '</a>' ,
+                                            'message': '<p class="float-left">' ~ ('Specify individual attributes of the product'|locale) ~ '</p>'~
+                                                       '<button class="btn btn-xs btn-secondary float-right" type="button">' ~ ('Add attribute'|locale) ~ '</button>' ~
+                                                       '<a href="/cup/catalog/attribute/add" class="btn btn-xs btn-info float-right" onclick="return confirm(\'Вы действительно хотите перейти на другую страницу?\');"><i class="fa fa-plus"></i> ' ~ ('Create attribute'|locale) ~ '</a>' ,
                                             'args': {
                                                 'option': attributes.where('type', '!=', 'boolean').pluck('title', 'uuid').all(),
                                                 'data': {'select': 'attributes'}
@@ -437,50 +436,50 @@
                             {# Tab: Поля #}
                             <div class="tab-pane fade" id="fields" role="tabpanel">
                                 {% include 'cup/field.twig' with {
-                                    'label': category.product.field_1 ? category.product.field_1 : ('Поле'|locale ~ ' 1'),
+                                    'label': category.product.field_1 ? category.product.field_1 : ('Field'|locale ~ ' 1'),
                                     'type': 'text',
                                     'name': 'field1',
-                                    'message': 'Индивидуальное поле'|locale,
+                                    'message': 'Individual field'|locale,
                                     'args': {
                                         'value': item.field1,
                                     }
                                 } %}
 
                                 {% include 'cup/field.twig' with {
-                                    'label': category.product.field_2 ? category.product.field_2 : ('Поле'|locale ~ ' 2'),
+                                    'label': category.product.field_2 ? category.product.field_2 : ('Field'|locale ~ ' 2'),
                                     'type': 'text',
                                     'name': 'field2',
-                                    'message': 'Индивидуальное поле'|locale,
+                                    'message': 'Individual field'|locale,
                                     'args': {
                                         'value': item.field2,
                                     }
                                 } %}
 
                                 {% include 'cup/field.twig' with {
-                                    'label': category.product.field_3 ? category.product.field_3 : ('Поле'|locale ~ ' 3'),
+                                    'label': category.product.field_3 ? category.product.field_3 : ('Field'|locale ~ ' 3'),
                                     'type': 'text',
                                     'name': 'field3',
-                                    'message': 'Индивидуальное поле'|locale,
+                                    'message': 'Individual field'|locale,
                                     'args': {
                                         'value': item.field3,
                                     }
                                 } %}
 
                                 {% include 'cup/field.twig' with {
-                                    'label': category.product.field_4 ? category.product.field_4 : ('Поле'|locale ~ ' 4'),
+                                    'label': category.product.field_4 ? category.product.field_4 : ('Field'|locale ~ ' 4'),
                                     'type': 'text',
                                     'name': 'field4',
-                                    'message': 'Индивидуальное поле'|locale,
+                                    'message': 'Individual field'|locale,
                                     'args': {
                                         'value': item.field4,
                                     }
                                 } %}
 
                                 {% include 'cup/field.twig' with {
-                                    'label': category.product.field_5 ? category.product.field_5 : ('Поле'|locale ~ ' 5'),
+                                    'label': category.product.field_5 ? category.product.field_5 : ('Field'|locale ~ ' 5'),
                                     'type': 'text',
                                     'name': 'field5',
-                                    'message': 'Индивидуальное поле'|locale,
+                                    'message': 'Individual field'|locale,
                                     'args': {
                                         'value': item.field5,
                                     }
@@ -492,11 +491,11 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Адрес'|locale,
+                                            'label': 'Address'|locale,
                                             'type': 'text',
                                             'name': 'address',
                                             'prefix': base_url() ~ '/catalog/',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Название товара. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов'|locale) ~ '"></i>',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Product Name. You can leave it blank, then the value will be generated automatically. It is allowed to use only Latin characters and numbers without spaces'|locale) ~ '"></i>',
                                             'args': {
                                                 'value': item.address,
                                                 'placeholder': 'food',
@@ -505,7 +504,7 @@
                                     </div>
                                     <div class="col-md-3">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Порядок'|locale,
+                                            'label': 'Sort order'|locale,
                                             'type': 'number',
                                             'name': 'order',
                                             'args': {
@@ -518,10 +517,10 @@
 
                                     <div class="col-md-3">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Внешний ID'|locale,
+                                            'label': 'External ID'|locale,
                                             'type': 'text',
                                             'name': 'external_id',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать.'|locale) ~ '"></i>',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('System field. If you don\'t know what this field is for, it\'s best not to touch it.'|locale) ~ '"></i>',
                                             'args': {
                                                 'value': item.external_id,
                                             }
@@ -534,7 +533,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         {% include 'cup/editor.twig' with {
-                                            'label': 'Дополнительное описание товара'|locale,
+                                            'label': 'Additional description'|locale,
                                             'name': 'extra',
                                             'args': {
                                                 'value': item.extra
@@ -570,27 +569,27 @@
         <div class="row">
             <div class="col-12">
                 {% include 'cup/form.twig' with {
-                    'label': 'Категория'|locale,
+                    'label': 'Category'|locale,
                     'name': 'category',
                     'type': 'select',
                     'args': {
-                        'data': {'search': 5, 'placeholder': 'Выберете категорию', 'allow-clear': true},
+                        'data': {'search': 5, 'placeholder': 'Choose a category', 'allow-clear': true},
                     }
                 } %}
             </div>
             <div class="col-12">
                 {% include 'cup/form.twig' with {
-                    'label': 'Продукт'|locale,
+                    'label': 'Product'|locale,
                     'name': 'product',
                     'type': 'select',
                     'args': {
-                        'data': {'search': 5, 'placeholder': 'Выберете товар'|locale}
+                        'data': {'search': 5, 'placeholder': 'Choose a product'|locale}
                     }
                 } %}
             </div>
             <div class="col-6">
                 {% include 'cup/form.twig' with {
-                    'label': 'Количество'|locale,
+                    'label': 'Quantity'|locale,
                     'type': 'number',
                     'args': {
                         'value': '1',
@@ -602,7 +601,7 @@
             </div>
             <div class="col-6">
                 <div class="text-right" style="margin-top: 37px;">
-                    <button type="button" class="btn btn-outline-info">{{ 'Добавить продукт'|locale }}</button>
+                    <button type="button" class="btn btn-outline-info">{{ 'Add product'|locale }}</button>
                 </div>
             </div>
         </div>

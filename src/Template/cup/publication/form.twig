@@ -5,8 +5,8 @@
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             {% include 'cup/form-header.twig' with {
                 'item': publication,
-                'create': 'Создание новой публикации',
-                'update': 'Редактирование публикации'
+                'create': 'Create a new publication',
+                'update': 'Publication editing'
             } only %}
         </div>
     </div>
@@ -22,17 +22,17 @@
                             <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
                                 <li class="nav-item">
                                     <a class="nav-link active show" data-toggle="pill" href="#publication" role="tab">
-                                        {{ 'Публикация'|locale }}
+                                        {{ 'Publication'|locale }}
                                     </a>
                                 </li>
                                 {#<li class="nav-item">
                                     <a class="nav-link" data-toggle="pill" href="#poll" role="tab">
-                                        {{ 'Опрос'|locale }}
+                                        {{ 'Poll'|locale }}
                                     </a>
                                 </li>#}
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="pill" href="#other" role="tab">
-                                        {{ 'Другое'|locale }}
+                                        {{ 'Other'|locale }}
                                     </a>
                                 </li>
                             </ul>
@@ -46,22 +46,22 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Заголовок'|locale,
+                                            'label': 'Title'|locale,
                                             'type': 'text',
                                             'name': 'title',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Заголовок публикации обязателен к заполнению и может содержать не более 255 символов'|locale) ~ '"></i>',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('The title of the publication is required and can contain no more than 255 characters'|locale) ~ '"></i>',
                                             'args': {
                                                 'value': publication.title,
                                                 'required': true,
-                                                'placeholder': 'О нас',
+                                                'placeholder': 'About Us',
                                             }
                                         } %}
                                     </div>
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Дата'|locale,
+                                            'label': 'Date'|locale,
                                             'type': 'datetime',
-                                            'name': 'date',
+                                            'name': 'Date',
                                             'args': {
                                                 'value': publication.date|df('Y-m-d\\TH:i'),
                                                 'placeholder': '20.01.2019 12:34',
@@ -73,10 +73,10 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Категория'|locale,
+                                            'label': 'Category'|locale,
                                             'type': 'select',
                                             'name': 'category',
-                                            'message': '<a href="/cup/publication/category/add" class="btn btn-xs btn-info float-right" onclick="return confirm(\'' ~ ('Вы действительно хотите перейти на другую страницу?'|locale) ~ '\');"><i class="fa fa-plus"></i> ' ~ ('Создать категорию'|locale) ~ '</a>',
+                                            'message': '<a href="/cup/publication/category/add" class="btn btn-xs btn-info float-right" onclick="return confirm(\'' ~ ('Are you sure you want to go to another page?'|locale) ~ '\');"><i class="fa fa-plus"></i> ' ~ ('Create category'|locale) ~ '</a>',
                                             'args': {
                                                 'required': true,
                                                 'option': list.pluck('title', 'uuid').all(),
@@ -89,7 +89,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         {% include 'cup/editor.twig' with {
-                                            'label': 'Краткое содержимое'|locale,
+                                            'label': 'Brief content'|locale,
                                             'name': 'content[short]',
                                             'args': {
                                                 'value': publication.content.short
@@ -100,7 +100,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         {% include 'cup/editor.twig' with {
-                                            'label': 'Полное содержимое'|locale,
+                                            'label': 'Full content'|locale,
                                             'name': 'content[full]',
                                             'args': {
                                                 'value': publication.content.full
@@ -150,11 +150,11 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Адрес'|locale,
+                                            'label': 'Address'|locale,
                                             'type': 'text',
                                             'name': 'address',
                                             'prefix': base_url() ~ '/',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Cсылка для просмотра статьи в браузере. Можно оставить пустым, тогда значение будет сгенерировано автоматически. Допустимо использование только латинских символов и цифер без пробелов'|locale) ~ '"></i>',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Link to view the article. You can leave it blank, then the value will be generated automatically. Only Latin characters and numbers without spaces are allowed'|locale) ~ '"></i>',
                                             'args': {
                                                 'value': publication.address,
                                                 'placeholder': 'my-publication',
@@ -163,10 +163,10 @@
                                     </div>
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Внешний ID'|locale,
+                                            'label': 'External ID'|locale,
                                             'type': 'text',
                                             'name': 'external_id',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать.'|locale) ~ '"></i>',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('System field. If you don\'t know what this field is for, it\'s best not to touch it.'|locale) ~ '"></i>',
                                             'args': {
                                                 'value': item.external_id,
                                             }
@@ -185,7 +185,7 @@
                     <div class="card-action">
                         {% include "cup/form-save.twig" %}
 
-                        <button type="button" data-click="preview" class="btn btn-info float-right">{{ 'Предварительный просмотр'|locale }}</button>
+                        <button type="button" data-click="preview" class="btn btn-info float-right">{{ 'Preview'|locale }}</button>
                     </div>
                 </form>
             </div>

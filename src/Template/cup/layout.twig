@@ -46,7 +46,7 @@
 
                                 {% if parameter('common_site_enabled', 'yes') != 'yes' %}
                                     <a href="/cup/parameters" class="d-block badge badge-danger mx-2 mt-2 mb-1 w-100">
-                                        {{ 'Сайт отключен!'|locale }}
+                                        {{ 'Site disabled!'|locale }}
                                     </a>
                                 {% endif %}
 
@@ -92,11 +92,11 @@
                                                 </li>
                                                 <li>
                                                     <div class="dropdown-divider"></div>
-                                                    <a class="dropdown-item" href="/cup/user/{{ user.uuid }}/view">{{ 'Профиль'|locale }}</a>
+                                                    <a class="dropdown-item" href="/cup/user/{{ user.uuid }}/view">{{ 'Profile'|locale }}</a>
                                                 </li>
                                                 <li>
                                                     <div class="dropdown-divider"></div>
-                                                    <a class="dropdown-item" href="/user/logout">{{ 'Выход'|locale }}</a>
+                                                    <a class="dropdown-item" href="/user/logout">{{ 'Exit'|locale }}</a>
                                                 </li>
                                             </div>
                                         </ul>
@@ -126,8 +126,8 @@
                                     <div class="page-inner py-5">
                                         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
                                             <div>
-                                                <h2 class="text-white pb-2 fw-bold">{{ 'Панель управления'|locale }}</h2>
-                                                <h5 class="text-white op-7 mb-2">{{ 'Добро пожаловать в панель управления сайтом'|locale }}</h5>
+                                                <h2 class="text-white pb-2 fw-bold">{{ 'Control Panel'|locale }}</h2>
+                                                <h5 class="text-white op-7 mb-2">{{ 'Welcome to the site control panel'|locale }}</h5>
                                             </div>
                                             <div class="ml-md-auto py-2 py-md-0">
                                                 {#<a href="#" class="btn btn-white btn-border btn-round mr-2">Manage</a>
@@ -144,12 +144,11 @@
                                         <div class="col-md-12">
                                             <div class="card bg-danger">
                                                 <div class="card-header text-center">
-                                                    <h4 class="card-title text-white">{{ 'Обнаружены ошибки'|locale }} ({{ _error|count }})</h4>
+                                                    <h4 class="card-title text-white">{{ 'Errors found'|locale }} ({{ _error|count }})</h4>
                                                     <p class="text-white my-0">
                                                         {% locale %}
-                                                            В форме обнаружены ошибки, пожалуйста,
-                                                            проверьте поля выделенные красным цветом,
-                                                            исправьте ошибки и попробуйте снова.
+                                                            Errors were found in the form, please check the fields
+                                                            highlighted in red, correct the errors and try again.
                                                         {% endlocale %}
                                                     </p>
                                                 </div>
@@ -168,11 +167,10 @@
                                                             <a href="/cup/user" class="card card-stats card-primary card-round">
                                                                 <div class="card-body">
                                                                     <p class="card-category">
-                                                                        <b>{{ 'Редактирование пользователей'|locale }}</b><br>
+                                                                        <b>{{ 'Editing Users'|locale }}</b><br>
                                                                         {% locale %}
-                                                                            Управление зарегистрированными
-                                                                            пользователями, редактирование их профилей
-                                                                            и блокировка
+                                                                            Managing registered users,
+                                                                            editing their profiles and blocking
                                                                         {% endlocale %}
                                                                     </p>
                                                                 </div>
@@ -182,10 +180,10 @@
                                                             <a href="/cup/publication" class="card card-stats card-primary card-round">
                                                                 <div class="card-body">
                                                                     <p class="card-category">
-                                                                        <b>{{ 'Управление публикациями'|locale }}</b><br>
+                                                                        <b>{{ 'Publication management'|locale }}</b><br>
                                                                         {% locale %}
-                                                                            Раздел управления статьями, новостями,
-                                                                            записями в личный блог
+                                                                            Section for managing articles, news,
+                                                                            personal blog entries
                                                                         {% endlocale %}
                                                                     </p>
                                                                 </div>
@@ -195,11 +193,11 @@
                                                             <a href="/cup/page" class="card card-stats card-primary card-round">
                                                                 <div class="card-body">
                                                                     <p class="card-category">
-                                                                        <b>{{ 'Страницы сайта'|locale }}</b><br>
+                                                                        <b>{{ 'Site pages'|locale }}</b><br>
                                                                         {% locale %}
-                                                                            Создание и редактирование страниц, которые
-                                                                            как правило редко изменяются и имеют
-                                                                            постоянный адрес
+                                                                            Creation and editing of pages that, as a
+                                                                            rule, rarely change and have a permanent
+                                                                            address
                                                                         {% endlocale %}
                                                                     </p>
                                                                 </div>
@@ -210,11 +208,11 @@
                                                                 <a href="/cup/catalog/product" class="card card-stats card-primary card-round">
                                                                     <div class="card-body">
                                                                         <p class="card-category">
-                                                                            <b>{{ 'Номенклатура товаров'|locale }}</b><br>
+                                                                            <b>{{ 'Product nomenclature'|locale }}</b><br>
                                                                             {% locale %}
-                                                                                Управление товарами и услугами сайта,
-                                                                                добавление новых позиций и изменение
-                                                                                существующих
+                                                                                Management of goods and services of the
+                                                                                site, adding new positions and changing
+                                                                                existing ones
                                                                             {% endlocale %}
                                                                         </p>
                                                                     </div>
@@ -224,11 +222,11 @@
                                                                 <a href="/cup/catalog/product" class="card card-stats card-primary card-round">
                                                                     <div class="card-body">
                                                                         <p class="card-category">
-                                                                            <b>{{ 'Категории магазина'|locale }}</b><br>
+                                                                            <b>{{ 'Store categories'|locale }}</b><br>
                                                                             {% locale %}
-                                                                                Создание и редактирование категорий
-                                                                                товаров, изменение описания и
-                                                                                приложенных фотографий
+                                                                                Create and edit product categories,
+                                                                                change descriptions and attached
+                                                                                photos
                                                                             {% endlocale %}
                                                                         </p>
                                                                     </div>
@@ -240,10 +238,10 @@
                                                                 <a href="/cup/guestbook" class="card card-stats card-primary card-round">
                                                                     <div class="card-body">
                                                                         <p class="card-category">
-                                                                            <b>{{ 'Гостевая книга и отзывы'|locale }}</b><br>
+                                                                            <b>{{ 'Guestbook and reviews'|locale }}</b><br>
                                                                             {% locale %}
-                                                                                Просмотр отзывов посетителей о сайте,
-                                                                                изменение и управление ответами
+                                                                                View visitor reviews of the site,
+                                                                                change and manage responses
                                                                             {% endlocale %}
                                                                         </p>
                                                                     </div>
@@ -255,10 +253,10 @@
                                                                 <a href="/cup/form" class="card card-stats card-primary card-round">
                                                                     <div class="card-body">
                                                                         <p class="card-category">
-                                                                            <b>{{ 'Формы связи'|locale }}</b><br>
+                                                                            <b>{{ 'Communication forms'|locale }}</b><br>
                                                                             {% locale %}
-                                                                                Создание и редактирование форм обратной
-                                                                                связи, настройка формата письма
+                                                                                Create and edit feedback forms,
+                                                                                customize the email format
                                                                             {% endlocale %}
                                                                         </p>
                                                                     </div>
@@ -269,11 +267,11 @@
                                                             <a href="/cup/parameters" class="card card-stats card-primary card-round">
                                                                 <div class="card-body">
                                                                     <p class="card-category">
-                                                                        <b>{{ 'Настройки системы'|locale }}</b><br>
+                                                                        <b>{{ 'System settings'|locale }}</b><br>
                                                                         {% locale %}
-                                                                            Настройка общих параметров скрипта, а также
-                                                                            настройка вывода новостей, каталога,
-                                                                            плагинов
+                                                                            Configuring general script parameters,
+                                                                            as well as configuring news output,
+                                                                            catalog, plugins
                                                                         {% endlocale %}
                                                                     </p>
                                                                 </div>
@@ -293,12 +291,12 @@
                                                         <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
                                                             <li class="nav-item">
                                                                 <a class="nav-link active show" data-toggle="pill" href="#stats" role="tab">
-                                                                    {{ 'Сводка сайта'|locale }}
+                                                                    {{ 'Site summary'|locale }}
                                                                 </a>
                                                             </li>
                                                             <li class="nav-item">
                                                                 <a class="nav-link" data-toggle="pill" href="#notepad" role="tab">
-                                                                    {{ 'Блокнот'|locale }}
+                                                                    {{ 'Notebook'|locale }}
                                                                 </a>
                                                             </li>
                                                         </ul>
@@ -311,54 +309,54 @@
                                                         <div class="tab-pane fade show active" id="stats" role="tabpanel">
                                                             <div class="row">
                                                                 <div class="col-12 col-md-6">
-                                                                    <p class="text-muted text-center">{{ 'Ниже отображается статистика использования движка по разделам'|locale }}</p>
+                                                                    <p class="text-muted text-center">{{ 'Below is the statistics of engine usage by sections'|locale }}</p>
 
                                                                     <table class="table table-stats">
                                                                         {% if stats.pages %}
                                                                             <tr>
-                                                                                <th width="50%">{{ 'Количество страниц'|locale }}:</th>
+                                                                                <th width="50%">{{ 'Number of pages'|locale }}:</th>
                                                                                 <td width="50%" class="text-center">{{ stats.pages }}</td>
                                                                             </tr>
                                                                         {% endif %}
                                                                         {% if stats.publications %}
                                                                             <tr>
-                                                                                <th width="50%">{{ 'Количество публикаций'|locale }}:</th>
+                                                                                <th width="50%">{{ 'Number of publications'|locale }}:</th>
                                                                                 <td width="50%" class="text-center">{{ stats.publications }}</td>
                                                                             </tr>
                                                                         {% endif %}
                                                                         {% if stats.guestbook %}
                                                                             <tr>
-                                                                                <th width="50%">{{ 'Количество отзывов'|locale }}:</th>
+                                                                                <th width="50%">{{ 'Number of reviews'|locale }}:</th>
                                                                                 <td width="50%" class="text-center">{{ stats.guestbook }}</td>
                                                                             </tr>
                                                                         {% endif %}
                                                                         {% if stats.users %}
                                                                             <tr>
-                                                                                <th width="50%">{{ 'Количество пользователей'|locale }}:</th>
+                                                                                <th width="50%">{{ 'Number of users'|locale }}:</th>
                                                                                 <td width="50%" class="text-center">{{ stats.users }}</td>
                                                                             </tr>
                                                                         {% endif %}
                                                                         {% if stats.catalog.category or stats.catalog.product %}
                                                                             <tr>
-                                                                                <th width="50%">{{ 'Количество категорий и товаров'|locale }}:</th>
+                                                                                <th width="50%">{{ 'Number of categories and products'|locale }}:</th>
                                                                                 <td width="50%" class="text-center">{{ stats.catalog.category }} | {{ stats.catalog.product }}</td>
                                                                             </tr>
                                                                         {% endif %}
                                                                         {% if stats.catalog.order %}
                                                                             <tr>
-                                                                                <th width="50%">{{ 'Количество заказов'|locale }}:</th>
+                                                                                <th width="50%">{{ 'The number of orders'|locale }}:</th>
                                                                                 <td width="50%" class="text-center">{{ stats.catalog.order }}</td>
                                                                             </tr>
                                                                         {% endif %}
                                                                         {% if stats.files %}
                                                                             <tr>
-                                                                                <th width="50%">{{ 'Количество файлов'|locale }}:</th>
+                                                                                <th width="50%">{{ 'Number of files'|locale }}:</th>
                                                                                 <td width="50%" class="text-center">{{ stats.files }}</td>
                                                                             </tr>
                                                                         {% endif %}
                                                                         {% if plugins.count() %}
                                                                             <tr>
-                                                                                <th width="50%">{{ 'Количество плагинов'|locale }}:</th>
+                                                                                <th width="50%">{{ 'Number of plugins'|locale }}:</th>
                                                                                 <td width="50%" class="text-center">
                                                                                     {{ plugins.count() }}
                                                                                 </td>
@@ -367,46 +365,46 @@
                                                                     </table>
                                                                 </div>
                                                                 <div class="col-12 col-md-6 border-left">
-                                                                    <p class="text-muted text-center">{{ 'Здесь собрана техническая информация о движке и сервере'|locale }}</p>
+                                                                    <p class="text-muted text-center">{{ 'Here is a collection of technical information about the engine and server'|locale }}</p>
 
                                                                     <table class="table table-properties">
                                                                         <tr>
-                                                                            <th width="50%">{{ 'Сборка'|locale }}:</th>
+                                                                            <th width="50%">{{ 'Build'|locale }}:</th>
                                                                             <td width="50%" class="text-center">
                                                                                 {{ properties.version.branch }}
                                                                                 (<a href="https://github.com/getwebspace/platform/tree/{{ properties.version.commit }}" target="_blank">{{ SHA }}</a>)
                                                                             </td>
                                                                         </tr>
                                                                         <tr>
-                                                                            <th width="50%">{{ 'Операционная система'|locale }}:</th>
+                                                                            <th width="50%">{{ 'Operating system'|locale }}:</th>
                                                                             <td width="50%" class="text-center">{{ properties.os }}</td>
                                                                         </tr>
                                                                         <tr>
-                                                                            <th width="50%">{{ 'Версия PHP'|locale }}:</th>
+                                                                            <th width="50%">{{ 'PHP version'|locale }}:</th>
                                                                             <td width="50%" class="text-center">{{ properties.php }}</td>
                                                                         </tr>
                                                                         <tr>
-                                                                            <th width="50%">{{ 'Выделено ОЗУ'|locale }}:</th>
+                                                                            <th width="50%">{{ 'Dedicated RAM'|locale }}:</th>
                                                                             <td width="50%" class="text-center">{{ properties.memory_limit }}</td>
                                                                         </tr>
                                                                         {% if properties.disable_functions %}
                                                                             <tr>
-                                                                                <th width="50%">{{ 'Отключенные функции'|locale }}:</th>
+                                                                                <th width="50%">{{ 'Disabled features'|locale }}:</th>
                                                                                 <td width="50%" class="text-center">{{ properties.disable_functions }}</td>
                                                                             </tr>
                                                                         {% endif %}
                                                                         {% if properties.disable_classes %}
                                                                             <tr>
-                                                                                <th width="50%">{{ 'Отключенные классы'|locale }}:</th>
+                                                                                <th width="50%">{{ 'Disabled classes'|locale }}:</th>
                                                                                 <td width="50%" class="text-center">{{ properties.disable_classes }}</td>
                                                                             </tr>
                                                                         {% endif %}
                                                                         <tr>
-                                                                            <th width="50%">{{ 'Максимальный размер загружаемого файла'|locale }}:</th>
+                                                                            <th width="50%">{{ 'Maximum upload file size'|locale }}:</th>
                                                                             <td width="50%" class="text-center">{{ properties.upload_max_filesize }}</td>
                                                                         </tr>
                                                                         <tr>
-                                                                            <th width="50%">{{ 'Максимальное количество загружаемых файлов'|locale }}:</th>
+                                                                            <th width="50%">{{ 'Maximum downloadable files'|locale }}:</th>
                                                                             <td width="50%" class="text-center">{{ properties.max_file_uploads }}</td>
                                                                         </tr>
                                                                     </table>
@@ -419,7 +417,7 @@
                                                             <div class="row">
                                                                 <div class="col-md-12">
                                                                     <form action="/cup/parameters?return=/cup" method="post">
-                                                                        <p class="text-muted text-center mb-0">{{ 'Здесь вы можете сохранять собственные заметки и памятки'|locale }}</p>
+                                                                        <p class="text-muted text-center mb-0">{{ 'Here you can save your own notes and memos'|locale }}</p>
 
                                                                         {% include 'cup/editor.twig' with {
                                                                             'name': 'notepad[' ~ user.username ~ ']',
@@ -428,7 +426,7 @@
                                                                                 'required': true,
                                                                             }
                                                                         } %}
-                                                                        <button type="submit" class="btn btn-success ml-2">{{ 'Сохранить'|locale }}</button>
+                                                                        <button type="submit" class="btn btn-success ml-2">{{ 'Save'|locale }}</button>
                                                                     </form>
                                                                 </div>
                                                             </div>
@@ -446,8 +444,8 @@
                     <footer class="footer">
                         <div class="container-fluid">
                             <div class="copyright mr-auto">
-                                Copyright &copy; 2011-{{ 'now'|df('Y') }} <a href="https://getwebspace.org" target="_blank">WebSpace Engine</a> &mdash; {{ 'платформа для управления контентом на сайте'|locale }}.<br>
-                                {{ 'Сборка'|locale }}: <span class="text-muted">{{ SHA }}</span>
+                                Copyright &copy; 2011-{{ 'now'|df('Y') }} <a href="https://getwebspace.org" target="_blank">WebSpace Engine</a> &mdash; {{ 'platform for managing content on the site'|locale }}.<br>
+                                {{ 'Build'|locale }}: <span class="text-muted">{{ SHA }}</span>
                             </div>
                             <nav class="pull-right">
                                 <ul class="nav">
@@ -458,12 +456,12 @@
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" href="https://github.com/getwebspace/platform/wiki" target="_blank">
-                                            {{ 'Документация'|locale }}
+                                            {{ 'Documentation'|locale }}
                                         </a>
                                     </li>
                                     <li class="nav-item">
                                         <a class="nav-link" href="https://github.com/getwebspace/platform/issues" target="_blank">
-                                            {{ 'Поддержка'|locale }}
+                                            {{ 'Support'|locale }}
                                         </a>
                                     </li>
                                 </ul>

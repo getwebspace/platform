@@ -1,17 +1,17 @@
 <form action="/cup/system/3" method="post" onsubmit="return confirm('{{ 'Вы уверены?'|locale }}');">
     {% if user == null %}
         <div class="card-body">
-            <h5 class="text-center">{{ 'Пользователь'|locale }}</h5>
+            <h5 class="text-center">{{ 'Account'|locale }}</h5>
 
             <div class="row justify-content-center my-3">
                 <div class="col-12">
                     <p class="text-center">
-                        {{ 'Настройка нового пользователя'|locale }}<br>
-                        {{ 'с правами администратора'|locale }}
+                        {{ 'Setting up a new user'|locale }}<br>
+                        {{ 'with administrator rights'|locale }}
                     </p>
 
                     {% include 'cup/form.twig' with {
-                        'label': 'Логин'|locale,
+                        'label': 'Login'|locale,
                         'type': 'text',
                         'name': 'user[username]',
                         'args': {
@@ -42,7 +42,7 @@
 
                 <div class="col-12">
                     {% include 'cup/form.twig' with {
-                        'label': 'Заполнение базы'|locale,
+                        'label': 'Filling the base'|locale,
                         'type': 'select',
                         'name': 'fill',
                         'args': {
@@ -56,17 +56,17 @@
     {% endif %}
 
     <div class="card-footer text-center">
-        <p>{{ 'Действия с базой данных'|locale }}</p>
+        <p>{{ 'Database Actions'|locale }}</p>
 
         <div class="d-flex justify-content-center">
             <button type="submit" name="database" value="create" class="btn {{ user == null ? 'btn-primary' : 'btn-secondary' }} mx-1">
-                {{ 'Создать'|locale }}
+                {{ 'Create'|locale }}
             </button>
             <button type="submit" name="database" value="update" class="btn {{ user == null ? 'btn-secondary' : 'btn-primary' }} mx-1">
-                {{ 'Обновить'|locale }}
+                {{ 'Update'|locale }}
             </button>
             <button type="submit" name="database" value="delete" class="btn btn-danger mx-1">
-                {{ 'Удалить'|locale }}
+                {{ 'Delete'|locale }}
             </button>
         </div>
     </div>

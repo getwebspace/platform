@@ -143,7 +143,7 @@ $(() => {
         setTimeout(() => $el.removeClass('fa-check fa-times fa-smile').addClass('fa-copy'), 2500);
     });
     
-    moment.locale('ru');
+    moment.locale('en');
     
     // modal window settings
     $.modal.defaults = {

@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">{{ 'Статусы заказа'|locale }} ({{ list.count() }})</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Order statuses'|locale }} ({{ list.count() }})</h2>
             </div>
         </div>
     </div>
@@ -19,7 +19,7 @@
                         {% block thead %}
                             <tr>
                                 <th width="5%" class="d-none d-md-table-cell">#</th>
-                                <th>{{ 'Наименование'|locale }}</th>
+                                <th>{{ 'Title'|locale }}</th>
                                 <th width="25%" class="text-right"></th>
                             </tr>
                         {% endblock %}
@@ -30,15 +30,15 @@
                                     <td width="5%" class="d-none d-md-table-cell">{{ item.order }}</td>
                                     <td>{{ item.title }}</td>
                                     <td width="25%" class="text-right">
-                                        <form action="/cup/catalog/order/status/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Вы действительно хотите удалить статус заказа?'|locale }}');">
+                                        <form action="/cup/catalog/order/status/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the order status?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/catalog/order/status/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
                                                     <i class="fas fa-fw fa-edit"></i>
-                                                    <span class="d-none d-md-inline-block">{{ 'Изменить'|locale }}</span>
+                                                    <span class="d-none d-md-inline-block">{{ 'Change'|locale }}</span>
                                                 </a>
                                                 <button type="submit" class="btn btn-sm btn-danger">
                                                     <i class="fas fa-fw fa-trash-alt"></i>
-                                                    <span class="d-none d-md-inline-block">{{ 'Удалить'|locale }}</span>
+                                                    <span class="d-none d-md-inline-block">{{ 'Delete'|locale }}</span>
                                                 </button>
                                             </div>
                                         </form>
@@ -48,7 +48,7 @@
                         {% endblock %}
                     {% endembed %}
 
-                    <a href="/cup/catalog/order/status/add" class="btn btn-outline-primary mt-3">{{ 'Создать статус'|locale }}</a>
+                    <a href="/cup/catalog/order/status/add" class="btn btn-outline-primary mt-3">{{ 'Create status'|locale }}</a>
                 </div>
             </div>
         </div>

@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">{{ 'Настройки'|locale }}</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Settings'|locale }}</h2>
             </div>
         </div>
     </div>
@@ -20,27 +20,27 @@
                             <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
                                 <li class="nav-item">
                                     <a class="nav-link active show" data-toggle="pill" href="#common" role="tab">
-                                        {{ 'Общие'|locale }}
+                                        {{ 'Common'|locale }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="pill" href="#user" role="tab">
-                                        {{ 'Пользователи'|locale }}
+                                        {{ 'Members'|locale }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="pill" href="#catalog" role="tab">
-                                        {{ 'Каталог'|locale }}
+                                        {{ 'Catalog'|locale }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="pill" href="#plugins" role="tab">
-                                        {{ 'Плагины'|locale }}
+                                        {{ 'Plugins'|locale }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="pill" href="#variables" role="tab">
-                                        {{ 'Переменные'|locale }}
+                                        {{ 'Variables'|locale }}
                                     </a>
                                 </li>
                             </ul>
@@ -54,13 +54,13 @@
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-5 col-md-4">
                                         <div class="nav flex-column nav-pills nav-secondary">
-                                            <a class="nav-link active"  data-toggle="pill" href="#other-common">{{ 'Основные'|locale }}</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#other-mail">{{ 'Почта'|locale }}</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#other-file">{{ 'Файлы и изображения'|locale }}</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#other-notification">{{ 'Уведомления'|locale }}</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#other-form">{{ 'Формы'|locale }}</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#other-search">{{ 'Поиск'|locale }}</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#other-guestbook">{{ 'Гостевая книга'|locale }}</a>
+                                            <a class="nav-link active"  data-toggle="pill" href="#other-common">{{ 'Main'|locale }}</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#other-mail">{{ 'Mail'|locale }}</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#other-file">{{ 'Files and images'|locale }}</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#other-notification">{{ 'Notifications'|locale }}</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#other-form">{{ 'Forms'|locale }}</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#other-search">{{ 'Search'|locale }}</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#other-guestbook">{{ 'Guestbook'|locale }}</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-api">{{ 'API'|locale }}</a>
                                         </div>
                                     </div>
@@ -70,8 +70,8 @@
                                             {# TAB: Common #}
                                             <div class="tab-pane fade active show" id="other-common">
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Сайт доступен посетителям',
-                                                    'description': 'Можно использовать во время технических работ и/или инвентаризации',
+                                                    'label': 'The site is available to visitors',
+                                                    'description': 'Can be used during maintenance and / or inventory',
                                                     'type': 'select',
                                                     'name': 'common[site_enabled]',
                                                     'args': {
@@ -83,36 +83,36 @@
                                                 <hr>
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Название сайта',
-                                                    'description': 'например: "Моя домашняя страница"',
+                                                    'label': 'Site title',
+                                                    'description': 'for example: "My home page"',
                                                     'type': 'text',
                                                     'name': 'common[title]',
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Домашняя страница сайта',
-                                                    'description': 'Укажите адрес главной страницы вашего сайта, включая слеш в конце. Например: http://yoursite.com/',
+                                                    'label': 'Home page address',
+                                                    'description': 'Enter the address of the home page of your site, including a slash at the end. For example: http://yoursite.com/',
                                                     'type': 'text',
                                                     'name': 'common[homepage]',
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Описание (Description) сайта',
-                                                    'description': 'Краткое описание, не более 200 символов',
+                                                    'label': 'Description (Description) of the site',
+                                                    'description': 'Short description, no more than 200 characters',
                                                     'type': 'text',
                                                     'name': 'common[description]',
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Ключевые (Keywords) слова',
-                                                    'description': 'Через запятую',
+                                                    'label': 'Key words',
+                                                    'description': 'Comma separated',
                                                     'type': 'textarea',
                                                     'name': 'common[keywords]',
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Тема оформления сайта',
-                                                    'description': 'По-умолчанию: "default"',
+                                                    'label': 'Theme name',
+                                                    'description': 'Default: "default"',
                                                     'type': 'text',
                                                     'name': 'common[theme]',
                                                     'args': {
@@ -122,11 +122,11 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Автообновление темы',
-                                                    'description': 'Система будет проверять изменения в теме оформления',
+                                                    'label': 'Theme auto-update',
+                                                    'description': 'The system will check for changes in the theme',
                                                     'type': 'select',
                                                     'name': 'common[theme_reload]',
-                                                    'message': 'Может повысить нагрузку на сервер, не рекомендуется в режиме <code>Production</code>',
+                                                    'message': 'May increase server load, not recommended in <code>Production</code> mode',
                                                     'args': {
                                                         'option': _(['off', 'on']),
                                                         'selected': 'off'
@@ -134,7 +134,7 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Шаблон главной страницы',
+                                                    'label': 'Home page template',
                                                     'type': 'text',
                                                     'name': 'common[template]',
                                                     'args': {
@@ -146,7 +146,7 @@
                                                 <hr>
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Часовой пояс',
+                                                    'label': 'Timezone',
                                                     'type': 'select',
                                                     'name': 'common[timezone]',
                                                     'args': {
@@ -157,7 +157,7 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Формат времени',
+                                                    'label': 'Time format',
                                                     'description': '',
                                                     'type': 'text',
                                                     'name': 'common[date_format]',
@@ -168,10 +168,10 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Код языка сайта',
+                                                    'label': 'Site language (code)',
                                                     'description': [
-                                                        'Задаёт язык сайта и значение атрибута <code>&lt;html lang="ru"&gt;</code>',
-                                                        'Например: <code>ru-RU</code>, <code>uk-UA</code>, <code>en-US</code>'
+                                                        'Sets the language of the site and the value of the attribute <code>&lt;html lang="en"&gt;</code>',
+                                                        'For example: <code>en-US</code>, <code>uk-UA</code>, <code>ru-RU</code>'
                                                     ]|locale|join('<br>'),
                                                     'type': 'text',
                                                     'name': 'common[language]',
@@ -183,8 +183,8 @@
                                                 <hr>
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Автоматически генерировать адреса',
-                                                    'description': 'Адреса некоторых сущностей будут автоматически включать адрес категории',
+                                                    'label': 'Automatically generate addresses',
+                                                    'description': 'Some entity addresses will automatically include the category address',
                                                     'type': 'select',
                                                     'name': 'common[auto_generate_address]',
                                                     'args': {
@@ -196,8 +196,8 @@
                                             {# TAB: Other Mail #}
                                             <div class="tab-pane fade" id="other-mail">
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Системный E-Mail адрес',
-                                                    'description': 'От данного адреса будут отправляться сообщения сайта, например уведомления пользователей, рассылки, подтверждения и т.д. Примечание: некоторые бесплатные почтовые сервисы, например yandex.ru, требуют, чтобы в качестве E-Mail адреса отправителя был указан именно адрес, зарегистрированный на их почтовом сервисе',
+                                                    'label': 'System E-Mail Address',
+                                                    'description': 'From this address, site messages will be sent, for example, user notifications, mailings, confirmations, etc. Note: some free mail services, for example yandex.ru, require that the address registered on their mail service be specified as the sender E-Mail address.',
                                                     'type': 'text',
                                                     'name': 'mail[from]',
                                                     'args': {
@@ -206,15 +206,15 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Имя отправителя',
-                                                    'description': 'Данное имя будет прикреплено к письму в качестве имени отправителя',
+                                                    'label': 'Sender name',
+                                                    'description': 'This name will be attached to the letter as the name of the sender',
                                                     'type': 'text',
                                                     'name': 'mail[from_name]',
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Заголовок при отправке писем',
-                                                    'description': 'При отправке писем с сайта вы можете указать заголовок, который будет добавляться к почте отправителя. Например, вы можете там указать краткое название вашего сайта',
+                                                    'label': 'Email subject',
+                                                    'description': 'When sending letters from the site, you can specify a header that will be added to the sender mail. For example, you can specify the short name of your site there.',
                                                     'type': 'text',
                                                     'name': 'mail[subject]',
                                                 } %}
@@ -239,8 +239,8 @@
                                                     {# TAB: SMTP #}
                                                     <div class="tab-pane fade show active" id="other-mail-smtp" role="tabpanel">
                                                         {% include 'cup/parameters/field.twig' with {
-                                                            'label': 'Хост SMTP сервера',
-                                                            'description': 'Обычно — localhost',
+                                                            'label': 'SMTP server host',
+                                                            'description': 'Usually - localhost',
                                                             'type': 'text',
                                                             'name': 'smtp[host]',
                                                             'args': {
@@ -249,8 +249,8 @@
                                                         } %}
 
                                                         {% include 'cup/parameters/field.twig' with {
-                                                            'label': 'Порт SMTP сервера',
-                                                            'description': 'Обычно — 465',
+                                                            'label': 'SMTP server port',
+                                                            'description': 'Usually — 465',
                                                             'type': 'select',
                                                             'name': 'smtp[port]',
                                                             'args': {
@@ -259,8 +259,8 @@
                                                         } %}
 
                                                         {% include 'cup/parameters/field.twig' with {
-                                                            'label': 'Использовать защищенный протокол для отправки писем через SMTP сервер',
-                                                            'description': 'Выберите протокол шифрования при отправке писем с использованием SMTP сервера',
+                                                            'label': 'Use secure protocol to send emails through SMTP server',
+                                                            'description': 'Select the encryption protocol when sending emails using an SMTP server',
                                                             'type': 'select',
                                                             'name': 'smtp[secure]',
                                                             'args': {
@@ -269,15 +269,15 @@
                                                         } %}
 
                                                         {% include 'cup/parameters/field.twig' with {
-                                                            'label': 'SMTP имя пользователя',
-                                                            'description': 'Не требуется в большинстве случаев, когда используется "localhost"',
+                                                            'label': 'SMTP username',
+                                                            'description': 'Not required in most cases when using "localhost"',
                                                             'type': 'text',
                                                             'name': 'smtp[login]',
                                                         } %}
 
                                                         {% include 'cup/parameters/field.twig' with {
-                                                            'label': 'SMTP пароль',
-                                                            'description': 'Не требуется в большинстве случаев, когда используется "localhost"',
+                                                            'label': 'SMTP password',
+                                                            'description': 'Not required in most cases when using "localhost"',
                                                             'type': 'text',
                                                             'name': 'smtp[pass]',
                                                         } %}
@@ -287,9 +287,10 @@
                                                     <div class="tab-pane fade" id="other-mail-sendpulse" role="tabpanel">
                                                         <p>
                                                             {% locale %}
-                                                            Необходимые параметры можно найти в настройках аккаунта, во
+                                                                The required parameters can be found in
+                                                                the account settings, in
                                                             {% endlocale %}
-                                                            <a href="https://login.sendpulse.com/settings/#api" target="_blank">{{ 'вкладке API'|locale }}</a>.
+                                                            <a href="https://login.sendpulse.com/settings/#api" target="_blank">{{ 'the API tab'|locale }}</a>.
                                                         </p>
 
                                                         {% include 'cup/parameters/field.twig' with {
@@ -316,8 +317,8 @@
                                             {# TAB: Other Files and Image #}
                                             <div class="tab-pane fade" id="other-file">
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Включить загрузку файлов',
-                                                    'description': 'Позволяет пользователям загружать файлы на сайт',
+                                                    'label': 'Enable File Upload',
+                                                    'description': 'Allows users to upload files to the site',
                                                     'type': 'select',
                                                     'name': 'file[is_enabled]',
                                                     'args': {
@@ -329,8 +330,8 @@
                                                 <hr>
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Разрешить конвертацию загруженных изображений',
-                                                    'description': 'Будет разрешена загрузка картинок на сервер',
+                                                    'label': 'Allow conversion of uploaded images',
+                                                    'description': 'Uploading images to the server will be allowed',
                                                     'type': 'select',
                                                     'name': 'image[enable]',
                                                     'args': {
@@ -339,8 +340,8 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Минимальный размер файла',
-                                                    'description': 'Файлы меньшего размера не будут подвергаться конвертации',
+                                                    'label': 'Minimum file size',
+                                                    'description': 'Smaller files will not be converted',
                                                     'postfix': 'b',
                                                     'type': 'number',
                                                     'name': 'image[convert_min_size]',
@@ -351,8 +352,8 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Размер маленькой превью копии загруженного изображения',
-                                                    'description': 'Вы можете указать 0, если не хотите создавать превью копии загружаемых картинок на сервер',
+                                                    'label': 'Size of a small preview of a copy of the uploaded image',
+                                                    'description': 'You can specify 0 if you do not want to create preview copies of uploaded images to the server',
                                                     'postfix': 'px',
                                                     'type': 'number',
                                                     'name': 'image[convert_size_small]',
@@ -363,8 +364,8 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Размер средней копии загруженного изображения',
-                                                    'description': 'Вы можете указать 0, если не хотите создавать превью копии загружаемых картинок на сервер',
+                                                    'label': 'Average copy size of uploaded image',
+                                                    'description': 'You can specify 0 if you do not want to create preview copies of uploaded images to the server',
                                                     'postfix': 'px',
                                                     'type': 'number',
                                                     'name': 'image[convert_size_middle]',
@@ -375,7 +376,7 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Исполняемый файл ImageMagick',
+                                                    'label': 'ImageMagick executable',
                                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
                                                     'type': 'text',
                                                     'name': 'image[convert_bin]',
@@ -386,7 +387,7 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Параметры ImageMagick',
+                                                    'label': 'ImageMagick options',
                                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
                                                     'type': 'textarea',
                                                     'name': 'image[convert_args]',
@@ -414,7 +415,7 @@
                                             {# TAB: Other Notification #}
                                             <div class="tab-pane fade" id="other-notification">
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Включить уведомления',
+                                                    'label': 'Enable Notifications',
                                                     'description': '',
                                                     'type': 'select',
                                                     'name': 'notification[is_enabled]',
@@ -427,9 +428,9 @@
                                                 <hr>
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Период отображение уведомлений',
-                                                    'description': 'Укажите количество часов за которые отображать уведомления',
-                                                    'postfix': 'часов',
+                                                    'label': 'Notification display period',
+                                                    'description': 'Specify the number of hours for which to display notifications',
+                                                    'postfix': 'hours',
                                                     'type': 'number',
                                                     'name': 'common[notification_period]',
                                                     'args': {
@@ -442,8 +443,8 @@
                                             {# TAB: Other Form #}
                                             <div class="tab-pane fade" id="other-form">
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Включить формы',
-                                                    'description': 'Возможность делать формы для получения заполненных анкет от клиентов',
+                                                    'label': 'Enable Forms',
+                                                    'description': 'Ability to create forms to receive completed questionnaires from clients',
                                                     'type': 'select',
                                                     'name': 'form[is_enabled]',
                                                     'args': {
@@ -456,7 +457,7 @@
                                             {# TAB: Other Search #}
                                             <div class="tab-pane fade" id="other-search">
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Включить поиск',
+                                                    'label': 'Enable Search',
                                                     'description': '',
                                                     'type': 'select',
                                                     'name': 'search[is_enabled]',
@@ -469,7 +470,7 @@
                                                 <hr>
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Шаблон страницы поиска',
+                                                    'label': 'Search Page Template',
                                                     'type': 'text',
                                                     'name': 'search[template]',
                                                     'args': {
@@ -479,8 +480,8 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Количество результатов',
-                                                    'description': 'Максимальное количество результатов при поиске',
+                                                    'label': 'Number of results',
+                                                    'description': 'Maximum number of search results',
                                                     'type': 'number',
                                                     'name': 'search[limit]',
                                                     'args': {
@@ -493,8 +494,8 @@
                                             {# TAB: Guestbook #}
                                             <div class="tab-pane fade" id="other-guestbook">
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Включить гостевую книгу',
-                                                    'description': 'Позволяет пользователям оставлять отзывы о сайте',
+                                                    'label': 'Enable guest book',
+                                                    'description': 'Allows users to leave feedback about the site',
                                                     'type': 'select',
                                                     'name': 'guestbook[is_enabled]',
                                                     'args': {
@@ -506,7 +507,7 @@
                                                 <hr>
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Шаблон гостевой книги',
+                                                    'label': 'Guest book template',
                                                     'type': 'text',
                                                     'name': 'guestbook[template]',
                                                     'args': {
@@ -516,7 +517,7 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Количество записей на страницу',
+                                                    'label': 'Number of entries per page',
                                                     'type': 'number',
                                                     'name': 'guestbook[pagination]',
                                                     'args': {
@@ -529,8 +530,8 @@
                                             {# TAB: API #}
                                             <div class="tab-pane fade" id="other-api">
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Включить доступ к API',
-                                                    'description': 'Позволяет программно получать данные с сайта',
+                                                    'label': 'Enable API Access',
+                                                    'description': 'Allows you to programmatically receive data from the site',
                                                     'type': 'select',
                                                     'name': 'entity[is_enabled]',
                                                     'args': {
@@ -542,8 +543,8 @@
                                                 <hr>
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Доступ к API',
-                                                    'description': 'Разграничивает права доступа',
+                                                    'label': 'API access',
+                                                    'description': 'Restricts access rights',
                                                     'type': 'select',
                                                     'name': 'entity[access]',
                                                     'args': {
@@ -555,15 +556,15 @@
                                                 <hr>
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Ключи доступа к API',
+                                                    'label': 'API access keys',
                                                     'description': [
-                                                        'Возможность вносить изменения по API есть только при наличии ключа',
+                                                        'The ability to make changes via the API is only available if you have a key',
                                                         '<br>',
                                                         '<button class="btn btn-outline-info btn-sm" type="button" data-entity-click="add">',
-                                                        'Сгенерировать новый',
+                                                        'Generate new',
                                                         '</button>',
                                                     ]|locale|join(''),
-                                                    'message': 'Каждый ключ с новой строки',
+                                                    'message': 'Each key on a new line',
                                                     'type': 'textarea',
                                                     'name': 'entity[keys]',
                                                     'args': {
@@ -582,10 +583,10 @@
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-5 col-md-4">
                                         <div class="nav flex-column nav-pills nav-secondary">
-                                            <a class="nav-link active"  data-toggle="pill" href="#user-common">{{ 'Основные'|locale }}</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#user-template">{{ 'Шаблоны'|locale }}</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#user-access">{{ 'Группа и права доступа'|locale }}</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#user-auth">{{ 'Параметры входа'|locale }}</a>
+                                            <a class="nav-link active"  data-toggle="pill" href="#user-common">{{ 'Main'|locale }}</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#user-template">{{ 'Templates'|locale }}</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#user-access">{{ 'Group and access rights'|locale }}</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#user-auth">{{ 'Login options'|locale }}</a>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-7 col-md-8 mt-5 mt-sm-0">
@@ -594,8 +595,8 @@
                                             {# TAB: User common #}
                                             <div class="tab-pane fade active show" id="user-common">
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Включить пользователей',
-                                                    'description': 'Позволяет пользователям регистрироваться на сайте',
+                                                    'label': 'Enable Users',
+                                                    'description': 'Allows users to register on the site',
                                                     'type': 'select',
                                                     'name': 'user[is_enabled]',
                                                     'args': {
@@ -608,7 +609,7 @@
                                             {# TAB: User Template #}
                                             <div class="tab-pane fade" id="user-template">
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Шаблон страницы авторизации',
+                                                    'label': 'Login page template',
                                                     'type': 'text',
                                                     'name': 'user[login_template]',
                                                     'args': {
@@ -618,7 +619,7 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Шаблон страницы регистрации',
+                                                    'label': 'Registration page template',
                                                     'type': 'text',
                                                     'name': 'user[register_template]',
                                                     'args': {
@@ -628,7 +629,7 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Шаблон страницы восстановления пароля',
+                                                    'label': 'Password recovery page template',
                                                     'type': 'text',
                                                     'name': 'user[lostpassword_template]',
                                                     'args': {
@@ -638,7 +639,7 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Шаблон страницы профиля пользователя',
+                                                    'label': 'User profile page template',
                                                     'type': 'text',
                                                     'name': 'user[profile_template]',
                                                     'args': {
@@ -651,30 +652,30 @@
                                             {# TAB: User Access #}
                                             <div class="tab-pane fade" id="user-access">
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Группа пользователя (по-умолчанию)',
+                                                    'label': 'User group (default)',
                                                     'type': 'select',
                                                     'name': 'user[group]',
-                                                    'description': 'Новый пользователь будет автоматически добавляться в выбранную группу',
+                                                    'description': 'The new user will be automatically added to the selected group',
                                                     'args': {
                                                         'option': {'': '---'}|merge(groups.pluck('title', 'uuid').all())
                                                     }
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Права доступа (по-умолчанию)',
+                                                    'label': 'Permissions (default)',
                                                     'type': 'select',
                                                     'name': 'user[access][]',
                                                     'description': [
-                                                        'Указанные права доступа также будут применены для незарегистрированного пользователя',
+                                                        'The specified access rights will also be applied to an unregistered user',
                                                         '<br>',
                                                         '<button class="btn btn-outline-success btn-sm mr-1" type="button" data-access-click="common">',
-                                                        'Общие',
+                                                        'Common',
                                                         '</button>',
                                                         '<button class="btn btn-outline-secondary btn-sm mr-1" type="button" data-access-click="cup">',
-                                                        'Панель управления',
+                                                        'Control Panel',
                                                         '</button>',
                                                         '<button class="btn btn-outline-danger btn-sm mr-1" type="button" data-access-click="none">',
-                                                        'Ничего',
+                                                        'Nothing',
                                                         '</button>',
                                                     ]|locale|join(''),
                                                     'args': {
@@ -689,8 +690,8 @@
                                             {# TAB: User Auth #}
                                             <div class="tab-pane fade" id="user-auth">
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Метод авторизации на сайте',
-                                                    'description': 'Вы можете выбрать, каким способом будет производиться авторизация пользователей на сайте. Доступно два варианта, либо с использованием своего логина или с использованием E-Mail',
+                                                    'label': 'Authorization method on the site',
+                                                    'description': 'You can choose how users will be authorized on the site',
                                                     'type': 'select',
                                                     'name': 'user[login_type]',
                                                     'args': {
@@ -701,7 +702,7 @@
                                                 <hr>
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Вариант работы списка',
+                                                    'label': 'List mode',
                                                     'type': 'select',
                                                     'name': 'user[email_list_mode]',
                                                     'args': {
@@ -711,10 +712,10 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Список доменов для регистрации',
+                                                    'label': 'List of domains for registration',
                                                     'type': 'textarea',
                                                     'name': 'user[email_list]',
-                                                    'message': 'Каждый домен с новой строки',
+                                                    'message': 'Each domain on a new line',
                                                     'args': {
                                                         'style': 'height: 100px!important;',
                                                         'placeholder': '@yahoo.com'
@@ -724,8 +725,8 @@
                                                 <hr>
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Включить вход через код',
-                                                    'description': 'При авторизации пользователя будет возможность подтверждения личности через высланный на почту код',
+                                                    'label': 'Enable code sign-in',
+                                                    'description': 'When authorizing the user, it will be possible to confirm the identity through the code sent to the mail',
                                                     'type': 'select',
                                                     'name': 'user[auth_code_is_enabled]',
                                                     'args': {
@@ -734,7 +735,7 @@
                                                     }
                                                 } %}
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Шаблон письма для авторизации с кодом',
+                                                    'label': 'Authorization letter template with code',
                                                     'type': 'text',
                                                     'name': 'user[auth_code_mail_template]',
                                                     'args': {
@@ -747,9 +748,9 @@
 
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': 'oAuth',
-                                                    'description': 'Открытый протокол авторизации',
-                                                    'postfix': '<i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="top" title="' ~ ('Требуется внимательная проверка значения!'|locale) ~ '"></i>',
-                                                    'message': 'Перед заполнением см. <a href="https://github.com/getwebspace/platform/wiki/oAuth" target="_blank">документацию</a>',
+                                                    'description': 'Open authorization protocol',
+                                                    'postfix': '<i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="top" title="' ~ ('A careful check of the value is required!'|locale) ~ '"></i>',
+                                                    'message': 'Before filling, see the <a href="https://github.com/getwebspace/platform/wiki/oAuth" target="_blank">documentation</a>',
                                                     'type': 'textarea',
                                                     'name': 'user[oauth]',
                                                     'args': {
@@ -770,9 +771,9 @@
                                     <div class="col-xs-12 col-sm-5 col-md-4">
                                         <div class="nav flex-column nav-pills nav-secondary">
                                             <a class="nav-link active"  data-toggle="pill" href="#catalog-general">{{ 'Основное'|locale }}</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#catalog-notify">{{ 'Уведомления'|locale }}</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#catalog-import-export">{{ 'Импорт и Экспорт'|locale }}</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#catalog-additional">{{ 'Дополнительно'|locale }}</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#catalog-notify">{{ 'Notifications'|locale }}</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#catalog-import-export">{{ 'Import and Export'|locale }}</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#catalog-additional">{{ 'Additionally'|locale }}</a>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-7 col-md-8 mt-5 mt-sm-0">
@@ -781,8 +782,8 @@
                                             {# TAB: Catalog General #}
                                             <div class="tab-pane fade show active" id="catalog-general">
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Включить каталог',
-                                                    'description': 'Возможность управлять категориями, товарами и заказами',
+                                                    'label': 'Enable Catalog',
+                                                    'description': 'Ability to manage categories, products and orders',
                                                     'type': 'select',
                                                     'name': 'catalog[is_enabled]',
                                                     'args': {
@@ -792,7 +793,7 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Адрес раздела',
+                                                    'label': 'Section address',
                                                     'type': 'text',
                                                     'name': 'catalog[address]',
                                                     'prefix': base_url() ~ '/',
@@ -803,8 +804,8 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Шаблон раздела',
-                                                    'description': 'Значение по-умолчанию, также это значение будет использовано для главной страницы каталога',
+                                                    'label': 'Section template',
+                                                    'description': 'Default value, this value will also be used for the main page of the catalog',
                                                     'type': 'text',
                                                     'name': 'catalog[category_template]',
                                                     'args': {
@@ -814,8 +815,8 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Шаблон товара',
-                                                    'description': 'Значение по-умолчанию',
+                                                    'label': 'Category product',
+                                                    'description': 'Default value',
                                                     'type': 'text',
                                                     'name': 'catalog[product_template]',
                                                     'args': {
@@ -825,7 +826,7 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Шаблон корзины',
+                                                    'label': 'Cart template',
                                                     'type': 'text',
                                                     'name': 'catalog[cart_template]',
                                                     'args': {
@@ -835,7 +836,7 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Шаблон заказа',
+                                                    'label': 'Order template',
                                                     'type': 'text',
                                                     'name': 'catalog[cart_complete_template]',
                                                     'args': {
@@ -845,8 +846,8 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Критерий сортировки товаров',
-                                                    'description': 'Значение по-умолчанию',
+                                                    'label': 'Criteria for sorting goods',
+                                                    'description': 'Default value',
                                                     'type': 'select',
                                                     'name': 'catalog[sort_by]',
                                                     'args': {
@@ -856,19 +857,19 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Порядок сортировки товаров',
-                                                    'description': 'Значение по-умолчанию',
+                                                    'label': 'Order of sorting goods',
+                                                    'description': 'Default value',
                                                     'type': 'select',
                                                     'name': 'catalog[sort_direction]',
                                                     'args': {
                                                         'option': _(reference('/App/Domain/References/Catalog::ORDER_DIRECTION')),
-                                                        'selected': 'ASC'
+                                                        'selected': 'Asc'
                                                     }
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Количество товаров на страницу',
-                                                    'description': 'Значение по-умолчанию, так же это значение будет использовано для ограничения количества товаров на главной странице',
+                                                    'label': 'Number of products per page',
+                                                    'description': 'The default value, this value will also be used to limit the number of products on the main page',
                                                     'type': 'number',
                                                     'name': 'catalog[category_pagination]',
                                                     'args': {
@@ -881,7 +882,7 @@
                                             {# TAB: Catalog Notify #}
                                             <div class="tab-pane fade" id="catalog-notify">
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Включение и выключение отправки письма клиенту',
+                                                    'label': 'Enabling and disabling sending an email to a client',
                                                     'type': 'select',
                                                     'name': 'catalog[mail_client]',
                                                     'args': {
@@ -891,8 +892,8 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Шаблон письма клиенту',
-                                                    'description': 'Если значения нет, письмо не будет отправляться',
+                                                    'label': 'Client mail template',
+                                                    'description': 'If there is no value, the email will not be sent',
                                                     'type': 'text',
                                                     'name': 'catalog[mail_client_template]',
                                                     'args': {
@@ -901,7 +902,7 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Включение и выключение отправки письма администратору',
+                                                    'label': 'Enabling and disabling sending a email to the administrator',
                                                     'type': 'select',
                                                     'name': 'catalog[mail_admin]',
                                                     'args': {
@@ -910,8 +911,8 @@
                                                     }
                                                 } %}
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Шаблон письма администратору',
-                                                    'description': 'Если значения нет, письмо не будет отправляться',
+                                                    'label': 'Administrator mail template',
+                                                    'description': 'If there is no value, the email will not be sent',
                                                     'type': 'text',
                                                     'name': 'catalog[mail_admin_template]',
                                                     'args': {
@@ -923,8 +924,8 @@
                                             {# TAB: Catalog Import #}
                                             <div class="tab-pane fade" id="catalog-import-export">
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Действие',
-                                                    'description': 'Необходимое действие с данными при импорте',
+                                                    'label': 'Action',
+                                                    'description': 'Required data action on import',
                                                     'type': 'select',
                                                     'name': 'catalog[import_action]',
                                                     'args': {
@@ -937,8 +938,8 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Отступ в строках',
-                                                    'description': 'Количество строк, которые необходимо отступить сверху',
+                                                    'label': 'Indentation in lines',
+                                                    'description': 'Number of lines to indent from top',
                                                     'type': 'number',
                                                     'name': 'catalog[import_export_offset_rows]',
                                                     'args': {
@@ -949,8 +950,8 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Отступ в колонках',
-                                                    'description': 'Количество колонок, которые необходимо отступить слева',
+                                                    'label': 'Indentation in columns',
+                                                    'description': 'Number of columns to indent from the left',
                                                     'type': 'number',
                                                     'name': 'catalog[import_export_offset_cols]',
                                                     'args': {
@@ -961,16 +962,16 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Ключевое поле',
-                                                    'description': ('Данное поле будет использовано для поиска товара'|locale) ~ '<br>' ~
-                                                                   ('<b>Важно</b>: значение поля должно быть уникально!'|locale),
+                                                    'label': 'Key field',
+                                                    'description': ('Field will be used to search for a product'|locale) ~ '<br>' ~
+                                                                   ('<b>Important</b>: field value must be unique!'|locale),
                                                     'type': 'select',
                                                     'name': 'catalog[import_key]',
                                                     'args': {
                                                         'option': {
                                                             'uuid': 'uuid',
                                                             'external_id': 'external_id',
-                                                            'title': 'title',
+                                                            'Title': 'Title',
                                                             'address': 'address',
                                                             'vendorcode': 'vendorcode',
                                                             'barcode': 'barcode',
@@ -984,10 +985,10 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Порядок колонок <b>Импорта</b>',
-                                                    'description': ('Возможные колонки:'|locale) ~ ' <i>' ~ reference('/App/Domain/References/Catalog::IMPORT_FIELDS')|merge(attributes.pluck('address'))|join(', ') ~ '</i><br>' ~
-                                                                   ('Пропустить колонку:'|locale) ~ ' <i>empty</i>',
-                                                    'message': 'Алиас каждой колонки с новой строки',
+                                                    'label': '<b>Import</b> column order',
+                                                    'description': ('Possible columns:'|locale) ~ ' <i>' ~ reference('/App/Domain/References/Catalog::IMPORT_FIELDS')|merge(attributes.pluck('address'))|join(', ') ~ '</i><br>' ~
+                                                                   ('Skip column:'|locale) ~ ' <i>empty</i>',
+                                                    'message': 'Alias each column on a new line',
                                                     'type': 'textarea',
                                                     'name': 'catalog[import_columns]',
                                                     'args': {
@@ -997,9 +998,9 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Порядок колонок <b>Экспорта</b>',
-                                                    'description': ('Возможные колонки:'|locale) ~ ' <i>' ~ reference('/App/Domain/References/Catalog::EXPORT_FIELDS')|merge(attributes.pluck('address'))|join(', ') ~ '</i><br>',
-                                                    'message': 'Алиас каждой колонки с новой строки',
+                                                    'label': '<b>Export</b> column order',
+                                                    'description': ('Possible columns:'|locale) ~ ' <i>' ~ reference('/App/Domain/References/Catalog::EXPORT_FIELDS')|merge(attributes.pluck('address'))|join(', ') ~ '</i><br>',
+                                                    'message': 'Alias each column on a new line',
                                                     'type': 'textarea',
                                                     'name': 'catalog[export_columns]',
                                                     'args': {
@@ -1012,8 +1013,8 @@
                                             {# TAB: Catalog Additional #}
                                             <div class="tab-pane fade" id="catalog-additional">
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Обработка полей корзины',
-                                                    'description': 'Дополнительные поля, переданные с корзиной, будут добавлены в конец поля комментария',
+                                                    'label': 'Handling cart fields',
+                                                    'description': 'Additional fields passed with the cart will be added to the end of the comment field',
                                                     'type': 'select',
                                                     'name': 'catalog[order_fields]',
                                                     'args': {
@@ -1023,8 +1024,8 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Строки адреса в корзине',
-                                                    'description': 'Позволяет передавать адрес в виде нумерованного массива строк',
+                                                    'label': 'Address lines in cart',
+                                                    'description': 'Allows you to pass the address as a numbered array of strings',
                                                     'type': 'select',
                                                     'name': 'catalog[order_address]',
                                                     'args': {
@@ -1034,43 +1035,43 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Дополнительное поле',
-                                                    'description': ('Поле'|locale) ~ ' 1',
+                                                    'label': 'Additional field',
+                                                    'description': ('Field'|locale) ~ ' 1',
                                                     'type': 'text',
                                                     'name': 'catalog[category_field_1]',
                                                     'args': {
-                                                        'placeholder': ('Поле'|locale) ~ ' 1',
-                                                        'value': ('Поле'|locale) ~ ' 1'
+                                                        'placeholder': ('Field'|locale) ~ ' 1',
+                                                        'value': ('Field'|locale) ~ ' 1'
                                                     }
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Дополнительное поле',
-                                                    'description': ('Поле'|locale) ~ ' 2',
+                                                    'label': 'Additional field',
+                                                    'description': ('Field'|locale) ~ ' 2',
                                                     'type': 'text',
                                                     'name': 'catalog[category_field_2]',
                                                     'args': {
-                                                        'placeholder': ('Поле'|locale) ~ ' 2',
-                                                        'value': ('Поле'|locale) ~ ' 2'
+                                                        'placeholder': ('Field'|locale) ~ ' 2',
+                                                        'value': ('Field'|locale) ~ ' 2'
                                                     }
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Дополнительное поле',
-                                                    'description': ('Поле'|locale) ~ ' 3',
+                                                    'label': 'Additional field',
+                                                    'description': ('Field'|locale) ~ ' 3',
                                                     'type': 'text',
                                                     'name': 'catalog[category_field_3]',
                                                     'args': {
-                                                        'placeholder': ('Поле'|locale) ~ ' 3',
-                                                        'value': ('Поле'|locale) ~ ' 3'
+                                                        'placeholder': ('Field'|locale) ~ ' 3',
+                                                        'value': ('Field'|locale) ~ ' 3'
                                                     }
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Объёмный вес',
+                                                    'label': 'Volumetric weight',
                                                     'description': [
-                                                        'Коэффициент-делителя',
-                                                        'Ш(см) &times; В(см) &times; Д(см) / X = ОВ(кг)'
+                                                        'Divisor',
+                                                        'W(cm) &times; H(cm) &times; L(cm) / X = Vw(kg)'
                                                     ]|locale|join('<br>'),
                                                     'type': 'number',
                                                     'name': 'catalog[dimensional_weight]',
@@ -1113,8 +1114,8 @@
                                             {# TAB: Plugin recaptcha #}
                                             <div class="tab-pane fade show active" id="plugins-recaptcha">
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Включение и выключение reCAPTCHA',
-                                                    'description': 'Защита от роботов',
+                                                    'label': 'Turning reCAPTCHA on and off',
+                                                    'description': 'Robot protection',
                                                     'type': 'select',
                                                     'name': 'integration[recaptcha]',
                                                     'args': {
@@ -1125,8 +1126,8 @@
                                                 <hr/>
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Публичный ключ сервиса reCAPTCHA',
-                                                    'description': 'Этот ключ будет использован в HTML-коде сайта на устройства пользователей',
+                                                    'label': 'Public key of the reCAPTCHA service',
+                                                    'description': 'This key will be used in the HTML code of the site for users devices',
                                                     'type': 'text',
                                                     'name': 'integration[recaptcha_public]',
                                                     'args': {
@@ -1135,8 +1136,8 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Секретный ключ сервиса reCAPTCHA',
-                                                    'description': 'Этот ключ нужен для связи между сайтом и сервисом reCAPTCHA. Никому его не сообщайте',
+                                                    'label': 'reCAPTCHA secret key',
+                                                    'description': 'This key is needed for communication between the site and the reCAPTCHA service. Do not tell it to anyone',
                                                     'type': 'text',
                                                     'name': 'integration[recaptcha_private]',
                                                     'args': {
@@ -1150,7 +1151,7 @@
 
                                                 <div class="tab-pane fade" id="plugins-{{ plugin.getCredentials('name') }}">
                                                     <d1>
-                                                        <dt>{{ 'Автор'|locale }}</dt>
+                                                        <dt>{{ 'Author'|locale }}</dt>
                                                         <dd>
                                                             {% if credentials.author_email %}
                                                                 <a href="mailto:{{ credentials.author_email }}">{{ credentials.author }}</a>
@@ -1163,7 +1164,7 @@
                                                     </d1>
                                                     {% if credentials.author_site %}
                                                         <d1>
-                                                            <dt>{{ 'Сайт'|locale }}</dt>
+                                                            <dt>{{ 'Site'|locale }}</dt>
                                                             <dd>
                                                                 {% for link in credentials.author_site|split(';') %}
                                                                     <a href="{{ link|trim }}" target="_blank">{{ link|trim }}</a><br>
@@ -1173,13 +1174,13 @@
                                                     {% endif %}
                                                     {% if credentials.description %}
                                                         <d1>
-                                                            <dt>{{ 'Описание'|locale }}</dt>
+                                                            <dt>{{ 'Description'|locale }}</dt>
                                                             <dd>{{ credentials.description|locale|raw }}</dd>
                                                         </d1>
                                                     {% endif %}
                                                     {% if credentials.version %}
                                                         <d1>
-                                                            <dt>{{ 'Версия'|locale }}</dt>
+                                                            <dt>{{ 'Version'|locale }}</dt>
                                                             <dd>{{ credentials.version }}</dd>
                                                         </d1>
                                                     {% endif %}
@@ -1192,7 +1193,7 @@
                                                             {% include 'cup/parameters/field.twig' with args %}
                                                         {% endfor %}
                                                     {% else %}
-                                                        <p>{{ 'Плагин не имеет настроек'|locale }}</p>
+                                                        <p>{{ 'The plugin has no settings'|locale }}</p>
                                                     {% endif %}
                                                 </div>
                                             {% endfor %}
@@ -1208,21 +1209,21 @@
                                     <div class="col-xs-12 col-sm-6">
                                         <p>
                                             {% locale %}
-                                                В этом разделе настроек можно задать дополнительные глобальные переменные, которые
-                                                можно легко использовать в шаблоне.
+                                                In this settings section, you can set additional global variables that
+                                                can be easily used in a template.
                                             {% endlocale %}<br>
-                                            <b>{{ 'Например'|locale }}</b>:
-                                            {{ 'переменную с именем'|locale }} <code>my_variable</code>
-                                            {{ 'можно вывести на странице с помощью следующего кода:'|locale }}
+                                            <b>{{ 'For example'|locale }}</b>:
+                                            {{ 'variable named'|locale }} <code>my_variable</code>
+                                            {{ 'can be displayed on the page using the following code:'|locale }}
                                             <br>
                                             <code>&lbrace;&lbrace; parameter('var_my_variable') &rbrace;&rbrace;</code>
                                         </p>
 
 
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Имя новой переменной'|locale,
+                                            'label': 'New variable name'|locale,
                                             'type': 'text',
-                                            'message': 'Допустимы только латинские буквы: <code>[A-Za-z]</code>'|locale,
+                                            'message': 'Only latin letters are allowed: <code>[A-Za-z]</code>'|locale,
                                             'prefix': 'var_',
                                             'args': {
                                                 'placeholder': 'my_variable',
@@ -1230,7 +1231,7 @@
                                             }
                                         } %}
 
-                                        <button type="button" class="btn btn-secondary float-right" data-click="add_variable">{{ 'Добавить'|locale }}</button>
+                                        <button type="button" class="btn btn-secondary float-right" data-click="add_variable">{{ 'Add'|locale }}</button>
                                     </div>
                                     <div class="col-xs-12 col-sm-6">
                                         {% for index,item in parameter %}
@@ -1257,8 +1258,8 @@
                         </div>
                     </div>
                     <div class="card-action">
-                        <button type="submit" class="btn btn-primary">{{ 'Сохранить'|locale }}</button>
-                        <a href="/cup/system" class="btn btn-outline-danger btn-round float-right" target="_blank">{{ 'Установка и обновление'|locale }}</a>
+                        <button type="submit" class="btn btn-primary">{{ 'Save'|locale }}</button>
+                        <a href="/cup/system" class="btn btn-outline-danger btn-round float-right" target="_blank">{{ 'Installation and update'|locale }}</a>
                     </div>
                 </form>
             </div>

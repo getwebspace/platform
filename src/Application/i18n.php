@@ -10,7 +10,7 @@ class i18n
     /**
      * Current possible locale options
      */
-    public static array $accept = ['en-US', 'ru-RU', 'uk-UA'];
+    public static array $accept = ['en-US'];
 
     /**
      * Buffer storage of the language file
@@ -18,14 +18,9 @@ class i18n
     public static array $locale = [];
 
     /**
-     * Buffer storage of added strings from plugins
-     */
-    private static array $strings = [];
-
-    /**
      * Locale code
      */
-    public static string $localeCode = 'en-US';
+    public static string $localeCode = '';
 
     /**
      * i18n constructor
@@ -57,8 +52,49 @@ class i18n
             throw new NullPointException('Locale list is empty');
         }
 
-        static::$locale = array_merge(static::load($priority), static::$strings);
-        static::$strings = [];
+        // add default locale
+        static::addLocaleFromFile('en-US', SRC_LOCALE_DIR . '/en-US.php');
+
+        // load
+        static::$locale = static::load($priority);
+    }
+
+    /**
+     * Add new lang-code
+     */
+    public static function addLocale(string $code, array $strings): void
+    {
+        static::$accept[] = $code;
+        static::$accept = array_unique(static::$accept);
+        static::$locale[$code] = array_merge(static::$locale[$code] ?? [], $strings);
+    }
+
+    /**
+     * Add new lang-code
+     */
+    public static function addLocaleFromFile(string $code, string $path): void
+    {
+        $strings = [];
+
+        if (file_exists($path)) {
+            $info = pathinfo($path);
+
+            switch ($info['extension']) {
+                case 'json':
+                    $strings = json_decode(file_get_contents($path), true);
+                    break;
+
+                case 'ini':
+                    $strings = parse_ini_file($path, true);
+                    break;
+
+                case 'php':
+                    $strings = require_once $path;
+                    break;
+            }
+        }
+
+        static::addLocale($code, $strings);
     }
 
     /**
@@ -67,48 +103,17 @@ class i18n
     protected static function load(SplPriorityQueue $priority): array
     {
         while ($priority->valid()) {
-            $locale = $priority->current();
+            $lang = $priority->current();
 
-            foreach (['php', 'json', 'ini'] as $type) {
-                $path = SRC_LOCALE_DIR . '/' . trim($locale) . '.' . $type;
-
-                if (file_exists($path)) {
-                    static::$localeCode = $locale;
-
-                    switch ($type) {
-                        case 'json':
-                            return json_decode(file_get_contents($path), true);
-
-                        case 'ini':
-                            return parse_ini_file($path, true);
-
-                        case 'php':
-                            return require_once $path;
-                    }
-                }
+            if (isset(static::$locale[$lang])) {
+                static::$localeCode = $lang;
+                return static::$locale[$lang];
             }
 
             $priority->next();
         }
 
         return [];
-    }
-
-    /**
-     * Add new lang-code
-     */
-    public static function addLanguage(string $code): void
-    {
-        static::$locale[] = $code;
-        static::$locale = array_unique(static::$locale);
-    }
-
-    /**
-     * For add new strings via plugin
-     */
-    public static function addStrings(array $strings): void
-    {
-        static::$strings = array_merge(static::$strings, $strings);
     }
 
     /**

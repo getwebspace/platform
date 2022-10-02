@@ -27,7 +27,7 @@
     /**
      * Russian
      */
-    $.FE.LANGUAGE['ru'] = {
+    $.FE.LANGUAGE['ru-RU'] = {
         translation: {
             "Type something": "Напишите что-нибудь",
             "Bold": "Полужирный",

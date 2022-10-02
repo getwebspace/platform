@@ -5,28 +5,28 @@
         <div class="wrapper wrapper-login wrapper-login-full p-0">
             <div class="login-aside w-50 d-flex flex-column align-items-center justify-content-center text-center bg-secondary-gradient">
                 <h1 class="title fw-bold text-white mb-3">WebSpace Engine</h1>
-                <p class="subtitle text-white op-7">Система управления сайтом</p>
+                <p class="subtitle text-white op-7">{{ 'Content management system'|locale }}</p>
             </div>
 
             <div class="login-aside w-50 d-flex align-items-center justify-content-center bg-white">
                 <div class="container container-login container-transparent animated fadeIn">
-                    <h3 class="text-center">Вход в панель администратора</h3>
+                    <h3 class="text-center">{{ 'Admin panel login'|locale }}</h3>
                     <div class="login-form">
                         <form method="post" data-grecaptcha>
                             {% include 'cup/form.twig' with {
-                                'label': 'Логин/E-Mail/Телефон',
+                                'label': 'Login/E-Mail/Phone',
                                 'type': 'text',
                                 'name': 'identifier'
                             } %}
 
                             {% include 'cup/form.twig' with {
-                                'label': 'Пароль',
+                                'label': 'Password',
                                 'type': 'password',
                                 'name': 'password'
                             } %}
 
                             <div class="form-group form-action-d-flex mb-3">
-                                <button class="btn btn-secondary col-md-5 float-right mt-3 mt-sm-0 fw-bold">Войти</button>
+                                <button class="btn btn-secondary col-md-5 float-right mt-3 mt-sm-0 fw-bold">{{ 'Sign In'|locale }}</button>
                             </div>
                         </form>
                     </div>

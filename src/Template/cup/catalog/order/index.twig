@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">{{ 'Список заказов'|locale }} ({{ list.count() }})</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ 'List of orders'|locale }} ({{ list.count() }})</h2>
             </div>
         </div>
     </div>
@@ -19,13 +19,13 @@
                         <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link active show" data-toggle="pill" href="#list" role="tab">
-                                    {{ 'Список заказов'|locale }}
+                                    {{ 'List of orders'|locale }}
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a href="/cup/catalog/order/add" class="nav-link bg-primary text-white">
                                     <i class="fa fa-plus"></i>
-                                    {{ 'Создать заказ'|locale }}
+                                    {{ 'Create order'|locale }}
                                 </a>
                             </li>
                         </ul>
@@ -40,15 +40,15 @@
                                 {% block thead %}
                                     <tr>
                                         <th width="20%">#</th>
-                                        <th>{{ 'Клиент'|locale }}</th>
-                                        <th width="15%">{{ 'Статус'|locale }}</th>
-                                        <th width="15%" class="d-none d-md-table-cell">{{ 'Дата добавления'|locale }}</th>
+                                        <th>{{ 'Client'|locale }}</th>
+                                        <th width="15%">{{ 'Status'|locale }}</th>
+                                        <th width="15%" class="d-none d-md-table-cell">{{ 'Added date'|locale }}</th>
                                         <th width="30%" class="text-right"></th>
                                     </tr>
                                 {% endblock %}
 
                                 {% block tbody %}
-                                    {% for item in list.sortByDesc('date') %}
+                                    {% for item in list.sortByDesc('Date') %}
                                         <tr>
                                             <td width="20%">
                                                 {{ item.serial }}
@@ -72,19 +72,19 @@
                                             </td>
                                             <td width="15%" class="d-none d-md-table-cell">{{ item.date|df('d.m.Y H:i') }}</td>
                                             <td width="30%" class="text-right">
-                                                <form action="/cup/catalog/order/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Вы действительно хотите удалить заказ?'|locale }}');">
+                                                <form action="/cup/catalog/order/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the order?'|locale }}');">
                                                     <div class="btn-group">
                                                         <a href="/cup/catalog/order/{{ item.uuid }}/invoice" class="btn btn-sm btn-outline-info">
                                                             <i class="fas fa-file-invoice"></i>
-                                                            <span class="d-none d-md-inline-block">{{ 'Инвойс'|locale }}</span>
+                                                            <span class="d-none d-md-inline-block">{{ 'Invoice'|locale }}</span>
                                                         </a>
                                                         <a href="/cup/catalog/order/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
                                                             <i class="fas fa-fw fa-edit"></i>
-                                                            <span class="d-none d-md-inline-block">{{ 'Изменить'|locale }}</span>
+                                                            <span class="d-none d-md-inline-block">{{ 'Change'|locale }}</span>
                                                         </a>
                                                         <button type="submit" class="btn btn-sm btn-danger">
                                                             <i class="fas fa-fw fa-trash-alt"></i>
-                                                            <span class="d-none d-md-inline-block">{{ 'Удалить'|locale }}</span>
+                                                            <span class="d-none d-md-inline-block">{{ 'Delete'|locale }}</span>
                                                         </button>
                                                     </div>
                                                 </form>
