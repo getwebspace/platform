@@ -4,8 +4,6 @@ namespace App\Application;
 
 use App\Application\Twig\LocaleParser;
 use App\Domain\AbstractExtension;
-use App\Domain\OAuth\FacebookOAuthProvider;
-use App\Domain\OAuth\VKOAuthProvider;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;

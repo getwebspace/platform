@@ -57,7 +57,7 @@
                             <i class="lni lni-phone"></i>
                             <h3>
                                 Hotline:
-                                <span>(+100) 123 456 7890</span>
+                                <span>{{ parameter('var_phone', '+1 (900) 00 000 0000') }}</span>
                             </h3>
                         </div>
                         <div class="navbar-cart">
@@ -119,16 +119,13 @@
                     <h5 class="title">Follow Us:</h5>
                     <ul>
                         <li>
-                            <a href="javascript:void(0)"><i class="lni lni-facebook-filled"></i></a>
+                            <a href="{{ parameter('var_soc_facebook', '#') }}"><i class="lni lni-facebook-filled"></i></a>
                         </li>
                         <li>
-                            <a href="javascript:void(0)"><i class="lni lni-twitter-original"></i></a>
+                            <a href="{{ parameter('var_soc_instagram', '#') }}"><i class="lni lni-twitter-original"></i></a>
                         </li>
                         <li>
-                            <a href="javascript:void(0)"><i class="lni lni-instagram"></i></a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0)"><i class="lni lni-skype"></i></a>
+                            <a href="{{ parameter('var_soc_twitter', '#') }}"><i class="lni lni-instagram"></i></a>
                         </li>
                     </ul>
                 </div>

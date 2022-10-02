@@ -1,31 +1,27 @@
-<!-- Start Single Blog -->
-<div class="col-lg-6 col-md-6 col-12">
-    <div class="single-blog">
-        <div class="blog-img">
-            <a href="/{{ item.address }}">
-                {% include 'mixin/img.twig' with {
-                    'src': item.hasFiles() ? item.getFiles().first().getPublicPath('middle') : 'https://via.placeholder.com/300x215',
-                    'placeholder': item.hasFiles() ? item.getFiles().first().getPublicPath('small') : '',
-                    'title': item.title,
-                    'alt': item.title,
-                    'style': 'display:block; height: 300px; width: 100%; object-fit: contain; object-position: center center;'
-                } only %}
-            </a>
-        </div>
-        <div class="blog-content">
-            {{ item.date|df }} |
-            <a class="category" href="/{{ item.category.address }}">{{ item.category.title }}</a> |
-            {{ item.user.getName('short') }}
-            <h4>
-                <a href="/{{ item.address }}">{{ item.title }}</a>
-            </h4>
+<div class="single-blog">
+    <div class="blog-img">
+        <a href="/{{ item.address }}">
+            {% include 'mixin/img.twig' with {
+                'src': item.hasFiles() ? item.getFiles().first().getPublicPath('middle') : 'https://via.placeholder.com/300x215',
+                'placeholder': item.hasFiles() ? item.getFiles().first().getPublicPath('small') : '',
+                'title': item.title,
+                'alt': item.title,
+                'style': 'display:block; height: 300px; width: 100%; object-fit: contain; object-position: center center;'
+            } only %}
+        </a>
+    </div>
+    <div class="blog-content">
+        {{ item.date|df }} |
+        <a class="category" href="/{{ item.category.address }}">{{ item.category.title }}</a> |
+        {{ item.user.getName('short') }}
+        <h4>
+            <a href="/{{ item.address }}">{{ item.title }}</a>
+        </h4>
 
-            {{ item.content.short|raw }}
+        {{ item.content.short|raw }}
 
-            <div class="button">
-                <a href="/{{ item.address }}" class="btn">Read More</a>
-            </div>
+        <div class="button">
+            <a href="/{{ item.address }}" class="btn">Read More</a>
         </div>
     </div>
 </div>
-<!-- End Single Blog -->

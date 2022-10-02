@@ -11,108 +11,28 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-4 col-md-6 col-12">
-                <!-- Start Single Category -->
-                <div class="single-category">
-                    <h3 class="heading">TV & Audios</h3>
-                    <ul>
-                        <li><a href="product-grids.html">Smart Television</a></li>
-                        <li><a href="product-grids.html">QLED TV</a></li>
-                        <li><a href="product-grids.html">Audios</a></li>
-                        <li><a href="product-grids.html">Headphones</a></li>
-                        <li><a href="product-grids.html">View All</a></li>
-                    </ul>
-                    <div class="images">
-                        <img src="https://via.placeholder.com/180x180" alt="#">
+            {% for category in catalog_category({'parent': NIL}) %}
+                <div class="col-lg-4 col-md-6 col-12">
+                    <!-- Start Single Category -->
+                    <div class="single-category" style="min-height: 184px;">
+                        <h3 class="heading">{{ category.title }}</h3>
+                        <ul>
+                            {% for sub in catalog_category({'parent': category.uuid}) %}
+                                <li><a href="/{{ parameter('catalog_address', 'catalog') }}/{{ sub.address }}">{{ sub.title }}</a></li>
+                            {% endfor %}
+                        </ul>
+                        <div class="images">
+                            {% include 'mixin/img.twig' with {
+                                'src': category.hasFiles() ? category.getFiles().first().getPublicPath('middle') : 'https://via.placeholder.com/180x180',
+                                'title': category.title,
+                                'alt': category.title,
+                                'style': 'height: 180px; object-fit: contain;'
+                            } only %}
+                        </div>
                     </div>
+                    <!-- End Single Category -->
                 </div>
-                <!-- End Single Category -->
-            </div>
-            <div class="col-lg-4 col-md-6 col-12">
-                <!-- Start Single Category -->
-                <div class="single-category">
-                    <h3 class="heading">Desktop & Laptop</h3>
-                    <ul>
-                        <li><a href="product-grids.html">Smart Television</a></li>
-                        <li><a href="product-grids.html">QLED TV</a></li>
-                        <li><a href="product-grids.html">Audios</a></li>
-                        <li><a href="product-grids.html">Headphones</a></li>
-                        <li><a href="product-grids.html">View All</a></li>
-                    </ul>
-                    <div class="images">
-                        <img src="https://via.placeholder.com/180x180" alt="#">
-                    </div>
-                </div>
-                <!-- End Single Category -->
-            </div>
-            <div class="col-lg-4 col-md-6 col-12">
-                <!-- Start Single Category -->
-                <div class="single-category">
-                    <h3 class="heading">Cctv Camera</h3>
-                    <ul>
-                        <li><a href="product-grids.html">Smart Television</a></li>
-                        <li><a href="product-grids.html">QLED TV</a></li>
-                        <li><a href="product-grids.html">Audios</a></li>
-                        <li><a href="product-grids.html">Headphones</a></li>
-                        <li><a href="product-grids.html">View All</a></li>
-                    </ul>
-                    <div class="images">
-                        <img src="https://via.placeholder.com/180x180" alt="#">
-                    </div>
-                </div>
-                <!-- End Single Category -->
-            </div>
-            <div class="col-lg-4 col-md-6 col-12">
-                <!-- Start Single Category -->
-                <div class="single-category">
-                    <h3 class="heading">Dslr Camera</h3>
-                    <ul>
-                        <li><a href="product-grids.html">Smart Television</a></li>
-                        <li><a href="product-grids.html">QLED TV</a></li>
-                        <li><a href="product-grids.html">Audios</a></li>
-                        <li><a href="product-grids.html">Headphones</a></li>
-                        <li><a href="product-grids.html">View All</a></li>
-                    </ul>
-                    <div class="images">
-                        <img src="https://via.placeholder.com/180x180" alt="#">
-                    </div>
-                </div>
-                <!-- End Single Category -->
-            </div>
-            <div class="col-lg-4 col-md-6 col-12">
-                <!-- Start Single Category -->
-                <div class="single-category">
-                    <h3 class="heading">Smart Phones</h3>
-                    <ul>
-                        <li><a href="product-grids.html">Smart Television</a></li>
-                        <li><a href="product-grids.html">QLED TV</a></li>
-                        <li><a href="product-grids.html">Audios</a></li>
-                        <li><a href="product-grids.html">Headphones</a></li>
-                        <li><a href="product-grids.html">View All</a></li>
-                    </ul>
-                    <div class="images">
-                        <img src="https://via.placeholder.com/180x180" alt="#">
-                    </div>
-                </div>
-                <!-- End Single Category -->
-            </div>
-            <div class="col-lg-4 col-md-6 col-12">
-                <!-- Start Single Category -->
-                <div class="single-category">
-                    <h3 class="heading">Game Console</h3>
-                    <ul>
-                        <li><a href="product-grids.html">Smart Television</a></li>
-                        <li><a href="product-grids.html">QLED TV</a></li>
-                        <li><a href="product-grids.html">Audios</a></li>
-                        <li><a href="product-grids.html">Headphones</a></li>
-                        <li><a href="product-grids.html">View All</a></li>
-                    </ul>
-                    <div class="images">
-                        <img src="https://via.placeholder.com/180x180" alt="#">
-                    </div>
-                </div>
-                <!-- End Single Category -->
-            </div>
+            {% endfor %}
         </div>
     </div>
 </section>
