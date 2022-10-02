@@ -72,7 +72,7 @@ class PublicationService extends AbstractService
             ->setExternalId($data['external_id']);
 
         // if address generation is enabled
-        if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
+        if (!$data['address'] && $this->parameter('common_auto_generate_address', 'no') === 'yes') {
             $publicationCategoryService = $this->container->get(PublicationCategoryService::class);
             $publicationCategory = $publicationCategoryService->read(['uuid' => $data['category']]);
 

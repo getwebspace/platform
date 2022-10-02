@@ -110,7 +110,7 @@ class ProductService extends AbstractService
             ->setExport($data['export']);
 
         // if address generation is enabled
-        if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && \Ramsey\Uuid\Uuid::isValid((string) $data['category'])) {
+        if (!$data['address'] && $this->parameter('common_auto_generate_address', 'no') === 'yes' && \Ramsey\Uuid\Uuid::isValid((string) $data['category'])) {
             try {
                 $catalogCategoryService = $this->container->get(CatalogCategoryService::class);
                 $catalogCategory = $catalogCategoryService->read(['uuid' => $data['category']]);

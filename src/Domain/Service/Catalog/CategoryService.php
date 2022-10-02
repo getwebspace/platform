@@ -92,11 +92,11 @@ class CategoryService extends AbstractService
             ->setExport($data['export']);
 
         // if address generation is enabled
-        if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && \Ramsey\Uuid\Uuid::isValid((string) $data['parent']) && $data['parent'] !== \Ramsey\Uuid\Uuid::NIL) {
+        if (!$data['address'] && $this->parameter('common_auto_generate_address', 'no') === 'yes' && \Ramsey\Uuid\Uuid::isValid((string) $data['parent']) && $data['parent'] !== \Ramsey\Uuid\Uuid::NIL) {
             try {
                 $parent = $this->read(['uuid' => $data['parent']]);
 
-                // combine address category with product address
+                // combine address category with parent category
                 $category->setAddress(
                     implode('/', [$parent->getAddress(), $category->setAddress('')->getAddress()])
                 );
