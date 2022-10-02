@@ -14,6 +14,19 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
+                            <li class="nav-item">
+                                <a href="/cup/catalog/order/status/add" class="nav-link bg-primary text-white">
+                                    <i class="fa fa-plus"></i>
+                                    {{ 'Create status'|locale }}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
@@ -47,8 +60,6 @@
                             {% endfor %}
                         {% endblock %}
                     {% endembed %}
-
-                    <a href="/cup/catalog/order/status/add" class="btn btn-outline-primary mt-3">{{ 'Create status'|locale }}</a>
                 </div>
             </div>
         </div>
