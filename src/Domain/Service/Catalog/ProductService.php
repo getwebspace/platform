@@ -158,6 +158,7 @@ class ProductService extends AbstractService
             'address' => null,
             'vendorcode' => null,
             'barcode' => null,
+            'special' => null,
             'field1' => null,
             'field2' => null,
             'field3' => null,
@@ -191,6 +192,9 @@ class ProductService extends AbstractService
         }
         if ($data['barcode'] !== null) {
             $criteria['barcode'] = $data['barcode'];
+        }
+        if ($data['special'] !== null) {
+            $criteria['special'] = !!$data['special'];
         }
         if ($data['field1'] !== null) {
             $criteria['field1'] = $data['field1'];
