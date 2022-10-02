@@ -14,13 +14,13 @@
                     <div class="login-form">
                         <form method="post" data-grecaptcha>
                             {% include 'cup/form.twig' with {
-                                'label': 'Login/E-Mail/Phone',
+                                'label': 'Login/E-Mail/Phone'|locale,
                                 'type': 'text',
                                 'name': 'identifier'
                             } %}
 
                             {% include 'cup/form.twig' with {
-                                'label': 'Password',
+                                'label': 'Password'|locale,
                                 'type': 'password',
                                 'name': 'password'
                             } %}
