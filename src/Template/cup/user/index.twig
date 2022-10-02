@@ -123,9 +123,6 @@
                                         </div>
 
                                         <div class="text-black-50 float-right d-none d-lg-inline">
-                                            {% for integration in user.getIntegrations() %}
-                                                <i class="fab fa-{{ integration.provider }}"></i>
-                                            {% endfor %}
                                             {% if user.getAllowMail() %}
                                                 <i class="fa fa-envelope" data-toggle="tooltip" data-placement="right" title="{{ 'Subscribed to newsletter'|locale }}"></i>
                                             {% endif %}

@@ -89,12 +89,12 @@ class SystemPageAction extends AbstractAction
             // create or read group
             try {
                 $userData['group'] = $userGroupService->create([
-                    'title' => __('Администраторы'),
+                    'title' => __('Administrators'),
                     'access' => $this->getRoutes()->values()->all(),
                 ]);
             } catch (TitleAlreadyExistsException $e) {
                 $userData['group'] = $userGroupService->read([
-                    'title' => __('Администраторы'),
+                    'title' => __('Administrators'),
                 ]);
             }
 
@@ -107,21 +107,21 @@ class SystemPageAction extends AbstractAction
     {
         if ('system_default' === $this->getParam('fill', 'no')) {
             $order_status = [
-                ['title' => __('Новый'), 'order' => 1],
-                ['title' => __('В обработке'), 'order' => 2],
-                ['title' => __('Отправлен'), 'order' => 3],
-                ['title' => __('Доставлен'), 'order' => 4],
-                ['title' => __('Отменён'), 'order' => 5],
+                ['title' => __('New'), 'order' => 1],
+                ['title' => __('In processing'), 'order' => 2],
+                ['title' => __('Sent'), 'order' => 3],
+                ['title' => __('Delivered'), 'order' => 4],
+                ['title' => __('Canceled'), 'order' => 5],
             ];
             foreach ($order_status as $el) {
                 $this->container->get(CatalogOrderStatusService::class)->create($el);
             }
 
             $product_measure = [
-                ['title' => __('Килограмм'), 'contraction' => __('кг'), 'value' => 1000],
-                ['title' => __('Грамм'), 'contraction' => __('г'), 'value' => 1],
-                ['title' => __('Литр'), 'contraction' => __('л'), 'value' => 1000],
-                ['title' => __('Миллилитр'), 'contraction' => __('мл'), 'value' => 1],
+                ['title' => __('Kilogram'), 'contraction' => __('kg'), 'value' => 1000],
+                ['title' => __('Gram'), 'contraction' => __('g'), 'value' => 1],
+                ['title' => __('Liter'), 'contraction' => __('l'), 'value' => 1000],
+                ['title' => __('Milliliter'), 'contraction' => __('ml'), 'value' => 1],
             ];
             foreach ($product_measure as $el) {
                 $this->container->get(CatalogMeasureService::class)->create($el);

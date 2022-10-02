@@ -9,7 +9,7 @@ use App\Domain\Service\User\UserService;
 
 class SendNewsLetterMailTask extends AbstractTask
 {
-    public const TITLE = 'Рассылка писем';
+    public const TITLE = 'Mailing of letters';
 
     public function execute(array $params = []): \App\Domain\Entities\Task
     {

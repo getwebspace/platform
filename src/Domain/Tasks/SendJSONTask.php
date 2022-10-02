@@ -6,7 +6,7 @@ use App\Domain\AbstractTask;
 
 class SendJSONTask extends AbstractTask
 {
-    public const TITLE = 'Отправка JSON';
+    public const TITLE = 'Sending JSON';
 
     public function execute(array $params = []): \App\Domain\Entities\Task
     {

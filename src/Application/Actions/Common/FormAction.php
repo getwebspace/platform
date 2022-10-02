@@ -96,7 +96,7 @@ class FormAction extends AbstractAction
                 // add notification
                 if ($this->parameter('notification_is_enabled', 'yes') === 'yes') {
                     $notificationService->create([
-                        'title' => __('Новый ответ в форме') . ': ' . $form->getTitle(),
+                        'title' => __('New answer in the form') . ': ' . $form->getTitle(),
                         'params' => [
                             'form_uuid' => $form->getUuid(),
                             'form_data_uuid' => $formData->getUuid(),

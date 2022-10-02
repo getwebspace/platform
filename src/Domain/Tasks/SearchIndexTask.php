@@ -10,7 +10,7 @@ use App\Domain\Entities\Publication;
 
 class SearchIndexTask extends AbstractTask
 {
-    public const TITLE = 'Поисковая индексация';
+    public const TITLE = 'Search indexing';
 
     public function execute(array $params = []): \App\Domain\Entities\Task
     {

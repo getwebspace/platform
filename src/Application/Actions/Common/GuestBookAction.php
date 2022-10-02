@@ -30,7 +30,7 @@ class GuestBookAction extends AbstractAction
                     // add notification
                     if ($this->parameter('notification_is_enabled', 'yes') === 'yes') {
                         $notificationService->create([
-                            'title' => __('Новый отзыв в гостевой книге'),
+                            'title' => __('New guestbook review'),
                             'params' => [
                                 'guestbook_uuid' => $entry->getUuid(),
                             ],

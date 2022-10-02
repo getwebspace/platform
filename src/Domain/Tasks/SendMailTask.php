@@ -7,7 +7,7 @@ use App\Domain\AbstractTask;
 
 class SendMailTask extends AbstractTask
 {
-    public const TITLE = 'Отправка почты';
+    public const TITLE = 'Sending mail';
 
     public function execute(array $params = []): \App\Domain\Entities\Task
     {

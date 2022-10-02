@@ -17,7 +17,7 @@ use Illuminate\Support\Collection;
 
 class ImportTask extends AbstractTask
 {
-    public const TITLE = 'Импорт каталога из Excel файла';
+    public const TITLE = 'Import directory from Excel file';
 
     public function execute(array $params = []): \App\Domain\Entities\Task
     {
