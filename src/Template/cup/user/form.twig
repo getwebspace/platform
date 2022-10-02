@@ -112,10 +112,10 @@
                                             }
                                         } %}
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Site language (code)'|locale,
-                                            'message': 'For example: <code>en-US</code>, <code>uk-UA</code>, <code>ru-RU</code>'|locale,
+                                            'message': 'For example: <code>en-US</code>'|locale,
                                             'type': 'text',
                                             'name': 'language',
                                             'args': {
@@ -132,7 +132,7 @@
                             {# Tab: Контакт #}
                             <div class="tab-pane fade {{ item ? 'active show' : '' }}" id="contact" role="tabpanel">
                                 <div class="row">
-                                    <div class="col-md-3">
+                                    <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Firstname'|locale,
                                             'type': 'text',
@@ -141,8 +141,7 @@
                                                 'value': item.firstname,
                                             }
                                         } %}
-                                    </div>
-                                    <div class="col-md-3">
+
                                         {% include 'cup/form.twig' with {
                                             'label': 'Lastname'|locale,
                                             'type': 'text',
@@ -151,8 +150,7 @@
                                                 'value': item.lastname,
                                             }
                                         } %}
-                                    </div>
-                                    <div class="col-md-3">
+
                                         {% include 'cup/form.twig' with {
                                             'label': 'Patronymic'|locale,
                                             'type': 'text',
@@ -162,10 +160,8 @@
                                             }
                                         } %}
                                     </div>
-                                </div>
 
-                                <div class="row">
-                                    <div class="col-md-3">
+                                    <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Gender'|locale,
                                             'type': 'text',
@@ -180,8 +176,7 @@
                                             <option value="{{ 'Male'|locale }}">{{ 'Male'|locale }}</option>
                                             <option value="{{ 'Female'|locale }}">{{ 'Female'|locale }}</option>
                                         </datalist>
-                                    </div>
-                                    <div class="col-md-3">
+
                                         {% include 'cup/form.twig' with {
                                             'label': 'Birthdate'|locale,
                                             'type': 'date',
@@ -191,13 +186,24 @@
                                                 'placeholder': '30.09.1991',
                                             }
                                         } %}
+
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Other/Note'|locale,
+                                            'message': 'Allows to specify any information up to 250 characters'|locale,
+                                            'type': 'textarea',
+                                            'name': 'additional',
+                                            'args': {
+                                                'value': item.additional,
+                                                'style': 'min-height: 75px;'
+                                            }
+                                        } %}
                                     </div>
                                 </div>
 
                                 <hr>
 
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Telephone'|locale,
                                             'type': 'tel',
@@ -206,8 +212,7 @@
                                                 'value': item.phone,
                                             }
                                         } %}
-                                    </div>
-                                    <div class="col-md-3">
+
                                         {% include 'cup/form.twig' with {
                                             'label': 'E-Mail',
                                             'type': 'email',
@@ -216,8 +221,7 @@
                                                 'value': item.email,
                                             }
                                         } %}
-                                    </div>
-                                    <div class="col-md-3">
+
                                         {% include 'cup/form.twig' with {
                                             'label': 'Subscribed to newsletter'|locale,
                                             'type': 'select',
@@ -229,10 +233,7 @@
                                         } %}
                                     </div>
 
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Country'|locale,
                                             'type': 'text',
@@ -241,8 +242,7 @@
                                                 'value': item.country,
                                             }
                                         } %}
-                                    </div>
-                                    <div class="col-md-4">
+
                                         {% include 'cup/form.twig' with {
                                             'label': 'City'|locale,
                                             'type': 'text',
@@ -251,8 +251,7 @@
                                                 'value': item.city,
                                             }
                                         } %}
-                                    </div>
-                                    <div class="col-md-4">
+
                                         {% include 'cup/form.twig' with {
                                             'label': 'Postcode'|locale,
                                             'type': 'text',
@@ -261,8 +260,7 @@
                                                 'value': item.postcode,
                                             }
                                         } %}
-                                    </div>
-                                    <div class="col-md-6">
+
                                         {% include 'cup/form.twig' with {
                                             'label': 'Address'|locale,
                                             'type': 'textarea',
@@ -273,24 +271,12 @@
                                             }
                                         } %}
                                     </div>
-                                    <div class="col-md-6">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Other/Note'|locale,
-                                            'message': 'Allows to specify any information up to 250 characters'|locale,
-                                            'type': 'textarea',
-                                            'name': 'additional',
-                                            'args': {
-                                                'value': item.additional,
-                                                'style': 'min-height: 133px;'
-                                            }
-                                        } %}
-                                    </div>
                                 </div>
 
                                 <hr>
 
                                 <div class="row">
-                                    <div class="col-md-3">
+                                    <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Company'|locale,
                                             'type': 'text',
@@ -299,8 +285,7 @@
                                                 'value': item.company.title,
                                             }
                                         } %}
-                                    </div>
-                                    <div class="col-md-3">
+
                                         {% include 'cup/form.twig' with {
                                             'label': 'Position'|locale,
                                             'type': 'text',
@@ -310,7 +295,8 @@
                                             }
                                         } %}
                                     </div>
-                                    <div class="col-md-3">
+
+                                    <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Registration No'|locale,
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('ID'|locale) ~ '"></i>',
@@ -320,8 +306,7 @@
                                                 'value': item.legal.code,
                                             }
                                         } %}
-                                    </div>
-                                    <div class="col-md-3">
+
                                         {% include 'cup/form.twig' with {
                                             'label': 'Tax ID'|locale,
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('VAT ID'|locale) ~ '"></i>',
