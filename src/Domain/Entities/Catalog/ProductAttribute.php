@@ -96,17 +96,12 @@ class ProductAttribute extends AbstractEntity
     #[ORM\Column(type: 'string', length: 1000, options: ['default' => ''])]
     public string $value = '';
 
-    /**
-     * @param mixed $value
-     *
-     * @return $this
-     */
-    public function setValue($value): self
+    public function setValue(mixed $value): self
     {
         switch ($this->attribute->getType()) {
             case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_STRING:
                 if ($this->checkStrLenMax($value, 1000)) {
-                    $this->value = mb_strtolower($value);
+                    $this->value = $value;
                 }
 
                 break;
@@ -122,10 +117,7 @@ class ProductAttribute extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getValue()
+    public function getValue(): string|int|float
     {
         switch ($this->attribute->getType()) {
             case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_STRING:
