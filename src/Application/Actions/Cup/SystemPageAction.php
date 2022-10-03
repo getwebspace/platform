@@ -190,14 +190,14 @@ const INVOICE_TEMPLATE = <<<'EOD'
     <div class="m-5">
         <div class="row">
             <div class="col-12 text-center">
-                <h3 class="font-weight-bold">{{ 'Инвойс'|locale }}</h3>
+                <h3 class="font-weight-bold">{{ 'Invoice'|locale }}</h3>
                 {#<img src="/images/logo.png" style="width: 100%; max-width: 300px" />#}
             </div>
             <div class="col-6">
                 {{ parameter('common_title') }}<br />
-                {{ 'Заказ'|locale }}: <b>{{ order.external_id ?: order.serial }}</b><br />
-                {{ 'Дата'|locale }}: <b>{{ order.date|df('d.m.Y H:i') }}</b><br />
-                {{ 'Доставка'|locale }}: <b>{{ order.shipping|df('d.m.Y H:i') }}</b>
+                {{ 'Order'|locale }}: <b>{{ order.external_id ?: order.serial }}</b><br />
+                {{ 'Date'|locale }}: <b>{{ order.date|df('d.m.Y H:i') }}</b><br />
+                {{ 'Shipping'|locale }}: <b>{{ order.shipping|df('d.m.Y H:i') }}</b>
             </div>
             <div class="col-6 text-right">
                 {{ qr_code(base_url() ~ '/cart/done/' ~ order.uuid, 100) }}
@@ -217,10 +217,10 @@ const INVOICE_TEMPLATE = <<<'EOD'
         </div>
 
         <div class="row py-1 mt-3 bg-grey2">
-            <div class="col-8 col-md-6 text-nowrap font-weight-bold">{{ 'Позиция'|locale }}</div>
-            <div class="d-none d-md-block col-md-2 text-right text-nowrap font-weight-bold">{{ 'Цена'|locale }}</div>
-            <div class="d-none d-md-block col-md-2 text-right text-nowrap font-weight-bold">{{ 'Количество'|locale }}</div>
-            <div class="col-4 col-md-2 text-right text-nowrap font-weight-bold">{{ 'Сумма'|locale }}</div>
+            <div class="col-8 col-md-6 text-nowrap font-weight-bold">{{ 'Item'|locale }}</div>
+            <div class="d-none d-md-block col-md-2 text-right text-nowrap font-weight-bold">{{ 'Price'|locale }}</div>
+            <div class="d-none d-md-block col-md-2 text-right text-nowrap font-weight-bold">{{ 'Quantity'|locale }}</div>
+            <div class="col-4 col-md-2 text-right text-nowrap font-weight-bold">{{ 'Sum'|locale }}</div>
         </div>
 
         {% set total = 0 %}
@@ -234,7 +234,7 @@ const INVOICE_TEMPLATE = <<<'EOD'
         {% endfor %}
 
         <div class="row py-1">
-            <div class="col-12 text-right text-nowrap font-weight-bold border-top">{{ 'Общая сумма'|locale }}: {{ order.getTotalPrice()|number_format(2, '.', ' ') }}</div>
+            <div class="col-12 text-right text-nowrap font-weight-bold border-top">{{ 'Total price'|locale }}: {{ order.getTotalPrice()|number_format(2, '.', ' ') }}</div>
         </div>
     </div>
     EOD;
