@@ -364,17 +364,21 @@
                             {# Tab: Атрибуты #}
                             <div class="tab-pane fade" id="attributes" role="tabpanel">
                                 {% if category.hasAttributes() %}
-                                    {% for attribute in category.getAttributes().where('type', '!=', 'boolean') %}
-                                        {% include 'cup/field.twig' with {
-                                            'label': attribute.title,
-                                            'type': attribute.type == 'string' ? 'text' : 'number',
-                                            'name': 'attributes[' ~ attribute.uuid ~ ']',
-                                            'message': 'Attribute from category'|locale,
-                                            'args': {
-                                                'value': item.hasAttributes() ? item.getAttributes().firstWhere('attribute_uuid', attribute.uuid).value : '',
-                                            }
-                                        } %}
-                                    {% endfor %}
+                                    <div class="row">
+                                        {% for attribute in category.getAttributes().where('type', '!=', 'boolean') %}
+                                            <div class="col-12 col-sm-6">
+                                                {% include 'cup/form.twig' with {
+                                                    'label': attribute.title,
+                                                    'type': attribute.type == 'string' ? 'text' : 'number',
+                                                    'name': 'attributes[' ~ attribute.uuid ~ ']',
+                                                    'message': 'Attribute from category'|locale,
+                                                    'args': {
+                                                        'value': item.hasAttributes() ? item.getAttributes().firstWhere('attribute_uuid', attribute.uuid).value : '',
+                                                    }
+                                                } %}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
 
                                     <div class="row">
                                         {% for attribute in category.getAttributes().where('type', '==', 'boolean') %}
@@ -398,7 +402,7 @@
                                 {% endif %}
 
                                 <div class="row">
-                                    <div class="col-12 col-md-4">
+                                    <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Attributes'|locale,
                                             'type': 'select',
@@ -412,13 +416,13 @@
                                         } %}
                                     </div>
 
-                                    <div class="col-12 col-md-8" data-place="attribute">
-                                        {% include 'cup/field.twig' with { 'label': 'attribute-template' } %}
+                                    <div class="col-12 col-md-6" data-place="attribute">
+                                        {% include 'cup/form.twig' with { 'label': 'attribute-template' } %}
 
                                         {% for attribute in item.getAttributes().whereNotIn('attribute_uuid', category.getAttributes().pluck('uuid')) %}
                                             {% if attribute.value %}
                                                 {% if attribute.type != 'boolean' %}
-                                                    {% include 'cup/field.twig' with {
+                                                    {% include 'cup/form.twig' with {
                                                         'label': attribute.title,
                                                         'type': attribute.type == 'string' ? 'text' : 'number',
                                                         'name': 'attributes[' ~ attribute.attribute_uuid ~ ']',
@@ -435,55 +439,63 @@
 
                             {# Tab: Поля #}
                             <div class="tab-pane fade" id="fields" role="tabpanel">
-                                {% include 'cup/field.twig' with {
-                                    'label': category.product.field_1 ? category.product.field_1 : ('Field'|locale ~ ' 1'),
-                                    'type': 'text',
-                                    'name': 'field1',
-                                    'message': 'Individual field'|locale,
-                                    'args': {
-                                        'value': item.field1,
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': category.product.field_2 ? category.product.field_2 : ('Field'|locale ~ ' 2'),
-                                    'type': 'text',
-                                    'name': 'field2',
-                                    'message': 'Individual field'|locale,
-                                    'args': {
-                                        'value': item.field2,
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': category.product.field_3 ? category.product.field_3 : ('Field'|locale ~ ' 3'),
-                                    'type': 'text',
-                                    'name': 'field3',
-                                    'message': 'Individual field'|locale,
-                                    'args': {
-                                        'value': item.field3,
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': category.product.field_4 ? category.product.field_4 : ('Field'|locale ~ ' 4'),
-                                    'type': 'text',
-                                    'name': 'field4',
-                                    'message': 'Individual field'|locale,
-                                    'args': {
-                                        'value': item.field4,
-                                    }
-                                } %}
-
-                                {% include 'cup/field.twig' with {
-                                    'label': category.product.field_5 ? category.product.field_5 : ('Field'|locale ~ ' 5'),
-                                    'type': 'text',
-                                    'name': 'field5',
-                                    'message': 'Individual field'|locale,
-                                    'args': {
-                                        'value': item.field5,
-                                    }
-                                } %}
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': category.product.field_1 ? category.product.field_1 : ('Field'|locale ~ ' 1'),
+                                            'type': 'text',
+                                            'name': 'field1',
+                                            'message': 'Individual field'|locale,
+                                            'args': {
+                                                'value': item.field1,
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': category.product.field_2 ? category.product.field_2 : ('Field'|locale ~ ' 2'),
+                                            'type': 'text',
+                                            'name': 'field2',
+                                            'message': 'Individual field'|locale,
+                                            'args': {
+                                                'value': item.field2,
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': category.product.field_3 ? category.product.field_3 : ('Field'|locale ~ ' 3'),
+                                            'type': 'text',
+                                            'name': 'field3',
+                                            'message': 'Individual field'|locale,
+                                            'args': {
+                                                'value': item.field3,
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': category.product.field_4 ? category.product.field_4 : ('Field'|locale ~ ' 4'),
+                                            'type': 'text',
+                                            'name': 'field4',
+                                            'message': 'Individual field'|locale,
+                                            'args': {
+                                                'value': item.field4,
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': category.product.field_5 ? category.product.field_5 : ('Field'|locale ~ ' 5'),
+                                            'type': 'text',
+                                            'name': 'field5',
+                                            'message': 'Individual field'|locale,
+                                            'args': {
+                                                'value': item.field5,
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
                             </div>
 
                             {# Tab: Дополнительно #}
