@@ -37,6 +37,9 @@ class CatalogExportAction extends CatalogAction
 
             $categories = $this->catalogCategoryService->read([
                 'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+                'order' => [
+                    'order' => 'ASC',
+                ],
             ]);
 
             // Products
@@ -50,6 +53,9 @@ class CatalogExportAction extends CatalogAction
                     $products = $this->catalogProductService->read([
                         'category' => $category->getNested($categories)->pluck('uuid')->all(),
                         'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+                        'order' => [
+                            'order' => 'ASC',
+                        ],
                     ]);
 
                     break;
@@ -58,6 +64,9 @@ class CatalogExportAction extends CatalogAction
                      false:
                     $products = $this->catalogProductService->read([
                         'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+                        'order' => [
+                            'order' => 'ASC',
+                        ],
                     ]);
 
                     break;
