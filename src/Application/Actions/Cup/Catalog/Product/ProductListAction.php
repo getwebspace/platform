@@ -21,7 +21,7 @@ class ProductListAction extends CatalogAction
                     'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
                 ]);
             } else {
-                return $this->respondWithRedirect('/cup/catalog/category');
+                return $this->respondWithRedirect('/cup/catalog/product');
             }
         }
 
@@ -31,6 +31,10 @@ class ProductListAction extends CatalogAction
         $products = $this->catalogProductService->read([
             'category' => $category ? $category->getNested($categories)->pluck('uuid')->all() : null,
             'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+            'order' => [
+                'order' => 'ASC',
+                'title' => 'ASC',
+            ],
         ]);
 
         return $this->respondWithTemplate('cup/catalog/product/index.twig', [

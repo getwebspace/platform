@@ -27,6 +27,10 @@ class CategoryListAction extends CatalogAction
 
         $categories = $this->catalogCategoryService->read([
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+            'order' => [
+                'order' => 'ASC',
+                'title' => 'ASC',
+            ],
         ]);
 
         return $this->respondWithTemplate('cup/catalog/category/index.twig', [
