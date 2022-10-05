@@ -1,7 +1,7 @@
 ![Docker builder](https://github.com/getwebspace/platform/workflows/Docker%20builder/badge.svg)
 ![License](https://img.shields.io/github/license/getwebspace/platform)
 ![](https://visitor-badge.glitch.me/badge?page_id=getwebspace.platform)
-[![Telegram](https://img.shields.io/badge/chat-on%20Telegram-2ba2d9.svg)](https://t.me/WSEPlatform)
+[![Telegram](https://img.shields.io/badge/chat-on%20Telegram-2ba2d9.svg)](https://t.me/WSEPlatformCommunity)
 
 ## WebSpace Engine
 
