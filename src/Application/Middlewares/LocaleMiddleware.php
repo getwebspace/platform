@@ -14,7 +14,7 @@ class LocaleMiddleware extends AbstractMiddleware
      */
     public function __invoke(Request $request, RequestHandlerInterface $handler): \Slim\Psr7\Response
     {
-        $default_locale = $this->parameter('common_language', 'ru-RU');
+        $default_locale = $this->parameter('common_language', 'en-US');
         $user_locale = $request->getCookieParams()['language'] ?? null;
         $query_locale = $request->getQueryParams()['lang'] ?? null;
 

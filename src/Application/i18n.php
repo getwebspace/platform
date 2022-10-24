@@ -48,10 +48,6 @@ class i18n
             $priority->insert($config['default'], 0);
         }
 
-        if (!count($priority)) {
-            throw new NullPointException('Locale list is empty');
-        }
-
         // add default locale
         static::addLocaleFromFile('en-US', SRC_LOCALE_DIR . '/en-US.php');
 
