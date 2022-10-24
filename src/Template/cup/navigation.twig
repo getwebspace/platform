@@ -153,7 +153,7 @@
             </a>
         </li>
 
-        {% if plugins.where('navigation', true).count() %}
+        {% if plugins.where('navigation', true) %}
             <li class="nav-section">
                 <span class="sidebar-mini-icon">
                     <i class="fa fa-ellipsis-h"></i>
@@ -161,15 +161,13 @@
                 <h4 class="text-section">{{ 'Plugins'|locale }}</h4>
             </li>
 
-            {% for plugin in plugins %}
-                {% if (plugin.isNavigationItemEnabled()) %}
-                    <li class="nav-item">
-                        <a href="/cup/plugin/{{ plugin.getCredentials('name') }}">
-                            <i class="fas fa-puzzle-piece"></i>
-                            <p>{{ plugin.getCredentials('Title') }}</p>
-                        </a>
-                    </li>
-                {% endif %}
+            {% for plugin in plugins.where('navigation', true) %}
+                <li class="nav-item">
+                    <a href="/cup/plugin/{{ plugin.getCredentials('name') }}">
+                        <i class="fas fa-puzzle-piece"></i>
+                        <p>{{ plugin.getCredentials('title') }}</p>
+                    </a>
+                </li>
             {% endfor %}
         {% endif %}
 

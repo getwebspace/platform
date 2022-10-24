@@ -170,12 +170,13 @@ abstract class AbstractPlugin
      */
     protected function enableNavigationItem(array $params = []): RouteInterface
     {
+        $self = $this;
         $default = [
-            'handler' => function (Request $request, Response $response) {
+            'handler' => function (Request $request, Response $response) use ($self) {
                 $response = $response->withHeader('Content-Type', 'text/plain');
 
                 $response->getBody()->write(
-                    'This is empty route for plugin: ' . static::NAME . PHP_EOL .
+                    'This is empty route for plugin: ' . $self::NAME . PHP_EOL .
                     'Change "handler" key in function arguments enableNavigationItem(["handler" => ??]).'
                 );
 
@@ -186,7 +187,9 @@ abstract class AbstractPlugin
 
         $this->navigation = true;
 
-        return $this->router->map(['GET', 'POST'], '/cup/plugin/' . static::NAME, $params['handler']);
+        return $this->router
+            ->map(['GET', 'POST'], '/cup/plugin/' . static::NAME, $params['handler'])
+            ->setName('cup:' . strtolower(static::NAME));
     }
 
     public function isNavigationItemEnabled(): bool
