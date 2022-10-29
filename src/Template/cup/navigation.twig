@@ -153,7 +153,7 @@
             </a>
         </li>
 
-        {% if plugins.where('navigation', true) %}
+        {% if plugins.where('navigation', true).count() %}
             <li class="nav-section">
                 <span class="sidebar-mini-icon">
                     <i class="fa fa-ellipsis-h"></i>
