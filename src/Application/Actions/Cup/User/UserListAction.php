@@ -9,7 +9,6 @@ class UserListAction extends UserAction
         $criteria = [
             'status' => [\App\Domain\Types\UserStatusType::STATUS_WORK],
         ];
-        $orderBy = [];
 
         if ($this->isPost()) {
             $data = [
@@ -54,12 +53,8 @@ class UserListAction extends UserAction
             $query->setParameter($criterion, $value);
         }
 
-        foreach ($orderBy as $field => $direction) {
-            $query->orderBy("u.{$field}", $direction);
-        }
-
-        $list = collect($query->getQuery()->getResult());
-
-        return $this->respondWithTemplate('cup/user/index.twig', ['list' => $list]);
+        return $this->respondWithTemplate('cup/user/index.twig', [
+            'list' => collect($query->getQuery()->getResult())->sortByDesc('session.date'),
+        ]);
     }
 }

@@ -25,27 +25,25 @@
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
-                            <tr>
-                                <th>{{ 'Title'|locale }}</th>
-                                <th width="25%">{{ 'Category'|locale }}</th>
-                                <th width="8%" class="d-none d-md-table-cell">{{ 'Is public'|locale }}</th>
-                                <th width="8%" class="d-none d-md-table-cell">{{ 'With nested'|locale }}</th>
-                                <th width="25%" class="text-right"></th>
-                            </tr>
+                            <div class="col">{{ 'Title'|locale }}</div>
+                            <div class="col-1">{{ 'Category'|locale }}</div>
+                            <div class="col-1 d-none d-md-block">{{ 'Is public'|locale }}</div>
+                            <div class="col-1 d-none d-md-block">{{ 'With nested'|locale }}</div>
+                            <div class="col-3 text-right"></div>
                         {% endblock %}
 
                         {% block tbody %}
-                            {% for item in list.sortBy('title') %}
-                                <tr>
-                                    <td>{{ item.title|u.truncate(50, '...') }}</td>
-                                    <td width="25%">{{ list.where('uuid', item.parent).first().title ?? '<code>&mdash;</code>'|raw }}</td>
-                                    <td width="8%" class="d-none d-md-table-cell text-center" data-order="{{ item.public }}">
+                            {% for item in list %}
+                                <div class="row">
+                                    <div class="col">{{ item.title|u.truncate(50, '...') }}</div>
+                                    <div class="col-1 text-center">{{ list.where('uuid', item.parent).first().title ?? '<code>&mdash;</code>'|raw }}</div>
+                                    <div class="col-1 d-none d-md-block text-center" data-order="{{ item.public }}">
                                         {{ item.public ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>' }}
-                                    </td>
-                                    <td width="8%" class="d-none d-md-table-cell text-center" data-order="{{ item.children }}">
+                                    </div>
+                                    <div class="col-1 d-none d-md-block text-center" data-order="{{ item.children }}">
                                         {{ item.children ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>' }}
-                                    </td>
-                                    <td width="25%" class="text-right">
+                                    </div>
+                                    <div class="col-3 text-right">
                                         <form action="/cup/publication/category/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete a post category?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/publication/category/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
@@ -58,8 +56,8 @@
                                                 </button>
                                             </div>
                                         </form>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
                             {% endfor %}
                         {% endblock %}
                     {% endembed %}

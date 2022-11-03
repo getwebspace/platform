@@ -30,40 +30,38 @@
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
-                            <tr>
-                                <th width="20%">#</th>
-                                <th>{{ 'Client'|locale }}</th>
-                                <th width="15%">{{ 'Status'|locale }}</th>
-                                <th width="15%" class="d-none d-md-table-cell">{{ 'Added date'|locale }}</th>
-                                <th width="30%" class="text-right"></th>
-                            </tr>
+                            <div class="col-2">#</div>
+                            <div class="col">{{ 'Client'|locale }}</div>
+                            <div class="col-2">{{ 'Status'|locale }}</div>
+                            <div class="col-2 d-none d-md-block">{{ 'Added date'|locale }}</div>
+                            <div class="col-4 text-right"></div>
                         {% endblock %}
 
                         {% block tbody %}
                             {% for item in list.sortByDesc('Date') %}
-                                <tr>
-                                    <td width="20%">
+                                <div class="row">
+                                    <div class="col-2">
                                         {{ item.serial }}
                                         {% if item.external_id %}
                                             <br/>{{ item.external_id }}
                                         {% endif %}
-                                    </td>
-                                    <td>
+                                    </div>
+                                    <div class="col">
                                         {% if item.user %}
                                             <a href="/cup/user/{{ item.user_uuid }}/view">{{ item.user.getName() ? item.user.getName() : item.delivery.client }}</a>
                                         {% else %}
                                             {{ item.delivery.client }}
                                         {% endif %}
-                                    </td>
-                                    <td width="15%">
+                                    </div>
+                                    <div class="col-2">
                                         {% if item.status_uuid %}
                                             <span class="badge badge-secondary">{{ item.status.title }}</span>
                                         {% else %}
                                             <code>&mdash;</code>
                                         {% endif %}
-                                    </td>
-                                    <td width="15%" class="d-none d-md-table-cell">{{ item.date|df('d.m.Y H:i') }}</td>
-                                    <td width="30%" class="text-right">
+                                    </div>
+                                    <div class="col-2 d-none d-md-block">{{ item.date|df('d.m.Y H:i') }}</div>
+                                    <div class="col-4 text-right">
                                         <form action="/cup/catalog/order/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the order?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/catalog/order/{{ item.uuid }}/invoice" class="btn btn-sm btn-outline-info">
@@ -80,8 +78,8 @@
                                                 </button>
                                             </div>
                                         </form>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
                             {% endfor %}
                         {% endblock %}
                     {% endembed %}

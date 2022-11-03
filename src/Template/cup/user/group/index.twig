@@ -25,21 +25,19 @@
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
-                            <tr>
-                                <th>{{ 'Title'|locale }}</th>
-                                <th width="15%" class="d-none d-md-table-cell">{{ 'Count users'|locale }}</th>
-                                <th width="20%" class="d-none d-md-table-cell">{{ 'Permissions'|locale }}</th>
-                                <th width="25%" class="text-right"></th>
-                            </tr>
+                            <div class="col">{{ 'Title'|locale }}</div>
+                            <div class="col-2 text-center d-none d-md-block">{{ 'Count users'|locale }}</div>
+                            <div class="col-2 d-none d-md-block">{{ 'Permissions'|locale }}</div>
+                            <div class="col-3 text-right"></div>
                         {% endblock %}
 
                         {% block tbody %}
                             {% for group in groups %}
                                 {% set users_in_group = users.where('group', group)|count %}
-                                <tr>
-                                    <td>{{ group.title }}</td>
-                                    <td width="15%" class="text-center d-none d-md-table-cell">{{ users_in_group }}</td>
-                                    <td width="20%" class="d-none d-md-table-cell">
+                                <div class="row">
+                                    <div class="col">{{ group.title }}</div>
+                                    <div class="col-2 text-center d-none d-md-block">{{ users_in_group }}</div>
+                                    <div class="col-2 d-none d-md-block">
                                         <code>
                                             {% if group.access %}
                                                 {{ 'Count'|locale }}: {{ group.access|count }}
@@ -47,8 +45,8 @@
                                                 {{ 'No permissions'|locale }}
                                             {% endif %}
                                         </code>
-                                    </td>
-                                    <td width="25%" class="text-right">
+                                    </div>
+                                    <div class="col-3 text-right">
                                         <form action="/cup/user/group/{{ group.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the group?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/user/group/{{ group.uuid }}/edit" class="btn btn-sm btn-info">
@@ -61,8 +59,8 @@
                                                 </button>
                                             </div>
                                         </form>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
                             {% endfor %}
                         {% endblock %}
                     {% endembed %}

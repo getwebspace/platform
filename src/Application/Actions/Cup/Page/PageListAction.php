@@ -6,8 +6,8 @@ class PageListAction extends PageAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        $list = $this->pageService->read();
-
-        return $this->respondWithTemplate('cup/page/index.twig', ['list' => $list]);
+        return $this->respondWithTemplate('cup/page/index.twig', [
+            'list' => $this->pageService->read(['order' => ['title' => 'asc']]),
+        ]);
     }
 }

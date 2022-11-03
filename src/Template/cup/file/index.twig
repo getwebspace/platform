@@ -17,26 +17,24 @@
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
-                            <tr>
-                                <th>{{ 'File name'|locale }}</th>
-                                <th width="15%">{{ 'Size'|locale }}</th>
-                                <th width="15%" class="d-none d-md-table-cell">{{ 'Creation date'|locale }}</th>
-                                <th width="20%" class="text-right"></th>
-                            </tr>
+                            <div class="col">{{ 'File name'|locale }}</div>
+                            <div class="col-2">{{ 'Size'|locale }}</div>
+                            <div class="col-2 d-none d-md-block">{{ 'Creation date'|locale }}</div>
+                            <div class="col-2 text-right"></div>
                         {% endblock %}
 
                         {% block tbody %}
-                            {% for item in list.sortByDesc('date') %}
-                                <tr>
-                                    <td>
+                            {% for item in list %}
+                                <div class="row">
+                                    <div class="col">
                                         <a href="{{ item.getPublicPath() }}" target="_blank">
                                             {{ item.getFileName()|u.truncate(50, '...') }}
                                             <i class="fas fa-external-link-alt"></i>
                                         </a>
-                                    </td>
-                                    <td width="15%">{{ item.getFileSize() }}</td>
-                                    <td width="15%" class="d-none d-md-table-cell">{{ item.date|df }}</td>
-                                    <td width="20%" class="text-right">
+                                    </div>
+                                    <div class="col-2">{{ item.getFileSize() }}</div>
+                                    <div class="col-2 d-none d-md-block">{{ item.date|df }}</div>
+                                    <div class="col-2 text-right">
                                         <form action="/cup/file/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the file?'|locale }}');">
                                             <div class="btn-group">
                                                 <button type="submit" class="btn btn-sm btn-danger">
@@ -45,8 +43,8 @@
                                                 </button>
                                             </div>
                                         </form>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
                             {% endfor %}
                         {% endblock %}
                     {% endembed %}

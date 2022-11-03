@@ -31,30 +31,28 @@
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
-                            <tr>
-                                <th>{{ 'Title'|locale }}</th>
-                                <th width="15%">{{ 'Category'|locale }}</th>
-                                <th width="45%" class="text-right"></th>
-                            </tr>
+                            <div class="col">{{ 'Title'|locale }}</div>
+                            <div class="col-3">{{ 'Category'|locale }}</div>
+                            <div class="col-5 text-right"></div>
                         {% endblock %}
 
                         {% block tbody %}
-                            {% for category in categories.where('parent', category ? category.uuid : NIL).sortBy('order') %}
-                                <tr>
-                                    <td>{{ category.title|u.truncate(50, '...') }}</td>
-                                    <td width="15%">{{ categories.where('uuid', category.parent).first().title ?? '<code>&mdash;</code>'|raw }}</td>
-                                    <td width="45%" class="text-right">
-                                        <form action="/cup/catalog/category/{{ category.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete a category?'|locale }}');">
+                            {% for item in categories %}
+                                <div class="row">
+                                    <div class="col">{{ item.title|u.truncate(50, '...') }}</div>
+                                    <div class="col-3">{{ category.title ?? '<code>&mdash;</code>'|raw }}</div>
+                                    <div class="col-5 text-right">
+                                        <form action="/cup/catalog/category/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete a category?'|locale }}');">
                                             <div class="btn-group">
-                                                <a href="/cup/catalog/category/{{ category.uuid }}" class="btn btn-sm btn-outline-info">
+                                                <a href="/cup/catalog/category/{{ item.uuid }}" class="btn btn-sm btn-outline-info">
                                                     <i class="fas fa-fw fa-sitemap"></i>
                                                     <span class="d-none d-md-inline-block">{{ 'Subcategories'|locale }}</span>
                                                 </a>
-                                                <a href="/cup/catalog/product/{{ category.uuid }}" class="btn btn-sm btn-outline-info">
+                                                <a href="/cup/catalog/product/{{ item.uuid }}" class="btn btn-sm btn-outline-info">
                                                     <i class="fas fa-fw fa-eye"></i>
                                                     <span class="d-none d-md-inline-block">{{ 'Nomenclature'|locale }}</span>
                                                 </a>
-                                                <a href="/cup/catalog/category/{{ category.uuid }}/edit" class="btn btn-sm btn-info">
+                                                <a href="/cup/catalog/category/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
                                                     <i class="fas fa-fw fa-edit"></i>
                                                     <span class="d-none d-md-inline-block">{{ 'Change'|locale }}</span>
                                                 </a>
@@ -64,8 +62,8 @@
                                                 </button>
                                             </div>
                                         </form>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
                             {% endfor %}
                         {% endblock %}
                     {% endembed %}

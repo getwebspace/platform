@@ -17,21 +17,19 @@
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
-                            <tr>
-                                <th width="15%" class="text-left">{{ 'Status'|locale }}</th>
-                                <th>{{ 'Author'|locale }}</th>
-                                <th width="15%" class="d-none d-md-table-cell">{{ 'Added date'|locale }}</th>
-                                <th width="25%" class="text-right"></th>
-                            </tr>
+                            <div class="col-1">{{ 'Status'|locale }}</div>
+                            <div class="col">{{ 'Author'|locale }}</div>
+                            <div class="col-2 d-none d-md-block">{{ 'Added date'|locale }}</div>
+                            <div class="col-3 text-right"></div>
                         {% endblock %}
 
                         {% block tbody %}
-                            {% for item in list.sortByDesc('date') %}
-                                <tr>
-                                    <td width="15%" class="text-left">
+                            {% for item in list %}
+                                <div class="row">
+                                    <div class="col-1">
                                         <span class="badge badge-default">{{item.status|locale}}</span>
-                                    </td>
-                                    <td>
+                                    </div>
+                                    <div class="col">
                                         {{ item.name }}
 
                                         {% if item.email %}
@@ -39,9 +37,9 @@
                                                 <i class="fa fa-envelope"></i>
                                             </a>
                                         {% endif %}
-                                    </td>
-                                    <td width="15%" class="d-none d-md-table-cell">{{ item.date|df('d.m.Y H:i:s') }}</td>
-                                    <td width="25%" class="text-right">
+                                    </div>
+                                    <div class="col-2 d-none d-md-block">{{ item.date|df('d.m.Y H:i:s') }}</div>
+                                    <div class="col-3 text-right">
                                         <form action="/cup/guestbook/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the entry?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/guestbook/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
@@ -54,8 +52,8 @@
                                                 </button>
                                             </div>
                                         </form>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
                             {% endfor %}
                         {% endblock %}
                     {% endembed %}

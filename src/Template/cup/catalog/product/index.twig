@@ -39,19 +39,16 @@
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
-                            <tr>
-                                <th>{{ 'Title'|locale }}</th>
-                                <th width="10%" class="text-right">{{ 'Price'|locale }}</th>
-                                <th width="7%" class="text-center"><i class="fas fa-boxes" data-toggle="tooltip" data-placement="top" title="{{ 'Packing volume'|locale }}"></i></th>
-                                <th width="10%">{{ 'Vendor code'|locale }}</th>
-                                <th width="25%" class="text-right"></th>
-                            </tr>
+                            <div class="col">{{ 'Title'|locale }}</div>
+                            <div class="col-1 text-right">{{ 'Price'|locale }}</div>
+                            <div class="col-2">{{ 'Vendor code'|locale }}</div>
+                            <div class="col-3 text-right"></div>
                         {% endblock %}
 
                         {% block tbody %}
-                            {% for item in products.sortBy('order') %}
-                                <tr>
-                                    <td>
+                            {% for item in products %}
+                                <div class="row">
+                                    <div class="col">
                                         {{ item.title|u.truncate(50, '...') }}
 
                                         <div class="text-black-50 float-right">
@@ -59,12 +56,11 @@
                                                 <i class="fas fa-tag" data-toggle="tooltip" data-placement="right" title="Акция"></i>
                                             {% endif %}
                                         </div>
-                                    </td>
-                                    <td width="10%" class="text-right" data-order="{{ item.price }}">
+                                    </div>
+                                    <div class="col-1 text-right" data-order="{{ item.price }}">
                                         {{ item.price|number_format(2, '.', ' ') }} {{ item.tax ? '[+'~ item.tax ~'%]'}}
-                                    </td>
-                                    <td width="7%" class="text-center" data-order="{{ item.volume }}">{{ item.getVolumeWithUnit() }}</td>
-                                    <td width="10%">
+                                    </div>
+                                    <div class="col-2">
                                         {% if item.vendorcode %}
                                             <div>{{ item.vendorcode }}</div>
                                         {% endif %}
@@ -74,8 +70,8 @@
                                                 {{ item.barcode }}
                                             </div>
                                         {% endif %}
-                                    </td>
-                                    <td width="25%" class="text-right">
+                                    </div>
+                                    <div class="col-3 text-right">
                                         <form action="/cup/catalog/product/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to uninstall the product?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/catalog/product/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
@@ -88,8 +84,8 @@
                                                 </button>
                                             </div>
                                         </form>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
                             {% endfor %}
                         {% endblock %}
                     {% endembed %}

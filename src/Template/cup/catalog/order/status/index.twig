@@ -30,19 +30,17 @@
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
-                            <tr>
-                                <th width="5%" class="d-none d-md-table-cell">#</th>
-                                <th>{{ 'Title'|locale }}</th>
-                                <th width="25%" class="text-right"></th>
-                            </tr>
+                            <div class="col-1 d-none d-md-block">#</div>
+                            <div class="col">{{ 'Title'|locale }}</div>
+                            <div class="col-3 text-right"></div>
                         {% endblock %}
 
                         {% block tbody %}
                             {% for item in list.sortBy('order') %}
-                                <tr>
-                                    <td width="5%" class="d-none d-md-table-cell">{{ item.order }}</td>
-                                    <td>{{ item.title }}</td>
-                                    <td width="25%" class="text-right">
+                                <div class="row">
+                                    <div class="col-1 d-none d-md-block">{{ item.order }}</div>
+                                    <div class="col">{{ item.title }}</div>
+                                    <div class="col-3 text-right">
                                         <form action="/cup/catalog/order/status/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the order status?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/catalog/order/status/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
@@ -55,8 +53,8 @@
                                                 </button>
                                             </div>
                                         </form>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
                             {% endfor %}
                         {% endblock %}
                     {% endembed %}

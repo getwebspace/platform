@@ -25,19 +25,17 @@
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
-                            <tr>
-                                <th>{{ 'Title'|locale }}</th>
-                                <th width="15%" class="d-none d-md-table-cell">{{ 'Date of publication'|locale }}</th>
-                                <th width="25%" class="text-right"></th>
-                            </tr>
+                            <div class="col">{{ 'Title'|locale }}</div>
+                            <div class="col-2 d-none d-md-block">{{ 'Date of publication'|locale }}</div>
+                            <div class="col-3 text-right"></div>
                         {% endblock %}
 
                         {% block tbody %}
-                            {% for item in list.sortByDesc('date') %}
-                                <tr>
-                                    <td>{{ item.title|u.truncate(50, '...') }}</td>
-                                    <td width="15%" class="d-none d-md-table-cell">{{ item.date|df('d.m.Y H:i') }}</td>
-                                    <td width="25%" class="text-right">
+                            {% for item in list %}
+                                <div class="row">
+                                    <div class="col">{{ item.title|u.truncate(50, '...') }}</div>
+                                    <div class="col-2 d-none d-md-block">{{ item.date|df('d.m.Y H:i') }}</div>
+                                    <div class="col-3 text-right">
                                         <form action="/cup/page/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the page?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/page/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
@@ -50,8 +48,8 @@
                                                 </button>
                                             </div>
                                         </form>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
                             {% endfor %}
                         {% endblock %}
                     {% endembed %}

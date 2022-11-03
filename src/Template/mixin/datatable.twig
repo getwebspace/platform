@@ -1,4 +1,4 @@
-{% set tableId = random() %}
+{% set randomId = random() %}
 
 <div class="row">
     <div class="col-12 col-sm-6 col-md-5 col-lg-4 col-xl-3" style="padding-top: 11px">
@@ -9,45 +9,34 @@
             'type': 'search',
             'args': {
                 'placeholder': 'Search'|locale,
-                'data': {'table-search': tableId}
+                'data': {'table-search': randomId}
             }
         } %}
     </div>
 </div>
 
-<div data-table="{{ tableId }}" class="clusterize">
-    <table class="table table-striped table-hover mb-0" style="table-layout:fixed; width: 100%">
-        <thead class="text-nowrap">
-            {% block thead %}
-                <tr class="clusterize-no-data">
-                    <th>{{ 'Нет заголовков'|locale }}</th>
-                </tr>
-            {% endblock %}
-        </thead>
-    </table>
-    <div data-table-scroll="{{ tableId }}" class="clusterize-scroll" style="max-height: 50vh!important; overflow: auto;">
-        <table class="table table-striped table-hover mb-0" style="table-layout:fixed; width: 100%">
-            <tbody data-table-content="{{ tableId }}" class="clusterize-content text-nowrap" style="display: none;">
-                {% block tbody %}
-                    <tr class="clusterize-no-data">
-                        <td>{{ 'No data'|locale }}</td>
-                    </tr>
-                {% endblock %}
-            </tbody>
-        </table>
+<div class="row clusterize-header text-nowrap">
+    {% block thead %}
+        <div class="col clusterize-no-data">
+            {{ 'No headers'|locale }}
+        </div>
+    {% endblock %}
+</div>
+<div data-table-scroll="{{ randomId }}" class="clusterize-scroll">
+    <div class="clusterize-content text-nowrap" data-table-content="{{ randomId }}" style="display: none;">
+        {% block tbody %}
+            <div class="row clusterize-no-data">
+                <div class="col">
+                    {{ 'No data'|locale }}
+                </div>
+            </div>
+        {% endblock %}
     </div>
 </div>
 
-<style>
-    tbody .form-group,
-    tbody .form-check {
-        padding: 10px 0;
-    }
-</style>
-
 <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', () => {
-        let $rows = $('[data-table-content="{{ tableId }}"] tr:not(.clusterize-no-data)').detach();
+        let $rows = $('[data-table-content="{{ randomId }}"] div.row:not(.clusterize-no-data)').detach();
 
         (async () => {
             await window.loader([
@@ -55,8 +44,8 @@
                 '/assets/js/plugin/clusterize/clusterize.min.js',
             ]);
 
-            let $scroll = $('[data-table-scroll="{{ tableId }}"]'),
-                $content = $('[data-table-content="{{ tableId }}"]');
+            let $scroll = $('[data-table-scroll="{{ randomId }}"]'),
+                $content = $('[data-table-content="{{ randomId }}"]');
 
             // init table
             let clusterize = new Clusterize({
@@ -68,7 +57,7 @@
                 no_data_text: '{{ 'No data'|locale }}'
             });
 
-            $('[data-table-search="{{ tableId }}"]').on('keyup', (e) => {
+            $('[data-table-search="{{ randomId }}"]').on('keyup', (e) => {
                 let query = e.currentTarget.value.toLowerCase(),
                     result = [];
 

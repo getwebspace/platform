@@ -6,8 +6,8 @@ class FormListAction extends FormAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        $list = $this->formService->read();
-
-        return $this->respondWithTemplate('cup/form/index.twig', ['list' => $list]);
+        return $this->respondWithTemplate('cup/form/index.twig', [
+            'list' => $this->formService->read(['order' => ['title' => 'asc']]),
+        ]);
     }
 }

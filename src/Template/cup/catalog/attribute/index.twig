@@ -26,27 +26,15 @@
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
-                            <tr>
-                                <th>{{ 'Title'|locale }}</th>
-                                <th width="35%" class="d-none d-md-table-cell">{{ 'Address'|locale }}</th>
-                                <th width="25%" class="text-right"></th>
-                            </tr>
+                            <div class="col">{{ 'Title'|locale }}</div>
+                            <div class="col-3 text-right"></div>
                         {% endblock %}
 
                         {% block tbody %}
                             {% for item in attributes %}
-                                <tr>
-                                    <td>{{ item.title }}</td>
-                                    <td width="35%" class="d-none d-md-table-cell">
-                                        {% include 'cup/form.twig' with {
-                                            'type': 'text',
-                                            'args': {
-                                                'value': item.address,
-                                                'readonly': true
-                                            }
-                                        } %}
-                                    </td>
-                                    <td width="25%" class="text-right">
+                                <div class="row">
+                                    <div class="col">{{ item.title }}</div>
+                                    <div class="col-3 text-right">
                                         <form action="/cup/catalog/attribute/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the attribute?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/catalog/attribute/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
@@ -59,8 +47,8 @@
                                                 </button>
                                             </div>
                                         </form>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
                             {% endfor %}
                         {% endblock %}
                     {% endembed %}

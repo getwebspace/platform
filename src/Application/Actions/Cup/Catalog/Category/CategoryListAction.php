@@ -33,9 +33,13 @@ class CategoryListAction extends CatalogAction
             ],
         ]);
 
+        if ($category) {
+            $categories = $categories;
+        }
+
         return $this->respondWithTemplate('cup/catalog/category/index.twig', [
             'category' => $category,
-            'categories' => $categories,
+            'categories' => $categories->where('parent', $category ? $category->getUuid() : \Ramsey\Uuid\Uuid::NIL),
             'fields' => $this->parameter(['catalog_category_field_1', 'catalog_category_field_2', 'catalog_category_field_3']),
         ]);
     }

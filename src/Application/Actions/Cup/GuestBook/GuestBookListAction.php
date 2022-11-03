@@ -6,8 +6,8 @@ class GuestBookListAction extends GuestBookAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        $list = $this->guestBookService->read();
-
-        return $this->respondWithTemplate('cup/guestbook/index.twig', ['list' => $list]);
+        return $this->respondWithTemplate('cup/guestbook/index.twig', [
+            'list' => $this->guestBookService->read(['order' => ['date' => 'desc']]),
+        ]);
     }
 }

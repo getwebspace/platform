@@ -8,7 +8,7 @@ class PublicationListAction extends PublicationAction
     {
         return $this->respondWithTemplate('cup/publication/index.twig', [
             'categories' => $this->publicationCategoryService->read(),
-            'publications' => $this->publicationService->read(),
+            'publications' => $this->publicationService->read(['order' => ['date' => 'desc']]),
         ]);
     }
 }
