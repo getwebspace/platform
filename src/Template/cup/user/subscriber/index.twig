@@ -25,17 +25,17 @@
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
-                            <div class="col">E-Mail</div>
-                            <div class="col-2 d-none d-md-block">{{ 'Added date'|locale }}</div>
-                            <div class="col-3 text-right"></div>
+                            <div class="col-6 col-sm">E-Mail</div>
+                            <div class="col-sm-2 d-none d-sm-block">{{ 'Added date'|locale }}</div>
+                            <div class="col-6 col-sm-3 text-right"></div>
                         {% endblock %}
 
                         {% block tbody %}
                             {% for item in list %}
                                 <div class="row">
-                                    <div class="col">{{ item.email }}</div>
-                                    <div class="col-2 d-none d-md-block">{{ item.date|df('d.m.Y H:i:s') }}</div>
-                                    <div class="col-3 text-right">
+                                    <div class="col-6 col-sm">{{ item.email }}</div>
+                                    <div class="col-sm-2 d-none d-sm-block">{{ item.date|df('d.m.Y H:i:s') }}</div>
+                                    <div class="col-6 col-sm-3 text-right">
                                         <form action="/cup/user/subscriber/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the subscriber address?'|locale }}');">
                                             <div class="btn-group">
                                                 <button type="submit" class="btn btn-sm btn-danger">

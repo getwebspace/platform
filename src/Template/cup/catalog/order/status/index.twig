@@ -16,31 +16,27 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
-                        <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
-                            <li class="nav-item">
-                                <a href="/cup/catalog/order/status/add" class="nav-link bg-primary text-white">
-                                    <i class="fa fa-plus"></i>
-                                    {{ 'Create status'|locale }}
-                                </a>
-                            </li>
-                        </ul>
+                        <a href="/cup/catalog/order/status/add" class="btn btn-primary btn-round ml-auto">
+                            <i class="fa fa-plus"></i>
+                            {{ 'Create status'|locale }}
+                        </a>
                     </div>
                 </div>
 
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
-                            <div class="col-1 d-none d-md-block">#</div>
+                            <div class="col-1 col-sm-1 d-none d-sm-block">#</div>
                             <div class="col">{{ 'Title'|locale }}</div>
-                            <div class="col-3 text-right"></div>
+                            <div class="col-4 col-sm-3 text-right"></div>
                         {% endblock %}
 
                         {% block tbody %}
                             {% for item in list.sortBy('order') %}
                                 <div class="row">
-                                    <div class="col-1 d-none d-md-block">{{ item.order }}</div>
+                                    <div class="col-1 col-sm-1 d-none d-sm-block">{{ item.order }}</div>
                                     <div class="col">{{ item.title }}</div>
-                                    <div class="col-3 text-right">
+                                    <div class="col-4 col-sm-3 text-right">
                                         <form action="/cup/catalog/order/status/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the order status?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/catalog/order/status/{{ item.uuid }}/edit" class="btn btn-sm btn-info">

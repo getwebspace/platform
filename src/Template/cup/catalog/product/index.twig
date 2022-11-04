@@ -39,16 +39,16 @@
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
-                            <div class="col">{{ 'Title'|locale }}</div>
-                            <div class="col-1 text-right">{{ 'Price'|locale }}</div>
-                            <div class="col-2">{{ 'Vendor code'|locale }}</div>
-                            <div class="col-3 text-right"></div>
+                            <div class="col-12 col-sm">{{ 'Title'|locale }}</div>
+                            <div class="col-4 col-sm-1 text-md-right">{{ 'Price'|locale }}</div>
+                            <div class="col-4 col-sm-2">{{ 'Vendor code'|locale }}</div>
+                            <div class="col-4 col-sm-3 text-right"></div>
                         {% endblock %}
 
                         {% block tbody %}
                             {% for item in products %}
                                 <div class="row">
-                                    <div class="col">
+                                    <div class="col-12 col-sm">
                                         {{ item.title|u.truncate(50, '...') }}
 
                                         <div class="text-black-50 float-right">
@@ -57,10 +57,10 @@
                                             {% endif %}
                                         </div>
                                     </div>
-                                    <div class="col-1 text-right" data-order="{{ item.price }}">
+                                    <div class="col-4 col-sm-1 text-md-right">
                                         {{ item.price|number_format(2, '.', ' ') }} {{ item.tax ? '[+'~ item.tax ~'%]'}}
                                     </div>
-                                    <div class="col-2">
+                                    <div class="col-4 col-sm-2">
                                         {% if item.vendorcode %}
                                             <div>{{ item.vendorcode }}</div>
                                         {% endif %}
@@ -71,7 +71,7 @@
                                             </div>
                                         {% endif %}
                                     </div>
-                                    <div class="col-3 text-right">
+                                    <div class="col-4 col-sm-3 text-right">
                                         <form action="/cup/catalog/product/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to uninstall the product?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/catalog/product/{{ item.uuid }}/edit" class="btn btn-sm btn-info">

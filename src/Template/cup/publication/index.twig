@@ -25,21 +25,24 @@
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
-                            <div class="col">{{ 'Title'|locale }}</div>
-                            <div class="col-1">{{ 'Category'|locale }}</div>
-                            <div class="col-1 d-none d-md-block">{{ 'Author'|locale }}</div>
-                            <div class="col-2 d-none d-md-block">{{ 'Date of publication'|locale }}</div>
-                            <div class="col-3 text-right"></div>
+                            <div class="col-12 col-sm">{{ 'Title'|locale }}</div>
+                            <div class="col-3 col-sm-2">{{ 'Category'|locale }}</div>
+                            <div class="col-1 d-none d-sm-block">{{ 'Author'|locale }}</div>
+                            <div class="col-3 col-sm-2">{{ 'Date of publication'|locale }}</div>
+                            <div class="col-3 col-sm-3 text-right"></div>
                         {% endblock %}
 
                         {% block tbody %}
                             {% for item in publications %}
                                 <div class="row">
-                                    <div class="col">{{ item.title|u.truncate(35, '...') }}</div>
-                                    <div class="col-1">{{ item.category.title }}</div>
-                                    <div class="col-1 d-none d-md-block">{{ item.user.getName('short') }}</div>
-                                    <div class="col-2 d-none d-md-block">{{ item.date|df('d.m.Y H:i') }}</div>
-                                    <div class="col-3 text-right">
+                                    <div class="col-12 col-sm">{{ item.title|u.truncate(35, '...') }}</div>
+                                    <div class="col-3 col-sm-2">{{ item.category.title }}</div>
+                                    <div class="col-1 d-none d-sm-block">{{ item.user.getName('short') }}</div>
+                                    <div class="col-3 col-sm-2">
+                                        <span class="d-none d-md-inline">{{ item.date|df('d.m.Y H:i') }}</span>
+                                        <span class="d-inline d-md-none">{{ item.date|df('d.m.y') }}</span>
+                                    </div>
+                                    <div class="col-6 col-sm-3 text-right">
                                         <form action="/cup/publication/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the publication?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/publication/{{ item.uuid }}/edit" class="btn btn-sm btn-info">

@@ -25,20 +25,20 @@
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
-                            <div class="col">{{ 'Title'|locale }}</div>
-                            <div class="col-3 d-none d-md-block">{{ 'E-Mail addresses of recipients'|locale }}</div>
-                            <div class="col-4 text-right"></div>
+                            <div class="col-6 col-sm">{{ 'Title'|locale }}</div>
+                            <div class="col-sm-3 d-none d-sm-block">{{ 'E-Mail addresses of recipients'|locale }}</div>
+                            <div class="col-6 col-sm-4 text-right"></div>
                         {% endblock %}
 
                         {% block tbody %}
                             {% for item in list %}
                                 <div class="row">
-                                    <div class="col">{{ item.title }}</div>
-                                    <div class="col-3 d-none d-md-block">
+                                    <div class="col-6 col-sm">{{ item.title }}</div>
+                                    <div class="col-sm-3 d-none d-sm-block">
                                         {{ item.mailto|join('<br>+ ')|raw }}
                                         {{ item.authorSend ? '<br>+ ' ~ 'applicant'|locale }}
                                     </div>
-                                    <div class="col-4 text-right">
+                                    <div class="col-6 col-sm-4 text-right">
                                         <form action="/cup/form/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the form?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/form/{{ item.uuid }}/view" class="btn btn-sm btn-outline-info">

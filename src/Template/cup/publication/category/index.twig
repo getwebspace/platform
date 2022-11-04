@@ -25,25 +25,25 @@
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
-                            <div class="col">{{ 'Title'|locale }}</div>
-                            <div class="col-1">{{ 'Category'|locale }}</div>
-                            <div class="col-1 d-none d-md-block">{{ 'Is public'|locale }}</div>
-                            <div class="col-1 d-none d-md-block">{{ 'With nested'|locale }}</div>
-                            <div class="col-3 text-right"></div>
+                            <div class="col-12 col-sm">{{ 'Title'|locale }}</div>
+                            <div class="col-6 col-sm-1">{{ 'Category'|locale }}</div>
+                            <div class="col-1 d-none d-sm-block">{{ 'Is public'|locale }}</div>
+                            <div class="col-1 d-none d-sm-block">{{ 'With nested'|locale }}</div>
+                            <div class="col-6 col-sm-3 text-right"></div>
                         {% endblock %}
 
                         {% block tbody %}
                             {% for item in list %}
                                 <div class="row">
-                                    <div class="col">{{ item.title|u.truncate(50, '...') }}</div>
-                                    <div class="col-1 text-center">{{ list.where('uuid', item.parent).first().title ?? '<code>&mdash;</code>'|raw }}</div>
-                                    <div class="col-1 d-none d-md-block text-center" data-order="{{ item.public }}">
+                                    <div class="col-12 col-sm">{{ item.title|u.truncate(50, '...') }}</div>
+                                    <div class="col-6 col-sm-1">{{ list.where('uuid', item.parent).first().title ?? '<code>&mdash;</code>'|raw }}</div>
+                                    <div class="col-1 d-none d-sm-block text-center" data-order="{{ item.public }}">
                                         {{ item.public ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>' }}
                                     </div>
-                                    <div class="col-1 d-none d-md-block text-center" data-order="{{ item.children }}">
+                                    <div class="col-1 d-none d-sm-block text-center" data-order="{{ item.children }}">
                                         {{ item.children ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>' }}
                                     </div>
-                                    <div class="col-3 text-right">
+                                    <div class="col-6 col-sm-3 text-right">
                                         <form action="/cup/publication/category/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete a post category?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/publication/category/{{ item.uuid }}/edit" class="btn btn-sm btn-info">

@@ -89,11 +89,11 @@
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
-                            <div class="col-2 d-none d-md-block">{{ 'Login'|locale }}</div>
-                            <div class="col">{{ 'Full name'|locale }}</div>
-                            <div class="col">{{ 'Phone & E-Mail'|locale }}</div>
-                            <div class="col-1 d-none d-md-block">{{ 'Group'|locale }}</div>
-                            <div class="col-4 text-right"></div>
+                            <div class="col-sm-2 d-none d-sm-block">{{ 'Login'|locale }}</div>
+                            <div class="col-12 col-sm">{{ 'Full name'|locale }}</div>
+                            <div class="col-6 col-sm">{{ 'Phone & E-Mail'|locale }}</div>
+                            <div class="col-sm-1 d-none d-sm-block">{{ 'Group'|locale }}</div>
+                            <div class="col-6 col-sm-4 text-right"></div>
                         {% endblock %}
 
                         {% block tbody %}
@@ -109,12 +109,12 @@
                                         )
                                     }}
                                 ">
-                                    <div class="col-2 d-none d-md-block">{{ user.username ?: '<code>&mdash;</code>'|raw }}</div>
-                                    <div class="col">
+                                    <div class="col-sm-2 d-none d-sm-block">{{ user.username ?: '<code>&mdash;</code>'|raw }}</div>
+                                    <div class="col-12 col-sm">
                                         <span class="d-none d-xl-inline">{{ user.getName('full') ?: '<code>&mdash;</code>'|raw }}</span>
                                         <span class="d-xl-none">{{ user.getName('name') ?: '<code>&mdash;</code>'|raw }}</span>
                                     </div>
-                                    <div class="col">
+                                    <div class="col-6 col-sm">
                                         <div class="float-left">
                                             {{ user.getPhone() ? (user.getPhone() ~ '<br>')|raw : '' }}
                                             {{ user.getEmail() ? (user.getEmail() ~ '<br>')|raw : '' }}
@@ -126,8 +126,8 @@
                                             {% endif %}
                                         </div>
                                     </div>
-                                    <div class="col-1 d-none d-md-block">{{ user.group.title|u.truncate(10, '.') ?? ('<code>' ~ ('Without group'|locale) ~ '</code>')|raw }}</div>
-                                    <div class="col-4 text-right">
+                                    <div class="col-sm-1 d-none d-sm-block">{{ user.group.title|u.truncate(10, '.') ?? ('<code>' ~ ('Without group'|locale) ~ '</code>')|raw }}</div>
+                                    <div class="col-6 col-sm-4 text-right">
                                         <form action="/cup/user/{{ user.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the user?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/user/{{ user.uuid }}/view" class="btn btn-sm btn-outline-info">
