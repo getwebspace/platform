@@ -176,33 +176,41 @@
                                                                 </div>
                                                             </a>
                                                         </div>
-                                                        <div class="col-12 col-sm-6 col-lg-4">
-                                                            <a href="/cup/publication" class="card card-stats card-primary card-round">
-                                                                <div class="card-body">
-                                                                    <p class="card-category">
-                                                                        <b>{{ 'Publication management'|locale }}</b><br>
-                                                                        {% locale %}
-                                                                            Section for managing articles, news,
-                                                                            personal blog entries
-                                                                        {% endlocale %}
-                                                                    </p>
-                                                                </div>
-                                                            </a>
-                                                        </div>
-                                                        <div class="col-12 col-sm-6 col-lg-4">
-                                                            <a href="/cup/page" class="card card-stats card-primary card-round">
-                                                                <div class="card-body">
-                                                                    <p class="card-category">
-                                                                        <b>{{ 'Site pages'|locale }}</b><br>
-                                                                        {% locale %}
-                                                                            Creation and editing of pages that, as a
-                                                                            rule, rarely change and have a permanent
-                                                                            address
-                                                                        {% endlocale %}
-                                                                    </p>
-                                                                </div>
-                                                            </a>
-                                                        </div>
+
+
+                                                        {% if parameter('publication_is_enabled', 'yes') != 'no' %}
+                                                            <div class="col-12 col-sm-6 col-lg-4">
+                                                                <a href="/cup/publication" class="card card-stats card-primary card-round">
+                                                                    <div class="card-body">
+                                                                        <p class="card-category">
+                                                                            <b>{{ 'Publication management'|locale }}</b><br>
+                                                                            {% locale %}
+                                                                                Section for managing articles, news,
+                                                                                personal blog entries
+                                                                            {% endlocale %}
+                                                                        </p>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
+                                                        {% endif %}
+
+                                                        {% if parameter('page_is_enabled', 'yes') != 'no' %}
+                                                            <div class="col-12 col-sm-6 col-lg-4">
+                                                                <a href="/cup/page" class="card card-stats card-primary card-round">
+                                                                    <div class="card-body">
+                                                                        <p class="card-category">
+                                                                            <b>{{ 'Site pages'|locale }}</b><br>
+                                                                            {% locale %}
+                                                                                Creation and editing of pages that, as a
+                                                                                rule, rarely change and have a permanent
+                                                                                address
+                                                                            {% endlocale %}
+                                                                        </p>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
+                                                        {% endif %}
+
                                                         {% if parameter('catalog_is_enabled', 'yes') != 'no' %}
                                                             <div class="col-12 col-sm-6 col-lg-4">
                                                                 <a href="/cup/catalog/product" class="card card-stats card-primary card-round">
@@ -233,6 +241,7 @@
                                                                 </a>
                                                             </div>
                                                         {% endif %}
+
                                                         {% if parameter('guestbook_is_enabled', 'yes') != 'no' %}
                                                             <div class="col-12 col-sm-6 col-lg-4">
                                                                 <a href="/cup/guestbook" class="card card-stats card-primary card-round">
@@ -248,6 +257,7 @@
                                                                 </a>
                                                             </div>
                                                         {% endif %}
+
                                                         {% if parameter('form_is_enabled', 'yes') != 'no' %}
                                                             <div class="col-12 col-sm-6 col-lg-4">
                                                                 <a href="/cup/form" class="card card-stats card-primary card-round">

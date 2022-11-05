@@ -14,34 +14,38 @@
             <h4 class="text-section">{{ 'Sections'|locale }}</h4>
         </li>
 
-        <li class="nav-item">
-            <a data-toggle="collapse" href="#nav-publication">
-                <i class="fas fa-newspaper"></i>
-                <p>{{ 'Publications'|locale }}</p>
-                <span class="caret"></span>
-            </a>
-            <div class="collapse" id="nav-publication">
-                <ul class="nav nav-collapse">
-                    <li>
-                        <a href="/cup/publication">
-                            <span class="sub-item">{{ 'Edit'|locale }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/cup/publication/category">
-                            <span class="sub-item">{{ 'Categories'|locale }}</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </li>
+        {% if parameter('publication_is_enabled', 'yes') != 'no' %}
+            <li class="nav-item">
+                <a data-toggle="collapse" href="#nav-publication">
+                    <i class="fas fa-newspaper"></i>
+                    <p>{{ 'Publications'|locale }}</p>
+                    <span class="caret"></span>
+                </a>
+                <div class="collapse" id="nav-publication">
+                    <ul class="nav nav-collapse">
+                        <li>
+                            <a href="/cup/publication">
+                                <span class="sub-item">{{ 'Edit'|locale }}</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/cup/publication/category">
+                                <span class="sub-item">{{ 'Categories'|locale }}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        {% endif %}
 
-        <li class="nav-item">
-            <a href="/cup/page">
-                <i class="fas fa-book-open"></i>
-                <p>{{ 'Pages'|locale }}</p>
-            </a>
-        </li>
+        {% if parameter('page_is_enabled', 'yes') != 'no' %}
+            <li class="nav-item">
+                <a href="/cup/page">
+                    <i class="fas fa-book-open"></i>
+                    <p>{{ 'Pages'|locale }}</p>
+                </a>
+            </li>
+        {% endif %}
 
         <li class="nav-item">
             <a data-toggle="collapse" href="#nav-user">

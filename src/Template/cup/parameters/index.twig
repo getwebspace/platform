@@ -58,6 +58,8 @@
                                             <a class="nav-link"         data-toggle="pill" href="#other-mail">{{ 'Mail'|locale }}</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-file">{{ 'Files and images'|locale }}</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-notification">{{ 'Notifications'|locale }}</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#other-publication">{{ 'Publications'|locale }}</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#other-page">{{ 'Pages'|locale }}</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-form">{{ 'Forms'|locale }}</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-search">{{ 'Search'|locale }}</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-guestbook">{{ 'Guestbook'|locale }}</a>
@@ -436,6 +438,34 @@
                                                     'args': {
                                                         'placeholder': '24',
                                                         'value': '24'
+                                                    }
+                                                } %}
+                                            </div>
+
+                                            {# TAB: Other Publication #}
+                                            <div class="tab-pane fade" id="other-publication">
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Enable Publications',
+                                                    'description': 'Ability to publish posts by category',
+                                                    'type': 'select',
+                                                    'name': 'publication[is_enabled]',
+                                                    'args': {
+                                                        'option': _(['yes', 'no']),
+                                                        'selected': 'yes'
+                                                    }
+                                                } %}
+                                            </div>
+
+                                            {# TAB: Other Page #}
+                                            <div class="tab-pane fade" id="other-page">
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Enable Pages',
+                                                    'description': 'Ability to add pages',
+                                                    'type': 'select',
+                                                    'name': 'page[is_enabled]',
+                                                    'args': {
+                                                        'option': _(['yes', 'no']),
+                                                        'selected': 'yes'
                                                     }
                                                 } %}
                                             </div>
