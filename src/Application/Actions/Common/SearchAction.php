@@ -74,7 +74,7 @@ class SearchAction extends AbstractAction
                             $entity->toArray(),
                             array_flip([
                                 'uuid', 'category',
-                                'title', 'description', 'extra',
+                                'title', 'description', 'extra', 'content',
                                 'address',
                                 'vendorcode', 'barcode',
                                 'field1', 'field2', 'field3', 'field4', 'field5',
@@ -144,8 +144,10 @@ class SearchAction extends AbstractAction
                             $item->toArray(),
                             array_flip([
                                 'uuid', 'category',
-                                'title', 'description', 'content',
+                                'title', 'description', 'extra', 'content',
                                 'address',
+                                'vendorcode', 'barcode',
+                                'field1', 'field2', 'field3', 'field4', 'field5',
                                 'priceFirst', 'price', 'priceWholesale',
                                 'volume', 'unit', 'meta', 'external_id',
                             ])
