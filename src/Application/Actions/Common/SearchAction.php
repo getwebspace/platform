@@ -159,9 +159,16 @@ class SearchAction extends AbstractAction
                             /** @var \App\Domain\Entities\File $file */
                             foreach ($item->getFiles() as $file) {
                                 $files[] = [
-                                    'full' => $file->getPublicPath('full'),
-                                    'middle' => $file->getPublicPath('middle'),
-                                    'small' => $file->getPublicPath('small'),
+                                    'filename' => implode('.', [$item->file->name, $item->file->ext]),
+                                    'full' => $item->getPublicPath('full'),
+                                    'middle' => $item->getPublicPath('middle'),
+                                    'small' => $item->getPublicPath('small'),
+                                    'type' => $item->file->type,
+                                    'salt' => $item->file->salt,
+                                    'hash' => $item->file->hash,
+                                    'size' => $item->file->size,
+                                    'comment' => $item->comment,
+                                    'order' => $item->order,
                                 ];
                             }
 
