@@ -139,9 +139,9 @@ class SearchAction extends AbstractAction
             foreach ($entities as $type => $service) {
                 if (!empty($search_by_index[$type])) {
                     /** @var AbstractService $service */
-                    foreach ($service->read(['uuid' => $search_by_index[$type], 'status' => 'work', 'limit' => $limit]) as $index => $item) {
+                    foreach ($service->read(['uuid' => $search_by_index[$type], 'status' => 'work', 'limit' => $limit]) as $index => $entity) {
                         $result[$type][$index] = array_intersect_key(
-                            $item->toArray(),
+                            $entity->toArray(),
                             array_flip([
                                 'uuid', 'category',
                                 'title', 'description', 'extra', 'content',
@@ -153,11 +153,11 @@ class SearchAction extends AbstractAction
                             ])
                         );
 
-                        if (method_exists($item, 'hasFiles')) {
+                        if (method_exists($entity, 'hasFiles')) {
                             $files = [];
 
-                            /** @var \App\Domain\Entities\File $file */
-                            foreach ($item->getFiles() as $file) {
+                            /** @var \App\Domain\Entities\File $item */
+                            foreach ($entity->getFiles()->sortBy('order') as $item) {
                                 $files[] = [
                                     'filename' => implode('.', [$item->file->name, $item->file->ext]),
                                     'full' => $item->getPublicPath('full'),
