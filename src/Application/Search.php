@@ -91,8 +91,9 @@ class Search
                     $text = str_replace(['-', '+'], '', $text);
                 }
 
-                $text = str_replace(['a', 'e', 'i', 'o', 'u', 'y'], '', $text);
-                $text = str_replace(['а', 'е', 'ё', 'и', 'о', 'у', 'ы', 'э', 'ю', 'я', 'ь', 'ъ'], '', $text);
+                $text = str_replace(['a', 'e', 'i', 'o', 'u', 'y'], '', $text); // english
+                $text = str_replace(['а', 'е', 'ё', 'и', 'о', 'у', 'ы', 'э', 'ю', 'я', 'ь', 'ъ'], '', $text); // russian
+                $text = str_replace(['а', 'е', 'є', 'и', 'і', 'ї', 'о', 'у', 'ю', 'я'], '', $text); // ukrainian
                 $text = explode(' ', $text);
 
                 foreach ($text as $i => &$word) {
