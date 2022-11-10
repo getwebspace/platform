@@ -74,8 +74,10 @@ class SearchAction extends AbstractAction
                             $entity->toArray(),
                             array_flip([
                                 'uuid', 'category',
-                                'title', 'description', 'content',
+                                'title', 'description', 'extra',
                                 'address',
+                                'vendorcode', 'barcode',
+                                'field1', 'field2', 'field3', 'field4', 'field5',
                                 'priceFirst', 'price', 'priceWholesale',
                                 'volume', 'unit', 'meta', 'external_id',
                             ])
@@ -84,12 +86,19 @@ class SearchAction extends AbstractAction
                         if (method_exists($entity, 'hasFiles')) {
                             $files = [];
 
-                            /** @var \App\Domain\Entities\File $file */
-                            foreach ($entity->getFiles() as $file) {
+                            /** @var \App\Domain\Entities\File $item */
+                            foreach ($entity->getFiles()->sortBy('order') as $item) {
                                 $files[] = [
-                                    'full' => $file->getPublicPath('full'),
-                                    'middle' => $file->getPublicPath('middle'),
-                                    'small' => $file->getPublicPath('small'),
+                                    'filename' => implode('.', [$item->file->name, $item->file->ext]),
+                                    'full' => $item->getPublicPath('full'),
+                                    'middle' => $item->getPublicPath('middle'),
+                                    'small' => $item->getPublicPath('small'),
+                                    'type' => $item->file->type,
+                                    'salt' => $item->file->salt,
+                                    'hash' => $item->file->hash,
+                                    'size' => $item->file->size,
+                                    'comment' => $item->comment,
+                                    'order' => $item->order,
                                 ];
                             }
 
