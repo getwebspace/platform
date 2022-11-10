@@ -30,7 +30,9 @@ class SearchIndexTask extends AbstractTask
                 Search::getIndexedText([
                     $item->getTitle(),
                     $item->getContent(),
+                    $item->getMeta()['title'],
                     $item->getMeta()['description'],
+                    $item->getMeta()['keywords'],
                 ], true),
             ]);
         }
@@ -45,7 +47,9 @@ class SearchIndexTask extends AbstractTask
                     $item->getTitle(),
                     $item->getContent()['short'],
                     $item->getContent()['full'],
+                    $item->getMeta()['title'],
                     $item->getMeta()['description'],
+                    $item->getMeta()['keywords'],
                 ], true),
             ]);
         }
@@ -60,8 +64,19 @@ class SearchIndexTask extends AbstractTask
                     $item->getTitle(),
                     $item->getDescription(),
                     $item->getExtra(),
+                    $item->getField1(),
+                    $item->getField2(),
+                    $item->getField3(),
+                    $item->getField4(),
+                    $item->getField5(),
+                    $item->getCountry(),
+                    $item->getManufacturer(),
                     $item->getVendorCode(),
+                    $item->getBarCode(),
+                    $item->getTags(),
+                    $item->getMeta()['title'],
                     $item->getMeta()['description'],
+                    $item->getMeta()['keywords'],
                 ], true),
             ]);
         }
