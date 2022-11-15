@@ -100,7 +100,7 @@ class TwigExtension extends AbstractExtension
             // catalog functions
             new TwigFunction('catalog_category', [$this, 'catalog_category']),
             new TwigFunction('catalog_category_parents', [$this, 'catalog_category_parents']),
-            new TwigFunction('catalog_products', [$this, 'catalog_products']),
+            new TwigFunction('catalog_products', [$this, 'catalog_product']), // todo remove
             new TwigFunction('catalog_product', [$this, 'catalog_product']),
             new TwigFunction('catalog_product_view', [$this, 'catalog_product_view']),
             new TwigFunction('catalog_order', [$this, 'catalog_order']),
@@ -463,15 +463,6 @@ class TwigExtension extends AbstractExtension
         }
 
         return collect($breadcrumb)->reverse();
-    }
-
-    // getting a list of products by criteria
-    public function catalog_products(array $criteria = [], $order = [], $limit = 10, $offset = null)
-    {
-        $criteria['status'] = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
-        $catalogProductService = $this->container->get(CatalogProductService::class);
-
-        return $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
     }
 
     // returns a product or a list of products by criteria
