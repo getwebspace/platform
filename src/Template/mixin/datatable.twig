@@ -17,7 +17,7 @@
 
 <div class="row clusterize-header text-nowrap">
     {% block thead %}
-        <div class="col clusterize-no-data">
+        <div class="col clusterize-no-data text-center">
             {{ 'No headers'|locale }}
         </div>
     {% endblock %}
@@ -25,7 +25,7 @@
 <div data-table-scroll="{{ randomId }}" class="clusterize-scroll">
     <div class="clusterize-content text-nowrap" data-table-content="{{ randomId }}" style="display: none;">
         {% block tbody %}
-            <div class="row clusterize-no-data">
+            <div class="row clusterize-no-data text-center">
                 <div class="col">
                     {{ 'No data'|locale }}
                 </div>
@@ -54,6 +54,7 @@
                 contentElem: $content.show().get(0),
                 rows_in_block: 10,
                 blocks_in_cluster: 3,
+                no_data_class: 'text-center pt-3',
                 no_data_text: '{{ 'No data'|locale }}'
             });
 
