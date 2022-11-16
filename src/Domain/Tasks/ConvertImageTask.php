@@ -37,17 +37,7 @@ class ConvertImageTask extends AbstractTask
         $command = $this->parameter('image_convert_bin', '/usr/bin/convert');
         $params = [
             '-quality 70%',
-            '-filter Lanczos',
-            '-gaussian-blur 0.05',
-            '-sampling-factor 4:2:0',
-            '-colorspace RGB',
-            '-interlace Plane',
-            '-strip',
-            '-depth 8',
-            '-в',
-            '-background white',
-            '-alpha remove',
-            '-alpha off',
+         // '-define webp:lossless=true',
         ];
         if (($arg = $this->parameter('image_convert_args', false)) !== false) {
             $params = array_map('trim', explode(PHP_EOL, $arg));
@@ -76,30 +66,28 @@ class ConvertImageTask extends AbstractTask
                             if ($pixels > 0) {
                                 $path = $folder . '/' . $size;
 
-                                if (!file_exists($path . '/' . $file->getName() . '.jpg')) {
+                                if (!file_exists($path . '/' . $file->getName() . '.webp')) {
                                     $buf = array_merge($params, ['-resize x' . $pixels . '\>']);
                                     $log[$size] = 'convert image';
 
                                     @mkdir($path, 0o777, true);
-                                    @exec($command . " '" . $original . "' " . implode(' ', $buf) . " '" . $path . '/' . $file->getName() . ".jpg'");
+                                    @exec($command . " '" . $original . "' " . implode(' ', $buf) . " '" . $path . '/' . $file->getName() . ".webp'");
                                 } else {
                                     $log[$size] = 'skip, converted file already exists';
                                 }
                             }
                         }
 
-                        @exec($command . " '" . $original . "' " . implode(' ', $params) . " '" . $folder . '/' . $file->getName() . ".jpg'");
+                        @exec($command . " '" . $original . "' " . implode(' ', $params) . " '" . $folder . '/' . $file->getName() . ".webp'");
                         $log['original'] = 'convert image';
                         $this->logger->info('Task: convert image', array_merge($log, ['params' => $params]));
 
-                        // set file type and ext
-                        if ($file->getExt() !== 'jpg') {
-                            $file->setExt('jpg');
-                            $file->setType('image/jpeg; charset=binary');
-                        }
+                        // set file ext and type
+                        $file->setExt('webp');
+                        $file->setType('image/webp');
 
                         // update file size
-                        $file->setSize(+filesize($folder . '/' . $file->getName() . '.jpg'));
+                        $file->setSize(+filesize($folder . '/' . $file->getName() . '.webp'));
                     }
                 } else {
                     $this->logger->info('Task: convert skipped, small file size');
