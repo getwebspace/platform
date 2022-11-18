@@ -67,8 +67,8 @@ class UserRepository extends AbstractRepository
     public function findOneByIdentifier(string $identifier): ?User
     {
         $query = $this->createQueryBuilder('u')
-            ->orWhere('u.username = :username')->setParameter('username', $identifier, Types::STRING)
-            ->orWhere('u.email = :email')->setParameter('email', $identifier, Types::STRING)
+            ->orWhere('LOWER(u.username) = LOWER(:username)')->setParameter('username', $identifier, Types::STRING)
+            ->orWhere('LOWER(u.email) = LOWER(:email)')->setParameter('email', $identifier, Types::STRING)
             ->orWhere('u.phone = :phone')->setParameter('phone', $identifier, Types::STRING)
             ->getQuery();
 
