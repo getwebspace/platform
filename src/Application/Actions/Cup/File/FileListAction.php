@@ -7,7 +7,7 @@ class FileListAction extends FileAction
     protected function action(): \Slim\Psr7\Response
     {
         return $this->respondWithTemplate('cup/file/index.twig', [
-            'list' => $this->fileService->read(['order' => ['name' => 'asc', 'date' => 'desc']]),
+            'list' => $this->fileService->read(['order' => ['date' => 'desc']]),
         ]);
     }
 }
