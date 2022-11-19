@@ -79,7 +79,7 @@ class SearchAction extends AbstractAction
                                 'vendorcode', 'barcode',
                                 'field1', 'field2', 'field3', 'field4', 'field5',
                                 'priceFirst', 'price', 'priceWholesale',
-                                'volume', 'unit', 'meta', 'external_id',
+                                'volume', 'unit', 'external_id',
                             ])
                         );
 
@@ -149,7 +149,7 @@ class SearchAction extends AbstractAction
                                 'vendorcode', 'barcode',
                                 'field1', 'field2', 'field3', 'field4', 'field5',
                                 'priceFirst', 'price', 'priceWholesale',
-                                'volume', 'unit', 'meta', 'external_id',
+                                'volume', 'unit', 'external_id',
                             ])
                         );
 

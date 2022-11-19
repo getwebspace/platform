@@ -73,7 +73,6 @@ class SearchIndexTask extends AbstractTask
                     $item->getManufacturer(),
                     $item->getVendorCode(),
                     $item->getBarCode(),
-                    $item->getTags(),
                     $item->getMeta()['title'],
                     $item->getMeta()['description'],
                     $item->getMeta()['keywords'],
