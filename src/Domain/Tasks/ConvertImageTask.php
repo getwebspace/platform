@@ -59,7 +59,7 @@ class ConvertImageTask extends AbstractTask
                         $original = '';
 
                         // search original image
-                        foreach (['jpg', 'jpeg', 'png', 'webp'] as $ext) {
+                        foreach (['png', 'jpg', 'jpeg', 'webp'] as $ext) {
                             $buf = $folder . '/' . $file->getName() . '.' . $ext;
                             if (file_exists($buf)) {
                                 $original = $buf;
