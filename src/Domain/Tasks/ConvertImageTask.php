@@ -3,6 +3,7 @@
 namespace App\Domain\Tasks;
 
 use App\Domain\AbstractTask;
+use App\Domain\Entities\File;
 use App\Domain\Service\File\Exception\FileNotFoundException;
 use App\Domain\Service\File\FileService;
 
@@ -37,7 +38,7 @@ class ConvertImageTask extends AbstractTask
         $command = $this->parameter('image_convert_bin', '/usr/bin/convert');
         $params = [
             '-quality 70%',
-         // '-define webp:lossless=true',
+            // '-define webp:lossless=true',
         ];
         if (($arg = $this->parameter('image_convert_args', false)) !== false) {
             $params = array_map('trim', explode(PHP_EOL, $arg));
@@ -48,13 +49,28 @@ class ConvertImageTask extends AbstractTask
 
         foreach ((array) $args['uuid'] as $index => $uuid) {
             try {
+                /** @var File $file */
                 $file = $fileService->read(['uuid' => $uuid]);
                 $this->logger->info('Task: prepare convert', ['file' => $file->getFileName(), 'salt' => $file->getSalt()]);
 
                 if ($file->getSize() >= $convert_size) {
                     if (str_start_with($file->getType(), 'image/')) {
                         $folder = $file->getDir('');
-                        $original = $file->getInternalPath();
+                        $original = '';
+
+                        // search original image
+                        foreach (['jpg', 'jpeg', 'png', 'webp'] as $ext) {
+                            $buf = $folder . '/' . $file->getName() . '.' . $ext;
+                            if (file_exists($buf)) {
+                                $original = $buf;
+                                break;
+                            }
+                        }
+                        if (!$original) {
+                            $this->logger->info('Task: skip convert, original file not found');
+                            continue;
+                        }
+
                         $log = [];
 
                         foreach (
@@ -65,21 +81,16 @@ class ConvertImageTask extends AbstractTask
                         ) {
                             if ($pixels > 0) {
                                 $path = $folder . '/' . $size;
+                                $buf = array_merge($params, ['-resize x' . $pixels . '\>']);
+                                $log[$size] = 'convert';
 
-                                if (!file_exists($path . '/' . $file->getName() . '.webp')) {
-                                    $buf = array_merge($params, ['-resize x' . $pixels . '\>']);
-                                    $log[$size] = 'convert image';
-
-                                    @mkdir($path, 0o777, true);
-                                    @exec($command . " '" . $original . "' " . implode(' ', $buf) . " '" . $path . '/' . $file->getName() . ".webp'");
-                                } else {
-                                    $log[$size] = 'skip, converted file already exists';
-                                }
+                                @mkdir($path, 0o777, true);
+                                @exec($command . " '" . $original . "' " . implode(' ', $buf) . " '" . $path . '/' . $file->getName() . ".webp'");
                             }
                         }
 
                         @exec($command . " '" . $original . "' " . implode(' ', $params) . " '" . $folder . '/' . $file->getName() . ".webp'");
-                        $log['original'] = 'convert image';
+                        $log['original'] = 'convert';
                         $this->logger->info('Task: convert image', array_merge($log, ['params' => $params]));
 
                         // set file ext and type
@@ -87,7 +98,7 @@ class ConvertImageTask extends AbstractTask
                         $file->setType('image/webp');
 
                         // update file size
-                        $file->setSize(+filesize($folder . '/' . $file->getName() . '.webp'));
+                        $file->setSize(+filesize($original));
                     }
                 } else {
                     $this->logger->info('Task: convert skipped, small file size');
