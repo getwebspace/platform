@@ -4,7 +4,7 @@ namespace App\Application;
 
 class Search
 {
-    public const CACHE_FILE = CACHE_DIR . '/search_idx';
+    public const CACHE_FILE = CACHE_DIR . '/search.idx';
 
     public static function isPossible(): bool
     {
