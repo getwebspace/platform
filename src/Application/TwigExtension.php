@@ -4,8 +4,10 @@ namespace App\Application;
 
 use App\Application\Twig\LocaleParser;
 use App\Domain\AbstractExtension;
+use App\Domain\Service\Catalog\AttributeService as CatalogAttributeService;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
+use App\Domain\Service\Catalog\OrderStatusService as CatalogOrderStatusService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\File\FileService;
 use App\Domain\Service\GuestBook\GuestBookService;
@@ -98,12 +100,14 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('guestbook', [$this, 'guestbook']),
 
             // catalog functions
+            new TwigFunction('catalog_attribute', [$this, 'catalog_attribute']),
             new TwigFunction('catalog_category', [$this, 'catalog_category']),
             new TwigFunction('catalog_category_parents', [$this, 'catalog_category_parents']),
             new TwigFunction('catalog_products', [$this, 'catalog_product']), // todo remove
             new TwigFunction('catalog_product', [$this, 'catalog_product']),
             new TwigFunction('catalog_product_view', [$this, 'catalog_product_view']),
             new TwigFunction('catalog_order', [$this, 'catalog_order']),
+            new TwigFunction('catalog_order_status', [$this, 'catalog_order_status']),
         ];
     }
 
@@ -433,6 +437,14 @@ class TwigExtension extends AbstractExtension
 
     // catalog functions
 
+    // fetch attributes list
+    public function catalog_attribute(array $criteria = [], $order = [])
+    {
+        $catalogAttributeService = $this->container->get(CatalogAttributeService::class);
+
+        return $catalogAttributeService->read(array_merge($criteria, ['order' => $order]));
+    }
+
     // fetch categories list
     public function catalog_category(array $criteria = [], $order = [])
     {
@@ -507,5 +519,13 @@ class TwigExtension extends AbstractExtension
             'limit' => $limit,
             'offset' => $offset,
         ]));
+    }
+
+    // fetch order status list
+    public function catalog_order_status(array $criteria = [], $order = [])
+    {
+        $catalogOrderStatusService = $this->container->get(CatalogOrderStatusService::class);
+
+        return $catalogOrderStatusService->read(array_merge($criteria, ['order' => $order]));
     }
 }
