@@ -135,13 +135,6 @@ class CatalogExportAction extends CatalogAction
 
                                 break;
 
-                            case 'description':
-                            case 'extra':
-                                $cell
-                                    ->setValue(trim($wizard->toRichTextObject($model->{$field})->getPlainText()));
-
-                                break;
-
                             case 'priceFirst':
                             case 'price':
                             case 'priceWholesale':
