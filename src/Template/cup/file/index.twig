@@ -11,6 +11,22 @@
 {% endblock %}
 
 {% block content %}
+    {% if parameter('file_is_enabled', 'yes') == 'yes' %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="post" class="dropzone dz-clickable">
+                            <div class="dz-message">
+                                <h4 class="message">{{ 'Drag and Drop files here'|locale }}</h4>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -52,4 +68,19 @@
             </div>
         </div>
     </div>
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', async () => {
+            await window.loader(['/assets/js/plugin/dropzone/dropzone.min.js']);
+
+            new Dropzone('form.dropzone', {
+                url: '/file/upload',
+                paramName: 'file',
+                maxFilesize: 10 * 1024 * 1024,
+                parallelUploads: 1,
+                uploadMultiple: true,
+                createImageThumbnails: false,
+            });
+        });
+    </script>
 {% endblock %}

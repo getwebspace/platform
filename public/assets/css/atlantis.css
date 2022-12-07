@@ -5728,7 +5728,7 @@ label.error {
 
 /*      Custom Dropzone      */
 .dropzone {
-    padding: 70px 60px 80px !important;
+    padding: 20px 60px 20px !important;
     border: 2px dashed rgba(0, 0, 0, 0.13) !important;
     background: transparent !important;
 }
@@ -5744,7 +5744,7 @@ label.error {
 }
 
 .dropzone .dz-message .message {
-    font-size: 34px;
+    font-size: 25px;
     font-weight: 200;
 }
 
@@ -17131,10 +17131,8 @@ be a descendant of the grid when it is being dragged.
 }
 
 .dropzone {
-    min-height: 150px;
     border: 2px solid rgba(0, 0, 0, 0.3);
     background: white;
-    padding: 20px 20px;
 }
 
 .dropzone.dz-clickable {
