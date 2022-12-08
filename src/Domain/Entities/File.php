@@ -323,11 +323,15 @@ class File extends AbstractEntity
         $result = [
             'name' => $this->getFileName(),
             'size' => $this->getSize(),
-            'path' => [],
+            'link' => $this->getPublicPath(),
         ];
 
-        foreach (['full', 'middle', 'small'] as $size) {
-            $result['path'][$size] = $this->getPublicPath($size);
+        if (str_start_with($this->getType(), 'image/')) {
+            $result['path'] = [];
+
+            foreach (['full', 'middle', 'small'] as $size) {
+                $result['path'][$size] = $this->getPublicPath($size);
+            }
         }
 
         return $result;
