@@ -14,11 +14,12 @@
                     {% include 'cup/form.twig' with {
                         'type': 'text',
                         'name': 'path',
-                        'postfix_btn': '<button type="submit" name="save" value="exit" class="btn btn-primary">' ~ ('Save')|locale ~ '</button>' ~
-                                       '<button type="submit" name="save" value="delete" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt" data-toggle="tooltip" data-placement="right" title="' ~ ('Delete')|locale ~ '"></i></button>',
+                        'postfix_btn': [
+                                '<button type="submit" name="save" value="exit" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="left" title="' ~ ('Save')|locale ~ '"><i class="fas fa-save"></i></button>',
+                                '<button type="submit" name="save" value="delete" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="left" title="' ~ ('Delete')|locale ~ '"><i class="fas fa-trash-alt"></i></button>'
+                            ]|join(''),
                         'args': {
                             'value': file.path,
-                            'readonly': true,
                             'required': true,
                             'placeholder': 'template.twig',
                             'autocomplete':'off'
@@ -26,6 +27,9 @@
                     } %}
 
                     <style>
+                        #CodeMirror {
+                            overflow: hidden;
+                        }
                         #CodeMirror .CodeMirror {
                             width: 100% !important;
                             min-height: 86vh !important;

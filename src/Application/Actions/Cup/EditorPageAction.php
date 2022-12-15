@@ -30,22 +30,26 @@ class EditorPageAction extends AbstractAction
             $content = $this->getParam('template');
 
             // delete file
-            if ($this->getParam('save', 'exit') === 'delete' && file_exists($absolute_path)) {
-                unlink($absolute_path);
+            if ($this->getParam('save', 'save') === 'delete' && file_exists($absolute_path)) {
+                @unlink($absolute_path);
 
                 return $this->response->withAddedHeader('Location', '/cup/editor')->withStatus(301);
             }
 
             if (!file_exists($absolute_path)) {
-                mkdir(dirname($absolute_path), 0o777, true);
+                @mkdir(dirname($absolute_path), 0o777, true);
             }
 
-            file_put_contents($absolute_path, $content);
+            @file_put_contents($absolute_path, $content);
 
             return $this->response->withAddedHeader('Location', '/cup/editor/' . $path)->withStatus(301);
         }
 
-        return $this->respondWithTemplate('cup/editor/index.twig', ['list' => $list, 'file' => $file, 'content' => $content]);
+        return $this->respondWithTemplate('cup/editor/index.twig', [
+            'list' => $list,
+            'file' => $file,
+            'content' => $content,
+        ]);
     }
 
     private function getCatalog($path)
