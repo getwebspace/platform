@@ -35,7 +35,7 @@
         "phpoffice/phpspreadsheet": "^1.23.0",
         "bacon/bacon-qr-code": "^2.0.7",
         "monolog/monolog": "^2.6.0",
-        "illuminate/collections": "^v8.83.15",
+        "illuminate/collections": "^v9.45.1",
         "symfony/cache": "^v6.1.0",
         "symfony/var-dumper": "^v6.1.0",
         "voku/html-compress-twig": "^4.0.2",
