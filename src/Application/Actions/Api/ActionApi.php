@@ -16,7 +16,7 @@ abstract class ActionApi extends AbstractAction
             case 'all':
                 // allow access for all
                 $access = true;
-            // no break
+                // no break
 
             case 'user':
                 if (($user = $this->request->getAttribute('user')) !== null) {
@@ -24,7 +24,7 @@ abstract class ActionApi extends AbstractAction
                     $access = true;
                     $params['user'] = $user->getUuid()->toString();
                 }
-            // no break
+                // no break
 
             case 'key':
                 $key = $this->getParam('key');

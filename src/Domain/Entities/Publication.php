@@ -5,7 +5,6 @@ namespace App\Domain\Entities;
 use App\Domain\AbstractEntity;
 use App\Domain\Entities\Publication\Category as PublicationCategory;
 use App\Domain\Traits\FileTrait;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
@@ -125,10 +124,9 @@ class Publication extends AbstractEntity
     }
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    protected DateTime $date;
+    protected \DateTime $date;
 
     /**
-     * @param $date
      * @param mixed $timezone
      *
      * @throws \Exception
@@ -143,7 +141,7 @@ class Publication extends AbstractEntity
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getDate()
     {

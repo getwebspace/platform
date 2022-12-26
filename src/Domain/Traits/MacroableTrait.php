@@ -2,12 +2,6 @@
 
 namespace App\Domain\Traits;
 
-use BadMethodCallException;
-use Closure;
-use ReflectionClass;
-use ReflectionException;
-use ReflectionMethod;
-
 trait MacroableTrait
 {
     /**
@@ -18,12 +12,12 @@ trait MacroableTrait
     /**
      * Mix another object into the class.
      *
-     * @throws ReflectionException
+     * @throws \ReflectionException
      */
     public static function mixin(object $mixin): void
     {
-        $methods = (new ReflectionClass($mixin))->getMethods(
-            ReflectionMethod::IS_PUBLIC | ReflectionMethod::IS_PROTECTED
+        $methods = (new \ReflectionClass($mixin))->getMethods(
+            \ReflectionMethod::IS_PUBLIC | \ReflectionMethod::IS_PROTECTED
         );
         foreach ($methods as $method) {
             $method->setAccessible(true);
@@ -44,21 +38,21 @@ trait MacroableTrait
     /**
      * Dynamically handle calls to the class.
      *
-     * @throws BadMethodCallException
+     * @throws \BadMethodCallException
      *
      * @return mixed
      */
     public static function __callStatic(string $method, array $parameters)
     {
         if (!static::hasMacro($method)) {
-            throw new BadMethodCallException(sprintf(
+            throw new \BadMethodCallException(sprintf(
                 'Method %s::%s does not exist.',
                 static::class,
                 $method
             ));
         }
-        if (static::$macros[$method] instanceof Closure) {
-            return call_user_func_array(Closure::bind(static::$macros[$method], null, static::class), $parameters);
+        if (static::$macros[$method] instanceof \Closure) {
+            return call_user_func_array(\Closure::bind(static::$macros[$method], null, static::class), $parameters);
         }
 
         return call_user_func_array(static::$macros[$method], $parameters);
@@ -75,21 +69,21 @@ trait MacroableTrait
     /**
      * Dynamically handle calls to the class.
      *
-     * @throws BadMethodCallException
+     * @throws \BadMethodCallException
      *
      * @return mixed
      */
     public function __call(string $method, array $parameters)
     {
         if (!static::hasMacro($method)) {
-            throw new BadMethodCallException(sprintf(
+            throw new \BadMethodCallException(sprintf(
                 'Method %s::%s does not exist.',
                 static::class,
                 $method
             ));
         }
         $macro = static::$macros[$method];
-        if ($macro instanceof Closure) {
+        if ($macro instanceof \Closure) {
             return call_user_func_array($macro->bindTo($this, static::class), $parameters);
         }
 

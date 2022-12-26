@@ -147,8 +147,6 @@ class SubscriberService extends AbstractService
     }
 
     /**
-     * @param $entity
-     *
      * @throws UserNotFoundException
      */
     public function delete($entity): bool

@@ -503,7 +503,6 @@ class UserService extends AbstractService
                 }
 
                 break;
-
         }
 
         return false;

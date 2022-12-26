@@ -63,11 +63,13 @@ class ConvertImageTask extends AbstractTask
                             $buf = $folder . '/' . $file->getName() . '.' . $ext;
                             if (file_exists($buf)) {
                                 $original = $buf;
+
                                 break;
                             }
                         }
                         if (!$original) {
                             $this->logger->info('Task: skip convert, original file not found');
+
                             continue;
                         }
 

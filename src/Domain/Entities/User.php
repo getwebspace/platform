@@ -7,10 +7,8 @@ use App\Domain\Entities\User\Group as UserGroup;
 use App\Domain\Entities\User\Integration as UserIntegration;
 use App\Domain\Entities\User\Session as UserSession;
 use App\Domain\Traits\FileTrait;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Illuminate\Support\Collection;
-use RuntimeException;
 
 #[ORM\Table(name: 'user')]
 #[ORM\Entity(repositoryClass: 'App\Domain\Repository\UserRepository')]
@@ -63,7 +61,7 @@ class User extends AbstractEntity
             if ($this->checkStrLenMax($email, 120) && $this->checkEmailByValue($email)) {
                 $this->email = $email;
             }
-        } catch (RuntimeException $e) {
+        } catch (\RuntimeException $e) {
             throw new \App\Domain\Service\User\Exception\WrongEmailValueException();
         }
 
@@ -102,7 +100,7 @@ class User extends AbstractEntity
                 if ($this->checkStrLenMax($phone, 25) && $this->checkPhoneByValue($phone)) {
                     $this->phone = $phone;
                 }
-            } catch (RuntimeException $e) {
+            } catch (\RuntimeException $e) {
                 throw new \App\Domain\Service\User\Exception\WrongPhoneValueException();
             }
         } else {
@@ -234,10 +232,9 @@ class User extends AbstractEntity
     }
 
     #[ORM\Column(type: 'date', nullable: true)]
-    protected ?DateTime $birthdate = null;
+    protected ?\DateTime $birthdate = null;
 
     /**
-     * @param $birthdate
      * @param mixed $timezone
      *
      * @throws \Exception
@@ -251,7 +248,7 @@ class User extends AbstractEntity
         return $this;
     }
 
-    public function getBirthdate(): ?DateTime
+    public function getBirthdate(): ?\DateTime
     {
         return $this->birthdate;
     }
@@ -544,10 +541,9 @@ class User extends AbstractEntity
     }
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    protected DateTime $register;
+    protected \DateTime $register;
 
     /**
-     * @param $register
      * @param mixed $timezone
      *
      * @throws \Exception
@@ -562,7 +558,7 @@ class User extends AbstractEntity
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getRegister()
     {
@@ -570,10 +566,9 @@ class User extends AbstractEntity
     }
 
     #[ORM\Column(name: '`change`', type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    protected DateTime $change;
+    protected \DateTime $change;
 
     /**
-     * @param $change
      * @param mixed $timezone
      *
      * @throws \Exception
@@ -588,7 +583,7 @@ class User extends AbstractEntity
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getChange()
     {

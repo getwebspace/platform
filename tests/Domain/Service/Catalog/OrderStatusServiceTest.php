@@ -10,6 +10,7 @@ use tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class OrderStatusServiceTest extends TestCase

@@ -4,7 +4,6 @@ namespace App\Domain\Entities;
 
 use App\Domain\AbstractEntity;
 use App\Domain\Traits\FileTrait;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'page')]
@@ -65,10 +64,9 @@ class Page extends AbstractEntity
     }
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    protected DateTime $date;
+    protected \DateTime $date;
 
     /**
-     * @param $date
      * @param mixed $timezone
      *
      * @throws \Exception
@@ -83,7 +81,7 @@ class Page extends AbstractEntity
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getDate()
     {

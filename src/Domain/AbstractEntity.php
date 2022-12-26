@@ -2,12 +2,7 @@
 
 namespace App\Domain;
 
-use BadMethodCallException;
-use DateTime;
-use JsonSerializable;
-use RuntimeException;
-
-abstract class AbstractEntity implements JsonSerializable
+abstract class AbstractEntity implements \JsonSerializable
 {
     /**
      * @param string[] $args
@@ -47,7 +42,7 @@ abstract class AbstractEntity implements JsonSerializable
     }
 
     /**
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     protected function checkEmailByValue(string $value): bool
     {
@@ -56,14 +51,14 @@ abstract class AbstractEntity implements JsonSerializable
                 return true;
             }
 
-            throw new RuntimeException();
+            throw new \RuntimeException();
         }
 
         return false;
     }
 
     /**
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     protected function checkPhoneByValue(string &$value): bool
     {
@@ -80,7 +75,7 @@ abstract class AbstractEntity implements JsonSerializable
                 return true;
             }
 
-            throw new RuntimeException();
+            throw new \RuntimeException();
         }
 
         return false;
@@ -102,7 +97,7 @@ abstract class AbstractEntity implements JsonSerializable
     }
 
     /**
-     * @throws RuntimeException
+     * @throws \RuntimeException
      */
     protected function getIpByValue(string $value): bool
     {
@@ -110,7 +105,7 @@ abstract class AbstractEntity implements JsonSerializable
             return true;
         }
 
-        throw new RuntimeException();
+        throw new \RuntimeException();
     }
 
     protected function getPasswordHashByValue(string $value): string
@@ -118,7 +113,7 @@ abstract class AbstractEntity implements JsonSerializable
         return password_hash($value, PASSWORD_ARGON2ID);
     }
 
-    protected function getDateTimeByValue($value, string $timezone = 'UTC'): DateTime
+    protected function getDateTimeByValue($value, string $timezone = 'UTC'): \DateTime
     {
         $value = datetime($value, $timezone);
 
@@ -129,12 +124,12 @@ abstract class AbstractEntity implements JsonSerializable
         return $value;
     }
 
-    protected function getDateByValue($value): DateTime
+    protected function getDateByValue($value): \DateTime
     {
         return match (true) {
-            is_string($value), is_numeric($value) => new DateTime($value),
-            is_a($value, DateTime::class) => clone $value,
-            default => new DateTime('now'),
+            is_string($value), is_numeric($value) => new \DateTime($value),
+            is_a($value, \DateTime::class) => clone $value,
+            default => new \DateTime('now'),
         };
     }
 
@@ -212,7 +207,7 @@ abstract class AbstractEntity implements JsonSerializable
             return $this->{$name};
         }
 
-        throw new BadMethodCallException(
+        throw new \BadMethodCallException(
             sprintf("Unknown property '%s' in class '%s'.", $name, get_class($this))
         );
     }
@@ -222,7 +217,7 @@ abstract class AbstractEntity implements JsonSerializable
      */
     public function __set(string $name, mixed $value): void
     {
-        throw new BadMethodCallException(
+        throw new \BadMethodCallException(
             sprintf("You cannot change value '%s' = '%s' by this way in class '%s'.", $name, $value, get_class($this))
         );
     }

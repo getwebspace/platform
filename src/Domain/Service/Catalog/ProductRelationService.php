@@ -71,9 +71,6 @@ class ProductRelationService extends AbstractService
         throw new \RuntimeException('Unused method');
     }
 
-    /**
-     * @param       $entity
-     */
     public function update($entity, array $data = []): void
     {
         throw new \RuntimeException('Unused method');

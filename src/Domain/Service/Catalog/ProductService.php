@@ -194,7 +194,7 @@ class ProductService extends AbstractService
             $criteria['barcode'] = $data['barcode'];
         }
         if ($data['special'] !== null) {
-            $criteria['special'] = !!$data['special'];
+            $criteria['special'] = (bool) $data['special'];
         }
         if ($data['field1'] !== null) {
             $criteria['field1'] = $data['field1'];

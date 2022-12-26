@@ -101,8 +101,6 @@ class IntegrationService extends AbstractService
     }
 
     /**
-     * @param $entity
-     *
      * @throws IntegrationNotFoundException
      */
     public function delete($entity): bool

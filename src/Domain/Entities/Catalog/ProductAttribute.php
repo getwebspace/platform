@@ -4,7 +4,6 @@ namespace App\Domain\Entities\Catalog;
 
 use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
-use RuntimeException;
 
 #[ORM\Table(name: 'catalog_product_attributes')]
 #[ORM\Entity]
@@ -131,7 +130,7 @@ class ProductAttribute extends AbstractEntity
                 return floatval($this->value);
         }
 
-        throw new RuntimeException('Wrong attribute type');
+        throw new \RuntimeException('Wrong attribute type');
     }
 
     /**

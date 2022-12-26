@@ -2,9 +2,6 @@
 
 namespace App\Application;
 
-use App\Domain\Exceptions\NullPointException;
-use SplPriorityQueue;
-
 class i18n
 {
     /**
@@ -34,7 +31,7 @@ class i18n
             'force' => null,
         ];
         $config = array_merge($default, $config);
-        $priority = new SplPriorityQueue();
+        $priority = new \SplPriorityQueue();
 
         if ($config['force'] && in_array($config['force'], static::$accept, true)) {
             $priority->insert($config['force'], 10);
@@ -78,14 +75,17 @@ class i18n
             switch ($info['extension']) {
                 case 'json':
                     $strings = json_decode(file_get_contents($path), true);
+
                     break;
 
                 case 'ini':
                     $strings = parse_ini_file($path, true);
+
                     break;
 
                 case 'php':
                     $strings = require_once $path;
+
                     break;
             }
         }
@@ -96,13 +96,14 @@ class i18n
     /**
      * Load language file for specified local
      */
-    protected static function load(SplPriorityQueue $priority): array
+    protected static function load(\SplPriorityQueue $priority): array
     {
         while ($priority->valid()) {
             $lang = $priority->current();
 
             if (isset(static::$locale[$lang])) {
                 static::$localeCode = $lang;
+
                 return static::$locale[$lang];
             }
 

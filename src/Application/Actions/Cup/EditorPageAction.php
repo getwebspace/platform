@@ -3,7 +3,6 @@
 namespace App\Application\Actions\Cup;
 
 use App\Domain\AbstractAction;
-use DirectoryIterator;
 
 class EditorPageAction extends AbstractAction
 {
@@ -56,7 +55,7 @@ class EditorPageAction extends AbstractAction
     {
         $list = collect();
 
-        foreach ((new DirectoryIterator($path)) as $file) {
+        foreach ((new \DirectoryIterator($path)) as $file) {
             if (!$file->isDot() && !str_start_with($file->getFilename(), '.')) {
                 if ($file->isDir()) {
                     $list = $list->merge([['name' => $file->getFilename(), 'type' => 'dir', 'list' => $this->getCatalog($path . '/' . $file->getFilename())]]);

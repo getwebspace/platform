@@ -12,11 +12,11 @@ use App\Domain\Service\Publication\Exception\PublicationNotFoundException;
 use App\Domain\Service\Publication\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\Publication\PublicationService;
 use App\Domain\Service\User\UserService;
-use DateTime;
 use tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class PublicationServiceTest extends TestCase
@@ -58,7 +58,7 @@ class PublicationServiceTest extends TestCase
             'title' => $this->getFaker()->title,
             'address' => 'publication-custom-address',
             'category' => $this->category,
-            'date' => new DateTime(),
+            'date' => new \DateTime(),
             'content' => [
                 'short' => $this->getFaker()->text(200),
                 'full' => $this->getFaker()->realText(500),
@@ -198,7 +198,7 @@ class PublicationServiceTest extends TestCase
             'title' => $this->getFaker()->title,
             'address' => 'publication-custom-address',
             'category' => $this->category,
-            'date' => new DateTime(),
+            'date' => new \DateTime(),
             'content' => [
                 'short' => $this->getFaker()->text(200),
                 'full' => $this->getFaker()->realText(500),

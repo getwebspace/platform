@@ -2,16 +2,13 @@
 
 namespace App\Domain;
 
-use Exception;
-use Throwable;
-
-abstract class AbstractException extends Exception
+abstract class AbstractException extends \Exception
 {
     protected string $title = '';
 
     protected string $description = '';
 
-    public function __construct(string $message = '', ?Throwable $previous = null)
+    public function __construct(string $message = '', ?\Throwable $previous = null)
     {
         if ($message) {
             $this->message = $message;

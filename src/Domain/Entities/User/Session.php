@@ -4,9 +4,7 @@ namespace App\Domain\Entities\User;
 
 use App\Domain\AbstractEntity;
 use App\Domain\Entities\User;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use RuntimeException;
 
 #[ORM\Table(name: 'user_session')]
 #[ORM\UniqueConstraint(name: 'unique_uuid', columns: ['uuid'])]
@@ -45,8 +43,6 @@ class Session extends AbstractEntity
     protected string $ip = '';
 
     /**
-     * @param $ip
-     *
      * @throws \App\Domain\Service\User\Exception\WrongIpValueException
      *
      * @return $this
@@ -57,7 +53,7 @@ class Session extends AbstractEntity
             if ($this->checkStrLenMax($ip, 16) && $this->getIpByValue($ip)) {
                 $this->ip = $ip;
             }
-        } catch (RuntimeException $e) {
+        } catch (\RuntimeException $e) {
             throw new \App\Domain\Service\User\Exception\WrongIpValueException();
         }
 
@@ -93,10 +89,9 @@ class Session extends AbstractEntity
     }
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    protected DateTime $date;
+    protected \DateTime $date;
 
     /**
-     * @param $date
      * @param mixed $timezone
      *
      * @throws \Exception
@@ -111,7 +106,7 @@ class Session extends AbstractEntity
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getDate()
     {

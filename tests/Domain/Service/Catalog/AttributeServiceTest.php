@@ -12,6 +12,7 @@ use tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class AttributeServiceTest extends TestCase

@@ -8,7 +8,6 @@ use App\Domain\Traits\ParameterTrait;
 use App\Domain\Traits\RendererTrait;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
-use RuntimeException;
 
 abstract class AbstractTask
 {
@@ -92,7 +91,7 @@ abstract class AbstractTask
             return $this->entity;
         }
 
-        throw new RuntimeException('Exist Task cannot be changed');
+        throw new \RuntimeException('Exist Task cannot be changed');
     }
 
     /**

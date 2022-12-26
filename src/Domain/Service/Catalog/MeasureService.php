@@ -89,7 +89,7 @@ class MeasureService extends AbstractService
                 case !is_array($data['uuid']) && $data['uuid'] !== null:
                 case !is_array($data['title']) && $data['title'] !== null:
                 case !is_array($data['contraction']) && $data['contraction'] !== null:
-                $measure = $this->service->findOneBy($criteria);
+                    $measure = $this->service->findOneBy($criteria);
 
                     if (empty($measure)) {
                         throw new MeasureNotFoundException();

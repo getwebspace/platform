@@ -16,6 +16,7 @@ use tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class UserServiceTest extends TestCase

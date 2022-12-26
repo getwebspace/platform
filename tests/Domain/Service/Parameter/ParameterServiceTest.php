@@ -11,6 +11,7 @@ use tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class ParameterServiceTest extends TestCase

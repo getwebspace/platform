@@ -3,14 +3,8 @@
 namespace App\Application\Actions\Common\User;
 
 use App\Domain\Entities\User;
-use App\Domain\OAuth\FacebookOAuthProvider;
-use App\Domain\OAuth\VKOAuthProvider;
-use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
-use App\Domain\Service\User\Exception\EmailBannedException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
-use App\Domain\Service\User\Exception\WrongEmailValueException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
-use DateTime;
 
 class UserLoginAction extends UserAction
 {
@@ -86,7 +80,7 @@ class UserLoginAction extends UserAction
 
                 break;
 
-            // via login/email/phone with code
+                // via login/email/phone with code
             case 'code':
                 if ($this->isPost() && $this->parameter('user_auth_code_is_enabled', 'no') === 'yes') {
                     $data = [
@@ -104,7 +98,7 @@ class UserLoginAction extends UserAction
 
                             if (isset($this->getParams()['sendcode'])) {
                                 if ($user->getEmail()) {
-                                    if (!$user->getAuthCode() || (new DateTime('now'))->diff($user->getChange())->i >= 10) {
+                                    if (!$user->getAuthCode() || (new \DateTime('now'))->diff($user->getChange())->i >= 10) {
                                         // new code
                                         $code = implode('-', [random_int(100, 999), random_int(100, 999), random_int(100, 999)]);
 
@@ -141,6 +135,7 @@ class UserLoginAction extends UserAction
                         }
                     }
                 }
+
                 break;
         }
 

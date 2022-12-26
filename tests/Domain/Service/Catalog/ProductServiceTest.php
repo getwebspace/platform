@@ -13,6 +13,7 @@ use tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class ProductServiceTest extends TestCase

@@ -3,7 +3,6 @@
 namespace App\Application\Actions\Cup\Catalog\Order\Invoice;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
-use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 
 class OrderInviceEditorAction extends CatalogAction
 {

@@ -3,7 +3,6 @@
 namespace App\Domain\Entities;
 
 use App\Domain\AbstractEntity;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'file')]
@@ -160,10 +159,9 @@ class File extends AbstractEntity
     }
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    protected DateTime $date;
+    protected \DateTime $date;
 
     /**
-     * @param $date
      * @param mixed $timezone
      *
      * @throws \Exception
@@ -178,7 +176,7 @@ class File extends AbstractEntity
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getDate()
     {
@@ -187,8 +185,6 @@ class File extends AbstractEntity
 
     /**
      * File details by path
-     *
-     * @param $path
      */
     public static function info($path): array
     {

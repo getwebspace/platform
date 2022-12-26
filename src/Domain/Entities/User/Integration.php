@@ -4,7 +4,6 @@ namespace App\Domain\Entities\User;
 
 use App\Domain\AbstractEntity;
 use App\Domain\Entities\User;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'user_integration')]
@@ -54,8 +53,6 @@ class Integration extends AbstractEntity
     protected string $provider = '';
 
     /**
-     * @param $provider
-     *
      * @return $this
      */
     public function setProvider($provider): self
@@ -74,8 +71,6 @@ class Integration extends AbstractEntity
     protected string $unique = '';
 
     /**
-     * @param $unique
-     *
      * @return $this
      */
     public function setUnique($unique): self
@@ -91,10 +86,9 @@ class Integration extends AbstractEntity
     }
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    protected DateTime $date;
+    protected \DateTime $date;
 
     /**
-     * @param $date
      * @param mixed $timezone
      *
      * @throws \Exception
@@ -108,7 +102,7 @@ class Integration extends AbstractEntity
         return $this;
     }
 
-    public function getDate(): DateTime
+    public function getDate(): \DateTime
     {
         return $this->date;
     }

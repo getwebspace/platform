@@ -4,7 +4,6 @@ namespace App\Domain\Entities\Form;
 
 use App\Domain\AbstractEntity;
 use App\Domain\Traits\FileTrait;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
@@ -85,10 +84,9 @@ class Data extends AbstractEntity
     }
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    protected DateTime $date;
+    protected \DateTime $date;
 
     /**
-     * @param $date
      * @param mixed $timezone
      *
      * @throws \Exception
@@ -103,7 +101,7 @@ class Data extends AbstractEntity
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getDate()
     {

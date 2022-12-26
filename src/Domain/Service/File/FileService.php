@@ -93,8 +93,6 @@ class FileService extends AbstractService
      * Get file from url
      * recursion when redirect
      *
-     * @param $path
-     *
      * @return bool|string
      */
     protected static function getFileFromRemote($path)

@@ -9,6 +9,7 @@ use tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class FileServiceTest extends TestCase

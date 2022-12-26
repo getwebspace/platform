@@ -4,7 +4,6 @@ namespace App\Domain\Entities\Catalog;
 
 use App\Domain\AbstractEntity;
 use App\Domain\Traits\FileTrait;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
@@ -577,7 +576,7 @@ class Product extends AbstractEntity
     }
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    protected DateTime $date;
+    protected \DateTime $date;
 
     public function setDate($date, mixed $timezone = 'UTC'): self
     {
@@ -586,7 +585,7 @@ class Product extends AbstractEntity
         return $this;
     }
 
-    public function getDate(): DateTime
+    public function getDate(): \DateTime
     {
         return $this->date;
     }

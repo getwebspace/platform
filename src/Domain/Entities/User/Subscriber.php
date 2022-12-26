@@ -3,9 +3,7 @@
 namespace App\Domain\Entities\User;
 
 use App\Domain\AbstractEntity;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use RuntimeException;
 
 #[ORM\Table(name: 'user_subscriber')]
 #[ORM\Entity(repositoryClass: 'App\Domain\Repository\User\SubscriberRepository')]
@@ -36,7 +34,7 @@ class Subscriber extends AbstractEntity
             if ($this->checkStrLenMax($email, 120) && $this->checkEmailByValue($email)) {
                 $this->email = $email;
             }
-        } catch (RuntimeException $e) {
+        } catch (\RuntimeException $e) {
             throw new \App\Domain\Service\User\Exception\WrongEmailValueException();
         }
 
@@ -49,10 +47,9 @@ class Subscriber extends AbstractEntity
     }
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    protected DateTime $date;
+    protected \DateTime $date;
 
     /**
-     * @param $date
      * @param mixed $timezone
      *
      * @throws \Exception
@@ -67,7 +64,7 @@ class Subscriber extends AbstractEntity
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getDate()
     {

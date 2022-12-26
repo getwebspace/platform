@@ -12,6 +12,7 @@ use tests\TestCase;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class TaskServiceTest extends TestCase

@@ -13,9 +13,6 @@ use App\Domain\Service\File\FileService;
 use App\Domain\Service\GuestBook\GuestBookService;
 use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
 use App\Domain\Service\Publication\PublicationService;
-use DateTime;
-use DateTimeZone;
-use Exception;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 use Ramsey\Uuid\UuidInterface as Uuid;
@@ -218,7 +215,7 @@ class TwigExtension extends AbstractExtension
                 default:
                     return $reference[$value];
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             return $value;
         }
     }
@@ -235,6 +232,7 @@ class TwigExtension extends AbstractExtension
      * @param mixed ...$args
      *
      * @deprecated
+     *
      * @tracySkipLocation
      */
     public function pre(...$args): void
@@ -245,8 +243,6 @@ class TwigExtension extends AbstractExtension
     }
 
     /**
-     * @param $obj
-     *
      * @return false|int
      */
     public function count($obj)
@@ -257,22 +253,22 @@ class TwigExtension extends AbstractExtension
     /**
      * Date format function
      *
-     * @param DateTime|string $obj
+     * @param \DateTime|string $obj
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public function df(mixed $obj = 'now', string $format = null, string $timezone = ''): string
     {
         if (is_string($obj) || is_numeric($obj)) {
-            $obj = new DateTime($obj);
+            $obj = new \DateTime($obj);
         } elseif (is_null($obj)) {
-            $obj = new DateTime();
+            $obj = new \DateTime();
         } else {
             $obj = clone $obj;
         }
 
         return $obj
-            ->setTimezone(new DateTimeZone($timezone ?: $this->parameter('common_timezone', 'UTC')))
+            ->setTimezone(new \DateTimeZone($timezone ?: $this->parameter('common_timezone', 'UTC')))
             ->format($format ?: $this->parameter('common_date_format', 'j-m-Y, H:i'));
     }
 

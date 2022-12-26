@@ -4,9 +4,7 @@ namespace App\Domain\Entities\Catalog;
 
 use App\Domain\AbstractEntity;
 use App\Domain\Entities\User;
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use RuntimeException;
 
 #[ORM\Table(name: 'catalog_order')]
 #[ORM\Index(name: 'catalog_order_serial_idx', columns: ['serial'])]
@@ -106,10 +104,9 @@ class Order extends AbstractEntity
     }
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    protected DateTime $shipping;
+    protected \DateTime $shipping;
 
     /**
-     * @param $date
      * @param mixed $timezone
      *
      * @throws \Exception
@@ -124,7 +121,7 @@ class Order extends AbstractEntity
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getShipping()
     {
@@ -166,7 +163,7 @@ class Order extends AbstractEntity
                 if ($this->checkStrLenMax($phone, 25) && $this->checkPhoneByValue($phone)) {
                     $this->phone = $phone;
                 }
-            } catch (RuntimeException $e) {
+            } catch (\RuntimeException $e) {
                 throw new \App\Domain\Service\Catalog\Exception\WrongPhoneValueException();
             }
         } else {
@@ -196,7 +193,7 @@ class Order extends AbstractEntity
                 if ($this->checkStrLenMax($email, 120) && $this->checkEmailByValue($email)) {
                     $this->email = $email;
                 }
-            } catch (RuntimeException $e) {
+            } catch (\RuntimeException $e) {
                 throw new \App\Domain\Service\Catalog\Exception\WrongEmailValueException();
             }
         } else {
@@ -265,10 +262,9 @@ class Order extends AbstractEntity
     }
 
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
-    protected DateTime $date;
+    protected \DateTime $date;
 
     /**
-     * @param $date
      * @param mixed $timezone
      *
      * @throws \Exception
@@ -283,7 +279,7 @@ class Order extends AbstractEntity
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getDate()
     {

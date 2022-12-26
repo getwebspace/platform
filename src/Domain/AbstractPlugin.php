@@ -8,7 +8,6 @@ use App\Domain\Traits\RendererTrait;
 use App\Domain\Traits\StorageTrait;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
-use RuntimeException;
 use Slim\App;
 use Slim\Interfaces\RouteCollectorInterface;
 use Slim\Interfaces\RouteInterface;
@@ -53,7 +52,7 @@ abstract class AbstractPlugin
     public function __construct(ContainerInterface $container)
     {
         if (empty(static::NAME) || empty(static::TITLE) || empty(static::AUTHOR)) {
-            throw new RuntimeException('Plugin credentials have empty fields');
+            throw new \RuntimeException('Plugin credentials have empty fields');
         }
 
         $this->container = $container;
@@ -189,7 +188,7 @@ abstract class AbstractPlugin
 
         return $this->router
             ->map(['GET', 'POST'], '/cup/plugin/' . static::NAME, $params['handler'])
-            ->setName('cup:' . strtolower(static::NAME));
+            ->setName('cup:' . mb_strtolower(static::NAME));
     }
 
     public function isNavigationItemEnabled(): bool
