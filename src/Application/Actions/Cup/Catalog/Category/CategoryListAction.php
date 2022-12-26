@@ -3,28 +3,13 @@
 namespace App\Application\Actions\Cup\Catalog\Category;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
+use Illuminate\Support\Collection;
+use Illuminate\Support\LazyCollection;
 
 class CategoryListAction extends CatalogAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        $category = null;
-
-        if (!empty($this->args['parent'])) {
-            if (
-                $this->resolveArg('parent') !== \Ramsey\Uuid\Uuid::NIL
-                && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('parent'))
-            ) {
-                /** @var \App\Domain\Entities\Catalog\Category $category */
-                $category = $this->catalogCategoryService->read([
-                    'uuid' => $this->resolveArg('parent'),
-                    'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
-                ]);
-            } else {
-                return $this->respondWithRedirect('/cup/catalog/category');
-            }
-        }
-
         $categories = $this->catalogCategoryService->read([
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
             'order' => [
@@ -33,13 +18,18 @@ class CategoryListAction extends CatalogAction
             ],
         ]);
 
-        if ($category) {
-            $categories = $categories;
-        }
+        $generator = function (Collection $level) use ($categories, &$generator) {
+            foreach ($level->sortBy('order') as $item) {
+                yield $item;
+                yield from $generator($categories->where('parent', $item->uuid->toString()));
+            }
+        };
+        $results = LazyCollection::make(function () use ($categories, $generator) {
+            yield from $generator($categories->where('parent', \Ramsey\Uuid\Uuid::NIL));
+        });
 
         return $this->respondWithTemplate('cup/catalog/category/index.twig', [
-            'category' => $category,
-            'categories' => $categories->where('parent', $category ? $category->getUuid() : \Ramsey\Uuid\Uuid::NIL),
+            'categories' => $results->flatten()->collect(),
             'fields' => $this->parameter(['catalog_category_field_1', 'catalog_category_field_2', 'catalog_category_field_3']),
         ]);
     }

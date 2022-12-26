@@ -40,14 +40,10 @@
                             {% for item in categories %}
                                 <div class="row">
                                     <div class="col-6 col-sm">{{ item.title|u.truncate(50, '...') }}</div>
-                                    <div class="col-6 col-sm-3">{{ category.title ?? '<code>&mdash;</code>'|raw }}</div>
+                                    <div class="col-6 col-sm-3">{{ categories.firstWhere('uuid', item.parent).title ?? '<code>&mdash;</code>'|raw }}</div>
                                     <div class="col-12 col-sm-5 text-right">
                                         <form action="/cup/catalog/category/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete a category?'|locale }}');">
                                             <div class="btn-group">
-                                                <a href="/cup/catalog/category/{{ item.uuid }}" class="btn btn-sm btn-outline-info">
-                                                    <i class="fas fa-fw fa-sitemap"></i>
-                                                    <span class="d-none d-md-inline-block">{{ 'Subcategories'|locale }}</span>
-                                                </a>
                                                 <a href="/cup/catalog/product/{{ item.uuid }}" class="btn btn-sm btn-outline-info">
                                                     <i class="fas fa-fw fa-eye"></i>
                                                     <span class="d-none d-md-inline-block">{{ 'Nomenclature'|locale }}</span>
