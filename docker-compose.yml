@@ -5,7 +5,7 @@ services:
         build:
             context: .
             dockerfile: docker/debian/Dockerfile
-        image: getwebspace/platform:dev
+        image: getwebspace/platform
         environment:
             - DEBUG=1
           # - SIMPLE_PHONE_CHECK=1
