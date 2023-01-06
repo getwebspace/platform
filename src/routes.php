@@ -166,14 +166,14 @@ return function (App $app, Container $container): void {
 
                         // products
                         $group->group('/product', function (Group $group): void {
+                            $group->get('', \App\Application\Actions\Cup\Catalog\Product\ProductListAction::class)
+                                ->setName('cup:catalog:product:list');
                             $group->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\Catalog\Product\ProductCreateAction::class)
                                 ->setName('cup:catalog:product:add');
                             $group->map(['GET', 'POST'], '/{product}/edit', \App\Application\Actions\Cup\Catalog\Product\ProductUpdateAction::class)
                                 ->setName('cup:catalog:product:edit');
                             $group->map(['GET', 'POST'], '/{product}/delete', \App\Application\Actions\Cup\Catalog\Product\ProductDeleteAction::class)
                                 ->setName('cup:catalog:product:delete');
-                            $group->get('[/{category}]', \App\Application\Actions\Cup\Catalog\Product\ProductListAction::class)
-                                ->setName('cup:catalog:product:list');
                         });
 
                         // attribute
