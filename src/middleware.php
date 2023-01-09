@@ -20,6 +20,9 @@ return function (App $app): void {
     // check user auth
     $app->add(new \App\Application\Middlewares\AuthorizationMiddleware($c));
 
+    // redirect to non-www domain
+    $app->add(new \App\Application\Middlewares\NonWWWMiddleware($c));
+
     // check is site disabled
     $app->add(new \App\Application\Middlewares\IsSiteEnabledMiddleware($c));
 

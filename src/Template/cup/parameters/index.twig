@@ -99,6 +99,16 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Auto redirect to non-www',
+                                                    'type': 'select',
+                                                    'name': 'common[non_www]',
+                                                    'args': {
+                                                        'option': _(['yes', 'no']),
+                                                        'selected': 'no'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Description (Description) of the site',
                                                     'description': 'Short description, no more than 200 characters',
                                                     'type': 'text',
