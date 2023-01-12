@@ -1,0 +1,57 @@
+{#
+    multiple - few files (default: true)
+#}
+{% if multiple is null %}
+    {% set multiple = true %}
+{% endif %}
+
+{% block fileimage %}
+    {% if parameter('file_is_enabled', 'yes') == 'yes' %}
+        <hr>
+
+        <div data-filedocument class="row">
+            <div class="col-md-12">
+                {% include 'cup/form.twig' with {
+                    'label': multiple ? 'Files'|locale : 'File'|locale,
+                    'type': 'file',
+                    'name': 'files[]',
+                    'postfix': multiple ? '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Multiple files can be selected here')|locale ~ '"></i>' : '',
+                    'args': {
+                        'class': ['d-block', 'btn', 'btn-sm', 'bg-grey2'],
+                        'multiple': multiple,
+                        'accept': 'application/*, text/*'
+                    }
+                } %}
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 60%;">{{ 'File name'|locale }}</th>
+                            <th scope="col">{{ 'Size'|locale }}</th>
+                            <th scope="col"></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for relation in entity.getDocuments() %}
+                            <tr>
+                                <td>{{ relation.getFileName() }}</td>
+                                <td>{{ relation.getFileSize() }}</td>
+                                <td class="text-right">
+                                    {% include 'cup/form.twig' with {
+                                        'label': '<i class="fa fa-trash"></i>',
+                                        'type': 'checkbox',
+                                        'name': 'files[' ~ relation.uuid.toString() ~ '][delete]',
+                                        'args': {
+                                            'value': 1
+                                        }
+                                    } %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
