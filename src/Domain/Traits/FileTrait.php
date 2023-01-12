@@ -3,13 +3,16 @@
 namespace App\Domain\Traits;
 
 use App\Domain\Entities\File;
+use App\Domain\Entities\FileRelation;
+use Doctrine\Common\Collections\ArrayCollection;
+use Illuminate\Support\Collection;
 
 /**
  * @property File[] $files
  */
 trait FileTrait
 {
-    public function addFile(\App\Domain\Entities\FileRelation $file): void
+    public function addFile(FileRelation $file): void
     {
         $this->files[] = $file;
     }
@@ -21,7 +24,7 @@ trait FileTrait
         }
     }
 
-    public function removeFile(\App\Domain\Entities\FileRelation $file): void
+    public function removeFile(FileRelation $file): void
     {
         foreach ($this->files as $key => $value) {
             if ($file === $value) {
@@ -44,12 +47,32 @@ trait FileTrait
         }
     }
 
-    public function getFiles($raw = false)
+    public function getFiles($raw = false): array|ArrayCollection|Collection
     {
         return $raw ? $this->files : collect($this->files);
     }
 
-    public function hasFiles()
+    public function getAudios(): array|Collection
+    {
+        return $this->getFiles()->filter(fn($item) => str_starts_with($item->getType(), 'audio/'));
+    }
+
+    public function getDocuments(): array|Collection
+    {
+        return $this->getFiles()->filter(fn($item) => str_starts_with($item->getType(), 'application/') || str_starts_with($item->getType(), 'text/'));
+    }
+
+    public function getImages(): array|Collection
+    {
+        return $this->getFiles()->filter(fn($item) => str_starts_with($item->getType(), 'image/'));
+    }
+
+    public function getVideos(): array|Collection
+    {
+        return $this->getFiles()->filter(fn($item) => str_starts_with($item->getType(), 'video/'));
+    }
+
+    public function hasFiles(): int
     {
         return count($this->files);
     }
