@@ -23,7 +23,7 @@
                     }
                 } %}
 
-                {% for relation in entity.getFiles() %}
+                {% for relation in entity.getImages() %}
                     <div class="d-inline-block p-2 m-2 bg-grey2 text-center rounded">
                         {% if multiple %}
                             <div class="pb-2">
@@ -40,7 +40,7 @@
                                         'type': 'textarea',
                                         'name': 'files[' ~ relation.uuid.toString() ~ '][comment]',
                                         'args': {
-                                            'placeholder': 'Комментарий к картинке..'
+                                            'placeholder': 'Comment..'
                                         }
                                     } %}
                                 </div>#}
@@ -48,7 +48,7 @@
                         {% endif %}
 
                         <a href="{{ relation.getPublicPath() }}" target="_blank">
-                            <img class="rounded" height="100" src="{{ relation.getPublicPath('small') }}" alt="preview" data-toggle="tooltip" data-placement="top" title="{{ relation.getName() }} ({{ relation.getFileSize() }})" />
+                            <img class="rounded" height="100" src="{{ relation.getPublicPath('small') }}" alt="preview" data-toggle="tooltip" data-placement="top" title="{{ relation.getFileName() }} ({{ relation.getFileSize() }})" />
                         </a>
 
                         <div class="pt-2">
