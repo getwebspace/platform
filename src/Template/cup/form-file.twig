@@ -23,34 +23,36 @@
                     }
                 } %}
 
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th scope="col" style="width: 60%;">{{ 'File name'|locale }}</th>
-                            <th scope="col">{{ 'Size'|locale }}</th>
-                            <th scope="col"></th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {% for relation in entity.getDocuments() %}
+                {% if entity.getDocuments() %}
+                    <table class="table table-striped">
+                        <thead>
                             <tr>
-                                <td>{{ relation.getFileName() }}</td>
-                                <td>{{ relation.getFileSize() }}</td>
-                                <td class="text-right">
-                                    {% include 'cup/form.twig' with {
-                                        'label': '<i class="fa fa-trash"></i>',
-                                        'type': 'checkbox',
-                                        'name': 'files[' ~ relation.uuid.toString() ~ '][delete]',
-                                        'args': {
-                                            'value': 1
-                                        }
-                                    } %}
-                                </td>
+                                <th scope="col" style="width: 60%;">{{ 'File name'|locale }}</th>
+                                <th scope="col">{{ 'Size'|locale }}</th>
+                                <th scope="col"></th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+
+                        <tbody>
+                            {% for relation in entity.getDocuments() %}
+                                <tr>
+                                    <td>{{ relation.getFileName() }}</td>
+                                    <td>{{ relation.getFileSize() }}</td>
+                                    <td class="text-right">
+                                        {% include 'cup/form.twig' with {
+                                            'label': '<i class="fa fa-trash"></i>',
+                                            'type': 'checkbox',
+                                            'name': 'files[' ~ relation.uuid.toString() ~ '][delete]',
+                                            'args': {
+                                                'value': 1
+                                            }
+                                        } %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
             </div>
         </div>
     {% endif %}
