@@ -196,6 +196,16 @@
                                 <div class="row">
                                     <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
+                                            'label': 'Length (cm)'|locale,
+                                            'type': 'number',
+                                            'name': 'dimension[length]',
+                                            'args': {
+                                                'value': item.dimension.length ? item.dimension.length|number_format(2, '.', '') : '',
+                                                'placeholder': '0.00'
+                                            }
+                                        } %}
+
+                                        {% include 'cup/form.twig' with {
                                             'label': 'Width (cm)'|locale,
                                             'type': 'number',
                                             'name': 'dimension[width]',
@@ -211,16 +221,6 @@
                                             'name': 'dimension[height]',
                                             'args': {
                                                 'value': item.dimension.height ? item.dimension.height|number_format(2, '.', '') : '',
-                                                'placeholder': '0.00'
-                                            }
-                                        } %}
-
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Length (cm)'|locale,
-                                            'type': 'number',
-                                            'name': 'dimension[length]',
-                                            'args': {
-                                                'value': item.dimension.length ? item.dimension.length|number_format(2, '.', '') : '',
                                                 'placeholder': '0.00'
                                             }
                                         } %}
