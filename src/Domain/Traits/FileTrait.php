@@ -54,22 +54,22 @@ trait FileTrait
 
     public function getAudios(): array|Collection
     {
-        return $this->getFiles()->filter(fn($item) => str_starts_with($item->getType(), 'audio/'));
+        return $this->getFiles()->filter(fn ($item) => str_starts_with($item->getType(), 'audio/'));
     }
 
     public function getDocuments(): array|Collection
     {
-        return $this->getFiles()->filter(fn($item) => str_starts_with($item->getType(), 'application/') || str_starts_with($item->getType(), 'text/'));
+        return $this->getFiles()->filter(fn ($item) => str_starts_with($item->getType(), 'application/') || str_starts_with($item->getType(), 'text/'));
     }
 
     public function getImages(): array|Collection
     {
-        return $this->getFiles()->filter(fn($item) => str_starts_with($item->getType(), 'image/'));
+        return $this->getFiles()->filter(fn ($item) => str_starts_with($item->getType(), 'image/'));
     }
 
     public function getVideos(): array|Collection
     {
-        return $this->getFiles()->filter(fn($item) => str_starts_with($item->getType(), 'video/'));
+        return $this->getFiles()->filter(fn ($item) => str_starts_with($item->getType(), 'video/'));
     }
 
     public function hasFiles(): int

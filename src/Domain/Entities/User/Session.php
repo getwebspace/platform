@@ -43,6 +43,8 @@ class Session extends AbstractEntity
     protected string $ip = '';
 
     /**
+     * @param mixed $ip
+     *
      * @throws \App\Domain\Service\User\Exception\WrongIpValueException
      *
      * @return $this
@@ -93,6 +95,7 @@ class Session extends AbstractEntity
 
     /**
      * @param mixed $timezone
+     * @param mixed $date
      *
      * @throws \Exception
      *

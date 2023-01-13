@@ -164,6 +164,7 @@ class File extends AbstractEntity
 
     /**
      * @param mixed $timezone
+     * @param mixed $date
      *
      * @throws \Exception
      *
@@ -186,6 +187,8 @@ class File extends AbstractEntity
 
     /**
      * File details by path
+     *
+     * @param mixed $path
      */
     public static function info($path): array
     {

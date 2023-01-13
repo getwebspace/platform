@@ -243,6 +243,8 @@ class TwigExtension extends AbstractExtension
     }
 
     /**
+     * @param mixed $obj
+     *
      * @return false|int
      */
     public function count($obj)

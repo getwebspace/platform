@@ -236,6 +236,7 @@ class User extends AbstractEntity
 
     /**
      * @param mixed $timezone
+     * @param mixed $birthdate
      *
      * @throws \Exception
      *
@@ -545,6 +546,7 @@ class User extends AbstractEntity
 
     /**
      * @param mixed $timezone
+     * @param mixed $register
      *
      * @throws \Exception
      *
@@ -570,6 +572,7 @@ class User extends AbstractEntity
 
     /**
      * @param mixed $timezone
+     * @param mixed $change
      *
      * @throws \Exception
      *

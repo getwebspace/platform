@@ -32,7 +32,6 @@ class PluginMiddleware extends AbstractMiddleware
                         $plugin->before($request, $routeName);
                     }
                 }
-
             }
 
             $response = $handler->handle($request);

@@ -301,6 +301,9 @@ class ImportTask extends AbstractTask
 
     /**
      * Check cell is merged or not
+     *
+     * @param mixed $sheet
+     * @param mixed $cell
      */
     protected function isMergedCell($sheet, $cell): bool
     {

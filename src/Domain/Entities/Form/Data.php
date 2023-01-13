@@ -88,6 +88,7 @@ class Data extends AbstractEntity
 
     /**
      * @param mixed $timezone
+     * @param mixed $date
      *
      * @throws \Exception
      *

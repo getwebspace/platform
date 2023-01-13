@@ -53,6 +53,8 @@ class Integration extends AbstractEntity
     protected string $provider = '';
 
     /**
+     * @param mixed $provider
+     *
      * @return $this
      */
     public function setProvider($provider): self
@@ -71,6 +73,8 @@ class Integration extends AbstractEntity
     protected string $unique = '';
 
     /**
+     * @param mixed $unique
+     *
      * @return $this
      */
     public function setUnique($unique): self
@@ -90,6 +94,7 @@ class Integration extends AbstractEntity
 
     /**
      * @param mixed $timezone
+     * @param mixed $date
      *
      * @throws \Exception
      *

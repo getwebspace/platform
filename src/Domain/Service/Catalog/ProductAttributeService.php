@@ -89,6 +89,8 @@ class ProductAttributeService extends AbstractService
     }
 
     /**
+     * @param mixed $entity
+     *
      * @throws AttributeNotFoundException
      */
     public function update($entity, array $data = []): ProductAttribute

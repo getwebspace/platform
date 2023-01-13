@@ -105,7 +105,7 @@ class i18n
      */
     public static function addLocaleTranslateLetters(string $code, array $original, array $latin): void
     {
-        if (in_array($code, static::$accept)) {
+        if (in_array($code, static::$accept, true)) {
             static::$letters[$code] = ['from' => $original, 'to' => $latin];
         }
     }
@@ -157,16 +157,16 @@ class i18n
             case is_array($string):
                 $buf = [];
                 foreach ($string as $key => $item) {
-                    if (is_numeric($key) && in_array($item, array_keys(i18n::$locale), true)) {
+                    if (is_numeric($key) && in_array($item, array_keys(self::$locale), true)) {
                         $key = $item;
                     }
-                    $buf[$key] = i18n::$locale[$item] ?? $item;
+                    $buf[$key] = self::$locale[$item] ?? $item;
                 }
 
                 return $buf;
 
             case is_string($string):
-                return i18n::$locale[$string] ?? $string;
+                return self::$locale[$string] ?? $string;
         }
 
         return $string;
