@@ -45,7 +45,7 @@ class UserListAction extends UserAction
         foreach ($criteria as $criterion => $value) {
             if (is_array($value)) {
                 $query->andWhere("u.{$criterion} IN (:{$criterion})");
-            } elseif (!str_start_with($value, '%')) {
+            } elseif (!str_starts_with($value, '%')) {
                 $query->andWhere("u.{$criterion} = :{$criterion}");
             } else {
                 $query->andWhere("u.{$criterion} LIKE :{$criterion}");

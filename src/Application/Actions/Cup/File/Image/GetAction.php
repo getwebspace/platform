@@ -12,7 +12,7 @@ class GetAction extends FileAction
 
         foreach ($this->fileService->read() as $file) {
             /** @var \App\Domain\Entities\File $file */
-            if (str_start_with($file->getType(), 'image/')) {
+            if (str_starts_with($file->getType(), 'image/')) {
                 $result[] = [
                     'url' => $file->getPublicPath(),
                     'thumb' => $file->getPublicPath('small'),

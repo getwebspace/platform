@@ -38,7 +38,7 @@ class ReConvertImageTask extends AbstractTask
         $uuids = [];
         foreach ($fileService->read() as $file) {
             /** @var File $file */
-            if (str_start_with($file->getType(), 'image/')) {
+            if (str_starts_with($file->getType(), 'image/')) {
                 $uuids[] = $file->getUuid()->toString();
             }
         }

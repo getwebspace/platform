@@ -487,22 +487,30 @@ class UserService extends AbstractService
      */
     protected function check_email(string $email)
     {
-        $list = array_map('trim', explode(PHP_EOL, $this->parameter('user_email_list', '')));
+        $emails = $this->parameter('user_email_list', '');
 
-        switch ($this->parameter('user_email_list_mode', 'blacklist')) {
-            case 'blacklist':
-                if (str_end_with($email, $list)) {
-                    return true;
-                }
+        if ($emails) {
+            $list = array_map('trim', explode(PHP_EOL, $emails));
 
-                break;
+            switch ($this->parameter('user_email_list_mode', 'blacklist')) {
+                case 'blacklist':
+                    foreach ($list as $item) {
+                        if (str_ends_with($email, $item)) {
+                            return true;
+                        }
+                    }
 
-            case 'whitelist':
-                if (!str_end_with($email, $list)) {
-                    return true;
-                }
+                    break;
 
-                break;
+                case 'whitelist':
+                    foreach ($list as $item) {
+                        if (!str_ends_with($email, $item)) {
+                            return true;
+                        }
+                    }
+
+                    break;
+            }
         }
 
         return false;

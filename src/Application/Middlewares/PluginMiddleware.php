@@ -27,17 +27,22 @@ class PluginMiddleware extends AbstractMiddleware
 
             /** @var AbstractPlugin $plugin */
             foreach ($plugins as $plugin) {
-                if ($routeName && str_start_with($routeName, $plugin->getHandledRoute())) {
-                    $plugin->before($request, $routeName);
+                foreach ($plugin->getHandledRoute() as $r) {
+                    if ($routeName && str_starts_with($routeName, $r)) {
+                        $plugin->before($request, $routeName);
+                    }
                 }
+
             }
 
             $response = $handler->handle($request);
 
             /** @var AbstractPlugin $plugin */
             foreach ($plugins as $plugin) {
-                if ($routeName && str_start_with($routeName, $plugin->getHandledRoute())) {
-                    $response = $plugin->after($request, $response, $routeName);
+                foreach ($plugin->getHandledRoute() as $r) {
+                    if ($routeName && str_starts_with($routeName, $r)) {
+                        $response = $plugin->after($request, $response, $routeName);
+                    }
                 }
             }
 

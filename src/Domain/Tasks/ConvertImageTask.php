@@ -54,7 +54,7 @@ class ConvertImageTask extends AbstractTask
                 $this->logger->info('Task: prepare convert', ['file' => $file->getFileName(), 'salt' => $file->getSalt()]);
 
                 if ($file->getSize() >= $convert_size) {
-                    if (str_start_with($file->getType(), 'image/')) {
+                    if (str_starts_with($file->getType(), 'image/')) {
                         $folder = $file->getDir('');
                         $original = '';
 

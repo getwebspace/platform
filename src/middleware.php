@@ -30,7 +30,7 @@ return function (App $app): void {
     $app->add(function (Request $request, RequestHandlerInterface $handler) {
         $path = $request->getUri()->getPath();
 
-        if ($path !== '/' && str_end_with($path, '/')) {
+        if ($path !== '/' && str_ends_with($path, '/')) {
             $query = $request->getUri()->getQuery();
 
             return (new Response())

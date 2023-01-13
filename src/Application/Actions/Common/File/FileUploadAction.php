@@ -22,7 +22,7 @@ class FileUploadAction extends FileAction
                         $model = $this->fileService->createFromPath($file->getFilePath(), $file->getClientFilename());
 
                         // is image
-                        if (str_start_with($model->getType(), 'image/')) {
+                        if (str_starts_with($model->getType(), 'image/')) {
                             $uuids[] = $model->getUuid();
                         }
 

@@ -28,8 +28,10 @@ class AccessCheckerMiddleware extends AbstractMiddleware
         $route = $routeContext->getRoute();
 
         // continue in any way
-        if (str_start_with($route->getName(), static::PUBLIC)) {
-            return $handler->handle($request);
+        foreach (static::PUBLIC as $r) {
+            if (str_starts_with($route->getName(), $r)) {
+                return $handler->handle($request);
+            }
         }
 
         /** @var User $user */
@@ -42,7 +44,7 @@ class AccessCheckerMiddleware extends AbstractMiddleware
         }
 
         if (
-            ($access === [] && str_start_with($route->getName(), 'common'))
+            ($access === [] && str_starts_with($route->getName(), 'common'))
             || in_array($route->getName(), $access, true)
         ) {
             return $handler->handle($request);
@@ -50,7 +52,7 @@ class AccessCheckerMiddleware extends AbstractMiddleware
 
         $redirect = '/forbidden';
 
-        if (str_start_with($route->getPattern(), '/cup')) {
+        if (str_starts_with($route->getPattern(), '/cup')) {
             $redirect = '/cup/forbidden';
 
             if (!$user) {

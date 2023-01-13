@@ -299,7 +299,7 @@ class File extends AbstractEntity
 
         if (!isset($buf[$uuid][$size])) {
             if ($this->private) {
-                if (str_start_with($this->type, 'image/')) {
+                if (str_starts_with($this->type, 'image/')) {
                     $buf[$uuid][$size] = '/file/view/';
                 } else {
                     $buf[$uuid][$size] = '/file/get/';
@@ -322,7 +322,7 @@ class File extends AbstractEntity
             'link' => $this->getPublicPath(),
         ];
 
-        if (str_start_with($this->getType(), 'image/')) {
+        if (str_starts_with($this->getType(), 'image/')) {
             $result['path'] = [];
 
             foreach (['full', 'middle', 'small'] as $size) {

@@ -46,7 +46,7 @@ class SearchAction extends AbstractAction
                 /** @var AbstractService $service */
                 $qb = $service->createQueryBuilder('e');
 
-                if (!str_start_with($query, '%')) {
+                if (!str_starts_with($query, '%')) {
                     $qb->andWhere('e.title = :title');
                 } else {
                     $qb->andWhere('LOWER(e.title) LIKE LOWER(:title)');
@@ -105,7 +105,7 @@ class SearchAction extends AbstractAction
                             $result[$type][$index]['files'] = $files;
                         }
 
-                        if (str_start_with($type, 'catalog_')) {
+                        if (str_starts_with($type, 'catalog_')) {
                             $result[$type][$index]['address'] = $this->parameter('catalog_address', 'catalog') . '/' . $result[$type][$index]['address'];
                         }
                     }
@@ -175,7 +175,7 @@ class SearchAction extends AbstractAction
                             $result[$type][$index]['files'] = $files;
                         }
 
-                        if (str_start_with($type, 'catalog_')) {
+                        if (str_starts_with($type, 'catalog_')) {
                             $result[$type][$index]['address'] = $this->parameter('catalog_address', 'catalog') . '/' . $result[$type][$index]['address'];
                         }
                     }

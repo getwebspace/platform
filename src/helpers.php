@@ -253,42 +253,6 @@ if (!function_exists('array_where')) {
     }
 }
 
-if (!function_exists('str_start_with')) {
-    /**
-     * Determine if a given string starts with a given substring.
-     *
-     * @param array|string $needles
-     */
-    function str_start_with(string $haystack, $needles): bool
-    {
-        foreach ((array) $needles as $needle) {
-            if ($needle !== '' && mb_substr($haystack, 0, mb_strlen($needle)) === (string) $needle) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-}
-
-if (!function_exists('str_end_with')) {
-    /**
-     * Determine if a given string ends with a given substring.
-     *
-     * @param array|string $needles
-     */
-    function str_end_with(string $haystack, $needles): bool
-    {
-        foreach ((array) $needles as $needle) {
-            if (mb_substr($haystack, -mb_strlen($needle)) === (string) $needle) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-}
-
 if (!function_exists('str_translate')) {
     /**
      * Transliterate a russian string

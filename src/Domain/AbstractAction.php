@@ -113,7 +113,7 @@ abstract class AbstractAction
             $routes = collect($this->routeCollector->getRoutes())
                 ->flatten()
                 ->map(fn ($item) => $item->getName())
-                ->filter(fn ($item) => !str_start_with($item, \App\Application\Middlewares\AccessCheckerMiddleware::PUBLIC));
+                ->filter(fn ($item) => !str_starts_with($item, \App\Application\Middlewares\AccessCheckerMiddleware::PUBLIC));
         }
 
         return $routes->combine($routes);
@@ -288,7 +288,7 @@ abstract class AbstractAction
                             $uploaded[$name][$index] = $model;
 
                             // is image
-                            if (str_start_with($model->getType(), 'image/')) {
+                            if (str_starts_with($model->getType(), 'image/')) {
                                 $image_uuids[] = $model->getUuid();
                             }
                         }
@@ -324,7 +324,7 @@ abstract class AbstractAction
                 $uploaded = $model;
 
                 // is image
-                if (str_start_with($model->getType(), 'image/')) {
+                if (str_starts_with($model->getType(), 'image/')) {
                     // add task convert
                     $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
                     $task->execute(['uuid' => [$model->getUuid()]]);

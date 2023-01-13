@@ -78,7 +78,7 @@ class ListAction extends CatalogAction
                 if (
                     (
                         !in_array($key, ['price', 'country', 'manufacturer', 'order', 'direction'], true)
-                        && !str_start_with($key, 'field')
+                        && !str_starts_with($key, 'field')
                         && $key !== 'format' // kostil
                     ) && $value
                 ) {
@@ -218,7 +218,7 @@ class ListAction extends CatalogAction
                 if (
                     (
                         !in_array($key, ['price', 'country', 'manufacturer', 'order', 'direction'], true)
-                        && !str_start_with($key, 'field')
+                        && !str_starts_with($key, 'field')
                         && $key !== 'format' // kostil
                     ) && $value
                 ) {

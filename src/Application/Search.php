@@ -20,7 +20,7 @@ class Search
         $results = [];
 
         // sort words
-        usort($query_words, fn ($word) => str_start_with($word, ['-', '+']) ? 1 : -1);
+        usort($query_words, fn ($word) => (str_starts_with($word, '-') || str_starts_with($word, '+')) ? 1 : -1);
 
         foreach ($index as $line) {
             $wordCount = 0;
@@ -29,7 +29,7 @@ class Search
 
             foreach ($query_words as $word) {
                 // case '*'
-                if (mb_stristr($word, '*') && str_end_with($word, '*')) {
+                if (mb_stristr($word, '*') && str_ends_with($word, '*')) {
                     $search = str_replace('*', '', $word);
                 } else {
                     $search = ' ' . $word . ' ';
@@ -39,7 +39,7 @@ class Search
                 if (mb_stristr($search, '+')) {
                     $search = str_replace('+', '', $search);
 
-                    if (str_start_with($word, '+')) {
+                    if (str_starts_with($word, '+')) {
                         ++$mustNtFound;
                     }
                 }
@@ -48,7 +48,7 @@ class Search
                 if (mb_stristr($search, '-')) {
                     $search = str_replace('-', '', $search);
 
-                    if (str_start_with($word, '-')) {
+                    if (str_starts_with($word, '-')) {
                         $mustNtFound = 0;
                     }
                 }

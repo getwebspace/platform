@@ -38,7 +38,7 @@ class ParametersPageAction extends AbstractAction
             'timezone' => collect(\DateTimeZone::listIdentifiers())->mapWithKeys(fn ($item) => [$item => $item]),
             'routes' => [
                 'all' => $this->getRoutes()->all(),
-                'guest' => $this->getRoutes()->filter(fn ($el) => str_start_with($el, 'common:'))->all(),
+                'guest' => $this->getRoutes()->filter(fn ($el) => str_starts_with($el, 'common:'))->all(),
             ],
             'groups' => $this->container->get(UserGroupService::class)->read(),
             'attributes' => $this->container->get(CatalogAttributeService::class)->read()->whereNotIn('type', \App\Domain\Types\Catalog\AttributeTypeType::TYPE_BOOLEAN),

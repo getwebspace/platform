@@ -59,7 +59,7 @@ class SendMailTask extends AbstractTask
 
         // extension part
         if ($args['template'] || $args['data']) {
-            if (str_end_with($args['template'], ['.twig', '.html'])) {
+            if (str_ends_with($args['template'], '.twig') || str_ends_with($args['template'], '.html')) {
                 $params['body'] = $this->render($args['template'], $args['data']);
                 $params['isHtml'] = true;
             } else {

@@ -24,7 +24,7 @@ class IsRouteEnabledMiddleware extends AbstractMiddleware
         }
 
         return (new Response())
-            ->withHeader('Location', str_start_with($route->getPattern(), '/cup') ? '/cup/forbidden' : '/forbidden')
+            ->withHeader('Location', str_starts_with($route->getPattern(), '/cup') ? '/cup/forbidden' : '/forbidden')
             ->withStatus(307);
     }
 }
