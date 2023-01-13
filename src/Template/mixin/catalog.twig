@@ -114,8 +114,9 @@
 
                         $window.on('event:catalog:ready event:catalog:cart event:catalog:cart:add event:catalog:cart:update event:catalog:cart:remove event:catalog:cart:remove:all', () => {
                             let $cart = $(getSelector('cart')).html(this.cartRender());
-                            $(getSelector('count-items')).text(this.cartCount());
-                            $(getSelector('count-total')).text(this.cartTotal());
+
+                            $(getSelector('count-items')).attr(options.selectors['count-items'], this.cartCount()).text(this.cartCount());
+                            $(getSelector('count-total')).attr(options.selectors['count-total'], this.cartCount()).text(this.cartTotal());
 
                             if (focus) {
                                 $cart.find('[data-uuid="' + focus + '"] [data-attr="quantity"] input').focus();
