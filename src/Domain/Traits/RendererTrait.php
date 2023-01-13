@@ -25,7 +25,7 @@ trait RendererTrait
         try {
             $data = array_merge(
                 [
-                    'SHA' => mb_substr($_ENV['COMMIT_SHA'] ?? 'specific', 0, 7),
+                    'SHA' => !empty($_ENV['COMMIT_SHA']) ? mb_substr($_ENV['COMMIT_SHA'], 0, 7) : 'specific',
                     'NIL' => \Ramsey\Uuid\Uuid::NIL,
                     '_request' => &$_REQUEST,
                     '_error' => \Alksily\Support\Form::$globalError = $this->error ?? [],

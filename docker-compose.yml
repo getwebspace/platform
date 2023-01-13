@@ -4,12 +4,12 @@ services:
     platform:
         build:
             context: .
-            dockerfile: docker/debian/Dockerfile
+            dockerfile: docker/Dockerfile
         image: getwebspace/platform
         environment:
             - DEBUG=1
+            - DATABASE=mysql://user:password@hostname/database
           # - SIMPLE_PHONE_CHECK=1
-          # - DATABASE=mysql://user:secret@localhost/mydb
         volumes:
             - ./bin:/var/container/bin:ro
             - ./config:/var/container/config:ro
@@ -21,10 +21,10 @@ services:
             - ./var:/var/container/var:rw
             - ./var/upload:/var/container/public/uploads:rw
             - ./vendor:/var/container/vendor:rw
-            - ./.php-cs-fixer.dist.php:/var/container/.php-cs-fixer.dist.php:ro
             - ./migrations.json:/var/container/migrations.json:ro
             - ./composer.json:/var/container/composer.json:rw
             - ./composer.lock:/var/container/composer.lock:rw
             - ./phpunit.xml:/var/container/phpunit.xml:ro
+        restart: always
         ports:
             - 9000:80

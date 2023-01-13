@@ -4,7 +4,7 @@ services:
     phpcs:
         build:
             context: .
-            dockerfile: docker/debian/Dockerfile
+            dockerfile: docker/Dockerfile
         image: getwebspace/platform:test
         environment:
             - DEBUG=0
@@ -28,7 +28,7 @@ services:
     phpunit:
         build:
             context: .
-            dockerfile: docker/debian/Dockerfile
+            dockerfile: docker/Dockerfile
         image: getwebspace/platform:test
         environment:
             - DEBUG=0

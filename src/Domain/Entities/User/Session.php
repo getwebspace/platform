@@ -119,7 +119,7 @@ class Session extends AbstractEntity
     public function getHash()
     {
         return sha1(
-            'salt:' . ($_SERVER['COMMIT_SHA'] ?? 'Li8.1Ej2-<Cid3[bE') . ';' .
+            'salt:' . ($_SERVER['COMMIT_SHA'] ?? 'f4il*NTgVC8#*j5W66%E') . ';' .
             'uuid:' . $this->getUuid() . ';' .
             'ip:' . md5($this->getIp()) . ';' .
             'agent:' . md5($this->getAgent()) . ';' .
