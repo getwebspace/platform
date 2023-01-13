@@ -113,7 +113,15 @@ abstract class AbstractAction
             $routes = collect($this->routeCollector->getRoutes())
                 ->flatten()
                 ->map(fn ($item) => $item->getName())
-                ->filter(fn ($item) => !str_starts_with($item, \App\Application\Middlewares\AccessCheckerMiddleware::PUBLIC));
+                ->filter(function ($item) {
+                    foreach (\App\Application\Middlewares\AccessCheckerMiddleware::PUBLIC as $r) {
+                        if (str_starts_with($item, $r)) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                });
         }
 
         return $routes->combine($routes);
