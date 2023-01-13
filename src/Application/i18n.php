@@ -2,6 +2,8 @@
 
 namespace App\Application;
 
+use Illuminate\Support\Collection;
+
 class i18n
 {
     /**
@@ -10,14 +12,19 @@ class i18n
     public static array $accept = ['en-US'];
 
     /**
+     * Locale code
+     */
+    public static string $localeCode = '';
+
+    /**
      * Buffer storage of the language file
      */
     public static array $locale = [];
 
     /**
-     * Locale code
+     * Buffer storage of letters
      */
-    public static string $localeCode = '';
+    public static array $letters = [];
 
     /**
      * i18n constructor
@@ -94,6 +101,16 @@ class i18n
     }
 
     /**
+     * Add letters for translate
+     */
+    public static function addLocaleTranslateLetters(string $code, array $original, array $latin): void
+    {
+        if (in_array($code, static::$accept)) {
+            static::$letters[$code] = ['from' => $original, 'to' => $latin];
+        }
+    }
+
+    /**
      * Load language file for specified local
      */
     protected static function load(\SplPriorityQueue $priority): array
@@ -129,5 +146,42 @@ class i18n
         arsort($data, SORT_NUMERIC);
 
         return $data ? key($data) : $default;
+    }
+
+    public static function getLocale(array|string|Collection $singular, ?string $plural = null, ?int $count = null)
+    {
+        $string = $plural && $count > 1 ? $plural : $singular;
+
+        switch (true) {
+            case is_a($string, Collection::class):
+            case is_array($string):
+                $buf = [];
+                foreach ($string as $key => $item) {
+                    if (is_numeric($key) && in_array($item, array_keys(i18n::$locale), true)) {
+                        $key = $item;
+                    }
+                    $buf[$key] = i18n::$locale[$item] ?? $item;
+                }
+
+                return $buf;
+
+            case is_string($string):
+                return i18n::$locale[$string] ?? $string;
+        }
+
+        return $string;
+    }
+
+    public static function getTranslatedText(string $str): string
+    {
+        if (!empty(static::$letters[static::$localeCode])) {
+            return str_replace(
+                static::$letters[static::$localeCode]['from'],
+                static::$letters[static::$localeCode]['to'],
+                $str
+            );
+        }
+
+        return $str;
     }
 }

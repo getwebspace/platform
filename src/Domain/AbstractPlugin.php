@@ -237,6 +237,14 @@ abstract class AbstractPlugin
     }
 
     /**
+     * Add translate letters
+     */
+    public function addLocaleTranslateLetters(string $code, array $original, array $latin): void
+    {
+        i18n::addLocaleTranslateLetters($code, $original, $latin);
+    }
+
+    /**
      * Publish a data to a channel
      */
     public function publish(string $channel, mixed $data = []): self

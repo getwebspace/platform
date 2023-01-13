@@ -2,6 +2,7 @@
 
 namespace App\Domain\Entities;
 
+use App\Application\i18n;
 use App\Domain\AbstractEntity;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -215,7 +216,7 @@ class File extends AbstractEntity
         $name = urldecode($name);
         $name = str_replace(' ', '_', $name);
         $name = str_replace($replacements, '', $name);
-        $name = str_translate($name);
+        $name = i18n::getTranslatedText($name);
 
         return mb_strtolower($name);
     }

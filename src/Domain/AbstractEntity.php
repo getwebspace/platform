@@ -2,6 +2,8 @@
 
 namespace App\Domain;
 
+use App\Application\i18n;
+
 abstract class AbstractEntity implements \JsonSerializable
 {
     /**
@@ -14,7 +16,7 @@ abstract class AbstractEntity implements \JsonSerializable
         foreach ($args as $str) {
             if ($str) {
                 $str = mb_strtolower($str);
-                $str = str_translate($str);
+                $str = i18n::getTranslatedText($str);
                 $str = trim($str);
 
                 return preg_replace(['/\s/', '/[^a-z0-9\-\/]/'], ['-', ''], $str);

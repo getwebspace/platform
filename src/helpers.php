@@ -253,31 +253,6 @@ if (!function_exists('array_where')) {
     }
 }
 
-if (!function_exists('str_translate')) {
-    /**
-     * Transliterate a russian string
-     *
-     * @return array|string|string[]
-     */
-    function str_translate(string $input, bool $back = false)
-    {
-        $russian = [
-            'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й', 'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У',
-            'Ф', 'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ', 'Ы', 'Ь', 'Э', 'Ю', 'Я', 'а', 'б', 'в', 'г', 'д', 'е', 'ё', 'ж', 'з',
-            'и', 'й', 'к', 'л', 'м', 'н', 'о', 'п', 'р', 'с', 'т', 'у', 'ф', 'х', 'ц', 'ч', 'ш', 'щ', 'ъ', 'ы', 'ь',
-            'э', 'ю', 'я',
-        ];
-        $latin = [
-            'A', 'B', 'V', 'G', 'D', 'E', 'E', 'Zh', 'Z', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'R', 'S', 'T', 'U',
-            'F', 'Kh', 'C', 'Ch', 'Sh', 'Sch', '', 'Y', '', 'E', 'Yu', 'Ya', 'a', 'b', 'v', 'g', 'd', 'e', 'e', 'zh',
-            'z', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'r', 's', 't', 'u', 'f', 'kh', 'c', 'ch', 'sh', 'sch', '',
-            'y', '', 'e', 'yu', 'ya',
-        ];
-
-        return !$back ? str_replace($russian, $latin, $input) : str_replace($latin, $russian, $input);
-    }
-}
-
 if (!function_exists('str_mask_email')) {
     /**
      * Mask email
@@ -327,26 +302,7 @@ if (!function_exists('__')) {
      */
     function __(array|string|Collection $singular, ?string $plural = null, ?int $count = null): array|string|Collection
     {
-        $string = $plural && $count > 1 ? $plural : $singular;
-
-        switch (true) {
-            case is_a($string, Collection::class):
-            case is_array($string):
-                $buf = [];
-                foreach ($string as $key => $item) {
-                    if (is_numeric($key) && in_array($item, array_keys(i18n::$locale), true)) {
-                        $key = $item;
-                    }
-                    $buf[$key] = i18n::$locale[$item] ?? $item;
-                }
-
-                return $buf;
-
-            case is_string($string):
-                return i18n::$locale[$string] ?? $string;
-        }
-
-        return $string;
+        return i18n::getLocale($singular, $plural, $count);
     }
 }
 
