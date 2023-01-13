@@ -311,7 +311,7 @@ class UserService extends AbstractService
 
             if ($data !== $default) {
                 if ($data['username'] !== null) {
-                    $found = $this->service->findOneByUsername($data['email']);
+                    $found = $this->service->findOneByUsername($data['username']);
 
                     if ($found === null || $found === $entity) {
                         $entity->setUsername($data['username']);
