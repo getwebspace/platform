@@ -382,7 +382,10 @@
                                                                             <th width="50%">{{ 'Build'|locale }}:</th>
                                                                             <td width="50%" class="text-center">
                                                                                 {{ properties.version.branch }}
-                                                                                (<a href="https://github.com/getwebspace/platform/tree/{{ properties.version.commit }}" target="_blank">{{ SHA }}</a>)
+
+                                                                                {% if properties.version.commit %}
+                                                                                    (<a href="https://github.com/getwebspace/platform/tree/{{ properties.version.commit }}" target="_blank">{{ SHA }}</a>)
+                                                                                {% endif %}
                                                                             </td>
                                                                         </tr>
                                                                         <tr>

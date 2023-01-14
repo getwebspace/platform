@@ -29,7 +29,7 @@ class MainPageAction extends AbstractAction
             'properties' => [
                 'version' => [
                     'branch' => ($_ENV['COMMIT_BRANCH'] ?? 'other'),
-                    'commit' => ($_ENV['COMMIT_SHA'] ?? 'specific'),
+                    'commit' => ($_ENV['COMMIT_SHA'] ?? false),
                 ],
                 'os' => @implode(' ', [php_uname('s'), php_uname('r'), php_uname('m')]),
                 'php' => PHP_VERSION,
