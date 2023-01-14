@@ -3,9 +3,14 @@ MAINTAINER Aleksey Ilyin <alksily@getwebspace.org>
 
 # Lightweight container with Nginx & PHP-FPM based on Alpine Linux for WebSpace Engine
 
+# Set args
+ARG VERSION="dev"
+ARG COMMIT=""
+ARG NO_DEV=""
+
 # Set env vars
-ENV COMMIT_BRANCH="dev" \
-    COMMIT_SHA="specific" \
+ENV COMMIT_BRANCH=${VERSION} \
+    COMMIT_SHA=${COMMIT} \
     BUILD_DEPENDENSIES="g++ make autoconf" \
     DEPENDENSIES="imagemagick-dev libzip-dev libpng-dev libxml2-dev icu-dev yaml-dev" \
     EXTRA_EXTENSIONS="pdo_mysql" \
@@ -20,8 +25,6 @@ WORKDIR ${PLATFORM_HOME}
 
 # Install packages
 RUN set -x \
-    && apk update \
-    && apk upgrade \
     && apk add --no-cache --virtual .build-deps ${PHPIZE_DEPS} ${BUILD_DEPENDENSIES} \
     && apk add --no-cache \
         runit \
@@ -66,7 +69,7 @@ RUN set -x \
     && chmod -R 0755 /etc/service \
     && chmod 0755 /bin/docker-entrypoint.sh \
     # Install platform
-    && composer install --no-suggest --no-progress \
+    && composer install ${NO_DEV} --no-suggest --no-progress \
     && chown -R nobody.nobody ${PLATFORM_HOME} \
     && chmod -R 0755 ${PLATFORM_HOME} \
     && chmod -R 0777 ${PLATFORM_HOME}/plugin \
