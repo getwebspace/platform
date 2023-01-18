@@ -141,7 +141,7 @@ class ProductAttribute extends AbstractEntity
         return $this->attribute
             ->getProductAttributes()
             ->unique('value')
-            ->whereNotIn('value', $this->value)
+            ->where('value', '!=', $this->value)
             ->pluck('value');
     }
 
@@ -153,7 +153,7 @@ class ProductAttribute extends AbstractEntity
         return $this->attribute
             ->getProductAttributes()
             ->where('value', $this->value)
-            ->whereNotIn('product.uuid', $this->product->getUuid())
+            ->where('product.uuid', '!=', $this->product->getUuid())
             ->pluck('product');
     }
 
@@ -164,6 +164,7 @@ class ProductAttribute extends AbstractEntity
     {
         return $this->attribute
             ->getProductAttributes()
+            ->where('product.status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK)
             ->where('value', $this->value)
             ->count();
     }
