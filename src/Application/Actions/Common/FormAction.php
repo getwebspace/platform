@@ -143,6 +143,8 @@ class FormAction extends AbstractAction
                 // run worker
                 \App\Domain\AbstractTask::worker($task);
 
+                $this->container->get(\App\Application\PubSub::class)->publish('common:form:create', $params);
+
                 return $this->respondWithJson(['status' => 'ok']);
             }
 
