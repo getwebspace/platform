@@ -16,7 +16,7 @@ class Parameter extends AbstractEntity
     /**
      * @return $this
      */
-    public function setKey(string $key)
+    public function setKey(string $key): static
     {
         if ($this->checkStrLenMax($key, 50)) {
             $this->key = $key;
@@ -38,11 +38,11 @@ class Parameter extends AbstractEntity
      *
      * @return $this
      */
-    public function setValue($value)
+    public function setValue(mixed $value): static
     {
         $value = (string) $value;
 
-        if ($this->checkStrLenMax($value, 3000)) {
+        if ($this->checkStrLenMax($value, 10000)) {
             $this->value = $value;
         }
 
