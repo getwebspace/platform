@@ -54,40 +54,33 @@ and more..
 #### Developer mode
 Use docker by running the command: `docker-compose up -d`, then open `http://localhost:9000`
 
-*Install dependencies*
+#### Environment variables
+You can define the next environment variables
+
+| Type    | Variable Name      | Default        | description                                                       |
+|---------|--------------------|----------------|-------------------------------------------------------------------|
+| Build   | BUILD_DEPENDENSIES |                | Dependencies used in the build                                    |   
+| Build   | DEPENDENSIES       | ''             | Core Libraries                                                    |   
+| Build   | EXTRA_EXTENSIONS   | pdo_mysql      | Additional Libraries                                              |   
+| Build   | PLATFORM_HOME      | /var/container | Home directory                                                    |   
+| Runtime | DEBUG              | 0              | Debug Mode                                                        |   
+| Runtime | DATABASE           |                | PDO Database params (default: sqlite)                             |   
+| Runtime | SIMPLE_PHONE_CHECK | 0              | Checking the user's phone number for compliance with the standard |   
+
+#### Install dependencies
 ```shell script
 ./composer install
 ```
 
-*Static analyzer*
+#### Static analyzer
 ```shell script
 ./phpcs
 ```
 
-*Unit tests*
+#### Unit tests
 ```shell script
 ./phpunit [..]
 ```
-
-#### Environment variables
-You can define the next environment variables to change values from NGINX and PHP
-
-| Server | Variable Name        | Default        | description                                                                                                                                                     |
-|--------|----------------------|----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| NGINX  | client_max_body_size | 32m            | Sets the maximum allowed size of the client request body, specified in the “Content-Length” request header field.                                               |
-| PHP    | max_execution_time   | 30             | Maximum time in seconds a script is allowed to run before it is terminated by the parser.                                                                       |
-| PHP    | max_input_time       | -1             | Maximum time in seconds a script is allowed to parse input data, like POST, GET and file uploads.                                                               |
-| PHP    | max_input_vars       | 1000           | Maximum number of input variables allowed per request and can be used to deter denial of service attacks involving hash collisions on the input variable names. |
-| PHP    | memory_limit         | 64M            | Maximum amount of memory in bytes that a script is allowed to allocate.                                                                                         |
-| PHP    | post_max_size        | 32M            | Max size of post data allowed.                                                                                                                                  |
-| PHP    | upload_max_filesize  | 32M            | Maximum size of an uploaded file.                                                                                                                               |
-| WSE    | BUILD_DEPENDENSIES   |                | Dependencies used in the build                                                                                                                                  |   
-| WSE    | DEPENDENSIES         |                | Core Libraries                                                                                                                                                  |   
-| WSE    | EXTRA_EXTENSIONS     | pdo_mysql      | Additional Libraries                                                                                                                                            |   
-| WSE    | PLATFORM_HOME        | /var/container | Home directory                                                                                                                                                  |   
-| WSE    | DEBUG                | 0              | Debug Mode                                                                                                                                                      |   
-| WSE    | DATABASE             |                | PDO Database params                                                                                                                                             |   
-| WSE    | SIMPLE_PHONE_CHECK   | 0              | Checking the user's phone number for compliance with the standard                                                                                               |   
 
 #### After run
 Check chmod's

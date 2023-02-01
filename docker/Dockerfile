@@ -1,7 +1,7 @@
 FROM php:8.1-fpm-alpine3.17
-MAINTAINER Aleksey Ilyin <alksily@getwebspace.org>
 
 # Lightweight container with Nginx & PHP-FPM based on Alpine Linux for WebSpace Engine
+MAINTAINER Aleksey Ilyin <alksily@getwebspace.org>
 
 # Set args
 ARG VERSION="dev"
@@ -12,13 +12,15 @@ ARG NO_DEV=""
 ENV COMMIT_BRANCH=${VERSION} \
     COMMIT_SHA=${COMMIT} \
     BUILD_DEPENDENSIES="g++ make autoconf" \
-    DEPENDENSIES="imagemagick-dev libzip-dev libpng-dev libxml2-dev icu-dev yaml-dev" \
+    DEPENDENSIES="" \
     EXTRA_EXTENSIONS="pdo_mysql" \
     PLATFORM_HOME="/var/container"
 
 # Copy configs
-COPY --chown=nobody . ${PLATFORM_HOME}
-COPY --chown=nobody docker/rootfs/ /
+COPY --chown=www-data docker/rootfs/ /
+
+# Copy platform files
+COPY --chown=www-data . ${PLATFORM_HOME}
 
 # Set homedir as work
 WORKDIR ${PLATFORM_HOME}
@@ -33,44 +35,40 @@ RUN set -x \
         git \
         unzip \
         imagemagick \
+        imagemagick-dev \
+        libzip-dev \
+        libpng-dev \
+        libxml2-dev \
+        icu-dev \
+        yaml-dev \
         ${DEPENDENSIES} \
     && nginx -V \
     && pecl install -f imagick yaml \
     && docker-php-ext-install -j$(nproc) zip gd intl soap ${EXTRA_EXTENSIONS} \
     && docker-php-ext-enable opcache.so imagick yaml \
     && docker-php-source delete \
+    \
+    # Remove alpine cache
+    && rm -rf /var/cache/apk/* \
+    \
+    # Remove default server definition
+    && rm /etc/nginx/http.d/default.conf \
+    \
+    # Make sure files/folders needed by the processes are accessable when they run under the www-data user
+    && chown -R www-data:www-data /run \
+    && chown -R www-data:www-data /var/lib/nginx \
+    && chown -R www-data:www-data /var/log/nginx \
+    && chmod -R 0755 /etc/service \
+    && chmod 0755 /bin/docker-entrypoint.sh \
+    \
+    # Install composer
     && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
     && php composer-setup.php --quiet --install-dir=/usr/bin --filename=composer \
     && rm composer-setup.php \
-    # Bring in gettext so we can get `envsubst`, then throw
-    # the rest away. To do this, we need to install `gettext`
-    # then move `envsubst` out of the way so `gettext` can
-    # be deleted completely, then move `envsubst` back.
-    && apk add --no-cache --virtual .gettext gettext \
-    && mv /usr/bin/envsubst /tmp/ \
-    && runDeps="$( \
-        scanelf --needed --nobanner /tmp/envsubst \
-            | awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
-            | sort -u \
-            | xargs -r apk info --installed \
-            | sort -u \
-    )" \
-    && apk add --no-cache $runDeps \
-    && apk del .gettext \
-    && mv /tmp/envsubst /usr/local/bin/ \
-    # Remove alpine cache
-    && rm -rf /var/cache/apk/* \
-    # Remove default server definition
-    && rm /etc/nginx/http.d/default.conf \
-    # Make sure files/folders needed by the processes are accessable when they run under the nobody user
-    && chown -R nobody.nobody /run \
-    && chown -R nobody.nobody /var/lib/nginx \
-    && chown -R nobody.nobody /var/log/nginx \
-    && chmod -R 0755 /etc/service \
-    && chmod 0755 /bin/docker-entrypoint.sh \
+    \
     # Install platform
     && composer install ${NO_DEV} --no-suggest --no-progress \
-    && chown -R nobody.nobody ${PLATFORM_HOME} \
+    && chown -R www-data:www-data ${PLATFORM_HOME} \
     && chmod -R 0755 ${PLATFORM_HOME} \
     && chmod -R 0777 ${PLATFORM_HOME}/plugin \
     && chmod -R 0776 ${PLATFORM_HOME}/public/uploads \
@@ -78,7 +76,7 @@ RUN set -x \
     && chmod -R 0777 ${PLATFORM_HOME}/var
 
 # Switch to use a non-root user from here on
-USER nobody
+USER www-data
 
 # Set volumes
 VOLUME ["${PLATFORM_HOME}/plugin", "${PLATFORM_HOME}/public/resource", "${PLATFORM_HOME}/theme", "${PLATFORM_HOME}/var", "${PLATFORM_HOME}/public/uploads"]
@@ -87,13 +85,3 @@ VOLUME ["${PLATFORM_HOME}/plugin", "${PLATFORM_HOME}/public/resource", "${PLATFO
 EXPOSE 80/tcp 443/tcp
 
 CMD ["/bin/docker-entrypoint.sh"]
-
-ENV short_open_tag=On \
-    client_max_body_size=32M \
-    max_execution_time=30 \
-    max_input_time=-1 \
-    max_input_vars=1000 \
-    memory_limit=64M \
-    post_max_size=32M \
-    upload_max_filesize=32M \
-    zlib.output_compression=On
