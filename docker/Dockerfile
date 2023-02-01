@@ -90,15 +90,10 @@ CMD ["/bin/docker-entrypoint.sh"]
 
 ENV short_open_tag=On \
     client_max_body_size=32M \
-    clear_env=no \
-    allow_url_fopen=On \
-    allow_url_include=Off \
-    display_errors=Off \
-    file_uploads=On \
-    max_execution_time=0 \
+    max_execution_time=30 \
     max_input_time=-1 \
     max_input_vars=1000 \
-    memory_limit=128M \
-    post_max_size=10M \
-    upload_max_filesize=2M \
+    memory_limit=64M \
+    post_max_size=32M \
+    upload_max_filesize=32M \
     zlib.output_compression=On
