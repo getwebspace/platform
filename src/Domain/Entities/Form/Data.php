@@ -47,7 +47,7 @@ class Data extends AbstractEntity
         return $this->form_uuid;
     }
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $data = [];
 
     /**

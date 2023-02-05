@@ -149,7 +149,7 @@ class Publication extends AbstractEntity
         return $this->date;
     }
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $content = [
         'short' => '',
         'full' => '',
@@ -179,13 +179,13 @@ class Publication extends AbstractEntity
         return $this->content;
     }
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $poll = [
         // 'question' => '',
         // 'answer' => '',
     ];
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $meta = [
         'title' => '',
         'description' => '',

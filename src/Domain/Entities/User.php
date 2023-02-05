@@ -394,7 +394,7 @@ class User extends AbstractEntity
         return $this->allow_mail;
     }
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $company = [
         'title' => '',
         'position' => '',
@@ -421,7 +421,7 @@ class User extends AbstractEntity
         return $this->company;
     }
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $legal = [
         'code' => '',
         'number' => '',
@@ -448,7 +448,7 @@ class User extends AbstractEntity
         return $this->legal;
     }
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $messenger = [
         'skype' => '',
         'telegram' => '',
@@ -693,7 +693,7 @@ class User extends AbstractEntity
         return $this->external_id;
     }
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $token = [];
 
     /**

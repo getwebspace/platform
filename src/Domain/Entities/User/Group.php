@@ -60,7 +60,7 @@ class Group extends AbstractEntity
         return $this->description;
     }
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $access = [];
 
     /**

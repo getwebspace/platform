@@ -268,7 +268,7 @@ class Product extends AbstractEntity
         return $this->special;
     }
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $dimension = [
         'width' => 0.0,
         'height' => 0.0,
@@ -490,7 +490,7 @@ class Product extends AbstractEntity
         return $this->manufacturer;
     }
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $tags = [];
 
     public function setTags(array|string $tags): self
@@ -590,7 +590,7 @@ class Product extends AbstractEntity
         return $this->date;
     }
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $meta = [
         'title' => '',
         'description' => '',

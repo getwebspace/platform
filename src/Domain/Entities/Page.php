@@ -133,7 +133,7 @@ class Page extends AbstractEntity
         return $this->type;
     }
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $meta = [
         'title' => '',
         'description' => '',

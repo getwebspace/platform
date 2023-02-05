@@ -163,7 +163,7 @@ class Category extends AbstractEntity
         return $this->field3;
     }
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $product = [
         'field_1' => '',
         'field_2' => '',
@@ -284,7 +284,7 @@ class Category extends AbstractEntity
         return $this->status;
     }
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $sort = [
         'by' => \App\Domain\References\Catalog::ORDER_BY_DATE,
         'direction' => \App\Domain\References\Catalog::ORDER_DIRECTION_ASC,
@@ -316,7 +316,7 @@ class Category extends AbstractEntity
         return $this->sort;
     }
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $meta = [
         'title' => '',
         'description' => '',
@@ -349,7 +349,7 @@ class Category extends AbstractEntity
         return $this->meta;
     }
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $template = [
         'category' => '',
         'product' => '',

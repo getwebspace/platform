@@ -138,7 +138,7 @@ class Form extends AbstractEntity
         return $this->authorSend;
     }
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $origin = [];
 
     /**
@@ -158,7 +158,7 @@ class Form extends AbstractEntity
         return $this->origin;
     }
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $mailto = [];
 
     /**

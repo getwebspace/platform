@@ -174,7 +174,7 @@ class Category extends AbstractEntity
         return $this->public;
     }
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $sort = [
         'by' => \App\Domain\References\Publication::ORDER_BY_DATE,
         'direction' => \App\Domain\References\Publication::ORDER_DIRECTION_ASC,
@@ -206,7 +206,7 @@ class Category extends AbstractEntity
         return $this->sort;
     }
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $meta = [
         'title' => '',
         'description' => '',
@@ -239,7 +239,7 @@ class Category extends AbstractEntity
         return $this->meta;
     }
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $template = [
         'list' => '',
         'short' => '',

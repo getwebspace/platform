@@ -82,7 +82,7 @@ class Notification extends AbstractEntity
         return $this->message;
     }
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $params = [];
 
     /**

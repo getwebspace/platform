@@ -73,7 +73,7 @@ class Order extends AbstractEntity
         return $this->user;
     }
 
-    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $delivery = [
         'client' => '',
         'address' => '',
