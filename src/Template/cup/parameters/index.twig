@@ -1256,42 +1256,46 @@
                                             {{ 'variable named'|locale }} <code>my_variable</code>
                                             {{ 'can be displayed on the page using the following code:'|locale }}
                                             <br>
-                                            <code>&lbrace;&lbrace; parameter('var_my_variable') &rbrace;&rbrace;</code>
+                                            <code>&lbrace;&lbrace; parameter('var_my_variable', 'default value') &rbrace;&rbrace;</code>
                                         </p>
-
 
                                         {% include 'cup/form.twig' with {
                                             'label': 'New variable name'|locale,
                                             'type': 'text',
-                                            'message': 'Only latin letters are allowed: <code>[A-Za-z]</code>'|locale,
+                                            'message': 'Only latin letters are allowed: <code>[A-Za-z0-9]</code>'|locale,
                                             'prefix': 'var_',
                                             'args': {
-                                                'placeholder': 'my_variable',
+                                                'placeholder': 'office_phone',
                                                 'data': {'input': 'variable'}
                                             }
                                         } %}
 
                                         <button type="button" class="btn btn-secondary float-right" data-click="add_variable">{{ 'Add'|locale }}</button>
                                     </div>
+
                                     <div class="col-xs-12 col-sm-6">
-                                        {% for index,item in parameter %}
+                                        {% for index, item in parameter %}
                                             {% if item.key starts with 'var_' and item.value %}
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': '<code>' ~ item.key ~ '</code>',
+                                                {% include 'cup/form.twig' with {
                                                     'type': 'text',
                                                     'name': index,
                                                     'args': {
                                                         'value': item.value
-                                                    }
+                                                    },
+                                                    'prefix': '<code class="text-dark">var_</code><code>' ~ item.key|replace({'var_': ''}) ~ '</code>',
+                                                    'postfix': '<i class="fas fa-copy text-small" data-copy data-value="{{ parameter(\''~item.key~'\', \'\') }}" data-toggle="tooltip" data-placement="top" data-original-title="Copy code"></i>'
                                                 } %}
                                             {% endif %}
                                         {% endfor %}
 
-                                        {% include 'cup/parameters/field.twig' with {
-                                            'label': '',
-                                            'type': 'hidden',
-                                            'name': 'var[]',
-                                        } %}
+                                        <div style="display: none">
+                                            {% include 'cup/form.twig' with {
+                                                'label': '',
+                                                'type': 'hidden',
+                                                'name': 'var[]',
+                                                'prefix': 'var_<code>' ~ item.key|replace({'var_': ''}) ~ '</code>',
+                                            } %}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

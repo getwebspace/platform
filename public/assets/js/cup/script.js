@@ -251,12 +251,12 @@ $(() => {
                     $value.parents('.form-group').removeClass('has-error');
                 }, 2500);
             } else {
-                $clone.find('div:first').text('var_' + $value.val());
+                $clone.find('.input-group-prepend span code').text($value.val());
                 $clone.find('input')
                     .attr('type', 'text')
                     .attr('name', 'var[' + $value.val() + ']');
                 
-                $clone.insertBefore($hidden);
+                $clone.insertBefore($hidden.parent());
                 $value.val('');
             }
         });
