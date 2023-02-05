@@ -271,6 +271,21 @@ if (!function_exists('str_mask_email')) {
     }
 }
 
+if (!function_exists('str_rem_tags')) {
+    /**
+     * Mask email
+     */
+    function str_rem_tags(string $str): string
+    {
+        $str = preg_replace('/<[^>]*>/', ' ', $str);
+        $str = html_entity_decode($str);
+        $str = str_replace(["\r", "\0", "\x0B", "\xC2", "\xA0"], '', $str);
+        $str = str_replace(["\n", "\t"], ' ', $str);
+
+        return trim(preg_replace('/ {2,}/', ' ', $str));
+    }
+}
+
 if (!function_exists('blank')) {
     /**
      * Determine if the given value is "blank".
