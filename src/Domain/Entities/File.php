@@ -334,6 +334,6 @@ class File extends AbstractEntity
             }
         }
 
-        return $result;
+        return array_serialize($result);
     }
 }

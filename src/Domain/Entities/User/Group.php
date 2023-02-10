@@ -83,10 +83,10 @@ class Group extends AbstractEntity
 
     public function toArray(): array
     {
-        return [
+        return array_serialize([
             'uuid' => $this->getUuid(),
             'title' => $this->getTitle(),
             'access' => $this->getAccess(),
-        ];
+        ]);
     }
 }

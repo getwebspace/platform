@@ -105,10 +105,10 @@ abstract class FileRelation extends AbstractEntity
 
     public function toArray(): array
     {
-        return array_merge($this->file->toArray(), [
+        return array_serialize(array_merge($this->file->toArray(), [
             'order' => $this->order,
             'comment' => $this->comment,
-        ]);
+        ]));
     }
 
     // magic

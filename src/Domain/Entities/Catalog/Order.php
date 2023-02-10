@@ -362,7 +362,7 @@ class Order extends AbstractEntity
             ];
         }
 
-        return [
+        return array_serialize([
             'uuid' => $this->uuid,
             'serial' => $this->serial,
             'user' => $this->user_uuid ?: \Ramsey\Uuid\Uuid::NIL,
@@ -377,6 +377,6 @@ class Order extends AbstractEntity
             'external_id' => $this->external_id,
             'export' => $this->export,
             'system' => $this->system,
-        ];
+        ]);
     }
 }

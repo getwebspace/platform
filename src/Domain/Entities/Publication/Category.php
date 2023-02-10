@@ -301,7 +301,7 @@ class Category extends AbstractEntity
      */
     public function toArray(): array
     {
-        return [
+        return array_serialize([
             'uuid' => $this->uuid,
             'parent' => $this->parent,
             'address' => $this->address,
@@ -313,6 +313,6 @@ class Category extends AbstractEntity
             'sort' => $this->sort,
             'files' => $this->getFiles(),
             'meta' => $this->meta,
-        ];
+        ]);
     }
 }

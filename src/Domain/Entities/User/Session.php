@@ -132,9 +132,9 @@ class Session extends AbstractEntity
 
     public function toArray(): array
     {
-        return [
+        return array_serialize([
             'ip' => $this->getIp(),
             'date' => $this->getDate()->format(\App\Domain\References\Date::DATETIME),
-        ];
+        ]);
     }
 }

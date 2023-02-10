@@ -92,12 +92,12 @@ class ProductRelation extends AbstractEntity
     {
         $type = get_class($this->related) === Product::class ? 'product' : 'related';
 
-        return [
+        return array_serialize([
             'uuid' => $this->{$type}->getUuid(),
             'title' => $this->{$type}->getTitle(),
             'address' => $this->{$type}->getAddress(),
             'price' => $this->{$type}->getPrice(),
             'count' => $type === 'related' ? $this->getCount() : 1,
-        ];
+        ]);
     }
 }

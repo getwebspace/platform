@@ -114,10 +114,10 @@ class Integration extends AbstractEntity
 
     public function toArray(): array
     {
-        return [
+        return array_serialize([
             'provider' => $this->getProvider(),
             'unique' => $this->getUnique(),
             'date' => $this->getDate(),
-        ];
+        ]);
     }
 }

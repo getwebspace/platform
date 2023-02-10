@@ -171,13 +171,13 @@ class ProductAttribute extends AbstractEntity
 
     public function toArray(): array
     {
-        return [
+        return array_serialize([
             'title' => $this->title,
             'type' => $this->type,
             'address' => $this->address,
             'value' => $this->value,
             'count' => $this->getCount(),
-        ];
+        ]);
     }
 
     #[ORM\PostLoad]

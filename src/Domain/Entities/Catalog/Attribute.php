@@ -151,11 +151,11 @@ class Attribute extends AbstractEntity
 
     public function toArray(): array
     {
-        return [
+        return array_serialize([
             'title' => $this->title,
             'type' => $this->type,
             'address' => $this->address,
             'values' => $this->getValues(),
-        ];
+        ]);
     }
 }

@@ -250,7 +250,7 @@ class Publication extends AbstractEntity
      */
     public function toArray(): array
     {
-        return [
+        return array_serialize([
             'uuid' => $this->uuid,
             'user' => $this->user_uuid ?: \Ramsey\Uuid\Uuid::NIL,
             'address' => $this->address,
@@ -258,8 +258,8 @@ class Publication extends AbstractEntity
             'category' => $this->category,
             'date' => $this->date,
             'content' => $this->content,
-            'files' => $this->getFiles(),
+            'files' => $this->files,
             'meta' => $this->meta,
-        ];
+        ]);
     }
 }

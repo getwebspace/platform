@@ -140,7 +140,7 @@ class OrderProduct extends AbstractEntity
 
     public function toArray(): array
     {
-        return [
+        return array_serialize([
             'uuid' => $this->product->getUuid(),
             'title' => $this->product->getTitle(),
             'address' => $this->product->getAddress(),
@@ -151,7 +151,7 @@ class OrderProduct extends AbstractEntity
             'external_id' => $this->product->getExternalId(),
             'files' => $this->product->getFiles(),
             'count' => $this->getCount(),
-        ];
+        ]);
     }
 
     #[ORM\PostLoad]

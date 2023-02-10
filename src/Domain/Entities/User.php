@@ -805,6 +805,6 @@ class User extends AbstractEntity
             $buf['session'] = $this->session->toArray();
         }
 
-        return $buf;
+        return array_serialize($buf);
     }
 }
