@@ -72,7 +72,7 @@
                 {% if (_request.q or _request.query) %}
                     {% if count %}
                         <div class="row mt-3">
-                            {% for type, list in result %}
+                            {% for type, list in result.groupBy('entity') %}
                                 <div class="col-md-12">
                                     <h5>
                                         {% if type == 'page' %}
@@ -93,7 +93,8 @@
                                             <div class="col-1">
                                                 <a href="/{{ item.address }}">
                                                     {% include 'mixin/img.twig' with {
-                                                        'src': item.files ? item.files[0].middle : '/assets/img/no_image.png',
+                                                        'placeholder': item.files ? item.files[0].path.small : '/assets/img/no_image.png',
+                                                        'src': item.files ? item.files[0].path.middle : '/assets/img/no_image.png',
                                                         'title': item.title,
                                                         'alt': item.title,
                                                         'style': 'display:block; float: left; margin: 0 auto; height: 50px; width: 50px; object-fit: cover; object-position: center center;'
