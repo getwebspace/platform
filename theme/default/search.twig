@@ -90,7 +90,7 @@
 
                                     {% for item in list %}
                                         <div class="row my-3">
-                                            <div class="col-1">
+                                            <div class="col-2">
                                                 <a href="/{{ item.address }}">
                                                     {% include 'mixin/img.twig' with {
                                                         'placeholder': item.files ? item.files[0].path.small : '/assets/img/no_image.png',
@@ -101,7 +101,7 @@
                                                     } only %}
                                                 </a>
                                             </div>
-                                            <div class="col-11">
+                                            <div class="col-10">
                                                 <a href="/{{ item.address }}">{{ item.title }}</a>
 
                                                 {% if item.description or item.content or item.content.short or item.meta.description %}
