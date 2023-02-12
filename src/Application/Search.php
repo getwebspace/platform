@@ -19,7 +19,7 @@ class Search
      *
      * @return string
      */
-    public static function getIndexedText(array|string $strings, bool $indexing = false): string
+    public static function getIndexedText(array|string $strings, bool $indexing = false): array
     {
         $index = [];
 
@@ -41,7 +41,7 @@ class Search
                 $text = str_replace(['a', 'e', 'i', 'o', 'u', 'y'], '', $text); // english
                 $text = str_replace(['а', 'е', 'ё', 'и', 'о', 'у', 'ы', 'э', 'ю', 'я', 'ь', 'ъ'], '', $text); // russian
                 $text = str_replace(['а', 'е', 'є', 'и', 'і', 'ї', 'о', 'у', 'ю', 'я'], '', $text); // ukrainian
-                $text = explode(' ', $text);
+                $text = explode(' ', trim($text));
 
                 foreach ($text as $i => &$word) {
                     if (mb_strlen($word) < 2) {
@@ -53,17 +53,18 @@ class Search
             }
         }
 
-        $index = array_unique($index);
-
-        return trim(implode(' ', $index));
+        return array_unique($index);
     }
 
     public static function search(string $query, bool $strong = false): array
     {
-        if ($query && !$strong) {
-            $query = array_map(fn($word) => (mb_strlen($word) > 3 ? $word . '*' : $word), explode(' ', $query));
+        $query_words = explode(' ', $query);
+
+        if ($query_words && !$strong) {
+            $query_words = array_map(fn($word) => (mb_strlen($word) > 3 ? $word . '*' : $word), $query_words);
         }
-        $query_words = explode(' ', static::getIndexedText($query));
+
+        $query_words = static::getIndexedText($query_words);
         $index = explode(PHP_EOL, file_get_contents(self::CACHE_FILE));
 
         $results = [];
@@ -109,17 +110,13 @@ class Search
                 }
             }
 
-            foreach (static::permutations($query_words) as $permutation) {
-                if (mb_stristr($line, $permutation)) {
-                    ++$comboCount;
-                }
-            }
-
-            if ($strong && !mb_stristr($line, str_replace('*', '', implode(' ', $query_words)))) {
-                $wordCount = 0;
-            }
-
             if ($wordCount > $mustFound) {
+                foreach (static::permutations($query_words) as $permutation) {
+                    if (mb_stristr($line, $permutation)) {
+                        ++$comboCount;
+                    }
+                }
+
                 $buf = explode(':', $line);
                 $results[$buf[0]][] = ['uuid' => $buf[1], 'order' => $comboCount + $wordCount];
             }
