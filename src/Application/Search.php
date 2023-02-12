@@ -135,12 +135,17 @@ class Search
     {
         $results = [[]];
 
-        foreach ($query_words as $k => $element) {
+        foreach ($query_words as $i => $word) {
             foreach ($results as $combination) {
-                $results[] = $combination + [$k => $element];
+                $results[] = $combination + [$i => $word];
             }
         }
 
-        return array_map(fn($words) => str_replace('*', '', implode(' ', $words)), array_values(array_filter($results, fn($el) => count($el) >= 2)));
+        return array_map(
+            fn($words) => str_replace('*', '', implode(' ', $words)),
+            array_values(
+                array_filter($results, fn($el) => count($el) >= 2)
+            )
+        );
     }
 }
