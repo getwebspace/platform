@@ -29,18 +29,16 @@ class SearchAction extends AbstractAction
 
             foreach ($services as $type => $service) {
                 if (!empty($search[$type]) && (!$query_type || (in_array($query_type, array_keys($services)) && $type === $query_type))) {
-                    $plucked = array_pluck($search[$type], 'order', 'uuid');
-                    arsort($plucked);
-                    $plucked = array_slice($plucked, 0, $limit);
+                    $sliced = array_slice($search[$type], 0, $limit);
 
                     /** @var AbstractService $service */
                     $entities = $service->read([
-                        'uuid' => array_keys($plucked),
+                        'uuid' => $sliced,
                         'status' => 'work',
                         'limit' => $limit,
                     ]);
 
-                    foreach ($plucked as $uuid => $order) {
+                    foreach ($sliced as $uuid) {
                         if (($entity = $entities->firstWhere('uuid', $uuid)) !== null) {
                             $entity = $entity->toArray();
                             $entity['entity'] = $type;

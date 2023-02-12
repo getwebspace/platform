@@ -122,6 +122,12 @@ class Search
             }
         }
 
+        foreach ($results as $type => $rows) {
+            $buf = array_pluck($rows, 'order', 'uuid');
+            arsort($buf);
+            $results[$type] = array_keys($buf);
+        }
+
         return $results;
     }
 
