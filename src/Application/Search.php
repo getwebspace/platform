@@ -110,7 +110,7 @@ class Search
                 }
             }
 
-            if ($wordCount > $mustFound) {
+            if ($wordCount >= $mustFound) {
                 foreach (static::permutations($query_words) as $permutation) {
                     if (mb_stristr($line, $permutation)) {
                         ++$comboCount;
