@@ -1,6 +1,7 @@
+![Release](https://img.shields.io/github/v/release/getwebspace/platform)
 ![Docker builder](https://github.com/getwebspace/platform/workflows/Docker%20builder/badge.svg)
 ![License](https://img.shields.io/github/license/getwebspace/platform)
-![](https://visitor-badge.glitch.me/badge?page_id=getwebspace.platform)
+![Visitors](https://visitor-badge.glitch.me/badge?page_id=getwebspace.platform)
 
 ## WebSpace Engine
 [Website](https://getwebspace.org/) |
@@ -47,14 +48,14 @@ and more..
 
 - new attributes
 
-## Installation
-#### Production mode
+## Quickstart install
+### Production mode
 [Installation instructions](https://github.com/getwebspace/platform/wiki/Installation-(Docker)) from Docker template [getwebspace/platform-template](https://github.com/getwebspace/platform-template)
 
-#### Developer mode
+### Developer mode
 Use docker by running the command: `docker-compose up -d`, then open `http://localhost:9000`
 
-#### Environment variables
+### Environment variables
 You can define the next environment variables
 
 | Type    | Variable Name      | Default        | description                                                       |
@@ -82,8 +83,7 @@ You can define the next environment variables
 ./phpunit [..]
 ```
 
-#### After run
-Check chmod's
+#### Post install check chmod's
 
 ```shell script
 chmod -R 0777 plugin
@@ -92,5 +92,5 @@ chmod -R 0777 var
 chmod -R 0776 var/upload
 ```
 
-## License
+## Copyright & license
 Licensed under the MIT license. See [License File](LICENSE.md) for more information.
