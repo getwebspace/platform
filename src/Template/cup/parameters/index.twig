@@ -569,37 +569,89 @@
                                                     }
                                                 } %}
 
+                                                <ul class="nav nav-pills nav-info justify-content-end" role="tablist">
+                                                    <li class="nav-item">
+                                                        <a class="nav-link active show" data-toggle="pill" href="#other-api-access" role="tab">
+                                                            {{ 'Access'|locale }}
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="nav-link" data-toggle="pill" href="#other-api-cors" role="tab">
+                                                            {{ 'CORS'|locale }}
+                                                        </a>
+                                                    </li>
+                                                </ul>
+
                                                 <hr>
 
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'API access',
-                                                    'description': 'Restricts access rights',
-                                                    'type': 'select',
-                                                    'name': 'entity[access]',
-                                                    'args': {
-                                                        'option': _(['all', 'key', 'user']),
-                                                        'selected': 'user'
-                                                    }
-                                                } %}
+                                                <div class="tab-content">
+                                                    {# TAB: Access #}
+                                                    <div class="tab-pane fade show active" id="other-api-access" role="tabpanel">
+                                                        {% include 'cup/parameters/field.twig' with {
+                                                            'label': 'API access',
+                                                            'description': 'Restricts access rights',
+                                                            'type': 'select',
+                                                            'name': 'entity[access]',
+                                                            'args': {
+                                                                'option': _(['all', 'key', 'user']),
+                                                                'selected': 'user'
+                                                            }
+                                                        } %}
 
-                                                <hr>
+                                                        <hr>
 
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'API access keys',
-                                                    'description': [
-                                                        'The ability to make changes via the API is only available if you have a key',
-                                                        '<br>',
-                                                        '<button class="btn btn-outline-info btn-sm" type="button" data-entity-click="add">',
-                                                        'Generate new',
-                                                        '</button>',
-                                                    ]|locale|join(''),
-                                                    'message': 'Each key on a new line',
-                                                    'type': 'textarea',
-                                                    'name': 'entity[keys]',
-                                                    'args': {
-                                                        'style': 'height: 100px!important;'
-                                                    },
-                                                } %}
+                                                        {% include 'cup/parameters/field.twig' with {
+                                                            'label': 'API access keys',
+                                                            'description': [
+                                                                'The ability to make changes via the API is only available if you have a key',
+                                                                '<br>',
+                                                                '<button class="btn btn-outline-info btn-sm" type="button" data-entity-click="add">',
+                                                                'Generate new',
+                                                                '</button>',
+                                                            ]|locale|join(''),
+                                                            'message': 'Each key on a new line',
+                                                            'type': 'textarea',
+                                                            'name': 'entity[keys]',
+                                                            'args': {
+                                                                'style': 'height: 100px!important;'
+                                                            },
+                                                        } %}
+                                                    </div>
+
+                                                    {# TAB: CORS #}
+                                                    <div class="tab-pane fade" id="other-api-cors" role="tabpanel">
+                                                        {% include 'cup/parameters/field.twig' with {
+                                                            'label': 'Allow Methods',
+                                                            'type': 'text',
+                                                            'name': 'entity[cors_methods]',
+                                                            'message': '',
+                                                            'args': {
+                                                                'placeholder': 'GET, POST, OPTIONS'
+                                                            }
+                                                        } %}
+
+                                                        {% include 'cup/parameters/field.twig' with {
+                                                            'label': 'Allow Headers',
+                                                            'type': 'text',
+                                                            'name': 'entity[cors_headers]',
+                                                            'message': '',
+                                                            'args': {
+                                                                'placeholder': '*',
+                                                            }
+                                                        } %}
+
+                                                        {% include 'cup/parameters/field.twig' with {
+                                                            'label': 'Allow Origin',
+                                                            'type': 'textarea',
+                                                            'name': 'entity[cors_origin]',
+                                                            'message': 'Each domain on a new line',
+                                                            'args': {
+                                                                'style': 'height: 100px!important;',
+                                                                'placeholder': 'https://developer.mozilla.org'
+                                                            }
+                                                        } %}
+                                                    </div>
+                                                </div>
                                             </div>
 
                                         </div>
