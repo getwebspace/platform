@@ -18,7 +18,7 @@ class CORSMiddleware extends AbstractMiddleware
         if (($value = $this->parameter('entity_cors_origin', false)) !== false) {
             $origin = $request->getHeaderLine('Origin');
 
-            if ($origin && in_array($origin, explode(PHP_EOL, $value))) {
+            if ($origin && in_array($origin, explode(PHP_EOL, $value)) || $value === '*') {
                 $response = $response->withHeader('Access-Control-Allow-Origin', $origin);
             }
         }
