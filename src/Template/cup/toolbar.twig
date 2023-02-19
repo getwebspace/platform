@@ -1,0 +1,66 @@
+{% if user and ('cup:main' in user.group.access) %}
+    <ul class="navbar-nav topbar-nav mr-md-auto align-items-center">
+        <li class="nav-item">
+            {% include 'cup/donate.twig' %}
+        </li>
+    </ul>
+
+    {% if parameter('common_site_enabled', 'yes') != 'yes' %}
+        <a href="/cup/parameters" class="d-block badge badge-danger mx-2 mt-2 mb-1 w-100">
+            {{ 'Site disabled!'|locale }}
+        </a>
+    {% endif %}
+
+    <ul class="navbar-nav topbar-nav ml-md-2 align-items-center">
+        {% for plugin in plugins.where('toolbar', true) %}
+            {% for param in plugin.getToolbarItem() %}
+                {% if param.twig %}
+                    {% include param.twig %}
+                {% elseif param.html %}
+                    {{ param.html|raw }}
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+
+        <li class="nav-item">
+            <a href="#" class="nav-link quick-sidebar-toggler">
+                <i class="fa fa-th"></i>
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link" href="/" target="_blank">
+                <i class="fas fa-globe"></i>
+            </a>
+        </li>
+
+        <li class="nav-item dropdown hidden-caret">
+            <a class="dropdown-toggle profile-pic" data-toggle="dropdown" href="#" aria-expanded="false">
+                <div class="avatar-sm">
+                    <img src="{{ user.avatar(40) }}" alt="{{ user.firstname }}" class="avatar-img rounded-circle">
+                </div>
+            </a>
+            <ul class="dropdown-menu dropdown-user animated fadeIn">
+                <div class="dropdown-user-scroll scrollbar-outer">
+                    <li>
+                        <div class="user-box">
+                            <div class="avatar-lg"><img src="{{ user.avatar(60) }}" alt="image profile" class="avatar-img rounded"></div>
+                            <div class="u-text">
+                                <h4>{{ user.getName('short') }}</h4>
+                                <p class="text-muted">{{ user.email }}</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/cup/user/{{ user.uuid }}/view">{{ 'Profile'|locale }}</a>
+                    </li>
+                    <li>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="/user/logout">{{ 'Exit'|locale }}</a>
+                    </li>
+                </div>
+            </ul>
+        </li>
+    </ul>
+{% endif %}

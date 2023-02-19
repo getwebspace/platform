@@ -39,11 +39,17 @@ abstract class AbstractPlugin
 
     private array $settingsField = [];
 
+    public bool $toolbar = false;
+
     private array $toolbars = [];
 
-    public bool $routes = false;
+    public bool $sidebar = false;
+
+    private array $sidebars = [];
 
     public bool $navigation = false;
+
+    public bool $routes = false;
 
     /**
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -156,6 +162,8 @@ abstract class AbstractPlugin
         ];
         $params = array_merge($default, $params);
 
+        $this->toolbar = true;
+
         $this->toolbars[] = $params;
     }
 
@@ -165,7 +173,28 @@ abstract class AbstractPlugin
     }
 
     /**
-     * Add sidebar menu point
+     * Add sidebar tab
+     */
+    protected function addSidebarTab(array $params = []): void
+    {
+        $default = [
+            'twig' => '',
+            'html' => '',
+        ];
+        $params = array_merge($default, $params);
+
+        $this->sidebar = true;
+
+        $this->sidebars[] = $params;
+    }
+
+    public function getSidebarTab(): array
+    {
+        return $this->sidebars;
+    }
+
+    /**
+     * Add navigation menu point
      */
     protected function enableNavigationItem(array $params = []): RouteInterface
     {

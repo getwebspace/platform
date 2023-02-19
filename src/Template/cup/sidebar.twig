@@ -2,6 +2,7 @@
     <a href="#" class="close-quick-sidebar">
         <i class="fa fa-times"></i>
     </a>
+
     <div class="quick-sidebar-wrapper">
         <ul class="nav nav-tabs nav-line nav-color-secondary" role="tablist">
             {% if parameter('notification_is_enabled', 'yes') == 'yes' %}
@@ -11,11 +12,21 @@
                     </a>
                 </li>
             {% endif %}
+
             <li class="nav-item">
                 <a class="nav-link {{ parameter('notification_is_enabled', 'yes') == 'no' ? 'active show' : '' }}" data-toggle="tab" href="#task">
                     <i class="fas fa-tasks"></i>
                 </a>
             </li>
+
+            {% for plugin in plugins.where('sidebar', true) %}
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#plugin-{{ plugin.getCredentials('name') }}">
+                        <i class="fas fa-puzzle-piece"></i>
+                    </a>
+                </li>
+            {% endfor %}
+
             <li class="nav-item">
                 <a class="nav-link" data-toggle="tab" href="#cog">
                     <i class="fas fa-cog"></i>
@@ -24,8 +35,9 @@
         </ul>
 
         <div class="tab-content mt-3">
+
+            {# TAB: Notifications #}
             {% if parameter('notification_is_enabled', 'yes') == 'yes' %}
-                {# TAB: Notifications #}
                 <div class="tab-chat tab-pane fade show active" id="notif">
                     <div class="quick-wrapper notif-box">
                         <div class="quick-scroll scrollbar-outer">
@@ -77,10 +89,29 @@
                 </div>
             </div>
 
+            {# TAB: Plugin tabs #}
+            {% for plugin in plugins.where('sidebar', true) %}
+                {% for param in plugin.getSidebarTab() %}
+                    <div class="tab-pane fade" id="plugin-{{ plugin.getCredentials('name') }}">
+                        <div class="quick-wrapper">
+                            <div class="quick-scroll scrollbar-outer">
+                                <div class="quick-content">
+                                    {% if param.twig %}
+                                        {% include param.twig %}
+                                    {% elseif param.html %}
+                                        {{ param.html|raw }}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
             {# TAB: Cog #}
             <div class="tab-chat tab-pane fade" id="cog">
                 <div class="quick-wrapper">
-                    <div class="quick-scroll scrollbar-outer">
+                    <div class="scroll-wrapper scrollbar-outer" style="position: relative;">
                         <div class="quick-content">
                             <form action="/cup/task/run" method="post" class="row m-0" onsubmit="return confirm('{{ 'Are you sure you want to perform this action now?'|locale }}');">
                                 <button type="submit" name="task" value="App\Domain\Tasks\SearchIndexTask" class="col-12 btn btn-dark mb-1">
@@ -101,7 +132,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
