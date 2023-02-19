@@ -489,22 +489,19 @@ class TwigExtension extends AbstractExtension
     {
         $list = $_SESSION['catalog_product_view'] ?? [];
 
-        switch (true) {
-            case is_null($uuid):
-                return $list;
+        if (is_string($uuid) && \Ramsey\Uuid\Uuid::isValid($uuid) || is_object($uuid) && is_a($uuid, Uuid::class)) {
+            $list[] = $uuid->toString();
+            $list = array_unique($list);
 
-            case is_string($uuid) && \Ramsey\Uuid\Uuid::isValid($uuid):
-            case is_object($uuid) && is_a($uuid, Uuid::class):
-                $list[] = $uuid->toString();
-                $list = array_unique($list);
+            // shift first element
+            if (count($list) > $limit) {
+                $list = array_slice($list, 0 - $limit, $limit);
+            }
 
-                // shift first element
-                if (count($list) > $limit) {
-                    $list = array_slice($list, 0 - $limit, $limit);
-                }
-
-                $_SESSION['catalog_product_view'] = $list;
+            $_SESSION['catalog_product_view'] = $list;
         }
+
+        return $list;
     }
 
     // fetch order
