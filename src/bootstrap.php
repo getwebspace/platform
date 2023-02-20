@@ -15,7 +15,7 @@ $settings($containerBuilder);
 $dependencies = require SRC_DIR . '/dependencies.php';
 $dependencies($containerBuilder);
 
-// set up $services
+// set up services
 $services = require SRC_DIR . '/services.php';
 $services($containerBuilder);
 
