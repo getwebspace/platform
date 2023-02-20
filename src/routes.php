@@ -13,7 +13,7 @@ return function (App $app, Container $container): void {
     // API section
     $app
         ->group('/api', function (Group $group): void {
-            // Entity getter
+            // entity getter/setter
             $group
                 ->map(['GET', 'POST', 'OPTIONS'], '/{args:.*}', \App\Application\Actions\Api\EntityAction::class)
                 ->setName('api:entity')
