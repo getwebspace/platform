@@ -381,22 +381,22 @@ abstract class AbstractAction
     protected function respond(string $template, array $data = []): Response
     {
         $format = $this->request->getQueryParams()['format'] ?? 'html';
-        $accept = explode(',', $this->request->getHeaderLine('HTTP_ACCEPT'));
+        $headerAccept = $this->request->getHeaderLine('accept');
 
         switch (true) {
             case $format === 'json':
-            case in_array('application/json', $accept, true):
+            case str_contains($headerAccept, 'application/json') || $headerAccept === '*/*':
                 return $this->respondWithJson([
                     'params' => $this->request->getQueryParams(),
                     'data' => $data,
                 ]);
 
             case $format === 'text':
-            case in_array('text/plain', $accept, true):
+            case str_contains($headerAccept, 'text/plain'):
                 return $this->respondWithText($data);
 
             case $format === 'html':
-            case in_array('text/html', $accept, true):
+            case str_contains($headerAccept, 'text/html'):
             default:
                 return $this->respondWithTemplate($template, $data);
         }

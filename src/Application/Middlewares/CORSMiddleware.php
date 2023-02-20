@@ -13,22 +13,28 @@ class CORSMiddleware extends AbstractMiddleware
      */
     public function __invoke(Request $request, RequestHandlerInterface $handler): \Slim\Psr7\Response
     {
-        $response = $handler->handle($request);
+        $headerAccept = $request->getHeaderLine('accept');
 
-        if (($value = $this->parameter('entity_cors_origin', false)) !== false) {
-            $origin = $request->getHeaderLine('Origin');
+        if (str_contains($headerAccept, 'application/json') || $headerAccept === '*/*') {
+            $response = $handler->handle($request);
 
-            if ($origin && in_array($origin, explode(PHP_EOL, $value)) || $value === '*') {
-                $response = $response->withHeader('Access-Control-Allow-Origin', $origin);
+            if (($value = $this->parameter('entity_cors_origin', false)) !== false) {
+                $origin = $request->getHeaderLine('Origin');
+
+                if ($origin && in_array($origin, explode(PHP_EOL, $value)) || $value === '*') {
+                    $response = $response->withHeader('Access-Control-Allow-Origin', $origin);
+                }
             }
-        }
-        if (($value = $this->parameter('entity_cors_headers', false)) !== false) {
-            $response = $response->withHeader('Access-Control-Allow-Headers', $value);
-        }
-        if (($value = $this->parameter('entity_cors_methods', false)) !== false) {
-            $response = $response->withHeader('Access-Control-Allow-Methods', strtoupper($value));
+            if (($value = $this->parameter('entity_cors_headers', false)) !== false) {
+                $response = $response->withHeader('Access-Control-Allow-Headers', $value);
+            }
+            if (($value = $this->parameter('entity_cors_methods', false)) !== false) {
+                $response = $response->withHeader('Access-Control-Allow-Methods', strtoupper($value));
+            }
+
+            return $response;
         }
 
-        return $response;
+        return $handler->handle($request);
     }
 }
