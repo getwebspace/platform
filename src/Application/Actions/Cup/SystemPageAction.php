@@ -13,19 +13,23 @@ use App\Domain\Service\User\UserService;
 
 class SystemPageAction extends AbstractAction
 {
-    protected static string $lock_file = VAR_DIR . '/installer.lock';
+    public const LOCK_FILE = VAR_DIR . '/installer.lock';
+
+    public const PRIVATE_SECRET_FILE = VAR_DIR . '/private.secret.key';
+
+    public const PUBLIC_SECRET_FILE = VAR_DIR . '/public.secret.key';
 
     protected function action(): \Slim\Psr7\Response
     {
         $access = false;
 
-        /** @var false|User $user */
-        $user = $this->request->getAttribute('user', false);
-
         // first install
-        if (!file_exists(self::$lock_file)) {
+        if (!file_exists(self::LOCK_FILE)) {
             $access = true;
         }
+
+        /** @var false|User $user */
+        $user = $this->request->getAttribute('user', false);
 
         // exist user
         if (!$access && $user) {
@@ -40,9 +44,10 @@ class SystemPageAction extends AbstractAction
                 $this->setup_database();
                 $this->setup_user();
                 $this->setup_data();
+                $this->gen_openssl();
 
                 // write lock file
-                file_put_contents(self::$lock_file, time());
+                file_put_contents(self::LOCK_FILE, time());
 
                 return $this->respondWithRedirect('/cup');
             }
@@ -132,6 +137,22 @@ class SystemPageAction extends AbstractAction
                 'value' => INVOICE_TEMPLATE,
             ]);
         }
+    }
+
+    protected function gen_openssl(): void
+    {
+        // generate private key file
+        $privateKeyResource = openssl_pkey_new([
+            'private_key_bits' => 2048,
+            'private_key_type' => OPENSSL_KEYTYPE_RSA
+        ]);
+
+        openssl_pkey_export_to_file($privateKeyResource, self::PRIVATE_SECRET_FILE);
+
+        // generate public key for private key
+        $privateKeyDetailsArray = openssl_pkey_get_details($privateKeyResource);
+
+        file_put_contents(self::PUBLIC_SECRET_FILE, $privateKeyDetailsArray['key']);
     }
 
     protected function self_check(): array
