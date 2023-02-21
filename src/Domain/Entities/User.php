@@ -4,7 +4,6 @@ namespace App\Domain\Entities;
 
 use App\Domain\AbstractEntity;
 use App\Domain\Entities\User\Group as UserGroup;
-use App\Domain\Entities\User\Integration as UserIntegration;
 use App\Domain\Entities\User\Session as UserSession;
 use App\Domain\Traits\FileTrait;
 use Doctrine\ORM\Mapping as ORM;
@@ -693,7 +692,7 @@ class User extends AbstractEntity
         return $this->external_id;
     }
 
-    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
+    #[ORM\Column(type: 'json', options: ['default' => '[]'])]
     protected array $token = [];
 
     /**
@@ -707,7 +706,7 @@ class User extends AbstractEntity
     }
 
     /**
-     * @param mixed  $data
+     * @param mixed $data
      *
      * @return $this
      */
@@ -730,19 +729,21 @@ class User extends AbstractEntity
         return $this->token;
     }
 
-    #[ORM\OneToMany(targetEntity: 'App\Domain\Entities\User\Integration', mappedBy: 'user', orphanRemoval: true)]
-    protected $integrations = [];
+    #[ORM\OneToMany(targetEntity: 'App\Domain\Entities\User\Token', mappedBy: 'user', orphanRemoval: true)]
+    protected $tokens = [];
 
     /**
-     * @return $this
+     * @param mixed $raw
+     *
+     * @return array|Collection
      */
-    public function addIntegration(UserIntegration $integration): self
+    public function getTokens($raw = false)
     {
-        $this->integrations[] = $integration;
-        $integration->setUser($this);
-
-        return $this;
+        return $raw ? $this->tokens : collect($this->tokens);
     }
+
+    #[ORM\OneToMany(targetEntity: 'App\Domain\Entities\User\Integration', mappedBy: 'user', orphanRemoval: true)]
+    protected $integrations = [];
 
     /**
      * @param mixed $raw

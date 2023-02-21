@@ -35,9 +35,6 @@ class IntegrationService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        if (!$data['user']) {
-            throw new UserNotFoundException();
-        }
         if (!$data['user'] || !$data['provider'] || !$data['unique']) {
             throw new \RuntimeException();
         }

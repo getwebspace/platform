@@ -80,7 +80,7 @@ class UserLoginAction extends UserAction
 
                 break;
 
-                // via login/email/phone with code
+            // via login/email/phone with code
             case 'code':
                 if ($this->isPost() && $this->parameter('user_auth_code_is_enabled', 'no') === 'yes') {
                     $data = [

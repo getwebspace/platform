@@ -106,6 +106,7 @@ return [
     'EXCEPTION_TASK_NOT_FOUND' => 'Task not found',
     'EXCEPTION_USER_NOT_FOUND' => 'User not found',
     'EXCEPTION_USER_INTEGRATION_NOT_FOUND' => 'Integration not found',
+    'EXCEPTION_USER_TOKEN_NOT_FOUND' => 'Token not found',
     'EXCEPTION_USER_GROUP_NOT_FOUND' => 'User group not found',
 
     // other
