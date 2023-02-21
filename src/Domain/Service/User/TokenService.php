@@ -54,7 +54,7 @@ class TokenService extends AbstractService
     }
 
     /**
-     * @throws UserNotFoundException
+     * @throws TokenNotFoundException
      *
      * @return Collection|UserToken
      */

@@ -3,67 +3,65 @@
 namespace App\Application\Middlewares;
 
 use App\Domain\AbstractMiddleware;
+use App\Domain\Entities\User;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\UserService;
+use App\Domain\Traits\SecurityTrait;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Request;
 
 class AuthorizationMiddleware extends AbstractMiddleware
 {
+    use SecurityTrait;
+
     /**
      * @throws \Exception
      */
     public function __invoke(Request $request, RequestHandlerInterface $handler): \Slim\Psr7\Response
     {
-        $data = [
-            'uuid' => $request->getCookieParams()['uuid'] ?? null,
-            'session' => $request->getCookieParams()['session'] ?? null,
-            'agent' => $request->getServerParams()['HTTP_USER_AGENT'] ?? '',
-            'ip' => $request->getServerParams()['HTTP_X_REAL_IP'] ??
-                    $request->getServerParams()['HTTP_X_FORWARDED_FOR'] ??
-                    $request->getServerParams()['REMOTE_ADDR'] ??
-                    '',
+        $tokens = [
+            'access_token' => $request->getCookieParams()['access_token'] ?? null,
+            'refresh_token' => $request->getCookieParams()['refresh_token'] ?? null,
         ];
 
-        if ($data['uuid'] && \Ramsey\Uuid\Uuid::isValid((string) $data['uuid']) && $data['session']) {
-            try {
-                /** @var UserService $userService */
-                $userService = $this->container->get(UserService::class);
-                $user = $userService->read([
-                    'uuid' => $data['uuid'],
-                    'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
-                ]);
+        if (!$tokens['access_token'] && $tokens['refresh_token']) {
+            $tokens = $this->refreshTokenPair($tokens['refresh_token']);
 
-                if ($user) {
-                    $session = $user->getSession();
+            setcookie('access_token', $tokens['access_token'], time() + (\App\Domain\References\Date::MINUTE * 10), '/');
+            setcookie('refresh_token', $tokens['refresh_token'], time() + \App\Domain\References\Date::MONTH, '/');
+        }
 
-                    if ($session) {
-                        $hash = $session->getHash();
+        if (
+            $tokens['access_token'] && (
+                ($uuid = $this->decodeAccessToken($tokens['access_token']))
+                && \Ramsey\Uuid\Uuid::isValid($uuid)
+            )
+        ) {
+            $user = $this->getUser($uuid);
 
-                        if (
-                            $data['session'] === $hash && (
-                                $this->parameter('user_deep_check', 'no') === 'no'
-                                || (
-                                    $session->getAgent() === $data['agent']
-                                    && $session->getIp() === $data['ip']
-                                )
-                            )
-                        ) {
-                            $request = $request->withAttribute('user', $user);
-
-                            return $handler->handle($request);
-                        }
-                    }
-                }
-
-                throw new \RuntimeException();
-            } catch (\RuntimeException|UserNotFoundException $e) {
-                // clear cookie
-                setcookie('uuid', '-1', time(), '/');
-                setcookie('session', '-1', time(), '/');
+            if ($user) {
+                $request = $request->withAttribute('user', $user);
+            } else {
+                setcookie('access_token', '-1', time(), '/');
             }
         }
 
         return $handler->handle($request);
+    }
+
+    protected function getUser($uuid): ?User
+    {
+        try {
+            /** @var UserService $userService */
+            $userService = $this->container->get(UserService::class);
+
+            return $userService->read([
+                'uuid' => $uuid,
+                'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
+            ]);
+
+        } catch (UserNotFoundException $e) {
+            return null;
+        }
     }
 }

@@ -5,9 +5,12 @@ namespace App\Application\Actions\Cup;
 use App\Application\Actions\Cup\User\UserAction;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
+use App\Domain\Traits\SecurityTrait;
 
 class LoginPageAction extends UserAction
 {
+    use SecurityTrait;
+
     protected function action(): \Slim\Psr7\Response
     {
         $identifier = $this->parameter('user_login_type', 'username');
@@ -32,29 +35,14 @@ class LoginPageAction extends UserAction
                         'ip' => $data['ip'],
                         'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
                     ]);
-                    $session = $user->getSession();
+                    $tokens = $this->getTokenPair($user, $data['ip'], $data['agent'], 'Login via CUP');
 
-                    // create new session
-                    if ($session === null) {
-                        $session = $this->userSessionService->create([
-                            'user' => $user,
-                            'date' => 'now',
-                            'agent' => $this->getServerParam('HTTP_USER_AGENT'),
-                            'ip' => $this->getRequestRemoteIP(),
-                        ]);
-                    } else {
-                        // update session
-                        $session = $this->userSessionService->update($session, [
-                            'date' => 'now',
-                            'agent' => $this->getServerParam('HTTP_USER_AGENT'),
-                            'ip' => $this->getRequestRemoteIP(),
-                        ]);
-                    }
+                    setcookie('access_token', $tokens['access_token'], time() + (\App\Domain\References\Date::MINUTE * 10), '/');
+                    setcookie('refresh_token', $tokens['refresh_token'], time() + \App\Domain\References\Date::MONTH, '/');
 
-                    setcookie('uuid', $user->getUuid()->toString(), time() + \App\Domain\References\Date::YEAR, '/');
-                    setcookie('session', $session->getHash(), time() + \App\Domain\References\Date::YEAR, '/');
+                    $this->container->get(\App\Application\PubSub::class)->publish('cup:user:login', $user);
 
-                    return $this->respondWithRedirect($data['redirect'] ? $data['redirect'] : '/cup');
+                    return $this->respondWithRedirect($data['redirect'] ?: '/cup');
                 } catch (UserNotFoundException $exception) {
                     $this->addError($identifier, $exception->getMessage());
                 } catch (WrongPasswordException $exception) {

@@ -780,17 +780,6 @@
                                                     }
                                                 } %}
 
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Deep authorization check',
-                                                    'description': 'When enabled IP and User-Agent will be checked each time',
-                                                    'type': 'select',
-                                                    'name': 'user[deep_check]',
-                                                    'args': {
-                                                        'option': _(['yes', 'no']),
-                                                        'selected': 'no'
-                                                    }
-                                                } %}
-
                                                 <hr>
 
                                                 {% include 'cup/parameters/field.twig' with {

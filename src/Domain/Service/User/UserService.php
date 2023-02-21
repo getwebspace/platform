@@ -239,10 +239,6 @@ class UserService extends AbstractService
 
                 // optional: check password
                 if ($data['password'] !== null) {
-                    if (crypta_hash_check($data['password'], $user->getPassword())) {
-                        // todo remove this in future
-                        $user = $this->update($user, ['password' => $data['password']]);
-                    }
                     if (!password_verify($data['password'], $user->getPassword())) {
                         throw new WrongPasswordException();
                     }

@@ -13,11 +13,11 @@ use App\Domain\Service\User\UserService;
 
 class SystemPageAction extends AbstractAction
 {
-    public const LOCK_FILE = VAR_DIR . '/installer.lock';
+    private const LOCK_FILE = VAR_DIR . '/installer.lock';
 
-    public const PRIVATE_SECRET_FILE = VAR_DIR . '/private.secret.key';
+    private const PRIVATE_SECRET_FILE = VAR_DIR . '/private.secret.key';
 
-    public const PUBLIC_SECRET_FILE = VAR_DIR . '/public.secret.key';
+    private const PUBLIC_SECRET_FILE = VAR_DIR . '/public.secret.key';
 
     protected function action(): \Slim\Psr7\Response
     {
