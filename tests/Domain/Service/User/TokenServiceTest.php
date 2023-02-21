@@ -53,21 +53,21 @@ class TokenServiceTest extends TestCase
             'date' => 'now',
         ];
 
-        $session = $this->service->create($data);
-        $this->assertInstanceOf(UserToken::class, $session);
-        $this->assertSame($data['unique'], $session->getUnique());
-        $this->assertSame($data['comment'], $session->getComment());
-        $this->assertSame($data['agent'], $session->getAgent());
-        $this->assertSame($data['ip'], $session->getIp());
+        $token = $this->service->create($data);
+        $this->assertInstanceOf(UserToken::class, $token);
+        $this->assertSame($data['unique'], $token->getUnique());
+        $this->assertSame($data['comment'], $token->getComment());
+        $this->assertSame($data['agent'], $token->getAgent());
+        $this->assertSame($data['ip'], $token->getIp());
 
         /** @var UserTokenRepository $userTokenRepo */
         $userTokenRepo = $this->em->getRepository(UserToken::class);
-        $s = $userTokenRepo->findOneByUuid($session->getUuid());
-        $this->assertInstanceOf(UserToken::class, $s);
-        $this->assertSame($data['unique'], $s->getUnique());
-        $this->assertSame($data['comment'], $s->getComment());
-        $this->assertSame($data['agent'], $s->getAgent());
-        $this->assertSame($data['ip'], $s->getIp());
+        $t = $userTokenRepo->findOneByUuid($token->getUuid());
+        $this->assertInstanceOf(UserToken::class, $t);
+        $this->assertSame($data['unique'], $t->getUnique());
+        $this->assertSame($data['comment'], $t->getComment());
+        $this->assertSame($data['agent'], $t->getAgent());
+        $this->assertSame($data['ip'], $t->getIp());
     }
 
     public function testReadSuccess(): void

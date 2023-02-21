@@ -21,7 +21,6 @@ use App\Domain\Service\Publication\PublicationService;
 use App\Domain\Service\Task\TaskService;
 use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\IntegrationService as UserIntegrationService;
-use App\Domain\Service\User\SessionService as UserSessionService;
 use App\Domain\Service\User\SubscriberService as UserSubscriberService;
 use App\Domain\Service\User\TokenService as UserTokenService;
 use App\Domain\Service\User\UserService;
@@ -69,7 +68,6 @@ return function (ContainerBuilder $containerBuilder): void {
         // user
         UserGroupService::class => \DI\autowire(UserGroupService::class),
         UserIntegrationService::class => \DI\autowire(UserIntegrationService::class),
-        UserSessionService::class => \DI\autowire(UserSessionService::class),
         UserTokenService::class => \DI\autowire(UserTokenService::class),
         UserSubscriberService::class => \DI\autowire(UserSubscriberService::class),
         UserService::class => \DI\autowire(UserService::class),

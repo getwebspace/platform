@@ -147,11 +147,11 @@
             </div>
         </div>
 
-        <div class="col-xl-12">
+        <div class="col-xl-6">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-12 col-xl-6">
+                        <div class="col-12">
                             <dl class="row mb-0">
                                 <dt class="col-4">{{ 'Registered'|locale }}</dt>
                                 <dd class="col-8">{{ item.register|df('d.m.Y H:i:s') }}</dd>
@@ -159,19 +159,23 @@
                                 <dd class="col-8">{{ item.change|df('d.m.Y H:i:s') }}</dd>
                             </dl>
                         </div>
-                        <div class="col-12 col-xl-6">
-                            <dl class="row mb-0">
-                                {% if item.session.date.getTimestamp() %}
-                                    <dt class="col-4">{{ 'Last login'|locale }}</dt>
-                                    <dd class="col-8">{{ item.session.date|df('d.m.Y H:i:s') }}</dd>
-                                {% endif %}
-                                {% if item.session.ip %}
-                                    <dt class="col-4">{{ 'Last Ip'|locale }}</dt>
-                                    <dd class="col-8">{{ item.session.ip }}</dd>
-                                {% endif %}
-                            </dl>
-                        </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-12">
+            <div class="card">
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        {% for token in item.tokens %}
+                            <dt class="col-4" data-unique="{{ token.unique }}">
+                                {{ token.comment ?? '&mdash;' }} ({{ token.ip }})<br>
+                                {{ token.date|df('d.m.Y H:i:s') }}
+                            </dt>
+                            <dd class="col-8">{{ token.agent }}</dd>
+                        {% endfor %}
+                    </dl>
                 </div>
             </div>
         </div>

@@ -10,16 +10,8 @@ class UserLogoutAction extends UserAction
         $user = $this->request->getAttribute('user', false);
 
         if ($user) {
-            $session = $user->getSession()
-                ->setAgent('')
-                ->setDate(null)
-                ->setIp('0.0.0.0');
-
-            // write clear session
-            $this->userService->write($session);
-
-            setcookie('uuid', '-1', time(), '/');
-            setcookie('session', '-1', time(), '/');
+            setcookie('access_token', '', time(), '/');
+            setcookie('refresh_token', '', time(), '/');
 
             $this->container->get(\App\Application\PubSub::class)->publish('common:user:logout', $user);
         }

@@ -23,7 +23,6 @@
         "slim/http-cache": "^1.1.0",
         "php-di/php-di": "^6.4.0",
         "doctrine/orm": "^2.14.1",
-        "doctrine/migrations": "^3.6.0",
         "firebase/php-jwt": "^6.4.0",
         "alksily/support": "^2.0.0",
         "twig/twig": "^v3.5.1",

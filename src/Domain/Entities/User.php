@@ -4,7 +4,6 @@ namespace App\Domain\Entities;
 
 use App\Domain\AbstractEntity;
 use App\Domain\Entities\User\Group as UserGroup;
-use App\Domain\Entities\User\Session as UserSession;
 use App\Domain\Traits\FileTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Illuminate\Support\Collection;
@@ -755,25 +754,6 @@ class User extends AbstractEntity
         return $raw ? $this->integrations : collect($this->integrations);
     }
 
-    #[ORM\OneToOne(targetEntity: 'App\Domain\Entities\User\Session', mappedBy: 'user', orphanRemoval: true)]
-    protected ?UserSession $session = null;
-
-    /**
-     * @return $this
-     */
-    public function setSession(UserSession $session): self
-    {
-        $this->session = $session;
-        $this->session->setUser($this);
-
-        return $this;
-    }
-
-    public function getSession(): ?UserSession
-    {
-        return $this->session;
-    }
-
     /**
      * @var array
      */
@@ -802,9 +782,7 @@ class User extends AbstractEntity
     {
         $buf = parent::toArray();
 
-        if ($this->session) {
-            $buf['session'] = $this->session->toArray();
-        }
+
 
         return array_serialize($buf);
     }

@@ -54,7 +54,7 @@ class UserListAction extends UserAction
         }
 
         return $this->respondWithTemplate('cup/user/index.twig', [
-            'list' => collect($query->getQuery()->getResult())->sortByDesc('session.date'),
+            'list' => collect($query->getQuery()->getResult()),
         ]);
     }
 }
