@@ -16,7 +16,7 @@ use tests\TestCase;
  *
  * @coversNothing
  */
-class SessionTokenTest extends TestCase
+class TokenServiceTest extends TestCase
 {
     protected UserTokenService $service;
 
@@ -87,7 +87,7 @@ class SessionTokenTest extends TestCase
         $token = $this->service->read([
             'unique' => $data['unique'],
         ]);
-        $this->assertInstanceOf(UserIntegration::class, $token);
+        $this->assertInstanceOf(UserToken::class, $token);
         $this->assertSame($data['user'], $token->getUser());
     }
 
