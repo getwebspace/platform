@@ -145,7 +145,7 @@ class TokenService extends AbstractService
             return $entity;
         }
 
-        throw new UserNotFoundException();
+        throw new TokenNotFoundException();
     }
 
     public function delete($entity): bool
@@ -165,6 +165,6 @@ class TokenService extends AbstractService
             return true;
         }
 
-        throw new UserGroupNotFoundException();
+        throw new TokenNotFoundException();
     }
 }

@@ -10,6 +10,13 @@ class UserLogoutAction extends UserAction
         $user = $this->request->getAttribute('user', false);
 
         if ($user) {
+            /** @var \App\Domain\Entities\User\Token $token */
+            $token = $this->request->getAttribute('user-token', false);
+
+            if ($token) {
+                $this->userTokenService->delete($token);
+            }
+
             setcookie('access_token', '', time(), '/');
             setcookie('refresh_token', '', time(), '/');
 

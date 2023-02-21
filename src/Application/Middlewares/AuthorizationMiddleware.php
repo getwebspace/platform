@@ -40,7 +40,11 @@ class AuthorizationMiddleware extends AbstractMiddleware
             $user = $this->getUser($uuid);
 
             if ($user) {
-                $request = $request->withAttribute('user', $user);
+                $token = $user->getTokens()->firstWhere('unique', $tokens['refresh_token']);
+
+                $request = $request
+                    ->withAttribute('user', $user)
+                    ->withAttribute('user-token', $token);
             } else {
                 setcookie('access_token', '-1', time(), '/');
             }
