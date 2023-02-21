@@ -15,7 +15,7 @@ class SearchAction extends AbstractAction
     {
         $query = trim(str_escape($this->getParam('query', $this->getParam('q', ''))));
         $query_type = $this->getParam('type', $this->getParam('t', false));
-        $query_strong = !!$this->getParam('query_strong', $this->getParam('qs', false));
+        $query_strong = (bool) $this->getParam('query_strong', $this->getParam('qs', false));
         $limit = (int) $this->getParam('limit', $this->parameter('search_limit', 10));
         $result = collect();
 
@@ -28,7 +28,7 @@ class SearchAction extends AbstractAction
             $search = Search::search($query, $query_strong);
 
             foreach ($services as $type => $service) {
-                if (!empty($search[$type]) && (!$query_type || (in_array($query_type, array_keys($services)) && $type === $query_type))) {
+                if (!empty($search[$type]) && (!$query_type || (in_array($query_type, array_keys($services), true) && $type === $query_type))) {
                     $sliced = array_slice($search[$type], 0, $limit);
 
                     /** @var AbstractService $service */

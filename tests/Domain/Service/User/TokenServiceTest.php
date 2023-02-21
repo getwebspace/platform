@@ -3,7 +3,6 @@
 namespace Domain\Service\User;
 
 use App\Domain\Entities\User;
-use App\Domain\Entities\User\Integration as UserIntegration;
 use App\Domain\Entities\User\Token as UserToken;
 use App\Domain\Repository\User\TokenRepository as UserTokenRepository;
 use App\Domain\Service\User\Exception\TokenNotFoundException;

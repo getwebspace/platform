@@ -14,9 +14,6 @@ class Search
     /**
      * Prepare text
      *
-     * @param array|string $strings
-     * @param bool         $indexing
-     *
      * @return string
      */
     public static function getIndexedText(array|string $strings, bool $indexing = false): array
@@ -61,7 +58,7 @@ class Search
         $query_words = explode(' ', $query);
 
         if ($query_words && !$strong) {
-            $query_words = array_map(fn($word) => (mb_strlen($word) > 3 ? $word . '*' : $word), $query_words);
+            $query_words = array_map(fn ($word) => (mb_strlen($word) > 3 ? $word . '*' : $word), $query_words);
         }
 
         $query_words = static::getIndexedText($query_words);
@@ -70,7 +67,7 @@ class Search
         $results = [];
 
         // sort words
-        usort($query_words, fn($word) => (str_starts_with($word, '-') || str_starts_with($word, '+')) ? 1 : -1);
+        usort($query_words, fn ($word) => (str_starts_with($word, '-') || str_starts_with($word, '+')) ? 1 : -1);
 
         foreach ($index as $line) {
             $wordCount = 0;
@@ -142,9 +139,9 @@ class Search
         }
 
         return array_map(
-            fn($words) => str_replace('*', '', implode(' ', $words)),
+            fn ($words) => str_replace('*', '', implode(' ', $words)),
             array_values(
-                array_filter($results, fn($el) => count($el) >= 2)
+                array_filter($results, fn ($el) => count($el) >= 2)
             )
         );
     }

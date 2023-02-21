@@ -6,7 +6,6 @@ use App\Domain\AbstractService;
 use App\Domain\Entities\User\Session as UserSession;
 use App\Domain\Repository\User\SessionRepository as UserSessionRepository;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
-use App\Domain\Service\User\Exception\IntegrationNotFoundException;
 use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\Exception\UserNotFoundException;

@@ -42,10 +42,10 @@ class AuthorizationMiddleware extends AbstractMiddleware
 
                         if (
                             $data['session'] === $hash && (
-                                $this->parameter('user_deep_check', 'no') === 'no' ||
-                                (
-                                    $session->getAgent() === $data['agent'] &&
-                                    $session->getIp() === $data['ip']
+                                $this->parameter('user_deep_check', 'no') === 'no'
+                                || (
+                                    $session->getAgent() === $data['agent']
+                                    && $session->getIp() === $data['ip']
                                 )
                             )
                         ) {

@@ -34,8 +34,6 @@ class Parameter extends AbstractEntity
     public string $value = '';
 
     /**
-     * @param mixed $value
-     *
      * @return $this
      */
     public function setValue(mixed $value): static

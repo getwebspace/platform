@@ -6,7 +6,6 @@ use App\Domain\AbstractService;
 use App\Domain\Entities\User\Integration as UserIntegration;
 use App\Domain\Repository\User\IntegrationRepository as UserIntegrationRepository;
 use App\Domain\Service\User\Exception\IntegrationNotFoundException;
-use App\Domain\Service\User\Exception\UserNotFoundException;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 

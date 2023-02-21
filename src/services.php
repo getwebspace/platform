@@ -22,8 +22,8 @@ use App\Domain\Service\Task\TaskService;
 use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\IntegrationService as UserIntegrationService;
 use App\Domain\Service\User\SessionService as UserSessionService;
-use App\Domain\Service\User\TokenService as UserTokenService;
 use App\Domain\Service\User\SubscriberService as UserSubscriberService;
+use App\Domain\Service\User\TokenService as UserTokenService;
 use App\Domain\Service\User\UserService;
 use DI\ContainerBuilder;
 

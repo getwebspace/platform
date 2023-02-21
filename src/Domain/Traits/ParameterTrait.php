@@ -3,8 +3,8 @@
 namespace App\Domain\Traits;
 
 use App\Domain\Service\Parameter\ParameterService;
-use Psr\Container\ContainerInterface;
 use Illuminate\Support\Collection;
+use Psr\Container\ContainerInterface;
 
 /**
  * @property ContainerInterface[] $container
@@ -48,12 +48,8 @@ trait ParameterTrait
      * For quickly updating parameter values.
      * Use only as a last resort.
      *
-     * @param $key
-     * @param $value
-     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
-     * @return array
      */
     protected function parameter_set($key, $value): array
     {
