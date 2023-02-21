@@ -1,4 +1,4 @@
-FROM php:8.1-fpm-alpine3.17
+FROM php:8.2-fpm-alpine3.17
 
 # Lightweight container with Nginx & PHP-FPM based on Alpine Linux for WebSpace Engine
 MAINTAINER Aleksey Ilyin <alksily@getwebspace.org>

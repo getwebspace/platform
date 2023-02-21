@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "php": ">=8.1",
+        "php": ">=8.2",
         "ext-pdo": "*",
         "ext-json": "*",
         "ext-yaml": "*",
@@ -25,7 +25,7 @@
         "doctrine/orm": "^2.14.1",
         "doctrine/migrations": "^3.6.0",
         "firebase/php-jwt": "^6.4.0",
-        "alksily/support": "^1.3.1",
+        "alksily/support": "^2.0.0",
         "twig/twig": "^v3.5.1",
         "twig/intl-extra": "^v3.5.1",
         "twig/string-extra": "^v3.5.1",
@@ -44,12 +44,12 @@
         "rybakit/twig-deferred-extension": "^v3.0.4",
         "socialconnect/http-client": "^1.0.0",
         "socialconnect/auth": "^3.3.4",
-        "bhaktaraz/php-rss-generator": "dev-master",
+        "bhaktaraz/php-rss-generator": "dev-master"
     },
     "require-dev": {
-        "fakerphp/faker": "^1.20.0",
-        "friendsofphp/php-cs-fixer": "^3.5",
-        "phpunit/phpunit": "^9.5"
+        "fakerphp/faker": "^v1.21.0",
+        "friendsofphp/php-cs-fixer": "^v3.14.4",
+        "phpunit/phpunit": "^9.6.3"
     },
     "autoload": {
         "psr-4": {

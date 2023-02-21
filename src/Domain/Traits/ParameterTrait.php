@@ -48,6 +48,9 @@ trait ParameterTrait
      * For quickly updating parameter values.
      * Use only as a last resort.
      *
+     * @param mixed $key
+     * @param mixed $value
+     *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
