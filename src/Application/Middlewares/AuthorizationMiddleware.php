@@ -63,7 +63,6 @@ class AuthorizationMiddleware extends AbstractMiddleware
                 'uuid' => $uuid,
                 'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
             ]);
-
         } catch (UserNotFoundException $e) {
             return null;
         }

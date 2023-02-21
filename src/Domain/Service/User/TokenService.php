@@ -6,8 +6,6 @@ use App\Domain\AbstractService;
 use App\Domain\Entities\User\Token as UserToken;
 use App\Domain\Repository\User\TokenRepository as UserTokenRepository;
 use App\Domain\Service\User\Exception\TokenNotFoundException;
-use App\Domain\Service\User\Exception\UserGroupNotFoundException;
-use App\Domain\Service\User\Exception\UserNotFoundException;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 

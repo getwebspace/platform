@@ -4,12 +4,10 @@ namespace App\Domain\Traits;
 
 use App\Domain\Entities\User;
 use App\Domain\Service\User\Exception\TokenNotFoundException;
-use App\Domain\Service\User\Exception\UserNotFoundException;
+use App\Domain\Service\User\TokenService as UserTokenService;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Ramsey\Uuid\UuidInterface as Uuid;
-use RuntimeException;
-use App\Domain\Service\User\TokenService as UserTokenService;
 
 trait SecurityTrait
 {
@@ -24,9 +22,8 @@ trait SecurityTrait
         if (!$key) {
             if (file_exists(self::PRIVATE_SECRET_FILE)) {
                 return file_get_contents(self::PRIVATE_SECRET_FILE);
-            } else {
-                $key = false;
             }
+            $key = false;
         }
 
         return $key;
@@ -137,7 +134,7 @@ trait SecurityTrait
             return JWT::encode($payload, $privateKey, 'RS256');
         }
 
-        throw new RuntimeException('Not exist PEM keys files');
+        throw new \RuntimeException('Not exist PEM keys files');
     }
 
     /*
@@ -160,7 +157,7 @@ trait SecurityTrait
             }
         }
 
-        throw new RuntimeException('Not exist PEM keys files');
+        throw new \RuntimeException('Not exist PEM keys files');
     }
 
     /*

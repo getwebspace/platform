@@ -782,8 +782,6 @@ class User extends AbstractEntity
     {
         $buf = parent::toArray();
 
-
-
         return array_serialize($buf);
     }
 }
