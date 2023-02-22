@@ -7,8 +7,11 @@ use App\Domain\Entities\User;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\UserService;
 use App\Domain\Traits\SecurityTrait;
+use Firebase\JWT\ExpiredException;
+use Firebase\JWT\SignatureInvalidException;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Request;
+use Slim\Psr7\Response;
 
 class AuthorizationMiddleware extends AbstractMiddleware
 {
@@ -19,52 +22,38 @@ class AuthorizationMiddleware extends AbstractMiddleware
      */
     public function __invoke(Request $request, RequestHandlerInterface $handler): \Slim\Psr7\Response
     {
-        $tokens = [
-            'access_token' => $request->getCookieParams()['access_token'] ?? null,
-            'refresh_token' => $request->getCookieParams()['refresh_token'] ?? null,
-        ];
+        $path = $request->getUri()->getPath();
+        $access_token = $request->getCookieParams()['access_token'] ?? null;
 
-        if (!$tokens['access_token'] && $tokens['refresh_token']) {
-            $tokens = $this->refreshTokenPair($tokens['refresh_token']);
+        if ($path !== '/auth/refresh-token') {
+            if ($access_token) {
+                try {
+                    $uuid = $this->getUUIDFromAccessToken($access_token);
 
-            setcookie('access_token', $tokens['access_token'], time() + (\App\Domain\References\Date::MINUTE * 10), '/');
-            setcookie('refresh_token', $tokens['refresh_token'], time() + \App\Domain\References\Date::MONTH, '/');
-        }
+                    if ($uuid && \Ramsey\Uuid\Uuid::isValid($uuid)) {
+                        try {
+                            /** @var UserService $userService */
+                            $userService = $this->container->get(UserService::class);
 
-        if (
-            $tokens['access_token'] && (
-                ($uuid = $this->decodeAccessToken($tokens['access_token']))
-                && \Ramsey\Uuid\Uuid::isValid($uuid)
-            )
-        ) {
-            $user = $this->getUser($uuid);
+                            /** @var User $user */
+                            $user = $userService->read([
+                                'uuid' => $uuid,
+                                'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
+                            ]);
 
-            if ($user) {
-                $token = $user->getTokens()->firstWhere('unique', $tokens['refresh_token']);
-
-                $request = $request
-                    ->withAttribute('user', $user)
-                    ->withAttribute('user-token', $token);
-            } else {
-                setcookie('access_token', '-1', time(), '/');
+                            $request = $request->withAttribute('user', $user);
+                        } catch (UserNotFoundException $e) {
+                        }
+                    }
+                } catch (ExpiredException|SignatureInvalidException $e) {
+                    return (new Response())
+                        ->withHeader('Location', '/auth/refresh-token?redirect=' . $request->getUri()->getPath())
+                        ->withStatus(308);
+                }
             }
         }
 
         return $handler->handle($request);
     }
 
-    protected function getUser($uuid): ?User
-    {
-        try {
-            /** @var UserService $userService */
-            $userService = $this->container->get(UserService::class);
-
-            return $userService->read([
-                'uuid' => $uuid,
-                'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
-            ]);
-        } catch (UserNotFoundException $e) {
-            return null;
-        }
-    }
 }

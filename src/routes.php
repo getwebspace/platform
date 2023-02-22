@@ -21,6 +21,22 @@ return function (App $app, Container $container): void {
         })
         ->add(new \Slim\HttpCache\Cache('public', 0));
 
+    // Auth section
+    $app
+        ->group('/auth', function (Group $group): void {
+            // refresh
+            $group
+                ->map(['GET', 'POST'], '/refresh-token', \App\Application\Actions\Auth\RefreshTokenAction::class)
+                ->setName('auth:refresh-token')
+                ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
+
+            // logout
+            $group
+                ->map(['GET', 'POST'], '/logout', \App\Application\Actions\Auth\LogoutAction::class)
+                ->setName('auth:logout')
+                ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
+        });
+
     // CUP section
     $app
         ->group('/cup', function (Group $group): void {

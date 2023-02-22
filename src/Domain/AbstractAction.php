@@ -105,6 +105,11 @@ abstract class AbstractAction
         return $this->request->getServerParams()[$key] ?? $default;
     }
 
+    protected function getCookie(string $key, mixed $default = null): mixed
+    {
+        return $this->request->getCookieParams()[$key] ?? $default;
+    }
+
     protected function getRoutes(): Collection
     {
         static $routes;
@@ -435,8 +440,8 @@ abstract class AbstractAction
         return $this->response->withHeader('Content-Type', 'text/plain; charset=utf-8');
     }
 
-    protected function respondWithRedirect(string $location = '/'): Response
+    protected function respondWithRedirect(string $location = '/', int $status = 301): Response
     {
-        return $this->response->withAddedHeader('Location', $location)->withStatus(301);
+        return $this->response->withAddedHeader('Location', $location)->withStatus($status);
     }
 }

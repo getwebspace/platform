@@ -24,8 +24,8 @@ class UserLoginAction extends UserAction
             ];
             $tokens = $this->getTokenPair($user, $data['ip'], $data['agent'], 'Login via common page');
 
-            setcookie('access_token', $tokens['access_token'], time() + (\App\Domain\References\Date::MINUTE * 10), '/');
-            setcookie('refresh_token', $tokens['refresh_token'], time() + \App\Domain\References\Date::MONTH, '/');
+            setcookie('access_token', $tokens['access_token'], time() + \App\Domain\References\Date::MONTH, '/');
+            setcookie('refresh_token', $tokens['refresh_token'], time() + \App\Domain\References\Date::MONTH, '/auth');
 
             $this->container->get(\App\Application\PubSub::class)->publish('common:user:login', $user);
 

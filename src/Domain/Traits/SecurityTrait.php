@@ -3,10 +3,11 @@
 namespace App\Domain\Traits;
 
 use App\Domain\Entities\User;
-use App\Domain\Service\User\Exception\TokenNotFoundException;
 use App\Domain\Service\User\TokenService as UserTokenService;
+use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use Firebase\JWT\SignatureInvalidException;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 trait SecurityTrait
@@ -59,6 +60,7 @@ trait SecurityTrait
             'comment' => $comment,
             'ip' => $ip,
             'agent' => $agent,
+            'date' => 'now',
         ]);
 
         return [
@@ -67,40 +69,10 @@ trait SecurityTrait
         ];
     }
 
-    public function refreshTokenPair(string $refresh_token): array
-    {
-        /** @var UserTokenService $userTokenService */
-        $userTokenService = $this->container->get(UserTokenService::class);
-
-        try {
-            $token = $userTokenService->read([
-                'unique' => $refresh_token,
-            ]);
-            $uuid = $this->getUuidString($token->getUser());
-
-            $access_token = $this->getAccessToken($uuid);
-            $refresh_token = $this->getRefreshToken($uuid, $token->getAgent(), $token->getIp());
-
-            $userTokenService->update($token, [
-                'unique' => $refresh_token,
-            ]);
-
-            return [
-                'access_token' => $access_token,
-                'refresh_token' => $refresh_token,
-            ];
-        } catch (TokenNotFoundException $e) {
-            return [
-                'access_token' => '',
-                'refresh_token' => '',
-            ];
-        }
-    }
-
     /*
      * From User/UUID/UUID-String return UUID string.
      */
-    private function getUuidString(mixed $uuid): string
+    protected function getUuidString(mixed $uuid): string
     {
         switch (true) {
             case is_string($uuid) && \Ramsey\Uuid\Uuid::isValid($uuid):
@@ -119,7 +91,7 @@ trait SecurityTrait
     /*
      * Generate JWT
      */
-    private function getAccessToken(string $uuid): string
+    protected function getAccessToken(string $uuid): string
     {
         $privateKey = $this->getPrivateKey();
 
@@ -137,24 +109,20 @@ trait SecurityTrait
         throw new \RuntimeException('Not exist PEM keys files');
     }
 
-    /*
+    /**
      * Decode JWT
+     *
+     * @throws ExpiredException
+     * @throws SignatureInvalidException
      */
-    protected function decodeAccessToken(string $access_token): string
+    protected function getUUIDFromAccessToken(string $access_token): string
     {
         $publicKey = $this->getPublicKey();
 
         if ($publicKey !== false) {
             $payload = (array) JWT::decode($access_token, new Key($publicKey, 'RS256'));
 
-            if ($payload['iat'] <= time() && $payload['exp'] > time()) {
-                switch ($payload['sub']) {
-                    case 'user':
-                        return $payload['uuid'];
-                }
-
-                return '';
-            }
+            return $payload['uuid'] ?? '';
         }
 
         throw new \RuntimeException('Not exist PEM keys files');
@@ -163,15 +131,13 @@ trait SecurityTrait
     /*
      * Generate sha1 hash
      */
-    private function getRefreshToken(string $uuid, string $ip, string $agent): string
+    protected function getRefreshToken(string $uuid, string $ip, string $agent): string
     {
-        $data = [
-            'uuid' => $uuid,
-            'agent' => sha1($ip),
-            'ip' => sha1($agent),
-            'date' => time(),
-        ];
-
-        return sha1(json_encode($data));
+        return sha1(
+            'uuid:' . $uuid . ';' .
+            'ip:' . sha1($ip) . ';' .
+            'agent:' . sha1($agent) . ';' .
+            'date:' . time(),
+        );
     }
 }

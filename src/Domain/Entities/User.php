@@ -774,14 +774,4 @@ class User extends AbstractEntity
     #[ORM\OneToMany(targetEntity: '\App\Domain\Entities\Catalog\Order', mappedBy: 'user', orphanRemoval: true)]
     #[ORM\OrderBy(['date' => 'ASC'])]
     protected $orders = [];
-
-    /**
-     * Return model as array
-     */
-    public function toArray(): array
-    {
-        $buf = parent::toArray();
-
-        return array_serialize($buf);
-    }
 }

@@ -167,7 +167,9 @@ class Token extends AbstractEntity
     public function toArray(): array
     {
         return array_serialize([
-            'unique' => $this->getUnique(),
+            'uuid' => $this->getUuid()->toString(),
+            'agent' => $this->getAgent(),
+            'ip' => $this->getIp(),
             'date' => $this->getDate(),
         ]);
     }
