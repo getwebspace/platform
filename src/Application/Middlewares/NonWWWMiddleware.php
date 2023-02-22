@@ -21,7 +21,7 @@ class NonWWWMiddleware extends AbstractMiddleware
             if (str_starts_with($host, 'www')) {
                 return (new Response())
                     ->withHeader('Location', $scheme . '://' . str_replace('www.', '', $host))
-                    ->withStatus(307);
+                    ->withStatus(308);
             }
         }
 
