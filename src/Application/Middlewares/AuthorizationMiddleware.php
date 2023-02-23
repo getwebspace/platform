@@ -8,7 +8,6 @@ use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\UserService;
 use App\Domain\Traits\SecurityTrait;
 use Firebase\JWT\ExpiredException;
-use Firebase\JWT\SignatureInvalidException;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
@@ -46,9 +45,12 @@ class AuthorizationMiddleware extends AbstractMiddleware
 
                         $request = $request->withAttribute('user', $user);
                     } catch (UserNotFoundException $e) {
+                        return (new Response())
+                            ->withHeader('Location', '/auth/logout')
+                            ->withStatus(307);
                     }
                 }
-            } catch (ExpiredException|SignatureInvalidException $e) {
+            } catch (ExpiredException $e) {
                 return (new Response())
                     ->withHeader('Location', '/auth/refresh-token?redirect=' . $request->getUri()->getPath())
                     ->withStatus(308);
@@ -57,5 +59,4 @@ class AuthorizationMiddleware extends AbstractMiddleware
 
         return $handler->handle($request);
     }
-
 }
