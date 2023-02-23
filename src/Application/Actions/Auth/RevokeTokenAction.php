@@ -2,15 +2,9 @@
 
 namespace App\Application\Actions\Auth;
 
-use App\Application\Actions\Common\User\UserAction;
-use App\Domain\Service\User\Exception\TokenNotFoundException;
-use App\Domain\Service\User\TokenService as UserTokenService;
-use App\Domain\Service\User\UserService;
 use App\Domain\Traits\SecurityTrait;
-use DateTime;
-use Psr\Container\ContainerInterface;
 
-class RevokeTokenAction extends UserAction
+class RevokeTokenAction extends AuthAction
 {
     use SecurityTrait;
 

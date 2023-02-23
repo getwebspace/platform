@@ -2,10 +2,9 @@
 
 namespace App\Application\Actions\Auth;
 
-use App\Application\Actions\Common\User\UserAction;
 use App\Domain\Traits\SecurityTrait;
 
-class LogoutAction extends UserAction
+class LogoutAction extends AuthAction
 {
     use SecurityTrait;
 
