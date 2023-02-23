@@ -30,6 +30,12 @@ return function (App $app, Container $container): void {
                 ->setName('auth:refresh-token')
                 ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
 
+            // revoke
+            $group
+                ->map(['GET', 'POST'], '/revoke', \App\Application\Actions\Auth\RevokeTokenAction::class)
+                ->setName('auth:logout')
+                ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
+
             // logout
             $group
                 ->map(['GET', 'POST'], '/logout', \App\Application\Actions\Auth\LogoutAction::class)
@@ -318,6 +324,9 @@ return function (App $app, Container $container): void {
 
             $group->map(['GET', 'POST'], '/logout', \App\Application\Actions\Common\User\UserLogoutAction::class)
                 ->setName('common:user:logout');
+
+            $group->map(['GET', 'POST'], '/revoke', \App\Application\Actions\Common\User\UserRevokeTokenAction::class)
+                ->setName('common:user:revoke');
 
             $group
                 ->map(['GET', 'POST'], '/profile', \App\Application\Actions\Common\User\UserProfileAction::class)

@@ -22,34 +22,36 @@ class AuthorizationMiddleware extends AbstractMiddleware
      */
     public function __invoke(Request $request, RequestHandlerInterface $handler): \Slim\Psr7\Response
     {
-        $path = $request->getUri()->getPath();
+        // skip if refresh token
+        if ($request->getUri()->getPath() === '/auth/refresh-token') {
+            return $handler->handle($request);
+        }
+
         $access_token = $request->getCookieParams()['access_token'] ?? null;
 
-        if ($path !== '/auth/refresh-token') {
-            if ($access_token) {
-                try {
-                    $uuid = $this->getUUIDFromAccessToken($access_token);
+        if ($access_token) {
+            try {
+                $uuid = $this->getUUIDFromAccessToken($access_token);
 
-                    if ($uuid && \Ramsey\Uuid\Uuid::isValid($uuid)) {
-                        try {
-                            /** @var UserService $userService */
-                            $userService = $this->container->get(UserService::class);
+                if ($uuid && \Ramsey\Uuid\Uuid::isValid($uuid)) {
+                    try {
+                        /** @var UserService $userService */
+                        $userService = $this->container->get(UserService::class);
 
-                            /** @var User $user */
-                            $user = $userService->read([
-                                'uuid' => $uuid,
-                                'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
-                            ]);
+                        /** @var User $user */
+                        $user = $userService->read([
+                            'uuid' => $uuid,
+                            'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
+                        ]);
 
-                            $request = $request->withAttribute('user', $user);
-                        } catch (UserNotFoundException $e) {
-                        }
+                        $request = $request->withAttribute('user', $user);
+                    } catch (UserNotFoundException $e) {
                     }
-                } catch (ExpiredException|SignatureInvalidException $e) {
-                    return (new Response())
-                        ->withHeader('Location', '/auth/refresh-token?redirect=' . $request->getUri()->getPath())
-                        ->withStatus(308);
                 }
+            } catch (ExpiredException|SignatureInvalidException $e) {
+                return (new Response())
+                    ->withHeader('Location', '/auth/refresh-token?redirect=' . $request->getUri()->getPath())
+                    ->withStatus(308);
             }
         }
 

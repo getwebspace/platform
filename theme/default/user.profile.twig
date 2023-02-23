@@ -206,6 +206,26 @@
                                 </section>
                             </li>
 
+                            {% if user.tokens %}
+                                <li>
+                                    <h6 class="title collapsed" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">Active sessions</h6>
+                                    <section class="checkout-steps-form-content collapse" id="collapseFour" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                                        {% for token in user.tokens %}
+                                            <div class="row pb-4">
+                                                <div class="col-8"><b>{{ token.comment }}</b></div>
+                                                <div class="col-4 text-end">{{ token.ip }}</div>
+                                                <div class="col-12">{{ token.agent }}</div>
+                                                <div class="col-12">{{ token.date|df }}</div>
+                                            </div>
+                                        {% endfor %}
+
+                                        <div class="row">
+                                            <a class="btn btn-primary" href="/user/revoke">Close other sessions</a>
+                                        </div>
+                                    </section>
+                                </li>
+                            {% endif %}
+
                             {% if oauth %}
                                 <li>
                                     <h6 class="title collapsed" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">Social networks</h6>
