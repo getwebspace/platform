@@ -47,6 +47,7 @@ class RefreshTokenAction extends AuthAction
                     $this->userTokenService->delete($token);
                 }
             } catch (TokenNotFoundException $e) {
+                return $this->respondWithRedirect('/auth/logout', 307);
             }
         }
 
