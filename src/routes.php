@@ -15,7 +15,7 @@ return function (App $app, Container $container): void {
         ->group('/api', function (Group $group): void {
             // entity getter/setter
             $group
-                ->map(['GET', 'POST', 'OPTIONS'], '/{args:.*}', \App\Application\Actions\Api\EntityAction::class)
+                ->map(['GET', 'POST', 'OPTIONS'], '/{args:.*}', \App\Application\Actions\Api\v1\EntityAction::class)
                 ->setName('api:entity')
                 ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
         })

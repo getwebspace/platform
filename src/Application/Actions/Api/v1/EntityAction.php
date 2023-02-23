@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Application\Actions\Api;
+namespace App\Application\Actions\Api\v1;
 
 use App\Domain\AbstractException;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
