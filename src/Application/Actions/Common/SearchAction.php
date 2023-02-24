@@ -13,7 +13,7 @@ class SearchAction extends AbstractAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        $query = trim($this->getParam('query', $this->getParam('q', '')));
+        $query = trim(str_escape($this->getParam('query', $this->getParam('q', ''))));
         $query_type = $this->getParam('type', $this->getParam('t', false));
         $query_strong = (bool) $this->getParam('query_strong', $this->getParam('qs', false));
         $limit = (int) $this->getParam('limit', $this->parameter('search_limit', 10));
