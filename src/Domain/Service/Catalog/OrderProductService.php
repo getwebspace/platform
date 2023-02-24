@@ -37,7 +37,7 @@ class OrderProductService extends AbstractService
         foreach ($products as $uuid => $count) {
             if ($count > 0) {
                 try {
-                    $result[] = $op = $this->create([
+                    $result[] = $this->create([
                         'order' => $order,
                         'product' => $this->catalogProductService->read(['uuid' => $uuid]),
                         'count' => (float) $count,
@@ -59,8 +59,8 @@ class OrderProductService extends AbstractService
     public function create(array $data = [])
     {
         $default = [
+            'order' => '',
             'product' => '',
-            'related' => '',
             'count' => 1,
         ];
         $data = array_merge($default, $data);

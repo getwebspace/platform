@@ -120,7 +120,7 @@ class OrderProduct extends AbstractEntity
         return $this->external_id;
     }
 
-    #[ORM\Column(type: 'float', scale: 2, precision: 10, options: ['default' => 1])]
+    #[ORM\Column(type: 'float', precision: 10, scale: 2, options: ['default' => 1])]
     public float $count = 1;
 
     /**
