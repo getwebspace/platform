@@ -14,6 +14,9 @@ class LogoutAction extends AuthAction
         $user = $this->request->getAttribute('user', false);
 
         if ($user) {
+            // timeout..
+            sleep(1);
+
             $refresh_token = $this->getCookie('refresh_token', null);
 
             if ($refresh_token) {
