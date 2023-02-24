@@ -119,7 +119,13 @@ abstract class AbstractAction
                 ->flatten()
                 ->map(fn ($item) => $item->getName())
                 ->filter(function ($item) {
-                    foreach (\App\Application\Middlewares\AccessCheckerMiddleware::PUBLIC as $r) {
+                    $public = [
+                        'api:', 'auth:',
+                        'common:forbidden',
+                        'cup:login', 'cup:forbidden', 'cup:system',
+                    ];
+
+                    foreach ($public as $r) {
                         if (str_starts_with($item, $r)) {
                             return false;
                         }

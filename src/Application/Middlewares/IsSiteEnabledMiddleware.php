@@ -15,10 +15,7 @@ class IsSiteEnabledMiddleware extends AbstractMiddleware
      */
     public function __invoke(Request $request, RequestHandlerInterface $handler): \Slim\Psr7\Response
     {
-        $routeContext = RouteContext::fromRequest($request);
-        $route = $routeContext->getRoute();
-
-        if (str_starts_with($route->getName(), 'common:') && $this->parameter('common_site_enabled', 'yes') !== 'yes') {
+        if ($this->parameter('common_site_enabled', 'yes') !== 'yes') {
             $renderer = $this->container->get('view');
 
             if (($path = realpath(THEME_DIR . '/' . $this->parameter('common_theme', 'default'))) !== false) {

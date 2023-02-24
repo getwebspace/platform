@@ -8,20 +8,8 @@ use Slim\Psr7\Response;
 return function (App $app): void {
     $c = $app->getContainer();
 
-    // apply locale
-    $app->add(new \App\Application\Middlewares\LocaleMiddleware($c));
-
-    // check user access
-    $app->add(new \App\Application\Middlewares\AccessCheckerMiddleware($c));
-
     // plugin functions
     $app->add(new \App\Application\Middlewares\PluginMiddleware($c));
-
-    // check user auth
-    $app->add(new \App\Application\Middlewares\AuthorizationMiddleware($c));
-
-    // check is site disabled
-    $app->add(new \App\Application\Middlewares\IsSiteEnabledMiddleware($c));
 
     // redirect to non-www domain
     $app->add(new \App\Application\Middlewares\NonWWWMiddleware($c));

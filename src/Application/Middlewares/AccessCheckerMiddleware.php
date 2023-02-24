@@ -11,15 +11,6 @@ use Slim\Routing\RouteContext;
 
 class AccessCheckerMiddleware extends AbstractMiddleware
 {
-    public const PUBLIC = [
-        'api:',
-        'auth:',
-        'common:forbidden',
-        'cup:login',
-        'cup:forbidden',
-        'cup:system',
-    ];
-
     /**
      * @throws \Exception
      */
@@ -27,13 +18,6 @@ class AccessCheckerMiddleware extends AbstractMiddleware
     {
         $routeContext = RouteContext::fromRequest($request);
         $route = $routeContext->getRoute();
-
-        // continue in any way
-        foreach (static::PUBLIC as $r) {
-            if (str_starts_with($route->getName(), $r)) {
-                return $handler->handle($request);
-            }
-        }
 
         /** @var User $user */
         $user = $request->getAttribute('user', false);
