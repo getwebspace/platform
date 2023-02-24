@@ -253,6 +253,24 @@ if (!function_exists('array_where')) {
     }
 }
 
+if (!function_exists('str_escape')) {
+    /**
+     * Escape strings
+     */
+    function str_escape(array|string $input): array|string
+    {
+        if (is_array($input)) {
+            foreach ($input as $key => $value) {
+                $input[$key] = str_escape($value);
+            }
+        } else {
+            $input = htmlspecialchars($input, ENT_QUOTES);
+        }
+
+        return $input;
+    }
+}
+
 if (!function_exists('str_mask_email')) {
     /**
      * Mask email
