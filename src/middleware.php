@@ -6,16 +6,14 @@ use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 
 return function (App $app): void {
-    $c = $app->getContainer();
-
     // plugin functions
-    $app->add(new \App\Application\Middlewares\PluginMiddleware($c));
+    $app->add(\App\Application\Middlewares\PluginMiddleware::class);
 
     // redirect to non-www domain
-    $app->add(new \App\Application\Middlewares\NonWWWMiddleware($c));
+    $app->add(\App\Application\Middlewares\NonWWWMiddleware::class);
 
     // cors headers
-    $app->add(new \App\Application\Middlewares\CORSMiddleware($c));
+    $app->add(\App\Application\Middlewares\CORSMiddleware::class);
 
     // redirect to address without slash in end
     $app->add(function (Request $request, RequestHandlerInterface $handler) {
