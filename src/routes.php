@@ -13,10 +13,10 @@ return function (App $app, Container $container): void {
     // API section
     $app
         ->group('/api', function (Group $group): void {
-            // entity getter/setter
+            // entity getter-only
             $group
-                ->map(['GET', 'POST', 'OPTIONS'], '/{args:.*}', \App\Application\Actions\Api\v1\EntityAction::class)
-                ->setName('api:entity')
+                ->map(['GET', 'POST', 'OPTIONS'], '/v1/{args:.*}', \App\Application\Actions\Api\v1\EntityAction::class)
+                ->setName('api:v1:entity')
                 ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
         })
         ->add(new \Slim\HttpCache\Cache('public', 0));
@@ -41,7 +41,8 @@ return function (App $app, Container $container): void {
                 ->map(['GET', 'POST'], '/logout', \App\Application\Actions\Auth\LogoutAction::class)
                 ->setName('auth:logout')
                 ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
-        });
+        })
+        ->add(new \Slim\HttpCache\Cache('public', 0));
 
     // CUP section
     $app
@@ -64,8 +65,11 @@ return function (App $app, Container $container): void {
                     $group->get('', \App\Application\Actions\Cup\MainPageAction::class)
                         ->setName('cup:main');
 
-                    // settings
+                    // parameters
                     $group->map(['GET', 'POST'], '/parameters', \App\Application\Actions\Cup\ParametersPageAction::class)
+                        ->setName('cup:parameters');
+
+                    $group->map(['POST'], '/parameters/gen-key', \App\Application\Actions\Cup\ParametersAPIAction::class)
                         ->setName('cup:parameters');
 
                     // refresh
@@ -377,7 +381,7 @@ return function (App $app, Container $container): void {
         ->group('', function (Group $group) use ($container): void {
             // forbidden
             $group->map(['GET', 'POST'], '/forbidden', \App\Application\Actions\Common\ForbiddenPageAction::class)
-                ->setName('forbidden');
+                ->setName('common:forbidden');
 
             // publication
             $group

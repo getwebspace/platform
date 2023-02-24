@@ -308,7 +308,7 @@ $(() => {
                     .html('')
                     .prop('disabled', true);
                 
-                $.get('/api/catalog/product', {category: $(e.currentTarget).val()}, (res) => {
+                $.get('/api/v1/catalog/product', {category: $(e.currentTarget).val()}, (res) => {
                     if (res.status === 200) {
                         for (let item of res.data) {
                             $product.append(
@@ -324,7 +324,7 @@ $(() => {
             };
             $category.html('').off('change', handler).on('change', handler);
             
-            $.get('/api/catalog/category', (res) => {
+            $.get('/api/v1/catalog/category', (res) => {
                 if (res.status === 200) {
                     (function renderTree(list, parent = '00000000-0000-0000-0000-000000000000', title = '') {
                         let buf = 0;
@@ -408,7 +408,7 @@ $(() => {
             this.blur();
             $category.html('');
             
-            $.get('/api/catalog/category', (res) => {
+            $.get('/api/v1/catalog/category', (res) => {
                 if (res.status === 200) {
                     (function renderTree(list, parent = '00000000-0000-0000-0000-000000000000', title = '') {
                         let buf = 0;
@@ -439,7 +439,7 @@ $(() => {
         $category.on('change', (e) => {
             $product.html('').prop('disabled', true);
     
-            $.get('/api/catalog/product', {category: $(e.currentTarget).val()}, (res) => {
+            $.get('/api/v1/catalog/product', {category: $(e.currentTarget).val()}, (res) => {
                 if (res.status === 200) {
                     for (let item of res.data) {
                         $product.append(

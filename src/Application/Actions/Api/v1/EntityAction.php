@@ -2,6 +2,7 @@
 
 namespace App\Application\Actions\Api\v1;
 
+use App\Application\Actions\Api\ActionApi;
 use App\Domain\AbstractException;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\Exception\CategoryNotFoundException as CatalogCategoryNotFoundException;
@@ -214,36 +215,5 @@ class EntityAction extends ActionApi
             'params' => $params,
             'data' => is_a($result, Collection::class) ? $result->toArray() : $result,
         ]);
-    }
-
-    protected function array_criteria_uuid($data): array
-    {
-        $result = [];
-
-        if (!is_array($data)) {
-            $data = [$data];
-        }
-
-        foreach ($data as $value) {
-            if (\Ramsey\Uuid\Uuid::isValid((string) $value) === true) {
-                $result[] = $value;
-            }
-        }
-
-        return $result;
-    }
-
-    protected function array_criteria($data): array
-    {
-        $result = [];
-
-        if (!is_array($data)) {
-            $data = [$data];
-        }
-        foreach ($data as $value) {
-            $result[] = $value;
-        }
-
-        return $result;
     }
 }

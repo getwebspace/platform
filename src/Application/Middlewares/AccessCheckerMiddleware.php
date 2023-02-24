@@ -12,9 +12,9 @@ use Slim\Routing\RouteContext;
 class AccessCheckerMiddleware extends AbstractMiddleware
 {
     public const PUBLIC = [
-        'forbidden',
         'api:',
         'auth:',
+        'common:forbidden',
         'cup:login',
         'cup:forbidden',
         'cup:system',
