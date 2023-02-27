@@ -100,7 +100,7 @@ trait SecurityTrait
                 'sub' => 'user',
                 'uuid' => $uuid,
                 'iat' => time(),
-                'exp' => time() + (\App\Domain\References\Date::MINUTE * 10),
+                'exp' => time() + (\App\Domain\References\Date::MINUTE * 30),
             ];
 
             return JWT::encode($payload, $privateKey, 'RS256');
