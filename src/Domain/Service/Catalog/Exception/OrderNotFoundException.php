@@ -2,9 +2,9 @@
 
 namespace App\Domain\Service\Catalog\Exception;
 
-use App\Domain\AbstractException;
+use App\Domain\AbstractNotFoundException;
 
-class OrderNotFoundException extends AbstractException
+class OrderNotFoundException extends AbstractNotFoundException
 {
     protected $message = 'EXCEPTION_ORDER_NOT_FOUND';
 }

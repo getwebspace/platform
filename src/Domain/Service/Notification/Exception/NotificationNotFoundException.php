@@ -2,9 +2,9 @@
 
 namespace App\Domain\Service\Notification\Exception;
 
-use App\Domain\AbstractException;
+use App\Domain\AbstractNotFoundException;
 
-class NotificationNotFoundException extends AbstractException
+class NotificationNotFoundException extends AbstractNotFoundException
 {
     protected $message = 'EXCEPTION_NOTIFICATION_NOT_FOUND';
 }

@@ -2,9 +2,9 @@
 
 namespace App\Domain\Service\GuestBook\Exception;
 
-use App\Domain\AbstractException;
+use App\Domain\AbstractNotFoundException;
 
-class EntryNotFoundException extends AbstractException
+class EntryNotFoundException extends AbstractNotFoundException
 {
     protected $message = 'EXCEPTION_ENTRY_NOT_FOUND';
 }

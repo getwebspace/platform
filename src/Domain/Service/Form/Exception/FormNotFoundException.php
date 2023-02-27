@@ -2,9 +2,9 @@
 
 namespace App\Domain\Service\Form\Exception;
 
-use App\Domain\AbstractException;
+use App\Domain\AbstractNotFoundException;
 
-class FormNotFoundException extends AbstractException
+class FormNotFoundException extends AbstractNotFoundException
 {
     protected $message = 'EXCEPTION_FORM_NOT_FOUND';
 }

@@ -2,9 +2,9 @@
 
 namespace App\Domain\Service\User\Exception;
 
-use App\Domain\AbstractException;
+use App\Domain\AbstractNotFoundException;
 
-class UserNotFoundException extends AbstractException
+class UserNotFoundException extends AbstractNotFoundException
 {
     protected $message = 'EXCEPTION_USER_NOT_FOUND';
 }

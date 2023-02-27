@@ -2,9 +2,9 @@
 
 namespace App\Domain\Service\Page\Exception;
 
-use App\Domain\AbstractException;
+use App\Domain\AbstractNotFoundException;
 
-class PageNotFoundException extends AbstractException
+class PageNotFoundException extends AbstractNotFoundException
 {
     protected $message = 'EXCEPTION_PAGE_NOT_FOUND';
 }

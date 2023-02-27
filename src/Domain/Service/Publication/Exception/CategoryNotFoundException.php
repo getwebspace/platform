@@ -2,9 +2,9 @@
 
 namespace App\Domain\Service\Publication\Exception;
 
-use App\Domain\AbstractException;
+use App\Domain\AbstractNotFoundException;
 
-class CategoryNotFoundException extends AbstractException
+class CategoryNotFoundException extends AbstractNotFoundException
 {
     protected $message = 'EXCEPTION_CATEGORY_NOT_FOUND';
 }

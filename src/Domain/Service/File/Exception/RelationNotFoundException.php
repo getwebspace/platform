@@ -2,9 +2,9 @@
 
 namespace App\Domain\Service\File\Exception;
 
-use App\Domain\AbstractException;
+use App\Domain\AbstractNotFoundException;
 
-class RelationNotFoundException extends AbstractException
+class RelationNotFoundException extends AbstractNotFoundException
 {
     protected $message = 'EXCEPTION_RELATION_NOT_FOUND';
 }

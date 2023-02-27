@@ -2,9 +2,9 @@
 
 namespace App\Domain\Service\Publication\Exception;
 
-use App\Domain\AbstractException;
+use App\Domain\AbstractNotFoundException;
 
-class PublicationNotFoundException extends AbstractException
+class PublicationNotFoundException extends AbstractNotFoundException
 {
     protected $message = 'EXCEPTION_PUBLICATION_NOT_FOUND';
 }

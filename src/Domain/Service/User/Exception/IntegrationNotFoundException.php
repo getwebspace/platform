@@ -2,9 +2,9 @@
 
 namespace App\Domain\Service\User\Exception;
 
-use App\Domain\AbstractException;
+use App\Domain\AbstractNotFoundException;
 
-class IntegrationNotFoundException extends AbstractException
+class IntegrationNotFoundException extends AbstractNotFoundException
 {
     protected $message = 'EXCEPTION_USER_INTEGRATION_NOT_FOUND';
 }
