@@ -21,7 +21,6 @@ services:
             - ./var:/var/container/var:rw
             - ./var/upload:/var/container/public/uploads:rw
             - ./vendor:/var/container/vendor:rw
-            - ./migrations.json:/var/container/migrations.json:ro
             - ./composer.json:/var/container/composer.json:rw
             - ./composer.lock:/var/container/composer.lock:rw
             - ./phpunit.xml:/var/container/phpunit.xml:ro

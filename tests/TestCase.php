@@ -26,7 +26,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         /**
          * from bootstrap
          *
-         * @var \Slim\App     $app
+         * @var \Slim\App $app
          */
         static::$app = $app;
         static::$container = static::$app->getContainer();
@@ -64,32 +64,18 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         return $faker;
     }
 
-    //    /**
-    //     * @param string $method
-    //     * @param string $path
-    //     * @param array  $headers
-    //     * @param array  $cookies
-    //     * @param array  $serverParams
-    //     *
-    //     * @return Request
-    //     */
-    //    protected function createRequest(
-    //        string $method,
-    //        string $path,
-    //        array $headers = ['HTTP_ACCEPT' => 'application/json'],
-    //        array $cookies = [],
-    //        array $serverParams = []
-    //    ): Request
-    //    {
-    //        $uri = new Uri('', '', 80, $path);
-    //        $handle = fopen('php://temp', 'w+');
-    //        $stream = (new StreamFactory())->createStreamFromResource($handle);
-    //
-    //        $h = new Headers();
-    //        foreach ($headers as $name => $value) {
-    //            $h->addHeader($name, $value);
-    //        }
-    //
-    //        return new SlimRequest($method, $uri, $h, $cookies, $serverParams, $stream);
-    //    }
+    protected function createRequest(): \GuzzleHttp\Client
+    {
+        static $client;
+
+        if (!$client) {
+            $client = new \GuzzleHttp\Client([
+                'base_uri' => 'http://127.0.0.1:80',
+                'http_errors' => false,
+                //'debug' => true,
+            ]);
+        }
+
+        return $client;
+    }
 }

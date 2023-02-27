@@ -48,7 +48,8 @@
     "require-dev": {
         "fakerphp/faker": "^v1.21.0",
         "friendsofphp/php-cs-fixer": "^v3.14.4",
-        "phpunit/phpunit": "^9.6.3"
+        "phpunit/phpunit": "^9.6.3",
+        "guzzlehttp/guzzle": "^7.5.0"
     },
     "autoload": {
         "psr-4": {
