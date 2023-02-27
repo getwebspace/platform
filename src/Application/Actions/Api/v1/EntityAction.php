@@ -27,6 +27,8 @@ class EntityAction extends ActionApi
     protected function action(): \Slim\Psr7\Response
     {
         $params = [
+            'user' => null,
+            'user_uuid' => null,
             'entity' => null,
             'order' => [],
             'limit' => 1000,
@@ -74,7 +76,7 @@ class EntityAction extends ActionApi
                 case 'PUT':
                 {
                     if (!empty($params['apikey'])) {
-                        $result = $service->create($this->getParams());
+                        $result = $service->create([...$this->getParams(), 'user' => $params['user'], 'user_uuid' => $params['user_uuid']]);
                         $status = 201;
 
                         $this->container->get(\App\Application\PubSub::class)->publish('api:' . str_replace('/', ':', $params['entity']) . ':create', $result);
@@ -98,7 +100,7 @@ class EntityAction extends ActionApi
                                 }
 
                                 foreach ($result as $index => $item) {
-                                    $result[$index] = $service->update($item, $this->getParams());
+                                    $result[$index] = $service->update($item, [...$this->getParams(), 'user' => $params['user'], 'user_uuid' => $params['user_uuid']]);
                                 }
                                 $status = 202;
 
