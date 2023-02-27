@@ -79,24 +79,27 @@ class AuthorizationAPIMiddleware extends AbstractMiddleware
     {
         $access_token = $request->getCookieParams()['access_token'] ?? null;
 
-        try {
-            $uuid = $this->decodeJWT($access_token)['uuid'] ?? null;
+        if ($access_token) {
+            try {
 
-            if ($uuid && \Ramsey\Uuid\Uuid::isValid($uuid)) {
-                try {
-                    /** @var UserService $userService */
-                    $userService = $this->container->get(UserService::class);
+                $uuid = $this->decodeJWT($access_token)['uuid'] ?? null;
 
-                    return $userService->read([
-                        'uuid' => $uuid,
-                        'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
-                    ]);
-                } catch (UserNotFoundException $e) {
-                    // nothing
+                if ($uuid && \Ramsey\Uuid\Uuid::isValid($uuid)) {
+                    try {
+                        /** @var UserService $userService */
+                        $userService = $this->container->get(UserService::class);
+
+                        return $userService->read([
+                            'uuid' => $uuid,
+                            'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
+                        ]);
+                    } catch (UserNotFoundException $e) {
+                        // nothing
+                    }
                 }
+            } catch (ExpiredException $e) {
+                // nothing
             }
-        } catch (ExpiredException $e) {
-            // nothing
         }
 
         return false;
