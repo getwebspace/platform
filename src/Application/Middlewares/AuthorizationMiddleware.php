@@ -21,16 +21,11 @@ class AuthorizationMiddleware extends AbstractMiddleware
      */
     public function __invoke(Request $request, RequestHandlerInterface $handler): \Slim\Psr7\Response
     {
-        // skip if refresh token
-        if ($request->getUri()->getPath() === '/auth/refresh-token') {
-            return $handler->handle($request);
-        }
-
         $access_token = $request->getCookieParams()['access_token'] ?? null;
 
         if ($access_token) {
             try {
-                $uuid = $this->getUUIDFromAccessToken($access_token);
+                $uuid = $this->decodeJWT($access_token)['uuid'] ?? null;
 
                 if ($uuid && \Ramsey\Uuid\Uuid::isValid($uuid)) {
                     try {

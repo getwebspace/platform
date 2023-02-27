@@ -100,29 +100,10 @@ trait SecurityTrait
                 'sub' => 'user',
                 'uuid' => $uuid,
                 'iat' => time(),
-                'exp' => time() + (\App\Domain\References\Date::MINUTE * 30),
+                'exp' => time() + (\App\Domain\References\Date::MINUTE * 10),
             ];
 
             return JWT::encode($payload, $privateKey, 'RS256');
-        }
-
-        throw new \RuntimeException('Not exist PEM keys files');
-    }
-
-    /**
-     * Decode JWT
-     *
-     * @throws ExpiredException
-     * @throws SignatureInvalidException
-     */
-    protected function getUUIDFromAccessToken(string $access_token): string
-    {
-        $publicKey = $this->getPublicKey();
-
-        if ($publicKey !== false) {
-            $payload = (array) JWT::decode($access_token, new Key($publicKey, 'RS256'));
-
-            return $payload['uuid'] ?? '';
         }
 
         throw new \RuntimeException('Not exist PEM keys files');
@@ -139,5 +120,22 @@ trait SecurityTrait
             'agent:' . sha1($agent) . ';' .
             'date:' . time(),
         );
+    }
+
+    /**
+     * Decode JWT
+     *
+     * @throws ExpiredException
+     * @throws SignatureInvalidException
+     */
+    protected function decodeJWT(string $token): array
+    {
+        $publicKey = $this->getPublicKey();
+
+        if ($publicKey !== false) {
+            return (array) JWT::decode($token, new Key($publicKey, 'RS256'));
+        }
+
+        throw new \RuntimeException('Not exist PEM keys files');
     }
 }

@@ -19,11 +19,11 @@ return function (App $app, Container $container): void {
             // API section
             $proxy
                 ->group('/api', function (Group $proxy): void {
-                    // entity getter-only
+                    // entity getter/setter
                     $proxy
-                        ->map(['GET', 'POST', 'OPTIONS'], '/v1/{args:.*}', \App\Application\Actions\Api\v1\EntityAction::class)
+                        ->map(['GET', 'POST', 'PUT', 'PATCH', 'OPTIONS'], '/v1/{args:.*}', \App\Application\Actions\Api\v1\EntityAction::class)
                         ->setName('api:v1:entity')
-                        ->add(\App\Application\Middlewares\AuthorizationMiddleware::class)
+                        ->add(\App\Application\Middlewares\AuthorizationAPIMiddleware::class)
                         ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
                 });
 
@@ -44,8 +44,7 @@ return function (App $app, Container $container): void {
                     // logout
                     $proxy
                         ->map(['GET', 'POST'], '/logout', \App\Application\Actions\Auth\LogoutAction::class)
-                        ->setName('auth:logout')
-                        ->add(\App\Application\Middlewares\AuthorizationMiddleware::class);
+                        ->setName('auth:logout');
                 });
 
             // CUP section
