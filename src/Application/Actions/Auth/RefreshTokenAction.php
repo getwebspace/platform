@@ -15,9 +15,6 @@ class RefreshTokenAction extends AuthAction
         $refresh_token = $this->getCookie('refresh_token', null);
 
         if ($refresh_token) {
-            // timeout..
-            sleep(1);
-
             try {
                 $token = $this->userTokenService->read([
                     'unique' => $refresh_token,
@@ -33,6 +30,7 @@ class RefreshTokenAction extends AuthAction
 
                     $this->userTokenService->update($token, [
                         'unique' => $refresh_token,
+                        'ip' => $this->getRequestRemoteIP(),
                         'date' => 'now',
                     ]);
 
@@ -50,8 +48,10 @@ class RefreshTokenAction extends AuthAction
                     $this->userTokenService->delete($token);
                 }
             } catch (TokenNotFoundException $e) {
-                return $this->respondWithRedirect('/auth/logout', 307);
+                // nothing
             }
+
+            return $this->respondWithRedirect('/auth/logout', 307);
         }
 
         return $this->respondWithRedirect($redirect, 308);

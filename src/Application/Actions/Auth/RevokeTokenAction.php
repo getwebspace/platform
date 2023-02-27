@@ -14,9 +14,6 @@ class RevokeTokenAction extends AuthAction
         $refresh_token = $this->getCookie('refresh_token', null);
 
         if ($refresh_token) {
-            // timeout..
-            sleep(1);
-
             /** @var \App\Domain\Entities\User $user */
             $user = $this->request->getAttribute('user', false);
 

@@ -2,6 +2,7 @@
 
 namespace App\Application\Actions\Auth;
 
+use App\Domain\Service\User\Exception\TokenNotFoundException;
 use App\Domain\Traits\SecurityTrait;
 
 class LogoutAction extends AuthAction
@@ -10,28 +11,26 @@ class LogoutAction extends AuthAction
 
     protected function action(): \Slim\Psr7\Response
     {
-        /** @var \App\Domain\Entities\User $user */
-        $user = $this->request->getAttribute('user', false);
+        $refresh_token = $this->getCookie('refresh_token', null);
 
-        if ($user) {
-            // timeout..
-            sleep(1);
-
-            $refresh_token = $this->getCookie('refresh_token', null);
-
-            if ($refresh_token) {
+        if ($refresh_token) {
+            try {
                 /** @var \App\Domain\Entities\User\Token $token */
-                $token = $user->getTokens()->firstWhere('unique', $refresh_token);
+                $token = $this->userTokenService->read(['unique' => $refresh_token]);
 
-                if ($token) {
-                    $this->userTokenService->delete($token);
-                }
+                /** @var \App\Domain\Entities\User $user */
+                $user = $token->getUser();
+
+                $this->userTokenService->delete($token);
+
+
+                $this->container->get(\App\Application\PubSub::class)->publish('common:user:logout', $user);
+            } catch (TokenNotFoundException $e) {
+                // nothing
+            } finally {
+                setcookie('access_token', '', time(), '/');
+                setcookie('refresh_token', '', time(), '/auth');
             }
-
-            setcookie('access_token', '', time(), '/');
-            setcookie('refresh_token', '', time(), '/auth');
-
-            $this->container->get(\App\Application\PubSub::class)->publish('common:user:logout', $user);
         }
 
         return $this->respondWithRedirect('/');
