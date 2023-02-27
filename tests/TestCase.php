@@ -72,7 +72,7 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
             $client = new \GuzzleHttp\Client([
                 'base_uri' => 'http://127.0.0.1:80',
                 'http_errors' => false,
-                //'debug' => true,
+                // 'debug' => true,
             ]);
         }
 

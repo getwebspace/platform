@@ -8,8 +8,8 @@ use App\Domain\AbstractNotFoundException;
 use App\Domain\AbstractService;
 use App\Domain\Entities\User;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
-use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
 use App\Domain\Service\Catalog\OrderProductService as CatalogOrderProductService;
+use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\File\FileService;
 use App\Domain\Service\GuestBook\GuestBookService;
@@ -62,7 +62,7 @@ class EntityAction extends ActionApi
 
             switch ($this->request->getMethod()) {
                 case 'GET':
-                {
+
                     try {
                         $result = $service->read($params);
                     } catch (AbstractNotFoundException|Exception $e) {
@@ -70,11 +70,10 @@ class EntityAction extends ActionApi
                     }
 
                     break;
-                }
 
                 case 'POST':
                 case 'PUT':
-                {
+
                     if (!empty($params['apikey'])) {
                         $result = $service->create([...$this->getParams(), 'user' => $params['user'], 'user_uuid' => $params['user_uuid']]);
                         $status = 201;
@@ -86,10 +85,9 @@ class EntityAction extends ActionApi
                     }
 
                     break;
-                }
 
                 case 'PATCH':
-                {
+
                     if (!empty($params['apikey'])) {
                         try {
                             $result = $service->read($params);
@@ -117,10 +115,9 @@ class EntityAction extends ActionApi
                     }
 
                     break;
-                }
 
                 case 'DELETE':
-                {
+
                     if (!empty($params['apikey'])) {
                         try {
                             $result = $service->read($params);
@@ -148,7 +145,6 @@ class EntityAction extends ActionApi
                     }
 
                     break;
-                }
             }
         } catch (ContainerExceptionInterface|AbstractException $exception) {
             $status = 503;
@@ -162,6 +158,8 @@ class EntityAction extends ActionApi
     }
 
     /**
+     * @param mixed $entity
+     *
      * @throws ContainerExceptionInterface
      */
     private function getService($entity): ?AbstractService

@@ -26,30 +26,26 @@ class AuthorizationAPIMiddleware extends AbstractMiddleware
         switch ($this->parameter('entity_access', 'user')) {
             // allow access for all
             case 'all':
-            {
-                $access = true;
-                // no break
-            }
 
-            // allow access if user exist
+                $access = true;
+
+                // allow access if user exist
+                // no break
             case 'user':
-            {
+
                 if (($user = $this->findUser($request)) !== false) {
                     $access = true;
                     $request = $request->withAttribute('user', $user);
                 }
-                // no break
-            }
 
-            // allow access if key exist
+                // allow access if key exist
+                // no break
             case 'key':
-            {
+
                 if (($apikey = $this->checkAPIKey($request)) !== false) {
                     $access = true;
                     $request = $request->withAttribute('apikey', $apikey);
                 }
-
-            }
         }
 
         if ($access) {
@@ -81,7 +77,6 @@ class AuthorizationAPIMiddleware extends AbstractMiddleware
 
         if ($access_token) {
             try {
-
                 $uuid = $this->decodeJWT($access_token)['uuid'] ?? null;
 
                 if ($uuid && \Ramsey\Uuid\Uuid::isValid($uuid)) {

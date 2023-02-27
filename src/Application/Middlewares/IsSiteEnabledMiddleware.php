@@ -6,7 +6,6 @@ use App\Domain\AbstractMiddleware;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
-use Slim\Routing\RouteContext;
 
 class IsSiteEnabledMiddleware extends AbstractMiddleware
 {

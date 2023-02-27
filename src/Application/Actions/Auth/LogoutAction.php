@@ -23,7 +23,6 @@ class LogoutAction extends AuthAction
 
                 $this->userTokenService->delete($token);
 
-
                 $this->container->get(\App\Application\PubSub::class)->publish('common:user:logout', $user);
             } catch (TokenNotFoundException $e) {
                 // nothing

@@ -8,7 +8,6 @@ use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 
 return function (App $app, Container $container): void {
-
     // --------------------------------------------------- //
     // Section without check access rights
     //          ^^ ^^
@@ -307,7 +306,6 @@ return function (App $app, Container $container): void {
                         ->setName('cup:task:run');
                 })
                 ->add(new \Slim\HttpCache\Cache('private', 0, true));
-
 
             // COMMON section
             $proxy

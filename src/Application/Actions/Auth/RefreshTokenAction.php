@@ -44,9 +44,8 @@ class RefreshTokenAction extends AuthAction
                         ])
                         ->withAddedHeader('Location', $redirect)
                         ->withStatus(308);
-                } else {
-                    $this->userTokenService->delete($token);
                 }
+                $this->userTokenService->delete($token);
             } catch (TokenNotFoundException $e) {
                 // nothing
             }
