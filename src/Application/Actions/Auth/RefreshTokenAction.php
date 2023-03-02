@@ -37,6 +37,8 @@ class RefreshTokenAction extends AuthAction
                     setcookie('access_token', $access_token, time() + \App\Domain\References\Date::MONTH, '/');
                     setcookie('refresh_token', $refresh_token, time() + \App\Domain\References\Date::MONTH, '/auth');
 
+                    $this->container->get(\App\Application\PubSub::class)->publish('auth:user:refresh-token', $token->getUser());
+
                     return $this
                         ->respondWithJson([
                             'access_token' => $access_token,

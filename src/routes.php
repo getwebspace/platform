@@ -30,6 +30,11 @@ return function (App $app, Container $container): void {
             // Auth section
             $proxy
                 ->group('/auth', function (Group $proxy): void {
+                    // login
+                    $proxy
+                        ->map(['GET', 'POST'], '/refresh-token', \App\Application\Actions\Auth\LoginAction::class)
+                        ->setName('auth:login');
+
                     // refresh
                     $proxy
                         ->map(['GET', 'POST'], '/refresh-token', \App\Application\Actions\Auth\RefreshTokenAction::class)
@@ -38,7 +43,7 @@ return function (App $app, Container $container): void {
                     // revoke
                     $proxy
                         ->map(['GET', 'POST'], '/revoke', \App\Application\Actions\Auth\RevokeTokenAction::class)
-                        ->setName('auth:revoke')
+                        ->setName('auth:revoke-token')
                         ->add(\App\Application\Middlewares\AuthorizationMiddleware::class);
 
                     // logout

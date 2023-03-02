@@ -20,6 +20,8 @@ class RevokeTokenAction extends AuthAction
             foreach ($user->getTokens()->whereNotIn('unique', $refresh_token) as $token) {
                 $this->userTokenService->delete($token);
             }
+
+            $this->container->get(\App\Application\PubSub::class)->publish('auth:user:revoke-token', $user);
         }
 
         return $this->respondWithRedirect($redirect, 307);

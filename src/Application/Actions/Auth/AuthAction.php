@@ -4,10 +4,13 @@ namespace App\Application\Actions\Auth;
 
 use App\Domain\AbstractAction;
 use App\Domain\Service\User\TokenService as UserTokenService;
+use App\Domain\Service\User\UserService;
 use Psr\Container\ContainerInterface;
 
 abstract class AuthAction extends AbstractAction
 {
+    protected UserService $userService;
+
     protected UserTokenService $userTokenService;
 
     /**
@@ -17,6 +20,7 @@ abstract class AuthAction extends AbstractAction
     {
         parent::__construct($container);
 
+        $this->userService = $container->get(UserService::class);
         $this->userTokenService = $container->get(UserTokenService::class);
     }
 }
