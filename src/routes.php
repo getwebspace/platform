@@ -32,7 +32,7 @@ return function (App $app, Container $container): void {
                 ->group('/auth', function (Group $proxy): void {
                     // login
                     $proxy
-                        ->map(['GET', 'POST'], '/refresh-token', \App\Application\Actions\Auth\LoginAction::class)
+                        ->map(['GET', 'POST'], '/login', \App\Application\Actions\Auth\LoginAction::class)
                         ->setName('auth:login');
 
                     // refresh
