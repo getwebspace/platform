@@ -21,40 +21,41 @@ class AuthorizationAPIMiddleware extends AbstractMiddleware
      */
     public function __invoke(Request $request, RequestHandlerInterface $handler): \Slim\Psr7\Response
     {
-        $access = false;
+        if ($request->getMethod() !== 'OPTIONS') {
+            $access = false;
 
-        switch ($this->parameter('entity_access', 'user')) {
-            // allow access for all
-            case 'all':
-
-                $access = true;
+            switch ($this->parameter('entity_access', 'user')) {
+                // allow access for all
+                case 'all':
+                    $access = true;
+                // no break
 
                 // allow access if user exist
+                case 'user':
+                    if (($user = $this->findUser($request)) !== false) {
+                        $access = true;
+                        $request = $request->withAttribute('user', $user);
+                    }
                 // no break
-            case 'user':
-
-                if (($user = $this->findUser($request)) !== false) {
-                    $access = true;
-                    $request = $request->withAttribute('user', $user);
-                }
 
                 // allow access if key exist
-                // no break
-            case 'key':
+                case 'key':
+                    if (($apikey = $this->checkAPIKey($request)) !== false) {
+                        $access = true;
+                        $request = $request->withAttribute('apikey', $apikey);
+                    }
+            }
 
-                if (($apikey = $this->checkAPIKey($request)) !== false) {
-                    $access = true;
-                    $request = $request->withAttribute('apikey', $apikey);
-                }
+            if ($access) {
+                return $handler->handle($request);
+            }
+
+            return (new Response())
+                ->withHeader('Content-Type', 'application/json; charset=utf-8')
+                ->withStatus(401);
         }
 
-        if ($access) {
-            return $handler->handle($request);
-        }
-
-        return (new Response())
-            ->withHeader('Content-Type', 'application/json; charset=utf-8')
-            ->withStatus(401);
+        return (new Response())->withStatus(200);
     }
 
     protected function checkAPIKey(Request $request): bool

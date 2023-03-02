@@ -12,9 +12,6 @@ return function (App $app): void {
     // redirect to non-www domain
     $app->add(\App\Application\Middlewares\NonWWWMiddleware::class);
 
-    // cors headers
-    $app->add(\App\Application\Middlewares\CORSMiddleware::class);
-
     // redirect to address without slash in end
     $app->add(function (Request $request, RequestHandlerInterface $handler) {
         $path = $request->getUri()->getPath();
