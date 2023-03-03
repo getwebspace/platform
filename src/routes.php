@@ -53,6 +53,10 @@ return function (App $app, Container $container): void {
                         ->setName('auth:logout');
                 });
 
+            // COMMON forbidden
+            $proxy->map(['GET', 'POST'], '/forbidden', \App\Application\Actions\Common\ForbiddenPageAction::class)
+                ->setName('common:forbidden');
+
             // CUP section
             $proxy
                 ->group('/cup', function (Group $proxy): void {
@@ -395,10 +399,6 @@ return function (App $app, Container $container): void {
                     // other PUBLIC section
                     $proxy
                         ->group('', function (Group $proxy) use ($container): void {
-                            // forbidden
-                            $proxy->map(['GET', 'POST'], '/forbidden', \App\Application\Actions\Common\ForbiddenPageAction::class)
-                                ->setName('common:forbidden');
-
                             // publication
                             $proxy
                                 ->group('', function (Group $proxy) use ($container): void {
