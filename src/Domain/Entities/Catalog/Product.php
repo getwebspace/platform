@@ -87,12 +87,12 @@ class Product extends AbstractEntity
         return $this->type;
     }
 
-    #[ORM\Column(type: 'text', length: 10000, options: ['default' => ''])]
+    #[ORM\Column(type: 'text', length: 100000, options: ['default' => ''])]
     protected string $description = '';
 
     public function setDescription(string $description): self
     {
-        if ($this->checkStrLenMax($description, 10000)) {
+        if ($this->checkStrLenMax($description, 100000)) {
             $this->description = $description;
         }
 
@@ -104,12 +104,12 @@ class Product extends AbstractEntity
         return $this->description;
     }
 
-    #[ORM\Column(type: 'text', length: 10000, options: ['default' => ''])]
+    #[ORM\Column(type: 'text', length: 100000, options: ['default' => ''])]
     protected string $extra = '';
 
     public function setExtra(string $extra): self
     {
-        if ($this->checkStrLenMax($extra, 10000)) {
+        if ($this->checkStrLenMax($extra, 100000)) {
             $this->extra = $extra;
         }
 

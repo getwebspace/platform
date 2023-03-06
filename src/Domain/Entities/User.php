@@ -352,7 +352,7 @@ class User extends AbstractEntity
         return $this->postcode;
     }
 
-    #[ORM\Column(type: 'string', length: 250, options: ['default' => ''])]
+    #[ORM\Column(type: 'string', length: 1000, options: ['default' => ''])]
     protected string $additional = '';
 
     /**
@@ -360,7 +360,7 @@ class User extends AbstractEntity
      */
     public function setAdditional(string $additional): self
     {
-        if ($this->checkStrLenMax($additional, 250)) {
+        if ($this->checkStrLenMax($additional, 1000)) {
             $this->additional = $additional;
         }
 

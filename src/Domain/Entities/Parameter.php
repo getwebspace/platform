@@ -30,7 +30,7 @@ class Parameter extends AbstractEntity
         return $this->key;
     }
 
-    #[ORM\Column(type: 'text', length: 10000, options: ['default' => ''])]
+    #[ORM\Column(type: 'text', length: 100000, options: ['default' => ''])]
     public string $value = '';
 
     /**
@@ -40,7 +40,7 @@ class Parameter extends AbstractEntity
     {
         $value = (string) $value;
 
-        if ($this->checkStrLenMax($value, 10000)) {
+        if ($this->checkStrLenMax($value, 100000)) {
             $this->value = $value;
         }
 
