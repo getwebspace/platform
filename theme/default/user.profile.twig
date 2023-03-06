@@ -13,10 +13,10 @@
             <div class="row justify-content-center">
                 <div class="col-12">
                     <div class="checkout-steps-form-style-1">
-                        <ul id="accordionExample">
+                        <ul id="accordion">
                             <li>
-                                <h6 class="title" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">Account Details </h6>
-                                <section class="checkout-steps-form-content collapse show" id="collapseThree" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                <h6 class="title" data-bs-toggle="collapse" data-bs-target="#collapse-profile" aria-expanded="true" aria-controls="collapse-profile">Account Details </h6>
+                                <section class="checkout-steps-form-content collapse show" id="collapse-profile" aria-labelledby="headingThree" data-bs-parent="#accordion">
                                     <form method="post" class="contact-form" data-grecaptcha>
                                         <div class="row">
                                             <div class="col-md-12">
@@ -208,8 +208,8 @@
 
                             {% if user.tokens %}
                                 <li>
-                                    <h6 class="title collapsed" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">Active sessions</h6>
-                                    <section class="checkout-steps-form-content collapse" id="collapseFour" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                                    <h6 class="title collapsed" data-bs-toggle="collapse" data-bs-target="#collapse-tokens" aria-expanded="false" aria-controls="collapse-tokens">Active sessions</h6>
+                                    <section class="checkout-steps-form-content collapse" id="collapse-tokens" aria-labelledby="headingFour" data-bs-parent="#accordion">
                                         {% for token in user.tokens %}
                                             <div class="row pt-4">
                                                 <div class="col-8"><b>{{ token.comment }}</b></div>
@@ -228,8 +228,8 @@
 
                             {% if oauth %}
                                 <li>
-                                    <h6 class="title collapsed" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">Social networks</h6>
-                                    <section class="checkout-steps-form-content collapse" id="collapseFour" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+                                    <h6 class="title collapsed" data-bs-toggle="collapse" data-bs-target="#collapse-social" aria-expanded="false" aria-controls="collapse-social">Social networks</h6>
+                                    <section class="checkout-steps-form-content collapse" id="collapse-social" aria-labelledby="headingFour" data-bs-parent="#accordion">
                                         <div class="row pt-4">
                                             {% for type in oauth %}
                                                 <div class="col-md-6 mb-2">
