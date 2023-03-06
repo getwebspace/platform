@@ -21,10 +21,9 @@ services:
             - ./var:/var/container/var:rw
             - ./var/upload:/var/container/public/uploads:rw
             - ./.php-cs-fixer.dist.php:/var/container/.php-cs-fixer.dist.php:ro
-            - ./migrations.json:/var/container/migrations.json:ro
             - ./composer.json:/var/container/composer.json:rw
             - ./composer.lock:/var/container/composer.lock:rw
-            - ./phpunit.xml:/var/container/phpunit.xml:ro
+            - ./phpunit.xml:/var/container/phpunit.xml:rw
 
     phpunit:
         build:
@@ -48,4 +47,4 @@ services:
             - ./.php-cs-fixer.dist.php:/var/container/.php-cs-fixer.dist.php:ro
             - ./composer.json:/var/container/composer.json:rw
             - ./composer.lock:/var/container/composer.lock:rw
-            - ./phpunit.xml:/var/container/phpunit.xml:ro
+            - ./phpunit.xml:/var/container/phpunit.xml:rw
