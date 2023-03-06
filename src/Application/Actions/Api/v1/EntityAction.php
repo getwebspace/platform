@@ -47,12 +47,10 @@ class EntityAction extends ActionApi
             $params['user_uuid'] = $user->getUuid();
         }
 
-        return $this->respondWithJson(
-            $this->process($params)
-        );
+        return $this->process($params);
     }
 
-    private function process($params): array
+    private function process(array $params): \Slim\Psr7\Response
     {
         $status = 200;
         $result = [];
@@ -147,18 +145,18 @@ class EntityAction extends ActionApi
             $result = $exception->getTitle();
         }
 
-        return [
-            'status' => $status,
-            'data' => is_a($result, Collection::class) ? $result->toArray() : $result,
-        ];
+        return $this
+            ->respondWithJson([
+                'status' => $status,
+                'data' => is_a($result, Collection::class) ? $result->toArray() : $result,
+            ])
+            ->withStatus($status);
     }
 
     /**
-     * @param mixed $entity
-     *
      * @throws ContainerExceptionInterface
      */
-    private function getService($entity): ?AbstractService
+    private function getService(mixed $entity): ?AbstractService
     {
         return match ($entity) {
             'catalog/category' => $this->container->get(CatalogCategoryService::class),
