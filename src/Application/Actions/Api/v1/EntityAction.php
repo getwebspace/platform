@@ -72,6 +72,8 @@ class EntityAction extends ActionApi
                 case 'PUT':
                     if (!empty($params['apikey'])) {
                         $result = $service->create([...$this->getParams(), 'user' => $params['user'], 'user_uuid' => $params['user_uuid']]);
+                        $result = $this->processEntityFiles($result);
+
                         $status = 201;
 
                         $this->container->get(\App\Application\PubSub::class)->publish('api:' . str_replace('/', ':', $params['entity']) . ':create', $result);
@@ -92,9 +94,11 @@ class EntityAction extends ActionApi
                                     $result = [$result];
                                 }
 
-                                foreach ($result as $index => $item) {
-                                    $result[$index] = $service->update($item, [...$this->getParams(), 'user' => $params['user'], 'user_uuid' => $params['user_uuid']]);
+                                foreach ($result as &$item) {
+                                    $item = $service->update($item, [...$this->getParams(), 'user' => $params['user'], 'user_uuid' => $params['user_uuid']]);
+                                    $item = $this->processEntityFiles($item);
                                 }
+
                                 $status = 202;
 
                                 $this->container->get(\App\Application\PubSub::class)->publish('api:' . str_replace('/', ':', $params['entity']) . ':edit', $result);
@@ -121,9 +125,10 @@ class EntityAction extends ActionApi
                                     $result = [$result];
                                 }
 
-                                foreach ($result as $index => $item) {
-                                    $result[$index] = $service->delete($item);
+                                foreach ($result as &$item) {
+                                    $item = $service->delete($item);
                                 }
+
                                 $status = 410;
 
                                 $this->container->get(\App\Application\PubSub::class)->publish('api:' . str_replace('/', ':', $params['entity']) . ':delete', $result);
