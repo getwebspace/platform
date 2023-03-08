@@ -11,7 +11,7 @@ class LogoutAction extends AuthAction
 
     protected function action(): \Slim\Psr7\Response
     {
-        $refresh_token = $this->getCookie('refresh_token', null);
+        $refresh_token = $this->getParam('token', $this->getCookie('refresh_token', null));
 
         if ($refresh_token) {
             try {
