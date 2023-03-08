@@ -117,7 +117,8 @@ trait SecurityTrait
                 'sub' => 'user',
                 'uuid' => $user->getUuid()->toString(),
                 'data' => [
-                    'name' => $user->getName(),
+                    'firstname' => $user->getFirstname(),
+                    'lastname' => $user->getLastname(),
                     'username' => $user->getUsername(),
                     'email' => $user->getEmail(),
                     'phone' => $user->getPhone(),
