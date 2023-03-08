@@ -132,7 +132,7 @@ trait SecurityTrait
                     ],
                     'avatar' => $user->avatar(100),
                     'external_id' => $user->getExternalId(),
-                    'group' => $user->getGroup()->getUuid(),
+                    'group' => $user->getGroup() ? $user->getGroup()->getUuid()->toString() : \Ramsey\Uuid\Uuid::NIL,
                     'language' => $user->getLanguage(),
                 ],
                 'iat' => time(),
