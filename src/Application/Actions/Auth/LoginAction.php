@@ -39,7 +39,5 @@ class LoginAction extends AuthAction
         } catch (UserNotFoundException|WrongPasswordException $exception) {
             return $this->response->withStatus(404);
         }
-
-        return $this->response->withStatus(401);
     }
 }

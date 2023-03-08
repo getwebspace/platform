@@ -49,10 +49,9 @@ trait SecurityTrait
     {
         /** @var UserTokenService $userTokenService */
         $userTokenService = $this->container->get(UserTokenService::class);
-        $uuid = $this->getUuidString($user);
 
-        $access_token = $this->getAccessToken($uuid);
-        $refresh_token = $this->getRefreshToken($uuid, $agent, $ip);
+        $access_token = $this->getAccessToken($user);
+        $refresh_token = $this->getRefreshToken($user->getUuid(), $agent, $ip);
 
         $userTokenService->create([
             'user' => $user,
@@ -91,16 +90,35 @@ trait SecurityTrait
     /*
      * Generate JWT
      */
-    protected function getAccessToken(string $uuid): string
+    protected function getAccessToken(User $user): string
     {
         $privateKey = $this->getPrivateKey();
 
         if ($privateKey !== false) {
             $payload = [
                 'sub' => 'user',
-                'uuid' => $uuid,
+                'uuid' => $user->getUuid()->toString(),
+                'data' => [
+                    'name' => $user->getName(),
+                    'username' => $user->getUsername(),
+                    'email' => $user->getEmail(),
+                    'phone' => $user->getPhone(),
+                    'gender' => $user->getGender(),
+                    'birthdate' => $user->getBirthdate(),
+                    'additional' => $user->getAdditional(),
+                    'shipping' => [
+                        'country' => $user->getCountry(),
+                        'city' => $user->getCity(),
+                        'address' => $user->getAddress(),
+                        'postcode' => $user->getPostcode(),
+                    ],
+                    'avatar' => $user->avatar(100),
+                    'external_id' => $user->getExternalId(),
+                    'group' => $user->getGroup()->getUuid(),
+                    'language' => $user->getLanguage(),
+                ],
                 'iat' => time(),
-                'exp' => time() + (\App\Domain\References\Date::MINUTE * 30),
+                'exp' => time() + (\App\Domain\References\Date::MINUTE * 10),
             ];
 
             return JWT::encode($payload, $privateKey, 'RS256');
@@ -112,7 +130,7 @@ trait SecurityTrait
     /*
      * Generate sha1 hash
      */
-    protected function getRefreshToken(string $uuid, string $ip, string $agent): string
+    protected function getRefreshToken(\Ramsey\Uuid\UuidInterface $uuid, string $ip, string $agent): string
     {
         return sha1(
             'uuid:' . $uuid . ';' .

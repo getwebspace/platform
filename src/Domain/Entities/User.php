@@ -77,7 +77,7 @@ class User extends AbstractEntity
     public function avatar(int $size = 40): string
     {
         if ($this->hasFiles()) {
-            return $this->getFiles()->first()->getPublicPath();
+            return $this->getFiles()->first()->getPublicPath('small');
         }
 
         return 'https://www.gravatar.com/avatar/' . md5(mb_strtolower(trim($this->email))) . '?d=identicon&s=' . $size;

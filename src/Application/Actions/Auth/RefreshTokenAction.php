@@ -23,10 +23,10 @@ class RefreshTokenAction extends AuthAction
                 $expired = $token->getDate()->getTimestamp() + \App\Domain\References\Date::MONTH;
 
                 if ($expired >= time()) {
-                    $uuid = $this->getUuidString($token->getUser());
+                    $user = $token->getUser();
 
-                    $access_token = $this->getAccessToken($uuid);
-                    $refresh_token = $this->getRefreshToken($uuid, $token->getAgent(), $token->getIp());
+                    $access_token = $this->getAccessToken($user);
+                    $refresh_token = $this->getRefreshToken($user->getUuid(), $token->getAgent(), $token->getIp());
 
                     $this->userTokenService->update($token, [
                         'unique' => $refresh_token,
