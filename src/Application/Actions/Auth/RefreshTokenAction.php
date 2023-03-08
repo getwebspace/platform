@@ -58,11 +58,4 @@ class RefreshTokenAction extends AuthAction
                 return $this->response->withAddedHeader('Location', $redirect)->withStatus(308);
         }
     }
-
-    private function isRequestJson(): bool
-    {
-        $headerAccept = $this->request->getHeaderLine('accept');
-
-        return str_contains($headerAccept, 'application/json') || $headerAccept === '*/*';
-    }
 }

@@ -23,4 +23,11 @@ abstract class AuthAction extends AbstractAction
         $this->userService = $container->get(UserService::class);
         $this->userTokenService = $container->get(UserTokenService::class);
     }
+
+    protected function isRequestJson(): bool
+    {
+        $headerAccept = $this->request->getHeaderLine('accept');
+
+        return str_contains($headerAccept, 'application/json') || $headerAccept === '*/*';
+    }
 }
