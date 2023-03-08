@@ -155,7 +155,7 @@ trait SecurityTrait
             'uuid:' . $uuid . ';' .
             'ip:' . sha1($ip) . ';' .
             'agent:' . sha1($agent) . ';' .
-            'date:' . time(),
+            'date:' . microtime(),
         );
     }
 
