@@ -12,7 +12,8 @@ class RefreshTokenAction extends AuthAction
     protected function action(): \Slim\Psr7\Response
     {
         $redirect = $this->getParam('redirect', '/');
-        $refresh_token = $this->getCookie('refresh_token', null);
+        $refresh_token = $this->getParam('token', $this->getCookie('refresh_token', null));
+        $output = [];
 
         if ($refresh_token) {
             try {
@@ -34,22 +35,34 @@ class RefreshTokenAction extends AuthAction
 
                     $this->container->get(\App\Application\PubSub::class)->publish('auth:user:refresh-token', $token->getUser());
 
-                    return $this
-                        ->respondWithJson([
-                            'access_token' => $tokens['access_token'],
-                            'refresh_token' => $tokens['refresh_token'],
-                        ])
-                        ->withAddedHeader('Location', $redirect)
-                        ->withStatus(308);
+                    $output = [
+                        'access_token' => $tokens['access_token'],
+                        'refresh_token' => $tokens['refresh_token'],
+                    ];
+                } else {
+                    $this->userTokenService->delete($token);
                 }
-                $this->userTokenService->delete($token);
             } catch (TokenNotFoundException $e) {
-                // nothing
+                $redirect = '/auth/logout';
             }
-
-            return $this->respondWithRedirect('/auth/logout', 307);
+        } else {
+            $redirect = '/auth/logout';
         }
 
-        return $this->respondWithRedirect($redirect, 308);
+        switch ($this->isRequestJson()) {
+            case true:
+                return $this->respondWithJson($output);
+
+            case false:
+            default:
+                return $this->response->withAddedHeader('Location', $redirect)->withStatus(308);
+        }
+    }
+
+    private function isRequestJson(): bool
+    {
+        $headerAccept = $this->request->getHeaderLine('accept');
+
+        return str_contains($headerAccept, 'application/json') || $headerAccept === '*/*';
     }
 }
