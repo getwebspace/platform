@@ -48,11 +48,12 @@ class UserOAuthAction extends UserAction
                 ]);
             }
 
-            $data = [
+            $tokens = $this->getTokenPair([
+                'user' => $user,
                 'agent' => $this->getServerParam('HTTP_USER_AGENT'),
                 'ip' => $this->getRequestRemoteIP(),
-            ];
-            $tokens = $this->getTokenPair($user, $data['ip'], $data['agent'], 'Login via OAuth service');
+                'comment' => 'Login via OAuth service',
+            ]);
 
             setcookie('access_token', $tokens['access_token'], time() + \App\Domain\References\Date::MONTH, '/');
             setcookie('refresh_token', $tokens['refresh_token'], time() + \App\Domain\References\Date::MONTH, '/auth');

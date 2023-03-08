@@ -3,6 +3,7 @@
 namespace App\Domain\Traits;
 
 use App\Domain\Entities\User;
+use App\Domain\Entities\User\Token as UserToken;
 use App\Domain\Service\User\TokenService as UserTokenService;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
@@ -45,22 +46,39 @@ trait SecurityTrait
         return $key;
     }
 
-    public function getTokenPair(User $user, string $ip, string $agent, $comment = ''): array
+    public function getTokenPair(array $data = []): array
     {
+        $default = [
+            'user' => null,
+            'user_token' => null,
+            'ip' => '',
+            'agent' => '',
+            'comment' => '',
+        ];
+        $data = array_merge($default, $data);
+
         /** @var UserTokenService $userTokenService */
         $userTokenService = $this->container->get(UserTokenService::class);
 
-        $access_token = $this->getAccessToken($user);
-        $refresh_token = $this->getRefreshToken($user->getUuid(), $agent, $ip);
+        $access_token = $this->getAccessToken($data['user']);
+        $refresh_token = $this->getRefreshToken($data['user']->getUuid(), $data['agent'], $data['ip']);
 
-        $userTokenService->create([
-            'user' => $user,
-            'unique' => $refresh_token,
-            'comment' => $comment,
-            'ip' => $ip,
-            'agent' => $agent,
-            'date' => 'now',
-        ]);
+        if ($data['user_token'] && is_a($data['user_token'], UserToken::class)) {
+            $userTokenService->update($data['user_token'], [
+                'unique' => $refresh_token,
+                'ip' => $this->getRequestRemoteIP(),
+                'date' => 'now',
+            ]);
+        } else {
+            $userTokenService->create([
+                'user' => $data['user'],
+                'unique' => $refresh_token,
+                'comment' => $data['comment'],
+                'ip' => $data['ip'],
+                'agent' => $data['agent'],
+                'date' => 'now',
+            ]);
+        }
 
         return [
             'access_token' => $access_token,
@@ -76,12 +94,12 @@ trait SecurityTrait
         switch (true) {
             case is_string($uuid) && \Ramsey\Uuid\Uuid::isValid($uuid):
             case is_object($uuid) && is_a($uuid, Uuid::class):
-                $uuid = (string) $uuid;
+                $uuid = (string)$uuid;
 
                 break;
 
             case is_object($uuid) && is_a($uuid, User::class):
-                $uuid = (string) $uuid->getUuid();
+                $uuid = (string)$uuid->getUuid();
         }
 
         return $uuid;
@@ -151,7 +169,7 @@ trait SecurityTrait
         $publicKey = $this->getPublicKey();
 
         if ($publicKey !== false) {
-            return (array) JWT::decode($token, new Key($publicKey, 'RS256'));
+            return (array)JWT::decode($token, new Key($publicKey, 'RS256'));
         }
 
         throw new \RuntimeException('Not exist PEM keys files');

@@ -149,8 +149,6 @@ class UserService extends AbstractService
             'status' => null,
             'external_id' => null,
             'password' => null, // optional: for check
-            'agent' => null, // optional: for update
-            'ip' => null, // optional: for update
         ];
         $data = array_merge($default, static::$default_read, $data);
 

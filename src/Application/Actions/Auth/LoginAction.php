@@ -15,20 +15,20 @@ class LoginAction extends AuthAction
         $identifier = $this->getParam('identifier', '');
         $password = $this->getParam('password', '');
 
-        $data = [
-            'agent' => $this->getServerParam('HTTP_USER_AGENT'),
-            'ip' => $this->getRequestRemoteIP(),
-        ];
-
         try {
             $user = $this->userService->read([
                 'identifier' => $identifier,
                 'password' => $password,
-                'agent' => $data['agent'],
-                'ip' => $data['ip'],
                 'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
             ]);
-            $tokens = $this->getTokenPair($user, $data['ip'], $data['agent'], 'Login via Auth');
+
+            $tokens = $this->getTokenPair([
+                'user' => $user,
+                'agent' => $this->getServerParam('HTTP_USER_AGENT'),
+                'ip' => $this->getRequestRemoteIP(),
+                'comment' => 'Login via Auth',
+            ]);
+
             $this->container->get(\App\Application\PubSub::class)->publish('auth:user:login', $user);
 
             return $this

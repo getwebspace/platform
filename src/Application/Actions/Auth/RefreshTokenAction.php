@@ -23,26 +23,21 @@ class RefreshTokenAction extends AuthAction
                 $expired = $token->getDate()->getTimestamp() + \App\Domain\References\Date::MONTH;
 
                 if ($expired >= time()) {
-                    $user = $token->getUser();
-
-                    $access_token = $this->getAccessToken($user);
-                    $refresh_token = $this->getRefreshToken($user->getUuid(), $token->getAgent(), $token->getIp());
-
-                    $this->userTokenService->update($token, [
-                        'unique' => $refresh_token,
+                    $tokens = $this->getTokenPair([
+                        'user' => $token->getUser(),
+                        'user_token' => $token,
                         'ip' => $this->getRequestRemoteIP(),
-                        'date' => 'now',
                     ]);
 
-                    setcookie('access_token', $access_token, time() + \App\Domain\References\Date::MONTH, '/');
-                    setcookie('refresh_token', $refresh_token, time() + \App\Domain\References\Date::MONTH, '/auth');
+                    setcookie('access_token', $tokens['access_token'], time() + \App\Domain\References\Date::MONTH, '/');
+                    setcookie('refresh_token', $tokens['refresh_token'], time() + \App\Domain\References\Date::MONTH, '/auth');
 
                     $this->container->get(\App\Application\PubSub::class)->publish('auth:user:refresh-token', $token->getUser());
 
                     return $this
                         ->respondWithJson([
-                            'access_token' => $access_token,
-                            'refresh_token' => $refresh_token,
+                            'access_token' => $tokens['access_token'],
+                            'refresh_token' => $tokens['refresh_token'],
                         ])
                         ->withAddedHeader('Location', $redirect)
                         ->withStatus(308);

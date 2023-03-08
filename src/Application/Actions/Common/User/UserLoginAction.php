@@ -18,11 +18,12 @@ class UserLoginAction extends UserAction
         $user = $this->process($identifier, $provider);
 
         if ($user) {
-            $data = [
+            $tokens = $this->getTokenPair([
+                'user' => $user,
                 'agent' => $this->getServerParam('HTTP_USER_AGENT'),
                 'ip' => $this->getRequestRemoteIP(),
-            ];
-            $tokens = $this->getTokenPair($user, $data['ip'], $data['agent'], 'Login via common page');
+                'comment' => 'Login via common page',
+            ]);
 
             setcookie('access_token', $tokens['access_token'], time() + \App\Domain\References\Date::MONTH, '/');
             setcookie('refresh_token', $tokens['refresh_token'], time() + \App\Domain\References\Date::MONTH, '/auth');

@@ -20,9 +20,6 @@ class LoginPageAction extends UserAction
                 'identifier' => $this->getParam('identifier', ''),
                 'password' => $this->getParam('password', ''),
 
-                'agent' => $this->getServerParam('HTTP_USER_AGENT'),
-                'ip' => $this->getRequestRemoteIP(),
-
                 'redirect' => $this->getParam('redirect'),
             ];
 
@@ -31,11 +28,15 @@ class LoginPageAction extends UserAction
                     $user = $this->userService->read([
                         'identifier' => $data['identifier'],
                         'password' => $data['password'],
-                        'agent' => $data['agent'],
-                        'ip' => $data['ip'],
                         'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
                     ]);
-                    $tokens = $this->getTokenPair($user, $data['ip'], $data['agent'], 'Login via CUP');
+
+                    $tokens = $this->getTokenPair([
+                        'user' => $user,
+                        'agent' => $this->getServerParam('HTTP_USER_AGENT'),
+                        'ip' => $this->getRequestRemoteIP(),
+                        'comment' => 'Login via CUP',
+                    ]);
 
                     setcookie('access_token', $tokens['access_token'], time() + \App\Domain\References\Date::MONTH, '/');
                     setcookie('refresh_token', $tokens['refresh_token'], time() + \App\Domain\References\Date::MONTH, '/auth');
