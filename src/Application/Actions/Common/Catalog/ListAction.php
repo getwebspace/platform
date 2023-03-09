@@ -142,8 +142,13 @@ class ListAction extends CatalogAction
                     $params['order'][$order] = $direction;
                 }
             } else {
-                $query->orderBy('p.title', 'ASC');
-                $params['order']['title'] = 'asc';
+                $sortBy = [
+                    'by' => $this->parameter('catalog_sort_by', 'title'),
+                    'direction' => $this->parameter('catalog_sort_direction', 'ASC'),
+                ];
+
+                $query->orderBy('p.' . $sortBy['by'], $sortBy['direction']);
+                $params['order'][$sortBy['by']] = mb_strtolower($sortBy['direction']);
             }
 
             $filtered = collect(
@@ -284,13 +289,8 @@ class ListAction extends CatalogAction
             } else {
                 $sortBy = $category->getSort();
 
-                if ($sortBy['by'] && $sortBy['direction']) {
-                    $query->orderBy('p.' . $sortBy['by'], $sortBy['direction']);
-                    $params['order'][$sortBy['by']] = mb_strtolower($sortBy['direction']);
-                } else {
-                    $query->orderBy('p.title', 'ASC');
-                    $params['order']['title'] = 'asc';
-                }
+                $query->orderBy('p.' . $sortBy['by'], $sortBy['direction']);
+                $params['order'][$sortBy['by']] = mb_strtolower($sortBy['direction']);
             }
 
             $filtered = collect(
