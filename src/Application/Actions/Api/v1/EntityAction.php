@@ -26,37 +26,20 @@ class EntityAction extends ActionApi
 {
     protected function action(): \Slim\Psr7\Response
     {
-        $params = [
-            'user' => null,
-            'user_uuid' => null,
-            'entity' => null,
-            'order' => [],
-            'limit' => 1000,
-            'offset' => 0,
-        ];
-        $params = array_merge($params, $this->request->getQueryParams());
-        $params['entity'] = ltrim($this->resolveArg('args'), '/');
+        $apikey = (bool) $this->request->getAttribute('apikey', false);
+        $entity = ltrim($this->resolveArg('args'), '/');
 
-        if (($apikey = $this->request->getAttribute('apikey', false)) !== false) {
-            $params['apikey'] = $apikey;
-        }
-
-        /** @var User $user */
-        if (($user = $this->request->getAttribute('user', false)) !== false) {
-            $params['user'] = $user;
-            $params['user_uuid'] = $user->getUuid();
-        }
-
-        return $this->process($params);
+        return $this->process($entity, $apikey);
     }
 
-    private function process(array $params): \Slim\Psr7\Response
+    private function process(string $entity, bool $apikey): \Slim\Psr7\Response
     {
         $status = 200;
         $result = [];
 
         try {
-            $service = $this->getService($params['entity']);
+            $params = $this->getParamsQuery();
+            $service = $this->getService($entity);
 
             switch ($this->request->getMethod()) {
                 case 'GET':
@@ -70,8 +53,8 @@ class EntityAction extends ActionApi
 
                 case 'POST':
                 case 'PUT':
-                    if (!empty($params['apikey'])) {
-                        $result = $service->create([...$this->getParams(), 'user' => $params['user'], 'user_uuid' => $params['user_uuid']]);
+                    if ($apikey) {
+                        $result = $service->create($this->getParamsBody());
                         $result = $this->processEntityFiles($result);
 
                         $status = 201;
@@ -85,7 +68,7 @@ class EntityAction extends ActionApi
                     break;
 
                 case 'PATCH':
-                    if (!empty($params['apikey'])) {
+                    if ($apikey) {
                         try {
                             $result = $service->read($params);
 
@@ -95,7 +78,7 @@ class EntityAction extends ActionApi
                                 }
 
                                 foreach ($result as &$item) {
-                                    $item = $service->update($item, [...$this->getParams(), 'user' => $params['user'], 'user_uuid' => $params['user_uuid']]);
+                                    $item = $service->update($item, $this->getParamsBody());
                                     $item = $this->processEntityFiles($item);
                                 }
 
@@ -116,7 +99,7 @@ class EntityAction extends ActionApi
                     break;
 
                 case 'DELETE':
-                    if (!empty($params['apikey'])) {
+                    if ($apikey) {
                         try {
                             $result = $service->read($params);
 
@@ -177,5 +160,38 @@ class EntityAction extends ActionApi
             'user/group' => $this->container->get(UserGroupService::class),
             default => null,
         };
+    }
+
+    private function getParamsQuery(): array
+    {
+        $params = [
+            'user' => null,
+            'user_uuid' => null,
+            'status' => 'work',
+            'order' => [],
+            'limit' => 1000,
+            'offset' => 0,
+        ];
+
+        /** @var User $user */
+        if (($user = $this->request->getAttribute('user', false)) !== false) {
+            $params['user'] = $user;
+            $params['user_uuid'] = $user->getUuid();
+        }
+
+        return array_merge($params, $this->request->getQueryParams());
+    }
+
+    private function getParamsBody(): array
+    {
+        $params = [];
+
+        /** @var User $user */
+        if (($user = $this->request->getAttribute('user', false)) !== false) {
+            $params['user'] = $user;
+            $params['user_uuid'] = $user->getUuid();
+        }
+
+        return array_merge($params, (array) ($this->request->getParsedBody() ?? []));
     }
 }
