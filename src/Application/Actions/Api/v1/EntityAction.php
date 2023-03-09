@@ -59,7 +59,7 @@ class EntityAction extends ActionApi
 
                         $status = 201;
 
-                        $this->container->get(\App\Application\PubSub::class)->publish('api:' . str_replace('/', ':', $params['entity']) . ':create', $result);
+                        $this->container->get(\App\Application\PubSub::class)->publish('api:' . str_replace('/', ':', $entity) . ':create', $result);
                         $this->logger->notice('Create entity via API', $params);
                     } else {
                         $status = 405;
@@ -84,7 +84,7 @@ class EntityAction extends ActionApi
 
                                 $status = 202;
 
-                                $this->container->get(\App\Application\PubSub::class)->publish('api:' . str_replace('/', ':', $params['entity']) . ':edit', $result);
+                                $this->container->get(\App\Application\PubSub::class)->publish('api:' . str_replace('/', ':', $entity) . ':edit', $result);
                                 $this->logger->notice('Update entity via API', $params);
                             } else {
                                 $status = 409;
@@ -114,7 +114,7 @@ class EntityAction extends ActionApi
 
                                 $status = 410;
 
-                                $this->container->get(\App\Application\PubSub::class)->publish('api:' . str_replace('/', ':', $params['entity']) . ':delete', $result);
+                                $this->container->get(\App\Application\PubSub::class)->publish('api:' . str_replace('/', ':', $entity) . ':delete', $result);
                                 $this->logger->notice('Delete entity via API', $params);
                             } else {
                                 $status = 409;
