@@ -1,8 +1,27 @@
+{% if parent != NIL %}
+    {% set subnodes = categories.where('parent', parent) %}
+
+    {% if subnodes.count() %}
+        <!-- Start Widget -->
+        <div class="single-widget">
+            <h3>Sub Categories</h3>
+            <ul class="list">
+                {% for node in subnodes.sortBy('order') %}
+                    <li>
+                        <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ node.address }}">{{ node.title }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <!-- End Widget -->
+    {% endif %}
+{% endif %}
+
 <!-- Start Widget -->
 <div class="single-widget">
-    <h3>All Categories</h3>
+    <h3>Main Categories</h3>
     <ul class="list">
-        {% for node in categories.where('parent', '=', parent ?? NIL).sortBy('order') %}
+        {% for node in categories.where('parent', NIL).sortBy('order') %}
             <li>
                 <a href="/{{ parameter('catalog_address', 'catalog') }}/{{ node.address }}">{{ node.title }}</a>
             </li>
@@ -10,3 +29,4 @@
     </ul>
 </div>
 <!-- End Widget -->
+

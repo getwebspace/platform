@@ -67,7 +67,7 @@
                         </div>
                         <!-- End Widget -->
 
-                        {% include 'catalog.category.menu.twig' with {'categories':categories,'NIL':NIL} %}
+                        {% include 'catalog.category.menu.twig' with {'categories':categories, 'parent': category.uuid.toString() ?? NIL} %}
                         {% include 'catalog.category.price.twig' with {'products': products} %}
                         {% include 'catalog.category.attributes.twig' with {'category': category, 'products': products} %}
                         {% include 'catalog.category.filter.twig' with {'category': category, 'products': products} %}
