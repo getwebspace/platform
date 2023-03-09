@@ -129,7 +129,7 @@ class Attribute extends AbstractEntity
             $buf = $buf->whereIn('product.category', $categories->pluck('uuid'));
         }
 
-        return $buf->unique('value')->pluck('value');
+        return $buf->unique('value')->sortBy('value')->pluck('value');
     }
 
     public function getValuesWithCounts(\Illuminate\Support\Collection $categories = null): \Illuminate\Support\Collection
