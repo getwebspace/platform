@@ -53,6 +53,12 @@ class ParameterService extends AbstractService
         ];
         $data = array_merge($default, static::$default_read, $data);
 
+        $criteria = [];
+
+        if ($data['key'] !== null) {
+            $criteria['key'] = $data['key'];
+        }
+
         try {
             switch (true) {
                 case !is_array($data['key']) && $data['key'] !== null:
@@ -66,7 +72,7 @@ class ParameterService extends AbstractService
                     return $parameter;
 
                 default:
-                    return collect($this->service->findBy([], $data['order'], $data['limit'], $data['offset']));
+                    return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
             }
         } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
             if ($fallback) {
