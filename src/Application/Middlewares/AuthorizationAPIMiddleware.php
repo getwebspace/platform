@@ -60,7 +60,7 @@ class AuthorizationAPIMiddleware extends AbstractMiddleware
 
     protected function checkAPIKey(Request $request): bool
     {
-        $key = $request->getQueryParams()['key'] ?? null;
+        $key = $request->getQueryParams()['apikey'] ?? null;
 
         if ($key === null) {
             $key = $request->getHeaderLine('key');
