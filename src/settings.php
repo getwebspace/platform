@@ -12,7 +12,7 @@ return function (ContainerBuilder $containerBuilder): void {
             'meta' => [
                 'entity_path' => [
                     SRC_DIR . '/Domain/Entities',
-                    PLUGIN_DIR,
+                  # PLUGIN_DIR, // todo ?
                 ],
                 'auto_generate_proxies' => true,
                 'proxy_dir' => CACHE_DIR . '/proxies',
