@@ -141,18 +141,20 @@ class SystemPageAction extends AbstractAction
 
     protected function gen_openssl(): void
     {
-        // generate private key file
-        $privateKeyResource = openssl_pkey_new([
-            'private_key_bits' => 2048,
-            'private_key_type' => OPENSSL_KEYTYPE_RSA,
-        ]);
+        if (!file_exists(self::PRIVATE_SECRET_FILE) || !file_exists(self::PUBLIC_SECRET_FILE)) {
+            // generate private key file
+            $privateKeyResource = openssl_pkey_new([
+                'private_key_bits' => 2048,
+                'private_key_type' => OPENSSL_KEYTYPE_RSA,
+            ]);
 
-        openssl_pkey_export_to_file($privateKeyResource, self::PRIVATE_SECRET_FILE);
+            openssl_pkey_export_to_file($privateKeyResource, self::PRIVATE_SECRET_FILE);
 
-        // generate public key for private key
-        $privateKeyDetailsArray = openssl_pkey_get_details($privateKeyResource);
+            // generate public key for private key
+            $privateKeyDetailsArray = openssl_pkey_get_details($privateKeyResource);
 
-        file_put_contents(self::PUBLIC_SECRET_FILE, $privateKeyDetailsArray['key']);
+            file_put_contents(self::PUBLIC_SECRET_FILE, $privateKeyDetailsArray['key']);
+        }
     }
 
     protected function self_check(): array
