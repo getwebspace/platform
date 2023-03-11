@@ -108,7 +108,7 @@ class Task extends AbstractEntity
         return $this->status;
     }
 
-    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
+    #[ORM\Column(type: 'array', options: ['default' => 'a:0:{}'])]
     protected array $params = [];
 
     /**
