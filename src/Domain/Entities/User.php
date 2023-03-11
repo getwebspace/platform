@@ -516,7 +516,7 @@ class User extends AbstractEntity
 
     #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\User\Group')]
     #[ORM\JoinColumn(name: 'group_uuid', referencedColumnName: 'uuid')]
-    protected $group = null;
+    protected ?UserGroup $group = null;
 
     /**
      * @param string|UserGroup $group
