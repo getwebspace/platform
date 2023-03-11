@@ -32,11 +32,9 @@ class OrderUpdateAction extends CatalogAction
                             'shipping' => $this->getParam('shipping'),
                             'external_id' => $this->getParam('external_id'),
                             'system' => $this->getParam('system', ''),
+
+                            'products' => $this->getParam('products', []),
                         ]);
-                        $this->catalogOrderProductService->proccess(
-                            $order,
-                            $this->getParam('products', [])
-                        );
 
                         $this->container->get(\App\Application\PubSub::class)->publish('cup:catalog:order:edit', $order);
 

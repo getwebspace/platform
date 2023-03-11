@@ -48,8 +48,6 @@ class OrderProductService extends AbstractService
             }
         }
 
-        $this->entityManager->refresh($order);
-
         return $result;
     }
 

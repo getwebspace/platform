@@ -34,8 +34,6 @@ abstract class CatalogAction extends AbstractAction
 
     protected CatalogOrderStatusService $catalogOrderStatusService;
 
-    protected CatalogOrderProductService $catalogOrderProductService;
-
     protected CatalogMeasureService $catalogMeasureService;
 
     protected NotificationService $notificationService;
@@ -55,7 +53,6 @@ abstract class CatalogAction extends AbstractAction
         $this->catalogProductRelationService = $container->get(CatalogProductRelationService::class);
         $this->catalogOrderService = $container->get(CatalogOrderService::class);
         $this->catalogOrderStatusService = $container->get(CatalogOrderStatusService::class);
-        $this->catalogOrderProductService = $container->get(CatalogOrderProductService::class);
         $this->catalogMeasureService = $container->get(CatalogMeasureService::class);
         $this->notificationService = $container->get(NotificationService::class);
     }

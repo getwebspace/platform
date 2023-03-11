@@ -18,6 +18,8 @@ class CartAction extends CatalogAction
                 'comment' => $this->getParam('comment', ''),
                 'shipping' => $this->getParam('shipping'),
                 'system' => $this->getParam('system', ''),
+
+                'products' => $this->getParam('products', []),
             ];
 
             /**
@@ -54,11 +56,7 @@ class CartAction extends CatalogAction
 
             if ($this->isRecaptchaChecked()) {
                 // todo try/catch
-                $order = static::$storage['order'] = $this->catalogOrderService->create($data);
-                $this->catalogOrderProductService->proccess(
-                    $order,
-                    $this->getParam('products', [])
-                );
+                $order = $this->catalogOrderService->create($data);
 
                 // notify to admin and user
                 if ($this->parameter('notification_is_enabled', 'yes') === 'yes') {

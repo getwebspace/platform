@@ -9,6 +9,7 @@ use App\Domain\Repository\Catalog\OrderRepository;
 use App\Domain\Service\Catalog\Exception\OrderNotFoundException;
 use App\Domain\Service\Catalog\Exception\WrongEmailValueException;
 use App\Domain\Service\Catalog\Exception\WrongPhoneValueException;
+use App\Domain\Service\Catalog\OrderProductService as OrderProductService;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
@@ -19,9 +20,12 @@ class OrderService extends AbstractService
      */
     protected mixed $service;
 
+    protected OrderProductService $orderProductService;
+
     protected function init(): void
     {
         $this->service = $this->entityManager->getRepository(Order::class);
+        $this->orderProductService = $this->container->get(OrderProductService::class);
     }
 
     /**
@@ -46,6 +50,8 @@ class OrderService extends AbstractService
             'external_id' => '',
             'export' => 'manual',
             'system' => '',
+
+            'products' => [],
         ];
         $data = array_merge($default, $data);
 
@@ -64,6 +70,10 @@ class OrderService extends AbstractService
             ->setSystem($data['system']);
 
         $this->entityManager->persist($order);
+
+        // add products
+        $this->orderProductService->proccess($order, $data['products']);
+
         $this->entityManager->flush();
 
         return $order;
@@ -171,6 +181,8 @@ class OrderService extends AbstractService
                 'external_id' => null,
                 'export' => null,
                 'system' => null,
+
+                'products' => null,
             ];
             $data = array_merge($default, $data);
 
@@ -214,6 +226,10 @@ class OrderService extends AbstractService
                 }
                 if ($data['system'] !== null) {
                     $entity->setSystem($data['system']);
+                }
+                if ($data['products'] !== null) {
+                    // update products
+                    $this->orderProductService->proccess($entity, $data['products']);
                 }
 
                 $this->entityManager->flush();

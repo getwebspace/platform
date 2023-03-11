@@ -8,7 +8,6 @@ use App\Domain\AbstractNotFoundException;
 use App\Domain\AbstractService;
 use App\Domain\Entities\User;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
-use App\Domain\Service\Catalog\OrderProductService as CatalogOrderProductService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\File\FileService;
@@ -152,7 +151,6 @@ class EntityAction extends ActionApi
             'catalog/category' => $this->container->get(CatalogCategoryService::class),
             'catalog/product' => $this->container->get(CatalogProductService::class),
             'catalog/order' => $this->container->get(CatalogOrderService::class),
-            'catalog/order/product' => $this->container->get(CatalogOrderProductService::class),
             'file' => $this->container->get(FileService::class),
             'guestbook' => $this->container->get(GuestBookService::class),
             'page' => $this->container->get(PageService::class),
