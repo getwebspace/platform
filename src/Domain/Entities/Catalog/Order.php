@@ -215,14 +215,32 @@ class Order extends AbstractEntity
     #[ORM\OneToMany(targetEntity: 'App\Domain\Entities\Catalog\OrderProduct', mappedBy: 'order', orphanRemoval: true)]
     protected $products = [];
 
-    public function getProducts($raw = false)
-    {
-        return $raw ? $this->products : collect($this->products);
-    }
-
     public function hasProducts()
     {
         return count($this->products);
+    }
+
+    public function addProduct(OrderProduct $product)
+    {
+        $this->products[] = $product;
+
+        return $this;
+    }
+
+    public function addProducts(array $products)
+    {
+        $this->products = [];
+
+        foreach ($products as $product) {
+            $this->products[] = $product;
+        }
+
+        return $this;
+    }
+
+    public function getProducts($raw = false)
+    {
+        return $raw ? $this->products : collect($this->products);
     }
 
     public function getTotalPrice($price_type = 'price'): float

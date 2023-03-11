@@ -26,7 +26,7 @@ class OrderProductService extends AbstractService
         $this->catalogProductService = $this->container->get(CatalogProductService::class);
     }
 
-    public function proccess(Order $order, array $products): array
+    public function proccess(Order $order, array $products): void
     {
         foreach ($order->getProducts() as $product) {
             $this->delete($product);
@@ -48,13 +48,13 @@ class OrderProductService extends AbstractService
             }
         }
 
-        return $result;
+        $order->addProducts($result);
     }
 
     /**
      * @return OrderProduct
      */
-    public function create(array $data = [])
+    public function create(array $data = []): OrderProduct
     {
         $default = [
             'order' => '',
@@ -94,7 +94,7 @@ class OrderProductService extends AbstractService
      *
      * @return bool
      */
-    public function delete($entity)
+    public function delete($entity): true
     {
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
