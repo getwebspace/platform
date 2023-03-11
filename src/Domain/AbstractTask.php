@@ -41,7 +41,7 @@ abstract class AbstractTask
      */
     public static function workerCreatePidFile(string $action = ''): void
     {
-        file_put_contents(VAR_DIR . '/' . ($action ? mb_strtolower($action) . '.' : '') . 'worker.pid', getmypid());
+        file_put_contents(VAR_DIR . '/' . ($action ? str_replace(['/', '\\'], '-', mb_strtolower($action)) . '.' : '') . 'worker.pid', getmypid());
     }
 
     /**
@@ -49,7 +49,7 @@ abstract class AbstractTask
      */
     public static function workerHasPidFile(string $action = ''): bool
     {
-        return file_exists(VAR_DIR . '/' . ($action ? mb_strtolower($action) . '.' : '') . 'worker.pid');
+        return file_exists(VAR_DIR . '/' . ($action ? str_replace(['/', '\\'], '-', mb_strtolower($action)) . '.' : '') . 'worker.pid');
     }
 
     /**
@@ -57,7 +57,7 @@ abstract class AbstractTask
      */
     public static function workerRemovePidFile(string $action = ''): void
     {
-        @unlink(VAR_DIR . '/' . ($action ? mb_strtolower($action) . '.' : '') . 'worker.pid');
+        @unlink(VAR_DIR . '/' . ($action ? str_replace(['/', '\\'], '-', mb_strtolower($action)) . '.' : '') . 'worker.pid');
     }
 
     /**
