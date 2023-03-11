@@ -78,47 +78,6 @@ class CartAction extends CatalogAction
                     }
                 }
 
-                $isNeedRunWorker = false;
-
-                // mail to administrator
-                if (
-                    ($this->parameter('catalog_mail_admin', 'off') === 'on')
-                    && ($email = $this->parameter('mail_from', '')) !== ''
-                    && ($tpl = $this->parameter('catalog_mail_admin_template', '')) !== ''
-                ) {
-                    // add task send admin mail
-                    $task = new \App\Domain\Tasks\SendMailTask($this->container);
-                    $task->execute([
-                        'to' => $email,
-                        'template' => $tpl,
-                        'data' => ['order' => $order],
-                        'isHtml' => true,
-                    ]);
-                    $isNeedRunWorker = $task;
-                }
-
-                // mail to client
-                if (
-                    ($this->parameter('catalog_mail_client', 'off') === 'on')
-                    && $order->getEmail()
-                    && ($tpl = $this->parameter('catalog_mail_client_template', '')) !== ''
-                ) {
-                    // add task send client mail
-                    $task = new \App\Domain\Tasks\SendMailTask($this->container);
-                    $task->execute([
-                        'to' => $order->getEmail(),
-                        'template' => $tpl,
-                        'data' => ['order' => $order],
-                        'isHtml' => true,
-                    ]);
-                    $isNeedRunWorker = $task;
-                }
-
-                // run worker
-                if ($isNeedRunWorker) {
-                    \App\Domain\AbstractTask::worker($isNeedRunWorker);
-                }
-
                 $this->container->get(\App\Application\PubSub::class)->publish('common:catalog:order:create', $order);
 
                 if (

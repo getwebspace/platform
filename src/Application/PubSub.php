@@ -2,10 +2,15 @@
 
 namespace App\Application;
 
+use App\Domain\Traits\ParameterTrait;
+use App\Domain\Traits\RendererTrait;
 use Psr\Container\ContainerInterface;
 
 class PubSub
 {
+    use ParameterTrait;
+    use RendererTrait;
+
     protected ContainerInterface $container;
 
     protected array $subscribers = [];
@@ -13,6 +18,93 @@ class PubSub
     final public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
+        $this->renderer = $container->get('view');
+
+        // todo come up with a new place for it
+        // ----------------------------------------------------
+
+        // reindex search
+        $this->subscribe(
+            [
+                'api:page:create',
+                'api:page:edit',
+                'api:page:delete',
+                'api:publication:create',
+                'api:publication:edit',
+                'api:publication:delete',
+                'api:catalog:product:create',
+                'api:catalog:product:edit',
+                'api:catalog:product:delete',
+                'cup:page:create',
+                'cup:page:edit',
+                'cup:page:delete',
+                'cup:publication:create',
+                'cup:publication:edit',
+                'cup:publication:delete',
+                'cup:catalog:product:create',
+                'cup:catalog:product:edit',
+                'cup:catalog:product:delete',
+                'task:catalog:import',
+            ],
+            function ($data, $container) {
+                $task = new \App\Domain\Tasks\SearchIndexTask($container);
+                $task->execute();
+
+                // run worker
+                \App\Domain\AbstractTask::worker($task);
+            }
+        );
+
+        // send mail when order created
+        $this->subscribe(
+            [
+                'api:catalog:order:create',
+                'common:catalog:order:create',
+                'cup:catalog:order:create',
+            ],
+            function ($order, $container) {
+                $isNeedRunWorker = false;
+
+                // mail to administrator
+                if (
+                    ($this->parameter('catalog_mail_admin', 'off') === 'on')
+                    && ($email = $this->parameter('mail_from', '')) !== ''
+                    && ($tpl = $this->parameter('catalog_mail_admin_template', '')) !== ''
+                ) {
+                    // add task send admin mail
+                    $task = new \App\Domain\Tasks\SendMailTask($container);
+                    $task->execute([
+                        'to' => $email,
+                        'template' => $this->render($tpl, ['order' => $order]),
+                        'isHtml' => true,
+                    ]);
+                    $isNeedRunWorker = $task;
+                }
+
+                // mail to client
+                if (
+                    ($this->parameter('catalog_mail_client', 'off') === 'on')
+                    && $order->getEmail()
+                    && ($tpl = $this->parameter('catalog_mail_client_template', '')) !== ''
+                ) {
+                    // add task send client mail
+                    $task = new \App\Domain\Tasks\SendMailTask($container);
+                    $task->execute([
+                        'to' => $order->getEmail(),
+                        'template' => $this->render($tpl, ['order' => $order]),
+                        'isHtml' => true,
+                    ]);
+                    $isNeedRunWorker = $task;
+                }
+
+                // run worker
+                if ($isNeedRunWorker) {
+                    \App\Domain\AbstractTask::worker($isNeedRunWorker);
+                }
+            }
+        );
+
+        // ----------------------------------------------------
     }
 
     /**
