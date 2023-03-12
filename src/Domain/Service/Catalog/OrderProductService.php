@@ -51,9 +51,6 @@ class OrderProductService extends AbstractService
         $order->addProducts($result);
     }
 
-    /**
-     * @return OrderProduct
-     */
     public function create(array $data = []): OrderProduct
     {
         $default = [

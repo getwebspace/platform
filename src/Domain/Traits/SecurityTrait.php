@@ -94,12 +94,12 @@ trait SecurityTrait
         switch (true) {
             case is_string($uuid) && \Ramsey\Uuid\Uuid::isValid($uuid):
             case is_object($uuid) && is_a($uuid, Uuid::class):
-                $uuid = (string)$uuid;
+                $uuid = (string) $uuid;
 
                 break;
 
             case is_object($uuid) && is_a($uuid, User::class):
-                $uuid = (string)$uuid->getUuid();
+                $uuid = (string) $uuid->getUuid();
         }
 
         return $uuid;
@@ -170,7 +170,7 @@ trait SecurityTrait
         $publicKey = $this->getPublicKey();
 
         if ($publicKey !== false) {
-            return (array)JWT::decode($token, new Key($publicKey, 'RS256'));
+            return (array) JWT::decode($token, new Key($publicKey, 'RS256'));
         }
 
         throw new \RuntimeException('Not exist PEM keys files');

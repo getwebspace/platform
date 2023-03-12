@@ -9,7 +9,6 @@ use App\Domain\Repository\Catalog\OrderRepository;
 use App\Domain\Service\Catalog\Exception\OrderNotFoundException;
 use App\Domain\Service\Catalog\Exception\WrongEmailValueException;
 use App\Domain\Service\Catalog\Exception\WrongPhoneValueException;
-use App\Domain\Service\Catalog\OrderProductService as OrderProductService;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 

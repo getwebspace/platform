@@ -64,7 +64,7 @@ class CatalogCategoryAPITest extends TestCase
         $response = $this->createRequest()->get('/api/v1/catalog/category', [
             'headers' => ['key' => $this->apikey],
             'query' => [
-                'uuid' => $json['data']['uuid'] ?? 'null'
+                'uuid' => $json['data']['uuid'] ?? 'null',
             ],
         ]);
         $this->assertEquals(200, $response->getStatusCode());
@@ -111,7 +111,7 @@ class CatalogCategoryAPITest extends TestCase
         $response = $this->createRequest()->patch('/api/v1/catalog/category', [
             'headers' => ['key' => $this->apikey],
             'query' => [
-                'uuid' => $json['data']['uuid'] ?? 'null'
+                'uuid' => $json['data']['uuid'] ?? 'null',
             ],
             'form_params' => $data,
         ]);
@@ -121,7 +121,7 @@ class CatalogCategoryAPITest extends TestCase
         $response = $this->createRequest()->get('/api/v1/catalog/category', [
             'headers' => ['key' => $this->apikey],
             'query' => [
-                'uuid' => $json['data']['uuid'] ?? 'null'
+                'uuid' => $json['data']['uuid'] ?? 'null',
             ],
         ]);
         $this->assertEquals(200, $response->getStatusCode());
@@ -159,7 +159,7 @@ class CatalogCategoryAPITest extends TestCase
         $response = $this->createRequest()->delete('/api/v1/catalog/category', [
             'headers' => ['key' => $this->apikey],
             'query' => [
-                'uuid' => $json['data']['uuid'] ?? 'null'
+                'uuid' => $json['data']['uuid'] ?? 'null',
             ],
         ]);
         $this->assertEquals(410, $response->getStatusCode());

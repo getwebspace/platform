@@ -46,7 +46,7 @@ class PubSub
                 'cup:catalog:product:delete',
                 'task:catalog:import',
             ],
-            function ($data, $container) {
+            function ($data, $container): void {
                 $task = new \App\Domain\Tasks\SearchIndexTask($container);
                 $task->execute();
 
@@ -62,7 +62,7 @@ class PubSub
                 'common:catalog:order:create',
                 'cup:catalog:order:create',
             ],
-            function ($order, $container) {
+            function ($order, $container): void {
                 $isNeedRunWorker = false;
 
                 // mail to administrator
