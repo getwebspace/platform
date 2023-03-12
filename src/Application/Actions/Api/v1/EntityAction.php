@@ -26,18 +26,12 @@ class EntityAction extends ActionApi
 {
     protected function action(): \Slim\Psr7\Response
     {
-        $apikey = (bool) $this->request->getAttribute('apikey', false);
-        $entity = ltrim($this->resolveArg('args'), '/');
-
-        return $this->process($entity, $apikey);
-    }
-
-    private function process(string $entity, bool $apikey): \Slim\Psr7\Response
-    {
         $status = 200;
         $result = [];
 
         try {
+            $apikey = (bool) $this->request->getAttribute('apikey', false);
+            $entity = ltrim($this->resolveArg('args'), '/');
             $params = $this->getParamsQuery();
             $service = $this->getService($entity);
 
