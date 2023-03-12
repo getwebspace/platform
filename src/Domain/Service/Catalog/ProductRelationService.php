@@ -22,7 +22,7 @@ class ProductRelationService extends AbstractService
         $this->service = $this->entityManager->getRepository(Product::class);
     }
 
-    public function proccess(Product $product, array $relations): array
+    public function process(Product $product, array $relations): array
     {
         foreach ($product->getRelations() as $relation) {
             $this->delete($relation);

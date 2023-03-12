@@ -22,7 +22,7 @@ class ProductAttributeService extends AbstractService
         $this->service = $this->entityManager->getRepository(Attribute::class);
     }
 
-    public function proccess(Product $product, array $attributes, bool $update_only = false): Product
+    public function process(Product $product, array $attributes, bool $update_only = false): Product
     {
         if ($update_only === false) {
             foreach ($product->getAttributes() as $attribute) {

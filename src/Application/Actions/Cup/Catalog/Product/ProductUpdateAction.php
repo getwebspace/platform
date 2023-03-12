@@ -52,11 +52,11 @@ class ProductUpdateAction extends CatalogAction
                             'meta' => $this->getParam('meta'),
                             'external_id' => $this->getParam('external_id'),
                         ]);
-                        $this->catalogProductAttributeService->proccess(
+                        $this->catalogProductAttributeService->process(
                             $product,
                             $this->getParam('attributes', [])
                         );
-                        $this->catalogProductRelationService->proccess(
+                        $this->catalogProductRelationService->process(
                             $product, $this->getParam('relation', [])
                         );
                         $product = $this->processEntityFiles($product);

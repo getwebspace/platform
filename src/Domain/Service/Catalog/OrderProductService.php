@@ -26,7 +26,7 @@ class OrderProductService extends AbstractService
         $this->catalogProductService = $this->container->get(CatalogProductService::class);
     }
 
-    public function proccess(Order $order, array $products): void
+    public function process(Order $order, array $products): void
     {
         foreach ($order->getProducts() as $product) {
             $this->delete($product);

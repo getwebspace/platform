@@ -157,7 +157,7 @@ class ImportTask extends AbstractTask
                                             )
                                         );
 
-                                        $catalogProductAttributeService->proccess(
+                                        $catalogProductAttributeService->process(
                                             $product,
                                             $data->intersectByKeys($attributes->pluck('title', 'address'))->map(fn ($el) => $el['raw'])->all(),
                                             true
@@ -190,7 +190,7 @@ class ImportTask extends AbstractTask
                                     $update['category'] = $category->getUuid();
                                 }
                                 $catalogProductService->update($product, $update);
-                                $catalogProductAttributeService->proccess(
+                                $catalogProductAttributeService->process(
                                     $product,
                                     $data->intersectByKeys($attributes->pluck('title', 'address'))->map(fn ($el) => $el['raw'])->all(),
                                     true

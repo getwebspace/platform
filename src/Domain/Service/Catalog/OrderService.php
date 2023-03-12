@@ -72,7 +72,7 @@ class OrderService extends AbstractService
         $this->entityManager->persist($order);
 
         // add products
-        $this->orderProductService->proccess($order, $data['products']);
+        $this->orderProductService->process($order, $data['products']);
 
         $this->entityManager->flush();
 
@@ -229,7 +229,7 @@ class OrderService extends AbstractService
                 }
                 if ($data['products'] !== null) {
                     // update products
-                    $this->orderProductService->proccess($entity, $data['products']);
+                    $this->orderProductService->process($entity, $data['products']);
                 }
 
                 $this->entityManager->flush();
