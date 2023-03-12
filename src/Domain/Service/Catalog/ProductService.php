@@ -10,6 +10,8 @@ use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\CategoryNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\ProductNotFoundException;
+use App\Domain\Service\Catalog\ProductAttributeService as CatalogProductAttributeService;
+use App\Domain\Service\Catalog\ProductRelationService as CatalogProductRelationService;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
@@ -20,9 +22,15 @@ class ProductService extends AbstractService
      */
     protected mixed $service;
 
+    protected CatalogProductAttributeService $catalogProductAttributeService;
+
+    protected CatalogProductRelationService $catalogProductRelationService;
+
     protected function init(): void
     {
         $this->service = $this->entityManager->getRepository(Product::class);
+        $this->catalogProductAttributeService = $this->container->get(CatalogProductAttributeService::class);
+        $this->catalogProductRelationService = $this->container->get(CatalogProductRelationService::class);
     }
 
     /**
@@ -68,6 +76,9 @@ class ProductService extends AbstractService
             ],
             'external_id' => '',
             'export' => 'manual',
+
+            'attributes' => [],
+            'relation' => [],
         ];
         $data = array_merge($default, $data);
 
@@ -138,6 +149,13 @@ class ProductService extends AbstractService
         }
 
         $this->entityManager->persist($product);
+
+        // add attributes
+        $this->catalogProductAttributeService->process($product, $data['attributes']);
+
+        // add relation products
+        $this->catalogProductRelationService->process($product, $data['relation']);
+
         $this->entityManager->flush();
 
         return $product;
@@ -294,6 +312,9 @@ class ProductService extends AbstractService
                 'meta' => null,
                 'external_id' => null,
                 'export' => null,
+
+                'attributes' => null,
+                'relation' => null,
             ];
             $data = array_merge($default, $data);
 
@@ -402,6 +423,14 @@ class ProductService extends AbstractService
                 }
                 if ($data['export'] !== null) {
                     $entity->setExport($data['export']);
+                }
+                if ($data['attributes'] !== null) {
+                    // update attributes
+                    $this->catalogProductAttributeService->process($entity, $data['attributes']);
+                }
+                if ($data['relation'] !== null) {
+                    // update relation products
+                    $this->catalogProductRelationService->process($entity, $data['relation']);
                 }
 
                 $entity->setDate('now', $this->parameter('common_timezone', 'UTC'));

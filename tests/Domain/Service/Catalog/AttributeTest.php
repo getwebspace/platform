@@ -32,7 +32,6 @@ class AttributeTest extends TestCase
         $this->attributeService = $this->getService(AttributeService::class);
         $this->categoryService = $this->getService(CategoryService::class);
         $this->productService = $this->getService(ProductService::class);
-        $this->productAttributeService = $this->getService(ProductAttributeService::class);
     }
 
     public function testCategoryWithAttribute(): void
@@ -101,15 +100,15 @@ class AttributeTest extends TestCase
         $product = $this->productService->create([
             'title' => $this->getFaker()->title,
             'description' => $this->getFaker()->text(100),
+
+            // set attributes to product
+            'attributes' => [
+                $attr1->getUuid()->toString() => $this->getFaker()->word,
+                $attr2->getUuid()->toString() => $this->getFaker()->word,
+            ],
         ]);
         $this->assertInstanceOf(Product::class, $product);
 
-        // set attributes to product
-        $this->productAttributeService->process($product, [
-            $attr1->getUuid()->toString() => $this->getFaker()->word,
-            $attr2->getUuid()->toString() => $this->getFaker()->word,
-        ]);
-
-        // to do add few asserts
+        // todo add few asserts
     }
 }

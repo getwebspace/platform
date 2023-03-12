@@ -51,14 +51,10 @@ class ProductUpdateAction extends CatalogAction
                             'date' => $this->getParam('date'),
                             'meta' => $this->getParam('meta'),
                             'external_id' => $this->getParam('external_id'),
+
+                            'attributes' => $this->getParam('attributes', []),
+                            'relation' => $this->getParam('relation', []),
                         ]);
-                        $this->catalogProductAttributeService->process(
-                            $product,
-                            $this->getParam('attributes', [])
-                        );
-                        $this->catalogProductRelationService->process(
-                            $product, $this->getParam('relation', [])
-                        );
                         $product = $this->processEntityFiles($product);
 
                         $this->container->get(\App\Application\PubSub::class)->publish('cup:catalog:product:edit', $product);

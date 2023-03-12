@@ -6,11 +6,8 @@ use App\Domain\AbstractAction;
 use App\Domain\Service\Catalog\AttributeService as CatalogAttributeService;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\MeasureService as CatalogMeasureService;
-use App\Domain\Service\Catalog\OrderProductService as CatalogOrderProductService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
 use App\Domain\Service\Catalog\OrderStatusService as CatalogOrderStatusService;
-use App\Domain\Service\Catalog\ProductAttributeService as CatalogProductAttributeService;
-use App\Domain\Service\Catalog\ProductRelationService as CatalogProductRelationService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\Notification\NotificationService;
 use App\Domain\Service\User\UserService;
@@ -25,10 +22,6 @@ abstract class CatalogAction extends AbstractAction
     protected CatalogProductService $catalogProductService;
 
     protected CatalogAttributeService $catalogAttributeService;
-
-    protected CatalogProductAttributeService $catalogProductAttributeService;
-
-    protected CatalogProductRelationService $catalogProductRelationService;
 
     protected CatalogOrderService $catalogOrderService;
 
@@ -49,8 +42,6 @@ abstract class CatalogAction extends AbstractAction
         $this->catalogAttributeService = $container->get(CatalogAttributeService::class);
         $this->catalogCategoryService = $container->get(CatalogCategoryService::class);
         $this->catalogProductService = $container->get(CatalogProductService::class);
-        $this->catalogProductAttributeService = $container->get(CatalogProductAttributeService::class);
-        $this->catalogProductRelationService = $container->get(CatalogProductRelationService::class);
         $this->catalogOrderService = $container->get(CatalogOrderService::class);
         $this->catalogOrderStatusService = $container->get(CatalogOrderStatusService::class);
         $this->catalogMeasureService = $container->get(CatalogMeasureService::class);

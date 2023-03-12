@@ -146,24 +146,20 @@ class ImportTask extends AbstractTask
                                     }
 
                                     if ($create) {
-                                        $product = $catalogProductService->create(
+                                        $catalogProductService->create(
                                             array_merge(
                                                 $create,
                                                 [
                                                     'category' => $category->getUuid(),
                                                     'date' => $now,
                                                     'export' => 'excel',
+                                                    'attributes' => $data
+                                                        ->intersectByKeys($attributes->pluck('title', 'address'))
+                                                        ->map(fn ($el) => $el['raw'])
+                                                        ->all(),
                                                 ]
                                             )
                                         );
-
-                                        $catalogProductAttributeService->process(
-                                            $product,
-                                            $data->intersectByKeys($attributes->pluck('title', 'address'))->map(fn ($el) => $el['raw'])->all(),
-                                            true
-                                        );
-
-                                        $product = null;
                                     }
                                 } catch (MissingTitleValueException $e) {
                                     $this->logger->warning('Product wrong title value');
@@ -175,7 +171,7 @@ class ImportTask extends AbstractTask
                             if ($product) {
                                 $this->logger->info('Update product data', [$key_field => @$data[$key_field]['formatted']]);
 
-                                $update = ['date' => $now];
+                                $update = [];
                                 foreach ($data as $key => $value) {
                                     if (
                                         $key !== 'empty'
@@ -189,12 +185,16 @@ class ImportTask extends AbstractTask
                                 if ($category) {
                                     $update['category'] = $category->getUuid();
                                 }
-                                $catalogProductService->update($product, $update);
-                                $catalogProductAttributeService->process(
-                                    $product,
-                                    $data->intersectByKeys($attributes->pluck('title', 'address'))->map(fn ($el) => $el['raw'])->all(),
-                                    true
-                                );
+                                $catalogProductService->update($product, array_merge(
+                                    $update,
+                                    [
+                                        'date' => $now,
+                                        'attributes' => $data
+                                            ->intersectByKeys($attributes->pluck('title', 'address'))
+                                            ->map(fn ($el) => $el['raw'])
+                                            ->all(),
+                                    ]
+                                ));
                             }
                         }
 
