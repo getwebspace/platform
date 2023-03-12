@@ -315,6 +315,12 @@ return function (App $app, Container $container): void {
                     // task add to queue
                     $proxy->post('/task/run', \App\Application\Actions\Cup\Task\TaskRunAction::class)
                         ->setName('cup:task:run');
+
+                    // cup entity getter/setter
+                    $proxy
+                        ->map(['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], '/api/v1/{args:.*}', \App\Application\Actions\Api\v1\EntityAction::class)
+                        ->setName('cup:api:v1:entity')
+                        ->add(\Slim\Middleware\BodyParsingMiddleware::class);
                 })
                 ->add(new \Slim\HttpCache\Cache('private', 0, true));
 
