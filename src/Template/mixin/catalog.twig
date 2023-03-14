@@ -56,17 +56,10 @@
                 // item type by default (e.g. 'product')
                 item_type: 'product',
 
-                // precision settings
-                // count of zeros after the decimal point
-                precision: {
-                    count: 0, // in item counts
-                    price: 2, // in item prices and totals
-                },
-
-                // currency
-                currency: {
-                    position: 'after', // or 'before'
-                    symbol: '',
+                // format settings
+                format: {
+                    count: ['{{ _language }}', {}], // in item counts
+                    price: ['{{ _language }}', {}], // in item prices and totals
                 },
 
                 // default selectors
@@ -270,7 +263,7 @@
                                                 $('<input>')
                                                     .attr('type', 'number')
                                                     .attr('step', item.quantity_step || 1)
-                                                    .val(item.quantity.toFixed(options.precision.count))
+                                                    .val(item.quantity.toLocaleString(...options.format.count).replace(',', '.')) // I'm shocked too
                                                     .on('change', (e) => {
                                                         this.cartItemChangeCount($(e.currentTarget).val(), item.uuid, 'uuid');
                                                     })
@@ -278,20 +271,12 @@
                                             break;
                                         case 'price':
                                             $column.text(
-                                                [
-                                                    (options.currency.position === 'before' ? options.currency.symbol : ''),
-                                                    (item.price).toFixed(options.precision.price),
-                                                    (options.currency.position === 'after' ? options.currency.symbol : '')
-                                                ].join('')
+                                                (item.price).toLocaleString(...options.format.price)
                                             );
                                             break;
                                         case 'total':
                                             $column.text(
-                                                [
-                                                    (options.currency.position === 'before' ? options.currency.symbol : ''),
-                                                    (item.price * item.quantity).toFixed(options.precision.price),
-                                                    (options.currency.position === 'after' ? options.currency.symbol : '')
-                                                ].join('')
+                                                (item.price * item.quantity).toLocaleString(...options.format.price)
                                             );
                                             break;
                                         case 'remove':
@@ -500,11 +485,12 @@
                  * Count of titles in cart by item_type
                  * @return {string|number}
                  */
-                cartCount() {
+                cartCount(ret_str = true) {
                     if (cart.length) {
-                        return cart
-                            .reduce((count, item) => item['type'] === options.item_type ? count + 1 : count, 0)
-                            .toFixed(options.precision.count);
+                        let count = cart
+                            .reduce((count, item) => item['type'] === options.item_type ? count + 1 : count, 0);
+
+                        return !ret_str ? count : count.toLocaleString(...options.format.count);
                     }
 
                     return 0;
@@ -514,16 +500,13 @@
                  * Total price of items in cart
                  * @return {string|number}
                  */
-                cartTotal() {
+                cartTotal(ret_str = true) {
                     if (cart.length) {
-                        return [
-                            (options.currency.position === 'before' ? options.currency.symbol : ''),
-                            Object.keys(cart)
+                        let price = Object.keys(cart)
                                 .map(f => cart[f]['type'] === options.item_type ? cart[f].quantity * cart[f].price : 0)
-                                .reduce((a, b) => a + b)
-                                .toFixed(options.precision.price),
-                            (options.currency.position === 'after' ? options.currency.symbol : '')
-                        ].join('')
+                                .reduce((a, b) => a + b);
+
+                        return !ret_str ? price : price.toLocaleString(...options.format.price);
                     }
 
                     return 0;

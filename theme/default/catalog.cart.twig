@@ -29,17 +29,10 @@
                 url: '',
             },
 
-            // precision settings
-            // count of zeros after the decimal point
-            precision: {
-                count: 0, // in item counts
-                price: 2, // in item prices and totals
-            },
-
-            // currency
-            currency: {
-                position: 'before', // or 'after'
-                symbol: '$',
+            // format settings
+            format: {
+                count: ['{{ _language }}', {minimumFractionDigits: 0, maximumFractionDigits: 2}], // in item counts
+                price: ['{{ _language }}', {style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 2}], // in item prices and totals
             },
 
             events: {
