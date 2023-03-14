@@ -7,7 +7,7 @@
             <ul class="list">
                 {% for value, count in attribute.getValuesWithCounts(category.getNested(categories)) %}
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="{{ attribute.uuid }}" value="{{ attr.value }}" id="{{ attr.uuid }}" {{ _request[attribute.address] == value ? 'checked' : '' }} onchange="(() => {location = '{{ non_page_path() }}{{ page ? '/' ~ page : '' }}{{ current_query(attribute.address, value|trim) }}'})()">
+                        <input class="form-check-input" type="radio" name="{{ attribute.uuid }}" value="{{ value }}" id="{{ attribute.uuid }}" {{ _request[attribute.address] == value ? 'checked' : '' }} onchange="(() => {location = '{{ non_page_path() }}{{ page ? '/' ~ page : '' }}{{ current_query(attribute.address, value|trim) }}'})()">
                         <label class="form-check-label" for="{{ attr.uuid }}">
                             {{ value }} ({{ count }})
                         </label>
