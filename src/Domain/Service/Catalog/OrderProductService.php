@@ -32,23 +32,21 @@ class OrderProductService extends AbstractService
             $this->delete($product);
         }
 
-        $result = [];
-
         foreach ($products as $uuid => $count) {
             if ($count > 0) {
                 try {
-                    $result[] = $this->create([
-                        'order' => $order,
-                        'product' => $this->catalogProductService->read(['uuid' => $uuid]),
-                        'count' => (float) $count,
-                    ]);
+                    $order->addProduct(
+                        $this->create([
+                            'order' => $order,
+                            'product' => $this->catalogProductService->read(['uuid' => $uuid]),
+                            'count' => (float)$count,
+                        ])
+                    );
                 } catch (Exception\ProductNotFoundException $e) {
                     // skip
                 }
             }
         }
-
-        $order->addProducts($result);
     }
 
     public function create(array $data = []): OrderProduct
