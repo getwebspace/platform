@@ -5,6 +5,10 @@ on:
         tags:
             - '*'
 
+env:
+    REGISTRY: ghcr.io
+    IMAGE_NAME: ${{ github.repository }}
+
 jobs:
     # Run tests.
     # See also https://docs.docker.com/docker-hub/builds/automated-testing/
@@ -38,17 +42,18 @@ jobs:
             -   name: Set up Docker Buildx
                 uses: docker/setup-buildx-action@v2
 
-            -   name: Log in to Docker Hub
+            -   name: Log in to the Container registry
                 uses: docker/login-action@v2
                 with:
-                    username: ${{ secrets.DOCKER_HUB_USERNAME }}
-                    password: ${{ secrets.DOCKER_HUB }}
+                    registry: ${{ env.REGISTRY }}
+                    username: ${{ github.actor }}
+                    password: ${{ secrets.GITHUB_TOKEN }}
 
             -   name: Extract metadata (tags, labels) for Docker
                 id: meta
                 uses: docker/metadata-action@v4
                 with:
-                    images: getwebspace/platform
+                    images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
             -   name: Build and push Docker image
                 uses: docker/build-push-action@v3
