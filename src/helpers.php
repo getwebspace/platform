@@ -233,6 +233,18 @@ if (!function_exists('array_sort')) {
     }
 }
 
+if (!function_exists('array_sort_desc')) {
+    /**
+     * Sort the array by the given callback or attribute name.
+     *
+     * @param null|callable|string $callback
+     */
+    function array_sort_desc(array $array, $callback = null): array
+    {
+        return Arr::sortDesc($array, $callback);
+    }
+}
+
 if (!function_exists('array_sort_recursive')) {
     /**
      * Recursively sort an array by keys and values.
