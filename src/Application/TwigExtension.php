@@ -347,12 +347,12 @@ class TwigExtension extends AbstractExtension
         return base64_decode($string, $strict);
     }
 
-    public function json_encode(string $json, ?bool $associative = true, int $depth = 512, int $flags = 0): mixed
+    public function json_decode(string $json, ?bool $associative = true, int $depth = 512, int $flags = 0): mixed
     {
         return json_decode($json, $associative, $depth, $flags);
     }
 
-    public function json_decode($value, int $flags = JSON_UNESCAPED_UNICODE, int $depth = 512): false|string
+    public function json_encode($value, int $flags = JSON_UNESCAPED_UNICODE, int $depth = 512): false|string
     {
         return json_encode($value, $flags, $depth);
     }
