@@ -483,7 +483,7 @@ class UserService extends AbstractService
     {
         $emails = $this->parameter('user_email_list', '');
 
-        if ($emails) {
+        if (trim($email) && $emails) {
             $list = array_map('trim', explode(PHP_EOL, $emails));
 
             switch ($this->parameter('user_email_list_mode', 'blacklist')) {
