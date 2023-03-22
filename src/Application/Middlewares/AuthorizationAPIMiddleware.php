@@ -8,6 +8,7 @@ use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\UserService;
 use App\Domain\Traits\SecurityTrait;
 use Firebase\JWT\ExpiredException;
+use Firebase\JWT\SignatureInvalidException;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
@@ -93,7 +94,7 @@ class AuthorizationAPIMiddleware extends AbstractMiddleware
                         // nothing
                     }
                 }
-            } catch (ExpiredException $e) {
+            } catch (SignatureInvalidException|ExpiredException $e) {
                 // nothing
             }
         }
