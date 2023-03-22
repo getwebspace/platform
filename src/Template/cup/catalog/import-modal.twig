@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-12 text-center">
                 {% include 'cup/form.twig' with {
-                    'label': 'Файл в формате Excel',
+                    'label': 'Excel file',
                     'type': 'file',
                     'name': 'excel',
                     'args': {
@@ -15,12 +15,12 @@
             </div>
             <div class="col-12 text-center">
                 <p>
-                    Excel файл должен соответствовать настройкам импорта.<br>
-                    (<a href="/cup/parameters">Настройки</a> <i class="fas fa-caret-right"></i> Каталог <i class="fas fa-caret-right"></i> Импорт)
+                    {{ 'The Excel file must match the import settings'|locale }}<br>
+                    (<a href="/cup/parameters">{{ 'Settings'|locale }}</a> <i class="fas fa-caret-right"></i> {{ 'Catalog'|locale }} <i class="fas fa-caret-right"></i> {{ 'Import and Export'|locale }})
                 </p>
 
                 <button type="submit" name="save" class="btn btn-info">
-                    <span class="text">Загрузить</span>
+                    <span class="text">{{ 'Upload'|locale }}</span>
                 </button>
             </div>
         </div>
