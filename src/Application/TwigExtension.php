@@ -100,8 +100,8 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('catalog_attribute', [$this, 'catalog_attribute']),
             new TwigFunction('catalog_category', [$this, 'catalog_category']),
             new TwigFunction('catalog_category_parents', [$this, 'catalog_category_parents']),
-            new TwigFunction('catalog_products', [$this, 'catalog_product']), // todo remove
             new TwigFunction('catalog_product', [$this, 'catalog_product']),
+            new TwigFunction('catalog_product_popular', [$this, 'catalog_product_popular']),
             new TwigFunction('catalog_product_view', [$this, 'catalog_product_view']),
             new TwigFunction('catalog_order', [$this, 'catalog_order']),
             new TwigFunction('catalog_order_status', [$this, 'catalog_order_status']),
@@ -482,6 +482,38 @@ class TwigExtension extends AbstractExtension
         $catalogProductService = $this->container->get(CatalogProductService::class);
 
         return $catalogProductService->read(array_merge($criteria, ['order' => $order, 'limit' => $limit, 'offset' => $offset]));
+    }
+
+    public function catalog_product_popular($limit = 10)
+    {
+        /** @var CatalogOrderService $catalogOrderService */
+        $catalogOrderService = $this->container->get(CatalogOrderService::class);
+
+        $query = $catalogOrderService->createQueryBuilder('o')
+            ->andWhere('o.date > :now')
+            ->setParameter('now', datetime()->modify('-30 days'))
+            ->orderBy('o.date', 'desc')
+            ->setMaxResults(100)
+            ->getQuery()
+            ->getResult();
+
+        $list = [];
+
+        foreach ($query as $order) {
+            foreach ($order->getProducts() as $orderProduct) {
+                $product = $orderProduct->product;
+                $uuid = $product->getUuid()->toString();
+                $count = +$orderProduct->count;
+
+                if (!isset($list[$uuid])) {
+                    $list[$uuid] = ['product' => $product, 'count' => $count];
+                } else {
+                    $list[$uuid]['count'] += $count;
+                }
+            }
+        }
+
+        return collect($list)->slice(0, $limit)->sortByDesc('count')->pluck('product');
     }
 
     // save uuid of product in session or return saved list

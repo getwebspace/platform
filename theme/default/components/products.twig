@@ -11,7 +11,7 @@
             </div>
         </div>
         <div class="row">
-            {% for product in catalog_products({}, [], 8) %}
+            {% for product in catalog_product({}, [], 8) %}
                 <div class="col-lg-3 col-md-6 col-12">
                     <!-- Start Single Product -->
                     {% include 'catalog.category.product.grid.twig' with {'product': product} %}
