@@ -1,24 +1,29 @@
-<!-- Start Trending Product Area -->
-<section class="trending-product section">
-    <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <div class="section-title">
-                    <h2>Trending Product</h2>
-                    <p>There are many variations of passages of Lorem Ipsum available, but the majority have
-                        suffered alteration in some form.</p>
+{% set popular = catalog_product_popular(8) %}
+
+{% if popular|count %}
+    <!-- Start Trending Product Area -->
+    <section class="trending-product section">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <div class="section-title">
+                        <h2>Trending Product</h2>
+                        <p>There are many variations of passages of Lorem Ipsum available, but the majority have
+                            suffered alteration in some form.</p>
+                    </div>
                 </div>
             </div>
+
+            <div class="row">
+                {% for product in popular %}
+                    <div class="col-lg-3 col-md-6 col-12">
+                        <!-- Start Single Product -->
+                        {% include 'catalog.category.product.grid.twig' with {'product': product} %}
+                        <!-- End Single Product -->
+                    </div>
+                {% endfor %}
+            </div>
         </div>
-        <div class="row">
-            {% for product in catalog_product({}, [], 8) %}
-                <div class="col-lg-3 col-md-6 col-12">
-                    <!-- Start Single Product -->
-                    {% include 'catalog.category.product.grid.twig' with {'product': product} %}
-                    <!-- End Single Product -->
-                </div>
-            {% endfor %}
-        </div>
-    </div>
-</section>
-<!-- End Trending Product Area -->
+    </section>
+    <!-- End Trending Product Area -->
+{% endif %}
