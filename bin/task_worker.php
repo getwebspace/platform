@@ -52,6 +52,8 @@ register_shutdown_function(function () use ($queue, $action): void {
     // after work remove PID file
     \App\Domain\AbstractTask::workerRemovePidFile($action);
 
+    sleep(1); // timeout
+
     if ($queue->count() > 1) {
         \App\Domain\AbstractTask::worker($action);
     }
@@ -71,10 +73,10 @@ if ($queue->count()) {
                 $task->run();
             } else {
                 // remove task by time
-                if ((new DateTime())->diff($entity->getDate())->i >= 10) {
+                if (datetime()->diff($entity->getDate())->i >= 10) {
                     $task->setStatusDelete('Removed by time');
                 } else {
-                    sleep(30);
+                    sleep(5);
                 }
             }
         } else {
