@@ -86,7 +86,9 @@ class ConvertImageTask extends AbstractTask
                                 $buf = array_merge($params, ['-resize x' . $pixels . '\>']);
                                 $log[$size] = 'convert';
 
-                                @mkdir($path, 0o777, true);
+                                if (!file_exists($path)) {
+                                    @mkdir($path, 0o777, true);
+                                }
                                 @exec($command . " '" . $original . "' " . implode(' ', $buf) . " '" . $path . '/' . $file->getName() . ".webp'");
                             }
                         }
