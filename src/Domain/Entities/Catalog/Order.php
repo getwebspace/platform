@@ -227,17 +227,6 @@ class Order extends AbstractEntity
         return $this;
     }
 
-    public function addProducts(array $products)
-    {
-        $this->products = [];
-
-        foreach ($products as $product) {
-            $this->products[] = $product;
-        }
-
-        return $this;
-    }
-
     public function getProducts($raw = false)
     {
         return $raw ? $this->products : collect($this->products);
