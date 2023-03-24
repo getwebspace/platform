@@ -372,7 +372,7 @@ class TwigExtension extends AbstractExtension
     // files functions
 
     // fetch files by args
-    public function files(array $criteria = [], $order = [], $limit = 10, $offset = null)
+    public function files(array $criteria = [], $order = ['date' => 'desc'], $limit = 10, $offset = null)
     {
         $fileService = $this->container->get(FileService::class);
 
@@ -410,7 +410,7 @@ class TwigExtension extends AbstractExtension
     // guestbook functions
 
     // fetch guest book rows
-    public function guestbook($order = [], $limit = 10, $offset = null)
+    public function guestbook($order = ['date' => 'desc'], $limit = 10, $offset = null)
     {
         $guestBookService = $this->container->get(GuestBookService::class);
 
@@ -444,7 +444,7 @@ class TwigExtension extends AbstractExtension
     }
 
     // fetch categories list
-    public function catalog_category(array $criteria = [], $order = [])
+    public function catalog_category(array $criteria = [], $order = ['order' => 'asc'])
     {
         $catalogCategoryService = $this->container->get(CatalogCategoryService::class);
 
@@ -476,7 +476,7 @@ class TwigExtension extends AbstractExtension
     }
 
     // returns a product or a list of products by criteria
-    public function catalog_product(array $criteria = [], $order = [], $limit = 10, $offset = null)
+    public function catalog_product(array $criteria = [], $order = ['order' => 'asc'], $limit = 10, $offset = null)
     {
         $criteria['status'] = \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK;
         $catalogProductService = $this->container->get(CatalogProductService::class);
@@ -537,7 +537,7 @@ class TwigExtension extends AbstractExtension
     }
 
     // fetch order
-    public function catalog_order(array $criteria = [], $order = [], $limit = 10, $offset = null)
+    public function catalog_order(array $criteria = [], $order = ['date' => 'desc'], $limit = 10, $offset = null)
     {
         $catalogOrderService = $this->container->get(CatalogOrderService::class);
 
@@ -549,7 +549,7 @@ class TwigExtension extends AbstractExtension
     }
 
     // fetch order status list
-    public function catalog_order_status(array $criteria = [], $order = [])
+    public function catalog_order_status(array $criteria = [], $order = ['order' => 'asc'])
     {
         $catalogOrderStatusService = $this->container->get(CatalogOrderStatusService::class);
 
