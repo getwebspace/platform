@@ -12,6 +12,7 @@
 !/vendor/.gitkeep
 /var/*.sqlite
 /var/*.sqlite-journal
+/var/*.key
 /var/cache/*
 !/var/cache/.gitkeep
 /var/log/*
