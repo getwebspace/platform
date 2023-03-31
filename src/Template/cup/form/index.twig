@@ -36,7 +36,7 @@
                                     <div class="col-6 col-sm">{{ item.title }}</div>
                                     <div class="col-sm-3 d-none d-sm-block">
                                         {{ item.mailto|join('<br>+ ')|raw }}
-                                        {{ item.authorSend ? '<br>+ ' ~ 'applicant'|locale }}
+                                        {{ (item.authorSend ? '<br>+ ' ~ 'applicant'|locale)|raw }}
                                     </div>
                                     <div class="col-6 col-sm-4 text-right">
                                         <form action="/cup/form/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the form?'|locale }}');">
