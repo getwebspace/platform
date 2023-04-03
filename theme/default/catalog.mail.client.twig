@@ -423,17 +423,17 @@
                                                                                             <tbody>
                                                                                             <tr>
                                                                                                 <td class="text-11 c-grey4 a-right mt-left pb-5" style="font-size:11px; line-height:17px; font-family:'Motiva Sans', Arial, sans-serif; color:#f1f1f1; text-align:right; padding-bottom: 5px;">
-                                                                                                    Price: {{ product.price|number_format(2, '.', ' ') }}
+                                                                                                    Price: {{ product.getPrice()|number_format(2, '.', ' ') }}
                                                                                                 </td>
                                                                                             </tr>
                                                                                             <tr>
                                                                                                 <td class="text-11 c-grey4 a-right mt-left pb-5" style="font-size:11px; line-height:17px; font-family:'Motiva Sans', Arial, sans-serif; color:#f1f1f1; text-align:right; padding-bottom: 5px;">
-                                                                                                    Quantity: {{ product.count }}
+                                                                                                    Quantity: {{ product.getCount() }}
                                                                                                 </td>
                                                                                             </tr>
                                                                                             <tr>
                                                                                                 <td class="text-14 c-white a-right mt-left" style="font-size:14px; line-height:20px; font-family:'Motiva Sans', Arial, sans-serif; color:#ffffff; text-align:right;">
-                                                                                                    <strong>Subtotal: {{ (product.price * product.count)|number_format(2, '.', ' ') }}</strong>
+                                                                                                    <strong>Subtotal: {{ product.getSum()|number_format(2, '.', ' ') }}</strong>
                                                                                                 </td>
                                                                                             </tr>
                                                                                             </tbody>

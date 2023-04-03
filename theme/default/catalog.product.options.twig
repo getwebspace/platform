@@ -4,9 +4,12 @@
         <span data-catalog-item-attr="uuid">{{ product.uuid }}</span>
         <span data-catalog-item-attr="title">{{ product.title }}</span>
         <span data-catalog-item-attr="url">/{{ parameter('catalog_address', 'catalog') }}/{{ product.address }}</span>
-        <span data-catalog-item-attr="price">{{ product.price }}</span>
-        <span data-catalog-item-attr="vendorcode">{{ product.vendorcode }}</span>
         <span data-catalog-item-attr="thumb">{{ product.hasFiles() ? product.getFiles().first().getPublicPath('middle') : 'https://via.placeholder.com/220x200' }}</span>
+        <span data-catalog-item-attr="vendorcode">{{ product.vendorcode }}</span>
+        <span data-catalog-item-attr="price">{{ product.price }}</span>
+        <span data-catalog-item-attr="price_wholesale">{{ product.priceWholesale }}</span>
+        <span data-catalog-item-attr="price_wholesale_from">{{ product.priceWholesaleFrom }}</span>
+        <span data-catalog-item-attr="price_type">price</span>
 
         <span data-catalog-item-attr="group">{{ categories.firstWhere('uuid', product.category).title }}</span>
         <span data-catalog-item-attr="type">product</span>

@@ -28,6 +28,7 @@ class ProductCreateAction extends CatalogAction
                     'priceFirst' => $this->getParam('priceFirst'),
                     'price' => $this->getParam('price'),
                     'priceWholesale' => $this->getParam('priceWholesale'),
+                    'priceWholesaleFrom' => $this->getParam('priceWholesaleFrom'),
                     'discount' => $this->getParam('discount'),
                     'special' => $this->getParam('special'),
                     'dimension' => $this->getParam('dimension'),

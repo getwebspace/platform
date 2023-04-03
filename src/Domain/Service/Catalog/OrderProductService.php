@@ -32,14 +32,25 @@ class OrderProductService extends AbstractService
             $this->delete($product);
         }
 
-        foreach ($products as $uuid => $count) {
+        foreach ($products as $uuid => $opts) {
+            $type = ($opts['price_type'] ?? 'price');
+            $count = (float) ($opts['count'] ?? 0);
+
             if ($count > 0) {
                 try {
+                    $product = $this->catalogProductService->read(['uuid' => $uuid]);
+
+                    $price = match ($type) {
+                        'price' => $product->getPrice(),
+                        'price_wholesale' => $product->getPriceWholesale(),
+                    };
+
                     $order->addProduct(
                         $this->create([
                             'order' => $order,
-                            'product' => $this->catalogProductService->read(['uuid' => $uuid]),
-                            'count' => (float)$count,
+                            'product' => $product,
+                            'price' => $price,
+                            'count' => $count,
                         ])
                     );
                 } catch (Exception\ProductNotFoundException $e) {
@@ -54,6 +65,7 @@ class OrderProductService extends AbstractService
         $default = [
             'order' => '',
             'product' => '',
+            'price' => 0.0,
             'count' => 1,
         ];
         $data = array_merge($default, $data);
@@ -61,6 +73,7 @@ class OrderProductService extends AbstractService
         $productRelation = (new OrderProduct())
             ->setOrder($data['order'])
             ->setProduct($data['product'])
+            ->setPrice($data['price'])
             ->setCount($data['count']);
 
         // trigger populate fields

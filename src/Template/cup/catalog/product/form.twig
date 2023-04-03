@@ -188,6 +188,18 @@
                                                 'min': '0',
                                             }
                                         } %}
+
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Price wholesale from'|locale,
+                                            'type': 'number',
+                                            'name': 'priceWholesaleFrom',
+                                            'args': {
+                                                'value': item.priceWholesaleFrom|number_format(0, '.', ''),
+                                                'placeholder': '0',
+                                                'step': 'any',
+                                                'min': '0',
+                                            }
+                                        } %}
                                     </div>
                                 </div>
 

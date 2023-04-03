@@ -4,10 +4,12 @@ namespace tests\Domain\Service\Catalog;
 
 use App\Domain\Entities\Catalog\Order;
 use App\Domain\Entities\Catalog\OrderStatus;
+use App\Domain\Entities\Catalog\Product;
 use App\Domain\Repository\Catalog\OrderRepository;
 use App\Domain\Service\Catalog\Exception\OrderNotFoundException;
 use App\Domain\Service\Catalog\OrderService;
 use App\Domain\Service\Catalog\OrderStatusService;
+use App\Domain\Service\Catalog\ProductService;
 use Illuminate\Support\Collection;
 use tests\TestCase;
 
@@ -35,8 +37,24 @@ class OrderServiceTest extends TestCase
         ]);
     }
 
+    protected function getRandomProduct(): Product
+    {
+        return $this->getService(ProductService::class)->create([
+            'title' => $this->getFaker()->title,
+            'address' => $this->getFaker()->word,
+            'price' => $this->getFaker()->randomFloat(),
+            'priceWholesale' => $this->getFaker()->randomFloat(),
+            'priceWholesaleFrom' => $this->getFaker()->randomDigit(),
+        ]);
+    }
+
     public function testCreateSuccess(): void
     {
+        $products = [
+            $this->getRandomProduct(),
+            $this->getRandomProduct(),
+        ];
+
         $data = [
             'delivery' => [
                 'client' => $this->getFaker()->word,
@@ -51,7 +69,16 @@ class OrderServiceTest extends TestCase
             'external_id' => $this->getFaker()->word,
             'export' => $this->getFaker()->word,
             'system' => $this->getFaker()->text,
+
+            'products' => [],
         ];
+
+        foreach ($products as $i => $product) {
+            $data['products'][$product->getUuid()->toString()] = [
+                'count' => $this->getFaker()->randomDigit(),
+                'price_type' => ($i === 1 ? 'price' : 'price_wholesale'),
+            ];
+        }
 
         $order = $this->service->create($data);
         $this->assertInstanceOf(Order::class, $order);
@@ -65,6 +92,14 @@ class OrderServiceTest extends TestCase
         $this->assertSame($data['external_id'], $order->getExternalId());
         $this->assertSame($data['export'], $order->getExport());
         $this->assertSame($data['system'], $order->getSystem());
+
+        foreach ($products as $i => $product) {
+            $productPrice = ($i === 1 ? $product->getPrice() : $product->getPriceWholesale());
+            $orderProduct = $order->getProducts()->firstWhere('product.uuid', $product->getUuid()->toString());
+
+            $this->assertSame($product->getTitle(), $orderProduct->getTitle());
+            $this->assertSame($productPrice, $orderProduct->getPrice());
+        }
 
         /** @var OrderRepository $orderRepo */
         $orderRepo = $this->em->getRepository(Order::class);

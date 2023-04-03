@@ -85,27 +85,6 @@ class OrderProduct extends AbstractEntity
         return $this->address;
     }
 
-    protected float $priceFirst = .00;
-
-    public function getPriceFirst(): float
-    {
-        return $this->priceFirst;
-    }
-
-    protected float $price = .00;
-
-    public function getPrice(): float
-    {
-        return $this->price;
-    }
-
-    protected float $priceWholesale = .00;
-
-    public function getPriceWholesale(): float
-    {
-        return $this->priceWholesale;
-    }
-
     protected string $vendorCode = '';
 
     public function getVendorCode(): string
@@ -118,6 +97,21 @@ class OrderProduct extends AbstractEntity
     public function getExternalId(): string
     {
         return $this->external_id;
+    }
+
+    #[ORM\Column(type: 'float', precision: 10, scale: 2, options: ['default' => 0])]
+    protected float $price = .00;
+
+    public function setPrice(float $value): self
+    {
+        $this->price = $value;
+
+        return $this;
+    }
+
+    public function getPrice(): float
+    {
+        return $this->price;
     }
 
     #[ORM\Column(type: 'float', precision: 10, scale: 2, options: ['default' => 1])]
@@ -138,18 +132,21 @@ class OrderProduct extends AbstractEntity
         return $this->count;
     }
 
+    public function getSum(): float
+    {
+        return $this->price * $this->count;
+    }
+
     public function toArray(): array
     {
         return array_serialize([
             'uuid' => $this->product->getUuid(),
             'title' => $this->product->getTitle(),
             'address' => $this->product->getAddress(),
-            'priceFirst' => $this->product->getPriceFirst(),
-            'price' => $this->product->getPrice(),
-            'priceWholesale' => $this->product->getPriceWholesale(),
             'vendorCode' => $this->product->getVendorCode(),
             'external_id' => $this->product->getExternalId(),
             'files' => $this->product->getFiles(),
+            'price' => $this->getPrice(),
             'count' => $this->getCount(),
         ]);
     }
@@ -159,9 +156,6 @@ class OrderProduct extends AbstractEntity
     {
         $this->title = $this->product->getTitle();
         $this->address = $this->product->getAddress();
-        $this->priceFirst = $this->product->getPriceFirst();
-        $this->price = $this->product->getPrice();
-        $this->priceWholesale = $this->product->getPriceWholesale();
         $this->vendorCode = $this->product->getVendorCode();
         $this->external_id = $this->product->getExternalId();
     }

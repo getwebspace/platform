@@ -72,9 +72,9 @@
                         {% for item in order.products %}
                             <tr>
                                 <td>{{ item.title }}</td>
-                                <td class="text-right">{{ item.price|number_format(2, '.', ' ') }}</td>
-                                <td class="text-right">{{ item.count }}</td>
-                                <td class="text-right">{{ (item.price * item.count)|number_format(2, '.', ' ') }}</td>
+                                <td class="text-right">{{ item.getPrice()|number_format(2, '.', ' ') }}</td>
+                                <td class="text-right">{{ item.getCount() }}</td>
+                                <td class="text-right">{{ item.getSum()|number_format(2, '.', ' ') }}</td>
                             </tr>
                         {% endfor %}
 

@@ -24,6 +24,7 @@
         -ms-interpolation-mode: bicubic;
         /* Allow smoother rendering of resized image in Internet Explorer */
     }
+
     /* for recepits */
 
     table {
@@ -73,6 +74,7 @@
     .ExternalClass font {
         line-height: 100%;
     }
+
     /* END for recepits */
 
     a[x-apple-data-detectors] {
@@ -145,118 +147,151 @@
     .l-blue2 a {
         color: #9eb8cc;
     }
+
     /* Mobile styles */
 
-    @media only screen and (max-device-width: 480px),
-    only screen and (max-width: 480px) {
+    @media only screen and (max-device-width: 480px), only screen and (max-width: 480px) {
         .mpy-35 {
             padding-top: 35px !important;
             padding-bottom: 35px !important;
         }
+
         .mpx-15 {
             padding-left: 15px !important;
             padding-right: 15px !important;
         }
+
         .mpx-20 {
             padding-left: 20px !important;
             padding-right: 20px !important;
         }
+
         .mpb-30 {
             padding-bottom: 30px !important;
         }
+
         .mpb-10 {
             padding-bottom: 10px !important;
         }
+
         .mpb-15 {
             padding-bottom: 15px !important;
         }
+
         .mpb-20 {
             padding-bottom: 20px !important;
         }
+
         .mpb-35 {
             padding-bottom: 35px !important;
         }
+
         .mpb-40 {
             padding-bottom: 40px !important;
         }
+
         .mpb-50 {
             padding-bottom: 50px !important;
         }
+
         .mpb-60 {
             padding-bottom: 60px !important;
         }
+
         .mpt-30 {
             padding-top: 30px !important;
         }
+
         .mpt-40 {
             padding-top: 40px !important;
         }
+
         .mpy-40 {
             padding-top: 40px !important;
             padding-bottom: 40px !important;
         }
+
         .mpt-0 {
             padding-top: 0px !important;
         }
+
         .mpr-0 {
             padding-right: 0px !important;
         }
+
         .mfz-14 {
             font-size: 14px !important;
         }
+
         .mfz-28 {
             font-size: 28px !important;
         }
+
         .mfz-16 {
             font-size: 16px !important;
         }
+
         .mfz-24 {
             font-size: 24px !important;
         }
+
         .mlh-18 {
             line-height: 18px !important;
         }
+
         u + body .gwfw {
             width: 100% !important;
             width: 100vw !important;
         }
+
         .td,
         .m-shell {
             width: 100% !important;
             min-width: 100% !important;
         }
+
         .mt-left {
             text-align: left !important;
         }
+
         .mt-center {
             text-align: center !important;
         }
+
         .mt-right {
             text-align: right !important;
         }
+
         .m-left {
             text-align: left !important;
         }
+
         .me-left {
             margin-right: auto !important;
         }
+
         .me-center {
             margin: 0 auto !important;
         }
+
         .me-right {
             margin-left: auto !important;
         }
+
         .mh-auto {
             height: auto !important;
         }
+
         .mw-auto {
             width: auto !important;
         }
+
         .fluid-img img {
             width: 100% !important;
             max-width: 100% !important;
             height: auto !important;
         }
+
         .column,
         .column-top,
         .column-dir,
@@ -265,6 +300,7 @@
             width: 100% !important;
             display: block !important;
         }
+
         .kmMobileStretch {
             float: left !important;
             width: 100% !important;
@@ -272,6 +308,7 @@
             padding-left: 0 !important;
             padding-right: 0 !important;
         }
+
         .m-hide {
             display: none !important;
             width: 0 !important;
@@ -280,27 +317,35 @@
             line-height: 0 !important;
             min-height: 0 !important;
         }
+
         .m-block {
             display: block !important;
         }
+
         .mw-15 {
             width: 15px !important;
         }
+
         .mw-2p {
             width: 2% !important;
         }
+
         .mw-32p {
             width: 32% !important;
         }
+
         .mw-49p {
             width: 49% !important;
         }
+
         .mw-50p {
             width: 50% !important;
         }
+
         .mw-100p {
             width: 100% !important;
         }
+
         .mbgs-200p {
             background-size: 200% auto !important;
         }
@@ -378,17 +423,17 @@
                                                                                             <tbody>
                                                                                             <tr>
                                                                                                 <td class="text-11 c-grey4 a-right mt-left pb-5" style="font-size:11px; line-height:17px; font-family:'Motiva Sans', Arial, sans-serif; color:#f1f1f1; text-align:right; padding-bottom: 5px;">
-                                                                                                    Price: {{ product.price|number_format(2, '.', ' ') }}
+                                                                                                    Price: {{ product.getPrice()|number_format(2, '.', ' ') }}
                                                                                                 </td>
                                                                                             </tr>
                                                                                             <tr>
                                                                                                 <td class="text-11 c-grey4 a-right mt-left pb-5" style="font-size:11px; line-height:17px; font-family:'Motiva Sans', Arial, sans-serif; color:#f1f1f1; text-align:right; padding-bottom: 5px;">
-                                                                                                    Quantity: {{ product.count }}
+                                                                                                    Quantity: {{ product.getCount() }}
                                                                                                 </td>
                                                                                             </tr>
                                                                                             <tr>
                                                                                                 <td class="text-14 c-white a-right mt-left" style="font-size:14px; line-height:20px; font-family:'Motiva Sans', Arial, sans-serif; color:#ffffff; text-align:right;">
-                                                                                                    <strong>Subtotal: {{ (product.price * product.count)|number_format(2, '.', ' ') }}</strong>
+                                                                                                    <strong>Subtotal: {{ product.getSum()|number_format(2, '.', ' ') }}</strong>
                                                                                                 </td>
                                                                                             </tr>
                                                                                             </tbody>

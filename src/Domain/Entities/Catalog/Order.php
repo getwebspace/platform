@@ -232,13 +232,9 @@ class Order extends AbstractEntity
         return $raw ? $this->products : collect($this->products);
     }
 
-    public function getTotalPrice($price_type = 'price'): float
+    public function getTotalPrice(): float
     {
-        if (in_array($price_type, ['priceFirst', 'price', 'priceWholesale'], true)) {
-            return $this->getProducts()->sum(fn ($el) => $el->{$price_type} * $el->count);
-        }
-
-        return 0;
+        return $this->getProducts()->sum(fn ($el) => $el->getSum());
     }
 
     #[ORM\Column(type: 'uuid', nullable: true, options: ['default' => null])]

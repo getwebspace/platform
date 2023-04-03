@@ -52,6 +52,7 @@ class ProductService extends AbstractService
             'priceFirst' => 0.0,
             'price' => 0.0,
             'priceWholesale' => 0.0,
+            'priceWholesaleFrom' => 0,
             'discount' => 0.0,
             'special' => false,
             'dimension' => [],
@@ -99,6 +100,7 @@ class ProductService extends AbstractService
             ->setPriceFirst((float) $data['priceFirst'])
             ->setPrice((float) $data['price'])
             ->setPriceWholesale((float) $data['priceWholesale'])
+            ->setPriceWholesaleFrom((float) $data['priceWholesaleFrom'])
             ->setDiscount((float) $data['discount'])
             ->setSpecial($data['special'])
             ->setDimension($data['dimension'])
@@ -293,6 +295,7 @@ class ProductService extends AbstractService
                 'priceFirst' => null,
                 'price' => null,
                 'priceWholesale' => null,
+                'priceWholesaleFrom' => null,
                 'discount' => null,
                 'special' => null,
                 'dimension' => null,
@@ -366,6 +369,9 @@ class ProductService extends AbstractService
                 }
                 if ($data['priceWholesale'] !== null) {
                     $entity->setPriceWholesale((float) $data['priceWholesale']);
+                }
+                if ($data['priceWholesaleFrom'] !== null) {
+                    $entity->setPriceWholesaleFrom((float) $data['priceWholesaleFrom']);
                 }
                 if ($data['discount'] !== null) {
                     $entity->setDiscount((float) $data['discount']);
