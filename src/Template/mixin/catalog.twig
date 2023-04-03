@@ -523,7 +523,7 @@
                 cartTotal(ret_str = true) {
                     if (cart.length) {
                         let price = Object.keys(cart)
-                                .map(f => cart[f]['type'] === options.item_type ? cart[f].quantity * cart[f].price : 0)
+                                .map(f => cart[f]['type'] === options.item_type ? cart[f].quantity * cart[f][cart[f].price_type] : 0)
                                 .reduce((a, b) => a + b);
 
                         return !ret_str ? price : price.toLocaleString(...options.format.price);
