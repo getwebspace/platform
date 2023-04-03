@@ -45,10 +45,36 @@
                     window.catalog = {
                         events: {
                             'on:cart:add': (new_item) => {
-                                Swal.fire('Товар добавлен', new_item.title + ' (x' + new_item.quantity + ') теперь в корзине.', 'success');
+                                Swal.fire({
+                                    title: 'Product added to cart',
+                                    text: new_item.title + ' (x' + new_item.quantity + ') now in cart.',
+                                    icon: 'success',
+                                    showCancelButton: true,
+                                    cancelButtonText: 'Continue shopping',
+                                    cancelButtonColor: '#0167F3',
+                                    confirmButtonText: 'Checkout',
+                                    confirmButtonColor: '#081828'
+                                }).then((result) => {
+                                    if (result.value) {
+                                        location.href = '/cart';
+                                    }
+                                });
                             },
                             'on:cart:update': (updated_item) => {
-                                Swal.fire('Товар обновлен', updated_item.title + ' (x' + updated_item.quantity + ')', 'success');
+                                Swal.fire({
+                                    title: 'Cart updated',
+                                    text: updated_item.title + ' (x' + updated_item.quantity + ')',
+                                    icon: 'success',
+                                    showCancelButton: true,
+                                    cancelButtonText: 'Continue shopping',
+                                    cancelButtonColor: '#0167F3',
+                                    confirmButtonText: 'Checkout',
+                                    confirmButtonColor: '#081828'
+                                }).then((result) => {
+                                    if (result.value) {
+                                        location.href = '/cart';
+                                    }
+                                });
                             }
                         }
                     }
