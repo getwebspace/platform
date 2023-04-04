@@ -41,6 +41,7 @@ $queue = $taskService->read([
     ],
     'order' => [
         'date' => 'asc',
+        'status' => 'desc',
     ],
     'limit' => 1,
 ]);
@@ -52,7 +53,7 @@ register_shutdown_function(function () use ($queue, $action): void {
 
     sleep(1); // timeout
 
-    if ($queue->count() > 1) {
+    if ($queue->count()) {
         \App\Domain\AbstractTask::worker($action);
     }
 });
