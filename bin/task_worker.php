@@ -47,8 +47,6 @@ $queue = $taskService->read([
 
 // rerun worker
 register_shutdown_function(function () use ($queue, $action): void {
-    sleep(1); // timeout
-
     // after work remove PID file
     \App\Domain\AbstractTask::workerRemovePidFile($action);
 
