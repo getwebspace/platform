@@ -270,6 +270,14 @@ abstract class AbstractPlugin
     }
 
     /**
+     * Add locale editor words
+     */
+    public function addLocaleEditor(string $code, array $translate): void
+    {
+        i18n::addLocaleEditor($code, $translate);
+    }
+
+    /**
      * Add translate letters
      */
     public function addLocaleTranslateLetters(string $code, array $original, array $latin): void

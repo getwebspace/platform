@@ -22,6 +22,11 @@ class i18n
     public static array $locale = [];
 
     /**
+     * Buffer storage of editor words
+     */
+    public static array $editor = [];
+
+    /**
      * Buffer storage of letters
      */
     public static array $letters = [];
@@ -98,6 +103,14 @@ class i18n
         }
 
         static::addLocale($code, $strings);
+    }
+
+    /**
+     * Add locale editor words
+     */
+    public static function addLocaleEditor(string $code, array $translate): void
+    {
+        static::$editor[$code] = $translate;
     }
 
     /**

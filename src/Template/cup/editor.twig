@@ -32,8 +32,11 @@
                 '/assets/js/plugin/codemirror/mode/twig/twig.js?v={{ SHA }}',
                 '/assets/js/plugin/codemirror/mode/xml/xml.js?v={{ SHA }}',
                 '/assets/js/plugin/froala/froala_editor.pkgd.js?v={{ SHA }}',
-                '/assets/js/plugin/froala/ru-RU.js?v={{ SHA }}',
             ]);
+
+            $.FE.LANGUAGE['{{ _language }}'] = {
+                translation: {{ _cup_editor_locale() }}
+            };
 
             (function init() {
                 let $editor = $('#wysiwygeditor-{{ editorId }}:visible');

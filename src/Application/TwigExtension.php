@@ -67,6 +67,7 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('current_path', [$this, 'currentPath']),
 
             // wse functions
+            new TwigFunction('_cup_editor_locale', [$this, '_cup_editor_locale'], ['is_safe' => ['html']]),
             new TwigFunction('_', '__', ['is_safe' => ['html']]),
             new TwigFunction('form', [$this, 'form'], ['is_safe' => ['html']]),
             new TwigFunction('reference', [$this, 'reference']),
@@ -106,6 +107,11 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('catalog_order', [$this, 'catalog_order']),
             new TwigFunction('catalog_order_status', [$this, 'catalog_order_status']),
         ];
+    }
+
+    public function _cup_editor_locale()
+    {
+        return json_encode(i18n::$editor[i18n::$localeCode] ?? [], JSON_UNESCAPED_UNICODE);
     }
 
     protected function currentHost()
