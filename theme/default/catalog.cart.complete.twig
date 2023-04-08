@@ -27,15 +27,15 @@
                     <table class="table table-striped mt-3 mb-5">
                         <tr>
                             <th style="width: 50%">Customer Name</th>
-                            <td style="width: 50%">{{ order.user ? order.user.getName() : order.delivery.client }}</td>
+                            <td style="width: 50%">{{ order.delivery.client }}</td>
                         </tr>
                         <tr>
                             <th>Phone</th>
-                            <td>{{ order.user and order.user.phone ? order.user.phone : order.phone }}</td>
+                            <td>{{ order.phone }}</td>
                         </tr>
                         <tr>
                             <th>E-Mail</th>
-                            <td>{{ order.user and order.user.email ? order.user.email : order.email }}</td>
+                            <td>{{ order.email }}</td>
                         </tr>
                         <tr>
                             <th>Delivery address</th>

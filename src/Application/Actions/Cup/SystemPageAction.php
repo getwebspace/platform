@@ -229,12 +229,12 @@ const INVOICE_TEMPLATE = <<<'EOD'
 
         <div class="row mt-3">
             <div class="col-6">
-                {{ order.user and order.user.getName() == order.delivery.client ? order.user.getName() : order.delivery.client }}<br />
-                {{ order.user and order.user.phone == order.phone ? order.user.phone : (order.phone ? order.phone : '-') }}<br />
-                {{ order.user and order.user.email == order.email ? order.user.email : (order.email ? order.email : '-') }}
+                {{ order.delivery.client }}<br />
+                {{ order.phone ? order.phone : '-' }}<br />
+                {{ order.email ? order.email : '-' }}
             </div>
             <div class="col-6 text-right">
-                {{ order.user and order.user.address == order.delivery.address ? order.user.address : order.delivery.address }}<br />
+                {{ order.delivery.address }}<br />
                 {{ order.comment }}
             </div>
         </div>

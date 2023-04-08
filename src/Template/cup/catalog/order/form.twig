@@ -57,7 +57,7 @@
                                             'name': 'delivery[client]',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('ФИО клиента'|locale) ~ '"></i>',
                                             'args': {
-                                                'value': order.user and order.user.getName() == order.delivery.client ? order.user.getName() : order.delivery.client,
+                                                'value': order.delivery.client,
                                                 'required': true,
                                             }
                                         } %}
@@ -70,7 +70,7 @@
                                             'type': 'tel',
                                             'name': 'phone',
                                             'args': {
-                                                'value': order.user and order.user.phone == order.phone ? order.user.phone : order.phone,
+                                                'value': order.phone,
                                             }
                                         } %}
 
@@ -79,7 +79,7 @@
                                             'type': 'email',
                                             'name': 'email',
                                             'args': {
-                                                'value': order.user and order.user.email == order.email ? order.user.email : order.email,
+                                                'value': order.email,
                                             }
                                         } %}
                                     </div>
@@ -127,7 +127,7 @@
                                             'type': 'textarea',
                                             'name': 'delivery[address]',
                                             'args': {
-                                                'value': order.user and order.user.address == order.delivery.address ? order.user.address : order.delivery.address,
+                                                'value': order.delivery.address,
                                                 'style': 'min-height: 133px;'
                                             }
                                         } %}

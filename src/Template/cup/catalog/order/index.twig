@@ -48,7 +48,7 @@
                                     </div>
                                     <div class="col-5 col-sm">
                                         {% if item.user %}
-                                            <a href="/cup/user/{{ item.user_uuid }}/view">{{ item.user.getName() ? item.user.getName() : item.delivery.client }}</a>
+                                            <a href="/cup/user/{{ item.user_uuid }}/view">{{ item.delivery.client }}</a>
                                         {% else %}
                                             {{ item.delivery.client }}
                                         {% endif %}
