@@ -31,19 +31,19 @@ class AuthorizationAPIMiddleware extends AbstractMiddleware
                     $access = true;
                 // no break
 
-                // allow access if user exist
-                case 'user':
-                    if (($user = $this->findUser($request)) !== false) {
-                        $access = true;
-                        $request = $request->withAttribute('user', $user);
-                    }
-                // no break
-
                 // allow access if key exist
                 case 'key':
                     if (($apikey = $this->checkAPIKey($request)) !== false) {
                         $access = true;
                         $request = $request->withAttribute('apikey', $apikey);
+                    }
+                // no break
+
+                // allow access if user exist
+                case 'user':
+                    if (($user = $this->findUser($request)) !== false) {
+                        $access = true;
+                        $request = $request->withAttribute('user', $user);
                     }
             }
 
@@ -64,10 +64,10 @@ class AuthorizationAPIMiddleware extends AbstractMiddleware
         $key = $request->getQueryParams()['apikey'] ?? null;
 
         if ($key === null) {
-            $key = $request->getHeaderLine('key');
+            $key = $request->getHeaderLine('key') ?? null;
         }
         if ($key === null) {
-            $key = $request->getHeaderLine('apikey');
+            $key = $request->getHeaderLine('apikey') ?? null;
         }
 
         return $key && str_contains($this->parameter('entity_keys', ''), $key);
@@ -75,7 +75,14 @@ class AuthorizationAPIMiddleware extends AbstractMiddleware
 
     protected function findUser(Request $request): false|User
     {
-        $access_token = $request->getCookieParams()['access_token'] ?? null;
+        $access_token = $request->getQueryParams()['access_token'] ?? null;
+
+        if ($access_token === null) {
+            $access_token = $request->getHeaderLine('access_token') ?? null;
+        }
+        if ($access_token === null) {
+            $access_token = $request->getCookieParams()['access_token'] ?? null;
+        }
 
         if ($access_token) {
             try {
