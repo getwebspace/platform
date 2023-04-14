@@ -42,7 +42,7 @@ class AuthorizationMiddleware extends AbstractMiddleware
                         $request = $request->withAttribute('user', $user);
                     } catch (UserNotFoundException $e) {
                         return (new Response())
-                            ->withHeader('Location', '/auth/logout')
+                            ->withHeader('Location', '/auth/logout?redirect=' . $request->getUri()->getPath())
                             ->withStatus(307);
                     }
                 }
