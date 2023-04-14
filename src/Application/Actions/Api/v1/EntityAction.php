@@ -16,6 +16,7 @@ use App\Domain\Service\Page\PageService;
 use App\Domain\Service\Parameter\ParameterService;
 use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
 use App\Domain\Service\Publication\PublicationService;
+use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\UserService;
 use Doctrine\DBAL\Exception;
@@ -159,33 +160,59 @@ class EntityAction extends ActionApi
     private function getParamsQuery(): array
     {
         $params = [
-            'user' => null,
-            'user_uuid' => null,
             'status' => 'work',
             'order' => [],
             'limit' => 1000,
             'offset' => 0,
         ];
 
-        /** @var User $user */
-        if (($user = $this->request->getAttribute('user', false)) !== false) {
-            $params['user'] = $user;
-            $params['user_uuid'] = $user->getUuid();
-        }
-
-        return array_merge($params, $this->request->getQueryParams());
+        return array_merge(
+            $params,
+            $this->getUser(),
+            $this->request->getQueryParams(),
+        );
     }
 
     private function getParamsBody(): array
     {
-        $params = [];
+        return array_merge(
+            [],
+            $this->getUser(),
+            (array) ($this->request->getParsedBody() ?? [])
+        );
+    }
+
+    private function getUser(): array
+    {
+        $params = [
+            'user' => null,
+            'user_uuid' => null,
+        ];
 
         /** @var User $user */
         if (($user = $this->request->getAttribute('user', false)) !== false) {
             $params['user'] = $user;
             $params['user_uuid'] = $user->getUuid();
+        } else {
+            // try retrieve user from params
+            if (($uuid = $this->getParam('user_uuid')) !== null) {
+                try {
+                    /** @var UserService $userService */
+                    $userService = $this->container->get(UserService::class);
+
+                    /** @var User $user */
+                    $user = $userService->read([
+                        'uuid' => $uuid,
+                    ]);
+
+                    $params['user'] = $user;
+                    $params['user_uuid'] = $user->getUuid();
+                } catch (UserNotFoundException $e) {
+                    // nothing
+                }
+            }
         }
 
-        return array_merge($params, (array) ($this->request->getParsedBody() ?? []));
+        return $params;
     }
 }
