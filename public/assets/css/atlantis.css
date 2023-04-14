@@ -1126,7 +1126,7 @@ body {
 
 .main-panel > .content {
     padding: 0px !important;
-    min-height: calc(100% - 123px);
+    min-height: calc(100% - 137px);
     margin-top: 62px;
     overflow: hidden;
 }

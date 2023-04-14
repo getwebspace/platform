@@ -143,8 +143,6 @@ $(() => {
         setTimeout(() => $el.removeClass('fa-check fa-times fa-smile').addClass('fa-copy'), 2500);
     });
 
-    moment.locale('en');
-
     // modal window settings
     $.modal.defaults = {
         closeExisting: true,      // Close existing modals. Set this to false if you need to stack multiple modal instances.

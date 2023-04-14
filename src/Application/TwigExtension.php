@@ -48,6 +48,7 @@ class TwigExtension extends AbstractExtension
         return [
             new TwigFilter('count', [$this, 'count']),
             new TwigFilter('df', [$this, 'df']),
+            new TwigFilter('dfm', [$this, 'dfm']),
             new TwigFilter('locale', '__', ['is_safe' => ['html']]),
             new TwigFilter('trans', [$this, 'trans'], ['is_safe' => ['html']]),
         ];
@@ -75,6 +76,7 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('pre', [$this, 'pre']),
             new TwigFunction('count', [$this, 'count']),
             new TwigFunction('df', [$this, 'df']),
+            new TwigFunction('dfm', [$this, 'dfm']),
             new TwigFunction('collect', [$this, 'collect']),
             new TwigFunction('non_page_path', [$this, 'non_page_path']),
             new TwigFunction('current_page_number', [$this, 'current_page_number']),
@@ -278,6 +280,11 @@ class TwigExtension extends AbstractExtension
         return $obj
             ->setTimezone(new \DateTimeZone($timezone ?: $this->parameter('common_timezone', 'UTC')))
             ->format($format ?: $this->parameter('common_date_format', 'j-m-Y, H:i'));
+    }
+
+    public function dfm(string $format = null): string
+    {
+        return convertPhpToJsMomentFormat($format ?: $this->parameter('common_date_format', 'j-m-Y, H:i'));
     }
 
     public function collect(array $array = []): Collection

@@ -39,21 +39,27 @@
             {# TAB: Notifications #}
             {% if parameter('notification_is_enabled', 'yes') == 'yes' %}
                 <div class="tab-chat tab-pane fade show active" id="notif">
-                    <div class="quick-wrapper notif-box">
+                    <div class="quick-wrapper">
                         <div class="quick-scroll scrollbar-outer">
-                            <div class="quick-content notif-center">
-                                <div data-notif-empty>
-                                    <div class="text-center my-3">
-                                        {{ 'Notifications yet'|locale }}
+                            <div class="quick-content">
+                                <div class="notif-center list-group list-group-flush">
+                                    <div data-notif-empty>
+                                        <div class="text-center my-3">
+                                            {{ 'Notifications yet'|locale }}
+                                        </div>
+                                    </div>
+
+                                    <div class="list-group-item flex-column pl-0" data-notif-item>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <h5 class="text-truncate my-0"></h5>
+                                            </div>
+                                            <div class="col-12 text-right">
+                                                <small class="date text-small text-muted"></small>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-
-                                <a href="#" data-notif-item>
-                                    <div class="notif-content">
-                                        <span class="block"></span>
-                                        <span class="time"></span>
-                                    </div>
-                                </a>
                             </div>
                         </div>
                     </div>
@@ -65,22 +71,32 @@
                 <div class="quick-wrapper">
                     <div class="quick-scroll scrollbar-outer">
                         <div class="quick-content">
-                            <div class="list-group list-group-file-item list-group-reflow list-group-flush list-group-divider">
+                            <div class="task-center list-group list-group-flush">
                                 <div data-task-empty>
                                     <div class="text-center my-3">
                                         {{ 'No data about background tasks'|locale }}
                                     </div>
                                 </div>
 
-                                <div class="list-group-item" data-task-item>
-                                    <div class="list-group-item-body">
-                                        <h5 class="list-group-item-title text-truncate m-0"></h5>
-                                        <div class="progress mt-2" style="display: none; height: 10px">
-                                            <div class="progress-bar" style="width: 0"></div>
+                                <div class="list-group-item flex-column pl-0" data-task-item>
+                                    <div class="row">
+                                        <div class="col-7">
+                                            <h5 class="text-truncate my-0"></h5>
+                                        </div>
+                                        <div class="col-5 text-right">
+                                            <div class="row">
+                                                <div class="col-12"><small class="status text-small"></small></div>
+                                                <div class="col-12"><small class="date text-small text-muted"></small></div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="list-group-item-figure">
-                                        <p class="list-group-item-text small"><span></span></p>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="progress mt-2" style="display: none; height: 10px">
+                                                <div class="progress-bar" style="width: 0"></div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -147,7 +163,7 @@
             $notifList = $quickSidebar.find('.notif-center'),
             $elNotifEmpty = $quickSidebar.find('[data-notif-empty]'),
             $elNotifItem = $quickSidebar.find('[data-notif-item]').detach().removeAttr('data-notif-item'),
-            $taskList = $quickSidebar.find('.list-group'),
+            $taskList = $quickSidebar.find('.task-center'),
             $elTaskEmpty = $quickSidebar.find('[data-task-empty]'),
             $elTaskItem = $quickSidebar.find('[data-task-item]').detach().removeAttr('data-task-item');
 
@@ -161,8 +177,13 @@
                         for (let notification of res.notification) {
                             let $buf = $elNotifItem.clone();
 
-                            $buf.find('.block').text(notification.title);
-                            $buf.find('.time').text(moment(notification.date.date).format('DD.MM.YYYY HH:mm:ss'));
+                            $buf.find('h5').text(notification.title);
+                            $buf.find('small.date').text(
+                                moment
+                                    .tz(notification.date, 'YYYY-MM-DD hh:mm:ss', 'utc')
+                                    .tz('{{ parameter('common_timezone', 'Europe/Kiev') }}')
+                                    .format('{{ parameter('common_date_format', 'j-m-Y, H:i')|dfm }}')
+                            );
 
                             $notifList.prepend($buf);
                             data.notifications.push(notification.uuid);
@@ -214,7 +235,13 @@
                             $buf.find('h5').text(task.title ? task.title : task.action);
                             $buf.find('.progress').toggle(task.progress > 0 && task.status === 'work');
                             $buf.find('.progress-bar').css('width', task.progress + '%');
-                            $buf.find('p span').attr('class', color).text(text);
+                            $buf.find('small.status').attr('class', color).text(text);
+                            $buf.find('small.date').text(
+                                moment
+                                    .tz(task.date, 'YYYY-MM-DD hh:mm:ss', 'utc')
+                                    .tz('{{ parameter('common_timezone', 'Europe/Kiev') }}')
+                                    .format('{{ parameter('common_date_format', 'j-m-Y, H:i')|dfm }}')
+                            );
 
                             return $buf;
                         }
