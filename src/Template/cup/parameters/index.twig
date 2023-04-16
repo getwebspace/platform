@@ -1316,7 +1316,7 @@
 
                                     <div class="col-xs-12 col-sm-6">
                                         {% for index, item in parameter %}
-                                            {% if item.key starts with 'var_' and item.value %}
+                                            {% if item.key starts with 'var_' %}
                                                 {% include 'cup/form.twig' with {
                                                     'type': 'text',
                                                     'name': index,

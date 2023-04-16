@@ -23,10 +23,16 @@ class ParametersPageAction extends AbstractAction
                         'value' => is_array($value) ? implode(',', $value) : $value,
                     ];
 
-                    if (($parameter = $parameters->firstWhere('key', $data['key'])) !== null) {
-                        $parameterService->update($parameter, $data);
+                    if (!blank($value)) {
+                        if (($parameter = $parameters->firstWhere('key', $data['key'])) !== null) {
+                            $parameterService->update($parameter, $data);
+                        } else {
+                            $parameterService->create($data);
+                        }
                     } else {
-                        $parameterService->create($data);
+                        if (($parameter = $parameters->firstWhere('key', $data['key'])) !== null) {
+                            $parameterService->delete($parameter);
+                        }
                     }
                 }
             }
