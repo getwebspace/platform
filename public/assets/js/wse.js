@@ -11,7 +11,8 @@ if (window.loader === undefined) {
             if (window.loader.loaded.has(url)) {
                 return resolve();
             }
-            
+            window.loader.loaded.add(url);
+
             let el;
             switch (true) {
                 case url.endsWith('.css') || url.includes('.css'): {
@@ -28,9 +29,8 @@ if (window.loader === undefined) {
                     break;
                 }
             }
-            
+
             document.body.appendChild(el);
-            window.loader.loaded.add(url);
         });
     };
 }
@@ -51,7 +51,7 @@ if (Math.randomInt === undefined) {
     Math.randomInt = (min, max) => {
         min = Math.ceil(min);
         max = Math.floor(max);
-        
+
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 }
@@ -59,7 +59,7 @@ if (Math.randomInt === undefined) {
 // default empty query list
 if (location.query === undefined) {
     location.query = {};
-    
+
     // build query params
     window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, (m, key, value) => {
         location.query[key] = value;
