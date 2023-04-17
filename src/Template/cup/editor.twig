@@ -34,14 +34,16 @@
                 '/assets/js/plugin/froala/froala_editor.pkgd.js?v={{ SHA }}',
             ]);
 
-            $.FE.LANGUAGE['{{ _language }}'] = {
-                translation: {{ _cup_editor_locale() }}
-            };
+            if ($.FE && $.FE.LANGUAGE) {
+                $.FE.LANGUAGE['{{ _language }}'] = {
+                    translation: {{ _cup_editor_locale() }}
+                };
+            }
 
             (function init() {
                 let $editor = $('#wysiwygeditor-{{ editorId }}:visible');
 
-                if ($editor.length) {
+                if ($editor.length && typeof $editor.froalaEditor === 'function') {
                     $('#spinner-{{ editorId }}').hide();
                     $editor.css('opacity', 1);
 
@@ -60,7 +62,10 @@
                             htmlRemoveTags: [],
                             htmlAllowedAttrs: ['.*'],
 
-                            toolbarButtons: ['bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', '|', 'fontFamily', 'fontSize', 'color', 'inlineClass', 'inlineStyle', 'paragraphStyle', 'lineHeight', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'fullscreen', '-', 'insertLink', 'insertImage', 'insertVideo', 'embedly', 'insertFile', 'insertTable', '|', 'emoticons', 'fontAwesome', 'specialCharacters', 'insertHR', 'selectAll', 'clearFormatting', '|', 'print', 'spellChecker', 'html', '|', 'undo', 'redo'],
+                            toolbarButtons: [
+                                'bold', 'italic', 'underline', 'strikeThrough', '|', 'paragraphFormat', 'fontSize', 'color', 'align', '|',
+                                'insertTable', 'insertLink', 'insertImage', 'insertVideo', 'embedly', 'insertFile', '|', 'clearFormatting', '|', 'undo', 'redo', '|', 'html'
+                            ],
 
                             fileMaxSize: 1024 * 1024 * 3,
                             fileUploadMethod: 'POST',
@@ -106,7 +111,7 @@
                         });
                     }
                 } else {
-                    setTimeout(init, 250);
+                    setTimeout(init, 1000);
                 }
             })();
         });
