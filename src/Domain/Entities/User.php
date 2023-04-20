@@ -53,14 +53,18 @@ class User extends AbstractEntity
      *
      * @return $this
      */
-    public function setEmail(string $email): self
+    public function setEmail(string $email = null): self
     {
-        try {
-            if ($this->checkStrLenMax($email, 120) && $this->checkEmailByValue($email)) {
-                $this->email = $email;
+        if ($email) {
+            try {
+                if ($this->checkStrLenMax($email, 120) && $this->checkEmailByValue($email)) {
+                    $this->email = $email;
+                }
+            } catch (\RuntimeException $e) {
+                throw new \App\Domain\Service\User\Exception\WrongEmailValueException();
             }
-        } catch (\RuntimeException $e) {
-            throw new \App\Domain\Service\User\Exception\WrongEmailValueException();
+        } else {
+            $this->email = '';
         }
 
         return $this;

@@ -314,16 +314,20 @@ class UserService extends AbstractService
                     }
                 }
                 if ($data['email'] !== null) {
-                    if ($this->check_email($data['email'])) {
-                        throw new EmailBannedException();
-                    }
-
-                    $found = $this->service->findOneByEmail($data['email']);
-
-                    if ($found === null || $found === $entity) {
-                        $entity->setEmail($data['email']);
+                    if (blank($data['email'])) {
+                        $entity->setEmail();
                     } else {
-                        throw new EmailAlreadyExistsException();
+                        if ($this->check_email($data['email'])) {
+                            throw new EmailBannedException();
+                        }
+
+                        $found = $this->service->findOneByEmail($data['email']);
+
+                        if ($found === null || $found === $entity) {
+                            $entity->setEmail($data['email']);
+                        } else {
+                            throw new EmailAlreadyExistsException();
+                        }
                     }
                 }
                 if ($data['phone'] !== null) {
