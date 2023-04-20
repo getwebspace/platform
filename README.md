@@ -7,46 +7,47 @@
 [Website](https://getwebspace.org/) |
 [Documentation](https://github.com/getwebspace/platform/wiki) |
 [Official Repository](https://github.com/getwebspace/platform) |
-[Doker template](https://github.com/getwebspace/platform-template) |
-[Demo shop](https://demo.getwebspace.org)
+[Issue Tracker](https://github.com/getwebspace/platform/issues) |
+[Docker template](https://github.com/getwebspace/platform-template) |
+[Demo website here](https://demo.getwebspace.org)
 
-WSE is a free open source multi-user site engine with great functionality, primarily intended for: organization of mass media; blogs; online stores;
+Simple free open source multi-user site engine with great functionality,
+primarily intended for: online stores and mass media or blogs.
 
 ![Demo site](image.png)
 
 ## Features
+- Docker compatible
 - Templates in Twig
 - Template editor
 - Plugins API
 - HTTP API (dedicated API, and each public controller as API)
-- Docker compatible
-- Publications
 - Static pages
-- Catalog of products (shop)
+- Publications with Categories
+- Catalog and Products (shop)
 - Dynamic forms
 - Guestbook
 - Users and User groups with permissions
 - User mailing list
 - SMTP & SendPulse
 - reCAPTCHA
-- OAuth (facebook, vk)
+- OAuth (via [SocialConnect](https://github.com/SocialConnect))
 - Files and image optimization (imagemagick)
 - Background tasks
 
 and more..
 
 ## Plugins
-- Search optimization (robots.txt, sitemap, Yandex.Market, Google Merchant)
-- TradeMaster
+- [Search optimization](https://github.com/getwebspace/platform-plugin-seo) (robots.txt, sitemap, Yandex.Market, Google Merchant)
 
 ## Languages
 - English (default)
-- Ukrainian (plugin)
-- Russian (plugin)
+- Ukrainian ([plugin](https://github.com/getwebspace/platform-lang-ukrainian))
+- Russian ([plugin](https://github.com/getwebspace/platform-lang-russian))
 
 ## Roadmap
-
-- new attributes
+- Products series
+- New attributes
 
 ## Quickstart install
 ### Production mode
@@ -84,13 +85,15 @@ You can define the next environment variables
 ```
 
 #### Post install check chmod's
-
 ```shell script
 chmod -R 0777 plugin
 chmod -R 0777 theme
 chmod -R 0777 var
 chmod -R 0776 var/upload
 ```
+
+## Collaborators
+<a href="https://github.com/alksily"><img src="https://avatars.githubusercontent.com/u/5148853?v=4" alt="alksily" width="40"/></a>
 
 ## Copyright & license
 Licensed under the MIT license. See [License File](LICENSE.md) for more information.
