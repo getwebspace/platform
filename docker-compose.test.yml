@@ -19,6 +19,7 @@ services:
             - ./tests:/var/container/tests:rw
             - ./theme:/var/container/theme:rw
             - ./var:/var/container/var:rw
+            - ./var/cache:/var/container/public/cache:rw
             - ./var/upload:/var/container/public/uploads:rw
             - ./.php-cs-fixer.dist.php:/var/container/.php-cs-fixer.dist.php:ro
             - ./composer.json:/var/container/composer.json:rw
