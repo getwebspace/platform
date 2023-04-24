@@ -8,7 +8,7 @@ services:
         image: getwebspace/platform:test
         environment:
             - TEST=1
-            - DEBUG=1
+            - DEBUG=0
         command: vendor/bin/phpunit --color=always --configuration phpunit.xml
         volumes:
             - ./bin:/var/container/bin:rw
