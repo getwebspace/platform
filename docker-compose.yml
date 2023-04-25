@@ -5,7 +5,7 @@ services:
         build:
             context: .
             dockerfile: docker/Dockerfile
-        image: getwebspace/platform
+        image: ghcr.io/getwebspace/platform:master
         environment:
             - DEBUG=1
           # - DATABASE=mysql://user:password@hostname/database
