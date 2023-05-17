@@ -20,7 +20,7 @@ class OrderStatusCreateAction extends CatalogAction
 
                 switch (true) {
                     case $this->getParam('save', 'exit') === 'exit':
-                        return $this->respondWithRedirect('/cup/catalog/order');
+                        return $this->respondWithRedirect('/cup/catalog/order/status');
 
                     default:
                         return $this->respondWithRedirect('/cup/catalog/order/status/' . $os->getUuid() . '/edit');
