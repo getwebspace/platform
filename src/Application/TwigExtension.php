@@ -476,7 +476,7 @@ class TwigExtension extends AbstractExtension
     // return parent categories
     public function catalog_category_parents(\App\Domain\Entities\Catalog\Category $category = null)
     {
-        $categories = $this->catalog_category();
+        $categories = $this->catalog_category(['hidden' => true]);
         $breadcrumb = [];
 
         if (!is_null($category)) {
