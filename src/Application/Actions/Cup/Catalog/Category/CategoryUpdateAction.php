@@ -27,6 +27,7 @@ class CategoryUpdateAction extends CatalogAction
                         $category = $this->catalogCategoryService->update($category, [
                             'parent' => $this->getParam('parent'),
                             'children' => $this->getParam('children'),
+                            'hidden' => $this->getParam('hidden'),
                             'title' => $this->getParam('title'),
                             'description' => $this->getParam('description'),
                             'address' => $this->getParam('address'),

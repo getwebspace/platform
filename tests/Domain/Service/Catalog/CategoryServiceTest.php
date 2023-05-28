@@ -32,6 +32,7 @@ class CategoryServiceTest extends TestCase
         $data = [
             'parent' => $this->getFaker()->uuid,
             'children' => $this->getFaker()->boolean,
+            'hidden' => $this->getFaker()->boolean,
             'title' => $this->getFaker()->title,
             'description' => $this->getFaker()->text(100),
             'address' => $this->getFaker()->word,
@@ -69,6 +70,7 @@ class CategoryServiceTest extends TestCase
         $this->assertInstanceOf(Category::class, $category);
         $this->assertSame($data['parent'], $category->getParent()->toString());
         $this->assertSame($data['children'], $category->getChildren());
+        $this->assertSame($data['hidden'], $category->getHidden());
         $this->assertSame($data['title'], $category->getTitle());
         $this->assertSame($data['description'], $category->getDescription());
         $this->assertSame($data['address'], $category->getAddress());
@@ -91,6 +93,7 @@ class CategoryServiceTest extends TestCase
         $this->assertInstanceOf(Category::class, $c);
         $this->assertSame($data['parent'], $c->getParent()->toString());
         $this->assertSame($data['children'], $c->getChildren());
+        $this->assertSame($data['hidden'], $c->getHidden());
         $this->assertSame($data['title'], $c->getTitle());
         $this->assertSame($data['description'], $c->getDescription());
         $this->assertSame($data['address'], $c->getAddress());
@@ -175,6 +178,7 @@ class CategoryServiceTest extends TestCase
         $category = $this->service->create([
             'parent' => $this->getFaker()->uuid,
             'children' => $this->getFaker()->boolean,
+            'hidden' => $this->getFaker()->boolean,
             'title' => $this->getFaker()->title,
             'description' => $this->getFaker()->text(100),
             'address' => $this->getFaker()->word,
@@ -211,6 +215,7 @@ class CategoryServiceTest extends TestCase
         $data = [
             'parent' => $this->getFaker()->uuid,
             'children' => $this->getFaker()->boolean,
+            'hidden' => $this->getFaker()->boolean,
             'title' => $this->getFaker()->title,
             'description' => $this->getFaker()->text(100),
             'address' => $this->getFaker()->word,
@@ -248,6 +253,7 @@ class CategoryServiceTest extends TestCase
         $this->assertInstanceOf(Category::class, $category);
         $this->assertSame($data['parent'], $category->getParent()->toString());
         $this->assertSame($data['children'], $category->getChildren());
+        $this->assertSame($data['hidden'], $category->getHidden());
         $this->assertSame($data['title'], $category->getTitle());
         $this->assertSame($data['description'], $category->getDescription());
         $this->assertSame($data['address'], $category->getAddress());

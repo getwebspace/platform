@@ -20,6 +20,7 @@ class CategoryCreateAction extends CatalogAction
                 $category = $this->catalogCategoryService->create([
                     'parent' => $this->getParam('parent'),
                     'children' => $this->getParam('children'),
+                    'hidden' => $this->getParam('hidden'),
                     'title' => $this->getParam('title'),
                     'description' => $this->getParam('description'),
                     'address' => $this->getParam('address'),

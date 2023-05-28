@@ -65,7 +65,8 @@
                                             }
                                         } %}
                                     </div>
-                                    <div class="col-md-6">
+
+                                    <div class="col-6 col-md-3">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Primary category'|locale,
                                             'type': 'select',
@@ -73,6 +74,17 @@
                                             'args': {
                                                 'option': {(NIL): '---'}|merge(categories.whereNotIn('uuid', [category.uuid]).pluck('title', 'uuid').all()),
                                                 'selected': category.parent ?? parent
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-6 col-md-3">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Hidden category'|locale,
+                                            'type': 'select',
+                                            'name': 'hidden',
+                                            'args': {
+                                                'option': _(['yes', 'no']),
+                                                'selected': category.hidden ? 'yes' : 'no'
                                             }
                                         } %}
                                     </div>

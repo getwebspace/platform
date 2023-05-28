@@ -32,6 +32,7 @@ class CategoryService extends AbstractService
         $default = [
             'parent' => \Ramsey\Uuid\Uuid::NIL,
             'children' => false,
+            'hidden' => false,
             'title' => '',
             'description' => '',
             'address' => '',
@@ -74,6 +75,7 @@ class CategoryService extends AbstractService
         $category = (new Category())
             ->setParent($data['parent'])
             ->setChildren($data['children'])
+            ->setHidden($data['hidden'])
             ->setDescription($data['description'])
             ->setTitle($data['title'])
             ->setAddress($data['address'])
@@ -127,6 +129,7 @@ class CategoryService extends AbstractService
             'uuid' => null,
             'parent' => null,
             'children' => null,
+            'hidden' => null,
             'title' => null,
             'address' => null,
             'field1' => null,
@@ -148,6 +151,9 @@ class CategoryService extends AbstractService
         }
         if ($data['children'] !== null) {
             $criteria['children'] = $data['children'];
+        }
+        if ($data['hidden'] !== null) {
+            $criteria['hidden'] = $data['hidden'];
         }
         if ($data['title'] !== null) {
             $criteria['title'] = $data['title'];
@@ -216,6 +222,7 @@ class CategoryService extends AbstractService
             $default = [
                 'parent' => null,
                 'children' => null,
+                'hidden' => null,
                 'title' => null,
                 'description' => null,
                 'address' => null,
@@ -241,6 +248,9 @@ class CategoryService extends AbstractService
                 }
                 if ($data['children'] !== null) {
                     $entity->setChildren($data['children']);
+                }
+                if ($data['hidden'] !== null) {
+                    $entity->setHidden($data['hidden']);
                 }
                 if ($data['title'] !== null) {
                     $entity->setTitle($data['title']);

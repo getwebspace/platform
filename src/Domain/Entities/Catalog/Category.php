@@ -240,6 +240,26 @@ class Category extends AbstractEntity
         return $this->children;
     }
 
+    #[ORM\Column(type: 'boolean', options: ['default' => false])]
+    protected bool $hidden = false;
+
+    /**
+     * @param mixed $value
+     *
+     * @return $this
+     */
+    public function setHidden($value)
+    {
+        $this->hidden = $this->getBooleanByValue($value);
+
+        return $this;
+    }
+
+    public function getHidden(): bool
+    {
+        return $this->hidden;
+    }
+
     #[ORM\Column(name: '`order`', type: 'integer', options: ['default' => 1])]
     protected int $order = 1;
 

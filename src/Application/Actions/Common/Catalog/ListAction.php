@@ -18,6 +18,7 @@ class ListAction extends CatalogAction
         $params = $this->parsePath();
         $categories = $this->catalogCategoryService->read([
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+            'hidden' => false,
         ]);
 
         // Catalog main

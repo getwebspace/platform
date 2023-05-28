@@ -462,6 +462,9 @@ class TwigExtension extends AbstractExtension
         $catalogCategoryService = $this->container->get(CatalogCategoryService::class);
 
         return $catalogCategoryService->read(array_merge(
+            [
+                'hidden' => false,
+            ],
             $criteria,
             [
                 'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
