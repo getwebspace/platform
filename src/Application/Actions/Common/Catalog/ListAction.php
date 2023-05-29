@@ -348,13 +348,15 @@ class ListAction extends CatalogAction
             $product = $products->first();
             $category = $categories->firstWhere('uuid', $product->getCategory());
 
-            return $this->respond($category->template['product'] ?? '', [
-                'categories' => $categories,
-                'category' => $category,
-                'product' => $product,
-                'products' => $products,
-                'params' => $params,
-            ]);
+            if ($category) {
+                return $this->respond($category->template['product'] ?? '', [
+                    'categories' => $categories,
+                    'category' => $category,
+                    'product' => $product,
+                    'products' => $products,
+                    'params' => $params,
+                ]);
+            }
         }
 
         return null;
