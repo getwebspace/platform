@@ -23,29 +23,23 @@ class ListAction extends CatalogAction
 
         // todo check category parents
 
-        // Catalog main
-        if ($buf = $this->prepareMain($params, $categories)) {
-            return $buf;
-        }
-
-        // Category
         try {
+            // Catalog main
+            if ($buf = $this->prepareMain($params, $categories)) {
+                return $buf;
+            }
+
+            // Category
             if ($buf = $this->prepareCategory($params, $categories)) {
                 return $buf;
             }
-        } catch (CategoryNotFoundException $e) {
-            // 404
-            return $this->respond('p404.twig')->withStatus(404);
-        }
 
-        // Product
-        try {
+            // Product
             if ($buf = $this->prepareProduct($params, $categories)) {
                 return $buf;
             }
-        } catch (ProductNotFoundException $e) {
-            // 404
-            return $this->respond('p404.twig')->withStatus(404);
+        } catch (CategoryNotFoundException|ProductNotFoundException $e) {
+            // nothing
         }
 
         // 404
