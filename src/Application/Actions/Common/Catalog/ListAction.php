@@ -21,6 +21,8 @@ class ListAction extends CatalogAction
             'hidden' => false,
         ]);
 
+        // todo check category parents
+
         // Catalog main
         if ($buf = $this->prepareMain($params, $categories)) {
             return $buf;
