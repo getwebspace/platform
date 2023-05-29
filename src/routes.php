@@ -72,7 +72,8 @@ return function (App $app, Container $container): void {
                     // cup forbidden
                     $proxy->map(['GET', 'POST'], '/forbidden', \App\Application\Actions\Cup\ForbiddenPageAction::class)
                         ->setName('cup:forbidden');
-                });
+                })
+                ->add(\App\Application\Middlewares\LocaleMiddleware::class);
         })
         ->add(new \Slim\HttpCache\Cache('public', 0));
 
