@@ -16452,7 +16452,7 @@ be a descendant of the grid when it is being dragged.
 }
 
 .select2-container--bootstrap .select2-selection--single {
-    height: 40px;
+    height: 42px;
     line-height: 1.42857143;
     padding: .6rem 1rem;
 }

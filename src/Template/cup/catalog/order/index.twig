@@ -14,6 +14,55 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
+                <form method="get">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Status'|locale,
+                                    'type': 'select',
+                                    'name': 'status',
+                                    'args': {
+                                        'option': {'': '---'}|merge(status_list.sortBy('order').pluck('title', 'uuid').all()),
+                                        'selected': status,
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-4">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Date From'|locale,
+                                    'type': 'date',
+                                    'name': 'date[from]',
+                                    'args': {
+                                        'value': date.from
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-4">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Date To'|locale,
+                                    'type': 'date',
+                                    'name': 'date[to]',
+                                    'args': {
+                                        'value': date.to
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        <div class="btn-group">
+                            <button type="submit" class="btn btn-primary">{{ 'Search'|locale }}</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
                         <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
