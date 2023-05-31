@@ -5,13 +5,13 @@
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             {% include 'cup/form-header.twig' with {
                 'item': order,
-                'create': 'Создание нового заказа',
-                'update': 'Редактирование заказа'
+                'create': 'Create a new order',
+                'update': 'Edit order'
             } only %}
             {% if order %}
                 <div class="ml-md-auto py-2 py-md-0">
                     <a href="/cup/catalog/order/{{ order.uuid }}/invoice" class="btn btn-secondary">
-                        {{ 'Инвойс'|locale }}
+                        {{ 'Invoice'|locale }}
                     </a>
                 </div>
             {% endif %}
@@ -29,17 +29,17 @@
                             <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
                                 <li class="nav-item">
                                     <a class="nav-link active show" data-toggle="pill" href="#client" role="tab">
-                                        {{ 'Клиент'|locale }}
+                                        {{ 'Client'|locale }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="pill" href="#delivery" role="tab">
-                                        {{ 'Доставка и статус'|locale }}
+                                        {{ 'Delivery and status'|locale }}
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="pill" href="#other" role="tab">
-                                        {{ 'Другое'|locale }}
+                                        {{ 'Other'|locale }}
                                     </a>
                                 </li>
                             </ul>
@@ -52,10 +52,10 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Клиент'|locale,
+                                            'label': 'Client'|locale,
                                             'type': 'text',
                                             'name': 'delivery[client]',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('ФИО клиента'|locale) ~ '"></i>',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Client name'|locale) ~ '"></i>',
                                             'args': {
                                                 'value': order.delivery.client,
                                                 'required': true,
@@ -66,7 +66,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Телефон'|locale,
+                                            'label': 'Phone'|locale,
                                             'type': 'tel',
                                             'name': 'phone',
                                             'args': {
@@ -85,7 +85,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Комментарий'|locale,
+                                            'label': 'Comment'|locale,
                                             'type': 'textarea',
                                             'name': 'comment',
                                             'args': {
@@ -102,7 +102,7 @@
                                 <div class="row">
                                     <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Дата создания'|locale,
+                                            'label': 'Order date'|locale,
                                             'type': 'datetime',
                                             'args': {
                                                 'value': order.date|df('Y-m-d\\TH:i'),
@@ -112,7 +112,7 @@
                                         } %}
 
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Дата доставки'|locale,
+                                            'label': 'Delivery date'|locale,
                                             'type': 'datetime',
                                             'name': 'shipping',
                                             'args': {
@@ -123,7 +123,7 @@
                                     </div>
                                     <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Адрес доставки'|locale,
+                                            'label': 'Delivery address'|locale,
                                             'type': 'textarea',
                                             'name': 'delivery[address]',
                                             'args': {
@@ -137,10 +137,10 @@
                                 <div class="row">
                                     <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Статус'|locale,
+                                            'label': 'Status'|locale,
                                             'type': 'select',
                                             'name': 'status_uuid',
-                                            'message': '<a href="/cup/catalog/order/status/add" class="btn btn-xs btn-info float-right" onclick="return confirm(\'' ~ ('Вы действительно хотите перейти на другую страницу?'|locale) ~ '\');"><i class="fa fa-plus"></i> ' ~ ('Создать статус'|locale) ~ '</a>',
+                                            'message': '<a href="/cup/catalog/order/status/add" class="btn btn-xs btn-info float-right" onclick="return confirm(\'' ~ ('Are you sure you want to go to another page?'|locale) ~ '\');"><i class="fa fa-plus"></i> ' ~ ('Create status'|locale) ~ '</a>',
                                             'args': {
                                                 'option': status_list.sortBy('order').pluck('title', 'uuid').all(),
                                                 'selected': order.status_uuid ? order.status_uuid : status_list.sortBy('order').first.uuid
@@ -155,19 +155,19 @@
                                 <div class="row">
                                     <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Идентификатор пользователя'|locale,
+                                            'label': 'User ID'|locale,
                                             'type': 'text',
                                             'name': 'user_uuid',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать.'|locale) ~ '"></i>',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('System field. If you don\'t know what this field is for, it\'s best not to touch it.'|locale) ~ '"></i>',
                                             'args': {
                                                 'value': order.user ? order.user.uuid : ''
                                             }
                                         } %}
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Внешний ID'|locale,
+                                            'label': 'External ID'|locale,
                                             'type': 'text',
                                             'name': 'external_id',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать.'|locale) ~ '"></i>',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('System field. If you don\'t know what this field is for, it\'s best not to touch it.'|locale) ~ '"></i>',
                                             'args': {
                                                 'value': order.external_id,
                                             }
@@ -175,10 +175,10 @@
                                     </div>
                                     <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Техническая информация'|locale,
+                                            'label': 'Technical information'|locale,
                                             'type': 'textarea',
                                             'name': 'system',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать.'|locale) ~ '"></i>',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('System field. If you don\'t know what this field is for, it\'s best not to touch it.'|locale) ~ '"></i>',
                                             'args': {
                                                 'value': order.system,
                                                 'style': 'min-height: 133px;'
@@ -201,13 +201,13 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="d-flex align-items-center">
-                            <div class="card-title">{{ 'Состав заказа'|locale }}</div>
+                            <div class="card-title">{{ 'Order list'|locale }}</div>
 
                             <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
                                 <li class="nav-item">
                                     <button type="button" data-btn-order-modal-products class="btn btn-outline-secondary ml-auto">
                                         <i class="fa fa-plus"></i>
-                                        {{ 'Добавить продукт'|locale }}
+                                        {{ 'Add product'|locale }}
                                     </button>
                                 </li>
                             </ul>
@@ -218,9 +218,9 @@
                             <table data-table="order" class="table table-striped table-hover" style="width: 100%;">
                                 <thead>
                                     <tr>
-                                        <th class="no-sorting">{{ 'Позиция'|locale }}</th>
-                                        <th width="15%" class="no-sorting">{{ 'Цена'|locale }}</th>
-                                        <th width="15%" class="no-sorting">{{ 'Количество'|locale }}</th>
+                                        <th class="no-sorting">{{ 'Item'|locale }}</th>
+                                        <th width="15%" class="no-sorting">{{ 'Price'|locale }}</th>
+                                        <th width="15%" class="no-sorting">{{ 'Count'|locale }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -255,27 +255,27 @@
         <div class="row">
             <div class="col-12">
                 {% include 'cup/form.twig' with {
-                    'label': 'Категория'|locale,
+                    'label': 'Category'|locale,
                     'name': 'category',
                     'type': 'select',
                     'args': {
-                        'data': {'search': 5, 'placeholder': 'Выберете категорию'|locale, 'allow-clear': true},
+                        'data': {'search': 5, 'placeholder': 'Choose a category'|locale, 'allow-clear': true},
                     }
                 } %}
             </div>
             <div class="col-12">
                 {% include 'cup/form.twig' with {
-                    'label': 'Товар'|locale,
+                    'label': 'Item'|locale,
                     'name': 'product',
                     'type': 'select',
                     'args': {
-                        'data': {'search': 5, 'placeholder': 'Выберете товар'|locale}
+                        'data': {'search': 5, 'placeholder': 'Choose a product'|locale}
                     }
                 } %}
             </div>
             <div class="col-6">
                 {% include 'cup/form.twig' with {
-                    'label': 'Количество'|locale,
+                    'label': 'Count'|locale,
                     'type': 'number',
                     'args': {
                         'value': '1',
@@ -287,7 +287,7 @@
             </div>
             <div class="col-6">
                 <div class="text-right" style="margin-top: 37px;">
-                    <button type="button" class="btn btn-outline-info">{{ 'Добавить продукт'|locale }}</button>
+                    <button type="button" class="btn btn-outline-info">{{ 'Add product'|locale }}</button>
                 </div>
             </div>
         </div>

@@ -420,7 +420,7 @@
                                             'type': 'select',
                                             'message': '<p class="float-left">' ~ ('Specify individual attributes of the product'|locale) ~ '</p>'~
                                                        '<button class="btn btn-xs btn-secondary float-right" type="button">' ~ ('Add attribute'|locale) ~ '</button>' ~
-                                                       '<a href="/cup/catalog/attribute/add" class="btn btn-xs btn-info float-right" onclick="return confirm(\'Вы действительно хотите перейти на другую страницу?\');"><i class="fa fa-plus"></i> ' ~ ('Create attribute'|locale) ~ '</a>' ,
+                                                       '<a href="/cup/catalog/attribute/add" class="btn btn-xs btn-info float-right" onclick="return confirm(\'Are you sure you want to go to another page?\');"><i class="fa fa-plus"></i> ' ~ ('Create attribute'|locale) ~ '</a>' ,
                                             'args': {
                                                 'option': attributes.where('type', '!=', 'boolean').pluck('title', 'uuid').all(),
                                                 'data': {'select': 'attributes'}
