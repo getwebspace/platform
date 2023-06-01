@@ -55,7 +55,7 @@ class OrderExportAction extends CatalogAction
             $orders = collect($query->getQuery()->getResult());
 
             if ($orders->count()) {
-                $fields = ['serial', 'external_id', 'date', 'delivery.client', 'phone', 'email', 'shipping', 'delivery.address', 'system'];
+                $fields = ['serial', 'external_id', 'date', 'delivery.client', 'phone', 'email', 'total', 'shipping', 'delivery.address', 'system'];
 
                 $spreadsheet = $this->createSpreadSheet();
                 $sheet = $spreadsheet->getActiveSheet();
@@ -84,6 +84,15 @@ class OrderExportAction extends CatalogAction
                                     ->getStyle()
                                     ->getNumberFormat()
                                     ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_DATETIME);
+
+                                break;
+
+                            case 'total':
+                                $cell
+                                    ->setValue($model->getTotalPrice())
+                                    ->getStyle()
+                                    ->getNumberFormat()
+                                    ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED2);
 
                                 break;
 
