@@ -1,8 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace App\Application\Actions\Cup\Catalog;
+namespace App\Application\Actions\Cup\Catalog\Product;
 
-class CatalogExportAction extends CatalogAction
+use App\Application\Actions\Cup\Catalog\CatalogAction;
+
+class ProductExportAction extends CatalogAction
 {
     protected function createSpreadSheet()
     {
@@ -72,7 +74,6 @@ class CatalogExportAction extends CatalogAction
                     break;
             }
 
-            $wizard = new \PhpOffice\PhpSpreadsheet\Helper\Html();
             $spreadsheet = $this->createSpreadSheet();
             $sheet = $spreadsheet->getActiveSheet();
 
@@ -138,11 +139,20 @@ class CatalogExportAction extends CatalogAction
                             case 'priceFirst':
                             case 'price':
                             case 'priceWholesale':
+                            case 'priceWholesaleFrom':
+                            case 'tax':
+                            case 'discount':
                                 $cell
                                     ->setValue($model->{$field})
                                     ->getStyle()
                                     ->getNumberFormat()
                                     ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED2);
+
+                                break;
+
+                            case 'special':
+                                $cell
+                                    ->setValueExplicit(!!$model->{$field}, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_BOOL);
 
                                 break;
 

@@ -65,14 +65,14 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
-                        <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
-                            <li class="nav-item">
-                                <a href="/cup/catalog/order/add" class="nav-link bg-primary text-white">
-                                    <i class="fa fa-plus"></i>
-                                    {{ 'Create order'|locale }}
-                                </a>
-                            </li>
-                        </ul>
+                        <a href="{{ path_for('cup:catalog:order:export', [], {'status': status}|merge(date)) }}" class="btn btn-secondary btn-icon ml-auto text-white" data-toggle="tooltip" data-placement="top" title="{{ 'Export current order list'|locale }}">
+                            <i class="fas fa-file-export"></i>
+                        </a>
+
+                        <a href="/cup/catalog/order/add" class="btn btn-primary btn-round ml-1">
+                            <i class="fa fa-plus"></i>
+                            {{ 'Create order'|locale }}
+                        </a>
                     </div>
                 </div>
 

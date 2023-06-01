@@ -11,7 +11,7 @@ class OrderListAction extends CatalogAction
     {
         $data = [
             'status' => $this->getParam('status', ''),
-            'from' => date(\App\Domain\References\Date::DATE, strtotime('-30 days')),
+            'from' => date(\App\Domain\References\Date::DATE, strtotime('-1 month')),
             'to' => date(\App\Domain\References\Date::DATE),
         ];
         $data = array_merge($data, $this->getParam('date', []));

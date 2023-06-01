@@ -1,8 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace App\Application\Actions\Cup\Catalog;
+namespace App\Application\Actions\Cup\Catalog\Product;
 
-class CatalogImportAction extends CatalogAction
+use App\Application\Actions\Cup\Catalog\CatalogAction;
+
+class ProductImportAction extends CatalogAction
 {
     protected function action(): \Slim\Psr7\Response
     {

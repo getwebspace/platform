@@ -25,12 +25,13 @@
                         <a href="#btn-modal-import" rel="modal:open" class="btn btn-secondary btn-icon ml-auto text-white" data-toggle="tooltip" data-placement="top" title="{{ 'Import products'|locale }}">
                             <i class="fas fa-file-import"></i>
                         </a>
-                        {% include "cup/catalog/import-modal.twig" %}
-                        <a href="/cup/catalog/data/export{{ category.uuid ? '?category=' ~ category.uuid : '' }}" class="btn btn-secondary btn-icon ml-1 text-white" data-toggle="tooltip" data-placement="top" title="{{ 'Export current product list'|locale }}">
+                        {% include "cup/catalog/product/import-modal.twig" %}
+
+                        <a href="{{ path_for('cup:catalog:product:export', [], {'category': category.uuid.toString()}) }}" class="btn btn-secondary btn-icon ml-1 text-white" data-toggle="tooltip" data-placement="top" title="{{ 'Export current product list'|locale }}">
                             <i class="fas fa-file-export"></i>
                         </a>
 
-                        <a href="/cup/catalog/product/add{{ category ? '?category=' ~ category.uuid : '' }}" class="btn btn-primary btn-round ml-1">
+                        <a href="{{ path_for('cup:catalog:product:add', [], {'category': category.uuid.toString()}) }}" class="btn btn-primary btn-round ml-1">
                             <i class="fa fa-plus"></i>
                             {{ 'Create product'|locale }}
                         </a>

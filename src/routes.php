@@ -215,6 +215,11 @@ return function (App $app, Container $container): void {
 
                         // products
                         $proxy->group('/product', function (Group $proxy): void {
+                            $proxy->get('/export', \App\Application\Actions\Cup\Catalog\Product\ProductExportAction::class)
+                                ->setName('cup:catalog:product:export');
+                            $proxy->post('/import', \App\Application\Actions\Cup\Catalog\Product\ProductImportAction::class)
+                                ->setName('cup:catalog:product:import');
+
                             $proxy->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\Catalog\Product\ProductCreateAction::class)
                                 ->setName('cup:catalog:product:add');
                             $proxy->map(['GET', 'POST'], '/{product}/edit', \App\Application\Actions\Cup\Catalog\Product\ProductUpdateAction::class)
@@ -239,6 +244,8 @@ return function (App $app, Container $container): void {
 
                         // order
                         $proxy->group('/order', function (Group $proxy): void {
+                            $proxy->get('/export', \App\Application\Actions\Cup\Catalog\Order\OrderExportAction::class)
+                                ->setName('cup:catalog:order:export');
                             $proxy->get('/invoice', \App\Application\Actions\Cup\Catalog\Order\Invoice\OrderInviceEditorAction::class)
                                 ->setName('cup:catalog:order:invoice:editor');
 
@@ -264,16 +271,6 @@ return function (App $app, Container $container): void {
                                 ->setName('cup:catalog:order:delete');
                             $proxy->map(['GET', 'POST'], '/{order}/invoice', \App\Application\Actions\Cup\Catalog\Order\OrderInvoiceAction::class)
                                 ->setName('cup:catalog:order:invoice');
-                        });
-
-                        // import export
-                        $proxy->group('/data', function (Group $proxy): void {
-                            $proxy
-                                ->get('/export', \App\Application\Actions\Cup\Catalog\CatalogExportAction::class)
-                                ->setName('cup:catalog:data:export');
-                            $proxy
-                                ->post('/import', \App\Application\Actions\Cup\Catalog\CatalogImportAction::class)
-                                ->setName('cup:catalog:data:import');
                         });
                     });
 
