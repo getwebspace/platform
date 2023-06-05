@@ -77,10 +77,10 @@ class AuthorizationAPIMiddleware extends AbstractMiddleware
     {
         $access_token = $request->getQueryParams()['access_token'] ?? null;
 
-        if ($access_token === null) {
+        if (blank($access_token)) {
             $access_token = $request->getHeaderLine('access_token') ?? null;
         }
-        if ($access_token === null) {
+        if (blank($access_token)) {
             $access_token = $request->getCookieParams()['access_token'] ?? null;
         }
 
