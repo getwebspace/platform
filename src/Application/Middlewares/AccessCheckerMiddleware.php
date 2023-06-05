@@ -19,6 +19,9 @@ class AccessCheckerMiddleware extends AbstractMiddleware
         $routeContext = RouteContext::fromRequest($request);
         $route = $routeContext->getRoute();
 
+        // skip check if is API
+        if (str_starts_with($route->getName(), 'api')) return $handler->handle($request);
+
         /** @var User $user */
         $user = $request->getAttribute('user', false);
 
