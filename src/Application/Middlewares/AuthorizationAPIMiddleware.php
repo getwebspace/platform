@@ -63,10 +63,10 @@ class AuthorizationAPIMiddleware extends AbstractMiddleware
     {
         $key = $request->getQueryParams()['apikey'] ?? null;
 
-        if ($key === null) {
+        if (blank($key)) {
             $key = $request->getHeaderLine('key') ?? null;
         }
-        if ($key === null) {
+        if (blank($key)) {
             $key = $request->getHeaderLine('apikey') ?? null;
         }
 
