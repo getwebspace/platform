@@ -234,7 +234,7 @@ class Order extends AbstractEntity
 
     public function getTotalPrice(): float
     {
-        return $this->getProducts()->sum(fn ($el) => $el->getSum());
+        return $this->getProducts()->sum(fn ($el) => $el->getTotal());
     }
 
     #[ORM\Column(type: 'uuid', nullable: true, options: ['default' => null])]

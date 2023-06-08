@@ -78,6 +78,13 @@ class OrderProduct extends AbstractEntity
         return $this->title;
     }
 
+    protected string $type = '';
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
     protected string $address = '';
 
     public function getAddress(): string
@@ -132,7 +139,7 @@ class OrderProduct extends AbstractEntity
         return $this->count;
     }
 
-    public function getSum(): float
+    public function getTotal(): float
     {
         return $this->price * $this->count;
     }
@@ -142,12 +149,14 @@ class OrderProduct extends AbstractEntity
         return array_serialize([
             'uuid' => $this->product->getUuid(),
             'title' => $this->product->getTitle(),
+            'type' => $this->product->getType(),
             'address' => $this->product->getAddress(),
             'vendorCode' => $this->product->getVendorCode(),
             'external_id' => $this->product->getExternalId(),
-            'files' => $this->product->getFiles(),
             'price' => $this->getPrice(),
             'count' => $this->getCount(),
+            'total' => $this->getPrice() * $this->getCount(),
+            'files' => $this->product->getFiles(),
         ]);
     }
 
@@ -155,6 +164,7 @@ class OrderProduct extends AbstractEntity
     public function _populate_fields(): void
     {
         $this->title = $this->product->getTitle();
+        $this->type = $this->product->getType();
         $this->address = $this->product->getAddress();
         $this->vendorCode = $this->product->getVendorCode();
         $this->external_id = $this->product->getExternalId();
