@@ -55,7 +55,7 @@ jobs:
                     push: true
                     file: docker/Dockerfile
                     tags: |
-                        ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$VERSION
+                        ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.VERSION }}
                         ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
                     build-args: |
                         NO_DEV=--no-dev
