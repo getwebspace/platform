@@ -53,7 +53,7 @@ jobs:
                     push: true
                     file: docker/Dockerfile
                     tags: |
-                        ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref }}
+                        ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.ref.replace('refs/tags/', '') }}
                         ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
                     build-args: |
                         NO_DEV=--no-dev
