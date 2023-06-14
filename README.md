@@ -89,7 +89,7 @@ You can define the next environment variables
 chmod -R 0777 plugin
 chmod -R 0777 theme
 chmod -R 0777 var
-chmod -R 0776 var/upload
+chmod -R 0777 var/upload
 ```
 
 ## Collaborators
