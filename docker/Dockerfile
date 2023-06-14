@@ -1,7 +1,10 @@
 FROM php:8.2-fpm-alpine3.17
 
-# Lightweight container with Nginx & PHP-FPM based on Alpine Linux for WebSpace Engine
 MAINTAINER Aleksey Ilyin <alksily@getwebspace.org>
+
+LABEL org.opencontainers.image.source="https://github.com/getwebspace/platform"
+LABEL org.opencontainers.image.description="Lightweight container with Nginx & PHP-FPM based on Alpine Linux for WebSpace Engine"
+LABEL org.opencontainers.image.licenses="MIT"
 
 # Set args
 ARG VERSION="dev"
