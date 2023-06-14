@@ -64,5 +64,7 @@ jobs:
                         ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
                     build-args: |
                         NO_DEV=--no-dev
-                        VERSION=${{ github.ref }}
+                        NAME=${{ steps.setup_env.outputs.NAME }}
+                        BRANCH=${{ steps.setup_env.outputs.BRANCH }}
+                        VERSION=${{ steps.setup_env.outputs.VERSION }}
                         COMMIT=${{ github.sha }}
