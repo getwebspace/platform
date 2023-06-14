@@ -8,8 +8,8 @@ on:
 env:
     REGISTRY: ghcr.io
     IMAGE_NAME: ${{ github.repository }}
-    BRANCH: ${GITHUB_REF#refs/heads/}
-    VERSION: ${GITHUB_REF/refs\/tags\//}
+    BRANCH: ${{ github.ref#refs/heads/ }}
+    VERSION: ${{ github.ref/refs\/tags\// }}
 
 jobs:
     # Run tests.
