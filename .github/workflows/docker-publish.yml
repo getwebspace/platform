@@ -39,12 +39,11 @@ jobs:
             -   name: Check out the repo
                 uses: actions/checkout@v3
 
-            -   name: Get the version
-                id: get_version
-                run: |
-                    echo ::set-output name=NAME::${GITHUB_REF#refs/*/}
-                    echo ::set-output name=BRANCH::${GITHUB_REF#refs/heads/}
-                    echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+            -   name: Set tag name environment variable
+                run: | 
+                    echo "NAME=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+                    echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+                    echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
 
             -   name: Log in to the Container registry
                 uses: docker/login-action@v2
@@ -60,7 +59,7 @@ jobs:
                     push: true
                     file: docker/Dockerfile
                     tags: |
-                        ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.get_version.outputs.VERSION }}
+                        ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$VERSION
                         ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
                     build-args: |
                         NO_DEV=--no-dev
