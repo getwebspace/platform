@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">Доступ запрещен</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Access is denied'|locale }}</h2>
             </div>
         </div>
     </div>
@@ -15,11 +15,11 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body text-center">
-                    <b>В данный момент у вас нет доступа к запрашиваемой странице!</b>
+                    <b>{{ 'You currently do not have access to the requested page!'|locale }}</b>
                     <p class="mt-1">
-                        Если вы уверены, что адрес набран правильно:<br>
-                        &mdash; проверьте права доступа;<br>
-                        &mdash; свяжитесь с администратором.
+                        {{ 'If you are sure that the address is typed correctly:'|locale }}<br>
+                        &mdash; {{ 'check permissions'|locale }};<br>
+                        &mdash; {{ 'contact the administrator'|locale }}.
                     </p>
                 </div>
             </div>
