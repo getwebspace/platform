@@ -389,7 +389,7 @@
 
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': 'ImageMagick executable',
-                                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
+                                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('System field. If you don\'t know what this field is for, it\'s best not to touch it.'|locale) ~ '"></i>',
                                                     'type': 'text',
                                                     'name': 'image[convert_bin]',
                                                     'args': {
@@ -400,7 +400,7 @@
 
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': 'ImageMagick options',
-                                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Системное поле. Если вы не знаете, зачем это поле - лучше его не трогать."></i>',
+                                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('System field. If you don\'t know what this field is for, it\'s best not to touch it.'|locale) ~ '"></i>',
                                                     'type': 'textarea',
                                                     'name': 'image[convert_args]',
                                                     'args': {
@@ -1012,8 +1012,8 @@
                                                     'args': {
                                                         'selected': 'update',
                                                         'option': {
-                                                            'insert': 'Вставка и обновление',
-                                                            'update': 'Только обновление',
+                                                            'insert': 'Insert and update'|locale,
+                                                            'update': 'Update only'|locale,
                                                         },
                                                     },
                                                 } %}

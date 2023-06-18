@@ -1,4 +1,4 @@
-<form action="/cup/system/3" method="post" onsubmit="return confirm('{{ 'Вы уверены?'|locale }}');">
+<form action="/cup/system/3" method="post" onsubmit="return confirm('{{ 'Are you sure?'|locale }}');">
     {% if user == null %}
         <div class="card-body">
             <h5 class="text-center">{{ 'Account'|locale }}</h5>
@@ -31,7 +31,7 @@
                         }
                     } %}
                     {% include 'cup/form.twig' with {
-                        'label': 'Пароль'|locale,
+                        'label': 'Password'|locale,
                         'type': 'password',
                         'name': 'user[password]',
                         'args': {
