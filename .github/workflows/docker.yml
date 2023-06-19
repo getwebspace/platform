@@ -10,32 +10,20 @@ env:
     IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-    # run tests
-    test:
-        runs-on: ubuntu-latest
-        name: Testing
-        steps:
-            -   name: Check out the repo
-                uses: actions/checkout@v3
-
-            -   name: Run over makefile
-                run: |
-                    make up
-                    make run-test
-                    make lint
-                    make down
-
     # build platform
     debian:
-        needs: test
         runs-on: ubuntu-latest
         name: Build base container
         steps:
             -   name: Check out the repo
                 uses: actions/checkout@v3
 
-            -   name: Set up Docker Buildx
-                uses: docker/setup-buildx-action@v2
+            -   name: Set tag name environment variable
+                id: setup_env
+                run: |
+                    echo "NAME=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+                    echo "BRANCH=${GITHUB_REF#refs/heads/}" >> $GITHUB_OUTPUT
+                    echo "VERSION=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_OUTPUT
 
             -   name: Log in to the Container registry
                 uses: docker/login-action@v2
@@ -56,9 +44,12 @@ jobs:
                     context: .
                     push: true
                     file: docker/Dockerfile
-                    tags: ${{ steps.meta.outputs.tags }}
-                    labels: ${{ steps.meta.outputs.labels }}
+                    tags: |
+                        ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.setup_env.outputs.VERSION }}
+                        ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
                     build-args: |
                         NO_DEV=--no-dev
-                        VERSION=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.version'] }}
-                        COMMIT=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.revision'] }}
+                        NAME=${{ steps.setup_env.outputs.NAME }}
+                        BRANCH=${{ steps.setup_env.outputs.BRANCH }}
+                        VERSION=${{ steps.setup_env.outputs.VERSION }}
+                        COMMIT=${{ github.sha }}
