@@ -72,7 +72,6 @@ class OrderExportAction extends CatalogAction
 
                 foreach ($orders->sortBy('date', SORT_REGULAR, true) as $row => $model) {
                     /** @var \App\Domain\Entities\Catalog\Order $model */
-
                     foreach ($fields as $index => $field) {
                         $cell = $sheet->getCell($this->getCellCoordinate($index, $row + 1));
 

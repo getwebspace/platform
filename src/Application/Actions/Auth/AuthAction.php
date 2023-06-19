@@ -13,9 +13,6 @@ abstract class AuthAction extends AbstractAction
 
     protected UserTokenService $userTokenService;
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);

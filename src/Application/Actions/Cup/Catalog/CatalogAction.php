@@ -31,9 +31,6 @@ abstract class CatalogAction extends AbstractAction
 
     protected NotificationService $notificationService;
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);

@@ -59,9 +59,9 @@ class ProductCreateAction extends CatalogAction
                     case $this->getParam('save', 'exit') === 'exit':
                         if ($category) {
                             return $this->respondWithRedirect('/cup/catalog/product/' . $category);
-                        } else {
-                            return $this->respondWithRedirect('/cup/catalog/product');
                         }
+
+                        return $this->respondWithRedirect('/cup/catalog/product');
 
                     default:
                         return $this->respondWithRedirect('/cup/catalog/product/' . $product->getUuid() . '/edit');

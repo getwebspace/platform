@@ -13,7 +13,6 @@ use Slim\Interfaces\RouteCollectorInterface;
 use Slim\Interfaces\RouteInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
-use Slim\Views\Twig;
 
 abstract class AbstractPlugin
 {

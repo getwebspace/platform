@@ -10,9 +10,6 @@ abstract class PageAction extends AbstractAction
 {
     protected PageService $pageService;
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);

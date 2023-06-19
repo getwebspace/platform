@@ -47,7 +47,7 @@
     },
     "require-dev": {
         "fakerphp/faker": "^v1.23.0",
-        "friendsofphp/php-cs-fixer": "^v2.19.3",
+        "friendsofphp/php-cs-fixer": "^v3.17.0",
         "phpunit/phpunit": "^9.6.9",
         "guzzlehttp/guzzle": "^7.7.0"
     },

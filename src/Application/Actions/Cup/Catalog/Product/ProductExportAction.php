@@ -152,7 +152,7 @@ class ProductExportAction extends CatalogAction
 
                             case 'special':
                                 $cell
-                                    ->setValueExplicit(!!$model->{$field}, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_BOOL);
+                                    ->setValueExplicit((bool) $model->{$field}, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_BOOL);
 
                                 break;
 
