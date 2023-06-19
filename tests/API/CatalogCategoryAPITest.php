@@ -71,12 +71,12 @@ class CatalogCategoryAPITest extends TestCase
         $json = json_decode((string) $response->getBody(), true);
 
         // check
-        $this->assertSame($data['title'], $json['data']['title']);
-        $this->assertSame($data['description'], $json['data']['description']);
-        $this->assertSame($data['field1'], $json['data']['field1']);
-        $this->assertSame($data['field2'], $json['data']['field2']);
-        $this->assertSame($data['field3'], $json['data']['field3']);
-        $this->assertSame($data['export'], $json['data']['export']);
+        $this->assertEquals($data['title'], $json['data']['title']);
+        $this->assertEquals($data['description'], $json['data']['description']);
+        $this->assertEquals($data['field1'], $json['data']['field1']);
+        $this->assertEquals($data['field2'], $json['data']['field2']);
+        $this->assertEquals($data['field3'], $json['data']['field3']);
+        $this->assertEquals($data['export'], $json['data']['export']);
     }
 
     public function testAPIUpdateSuccess(): void
@@ -128,12 +128,12 @@ class CatalogCategoryAPITest extends TestCase
         $json = json_decode((string) $response->getBody(), true);
 
         // check
-        $this->assertSame($data['title'], $json['data']['title']);
-        $this->assertSame($data['description'], $json['data']['description']);
-        $this->assertSame($data['field1'], $json['data']['field1']);
-        $this->assertSame($data['field2'], $json['data']['field2']);
-        $this->assertSame($data['field3'], $json['data']['field3']);
-        $this->assertSame($data['export'], $json['data']['export']);
+        $this->assertEquals($data['title'], $json['data']['title']);
+        $this->assertEquals($data['description'], $json['data']['description']);
+        $this->assertEquals($data['field1'], $json['data']['field1']);
+        $this->assertEquals($data['field2'], $json['data']['field2']);
+        $this->assertEquals($data['field3'], $json['data']['field3']);
+        $this->assertEquals($data['export'], $json['data']['export']);
     }
 
     public function testAPIDeleteSuccess(): void

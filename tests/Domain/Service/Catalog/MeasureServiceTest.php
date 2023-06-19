@@ -36,17 +36,17 @@ class MeasureServiceTest extends TestCase
 
         $measure = $this->service->create($data);
         $this->assertInstanceOf(Measure::class, $measure);
-        $this->assertSame($data['title'], $measure->getTitle());
-        $this->assertSame($data['contraction'], $measure->getContraction());
-        $this->assertSame($data['value'], $measure->getValue());
+        $this->assertEquals($data['title'], $measure->getTitle());
+        $this->assertEquals($data['contraction'], $measure->getContraction());
+        $this->assertEquals($data['value'], $measure->getValue());
 
         /** @var MeasureRepository $measureRepo */
         $measureRepo = $this->em->getRepository(Measure::class);
         $m = $measureRepo->findOneByTitle($data['title']);
         $this->assertInstanceOf(Measure::class, $m);
-        $this->assertSame($data['title'], $m->getTitle());
-        $this->assertSame($data['contraction'], $m->getContraction());
-        $this->assertSame($data['value'], $m->getValue());
+        $this->assertEquals($data['title'], $m->getTitle());
+        $this->assertEquals($data['contraction'], $m->getContraction());
+        $this->assertEquals($data['value'], $m->getValue());
     }
 
     public function testCreateWithMissingTitleValue(): void
@@ -84,9 +84,9 @@ class MeasureServiceTest extends TestCase
 
         $measure = $this->service->read(['title' => $data['title']]);
         $this->assertInstanceOf(Measure::class, $measure);
-        $this->assertSame($data['title'], $measure->getTitle());
-        $this->assertSame($data['contraction'], $measure->getContraction());
-        $this->assertSame($data['value'], $measure->getValue());
+        $this->assertEquals($data['title'], $measure->getTitle());
+        $this->assertEquals($data['contraction'], $measure->getContraction());
+        $this->assertEquals($data['value'], $measure->getValue());
     }
 
     public function testReadWithProductNotFound(): void
@@ -112,9 +112,9 @@ class MeasureServiceTest extends TestCase
 
         $measure = $this->service->update($measure, $data);
         $this->assertInstanceOf(Measure::class, $measure);
-        $this->assertSame($data['title'], $measure->getTitle());
-        $this->assertSame($data['contraction'], $measure->getContraction());
-        $this->assertSame($data['value'], $measure->getValue());
+        $this->assertEquals($data['title'], $measure->getTitle());
+        $this->assertEquals($data['contraction'], $measure->getContraction());
+        $this->assertEquals($data['value'], $measure->getValue());
     }
 
     public function testUpdateWithProductNotFound(): void

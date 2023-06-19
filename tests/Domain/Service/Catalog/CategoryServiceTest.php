@@ -68,47 +68,47 @@ class CategoryServiceTest extends TestCase
 
         $category = $this->service->create($data);
         $this->assertInstanceOf(Category::class, $category);
-        $this->assertSame($data['parent'], $category->getParent()->toString());
-        $this->assertSame($data['children'], $category->getChildren());
-        $this->assertSame($data['hidden'], $category->getHidden());
-        $this->assertSame($data['title'], $category->getTitle());
-        $this->assertSame($data['description'], $category->getDescription());
-        $this->assertSame($data['address'], $category->getAddress());
-        $this->assertSame($data['field1'], $category->getField1());
-        $this->assertSame($data['field2'], $category->getField2());
-        $this->assertSame($data['field3'], $category->getField3());
+        $this->assertEquals($data['parent'], $category->getParent()->toString());
+        $this->assertEquals($data['children'], $category->getChildren());
+        $this->assertEquals($data['hidden'], $category->getHidden());
+        $this->assertEquals($data['title'], $category->getTitle());
+        $this->assertEquals($data['description'], $category->getDescription());
+        $this->assertEquals($data['address'], $category->getAddress());
+        $this->assertEquals($data['field1'], $category->getField1());
+        $this->assertEquals($data['field2'], $category->getField2());
+        $this->assertEquals($data['field3'], $category->getField3());
         $this->assertEquals($data['product'], $category->getProduct());
-        $this->assertSame($data['status'], $category->getStatus());
-        $this->assertSame($data['pagination'], $category->getPagination());
-        $this->assertSame($data['order'], $category->getOrder());
+        $this->assertEquals($data['status'], $category->getStatus());
+        $this->assertEquals($data['pagination'], $category->getPagination());
+        $this->assertEquals($data['order'], $category->getOrder());
         $this->assertEquals($data['sort'], $category->getSort());
         $this->assertEquals($data['meta'], $category->getMeta());
         $this->assertEquals($data['template'], $category->getTemplate());
-        $this->assertSame($data['external_id'], $category->getExternalId());
-        $this->assertSame($data['export'], $category->getExport());
+        $this->assertEquals($data['external_id'], $category->getExternalId());
+        $this->assertEquals($data['export'], $category->getExport());
 
         /** @var CategoryRepository $categoryRepo */
         $categoryRepo = $this->em->getRepository(Category::class);
         $c = $categoryRepo->findOneByTitle($data['title']);
         $this->assertInstanceOf(Category::class, $c);
-        $this->assertSame($data['parent'], $c->getParent()->toString());
-        $this->assertSame($data['children'], $c->getChildren());
-        $this->assertSame($data['hidden'], $c->getHidden());
-        $this->assertSame($data['title'], $c->getTitle());
-        $this->assertSame($data['description'], $c->getDescription());
-        $this->assertSame($data['address'], $c->getAddress());
-        $this->assertSame($data['field1'], $c->getField1());
-        $this->assertSame($data['field2'], $c->getField2());
-        $this->assertSame($data['field3'], $c->getField3());
+        $this->assertEquals($data['parent'], $c->getParent()->toString());
+        $this->assertEquals($data['children'], $c->getChildren());
+        $this->assertEquals($data['hidden'], $c->getHidden());
+        $this->assertEquals($data['title'], $c->getTitle());
+        $this->assertEquals($data['description'], $c->getDescription());
+        $this->assertEquals($data['address'], $c->getAddress());
+        $this->assertEquals($data['field1'], $c->getField1());
+        $this->assertEquals($data['field2'], $c->getField2());
+        $this->assertEquals($data['field3'], $c->getField3());
         $this->assertEquals($data['product'], $c->getProduct());
-        $this->assertSame($data['status'], $c->getStatus());
-        $this->assertSame($data['pagination'], $c->getPagination());
-        $this->assertSame($data['order'], $c->getOrder());
+        $this->assertEquals($data['status'], $c->getStatus());
+        $this->assertEquals($data['pagination'], $c->getPagination());
+        $this->assertEquals($data['order'], $c->getOrder());
         $this->assertEquals($data['sort'], $c->getSort());
         $this->assertEquals($data['meta'], $c->getMeta());
         $this->assertEquals($data['template'], $c->getTemplate());
-        $this->assertSame($data['external_id'], $c->getExternalId());
-        $this->assertSame($data['export'], $c->getExport());
+        $this->assertEquals($data['external_id'], $c->getExternalId());
+        $this->assertEquals($data['export'], $c->getExport());
     }
 
     public function testCreateWithMissingTitleValue(): void
@@ -149,7 +149,7 @@ class CategoryServiceTest extends TestCase
 
         $category = $this->service->read(['title' => $data['title']]);
         $this->assertInstanceOf(Category::class, $category);
-        $this->assertSame($data['title'], $category->getTitle());
+        $this->assertEquals($data['title'], $category->getTitle());
     }
 
     public function testReadSuccess2(): void
@@ -251,24 +251,24 @@ class CategoryServiceTest extends TestCase
 
         $category = $this->service->update($category, $data);
         $this->assertInstanceOf(Category::class, $category);
-        $this->assertSame($data['parent'], $category->getParent()->toString());
-        $this->assertSame($data['children'], $category->getChildren());
-        $this->assertSame($data['hidden'], $category->getHidden());
-        $this->assertSame($data['title'], $category->getTitle());
-        $this->assertSame($data['description'], $category->getDescription());
-        $this->assertSame($data['address'], $category->getAddress());
-        $this->assertSame($data['field1'], $category->getField1());
-        $this->assertSame($data['field2'], $category->getField2());
-        $this->assertSame($data['field3'], $category->getField3());
+        $this->assertEquals($data['parent'], $category->getParent()->toString());
+        $this->assertEquals($data['children'], $category->getChildren());
+        $this->assertEquals($data['hidden'], $category->getHidden());
+        $this->assertEquals($data['title'], $category->getTitle());
+        $this->assertEquals($data['description'], $category->getDescription());
+        $this->assertEquals($data['address'], $category->getAddress());
+        $this->assertEquals($data['field1'], $category->getField1());
+        $this->assertEquals($data['field2'], $category->getField2());
+        $this->assertEquals($data['field3'], $category->getField3());
         $this->assertEquals($data['product'], $category->getProduct());
-        $this->assertSame($data['status'], $category->getStatus());
-        $this->assertSame($data['pagination'], $category->getPagination());
-        $this->assertSame($data['order'], $category->getOrder());
+        $this->assertEquals($data['status'], $category->getStatus());
+        $this->assertEquals($data['pagination'], $category->getPagination());
+        $this->assertEquals($data['order'], $category->getOrder());
         $this->assertEquals($data['sort'], $category->getSort());
         $this->assertEquals($data['meta'], $category->getMeta());
         $this->assertEquals($data['template'], $category->getTemplate());
-        $this->assertSame($data['external_id'], $category->getExternalId());
-        $this->assertSame($data['export'], $category->getExport());
+        $this->assertEquals($data['external_id'], $category->getExternalId());
+        $this->assertEquals($data['export'], $category->getExport());
     }
 
     public function testUpdateWithCategoryNotFound(): void

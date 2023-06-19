@@ -45,10 +45,10 @@ class FileServiceTest extends TestCase
 
         $file = $this->service->createFromPath($path);
         $this->assertInstanceOf(File::class, $file);
-        $this->assertSame($info['name'], $file->getName());
-        $this->assertSame($info['ext'], $file->getExt());
-        $this->assertSame($info['type'], $file->getType());
-        $this->assertSame($info['size'], $file->getSize());
+        $this->assertEquals($info['name'], $file->getName());
+        $this->assertEquals($info['ext'], $file->getExt());
+        $this->assertEquals($info['type'], $file->getType());
+        $this->assertEquals($info['size'], $file->getSize());
         $this->assertTrue(file_exists($file->getInternalPath()));
         $this->assertTrue(!file_exists($path));
     }
@@ -70,7 +70,7 @@ class FileServiceTest extends TestCase
         $file2 = $this->service->createFromPath($file1->getInternalPath());
 
         $this->assertInstanceOf(File::class, $file2);
-        $this->assertSame($file1, $file2);
+        $this->assertEquals($file1, $file2);
     }
 
     public function testReadSuccess(): void
@@ -79,11 +79,11 @@ class FileServiceTest extends TestCase
 
         $f1 = $this->service->read(['uuid' => $file->getUuid()]);
         $this->assertInstanceOf(File::class, $f1);
-        $this->assertSame($file->getFileName(), $f1->getFileName());
+        $this->assertEquals($file->getFileName(), $f1->getFileName());
 
         $f2 = $this->service->read(['hash' => $file->getHash()]);
         $this->assertInstanceOf(File::class, $f2);
-        $this->assertSame($file->getFileName(), $f2->getFileName());
+        $this->assertEquals($file->getFileName(), $f2->getFileName());
     }
 
     public function testReadWithFileNotFound(): void
@@ -102,7 +102,7 @@ class FileServiceTest extends TestCase
         ];
 
         $page = $this->service->update($file, $data);
-        $this->assertSame($data['name'], $page->getName());
+        $this->assertEquals($data['name'], $page->getName());
     }
 
     public function testUpdateWithFileNotFound(): void

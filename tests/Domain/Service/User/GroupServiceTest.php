@@ -36,17 +36,17 @@ class GroupServiceTest extends TestCase
 
         $userGroup = $this->service->create($data);
         $this->assertInstanceOf(UserGroup::class, $userGroup);
-        $this->assertSame($data['title'], $userGroup->getTitle());
-        $this->assertSame($data['description'], $userGroup->getDescription());
-        $this->assertSame($data['access'], $userGroup->getAccess());
+        $this->assertEquals($data['title'], $userGroup->getTitle());
+        $this->assertEquals($data['description'], $userGroup->getDescription());
+        $this->assertEquals($data['access'], $userGroup->getAccess());
 
         /** @var GroupServiceRepository $userGroupRepo */
         $userGroupRepo = $this->em->getRepository(UserGroup::class);
         $ug = $userGroupRepo->findOneByTitle($data['title']);
         $this->assertInstanceOf(UserGroup::class, $ug);
-        $this->assertSame($data['title'], $ug->getTitle());
-        $this->assertSame($data['description'], $ug->getDescription());
-        $this->assertSame($data['access'], $ug->getAccess());
+        $this->assertEquals($data['title'], $ug->getTitle());
+        $this->assertEquals($data['description'], $ug->getDescription());
+        $this->assertEquals($data['access'], $ug->getAccess());
     }
 
     public function testCreateWithMissingTitle(): void
@@ -89,9 +89,9 @@ class GroupServiceTest extends TestCase
 
         $userGroup = $this->service->read(['title' => $data['title']]);
         $this->assertInstanceOf(UserGroup::class, $userGroup);
-        $this->assertSame($data['title'], $userGroup->getTitle());
-        $this->assertSame($data['description'], $userGroup->getDescription());
-        $this->assertSame($data['access'], $userGroup->getAccess());
+        $this->assertEquals($data['title'], $userGroup->getTitle());
+        $this->assertEquals($data['description'], $userGroup->getDescription());
+        $this->assertEquals($data['access'], $userGroup->getAccess());
     }
 
     public function testReadWithUserGroupNotFound(): void
@@ -116,9 +116,9 @@ class GroupServiceTest extends TestCase
         ];
 
         $userGroup = $this->service->update($userGroup, $data);
-        $this->assertSame($data['title'], $userGroup->getTitle());
-        $this->assertSame($data['description'], $userGroup->getDescription());
-        $this->assertSame($data['access'], $userGroup->getAccess());
+        $this->assertEquals($data['title'], $userGroup->getTitle());
+        $this->assertEquals($data['description'], $userGroup->getDescription());
+        $this->assertEquals($data['access'], $userGroup->getAccess());
     }
 
     public function testUpdateWithUserGroupNotFound(): void

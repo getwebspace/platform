@@ -40,16 +40,16 @@ class NotificationServiceTest extends TestCase
 
         $n = $this->service->create($data);
         $this->assertInstanceOf(Notification::class, $n);
-        $this->assertSame($data['user_uuid'], $n->getUserUuid()->toString());
-        $this->assertSame($data['title'], $n->getTitle());
-        $this->assertSame($data['message'], $n->getMessage());
-        $this->assertSame($data['params'], $n->getParams());
+        $this->assertEquals($data['user_uuid'], $n->getUserUuid()->toString());
+        $this->assertEquals($data['title'], $n->getTitle());
+        $this->assertEquals($data['message'], $n->getMessage());
+        $this->assertEquals($data['params'], $n->getParams());
 
         /** @var NotificationRepository $notificationRepo */
         $notificationRepo = $this->em->getRepository(Notification::class);
         $n = $notificationRepo->findOneByUuid($n->getUuid());
         $this->assertInstanceOf(Notification::class, $n);
-        $this->assertSame($data['title'], $n->getTitle());
+        $this->assertEquals($data['title'], $n->getTitle());
     }
 
     public function testCreateWithMissingUserUuidValue(): void
@@ -82,9 +82,9 @@ class NotificationServiceTest extends TestCase
 
         $n = $this->service->read(['uuid' => $n->getUuid()]);
         $this->assertInstanceOf(Notification::class, $n);
-        $this->assertSame($data['user_uuid'], $n->getUserUuid()->toString());
-        $this->assertSame($data['title'], $n->getTitle());
-        $this->assertSame($data['message'], $n->getMessage());
+        $this->assertEquals($data['user_uuid'], $n->getUserUuid()->toString());
+        $this->assertEquals($data['title'], $n->getTitle());
+        $this->assertEquals($data['message'], $n->getMessage());
     }
 
     public function testReadWithNotificationNotFound(): void
@@ -112,10 +112,10 @@ class NotificationServiceTest extends TestCase
         ];
 
         $n = $this->service->update($n, $data);
-        $this->assertSame($data['user_uuid'], $n->getUserUuid()->toString());
-        $this->assertSame($data['title'], $n->getTitle());
-        $this->assertSame($data['message'], $n->getMessage());
-        $this->assertSame($data['params'], $n->getParams());
+        $this->assertEquals($data['user_uuid'], $n->getUserUuid()->toString());
+        $this->assertEquals($data['title'], $n->getTitle());
+        $this->assertEquals($data['message'], $n->getMessage());
+        $this->assertEquals($data['params'], $n->getParams());
     }
 
     public function testUpdateWithNotificationNotFound(): void

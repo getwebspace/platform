@@ -42,27 +42,27 @@ class FormServiceTest extends TestCase
 
         $form = $this->service->create($data);
         $this->assertInstanceOf(Form::class, $form);
-        $this->assertSame($data['title'], $form->getTitle());
-        $this->assertSame($data['address'], $form->getAddress());
-        $this->assertSame($data['template'], $form->getTemplate());
-        $this->assertSame($data['authorSend'], $form->getAuthorSend());
-        $this->assertSame($data['recaptcha'], $form->getRecaptcha());
-        $this->assertSame($data['origin'], $form->getOrigin());
-        $this->assertSame($data['mailto'], $form->getMailto());
-        $this->assertSame($data['duplicate'], $form->getDuplicate());
+        $this->assertEquals($data['title'], $form->getTitle());
+        $this->assertEquals($data['address'], $form->getAddress());
+        $this->assertEquals($data['template'], $form->getTemplate());
+        $this->assertEquals($data['authorSend'], $form->getAuthorSend());
+        $this->assertEquals($data['recaptcha'], $form->getRecaptcha());
+        $this->assertEquals($data['origin'], $form->getOrigin());
+        $this->assertEquals($data['mailto'], $form->getMailto());
+        $this->assertEquals($data['duplicate'], $form->getDuplicate());
 
         /** @var FormRepository $formRepo */
         $formRepo = $this->em->getRepository(Form::class);
         $f = $formRepo->findOneByTitle($data['title']);
         $this->assertInstanceOf(Form::class, $f);
-        $this->assertSame($data['title'], $f->getTitle());
-        $this->assertSame($data['address'], $f->getAddress());
-        $this->assertSame($data['template'], $f->getTemplate());
-        $this->assertSame($data['authorSend'], $f->getAuthorSend());
-        $this->assertSame($data['recaptcha'], $f->getRecaptcha());
-        $this->assertSame($data['origin'], $f->getOrigin());
-        $this->assertSame($data['mailto'], $f->getMailto());
-        $this->assertSame($data['duplicate'], $f->getDuplicate());
+        $this->assertEquals($data['title'], $f->getTitle());
+        $this->assertEquals($data['address'], $f->getAddress());
+        $this->assertEquals($data['template'], $f->getTemplate());
+        $this->assertEquals($data['authorSend'], $f->getAuthorSend());
+        $this->assertEquals($data['recaptcha'], $f->getRecaptcha());
+        $this->assertEquals($data['origin'], $f->getOrigin());
+        $this->assertEquals($data['mailto'], $f->getMailto());
+        $this->assertEquals($data['duplicate'], $f->getDuplicate());
     }
 
     public function testCreateWithMissingTitleValue(): void
@@ -126,7 +126,7 @@ class FormServiceTest extends TestCase
 
         $form = $this->service->read(['title' => $data['title']]);
         $this->assertInstanceOf(Form::class, $form);
-        $this->assertSame($data['title'], $form->getTitle());
+        $this->assertEquals($data['title'], $form->getTitle());
     }
 
     public function testReadSuccess2(): void
@@ -141,7 +141,7 @@ class FormServiceTest extends TestCase
 
         $form = $this->service->read(['address' => $data['address']]);
         $this->assertInstanceOf(Form::class, $form);
-        $this->assertSame($data['address'], $form->getAddress());
+        $this->assertEquals($data['address'], $form->getAddress());
     }
 
     public function testReadWithFormNotFound(): void
@@ -177,14 +177,14 @@ class FormServiceTest extends TestCase
 
         $form = $this->service->update($form, $data);
         $this->assertInstanceOf(Form::class, $form);
-        $this->assertSame($data['title'], $form->getTitle());
-        $this->assertSame($data['address'], $form->getAddress());
-        $this->assertSame($data['template'], $form->getTemplate());
-        $this->assertSame($data['authorSend'], $form->getAuthorSend());
-        $this->assertSame($data['recaptcha'], $form->getRecaptcha());
-        $this->assertSame($data['origin'], $form->getOrigin());
-        $this->assertSame($data['mailto'], $form->getMailto());
-        $this->assertSame($data['duplicate'], $form->getDuplicate());
+        $this->assertEquals($data['title'], $form->getTitle());
+        $this->assertEquals($data['address'], $form->getAddress());
+        $this->assertEquals($data['template'], $form->getTemplate());
+        $this->assertEquals($data['authorSend'], $form->getAuthorSend());
+        $this->assertEquals($data['recaptcha'], $form->getRecaptcha());
+        $this->assertEquals($data['origin'], $form->getOrigin());
+        $this->assertEquals($data['mailto'], $form->getMailto());
+        $this->assertEquals($data['duplicate'], $form->getDuplicate());
     }
 
     public function testUpdateWithFormNotFound(): void

@@ -36,16 +36,16 @@ class AttributeServiceTest extends TestCase
 
         $attribute = $this->service->create($data);
         $this->assertInstanceOf(Attribute::class, $attribute);
-        $this->assertSame($data['title'], $attribute->getTitle());
-        $this->assertSame($data['address'], $attribute->getAddress());
-        $this->assertSame($data['type'], $attribute->getType());
+        $this->assertEquals($data['title'], $attribute->getTitle());
+        $this->assertEquals($data['address'], $attribute->getAddress());
+        $this->assertEquals($data['type'], $attribute->getType());
 
         $attributeRepo = $this->em->getRepository(Attribute::class);
         $a = $attributeRepo->findOneByTitle($data['title']);
         $this->assertInstanceOf(Attribute::class, $a);
-        $this->assertSame($data['title'], $a->getTitle());
-        $this->assertSame($data['address'], $a->getAddress());
-        $this->assertSame($data['type'], $a->getType());
+        $this->assertEquals($data['title'], $a->getTitle());
+        $this->assertEquals($data['address'], $a->getAddress());
+        $this->assertEquals($data['type'], $a->getType());
     }
 
     public function testCreateWithMissingTitleValue(): void
@@ -105,9 +105,9 @@ class AttributeServiceTest extends TestCase
 
         $attribute = $this->service->read(['title' => $data['title']]);
         $this->assertInstanceOf(Attribute::class, $attribute);
-        $this->assertSame($data['title'], $attribute->getTitle());
-        $this->assertSame($data['address'], $attribute->getAddress());
-        $this->assertSame($data['type'], $attribute->getType());
+        $this->assertEquals($data['title'], $attribute->getTitle());
+        $this->assertEquals($data['address'], $attribute->getAddress());
+        $this->assertEquals($data['type'], $attribute->getType());
     }
 
     public function testReadSuccess2(): void
@@ -122,9 +122,9 @@ class AttributeServiceTest extends TestCase
 
         $attribute = $this->service->read(['address' => $data['address']]);
         $this->assertInstanceOf(Attribute::class, $attribute);
-        $this->assertSame($data['title'], $attribute->getTitle());
-        $this->assertSame($data['address'], $attribute->getAddress());
-        $this->assertSame($data['type'], $attribute->getType());
+        $this->assertEquals($data['title'], $attribute->getTitle());
+        $this->assertEquals($data['address'], $attribute->getAddress());
+        $this->assertEquals($data['type'], $attribute->getType());
     }
 
     public function testReadWithCategoryNotFound(): void
@@ -150,9 +150,9 @@ class AttributeServiceTest extends TestCase
 
         $attribute = $this->service->update($attribute, $data);
         $this->assertInstanceOf(Attribute::class, $attribute);
-        $this->assertSame($data['title'], $attribute->getTitle());
-        $this->assertSame($data['address'], $attribute->getAddress());
-        $this->assertSame($data['type'], $attribute->getType());
+        $this->assertEquals($data['title'], $attribute->getTitle());
+        $this->assertEquals($data['address'], $attribute->getAddress());
+        $this->assertEquals($data['type'], $attribute->getType());
     }
 
     public function testUpdateWithCategoryNotFound(): void

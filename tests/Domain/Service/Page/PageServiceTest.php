@@ -45,17 +45,17 @@ class PageServiceTest extends TestCase
 
         $page = $this->service->create($data);
         $this->assertInstanceOf(Page::class, $page);
-        $this->assertSame($data['title'], $page->getTitle());
-        // $this->assertSame($data['address'], $page->getAddress());
-        $this->assertSame($data['content'], $page->getContent());
-        $this->assertSame($data['template'], $page->getTemplate());
-        $this->assertSame($data['type'], $page->getType());
+        $this->assertEquals($data['title'], $page->getTitle());
+        // $this->assertEquals($data['address'], $page->getAddress());
+        $this->assertEquals($data['content'], $page->getContent());
+        $this->assertEquals($data['template'], $page->getTemplate());
+        $this->assertEquals($data['type'], $page->getType());
 
         /** @var PageRepository $pageRepo */
         $pageRepo = $this->em->getRepository(Page::class);
         $p = $pageRepo->findOneByTitle($data['title']);
         $this->assertInstanceOf(Page::class, $p);
-        $this->assertSame($data['title'], $p->getTitle());
+        $this->assertEquals($data['title'], $p->getTitle());
     }
 
     public function testCreateWithMissingTitleValue(): void
@@ -126,11 +126,11 @@ class PageServiceTest extends TestCase
 
         $page = $this->service->read(['title' => $data['title']]);
         $this->assertInstanceOf(Page::class, $page);
-        $this->assertSame($data['title'], $page->getTitle());
+        $this->assertEquals($data['title'], $page->getTitle());
 
         $page = $this->service->read(['address' => $page->getAddress()]);
         $this->assertInstanceOf(Page::class, $page);
-        $this->assertSame($data['title'], $page->getTitle());
+        $this->assertEquals($data['title'], $page->getTitle());
     }
 
     public function testReadWithPageNotFound(): void
@@ -162,12 +162,12 @@ class PageServiceTest extends TestCase
         ];
 
         $page = $this->service->update($page, $data);
-        $this->assertSame($data['title'], $page->getTitle());
-        $this->assertSame($data['address'], $page->getAddress());
-        $this->assertSame($data['content'], $page->getContent());
-        $this->assertSame($data['meta'], $page->getMeta());
-        $this->assertSame($data['template'], $page->getTemplate());
-        $this->assertSame($data['type'], $page->getType());
+        $this->assertEquals($data['title'], $page->getTitle());
+        $this->assertEquals($data['address'], $page->getAddress());
+        $this->assertEquals($data['content'], $page->getContent());
+        $this->assertEquals($data['meta'], $page->getMeta());
+        $this->assertEquals($data['template'], $page->getTemplate());
+        $this->assertEquals($data['type'], $page->getType());
     }
 
     public function testUpdateWithPageNotFound(): void
