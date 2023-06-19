@@ -10,9 +10,6 @@ abstract class FileAction extends AbstractAction
 {
     protected FileService $fileService;
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);

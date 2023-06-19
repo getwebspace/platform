@@ -237,7 +237,6 @@ class User extends AbstractEntity
     protected ?\DateTime $birthdate = null;
 
     /**
-     * @param mixed $timezone
      * @param mixed $birthdate
      *
      * @throws \Exception

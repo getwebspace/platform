@@ -10,9 +10,6 @@ abstract class GuestBookAction extends AbstractAction
 {
     protected GuestBookService $guestBookService;
 
-    /**
-     * {@inheritdoc}
-     */
     public function __construct(ContainerInterface $container)
     {
         parent::__construct($container);

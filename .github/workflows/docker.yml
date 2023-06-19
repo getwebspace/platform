@@ -24,7 +24,6 @@ jobs:
                     make run-test
                     make lint
                     make down
-                    make clean
 
     # build platform
     debian:

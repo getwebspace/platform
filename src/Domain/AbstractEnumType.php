@@ -20,25 +20,16 @@ abstract class AbstractEnumType extends Type
      */
     public const LIST = [];
 
-    /**
-     * {@inheritdoc}
-     */
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
         return 'VARCHAR(100)';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
         return $value;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
         if (!in_array($value, static::LIST, true) && !in_array($value, array_keys(static::LIST), true)) {
@@ -48,17 +39,11 @@ abstract class AbstractEnumType extends Type
         return $value;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getName(): ?string
     {
         return static::NAME;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function requiresSQLCommentHint(AbstractPlatform $platform): bool
     {
         return true;
