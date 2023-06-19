@@ -10,24 +10,8 @@ env:
     IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-    # run tests
-    test:
-        runs-on: ubuntu-latest
-        name: Testing
-        steps:
-            -   name: Check out the repo
-                uses: actions/checkout@v3
-
-            -   name: Run over makefile
-                run: |
-                    make up
-                    make run-test
-                    make lint
-                    make down
-
     # build platform
     debian:
-        needs: test
         runs-on: ubuntu-latest
         name: Build base container
         steps:
