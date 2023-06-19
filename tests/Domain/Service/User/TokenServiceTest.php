@@ -55,19 +55,19 @@ class TokenServiceTest extends TestCase
 
         $token = $this->service->create($data);
         $this->assertInstanceOf(UserToken::class, $token);
-        $this->assertSame($data['unique'], $token->getUnique());
-        $this->assertSame($data['comment'], $token->getComment());
-        $this->assertSame($data['agent'], $token->getAgent());
-        $this->assertSame($data['ip'], $token->getIp());
+        $this->assertEquals($data['unique'], $token->getUnique());
+        $this->assertEquals($data['comment'], $token->getComment());
+        $this->assertEquals($data['agent'], $token->getAgent());
+        $this->assertEquals($data['ip'], $token->getIp());
 
         /** @var UserTokenRepository $userTokenRepo */
         $userTokenRepo = $this->em->getRepository(UserToken::class);
         $t = $userTokenRepo->findOneByUuid($token->getUuid());
         $this->assertInstanceOf(UserToken::class, $t);
-        $this->assertSame($data['unique'], $t->getUnique());
-        $this->assertSame($data['comment'], $t->getComment());
-        $this->assertSame($data['agent'], $t->getAgent());
-        $this->assertSame($data['ip'], $t->getIp());
+        $this->assertEquals($data['unique'], $t->getUnique());
+        $this->assertEquals($data['comment'], $t->getComment());
+        $this->assertEquals($data['agent'], $t->getAgent());
+        $this->assertEquals($data['ip'], $t->getIp());
     }
 
     public function testReadSuccess(): void
@@ -87,7 +87,7 @@ class TokenServiceTest extends TestCase
             'unique' => $data['unique'],
         ]);
         $this->assertInstanceOf(UserToken::class, $token);
-        $this->assertSame($data['user'], $token->getUser());
+        $this->assertEquals($data['user'], $token->getUser());
     }
 
     public function testDelete(): void

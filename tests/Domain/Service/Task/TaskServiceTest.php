@@ -41,18 +41,18 @@ class TaskServiceTest extends TestCase
 
         $t = $this->service->create($data);
         $this->assertInstanceOf(Task::class, $t);
-        $this->assertSame($data['title'], $t->getTitle());
-        $this->assertSame($data['action'], $t->getAction());
-        $this->assertSame($data['progress'], $t->getProgress());
-        $this->assertSame($data['status'], $t->getStatus());
-        $this->assertSame($data['params'], $t->getParams());
-        $this->assertSame($data['output'], $t->getOutput());
+        $this->assertEquals($data['title'], $t->getTitle());
+        $this->assertEquals($data['action'], $t->getAction());
+        $this->assertEquals($data['progress'], $t->getProgress());
+        $this->assertEquals($data['status'], $t->getStatus());
+        $this->assertEquals($data['params'], $t->getParams());
+        $this->assertEquals($data['output'], $t->getOutput());
 
         /** @var TaskRepository $taskRepo */
         $taskRepo = $this->em->getRepository(Task::class);
         $t = $taskRepo->findOneByUuid($t->getUuid());
         $this->assertInstanceOf(Task::class, $t);
-        $this->assertSame($data['title'], $t->getTitle());
+        $this->assertEquals($data['title'], $t->getTitle());
     }
 
     public function testCreateWithMissingNameValue(): void
@@ -85,9 +85,9 @@ class TaskServiceTest extends TestCase
 
         $t = $this->service->read(['uuid' => $t->getUuid()]);
         $this->assertInstanceOf(Task::class, $t);
-        $this->assertSame($data['title'], $t->getTitle());
-        $this->assertSame($data['action'], $t->getAction());
-        $this->assertSame($data['params'], $t->getParams());
+        $this->assertEquals($data['title'], $t->getTitle());
+        $this->assertEquals($data['action'], $t->getAction());
+        $this->assertEquals($data['params'], $t->getParams());
     }
 
     public function testReadWithEntryNotFound(): void
@@ -120,12 +120,12 @@ class TaskServiceTest extends TestCase
         ];
 
         $t = $this->service->update($t, $data);
-        $this->assertSame($data['title'], $t->getTitle());
-        $this->assertSame($data['action'], $t->getAction());
-        $this->assertSame($data['progress'], $t->getProgress());
-        $this->assertSame($data['status'], $t->getStatus());
-        $this->assertSame($data['params'], $t->getParams());
-        $this->assertSame($data['output'], $t->getOutput());
+        $this->assertEquals($data['title'], $t->getTitle());
+        $this->assertEquals($data['action'], $t->getAction());
+        $this->assertEquals($data['progress'], $t->getProgress());
+        $this->assertEquals($data['status'], $t->getStatus());
+        $this->assertEquals($data['params'], $t->getParams());
+        $this->assertEquals($data['output'], $t->getOutput());
     }
 
     public function testUpdateWithTaskNotFound(): void

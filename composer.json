@@ -46,10 +46,10 @@
         "bhaktaraz/php-rss-generator": "dev-master"
     },
     "require-dev": {
-        "fakerphp/faker": "^v1.21.0",
-        "friendsofphp/php-cs-fixer": "^v3.14.4",
-        "phpunit/phpunit": "^9.6.3",
-        "guzzlehttp/guzzle": "^7.5.0"
+        "fakerphp/faker": "^v1.23.0",
+        "friendsofphp/php-cs-fixer": "^v2.19.3",
+        "phpunit/phpunit": "^9.6.9",
+        "guzzlehttp/guzzle": "^7.7.0"
     },
     "autoload": {
         "psr-4": {

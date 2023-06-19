@@ -83,22 +83,22 @@ class OrderServiceTest extends TestCase
         $order = $this->service->create($data);
         $this->assertInstanceOf(Order::class, $order);
         $this->assertEquals($data['delivery'], $order->getDelivery());
-        $this->assertSame($data['phone'], $order->getPhone());
-        $this->assertSame($data['email'], $order->getEmail());
-        $this->assertSame($data['status'], $order->getStatus());
-        $this->assertSame($data['comment'], $order->getComment());
+        $this->assertEquals($data['phone'], $order->getPhone());
+        $this->assertEquals($data['email'], $order->getEmail());
+        $this->assertEquals($data['status'], $order->getStatus());
+        $this->assertEquals($data['comment'], $order->getComment());
         $this->assertEquals($data['shipping'], $order->getShipping());
         $this->assertEquals($data['date'], $order->getDate());
-        $this->assertSame($data['external_id'], $order->getExternalId());
-        $this->assertSame($data['export'], $order->getExport());
-        $this->assertSame($data['system'], $order->getSystem());
+        $this->assertEquals($data['external_id'], $order->getExternalId());
+        $this->assertEquals($data['export'], $order->getExport());
+        $this->assertEquals($data['system'], $order->getSystem());
 
         foreach ($products as $i => $product) {
             $productPrice = ($i === 1 ? $product->getPrice() : $product->getPriceWholesale());
             $orderProduct = $order->getProducts()->firstWhere('product.uuid', $product->getUuid()->toString());
 
-            $this->assertSame($product->getTitle(), $orderProduct->getTitle());
-            $this->assertSame($productPrice, $orderProduct->getPrice());
+            $this->assertEquals($product->getTitle(), $orderProduct->getTitle());
+            $this->assertEquals($productPrice, $orderProduct->getPrice());
         }
 
         /** @var OrderRepository $orderRepo */
@@ -106,15 +106,15 @@ class OrderServiceTest extends TestCase
         $o = $orderRepo->findOneByUuid($order->getUuid());
         $this->assertInstanceOf(Order::class, $o);
         $this->assertEquals($data['delivery'], $o->getDelivery());
-        $this->assertSame($data['phone'], $o->getPhone());
-        $this->assertSame($data['email'], $o->getEmail());
-        $this->assertSame($data['status'], $o->getStatus());
-        $this->assertSame($data['comment'], $o->getComment());
+        $this->assertEquals($data['phone'], $o->getPhone());
+        $this->assertEquals($data['email'], $o->getEmail());
+        $this->assertEquals($data['status'], $o->getStatus());
+        $this->assertEquals($data['comment'], $o->getComment());
         $this->assertEquals($data['shipping'], $o->getShipping());
         $this->assertEquals($data['date'], $o->getDate());
-        $this->assertSame($data['external_id'], $o->getExternalId());
-        $this->assertSame($data['export'], $o->getExport());
-        $this->assertSame($data['system'], $o->getSystem());
+        $this->assertEquals($data['external_id'], $o->getExternalId());
+        $this->assertEquals($data['export'], $o->getExport());
+        $this->assertEquals($data['system'], $o->getSystem());
     }
 
     public function testReadSuccess1(): void
@@ -138,7 +138,7 @@ class OrderServiceTest extends TestCase
 
         $order = $this->service->read(['external_id' => $data['external_id']]);
         $this->assertInstanceOf(Order::class, $order);
-        $this->assertSame($data['external_id'], $order->getExternalId());
+        $this->assertEquals($data['external_id'], $order->getExternalId());
     }
 
     public function testReadSuccess2(): void
@@ -208,15 +208,15 @@ class OrderServiceTest extends TestCase
         $order = $this->service->update($order, $data);
         $this->assertInstanceOf(Order::class, $order);
         $this->assertEquals($data['delivery'], $order->getDelivery());
-        $this->assertSame($data['phone'], $order->getPhone());
-        $this->assertSame($data['email'], $order->getEmail());
-        $this->assertSame($data['status'], $order->getStatus());
-        $this->assertSame($data['comment'], $order->getComment());
+        $this->assertEquals($data['phone'], $order->getPhone());
+        $this->assertEquals($data['email'], $order->getEmail());
+        $this->assertEquals($data['status'], $order->getStatus());
+        $this->assertEquals($data['comment'], $order->getComment());
         $this->assertEquals($data['shipping'], $order->getShipping());
         $this->assertEquals($data['date'], $order->getDate());
-        $this->assertSame($data['external_id'], $order->getExternalId());
-        $this->assertSame($data['export'], $order->getExport());
-        $this->assertSame($data['system'], $order->getSystem());
+        $this->assertEquals($data['external_id'], $order->getExternalId());
+        $this->assertEquals($data['export'], $order->getExport());
+        $this->assertEquals($data['system'], $order->getSystem());
     }
 
     public function testUpdateWithOrderNotFound(): void

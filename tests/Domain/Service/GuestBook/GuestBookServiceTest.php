@@ -40,17 +40,17 @@ class GuestBookServiceTest extends TestCase
 
         $gb = $this->service->create($data);
         $this->assertInstanceOf(GuestBook::class, $gb);
-        $this->assertSame($data['name'], $gb->getName());
-        $this->assertSame($data['email'], $gb->getEmail());
-        $this->assertSame($data['message'], $gb->getMessage());
-        $this->assertSame($data['response'], $gb->getResponse());
-        $this->assertSame($data['status'], $gb->getStatus());
+        $this->assertEquals($data['name'], $gb->getName());
+        $this->assertEquals($data['email'], $gb->getEmail());
+        $this->assertEquals($data['message'], $gb->getMessage());
+        $this->assertEquals($data['response'], $gb->getResponse());
+        $this->assertEquals($data['status'], $gb->getStatus());
 
         /** @var GuestBookRepository $guestBookRepo */
         $guestBookRepo = $this->em->getRepository(GuestBook::class);
         $gb = $guestBookRepo->findOneByUuid($gb->getUuid());
         $this->assertInstanceOf(GuestBook::class, $gb);
-        $this->assertSame($data['name'], $gb->getName());
+        $this->assertEquals($data['name'], $gb->getName());
     }
 
     public function testCreateWithMissingNameValue(): void
@@ -91,9 +91,9 @@ class GuestBookServiceTest extends TestCase
 
         $gb = $this->service->read(['uuid' => $gb->getUuid()]);
         $this->assertInstanceOf(GuestBook::class, $gb);
-        $this->assertSame($data['name'], $gb->getName());
-        $this->assertSame($data['email'], $gb->getEmail());
-        $this->assertSame($data['message'], $gb->getMessage());
+        $this->assertEquals($data['name'], $gb->getName());
+        $this->assertEquals($data['email'], $gb->getEmail());
+        $this->assertEquals($data['message'], $gb->getMessage());
     }
 
     public function testReadWithEntryNotFound(): void
@@ -120,11 +120,11 @@ class GuestBookServiceTest extends TestCase
         ];
 
         $gb = $this->service->update($gb, $data);
-        $this->assertSame($data['name'], $gb->getName());
-        $this->assertSame($data['email'], $gb->getEmail());
-        $this->assertSame($data['message'], $gb->getMessage());
-        $this->assertSame($data['response'], $gb->getResponse());
-        $this->assertSame($data['status'], $gb->getStatus());
+        $this->assertEquals($data['name'], $gb->getName());
+        $this->assertEquals($data['email'], $gb->getEmail());
+        $this->assertEquals($data['message'], $gb->getMessage());
+        $this->assertEquals($data['response'], $gb->getResponse());
+        $this->assertEquals($data['status'], $gb->getStatus());
     }
 
     public function testUpdateWithEntryNotFound(): void

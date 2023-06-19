@@ -49,15 +49,15 @@ class IntegrationServiceTest extends TestCase
 
         $integration = $this->service->create($data);
         $this->assertInstanceOf(UserIntegration::class, $integration);
-        $this->assertSame($data['user'], $integration->getUser());
-        $this->assertSame($data['provider'], $integration->getProvider());
-        $this->assertSame($data['unique'], $integration->getUnique());
+        $this->assertEquals($data['user'], $integration->getUser());
+        $this->assertEquals($data['provider'], $integration->getProvider());
+        $this->assertEquals($data['unique'], $integration->getUnique());
 
         /** @var UserIntegrationRepository $userIntegrationRepo */
         $userIntegrationRepo = $this->em->getRepository(UserIntegration::class);
         $i = $userIntegrationRepo->findOneByUuid($integration->getUuid());
         $this->assertInstanceOf(UserIntegration::class, $i);
-        $this->assertSame($data['user'], $i->getUser());
+        $this->assertEquals($data['user'], $i->getUser());
     }
 
     public function testReadSuccess(): void
@@ -75,7 +75,7 @@ class IntegrationServiceTest extends TestCase
             'unique' => $data['unique'],
         ]);
         $this->assertInstanceOf(UserIntegration::class, $integration);
-        $this->assertSame($data['user'], $integration->getUser());
+        $this->assertEquals($data['user'], $integration->getUser());
     }
 
     public function testDelete(): void

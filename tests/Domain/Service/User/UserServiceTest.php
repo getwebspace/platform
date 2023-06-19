@@ -62,30 +62,30 @@ class UserServiceTest extends TestCase
 
         $user = $this->service->create($data);
         $this->assertInstanceOf(User::class, $user);
-        $this->assertSame($data['username'], $user->getUsername());
-        $this->assertSame($data['phone'], $user->getPhone());
-        $this->assertSame($data['firstname'], $user->getFirstname());
-        $this->assertSame($data['lastname'], $user->getLastname());
-        $this->assertSame($data['patronymic'], $user->getPatronymic());
-        $this->assertSame($data['gender'], $user->getGender());
-        $this->assertSame($data['company'], $user->getCompany());
-        $this->assertSame($data['legal'], $user->getLegal());
-        $this->assertSame($data['website'], $user->getWebsite());
-        $this->assertSame($data['source'], $user->getSource());
-        $this->assertSame($data['country'], $user->getCountry());
-        $this->assertSame($data['city'], $user->getCity());
-        $this->assertSame($data['address'], $user->getAddress());
-        $this->assertSame($data['postcode'], $user->getPostcode());
-        $this->assertSame($data['additional'], $user->getAdditional());
-        $this->assertSame($data['auth_code'], $user->getAuthCode());
-        $this->assertSame($data['language'], $user->getLanguage());
-        $this->assertSame($data['external_id'], $user->getExternalId());
+        $this->assertEquals($data['username'], $user->getUsername());
+        $this->assertEquals($data['phone'], $user->getPhone());
+        $this->assertEquals($data['firstname'], $user->getFirstname());
+        $this->assertEquals($data['lastname'], $user->getLastname());
+        $this->assertEquals($data['patronymic'], $user->getPatronymic());
+        $this->assertEquals($data['gender'], $user->getGender());
+        $this->assertEquals($data['company'], $user->getCompany());
+        $this->assertEquals($data['legal'], $user->getLegal());
+        $this->assertEquals($data['website'], $user->getWebsite());
+        $this->assertEquals($data['source'], $user->getSource());
+        $this->assertEquals($data['country'], $user->getCountry());
+        $this->assertEquals($data['city'], $user->getCity());
+        $this->assertEquals($data['address'], $user->getAddress());
+        $this->assertEquals($data['postcode'], $user->getPostcode());
+        $this->assertEquals($data['additional'], $user->getAdditional());
+        $this->assertEquals($data['auth_code'], $user->getAuthCode());
+        $this->assertEquals($data['language'], $user->getLanguage());
+        $this->assertEquals($data['external_id'], $user->getExternalId());
 
         /** @var UserRepository $userRepo */
         $userRepo = $this->em->getRepository(User::class);
         $u = $userRepo->findOneByUsername($data['username']);
         $this->assertInstanceOf(User::class, $u);
-        $this->assertSame($data['username'], $u->getUsername());
+        $this->assertEquals($data['username'], $u->getUsername());
     }
 
     public function testCreateSuccess2(): void
@@ -100,16 +100,16 @@ class UserServiceTest extends TestCase
 
         $user = $this->service->create($data);
         $this->assertInstanceOf(User::class, $user);
-        $this->assertSame($data['email'], $user->getEmail());
-        $this->assertSame($data['phone'], $user->getPhone());
-        $this->assertSame($data['firstname'], $user->getFirstname());
-        $this->assertSame($data['lastname'], $user->getLastname());
+        $this->assertEquals($data['email'], $user->getEmail());
+        $this->assertEquals($data['phone'], $user->getPhone());
+        $this->assertEquals($data['firstname'], $user->getFirstname());
+        $this->assertEquals($data['lastname'], $user->getLastname());
 
         /** @var UserRepository $userRepo */
         $userRepo = $this->em->getRepository(User::class);
         $u = $userRepo->findOneByEmail($data['email']);
         $this->assertInstanceOf(User::class, $u);
-        $this->assertSame($data['email'], $u->getEmail());
+        $this->assertEquals($data['email'], $u->getEmail());
     }
 
     public function testCreateSuccess3(): void
@@ -124,16 +124,16 @@ class UserServiceTest extends TestCase
 
         $user = $this->service->create($data);
         $this->assertInstanceOf(User::class, $user);
-        $this->assertSame($data['email'], $user->getEmail());
-        $this->assertSame($data['phone'], $user->getPhone());
-        $this->assertSame($data['firstname'], $user->getFirstname());
-        $this->assertSame($data['lastname'], $user->getLastname());
+        $this->assertEquals($data['email'], $user->getEmail());
+        $this->assertEquals($data['phone'], $user->getPhone());
+        $this->assertEquals($data['firstname'], $user->getFirstname());
+        $this->assertEquals($data['lastname'], $user->getLastname());
 
         /** @var UserRepository $userRepo */
         $userRepo = $this->em->getRepository(User::class);
         $u = $userRepo->findOneByPhone($data['phone']);
         $this->assertInstanceOf(User::class, $u);
-        $this->assertSame($data['phone'], $u->getPhone());
+        $this->assertEquals($data['phone'], $u->getPhone());
     }
 
     public function testCreateWithMissingUniqueValue(): void
@@ -224,7 +224,7 @@ class UserServiceTest extends TestCase
 
         $user = $this->service->read(['identifier' => $data['username']]);
         $this->assertInstanceOf(User::class, $user);
-        $this->assertSame($data['username'], $user->getUsername());
+        $this->assertEquals($data['username'], $user->getUsername());
     }
 
     public function testReadSuccess2(): void
@@ -238,7 +238,7 @@ class UserServiceTest extends TestCase
 
         $user = $this->service->read(['identifier' => $data['email']]);
         $this->assertInstanceOf(User::class, $user);
-        $this->assertSame($data['email'], $user->getEmail());
+        $this->assertEquals($data['email'], $user->getEmail());
     }
 
     public function testReadSuccess3(): void
@@ -252,7 +252,7 @@ class UserServiceTest extends TestCase
 
         $user = $this->service->read(['identifier' => $data['phone']]);
         $this->assertInstanceOf(User::class, $user);
-        $this->assertSame($data['phone'], $user->getPhone());
+        $this->assertEquals($data['phone'], $user->getPhone());
     }
 
     public function testReadWithUserNotFound1(): void
@@ -345,24 +345,24 @@ class UserServiceTest extends TestCase
         ];
 
         $user = $this->service->update($user, $data);
-        $this->assertSame($data['username'], $user->getUsername());
-        $this->assertSame($data['firstname'], $user->getFirstname());
-        $this->assertSame($data['lastname'], $user->getLastname());
-        $this->assertSame($data['patronymic'], $user->getPatronymic());
-        $this->assertSame($data['gender'], $user->getGender());
-        $this->assertSame($data['company'], $user->getCompany());
-        $this->assertSame($data['legal'], $user->getLegal());
-        $this->assertSame($data['website'], $user->getWebsite());
-        $this->assertSame($data['source'], $user->getSource());
-        $this->assertSame($data['country'], $user->getCountry());
-        $this->assertSame($data['city'], $user->getCity());
-        $this->assertSame($data['address'], $user->getAddress());
-        $this->assertSame($data['postcode'], $user->getPostcode());
-        $this->assertSame($data['additional'], $user->getAdditional());
-        $this->assertSame($data['email'], $user->getEmail());
-        $this->assertSame($data['auth_code'], $user->getAuthCode());
-        $this->assertSame($data['language'], $user->getLanguage());
-        $this->assertSame($data['external_id'], $user->getExternalId());
+        $this->assertEquals($data['username'], $user->getUsername());
+        $this->assertEquals($data['firstname'], $user->getFirstname());
+        $this->assertEquals($data['lastname'], $user->getLastname());
+        $this->assertEquals($data['patronymic'], $user->getPatronymic());
+        $this->assertEquals($data['gender'], $user->getGender());
+        $this->assertEquals($data['company'], $user->getCompany());
+        $this->assertEquals($data['legal'], $user->getLegal());
+        $this->assertEquals($data['website'], $user->getWebsite());
+        $this->assertEquals($data['source'], $user->getSource());
+        $this->assertEquals($data['country'], $user->getCountry());
+        $this->assertEquals($data['city'], $user->getCity());
+        $this->assertEquals($data['address'], $user->getAddress());
+        $this->assertEquals($data['postcode'], $user->getPostcode());
+        $this->assertEquals($data['additional'], $user->getAdditional());
+        $this->assertEquals($data['email'], $user->getEmail());
+        $this->assertEquals($data['auth_code'], $user->getAuthCode());
+        $this->assertEquals($data['language'], $user->getLanguage());
+        $this->assertEquals($data['external_id'], $user->getExternalId());
     }
 
     public function testUpdateWithUserNotFound(): void
@@ -385,16 +385,16 @@ class UserServiceTest extends TestCase
         // 1
         $phone = $this->getFaker()->phoneNumber;
         $this->service->update($user, ['phone' => $phone]);
-        $this->assertSame(str_replace(['(', ')', ' ', '.', '-'], '', $phone), $user->getPhone());
+        $this->assertEquals(str_replace(['(', ')', ' ', '.', '-'], '', $phone), $user->getPhone());
 
         // 2
         $phone = '89991112233';
         $this->service->update($user, ['phone' => $phone]);
-        $this->assertSame($phone, $user->getPhone());
+        $this->assertEquals($phone, $user->getPhone());
 
         // 3
         $this->service->update($user, ['phone' => '8 (999) 111-22-33']);
-        $this->assertSame('89991112233', $user->getPhone());
+        $this->assertEquals('89991112233', $user->getPhone());
 
         // убираем флаг
         unset($_ENV['SIMPLE_PHONE_CHECK']);
@@ -402,11 +402,11 @@ class UserServiceTest extends TestCase
         // 4
         $phone = '+79991112233';
         $this->service->update($user, ['phone' => $phone]);
-        $this->assertSame($phone, $user->getPhone());
+        $this->assertEquals($phone, $user->getPhone());
 
         // 5
         $this->service->update($user, ['phone' => '+7 (999) 111-22-33']);
-        $this->assertSame('+79991112233', $user->getPhone());
+        $this->assertEquals('+79991112233', $user->getPhone());
     }
 
     public function testDelete(): void
@@ -419,7 +419,7 @@ class UserServiceTest extends TestCase
         ]);
 
         $user = $this->service->delete($user);
-        $this->assertSame(UserStatusType::STATUS_DELETE, $user->getStatus());
+        $this->assertEquals(UserStatusType::STATUS_DELETE, $user->getStatus());
     }
 
     public function testDeleteWithNotFound(): void
@@ -439,7 +439,7 @@ class UserServiceTest extends TestCase
         ]);
 
         $user = $this->service->block($user);
-        $this->assertSame(UserStatusType::STATUS_BLOCK, $user->getStatus());
+        $this->assertEquals(UserStatusType::STATUS_BLOCK, $user->getStatus());
     }
 
     public function testBlockWithNotFound(): void

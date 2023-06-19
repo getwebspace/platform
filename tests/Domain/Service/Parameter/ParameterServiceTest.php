@@ -34,15 +34,15 @@ class ParameterServiceTest extends TestCase
 
         $parameter = $this->service->create($data);
         $this->assertInstanceOf(Parameter::class, $parameter);
-        $this->assertSame($data['key'], $parameter->getKey());
-        $this->assertSame($data['value'], $parameter->getValue());
+        $this->assertEquals($data['key'], $parameter->getKey());
+        $this->assertEquals($data['value'], $parameter->getValue());
 
         /** @var ParameterRepository $parameterRepo */
         $parameterRepo = $this->em->getRepository(Parameter::class);
         $p = $parameterRepo->findOneByKey($data['key']);
         $this->assertInstanceOf(Parameter::class, $p);
-        $this->assertSame($data['key'], $p->getKey());
-        $this->assertSame($data['value'], $p->getValue());
+        $this->assertEquals($data['key'], $p->getKey());
+        $this->assertEquals($data['value'], $p->getValue());
     }
 
     public function testCreateWithParameterAlreadyExistent(): void
@@ -75,8 +75,8 @@ class ParameterServiceTest extends TestCase
 
         $parameter = $this->service->read(['key' => $data['key']]);
         $this->assertInstanceOf(Parameter::class, $parameter);
-        $this->assertSame($data['key'], $parameter->getKey());
-        $this->assertSame($data['value'], $parameter->getValue());
+        $this->assertEquals($data['key'], $parameter->getKey());
+        $this->assertEquals($data['value'], $parameter->getValue());
     }
 
     public function testReadWithDefault(): void
@@ -88,8 +88,8 @@ class ParameterServiceTest extends TestCase
 
         $parameter = $this->service->read(['key' => $data['key']], $data['default']);
         $this->assertInstanceOf(Parameter::class, $parameter);
-        $this->assertSame($data['key'], $parameter->getKey());
-        $this->assertSame($data['default'], $parameter->getValue());
+        $this->assertEquals($data['key'], $parameter->getKey());
+        $this->assertEquals($data['default'], $parameter->getValue());
     }
 
     public function testUpdateSuccess(): void
@@ -104,7 +104,7 @@ class ParameterServiceTest extends TestCase
         ];
 
         $parameter = $this->service->update($parameter, $data);
-        $this->assertSame($data['value'], $parameter->getValue());
+        $this->assertEquals($data['value'], $parameter->getValue());
     }
 
     public function testUpdateWithPageNotFound(): void

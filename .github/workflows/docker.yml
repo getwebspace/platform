@@ -10,29 +10,25 @@ env:
     IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-    # Run tests.
-    # See also https://docs.docker.com/docker-hub/builds/automated-testing/
-#    test:
-#        runs-on: ubuntu-latest
-#        name: Testing
-#        steps:
-#            -   uses: actions/checkout@v3
-#
-#            -   name: Set up Docker Buildx
-#                uses: docker/setup-buildx-action@v2
-#
-#            -   name: Build test version
-#                run: docker-compose --file docker-compose.test.yml build --build-arg=NO_DEV=""
-#
-#            -   name: Run test PHP_CS
-#                run: docker-compose --file docker-compose.test.yml run phpcs
-#
-#            -   name: Run test PHPUnit
-#                run: docker-compose --file docker-compose.test.yml run phpunit
+    # run tests
+    test:
+        runs-on: ubuntu-latest
+        name: Testing
+        steps:
+            -   name: Check out the repo
+                uses: actions/checkout@v3
 
-    # build alpine
+            -   name: Run over makefile
+                run: |
+                    make up
+                    make run-test
+                    make lint
+                    make down
+                    make clean
+
+    # build platform
     debian:
-#        needs: test
+        needs: test
         runs-on: ubuntu-latest
         name: Build base container
         steps:

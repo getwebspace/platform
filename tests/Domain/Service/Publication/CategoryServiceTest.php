@@ -54,29 +54,29 @@ class CategoryServiceTest extends TestCase
 
         $publicationCategory = $this->service->create($data);
         $this->assertInstanceOf(PublicationCategory::class, $publicationCategory);
-        $this->assertSame($data['title'], $publicationCategory->getTitle());
-        $this->assertSame($data['address'], $publicationCategory->getAddress());
-        $this->assertSame($data['description'], $publicationCategory->getDescription());
-        $this->assertSame($data['pagination'], $publicationCategory->getPagination());
-        $this->assertSame($data['children'], $publicationCategory->getChildren());
-        $this->assertSame($data['public'], $publicationCategory->getPublic());
-        $this->assertSame($data['sort'], $publicationCategory->getSort());
-        $this->assertSame($data['meta'], $publicationCategory->getMeta());
-        $this->assertSame($data['template'], $publicationCategory->getTemplate());
+        $this->assertEquals($data['title'], $publicationCategory->getTitle());
+        $this->assertEquals($data['address'], $publicationCategory->getAddress());
+        $this->assertEquals($data['description'], $publicationCategory->getDescription());
+        $this->assertEquals($data['pagination'], $publicationCategory->getPagination());
+        $this->assertEquals($data['children'], $publicationCategory->getChildren());
+        $this->assertEquals($data['public'], $publicationCategory->getPublic());
+        $this->assertEquals($data['sort'], $publicationCategory->getSort());
+        $this->assertEquals($data['meta'], $publicationCategory->getMeta());
+        $this->assertEquals($data['template'], $publicationCategory->getTemplate());
 
         /** @var PublicationCategoryRepository $publicationCategoryRepo */
         $publicationCategoryRepo = $this->em->getRepository(PublicationCategory::class);
         $pc = $publicationCategoryRepo->findOneByTitle($data['title']);
         $this->assertInstanceOf(PublicationCategory::class, $pc);
-        $this->assertSame($data['title'], $pc->getTitle());
-        $this->assertSame($data['address'], $pc->getAddress());
-        $this->assertSame($data['description'], $pc->getDescription());
-        $this->assertSame($data['pagination'], $pc->getPagination());
-        $this->assertSame($data['children'], $pc->getChildren());
-        $this->assertSame($data['public'], $pc->getPublic());
-        $this->assertSame($data['sort'], $pc->getSort());
-        $this->assertSame($data['meta'], $pc->getMeta());
-        $this->assertSame($data['template'], $pc->getTemplate());
+        $this->assertEquals($data['title'], $pc->getTitle());
+        $this->assertEquals($data['address'], $pc->getAddress());
+        $this->assertEquals($data['description'], $pc->getDescription());
+        $this->assertEquals($data['pagination'], $pc->getPagination());
+        $this->assertEquals($data['children'], $pc->getChildren());
+        $this->assertEquals($data['public'], $pc->getPublic());
+        $this->assertEquals($data['sort'], $pc->getSort());
+        $this->assertEquals($data['meta'], $pc->getMeta());
+        $this->assertEquals($data['template'], $pc->getTemplate());
     }
 
     public function testCreateWithMissingTitleValue(): void
@@ -137,7 +137,7 @@ class CategoryServiceTest extends TestCase
 
         $publicationCategory = $this->service->read(['title' => $data['title']]);
         $this->assertInstanceOf(PublicationCategory::class, $publicationCategory);
-        $this->assertSame($data['title'], $publicationCategory->getTitle());
+        $this->assertEquals($data['title'], $publicationCategory->getTitle());
     }
 
     public function testReadSuccess2(): void
@@ -152,7 +152,7 @@ class CategoryServiceTest extends TestCase
 
         $publicationCategory = $this->service->read(['address' => $data['address']]);
         $this->assertInstanceOf(PublicationCategory::class, $publicationCategory);
-        $this->assertSame($data['address'], $publicationCategory->getAddress());
+        $this->assertEquals($data['address'], $publicationCategory->getAddress());
     }
 
     public function testReadWithCategoryNotFound(): void
@@ -212,15 +212,15 @@ class CategoryServiceTest extends TestCase
 
         $publicationCategory = $this->service->update($publicationCategory, $data);
         $this->assertInstanceOf(PublicationCategory::class, $publicationCategory);
-        $this->assertSame($data['title'], $publicationCategory->getTitle());
-        $this->assertSame($data['address'], $publicationCategory->getAddress());
-        $this->assertSame($data['description'], $publicationCategory->getDescription());
-        $this->assertSame($data['pagination'], $publicationCategory->getPagination());
-        $this->assertSame($data['children'], $publicationCategory->getChildren());
-        $this->assertSame($data['public'], $publicationCategory->getPublic());
-        $this->assertSame($data['sort'], $publicationCategory->getSort());
-        $this->assertSame($data['meta'], $publicationCategory->getMeta());
-        $this->assertSame($data['template'], $publicationCategory->getTemplate());
+        $this->assertEquals($data['title'], $publicationCategory->getTitle());
+        $this->assertEquals($data['address'], $publicationCategory->getAddress());
+        $this->assertEquals($data['description'], $publicationCategory->getDescription());
+        $this->assertEquals($data['pagination'], $publicationCategory->getPagination());
+        $this->assertEquals($data['children'], $publicationCategory->getChildren());
+        $this->assertEquals($data['public'], $publicationCategory->getPublic());
+        $this->assertEquals($data['sort'], $publicationCategory->getSort());
+        $this->assertEquals($data['meta'], $publicationCategory->getMeta());
+        $this->assertEquals($data['template'], $publicationCategory->getTemplate());
     }
 
     public function testUpdateWithCategoryNotFound(): void

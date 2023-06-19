@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+    platform:
+        build:
+            context: .
+            dockerfile: docker/Dockerfile
+        image: ghcr.io/getwebspace/platform:test
+        environment:
+            - TEST=1
+        volumes:
+            - ./bin:/var/container/bin:rw
+            - ./config:/var/container/config:rw
+            - ./plugin:/var/container/plugin:rw
+            - ./public:/var/container/public:rw
+            - ./src:/var/container/src:rw
+            - ./tests:/var/container/tests:rw
+            - ./theme:/var/container/theme:rw
+            - ./var:/var/container/var:rw
+            - ./var/upload:/var/container/public/uploads:rw
+            - ./.php-cs-fixer.dist.php:/var/container/.php-cs-fixer.dist.php:ro
+            - ./composer.json:/var/container/composer.json:rw
+            - ./composer.lock:/var/container/composer.lock:rw
+            - ./phpunit.xml:/var/container/phpunit.xml:rw

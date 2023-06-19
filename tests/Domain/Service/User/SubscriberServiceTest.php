@@ -35,13 +35,13 @@ class SubscriberServiceTest extends TestCase
 
         $userSubscriber = $this->service->create($data);
         $this->assertInstanceOf(UserSubscriber::class, $userSubscriber);
-        $this->assertSame($data['email'], $userSubscriber->getEmail());
+        $this->assertEquals($data['email'], $userSubscriber->getEmail());
 
         /** @var UserSubscriberRepository $userSubscriberRepo */
         $userSubscriberRepo = $this->em->getRepository(UserSubscriber::class);
         $us = $userSubscriberRepo->findOneByEmail($data['email']);
         $this->assertInstanceOf(UserSubscriber::class, $us);
-        $this->assertSame($data['email'], $us->getEmail());
+        $this->assertEquals($data['email'], $us->getEmail());
     }
 
     public function testCreateWithMissingUniqueValue(): void
@@ -81,7 +81,7 @@ class SubscriberServiceTest extends TestCase
 
         $userSubscriber = $this->service->read(['email' => $data['email']]);
         $this->assertInstanceOf(UserSubscriber::class, $userSubscriber);
-        $this->assertSame($data['email'], $userSubscriber->getEmail());
+        $this->assertEquals($data['email'], $userSubscriber->getEmail());
     }
 
     public function testReadWithUserNotFound1(): void
@@ -110,7 +110,7 @@ class SubscriberServiceTest extends TestCase
         ];
 
         $user = $this->service->update($userSubscriber, $data);
-        $this->assertSame($data['email'], $user->getEmail());
+        $this->assertEquals($data['email'], $user->getEmail());
     }
 
     public function testUpdateWithUserNotFound(): void

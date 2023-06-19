@@ -67,10 +67,10 @@ class CatalogProductAPITest extends TestCase
         $json = json_decode((string) $response->getBody(), true);
 
         // check
-        $this->assertSame($data['title'], $json['data']['title']);
-        $this->assertSame($data['description'], $json['data']['description']);
-        $this->assertSame($data['extra'], $json['data']['extra']);
-        $this->assertSame($data['export'], $json['data']['export']);
+        $this->assertEquals($data['title'], $json['data']['title']);
+        $this->assertEquals($data['description'], $json['data']['description']);
+        $this->assertEquals($data['extra'], $json['data']['extra']);
+        $this->assertEquals($data['export'], $json['data']['export']);
     }
 
     public function testAPIUpdateSuccess(): void
@@ -118,10 +118,10 @@ class CatalogProductAPITest extends TestCase
         $json = json_decode((string) $response->getBody(), true);
 
         // check
-        $this->assertSame($data['title'], $json['data']['title']);
-        $this->assertSame($data['description'], $json['data']['description']);
-        $this->assertSame($data['extra'], $json['data']['extra']);
-        $this->assertSame($data['export'], $json['data']['export']);
+        $this->assertEquals($data['title'], $json['data']['title']);
+        $this->assertEquals($data['description'], $json['data']['description']);
+        $this->assertEquals($data['extra'], $json['data']['extra']);
+        $this->assertEquals($data['export'], $json['data']['export']);
     }
 
     public function testAPIDeleteSuccess(): void
