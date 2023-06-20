@@ -65,7 +65,8 @@ You can define the next environment variables
 | Build   | DEPENDENSIES       | ''             | Core Libraries                                                    |   
 | Build   | EXTRA_EXTENSIONS   | pdo_mysql      | Additional Libraries                                              |   
 | Build   | PLATFORM_HOME      | /var/container | Home directory                                                    |   
-| Runtime | DEBUG              | 0              | Debug Mode                                                        |   
+| Runtime | DEBUG              | 0              | Debug mode                                                        |   
+| Runtime | TEST               | 0              | Test mode                                                         |   
 | Runtime | DATABASE           |                | PDO Database params (default: sqlite)                             |   
 | Runtime | SIMPLE_PHONE_CHECK | 0              | Checking the user's phone number for compliance with the standard |   
 
