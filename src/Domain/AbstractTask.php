@@ -71,6 +71,9 @@ abstract class AbstractTask
         $this->entity = $entity;
         $this->taskService = $container->get(TaskService::class);
         $this->renderer = $container->get('view');
+
+        // use language
+        \App\Application\i18n::$localeCode = $this->parameter('common_language', 'en-US');
     }
 
     /**
