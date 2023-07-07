@@ -168,11 +168,12 @@
                                             'name': 'gender',
                                             'args': {
                                                 'value': item.gender,
-                                                'list': 'unit',
+                                                'list': 'genders',
+                                                'autocomplete': 'off',
                                             }
                                         } %}
 
-                                        <datalist id="unit">
+                                        <datalist id="genders">
                                             <option value="{{ 'Male'|locale }}">{{ 'Male'|locale }}</option>
                                             <option value="{{ 'Female'|locale }}">{{ 'Female'|locale }}</option>
                                         </datalist>
