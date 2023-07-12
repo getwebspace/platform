@@ -41,8 +41,8 @@ class OrderExportAction extends CatalogAction
                 ->from(\App\Domain\Entities\Catalog\Order::class, 'o')
                 ->where('o.date >= :dateFrom')
                 ->andWhere('o.date <= :dateTo')
-                ->setParameter('dateFrom', $data['from'], ParameterType::STRING)
-                ->setParameter('dateTo', $data['to'], ParameterType::STRING)
+                ->setParameter('dateFrom', $data['from'] . ' 00:00:00', ParameterType::STRING)
+                ->setParameter('dateTo', $data['to'] . ' 23:59:59', ParameterType::STRING)
                 ->orderBy('o.date', 'DESC');
 
             // filter by status
