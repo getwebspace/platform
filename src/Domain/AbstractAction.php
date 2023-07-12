@@ -398,6 +398,7 @@ abstract class AbstractAction
             case $format === 'json':
             case str_contains($headerAccept, 'application/json') || $headerAccept === '*/*':
                 return $this->respondWithJson([
+                    'errors' => $this->error,
                     'params' => $this->request->getQueryParams(),
                     'data' => $data,
                 ]);

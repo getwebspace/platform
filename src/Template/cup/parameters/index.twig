@@ -958,6 +958,16 @@
                                                         'value': '10'
                                                     }
                                                 } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Number of order per day',
+                                                    'type': 'number',
+                                                    'name': 'catalog[order_limit]',
+                                                    'args': {
+                                                        'placeholder': '0',
+                                                        'value': '0'
+                                                    }
+                                                } %}
                                             </div>
 
                                             {# TAB: Catalog Notify #}

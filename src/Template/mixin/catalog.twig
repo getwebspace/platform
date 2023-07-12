@@ -574,13 +574,21 @@
                         cache: false,
                         processData: false,
                         success: (res) => {
-                            triggerEvent('cart:checkout:after', data);
+                            if (res) {
+                                if (res.redirect) {
+                                    triggerEvent('cart:checkout:after', data);
+                                    this.cartRemoveAll();
 
-                            if (res && res.redirect) {
-                                this.cartRemoveAll();
-
-                                // flexibility
-                                setTimeout(() => location = res.redirect, options.cart.delay);
+                                    // flexibility
+                                    setTimeout(() => location = res.redirect, options.cart.delay);
+                                } else if (res.errors) {
+                                    for(let name in res.errors) {
+                                        $(getSelector('cart-data'))
+                                            .filter('[name="' + name + '"]')
+                                            .parents('[data-input]')
+                                            .addClass('has-error');
+                                    }
+                                }
                             }
                         }
                     });

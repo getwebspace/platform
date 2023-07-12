@@ -2,6 +2,11 @@
 
 namespace App\Application\Actions\Common\Catalog;
 
+use App\Domain\Service\Catalog\Exception\OrderShippingLimitException;
+use App\Domain\Service\Catalog\Exception\WrongEmailValueException;
+use App\Domain\Service\Catalog\Exception\WrongPhoneValueException;
+use Doctrine\DBAL\ParameterType;
+
 class CartAction extends CatalogAction
 {
     /**
@@ -55,41 +60,65 @@ class CartAction extends CatalogAction
             }
 
             if ($this->isRecaptchaChecked()) {
-                // todo try/catch
-                $order = $this->catalogOrderService->create($data);
+                try {
+                    $date = datetime($data['shipping'], $this->parameter('common_timezone', 'UTC'))->format(\App\Domain\References\Date::DATE);
+                    $limit = $this->parameter('catalog_order_limit', 0);
+                    $qb = $this->entityManager->createQueryBuilder();
+                    $count = $qb
+                        ->select('count(o.serial)')
+                        ->from(\App\Domain\Entities\Catalog\Order::class, 'o')
+                        ->where('o.date >= :dateFrom')
+                        ->andWhere('o.date <= :dateTo')
+                        ->setParameter('dateFrom', $date . ' 00:00:00', ParameterType::STRING)
+                        ->setParameter('dateTo', $date . ' 23:59:59', ParameterType::STRING)
+                        ->getQuery()
+                        ->getSingleScalarResult();
 
-                // notify to admin and user
-                if ($this->parameter('notification_is_enabled', 'yes') === 'yes') {
-                    $this->notificationService->create([
-                        'title' => __('Order added') . ': ' . $order->getSerial(),
-                        'params' => [
-                            'order_uuid' => $order->getUuid(),
-                        ],
-                    ]);
+                    if ($limit && $count >= $limit) {
+                        throw new OrderShippingLimitException();
+                    }
 
-                    if ($user) {
+                    $order = $this->catalogOrderService->create($data);
+
+                    // notify to admin and user
+                    if ($this->parameter('notification_is_enabled', 'yes') === 'yes') {
                         $this->notificationService->create([
-                            'user_uuid' => $user->getUuid(),
                             'title' => __('Order added') . ': ' . $order->getSerial(),
                             'params' => [
                                 'order_uuid' => $order->getUuid(),
                             ],
                         ]);
+
+                        if ($user) {
+                            $this->notificationService->create([
+                                'user_uuid' => $user->getUuid(),
+                                'title' => __('Order added') . ': ' . $order->getSerial(),
+                                'params' => [
+                                    'order_uuid' => $order->getUuid(),
+                                ],
+                            ]);
+                        }
                     }
+
+                    $this->container->get(\App\Application\PubSub::class)->publish('common:catalog:order:create', $order);
+
+                    if (
+                        (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') && !empty($_SERVER['HTTP_REFERER'])
+                    ) {
+                        $this->response = $this->response->withHeader('Location', '/cart/done/' . $order->getUuid())->withStatus(301);
+                    }
+
+                    return $this->respondWithJson(['redirect' => '/cart/done/' . $order->getUuid()]);
+                } catch (WrongEmailValueException $e) {
+                    $this->addError('email', $e->getMessage());
+                } catch (WrongPhoneValueException $e) {
+                    $this->addError('phone', $e->getMessage());
+                } catch (OrderShippingLimitException $e) {
+                    $this->addError('shipping', $e->getMessage());
                 }
-
-                $this->container->get(\App\Application\PubSub::class)->publish('common:catalog:order:create', $order);
-
-                if (
-                    (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') && !empty($_SERVER['HTTP_REFERER'])
-                ) {
-                    $this->response = $this->response->withHeader('Location', '/cart/done/' . $order->getUuid())->withStatus(301);
-                }
-
-                return $this->respondWithJson(['redirect' => '/cart/done/' . $order->getUuid()]);
+            } else {
+                $this->addError('grecaptcha', 'EXCEPTION_WRONG_GRECAPTCHA');
             }
-
-            $this->addError('grecaptcha', 'EXCEPTION_WRONG_GRECAPTCHA');
         }
 
         return $this->respond($this->parameter('catalog_cart_template', 'catalog.cart.twig'));
