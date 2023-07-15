@@ -944,7 +944,7 @@
                                                     'name': 'catalog[sort_direction]',
                                                     'args': {
                                                         'option': _(reference('/App/Domain/References/Catalog::ORDER_DIRECTION')),
-                                                        'selected': 'Asc'
+                                                        'selected': 'ASC'
                                                     }
                                                 } %}
 
@@ -960,7 +960,8 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Number of order per day',
+                                                    'label': 'Number of orders per day',
+                                                    'description': 'Allows set limit the maximum number of orders per delivery date. You can specify 0 if you do not want set limit',
                                                     'type': 'number',
                                                     'name': 'catalog[order_limit]',
                                                     'args': {
@@ -1103,6 +1104,17 @@
 
                                             {# TAB: Catalog Additional #}
                                             <div class="tab-pane fade" id="catalog-additional">
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Price type for registered user',
+                                                    'description': 'Allows change the type of sale price for a registered user',
+                                                    'type': 'select',
+                                                    'name': 'catalog[price_type]',
+                                                    'args': {
+                                                        'option': _(reference('/App/Domain/References/Catalog::PRODUCT_PRICE_TYPE')),
+                                                        'selected': 'price'
+                                                    }
+                                                } %}
+
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Handling cart fields',
                                                     'description': 'Additional fields passed with the cart will be added to the end of the comment field',

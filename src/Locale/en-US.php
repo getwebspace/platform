@@ -52,6 +52,7 @@ return [
     // sorts by
     'title' => 'Title',
     'price' => 'Price',
+    'price_wholesale' => 'Price wholesale',
     'stock' => 'Stock',
     'date' => 'Date',
     'DESC' => 'Desc',

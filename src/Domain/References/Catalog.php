@@ -62,4 +62,14 @@ class Catalog
         self::ORDER_DIRECTION_ASC,
         self::ORDER_DIRECTION_DESC,
     ];
+
+    // possible product price types
+    public const PRODUCT_PRICE_TYPE_PRICE = 'price';
+    public const PRODUCT_PRICE_TYPE_PRICE_WHOLESALE = 'price_wholesale';
+
+    // list of product price types
+    public const PRODUCT_PRICE_TYPE = [
+        self::PRODUCT_PRICE_TYPE_PRICE,
+        self::PRODUCT_PRICE_TYPE_PRICE_WHOLESALE,
+    ];
 }
