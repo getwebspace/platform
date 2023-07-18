@@ -15,12 +15,13 @@ class UserListAction extends UserAction
                 'username' => $this->getParam('username'),
                 'username_strong' => $this->getParam('username_strong'),
                 'email' => $this->getParam('email'),
+                'group_uuid' => $this->getParam('group_uuid'),
                 'status_block' => $this->getParam('status_block'),
                 'status_delete' => $this->getParam('status_delete'),
             ];
 
             if ($data['username']) {
-                $criteria['username'] = str_escape($data['username']);
+                $criteria['username'] = $data['username'];
 
                 if (!$data['username_strong']) {
                     $criteria['username'] = '%' . $criteria['username'] . '%';
@@ -28,7 +29,11 @@ class UserListAction extends UserAction
             }
 
             if ($data['email']) {
-                $criteria['email'] = str_escape($data['email']);
+                $criteria['email'] = $data['email'];
+            }
+
+            if ($data['group_uuid']) {
+                $criteria['group_uuid'] = $data['group_uuid'];
             }
 
             if ($data['status_block']) {
@@ -55,6 +60,7 @@ class UserListAction extends UserAction
 
         return $this->respondWithTemplate('cup/user/index.twig', [
             'list' => collect($query->getQuery()->getResult()),
+            'groups' => $this->userGroupService->read(['order' => ['title' => 'asc']]),
         ]);
     }
 }

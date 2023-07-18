@@ -17,7 +17,7 @@
                 <form method="post">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Login'|locale,
                                     'type': 'text',
@@ -36,7 +36,7 @@
                                     }
                                 } %}
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 {% include 'cup/form.twig' with {
                                     'label': 'E-Mail',
                                     'type': 'email',
@@ -45,7 +45,22 @@
                                         'placeholder': 'pushkin@example.com'
                                     }
                                 } %}
+                            </div>
+                            <div class="col-md-4">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Group'|locale,
+                                    'type': 'select',
+                                    'name': 'group_uuid',
+                                    'args': {
+                                        'option': _({'': '---', (NIL): 'WITHOUT_GROUP'}|merge(groups.pluck('title', 'uuid').all())),
+                                        'selected': _request.group_uuid ?? ''
+                                    }
+                                } %}
+                            </div>
+                        </div>
 
+                        <div class="row">
+                            <div class="col-12">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Banned'|locale,
                                     'type': 'checkbox',
