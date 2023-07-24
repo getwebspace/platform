@@ -1,6 +1,7 @@
 up:
 	@docker-compose -f docker-compose.dev.yml up -d --build
-	@chmod -R 0755 plugin || :
+	@chmod -R 0777 plugin || :
+	@chmod -R 0777 public/resource || :
 	@chmod -R 0777 theme || :
 	@chmod -R 0777 var || :
 

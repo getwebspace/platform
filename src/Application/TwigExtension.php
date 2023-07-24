@@ -87,6 +87,7 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('base64_decode', [$this, 'base64_decode']),
             new TwigFunction('json_encode', [$this, 'json_encode']),
             new TwigFunction('json_decode', [$this, 'json_decode']),
+            new TwigFunction('convert_size', [$this, 'convert_size']),
             new TwigFunction('qr_code', [$this, 'qr_code'], ['is_safe' => ['html']]),
 
             // files functions
@@ -370,6 +371,13 @@ class TwigExtension extends AbstractExtension
     public function json_encode($value, int $flags = JSON_UNESCAPED_UNICODE, int $depth = 512): false|string
     {
         return json_encode($value, $flags, $depth);
+    }
+
+    public function convert_size(int $size): string
+    {
+        $unit = ['b', 'kb', 'mb', 'gb', 'tb', 'pb'];
+
+        return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[(int) $i];
     }
 
     public function qr_code(mixed $value, $size = 256, $margin = 0): string

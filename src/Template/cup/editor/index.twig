@@ -14,6 +14,7 @@
                     {% include 'cup/form.twig' with {
                         'type': 'text',
                         'name': 'path',
+                        'postfix': file ? convert_size(file.size) : '',
                         'postfix_btn': [
                                 '<button type="submit" name="save" value="exit" class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="left" title="' ~ ('Save')|locale ~ '"><i class="fas fa-save"></i></button>',
                                 '<button type="submit" name="save" value="delete" class="btn btn-danger btn-sm" data-toggle="tooltip" data-placement="left" title="' ~ ('Delete')|locale ~ '"><i class="fas fa-trash-alt"></i></button>'
@@ -25,25 +26,6 @@
                             'autocomplete':'off'
                         }
                     } %}
-
-                    <style>
-                        #CodeMirror {
-                            overflow: hidden;
-                        }
-                        #CodeMirror .CodeMirror {
-                            width: 100% !important;
-                            min-height: 86vh !important;
-                        }
-                        #CodeMirror style + .form-group {
-                            padding: 0;
-                        }
-
-                        @media screen and (max-width: 856px) {
-                            #CodeMirror .CodeMirror {
-                                height: 68vh !important;
-                            }
-                        }
-                    </style>
 
                     {% include 'cup/editor.twig' with {
                         'name': 'template',
@@ -57,4 +39,26 @@
             </div>
         </div>
     </div>
+
+    <style>
+        #CodeMirror {
+            overflow: hidden;
+        }
+        #CodeMirror .CodeMirror {
+            width: 100% !important;
+            height: calc(100vh - 62px - 42px) !important;
+        }
+        #CodeMirror style + .form-group {
+            padding: 0;
+        }
+        #CodeMirror [data-input] {
+            padding: 0;
+        }
+
+        @media screen and (max-width: 856px) {
+            #CodeMirror .CodeMirror {
+                height: 68vh !important;
+            }
+        }
+    </style>
 {% endblock %}

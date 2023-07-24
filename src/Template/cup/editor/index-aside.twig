@@ -1,26 +1,4 @@
-<div class="page-aside bg-grey1">
-    <style>
-        .page-aside {
-            min-width: 280px;
-            min-height: calc(100vh - 62px - 15px) !important;
-            padding-bottom: 0 !important;
-        }
-
-        .page-aside #editor-app-nav {
-            position: relative;
-            height: calc(100vh - 62px - 15px - 66px);
-            overflow-x: hidden;
-        }
-
-        @media screen and (max-width: 856px) {
-            .page-aside,
-            .page-aside #editor-app-nav {
-                height: unset!important;
-                min-height: unset!important;
-            }
-        }
-    </style>
-
+<div class="page-aside">
     <div class="aside-header">
         <div class="title">{{ 'Choose a template'|locale }}</div>
         <a class="btn btn-primary toggle-editor-nav" data-toggle="collapse" href="#editor-app-nav" role="button" aria-expanded="false" aria-controls="editor-nav">
@@ -30,7 +8,58 @@
             {{ 'List of files'|locale }}
         </a>
     </div>
-    <div class="aside-nav collapse" id="editor-app-nav">
-        {% include 'cup/editor/index-aside-file.twig' with {padding: 22} %}
+    <div class="aside-nav collapse py-0" id="editor-app-nav">
+        <div id="accordion" class="list-group" style="border-radius: 0;">
+            {% for item in list.where('type', 'section') %}
+                <button class="list-group-item py-2 collapsed" data-toggle="collapse" data-target="#collapse-section-{{ item.name }}" aria-expanded="false" aria-controls="collapse-section-{{ item.name }}" style="padding-left: 10px;">
+                    <i class="far fa-folder fa-fw" style="font-size: 18px;"></i>
+                    <i class="far fa-folder-open fa-fw" style="font-size: 18px;"></i>
+                    {{ item.name|locale }}
+                </button>
+
+                <div id="collapse-section-{{ item.name }}" class="collapse" data-parent="#accordion">
+                    <div class="list-group">
+                        {% include 'cup/editor/index-aside-file.twig' with {'prefix': item.name|lower ~ '/', 'list': item.list, 'padding': 15} %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', async () => {
+        $('a[href="/cup/editor/{{ file.path }}"]')
+            .parents('.collapse').addClass('show')
+            .prev('.list-group-item').removeClass('collapsed');
+    });
+</script>
+
+<style>
+    .page-aside {
+        min-width: 280px;
+        min-height: calc(100vh - 62px - 15px) !important;
+        padding-bottom: 0 !important;
+    }
+
+    .page-aside #editor-app-nav {
+        position: relative;
+        height: calc(100vh - 62px - 15px - 66px);
+        overflow-x: hidden;
+    }
+
+    .page-aside button.collapsed .fa-folder-open {
+        display: none;
+    }
+    .page-aside button:not(.collapsed) .fa-folder {
+        display: none;
+    }
+
+    @media screen and (max-width: 856px) {
+        .page-aside,
+        .page-aside #editor-app-nav {
+            height: unset!important;
+            min-height: unset!important;
+        }
+    }
+</style>

@@ -81,10 +81,7 @@ RUN set -x \
 # Switch to use a non-root user from here on
 USER www-data
 
-# Set volumes
-VOLUME ["${PLATFORM_HOME}/plugin", "${PLATFORM_HOME}/public/resource", "${PLATFORM_HOME}/theme", "${PLATFORM_HOME}/var", "${PLATFORM_HOME}/public/uploads"]
-
 # Set ports
-EXPOSE 80/tcp 443/tcp
+EXPOSE 80/tcp
 
 CMD ["/bin/docker-entrypoint.sh"]

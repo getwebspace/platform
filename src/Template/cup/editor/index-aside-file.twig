@@ -1,19 +1,41 @@
-{% for item in list.where('type', 'dir').sortBy('name') %}
-    {% if item.list is not empty %}
-        <span class="label">
-            <i class="fas fa-folder fa-fw"></i>
-            {{ item.name }}
-        </span>
-        {% include 'cup/editor/index-aside-file.twig' with {'list': item.list, 'prefix': prefix ~ item.name ~ '/', 'padding': padding + 10} only %}
-    {% endif %}
-{% endfor %}
+{% set parent = 'accordion-' ~ prefix|replace({'/':''}) %}
 
-<ul class="nav">
-    {% for item in list.where('type', 'file').sortBy('name') %}
-        <li class="{{ current_path() ends with prefix ~ item.name ? 'active' }}" style="{{ padding ? 'padding-left: ' ~ padding ~ 'px;'}}">
-            <a href="/cup/editor/{{ prefix }}{{ item.name }}">
-                <i class="fas fa-file fa-fw"></i> {{ item.name }}
-            </a>
-        </li>
+<div id="{{ parent }}">
+    {% for item in list.where('type', 'dir').sortBy('name') %}
+        {% set collapse = 'collapse-' ~ prefix|replace({'/':''}) ~ '-' ~ item.name %}
+
+        <button class="list-group-item py-2 collapsed w-100" data-toggle="collapse" data-target="#{{ collapse }}" aria-expanded="false"  style="padding-left: {{ padding }}px">
+            <i class="fas fa-folder fa-fw" style="font-size: 18px;"></i>
+            <i class="fas fa-folder-open fa-fw" style="font-size: 18px;"></i>
+            {{ item.name }}
+        </button>
+
+        {% if item.list is not empty %}
+            <div id="{{ collapse }}" class="collapse" data-parent="#{{ parent }}">
+                <div class="list-group">
+                    {% include 'cup/editor/index-aside-file.twig' with {'list': item.list, 'prefix': prefix ~ item.name ~ '/', 'padding': padding + 5} %}
+                </div>
+            </div>
+        {% endif %}
     {% endfor %}
-</ul>
+</div>
+
+{% for item in list.where('type', 'file').sortBy('name') %}
+    <a
+        href="/cup/editor/{{ prefix }}{{ item.name }}"
+        class="list-group-item py-2 {{ current_path() ends with prefix ~ item.name ? 'active text-light' : 'text-reset' }}"
+        style="padding-left: {{ padding }}px"
+    >
+        {% if item.name ends with '.js' or item.name ends with '.twig' %}
+            <i class="fas fa-file-code fa-fw" style="font-size: 18px;"></i>
+        {% elseif item.name ends with '.css' %}
+            <i class="fas fa-file-alt fa-fw" style="font-size: 18px;"></i>
+        {% elseif item.name ends with '.jpg' or item.name ends with '.jpeg' or item.name ends with '.png' or item.name ends with '.gif' or item.name ends with '.svg' or item.name ends with '.webp' %}
+            <i class="fas fa-file-image fa-fw" style="font-size: 18px;"></i>
+        {% else %}
+            <i class="fas fa-file fa-fw" style="font-size: 18px;"></i>
+        {% endif %}
+
+        {{ item.name|u.truncate(30, '..') }}
+    </a>
+{% endfor %}

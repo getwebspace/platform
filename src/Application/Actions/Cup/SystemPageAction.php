@@ -165,7 +165,7 @@ class SystemPageAction extends AbstractAction
             CONFIG_DIR => 0o755,
             PLUGIN_DIR => 0o777,
             PUBLIC_DIR => 0o755,
-            RESOURCE_DIR => 0o755,
+            RESOURCE_DIR => 0o777,
             UPLOAD_DIR => 0o777,
             SRC_DIR => 0o755,
             SRC_LOCALE_DIR => 0o755,

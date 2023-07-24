@@ -300,7 +300,7 @@ return function (App $app, Container $container): void {
                             ->setName('cup:file:delete');
                     });
 
-                    // template editor
+                    // editor
                     $proxy->group('/editor', function (Group $proxy): void {
                         $proxy->map(['GET', 'POST'], '[/{file:.*}]', \App\Application\Actions\Cup\EditorPageAction::class)
                             ->setName('cup:editor');

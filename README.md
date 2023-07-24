@@ -19,7 +19,7 @@ primarily intended for: online stores and mass media or blogs.
 ## Features
 - Docker compatible
 - Templates in Twig
-- Template editor
+- Template & file editor
 - Plugins API
 - HTTP API (dedicated API, and each public controller as API)
 - Static pages
@@ -88,9 +88,9 @@ You can define the next environment variables
 #### Post install check chmod's
 ```shell script
 chmod -R 0777 plugin
+chmod -R 0777 public/resource
 chmod -R 0777 theme
 chmod -R 0777 var
-chmod -R 0777 var/upload
 ```
 
 ## Collaborators
