@@ -24,6 +24,7 @@
                 '/assets/js/plugin/froala/froala_style.css?v={{ SHA }}',
                 '/assets/js/plugin/codemirror/lib/codemirror.js?v={{ SHA }}',
                 '/assets/js/plugin/codemirror/addon/mode/overlay.js?v={{ SHA }}',
+                '/assets/js/plugin/codemirror/addon/edit/matchbrackets.js?v={{ SHA }}',
                 '/assets/js/plugin/codemirror/addon/selection/selection-pointer.js?v={{ SHA }}',
                 '/assets/js/plugin/codemirror/mode/css/css.js?v={{ SHA }}',
                 '/assets/js/plugin/codemirror/mode/htmlmixed/htmlmixed.js?v={{ SHA }}',
@@ -51,6 +52,9 @@
                         CodeMirror.fromTextArea($editor.get(0), {
                             lineNumbers: true,
                             readOnly: '{{ args.readonly }}',
+                            matchBrackets: true,
+                            continueComments: 'Enter',
+                            extraKeys: {'Ctrl-q': 'toggleComment'}
                         });
                     } else {
                         $editor.froalaEditor({
