@@ -231,7 +231,7 @@
                                             <td>
                                                 {% include 'cup/form.twig' with {
                                                     'type': 'number',
-                                                    'name': 'products['~ item.product.uuid ~']',
+                                                    'name': 'products['~ item.product.uuid ~'][count]',
                                                     'args': {
                                                         'value': item.count,
                                                         'placeholder': '1',

@@ -465,7 +465,7 @@ $(() => {
                         $('<td>').text($selected.data('price')),
                         $('<td>').html(
                             $('<input class="form-control" type="number" placeholder="1" min="0" step="any">')
-                                .attr('name', 'products[' + $selected.attr('value') + ']')
+                                .attr('name', 'products[' + $selected.attr('value') + '][count]')
                                 .val($quantity.val())
                         ),
                     )
