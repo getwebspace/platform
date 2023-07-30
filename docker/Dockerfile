@@ -20,10 +20,10 @@ ENV COMMIT_BRANCH=${VERSION} \
     PLATFORM_HOME="/var/container"
 
 # Copy configs
-COPY --chown=www-data docker/rootfs/ /
+COPY docker/rootfs/ /
 
 # Copy platform files
-COPY --chown=www-data . ${PLATFORM_HOME}
+COPY --chown=www-data:www-data --chmod=755 . ${PLATFORM_HOME}
 
 # Set homedir as work
 WORKDIR ${PLATFORM_HOME}
