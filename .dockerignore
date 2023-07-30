@@ -2,7 +2,7 @@
 .git
 .composer
 hooks
-plugin/*
+plugin
 vendor
 .gitignore
 composer
