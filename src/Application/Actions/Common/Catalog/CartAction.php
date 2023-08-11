@@ -121,6 +121,8 @@ class CartAction extends CatalogAction
             }
         }
 
-        return $this->respond($this->parameter('catalog_cart_template', 'catalog.cart.twig'));
+        return $this
+            ->respond($this->parameter('catalog_cart_template', 'catalog.cart.twig'))
+            ->withAddedHeader('X-Robots-Tag', 'noindex, nofollow');
     }
 }

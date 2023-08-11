@@ -54,12 +54,14 @@ class SearchAction extends AbstractAction
             }
         }
 
-        return $this->respond($this->parameter('search_template', 'search.twig'), [
-            'query' => $query,
-            'type' => $query_type,
-            'strong' => $query_strong,
-            'count' => count($result),
-            'result' => $result,
-        ]);
+        return $this
+            ->respond($this->parameter('search_template', 'search.twig'), [
+                'query' => $query,
+                'type' => $query_type,
+                'strong' => $query_strong,
+                'count' => count($result),
+                'result' => $result,
+            ])
+            ->withAddedHeader('X-Robots-Tag', 'noindex, nofollow');
     }
 }
