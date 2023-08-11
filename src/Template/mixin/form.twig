@@ -3,9 +3,10 @@
     name - field name
     type - field type
     args - field other args
-    message - comment
-    prefix - prefix input
-    postfix - postfix input
+    message - additional bottom message
+    prefix - bootstrap prefix
+    postfix - bootstrap postfix
+    postfix_btn - bootstrap postfix btn
 #}
 {% htmlcompress %}
     {% if name is empty %}
@@ -22,7 +23,7 @@
         {% set error = 'has-error' %}
     {% endif %}
 
-    <div data-input class="{{ type == 'checkbox' or type == 'radio' ? type : 'form-group' }} {{ error }}">
+    <div data-input class="{{ type == 'checkbox' or type == 'radio' ? type : (postfix_btn is not empty ? '' : 'form-group') }} {{ error }}">
         {# COMMON LABEL #}
         {% if label is not empty and type not in ['checkbox', 'radio'] %}
             <label>
@@ -34,7 +35,7 @@
             </label>
         {% endif %}
 
-        {% if prefix is not empty or postfix is not empty %}
+        {% if prefix is not empty or postfix is not empty or postfix_btn is not empty %}
             <div class="input-group">
             {% if prefix is not empty %}<span class="input-group-addon">{{ prefix }}</span>{% endif %}
         {% endif %}
@@ -52,8 +53,9 @@
             </label>
         {% endif %}
 
-        {% if prefix is not empty or postfix is not empty %}
+        {% if prefix is not empty or postfix is not empty or postfix_btn is not empty %}
             {% if postfix is not empty %}<span class="input-group-addon">{{ postfix }}</span>{% endif %}
+            {% if postfix_btn is not empty %}<span class="input-group-append">{{ postfix_btn|raw }}</span>{% endif %}
             </div>
         {% endif %}
 
