@@ -248,7 +248,7 @@ abstract class AbstractPlugin
         return $this->router
             ->map(array_map('mb_strtoupper', $params['methods']), (string) $params['pattern'], $params['handler'])
             ->add(\App\Application\Middlewares\AccessCheckerMiddleware::class)
-            ->add(\App\Application\Middlewares\AuthorizationAPIMiddleware::class)
+            ->add(\App\Application\Middlewares\AuthorizationMiddleware::class)
             ->add(\App\Application\Middlewares\CORSMiddleware::class);
     }
 
