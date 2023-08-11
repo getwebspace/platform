@@ -97,9 +97,9 @@
                                     </div>
                                     <div class="col-5 col-sm">
                                         {% if item.user %}
-                                            <a href="/cup/user/{{ item.user_uuid }}/view">{{ item.delivery.client }}</a>
+                                            <a href="/cup/user/{{ item.user_uuid }}/view">{{ item.delivery.client|u.truncate(15, '...') }}</a>
                                         {% else %}
-                                            {{ item.delivery.client }}
+                                            {{ item.delivery.client|u.truncate(15, '...') }}
                                         {% endif %}
                                     </div>
                                     <div class="col-3 col-sm-2">
