@@ -345,9 +345,9 @@ if (!function_exists('__')) {
     /**
      * Locale helper
      */
-    function __(array|string|Collection $singular, ?string $plural = null, ?int $count = null): array|string|Collection
+    function __(array|string|null|Collection $singular, ?string $plural = null, ?int $count = null): array|string|Collection
     {
-        return i18n::getLocale($singular, $plural, $count);
+        return $singular ? i18n::getLocale($singular, $plural, $count) : '';
     }
 }
 
