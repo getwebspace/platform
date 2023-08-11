@@ -59,6 +59,7 @@ class TokenService extends AbstractService
     public function read(array $data = [])
     {
         $default = [
+            'user' => null,
             'unique' => null,
             'agent' => null,
             'ip' => null,
@@ -67,6 +68,9 @@ class TokenService extends AbstractService
 
         $criteria = [];
 
+        if ($data['user'] !== null) {
+            $criteria['user_uuid'] = $data['user']->getUuid();
+        }
         if ($data['unique'] !== null) {
             $criteria['unique'] = $data['unique'];
         }

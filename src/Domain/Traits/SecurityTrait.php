@@ -17,6 +17,8 @@ trait SecurityTrait
 
     private const PUBLIC_SECRET_FILE = VAR_DIR . '/public.secret.key';
 
+    private const MAX_COUNT_ACTIVE_SESSIONS = 5;
+
     private function getPrivateKey(): string|false
     {
         static $key;
@@ -70,6 +72,15 @@ trait SecurityTrait
                 'date' => 'now',
             ]);
         } else {
+            // auto remove all active sessions if count of active session more than const
+            $active = $userTokenService->read(['user' => $data['user']]);
+
+            if ($active->count() >= self::MAX_COUNT_ACTIVE_SESSIONS) {
+                foreach ($active as $token) {
+                    $userTokenService->delete($token);
+                }
+            }
+
             $userTokenService->create([
                 'user' => $data['user'],
                 'unique' => $refresh_token,
