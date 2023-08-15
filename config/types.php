@@ -13,6 +13,7 @@ return [
     App\Domain\Types\FileItemType::NAME => App\Domain\Types\FileItemType::class,
     App\Domain\Types\GuestBookStatusType::NAME => App\Domain\Types\GuestBookStatusType::class,
     App\Domain\Types\PageTypeType::NAME => App\Domain\Types\PageTypeType::class,
+    App\Domain\Types\ReferenceTypeType::NAME => App\Domain\Types\ReferenceTypeType::class,
     App\Domain\Types\TaskStatusType::NAME => App\Domain\Types\TaskStatusType::class,
     App\Domain\Types\UserStatusType::NAME => App\Domain\Types\UserStatusType::class,
 ];

@@ -18,6 +18,7 @@ use App\Domain\Service\Page\PageService;
 use App\Domain\Service\Parameter\ParameterService;
 use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
 use App\Domain\Service\Publication\PublicationService;
+use App\Domain\Service\Reference\ReferenceService;
 use App\Domain\Service\Task\TaskService;
 use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\IntegrationService as UserIntegrationService;
@@ -61,6 +62,9 @@ return function (ContainerBuilder $containerBuilder): void {
         // publication
         PublicationCategoryService::class => \DI\autowire(PublicationCategoryService::class),
         PublicationService::class => \DI\autowire(PublicationService::class),
+
+        // reference
+        ReferenceService::class => \DI\autowire(ReferenceService::class),
 
         // task
         TaskService::class => \DI\autowire(TaskService::class),

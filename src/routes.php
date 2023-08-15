@@ -246,20 +246,6 @@ return function (App $app, Container $container): void {
                         $proxy->group('/order', function (Group $proxy): void {
                             $proxy->get('/export', \App\Application\Actions\Cup\Catalog\Order\OrderExportAction::class)
                                 ->setName('cup:catalog:order:export');
-                            $proxy->get('/invoice', \App\Application\Actions\Cup\Catalog\Order\Invoice\OrderInviceEditorAction::class)
-                                ->setName('cup:catalog:order:invoice:editor');
-
-                            // order status
-                            $proxy->group('/status', function (Group $proxy): void {
-                                $proxy->get('', \App\Application\Actions\Cup\Catalog\Order\Status\OrderStatusListAction::class)
-                                    ->setName('cup:catalog:order:status:list');
-                                $proxy->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\Catalog\Order\Status\OrderStatusCreateAction::class)
-                                    ->setName('cup:catalog:order:status:add');
-                                $proxy->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\Catalog\Order\Status\OrderStatusUpdateAction::class)
-                                    ->setName('cup:catalog:order:status:edit');
-                                $proxy->map(['GET', 'POST'], '/{uuid}/delete', \App\Application\Actions\Cup\Catalog\Order\Status\OrderStatusDeleteAction::class)
-                                    ->setName('cup:catalog:order:status:delete');
-                            });
 
                             $proxy->get('', \App\Application\Actions\Cup\Catalog\Order\OrderListAction::class)
                                 ->setName('cup:catalog:order:list');
@@ -298,6 +284,21 @@ return function (App $app, Container $container): void {
                             ->setName('cup:file:list');
                         $proxy->any('/{uuid}/delete', \App\Application\Actions\Cup\File\FileDeleteAction::class)
                             ->setName('cup:file:delete');
+                    });
+
+                    // reference
+                    $proxy->group('/reference', function (Group $proxy): void {
+                        $proxy->group('/currencies', function (Group $proxy): void {
+                            $proxy->get('', \App\Application\Actions\Cup\Reference\Currencies\CurrencyListAction::class)
+                                ->setName('cup:reference:currencies:list');
+                            $proxy->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\Reference\Currencies\CurrencyCreateAction::class)
+                                ->setName('cup:reference:currencies:add');
+                            $proxy->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\Reference\Currencies\CurrencyUpdateAction::class)
+                                ->setName('cup:reference:currencies:edit');
+                        });
+
+                        $proxy->post('/{uuid}/delete', \App\Application\Actions\Cup\Reference\ReferenceDeleteAction::class)
+                            ->setName('cup:reference:delete');
                     });
 
                     // editor

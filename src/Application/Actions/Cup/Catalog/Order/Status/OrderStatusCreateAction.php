@@ -16,7 +16,7 @@ class OrderStatusCreateAction extends CatalogAction
                     'order' => $this->getParam('order'),
                 ]);
 
-                $this->container->get(\App\Application\PubSub::class)->publish('cup:catalog:order:status::create', $os);
+                $this->container->get(\App\Application\PubSub::class)->publish('cup:catalog:order:status:create', $os);
 
                 switch (true) {
                     case $this->getParam('save', 'exit') === 'exit':
