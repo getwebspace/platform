@@ -29,6 +29,19 @@
                                     }
                                 } %}
                             </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Enabled'|locale,
+                                    'type': 'select',
+                                    'name': 'status',
+                                    'args': {
+                                        'option': _(['yes', 'no']),
+                                        'selected': item.status is empty or item.status ? 'yes' : 'no'
+                                    }
+                                } %}
+                            </div>
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Sort order'|locale,
@@ -37,7 +50,7 @@
                                     'args': {
                                         'value': item.order is not empty ? item.order : list.count() + 1,
                                         'placeholder': '1',
-                                        'min': '0'
+                                        'min': '1'
                                     }
                                 } %}
                             </div>

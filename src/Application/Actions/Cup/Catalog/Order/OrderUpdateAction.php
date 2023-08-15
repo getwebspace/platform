@@ -7,6 +7,7 @@ use App\Domain\Service\Catalog\Exception\OrderNotFoundException;
 use App\Domain\Service\Catalog\Exception\WrongEmailValueException;
 use App\Domain\Service\Catalog\Exception\WrongPhoneValueException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
+use App\Domain\Types\ReferenceTypeType;
 
 class OrderUpdateAction extends CatalogAction
 {
@@ -27,7 +28,7 @@ class OrderUpdateAction extends CatalogAction
                             'list' => (array) $this->getParam('list', []),
                             'phone' => $this->getParam('phone'),
                             'email' => $this->getParam('email'),
-                            'status' => $status_uuid ? $this->catalogOrderStatusService->read(['uuid' => $status_uuid]) : null,
+                            'status' => $status_uuid ? $this->referenceService->read(['uuid' => $status_uuid, 'type' => ReferenceTypeType::TYPE_ORDER_STATUS]) : null,
                             'comment' => $this->getParam('comment'),
                             'shipping' => $this->getParam('shipping'),
                             'external_id' => $this->getParam('external_id'),
@@ -56,7 +57,7 @@ class OrderUpdateAction extends CatalogAction
 
                 return $this->respondWithTemplate('cup/catalog/order/form.twig', [
                     'order' => $order,
-                    'status_list' => $this->catalogOrderStatusService->read(),
+                    'status_list' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_ORDER_STATUS]),
                 ]);
             } catch (OrderNotFoundException $e) {
                 // nothing

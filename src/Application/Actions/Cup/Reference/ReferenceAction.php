@@ -16,6 +16,7 @@ use App\Domain\Service\Reference\Exception\ReferenceNotFoundException;
 use App\Domain\Service\Reference\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\Reference\ReferenceService;
 use App\Domain\Service\User\UserService;
+use App\Domain\Types\ReferenceTypeType;
 use Psr\Container\ContainerInterface;
 
 abstract class ReferenceAction extends AbstractAction
@@ -29,41 +30,19 @@ abstract class ReferenceAction extends AbstractAction
         $this->referenceService = $container->get(ReferenceService::class);
     }
 
-    /**
-     * @throws TitleAlreadyExistsException
-     * @throws MissingTitleValueException
-     */
-    protected function doCreateAction(string $type): Reference
+    protected function getReferenceType(string $type): string
     {
-        $ref = $this->referenceService->create([
-            'type' => $type,
-            'title' => $this->getParam('title'),
-            'value' => $this->getParam('value'),
-            'order' => $this->getParam('order'),
-            'status' => $this->getParam('status'),
-        ]);
+        switch ($type) {
+            case 'currencies':
+                return ReferenceTypeType::TYPE_CURRENCY;
 
-        $this->container->get(\App\Application\PubSub::class)->publish('cup:reference:create', $ref);
+            case 'order-status':
+                return ReferenceTypeType::TYPE_ORDER_STATUS;
 
-        return $ref;
-    }
-
-    /**
-     * @throws ReferenceNotFoundException
-     * @throws TitleAlreadyExistsException
-     */
-    protected function doUpdateAction(Reference $ref, string $type): Reference
-    {
-        $ref = $this->referenceService->update($ref, [
-            'type' => $type,
-            'title' => $this->getParam('title'),
-            'value' => $this->getParam('value'),
-            'order' => $this->getParam('order'),
-            'status' => $this->getParam('status'),
-        ]);
-
-        $this->container->get(\App\Application\PubSub::class)->publish('cup:reference:edit', $ref);
-
-        return $ref;
+            case 'order-shipping':
+            case 'order-invoice':
+            default:
+                return ReferenceTypeType::TYPE_TEXT;
+        }
     }
 }

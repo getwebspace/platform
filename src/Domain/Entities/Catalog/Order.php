@@ -3,6 +3,7 @@
 namespace App\Domain\Entities\Catalog;
 
 use App\Domain\AbstractEntity;
+use App\Domain\Entities\Reference;
 use App\Domain\Entities\User;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -240,16 +241,16 @@ class Order extends AbstractEntity
     #[ORM\Column(type: 'uuid', nullable: true, options: ['default' => null])]
     protected ?\Ramsey\Uuid\UuidInterface $status_uuid;
 
-    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\Catalog\OrderStatus')]
+    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\Reference')]
     #[ORM\JoinColumn(name: 'status_uuid', referencedColumnName: 'uuid')]
-    protected ?OrderStatus $status = null;
+    protected ?Reference $status = null;
 
     /**
      * @return $this
      */
-    public function setStatus(?OrderStatus $status)
+    public function setStatus(?Reference $status)
     {
-        if (is_a($status, OrderStatus::class)) {
+        if (is_a($status, Reference::class)) {
             $this->status_uuid = $status->getUuid();
             $this->status = $status;
         } else {
@@ -260,7 +261,7 @@ class Order extends AbstractEntity
         return $this;
     }
 
-    public function getStatus(): ?OrderStatus
+    public function getStatus(): ?Reference
     {
         return $this->status;
     }

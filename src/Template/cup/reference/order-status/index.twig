@@ -16,7 +16,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
-                        <a href="/cup/catalog/order/status/add" class="btn btn-primary btn-round ml-auto">
+                        <a href="/cup/reference/order-status/add" class="btn btn-primary btn-round ml-auto">
                             <i class="fa fa-plus"></i>
                             {{ 'Create status'|locale }}
                         </a>
@@ -37,9 +37,9 @@
                                     <div class="col-1 col-sm-1 d-none d-sm-block">{{ item.order }}</div>
                                     <div class="col">{{ item.title }}</div>
                                     <div class="col-4 col-sm-3 text-right">
-                                        <form action="/cup/catalog/order/status/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the order status?'|locale }}');">
+                                        <form action="/cup/reference/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the order status?'|locale }}');">
                                             <div class="btn-group">
-                                                <a href="/cup/catalog/order/status/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
+                                                <a href="/cup/reference/order-status/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
                                                     <i class="fas fa-fw fa-edit"></i>
                                                     <span class="d-none d-md-inline-block">{{ 'Change'|locale }}</span>
                                                 </a>

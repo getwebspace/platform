@@ -99,7 +99,7 @@
                                     'name': 'status',
                                     'args': {
                                         'option': _(['yes', 'no']),
-                                        'selected': item.status ? item.status : 'yes'
+                                        'selected': item.status is empty or item.status ? 'yes' : 'no'
                                     }
                                 } %}
                             </div>
@@ -109,9 +109,9 @@
                                     'type': 'number',
                                     'name': 'order',
                                     'args': {
-                                        'value': item.order is not empty ? item.order : '1',
+                                        'value': item.order is not empty ? item.order : list.count() + 1,
                                         'placeholder': '1',
-                                        'min': '0'
+                                        'min': '1'
                                     }
                                 } %}
                             </div>

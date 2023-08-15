@@ -3,6 +3,7 @@
 namespace App\Application\Actions\Cup\Catalog\Order;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
+use App\Domain\Types\ReferenceTypeType;
 use Doctrine\DBAL\ParameterType;
 
 class OrderListAction extends CatalogAction
@@ -37,7 +38,9 @@ class OrderListAction extends CatalogAction
             'date' => ['from' => $data['from'], 'to' => $data['to']],
             'list' => collect($query->getQuery()->getResult()),
             'status' => $data['status'],
-            'status_list' => $this->catalogOrderStatusService->read(),
+            'status_list' => $this->referenceService->read([
+                'type' => ReferenceTypeType::TYPE_ORDER_STATUS,
+            ]),
         ]);
     }
 }
