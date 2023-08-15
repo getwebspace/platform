@@ -56,8 +56,8 @@ class ProductService extends AbstractService
             'discount' => 0.0,
             'special' => false,
             'dimension' => [],
-            'volume' => 0.0,
-            'unit' => '',
+            'quantity' => 1.0,
+            'quantityMin' => 1.0,
             'stock' => 0.0,
             'field1' => '',
             'field2' => '',
@@ -104,8 +104,8 @@ class ProductService extends AbstractService
             ->setDiscount((float) $data['discount'])
             ->setSpecial($data['special'])
             ->setDimension($data['dimension'])
-            ->setVolume((float) $data['volume'])
-            ->setUnit($data['unit'])
+            ->setQuantity((float) $data['quantity'])
+            ->setQuantityMin((float) $data['quantityMin'])
             ->setStock((float) $data['stock'])
             ->setField1($data['field1'])
             ->setField2($data['field2'])
@@ -142,8 +142,7 @@ class ProductService extends AbstractService
             $this->service->findOneUnique(
                 $product->getCategory()->toString(),
                 $product->getAddress(),
-                $product->getVolume(),
-                $product->getUnit(),
+                $product->getDimension(),
                 $product->getExternalId()
             ) !== null
         ) {
@@ -299,8 +298,8 @@ class ProductService extends AbstractService
                 'discount' => null,
                 'special' => null,
                 'dimension' => null,
-                'volume' => null,
-                'unit' => null,
+                'quantity' => null,
+                'quantityMin' => null,
                 'stock' => null,
                 'field1' => null,
                 'field2' => null,
@@ -341,8 +340,7 @@ class ProductService extends AbstractService
                     $found = $this->service->findOneUnique(
                         $data['category'] ?? $entity->getCategory()->toString(),
                         $data['address'] ?? $entity->getAddress(),
-                        floatval($data['volume']) ?? $entity->getVolume(),
-                        $data['unit'] ?? $entity->getUnit(),
+                        $data['dimension'] ?? $entity->getDimension(),
                         $data['external_id'] ?? $entity->getExternalId()
                     );
 
@@ -382,11 +380,11 @@ class ProductService extends AbstractService
                 if ($data['dimension'] !== null) {
                     $entity->setDimension($data['dimension']);
                 }
-                if ($data['volume'] !== null) {
-                    $entity->setVolume((float) $data['volume']);
+                if ($data['quantity'] !== null) {
+                    $entity->setQuantity((float) $data['quantity']);
                 }
-                if ($data['unit'] !== null) {
-                    $entity->setUnit($data['unit']);
+                if ($data['quantityMin'] !== null) {
+                    $entity->setQuantityMin((float) $data['quantityMin']);
                 }
                 if ($data['stock'] !== null) {
                     $entity->setStock((float) $data['stock']);

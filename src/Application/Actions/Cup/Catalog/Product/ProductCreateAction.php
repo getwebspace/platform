@@ -6,6 +6,7 @@ use App\Application\Actions\Cup\Catalog\CatalogAction;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
+use App\Domain\Types\ReferenceTypeType;
 
 class ProductCreateAction extends CatalogAction
 {
@@ -31,9 +32,9 @@ class ProductCreateAction extends CatalogAction
                     'priceWholesaleFrom' => $this->getParam('priceWholesaleFrom'),
                     'discount' => $this->getParam('discount'),
                     'special' => $this->getParam('special'),
+                    'quantity' => $this->getParam('quantity'),
+                    'quantityMin' => $this->getParam('quantityMin'),
                     'dimension' => $this->getParam('dimension'),
-                    'volume' => $this->getParam('volume'),
-                    'unit' => $this->getParam('unit'),
                     'stock' => $this->getParam('stock'),
                     'field1' => $this->getParam('field1'),
                     'field2' => $this->getParam('field2'),
@@ -84,6 +85,9 @@ class ProductCreateAction extends CatalogAction
             'category' => $categories->firstWhere('uuid', $category),
             'categories' => $categories,
             'attributes' => $attributes,
+            'stock_status' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_STOCK_STATUS]),
+            'length_class' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_LENGTH_CLASS]),
+            'weight_class' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_WEIGHT_CLASS]),
             'measure' => $this->catalogMeasureService->read(),
         ]);
     }

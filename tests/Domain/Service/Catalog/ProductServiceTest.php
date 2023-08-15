@@ -46,12 +46,13 @@ class ProductServiceTest extends TestCase
             'discount' => $this->getFaker()->randomFloat(),
             'special' => $this->getFaker()->boolean(),
             'dimension' => [
+                'length' => $this->getFaker()->randomFloat(),
                 'width' => $this->getFaker()->randomFloat(),
                 'height' => $this->getFaker()->randomFloat(),
-                'length' => $this->getFaker()->randomFloat(),
+                'weight' => $this->getFaker()->randomFloat(),
+                'length_class' => $this->getFaker()->word,
+                'weight_class' => $this->getFaker()->word,
             ],
-            'volume' => $this->getFaker()->randomFloat(),
-            'unit' => $this->getFaker()->word,
             'stock' => $this->getFaker()->randomFloat(),
             'field1' => $this->getFaker()->word,
             'field2' => $this->getFaker()->word,
@@ -91,8 +92,6 @@ class ProductServiceTest extends TestCase
         $this->assertEquals($data['discount'], $product->getDiscount());
         $this->assertEquals($data['special'], $product->getSpecial());
         $this->assertEquals($data['dimension'], $product->getDimension());
-        $this->assertEquals($data['volume'], $product->getVolume());
-        $this->assertEquals($data['unit'], $product->getUnit());
         $this->assertEquals($data['stock'], $product->getStock());
         $this->assertEquals($data['field1'], $product->getField1());
         $this->assertEquals($data['field2'], $product->getField2());
@@ -127,8 +126,6 @@ class ProductServiceTest extends TestCase
         $this->assertEquals($data['priceWholesaleFrom'], $p->getPriceWholesaleFrom());
         $this->assertEquals($data['discount'], $p->getDiscount());
         $this->assertEquals($data['special'], $p->getSpecial());
-        $this->assertEquals($data['volume'], $p->getVolume());
-        $this->assertEquals($data['unit'], $p->getUnit());
         $this->assertEquals($data['stock'], $p->getStock());
         $this->assertEquals($data['field1'], $p->getField1());
         $this->assertEquals($data['field2'], $p->getField2());
@@ -160,8 +157,6 @@ class ProductServiceTest extends TestCase
         $data = [
             'title' => $this->getFaker()->title,
             'address' => 'some-custom-address',
-            'volume' => $this->getFaker()->randomFloat(2),
-            'unit' => $this->getFaker()->word,
             'date' => 'now',
             'external_id' => $this->getFaker()->word,
         ];
@@ -169,8 +164,6 @@ class ProductServiceTest extends TestCase
         $product = (new Product())
             ->setTitle($data['title'] . '-miss')
             ->setAddress($data['address'])
-            ->setVolume($data['volume'])
-            ->setUnit($data['unit'])
             ->setDate($data['date'])
             ->setExternalId($data['external_id']);
 
@@ -234,12 +227,13 @@ class ProductServiceTest extends TestCase
             'discount' => $this->getFaker()->randomFloat(),
             'special' => $this->getFaker()->boolean(),
             'dimension' => [
+                'length' => $this->getFaker()->randomFloat(),
                 'width' => $this->getFaker()->randomFloat(),
                 'height' => $this->getFaker()->randomFloat(),
-                'length' => $this->getFaker()->randomFloat(),
+                'weight' => $this->getFaker()->randomFloat(),
+                'length_class' => $this->getFaker()->word,
+                'weight_class' => $this->getFaker()->word,
             ],
-            'volume' => $this->getFaker()->randomFloat(),
-            'unit' => $this->getFaker()->word,
             'stock' => $this->getFaker()->randomFloat(),
             'field1' => $this->getFaker()->word,
             'field2' => $this->getFaker()->word,
@@ -277,12 +271,13 @@ class ProductServiceTest extends TestCase
             'discount' => $this->getFaker()->randomFloat(),
             'special' => $this->getFaker()->boolean(),
             'dimension' => [
+                'length' => $this->getFaker()->randomFloat(),
                 'width' => $this->getFaker()->randomFloat(),
                 'height' => $this->getFaker()->randomFloat(),
-                'length' => $this->getFaker()->randomFloat(),
+                'weight' => $this->getFaker()->randomFloat(),
+                'length_class' => $this->getFaker()->word,
+                'weight_class' => $this->getFaker()->word,
             ],
-            'volume' => $this->getFaker()->randomFloat(),
-            'unit' => $this->getFaker()->word,
             'stock' => $this->getFaker()->randomFloat(),
             'field1' => $this->getFaker()->word,
             'field2' => $this->getFaker()->word,
@@ -321,8 +316,6 @@ class ProductServiceTest extends TestCase
         $this->assertEquals($data['discount'], $product->getDiscount());
         $this->assertEquals($data['special'], $product->getSpecial());
         $this->assertEquals($data['dimension'], $product->getDimension());
-        $this->assertEquals($data['volume'], $product->getVolume());
-        $this->assertEquals($data['unit'], $product->getUnit());
         $this->assertEquals($data['stock'], $product->getStock());
         $this->assertEquals($data['field1'], $product->getField1());
         $this->assertEquals($data['field2'], $product->getField2());

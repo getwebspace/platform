@@ -1,0 +1,92 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            {% include 'cup/form-header.twig' with {
+                'item': item,
+                'create': 'Create a new weight class',
+                'update': 'Edit weight class'
+            } only %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <form method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Title'|locale,
+                                    'type': 'text',
+                                    'name': 'title',
+                                    'args': {
+                                        'value': item.title,
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Weight Unit'|locale,
+                                    'type': 'text',
+                                    'name': 'value[unit]',
+                                    'args': {
+                                        'value': item.value.unit,
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Value'|locale,
+                                    'type': 'number',
+                                    'name': 'value[value]',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('The value of your default weight in the current weight unit. Set to 1 for your default weight.'|locale) ~ '"></i>',
+                                    'args': {
+                                        'value': item.value.value,
+                                        'placeholder': '1',
+                                        'min': '0',
+                                        'step': 'any',
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Enabled'|locale,
+                                    'type': 'select',
+                                    'name': 'status',
+                                    'args': {
+                                        'option': _(['yes', 'no']),
+                                        'selected': item.status is empty or item.status ? 'yes' : 'no'
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Sort order'|locale,
+                                    'type': 'number',
+                                    'name': 'order',
+                                    'args': {
+                                        'value': item.order is not empty ? item.order : list.count() + 1,
+                                        'placeholder': '1',
+                                        'min': '1'
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        {% include "cup/form-save.twig" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

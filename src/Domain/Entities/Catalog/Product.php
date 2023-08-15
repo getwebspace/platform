@@ -11,11 +11,10 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 #[ORM\Index(name: 'catalog_product_address_idx', columns: ['address'])]
 #[ORM\Index(name: 'catalog_product_category_idx', columns: ['category'])]
 #[ORM\Index(name: 'catalog_product_price_idx', columns: ['price', 'priceFirst', 'priceWholesale'])]
-#[ORM\Index(name: 'catalog_product_volume_idx', columns: ['volume', 'unit'])]
 #[ORM\Index(name: 'catalog_product_manufacturer_idx', columns: ['manufacturer'])]
 #[ORM\Index(name: 'catalog_product_country_idx', columns: ['country'])]
 #[ORM\Index(name: 'catalog_product_order_idx', columns: ['order'])]
-#[ORM\UniqueConstraint(name: 'catalog_product_unique', columns: ['category', 'address', 'volume', 'unit', 'external_id'])]
+#[ORM\UniqueConstraint(name: 'catalog_product_unique', columns: ['category', 'address', 'dimension', 'external_id'])]
 #[ORM\Entity(repositoryClass: 'App\Domain\Repository\Catalog\ProductRepository')]
 class Product extends AbstractEntity
 {
@@ -279,24 +278,33 @@ class Product extends AbstractEntity
 
     #[ORM\Column(type: 'json', options: ['default' => '{}'])]
     protected array $dimension = [
+        'length' => 0.0,
         'width' => 0.0,
         'height' => 0.0,
-        'length' => 0.0,
+        'weight' => 0.0,
+        'length_class' => '',
+        'weight_class' => '',
     ];
 
     public function setDimension(array $data): self
     {
         $default = [
+            'length' => 0.0,
             'width' => 0.0,
             'height' => 0.0,
-            'length' => 0.0,
+            'weight' => 0.0,
+            'length_class' => '',
+            'weight_class' => '',
         ];
         $data = array_merge($default, $data);
 
         $this->dimension = [
+            'length' => floatval($data['length']),
             'width' => floatval($data['width']),
             'height' => floatval($data['height']),
-            'length' => floatval($data['length']),
+            'weight' => floatval($data['weight']),
+            'length_class' => $data['length_class'],
+            'weight_class' => $data['weight_class'],
         ];
 
         return $this;
@@ -307,41 +315,72 @@ class Product extends AbstractEntity
         return $this->dimension;
     }
 
-    #[ORM\Column(type: 'float', scale: 3, precision: 10, options: ['default' => '1.0'])]
-    protected float $volume = 0.000;
-
-    public function setVolume(float $value): self
+    public function getSpecification(): string
     {
-        $this->volume = $value;
+        $dimensions = [
+            $this->dimension['length'] ?? 0,
+            $this->dimension['width'] ?? 0,
+            $this->dimension['height'] ?? 0,
+        ];
 
-        return $this;
+        return implode('×', $dimensions);
     }
 
-    public function getVolume(): float
+    public function getSpecificationWithClass(): string
     {
-        return $this->volume;
+        return $this->getSpecification() . ($this->dimension['length_class'] ? ' ' . $this->dimension['length_class'] : '');
     }
 
-    #[ORM\Column(type: 'string', length: 64, options: ['default' => ''])]
-    protected string $unit = '';
-
-    public function setUnit(string $value): self
+    public function getWeight(): float
     {
-        if ($this->checkStrLenMax($value, 64)) {
-            $this->unit = $value;
-        }
-
-        return $this;
+        return $this->dimension['weight'] ?? 0;
     }
 
-    public function getUnit(): string
+    public function getWeightWithClass(): string
     {
-        return $this->unit;
+        return $this->getWeight() . ($this->dimension['weight_class'] ? ' ' . $this->dimension['weight_class'] : '');
     }
 
+    /** @deprecated  */
+    public function getVolume(): float|string
+    {
+        return $this->getWeight();
+    }
+
+    /** @deprecated  */
     public function getVolumeWithUnit(): string
     {
-        return ($this->volume ?? .0) . ($this->unit ?: '');
+        return $this->getWeightWithClass();
+    }
+
+    #[ORM\Column(type: 'float', scale: 2, precision: 10, options: ['default' => 1])]
+    protected float $quantity = 1;
+
+    public function setQuantity(float $value): self
+    {
+        $this->quantity = $value;
+
+        return $this;
+    }
+
+    public function getQuantity(): float
+    {
+        return $this->quantity;
+    }
+
+    #[ORM\Column(type: 'float', scale: 2, precision: 10, options: ['default' => 1])]
+    protected float $quantityMin = 1;
+
+    public function setQuantityMin(float $value): self
+    {
+        $this->quantityMin = $value;
+
+        return $this;
+    }
+
+    public function getQuantityMin(): float
+    {
+        return $this->quantityMin;
     }
 
     #[ORM\Column(type: 'float', scale: 2, precision: 10, options: ['default' => 0])]

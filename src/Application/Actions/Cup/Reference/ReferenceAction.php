@@ -42,6 +42,12 @@ abstract class ReferenceAction extends AbstractAction
             case 'stock-status':
                 return ReferenceTypeType::TYPE_STOCK_STATUS;
 
+            case 'length-classes':
+                return ReferenceTypeType::TYPE_LENGTH_CLASS;
+
+            case 'weight-classes':
+                return ReferenceTypeType::TYPE_WEIGHT_CLASS;
+
             case 'order-shipping':
             case 'order-invoice':
             default:
