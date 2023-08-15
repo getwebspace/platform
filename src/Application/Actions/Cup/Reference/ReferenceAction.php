@@ -39,6 +39,9 @@ abstract class ReferenceAction extends AbstractAction
             case 'order-status':
                 return ReferenceTypeType::TYPE_ORDER_STATUS;
 
+            case 'stock-status':
+                return ReferenceTypeType::TYPE_STOCK_STATUS;
+
             case 'order-shipping':
             case 'order-invoice':
             default:
