@@ -71,7 +71,7 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('_cup_editor_locale', [$this, '_cup_editor_locale'], ['is_safe' => ['html']]),
             new TwigFunction('_', '__', ['is_safe' => ['html']]),
             new TwigFunction('form', [$this, 'form'], ['is_safe' => ['html']]),
-            new TwigFunction('reference', [$this, 'reference']),
+            new TwigFunction('constant', [$this, 'constant']),
             new TwigFunction('parameter', [$this, 'parameter']),
             new TwigFunction('pre', [$this, 'pre']),
             new TwigFunction('count', [$this, 'count']),
@@ -210,7 +210,7 @@ class TwigExtension extends AbstractExtension
     }
 
     // todo review this
-    public function reference($reference, $value = null)
+    public function constant($reference, $value = null)
     {
         try {
             $reference = constant(str_replace('/', '\\', $reference));

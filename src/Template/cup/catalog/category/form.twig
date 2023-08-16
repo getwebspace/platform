@@ -135,7 +135,7 @@
                                             'type': 'select',
                                             'name': 'sort[by]',
                                             'args': {
-                                                'option': _(reference('/App/Domain/References/Catalog::ORDER_BY')),
+                                                'option': _(constant('/App/Domain/References/Catalog::ORDER_BY')),
                                                 'selected': category.sort['by'] ?? parameter('catalog_sort_by', 'title')
                                             }
                                         } %}
@@ -146,7 +146,7 @@
                                             'type': 'select',
                                             'name': 'sort[direction]',
                                             'args': {
-                                                'option': _(reference('/App/Domain/References/Catalog::ORDER_DIRECTION')),
+                                                'option': _(constant('/App/Domain/References/Catalog::ORDER_DIRECTION')),
                                                 'selected': category.sort['direction'] ?? parameter('catalog_sort_direction', 'ASC')
                                             }
                                         } %}

@@ -117,7 +117,7 @@
                                     'type': 'select',
                                     'name': 'sort[by]',
                                     'args': {
-                                        'option': _(reference('/App/Domain/References/Publication::ORDER_BY')),
+                                        'option': _(constant('/App/Domain/References/Publication::ORDER_BY')),
                                         'selected': item.sort['by']
                                     }
                                 } %}
@@ -128,7 +128,7 @@
                                     'type': 'select',
                                     'name': 'sort[direction]',
                                     'args': {
-                                        'option': _(reference('/App/Domain/References/Publication::ORDER_DIRECTION')),
+                                        'option': _(constant('/App/Domain/References/Publication::ORDER_DIRECTION')),
                                         'selected': item.sort['direction']
                                     }
                                 } %}

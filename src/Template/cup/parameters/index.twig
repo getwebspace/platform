@@ -932,7 +932,7 @@
                                                     'type': 'select',
                                                     'name': 'catalog[sort_by]',
                                                     'args': {
-                                                        'option': _(reference('/App/Domain/References/Catalog::ORDER_BY')),
+                                                        'option': _(constant('/App/Domain/References/Catalog::ORDER_BY')),
                                                         'selected': 'title'
                                                     }
                                                 } %}
@@ -943,7 +943,7 @@
                                                     'type': 'select',
                                                     'name': 'catalog[sort_direction]',
                                                     'args': {
-                                                        'option': _(reference('/App/Domain/References/Catalog::ORDER_DIRECTION')),
+                                                        'option': _(constant('/App/Domain/References/Catalog::ORDER_DIRECTION')),
                                                         'selected': 'ASC'
                                                     }
                                                 } %}
@@ -1078,26 +1078,26 @@
 
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': '<b>Import</b> column order',
-                                                    'description': ('Possible columns:'|locale) ~ ' <i>' ~ reference('/App/Domain/References/Catalog::IMPORT_FIELDS')|merge(attributes.pluck('address'))|join(', ') ~ '</i><br>' ~
+                                                    'description': ('Possible columns:'|locale) ~ ' <i>' ~ constant('/App/Domain/References/Catalog::IMPORT_FIELDS')|merge(attributes.pluck('address'))|join(', ') ~ '</i><br>' ~
                                                                    ('Skip column:'|locale) ~ ' <i>empty</i>',
                                                     'message': 'Alias each column on a new line',
                                                     'type': 'textarea',
                                                     'name': 'catalog[import_columns]',
                                                     'args': {
                                                         'style': 'height: 200px!important;',
-                                                        'value': reference('/App/Domain/References/Catalog::IMPORT_EXPORT_FIELDS_DEFAULT')|join("\n"),
+                                                        'value': constant('/App/Domain/References/Catalog::IMPORT_EXPORT_FIELDS_DEFAULT')|join("\n"),
                                                     },
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': '<b>Export</b> column order',
-                                                    'description': ('Possible columns:'|locale) ~ ' <i>' ~ reference('/App/Domain/References/Catalog::EXPORT_FIELDS')|merge(attributes.pluck('address'))|join(', ') ~ '</i><br>',
+                                                    'description': ('Possible columns:'|locale) ~ ' <i>' ~ constant('/App/Domain/References/Catalog::EXPORT_FIELDS')|merge(attributes.pluck('address'))|join(', ') ~ '</i><br>',
                                                     'message': 'Alias each column on a new line',
                                                     'type': 'textarea',
                                                     'name': 'catalog[export_columns]',
                                                     'args': {
                                                         'style': 'height: 200px!important;',
-                                                        'value': reference('/App/Domain/References/Catalog::IMPORT_EXPORT_FIELDS_DEFAULT')|join("\n"),
+                                                        'value': constant('/App/Domain/References/Catalog::IMPORT_EXPORT_FIELDS_DEFAULT')|join("\n"),
                                                     },
                                                 } %}
                                             </div>
@@ -1110,7 +1110,7 @@
                                                     'type': 'select',
                                                     'name': 'catalog[price_type]',
                                                     'args': {
-                                                        'option': _(reference('/App/Domain/References/Catalog::PRODUCT_PRICE_TYPE')),
+                                                        'option': _(constant('/App/Domain/References/Catalog::PRODUCT_PRICE_TYPE')),
                                                         'selected': 'price'
                                                     }
                                                 } %}
