@@ -92,8 +92,11 @@ $(() => {
         }
     });
 
-    console.log($active);
-    $active.parent('li').addClass('active').parents('.nav-item').find('[href^="#"]').click();
+    $active
+        .parent('li')
+        .addClass('active')
+        .parents('.nav-item, .submenu')
+        .each((i, el) => $(el).find('[href^="#"]:first').click());
 
     $('[data-toggle="tooltip"]').tooltip();
 
