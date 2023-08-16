@@ -1,0 +1,100 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            {% include 'cup/form-header.twig' with {
+                'item': item,
+                'create': 'Create a new delivery',
+                'update': 'Edit delivery'
+            } only %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <form method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Title'|locale,
+                                    'type': 'text',
+                                    'name': 'title',
+                                    'args': {
+                                        'value': item.title,
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        {% for pair in item.value %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {% include 'cup/form.twig' with {
+                                        'label': 'Condition'|locale,
+                                        'type': 'number',
+                                        'name': 'value[' ~ loop.index0 ~ '][condition]',
+                                        'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Cart total must be greater than or equal.'|locale) ~ '"></i>',
+                                        'prefix': 'total >='|locale,
+                                        'args': {
+                                            'value': pair.condition,
+                                            'placeholder': 0,
+                                            'step': 'any',
+                                            'min': 0,
+                                        }
+                                    } %}
+                                </div>
+                                <div class="col-md-6">
+                                    {% include 'cup/form.twig' with {
+                                        'label': 'Product'|locale,
+                                        'type': 'text',
+                                        'name': 'value[' ~ loop.index0 ~ '][product]',
+                                        'postfix_btn': '<button type="button" class="btn btn-outline-primary btn-sm"><i class="fas fa-fw fa-hand-pointer"></i></button>',
+                                        'args': {
+                                            'value': pair.product,
+                                            'placeholder': NIL,
+                                            'readonly': true,
+                                        }
+                                    } %}
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Enabled'|locale,
+                                    'type': 'select',
+                                    'name': 'status',
+                                    'args': {
+                                        'option': _(['yes', 'no']),
+                                        'selected': item.status is empty or item.status ? 'yes' : 'no'
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Sort order'|locale,
+                                    'type': 'number',
+                                    'name': 'order',
+                                    'args': {
+                                        'value': item.order is not empty ? item.order : list.count() + 1,
+                                        'placeholder': '1',
+                                        'min': '1'
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        {% include "cup/form-save.twig" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

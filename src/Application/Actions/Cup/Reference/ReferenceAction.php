@@ -36,6 +36,9 @@ abstract class ReferenceAction extends AbstractAction
             case 'currencies':
                 return ReferenceTypeType::TYPE_CURRENCY;
 
+            case 'deliveries':
+                return ReferenceTypeType::TYPE_DELIVERY;
+
             case 'order-status':
                 return ReferenceTypeType::TYPE_ORDER_STATUS;
 

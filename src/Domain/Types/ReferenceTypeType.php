@@ -19,6 +19,7 @@ class ReferenceTypeType extends AbstractEnumType
     public const TYPE_LENGTH_CLASS = 'length_class';
     public const TYPE_WEIGHT_CLASS = 'weight_class';
     public const TYPE_ADDRESS_FORMAT = 'address_format';
+    public const TYPE_SOCIAL_NETWORKS = 'social_network';
 
     public const LIST = [
         self::TYPE_TEXT,
@@ -32,5 +33,6 @@ class ReferenceTypeType extends AbstractEnumType
         self::TYPE_LENGTH_CLASS,
         self::TYPE_WEIGHT_CLASS,
         self::TYPE_ADDRESS_FORMAT,
+        self::TYPE_SOCIAL_NETWORKS,
     ];
 }

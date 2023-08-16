@@ -1,0 +1,28 @@
+<div id="btn-modal-import" class="modal">
+    <form action="/cup/catalog/product/import" method="post"  enctype="multipart/form-data" class="row m-0">
+        <div class="row">
+            <div class="col-12 text-center">
+                {% include 'cup/form.twig' with {
+                    'label': 'Excel file',
+                    'type': 'file',
+                    'name': 'excel',
+                    'args': {
+                        'required': true,
+                        'class': ['d-block', 'btn', 'btn-sm', 'bg-grey2', 'm-auto'],
+                        'accept': 'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                    }
+                } %}
+            </div>
+            <div class="col-12 text-center">
+                <p>
+                    {{ 'The Excel file must match the import settings'|locale }}<br>
+                    (<a href="/cup/parameters">{{ 'Settings'|locale }}</a> <i class="fas fa-caret-right"></i> {{ 'Catalog'|locale }} <i class="fas fa-caret-right"></i> {{ 'Import and Export'|locale }})
+                </p>
+
+                <button type="submit" name="save" class="btn btn-info">
+                    <span class="text">{{ 'Upload'|locale }}</span>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

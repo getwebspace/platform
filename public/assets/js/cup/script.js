@@ -83,14 +83,17 @@ $(() => {
     // navigation highlight
     let buf = 0, $active = null;
     $($('.sidebar a').get().reverse()).each((i, el) => {
-        let $el = $(el), href = $el.attr('href');
+        let $el = $(el),
+            href = $el.attr('href');
 
         if (location.pathname.startsWith(href) && href.length > buf) {
             buf = href.length;
             $active = $el;
         }
     });
-    $active.parents('li').addClass('active').parents('.nav-item').find('[href^="#"]').click();
+
+    console.log($active);
+    $active.parent('li').addClass('active').parents('.nav-item').find('[href^="#"]').click();
 
     $('[data-toggle="tooltip"]').tooltip();
 

@@ -140,7 +140,7 @@
             </a>
         </li>
 
-        <li class="nav-item">
+        <li class="nav-item submenu">
             <a data-toggle="collapse" href="#nav-reference">
                 <i class="fas fa-book"></i>
                 <p>{{ 'Reference'|locale }}</p>
@@ -148,30 +148,65 @@
             </a>
             <div class="collapse" id="nav-reference">
                 <ul class="nav nav-collapse">
-                    <li>
-                        <a href="/cup/reference/store-locations">
-                            <span class="sub-item">{{ 'Store Locations'|locale }}</span>
+                    <li class="submenu">
+                        <a data-toggle="collapse" href="#nav-catalog-other">
+                            <span class="sub-item">{{ 'Store'|locale }}</span>
+                            <span class="caret"></span>
                         </a>
-                    </li>
-                    <li>
-                        <a href="/cup/reference/currencies">
-                            <span class="sub-item">{{ 'Currencies'|locale }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/cup/reference/order-status">
-                            <span class="sub-item">{{ 'Order statuses'|locale }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/cup/reference/stock-status">
-                            <span class="sub-item">{{ 'Stock statuses'|locale }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/cup/reference/deliveries">
-                            <span class="sub-item">{{ 'Deliveries'|locale }}</span>
-                        </a>
+                        <div class="collapse" id="nav-catalog-other">
+                            <ul class="nav nav-collapse subnav">
+                                <li>
+                                    <a href="/cup/reference/store-locations">
+                                        <span class="sub-item">{{ 'Store Locations'|locale }}</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/cup/reference/deliveries">
+                                        <span class="sub-item">{{ 'Deliveries'|locale }}</span>
+                                    </a>
+                                </li>
+                                {#<li>
+                                    <a href="/cup/reference/currencies">
+                                        <span class="sub-item">{{ 'Currencies'|locale }}</span>
+                                    </a>
+                                </li>#}
+                                <li>
+                                    <a href="/cup/reference/order-status">
+                                        <span class="sub-item">{{ 'Order statuses'|locale }}</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/cup/reference/stock-status">
+                                        <span class="sub-item">{{ 'Stock statuses'|locale }}</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/cup/reference/length-classes">
+                                        <span class="sub-item">{{ 'Length Classes'|locale }}</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/cup/reference/weight-classes">
+                                        <span class="sub-item">{{ 'Weight Classes'|locale }}</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/cup/reference/tax-rates">
+                                        <span class="sub-item">{{ 'Tax Rates'|locale }}</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/cup/reference/order-invoice">
+                                        <span class="sub-item">{{ 'Invoice template'|locale }}</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="/cup/reference/order-shipping">
+                                        <span class="sub-item">{{ 'Shipping template'|locale }}</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     </li>
                     <li>
                         <a href="/cup/reference/countries">
@@ -179,28 +214,8 @@
                         </a>
                     </li>
                     <li>
-                        <a href="/cup/reference/tax-rates">
-                            <span class="sub-item">{{ 'Tax Rates'|locale }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/cup/reference/order-invoice">
-                            <span class="sub-item">{{ 'Invoice template'|locale }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/cup/reference/order-shipping">
-                            <span class="sub-item">{{ 'Shipping template'|locale }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/cup/reference/length-classes">
-                            <span class="sub-item">{{ 'Length Classes'|locale }}</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/cup/reference/weight-classes">
-                            <span class="sub-item">{{ 'Weight Classes'|locale }}</span>
+                        <a href="/cup/reference/social-networks">
+                            <span class="sub-item">{{ 'Social Networks'|locale }}</span>
                         </a>
                     </li>
                     <li>
