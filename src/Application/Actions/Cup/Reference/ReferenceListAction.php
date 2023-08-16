@@ -6,11 +6,11 @@ class ReferenceListAction extends ReferenceAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        $type = $this->resolveArg('type');
+        $entity = $this->resolveArg('entity');
 
-        return $this->respondWithTemplate("cup/reference/{$type}/index.twig", [
+        return $this->respondWithTemplate("cup/reference/{$entity}/index.twig", [
             'list' => $this->referenceService->read([
-                'type' => $this->getReferenceType($type),
+                'type' => $this->getReferenceType($entity),
             ])
         ]);
     }

@@ -9,12 +9,12 @@ class ReferenceCreateAction extends ReferenceAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        $type = $this->resolveArg('type');
+        $entity = $this->resolveArg('entity');
 
         if ($this->isPost()) {
             try {
                 $ref = $this->referenceService->create([
-                    'type' => $this->getReferenceType($type),
+                    'type' => $this->getReferenceType($entity),
                     'title' => $this->getParam('title'),
                     'value' => $this->getParam('value', []),
                     'order' => $this->getParam('order'),
@@ -25,18 +25,18 @@ class ReferenceCreateAction extends ReferenceAction
 
                 switch (true) {
                     case $this->getParam('save', 'exit') === 'exit':
-                        return $this->respondWithRedirect("/cup/reference/{$type}");
+                        return $this->respondWithRedirect("/cup/reference/{$entity}");
 
                     default:
-                        return $this->respondWithRedirect("/cup/reference/{$type}/{$ref->getUuid()}/edit");
+                        return $this->respondWithRedirect("/cup/reference/{$entity}/{$ref->getUuid()}/edit");
                 }
             } catch (MissingTitleValueException|TitleAlreadyExistsException $e) {
                 $this->addError('title', $e->getMessage());
             }
         }
 
-        return $this->respondWithTemplate("cup/reference/{$type}/form.twig", [
-            'list' => $this->referenceService->read(['type' => $this->getReferenceType($type)]),
+        return $this->respondWithTemplate("cup/reference/{$entity}/form.twig", [
+            'list' => $this->referenceService->read(['type' => $this->getReferenceType($entity)]),
         ]);
     }
 }

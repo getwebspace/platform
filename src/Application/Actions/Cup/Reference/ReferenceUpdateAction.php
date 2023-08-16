@@ -9,19 +9,19 @@ class ReferenceUpdateAction extends ReferenceAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        $type = $this->resolveArg('type');
+        $entity = $this->resolveArg('entity');
 
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
             try {
                 $ref = $this->referenceService->read([
                     'uuid' => $this->resolveArg('uuid'),
-                    'type' => $this->getReferenceType($type),
+                    'type' => $this->getReferenceType($entity),
                 ]);
 
                 if ($this->isPost()) {
                     try {
                         $ref = $this->referenceService->update($ref, [
-                            'type' => $this->getReferenceType($type),
+                            'type' => $this->getReferenceType($entity),
                             'title' => $this->getParam('title'),
                             'value' => $this->getParam('value'),
                             'order' => $this->getParam('order'),
@@ -32,17 +32,17 @@ class ReferenceUpdateAction extends ReferenceAction
 
                         switch (true) {
                             case $this->getParam('save', 'exit') === 'exit':
-                                return $this->respondWithRedirect("/cup/reference/{$type}");
+                                return $this->respondWithRedirect("/cup/reference/{$entity}");
 
                             default:
-                                return $this->respondWithRedirect("/cup/reference/{$type}/{$ref->getUuid()}/edit");
+                                return $this->respondWithRedirect("/cup/reference/{$entity}/{$ref->getUuid()}/edit");
                         }
                     } catch (TitleAlreadyExistsException $e) {
                         $this->addError('title', $e->getMessage());
                     }
                 }
 
-                return $this->respondWithTemplate("cup/reference/{$type}/form.twig", [
+                return $this->respondWithTemplate("cup/reference/{$entity}/form.twig", [
                     'item' => $ref,
                 ]);
             } catch (ReferenceNotFoundException $e) {
@@ -50,6 +50,6 @@ class ReferenceUpdateAction extends ReferenceAction
             }
         }
 
-        return $this->respondWithRedirect("/cup/reference/{$type}");
+        return $this->respondWithRedirect("/cup/reference/{$entity}");
     }
 }

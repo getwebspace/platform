@@ -288,13 +288,13 @@ return function (App $app, Container $container): void {
 
                     // reference
                     $proxy->group('/reference', function (Group $proxy): void {
-                        $proxy->group('/{type}', function (Group $proxy): void {
+                        $proxy->group('/{entity}', function (Group $proxy): void {
                             $proxy->get('', \App\Application\Actions\Cup\Reference\ReferenceListAction::class)
-                                ->setName('cup:reference:currencies:list');
+                                ->setName('cup:reference:list');
                             $proxy->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\Reference\ReferenceCreateAction::class)
-                                ->setName('cup:reference:currencies:add');
+                                ->setName('cup:reference:add');
                             $proxy->map(['GET', 'POST'], '/{uuid}/edit', \App\Application\Actions\Cup\Reference\ReferenceUpdateAction::class)
-                                ->setName('cup:reference:currencies:edit');
+                                ->setName('cup:reference:edit');
                         });
 
                         $proxy->post('/{uuid}/delete', \App\Application\Actions\Cup\Reference\ReferenceDeleteAction::class)
