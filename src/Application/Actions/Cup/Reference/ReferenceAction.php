@@ -48,6 +48,9 @@ abstract class ReferenceAction extends AbstractAction
             case 'weight-classes':
                 return ReferenceTypeType::TYPE_WEIGHT_CLASS;
 
+            case 'store-locations':
+                return ReferenceTypeType::TYPE_STORE_LOCATION;
+
             case 'order-shipping':
             case 'order-invoice':
             default:
