@@ -13,6 +13,8 @@ use App\Domain\Service\File\FileService;
 use App\Domain\Service\GuestBook\GuestBookService;
 use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
 use App\Domain\Service\Publication\PublicationService;
+use App\Domain\Service\Reference\ReferenceService;
+use App\Domain\Types\ReferenceTypeType;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 use Ramsey\Uuid\UuidInterface as Uuid;
@@ -72,6 +74,7 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('_', '__', ['is_safe' => ['html']]),
             new TwigFunction('form', [$this, 'form'], ['is_safe' => ['html']]),
             new TwigFunction('constant', [$this, 'constant']),
+            new TwigFunction('reference', [$this, 'reference']),
             new TwigFunction('parameter', [$this, 'parameter']),
             new TwigFunction('pre', [$this, 'pre']),
             new TwigFunction('count', [$this, 'count']),
@@ -209,7 +212,6 @@ class TwigExtension extends AbstractExtension
         return form($type, $name, $args);
     }
 
-    // todo review this
     public function constant($reference, $value = null)
     {
         try {
@@ -229,6 +231,20 @@ class TwigExtension extends AbstractExtension
         } catch (\Exception $e) {
             return $value;
         }
+    }
+
+    public function reference(string $type = ReferenceTypeType::TYPE_TEXT)
+    {
+        if (in_array($type, ReferenceTypeType::LIST)) {
+            $referenceService = $this->container->get(ReferenceService::class);
+
+            return $referenceService->read([
+                'type' => $type,
+                'status' => true,
+            ]);
+        }
+
+        return null;
     }
 
     // return parameter value by key or default
