@@ -111,7 +111,7 @@ return function (ContainerBuilder $containerBuilder): void {
 
             $view = \Slim\Views\Twig::create($settings['template_path'], [
                 'debug' => $settings['displayErrorDetails'],
-                'cache' => $settings['caches_path'],
+                'cache' => $settings['displayErrorDetails'] ? false : $settings['caches_path'],
                 'auto_reload' => $settings['displayErrorDetails'],
             ]);
 
