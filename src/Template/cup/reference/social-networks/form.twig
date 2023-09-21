@@ -1,0 +1,94 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            {% include 'cup/form-header.twig' with {
+                'item': item,
+                'create': 'Create a new currency',
+                'update': 'Edit currency'
+            } only %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <form method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Title'|locale,
+                                    'type': 'text',
+                                    'name': 'title',
+                                    'args': {
+                                        'required': true,
+                                        'value': item.title,
+                                        'list': 'social-networks',
+                                        'autocomplete': 'off',
+                                    }
+                                } %}
+
+                                <datalist id="social-networks">
+                                    {% set networks = [
+                                        'Facebook','Instagram','Threads','VK',
+                                        'Telegram','Pinterest','Snapchat','Reddit',
+                                        'WhatsApp','TikTok','YouTube','Twitter','LinkedIn'
+                                    ] %}
+
+                                    {% for el in networks %}
+                                        <option value="{{ el }}">{{ el }}</option>
+                                    {% endfor %}
+                                </datalist>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'URL'|locale,
+                                    'type': 'text',
+                                    'name': 'value[url]',
+                                    'args': {
+                                        'required': true,
+                                        'value': item.value.url,
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Enabled'|locale,
+                                    'type': 'select',
+                                    'name': 'status',
+                                    'args': {
+                                        'option': _(['yes', 'no']),
+                                        'selected': item.status is empty or item.status ? 'yes' : 'no'
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Sort order'|locale,
+                                    'type': 'number',
+                                    'name': 'order',
+                                    'args': {
+                                        'value': item.order is not empty ? item.order : list.count() + 1,
+                                        'placeholder': '1',
+                                        'min': '1'
+                                    }
+                                } %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        {% include "cup/form-save.twig" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}
