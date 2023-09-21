@@ -11,6 +11,7 @@ use App\Domain\Service\Catalog\OrderStatusService as CatalogOrderStatusService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\File\FileService;
 use App\Domain\Service\GuestBook\GuestBookService;
+use App\Domain\Service\Page\PageService;
 use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
 use App\Domain\Service\Publication\PublicationService;
 use App\Domain\Service\Reference\ReferenceService;
@@ -74,8 +75,6 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('_', '__', ['is_safe' => ['html']]),
             new TwigFunction('form', [$this, 'form'], ['is_safe' => ['html']]),
             new TwigFunction('constant', [$this, 'constant']),
-            new TwigFunction('reference', [$this, 'reference']),
-            new TwigFunction('parameter', [$this, 'parameter']),
             new TwigFunction('pre', [$this, 'pre']),
             new TwigFunction('count', [$this, 'count']),
             new TwigFunction('df', [$this, 'df']),
@@ -94,11 +93,20 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('qr_code', [$this, 'qr_code'], ['is_safe' => ['html']]),
 
             // files functions
-            new TwigFunction('files', [$this, 'files']),
+            new TwigFunction('file', [$this, 'file']),
+
+            // page functions
+            new TwigFunction('page', [$this, 'page']),
 
             // publication functions
             new TwigFunction('publication_category', [$this, 'publication_category']),
             new TwigFunction('publication', [$this, 'publication']),
+
+            // parameter functions
+            new TwigFunction('parameter', [$this, 'parameter']),
+
+            // reference functions
+            new TwigFunction('reference', [$this, 'reference']),
 
             // guestbook functions
             new TwigFunction('guestbook', [$this, 'guestbook']),
@@ -231,26 +239,6 @@ class TwigExtension extends AbstractExtension
         } catch (\Exception $e) {
             return $value;
         }
-    }
-
-    public function reference(string $type = ReferenceTypeType::TYPE_TEXT)
-    {
-        if (in_array($type, ReferenceTypeType::LIST)) {
-            $referenceService = $this->container->get(ReferenceService::class);
-
-            return $referenceService->read([
-                'type' => $type,
-                'status' => true,
-            ]);
-        }
-
-        return null;
-    }
-
-    // return parameter value by key or default
-    public function parameter(mixed $key = null, mixed $default = null): mixed
-    {
-        return parent::parameter($key, $default);
     }
 
     /**
@@ -411,11 +399,25 @@ class TwigExtension extends AbstractExtension
     // files functions
 
     // fetch files by args
-    public function files(array $criteria = [], $order = ['date' => 'desc'], $limit = 10, $offset = null)
+    public function file(array $criteria = [], $order = ['date' => 'desc'], $limit = 10, $offset = null)
     {
         $fileService = $this->container->get(FileService::class);
 
         return $fileService->read(array_merge($criteria, [
+            'order' => $order,
+            'limit' => $limit,
+            'offset' => $offset,
+        ]));
+    }
+
+    // pages functions
+
+    // fetch page by args
+    public function page(array $criteria = [], $order = ['date' => 'desc'], $limit = 10, $offset = null)
+    {
+        $pageService = $this->container->get(PageService::class);
+
+        return $pageService->read(array_merge($criteria, [
             'order' => $order,
             'limit' => $limit,
             'offset' => $offset,
@@ -444,6 +446,31 @@ class TwigExtension extends AbstractExtension
             'limit' => $limit,
             'offset' => $offset,
         ]));
+    }
+
+    // reference functions
+
+    // fetch reference by type
+    public function reference(string $type = null)
+    {
+        if (in_array($type, ReferenceTypeType::LIST)) {
+            $referenceService = $this->container->get(ReferenceService::class);
+
+            return $referenceService->read([
+                'type' => $type,
+                'status' => true,
+            ]);
+        }
+
+        return ReferenceTypeType::LIST;
+    }
+
+    // parameter functions
+
+    // return parameter value by key or default
+    public function parameter(mixed $key = null, mixed $default = null): mixed
+    {
+        return parent::parameter($key, $default);
     }
 
     // guestbook functions
