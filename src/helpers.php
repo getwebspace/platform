@@ -379,26 +379,39 @@ if (!function_exists('array_serialize')) {
      */
     function array_serialize($array)
     {
+        // switch type
+        switch (true) {
+            case is_a($array, Collection::class):
+                $array = $array->all();
+                break;
+
+            case is_a($array, AbstractEntity::class):
+                $array = $array->toArray();
+                break;
+        }
+
+        // decode data
         foreach ($array as $key => $item) {
             switch (true) {
                 case is_array($item):
-                case is_a($item, Collection::class):
+                case is_a($item, AbstractEntity::class):
                     $array[$key] = array_serialize($item);
 
                     break;
 
+                case is_a($item, Collection::class):
+                    $array[$key] = array_serialize($item->all());
+
+                    break;
+
                 case is_a($item, \Ramsey\Uuid\Uuid::class):
-                    $array[$key] = (string) $item;
+                case is_a($item, \Ramsey\Uuid\Lazy\LazyUuidFromString::class):
+                   $array[$key] = (string) $item;
 
                     break;
 
                 case is_a($item, \Doctrine\ORM\PersistentCollection::class):
                     $array[$key] = array_serialize($item->toArray());
-
-                    break;
-
-                case is_a($item, AbstractEntity::class):
-                    $array[$key] = $item->toArray();
 
                     break;
 
