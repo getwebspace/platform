@@ -46,17 +46,6 @@
                             </div>
                             <div class="col-md-12">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'ISO Code (3)'|locale,
-                                    'type': 'text',
-                                    'name': 'value[iso_3]',
-                                    'args': {
-                                        'required': true,
-                                        'value': item.order is not empty ? item.value.iso_3 : '',
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-12">
-                                {% include 'cup/form.twig' with {
                                     'label': 'Adress format'|locale,
                                     'type': 'select',
                                     'name': 'value[adress_format]',
