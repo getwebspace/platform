@@ -16,6 +16,8 @@ use App\Domain\Service\Page\PageService;
 use App\Domain\Service\Parameter\ParameterService;
 use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
 use App\Domain\Service\Publication\PublicationService;
+use App\Domain\Service\Reference\ReferenceService;
+use App\Domain\Service\Task\TaskService;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\UserService;
@@ -142,15 +144,17 @@ class EntityAction extends ActionApi
     private function getService(mixed $entity): ?AbstractService
     {
         return match ($entity) {
-            'parameter' => $this->container->get(ParameterService::class),
             'catalog/category' => $this->container->get(CatalogCategoryService::class),
             'catalog/product' => $this->container->get(CatalogProductService::class),
             'catalog/order' => $this->container->get(CatalogOrderService::class),
             'file' => $this->container->get(FileService::class),
             'guestbook' => $this->container->get(GuestBookService::class),
             'page' => $this->container->get(PageService::class),
+            'parameter' => $this->container->get(ParameterService::class),
             'publication' => $this->container->get(PublicationService::class),
             'publication/category' => $this->container->get(PublicationCategoryService::class),
+            'reference' => $this->container->get(ReferenceService::class),
+            'task' => $this->container->get(TaskService::class),
             'user' => $this->container->get(UserService::class),
             'user/group' => $this->container->get(UserGroupService::class),
             default => null,
