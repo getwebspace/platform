@@ -187,7 +187,7 @@ abstract class AbstractEntity implements \JsonSerializable
      */
     public function __toString(): string
     {
-        return serialize($this->toArray());
+        return json_encode($this->toArray(), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     }
 
     public function jsonSerialize(): array
