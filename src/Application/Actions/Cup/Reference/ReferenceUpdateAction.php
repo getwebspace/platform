@@ -44,6 +44,7 @@ class ReferenceUpdateAction extends ReferenceAction
 
                 return $this->respondWithTemplate("cup/reference/{$entity}/form.twig", [
                     'item' => $ref,
+                    'type' => $this->getReferenceType($entity),
                 ]);
             } catch (ReferenceNotFoundException $e) {
                 // nothing
