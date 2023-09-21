@@ -118,4 +118,19 @@ class Reference extends AbstractEntity
     {
         return $this->status;
     }
+
+    /**
+     * Return model as array
+     */
+    public function toArray(): array
+    {
+        return array_serialize([
+            'uuid' => $this->uuid,
+            'type' => $this->type,
+            'title' => $this->title,
+            'value' => $this->value,
+            'order' => $this->order,
+            'status' => $this->status,
+        ]);
+    }
 }
