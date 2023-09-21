@@ -25,6 +25,7 @@
                                     'type': 'text',
                                     'name': 'title',
                                     'args': {
+                                        'required': true,
                                         'value': item.title,
                                     }
                                 } %}
@@ -37,6 +38,7 @@
                                     'type': 'text',
                                     'name': 'value[unit]',
                                     'args': {
+                                        'required': true,
                                         'value': item.value.unit,
                                     }
                                 } %}
@@ -48,6 +50,7 @@
                                     'name': 'value[value]',
                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('The value of your default weight in the current weight unit. Set to 1 for your default weight.'|locale) ~ '"></i>',
                                     'args': {
+                                        'required': true,
                                         'value': item.value.value,
                                         'placeholder': '1',
                                         'min': '0',

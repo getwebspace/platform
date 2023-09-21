@@ -25,6 +25,7 @@
                                     'type': 'text',
                                     'name': 'title',
                                     'args': {
+                                        'required': true,
                                         'value': item.title,
                                     }
                                 } %}
@@ -36,6 +37,7 @@
                                     'name': 'value[code]',
                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Do not change if this is your default currency'|locale) ~ '"></i>',
                                     'args': {
+                                        'required': true,
                                         'value': item.value.code,
                                     }
                                 } %}
@@ -48,6 +50,7 @@
                                     'type': 'text',
                                     'name': 'value[symbol][left]',
                                     'args': {
+                                        'required': true,
                                         'value': item.value.symbol.left,
                                     }
                                 } %}
@@ -58,6 +61,7 @@
                                     'type': 'text',
                                     'name': 'value[symbol][right]',
                                     'args': {
+                                        'required': true,
                                         'value': item.value.symbol.right,
                                     }
                                 } %}
@@ -71,6 +75,7 @@
                                     'name': 'value[value]',
                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('The value of your default currency in the current currency unit. Set to 1 for your default currency'|locale) ~ '"></i>',
                                     'args': {
+                                        'required': true,
                                         'value': item.value.value,
                                         'placeholder': '1',
                                         'min': '0',
@@ -84,6 +89,7 @@
                                     'type': 'number',
                                     'name': 'value[decimal]',
                                     'args': {
+                                        'required': true,
                                         'value': item.value.decimal,
                                         'placeholder': '2',
                                         'min': '0'

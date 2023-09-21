@@ -39,6 +39,9 @@ abstract class ReferenceAction extends AbstractAction
             case 'deliveries':
                 return ReferenceTypeType::TYPE_DELIVERY;
 
+            case 'countries':
+                return ReferenceTypeType::TYPE_COUNTRY;
+
             case 'order-status':
                 return ReferenceTypeType::TYPE_ORDER_STATUS;
 
@@ -51,11 +54,15 @@ abstract class ReferenceAction extends AbstractAction
             case 'weight-classes':
                 return ReferenceTypeType::TYPE_WEIGHT_CLASS;
 
+            case 'address-format':
+                return ReferenceTypeType::TYPE_ADDRESS_FORMAT;
+
             case 'store-locations':
                 return ReferenceTypeType::TYPE_STORE_LOCATION;
 
             case 'order-shipping':
             case 'order-invoice':
+
             default:
                 return ReferenceTypeType::TYPE_TEXT;
         }

@@ -25,6 +25,7 @@
                                     'type': 'text',
                                     'name': 'title',
                                     'args': {
+                                        'required': true,
                                         'value': item.title,
                                     }
                                 } %}
@@ -37,6 +38,7 @@
                                     'type': 'text',
                                     'name': 'value[address]',
                                     'args': {
+                                        'required': true,
                                         'value': item.value.address,
                                     }
                                 } %}
@@ -60,6 +62,7 @@
                                     'name': 'value[times]',
                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Fill in your stores opening times.'|locale) ~ '"></i>',
                                     'args': {
+                                        'required': true,
                                         'value': item.value.times,
                                     }
                                 } %}

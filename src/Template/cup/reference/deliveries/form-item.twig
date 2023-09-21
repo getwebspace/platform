@@ -5,9 +5,9 @@
             'type': 'select',
             'name': 'value[' ~ (loop.index0 ?? 0) ~ '][product]',
             'args': {
+                'required': true,
                 'option': products,
                 'selected': pair.product,
-                'required': true,
             }
         } %}
     </div>
@@ -20,8 +20,8 @@
             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Cart total must be greater than or equal.'|locale) ~ '"></i>',
             'postfix_btn': '<button type="button" data-btn-reference-deliveries-remove class="btn btn-outline-danger btn-icon h-100"><i class="far fa-fw fa-trash"></i></button>',
             'args': {
-                'value': pair.condition ?? 0,
                 'required': true,
+                'value': pair.condition ?? 0,
                 'placeholder': 0,
                 'step': 'any',
                 'min': 0,
