@@ -1,0 +1,61 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Countries'|locale }} ({{ list.count() }})</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <a href="/cup/reference/countries/add" class="btn btn-primary btn-round ml-auto">
+                            <i class="fa fa-plus"></i>
+                            {{ 'Create'|locale }}
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    {% embed 'mixin/datatable.twig' %}
+                        {% block thead %}
+                            <div class="col col-sm-1 d-none d-sm-block">#</div>
+                            <div class="col">{{ 'Title'|locale }}</div>
+                            <div class="col-4 col-sm-3 text-right"></div>
+                        {% endblock %}
+
+                        {% block tbody %}
+                            {% for item in list.sortBy('order') %}
+                                <div class="row">
+                                    <div class="col col-sm-1 d-none d-sm-block">{{ item.order }}</div>
+                                    <div class="col">{{ item.title }}</div>
+                                    <div class="col-4 col-sm-3 text-right">
+                                        <form action="/cup/reference/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete this element?'|locale }}');">
+                                            <div class="btn-group">
+                                                <a href="/cup/reference/countries/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
+                                                    <i class="fas fa-fw fa-edit"></i>
+                                                    <span class="d-none d-md-inline-block">{{ 'Change'|locale }}</span>
+                                                </a>
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-fw fa-trash-alt"></i>
+                                                    <span class="d-none d-md-inline-block">{{ 'Delete'|locale }}</span>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endblock %}
+                    {% endembed %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
