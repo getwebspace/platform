@@ -31,39 +31,6 @@
                             </div>
                         </div>
 
-                        {% for pair in item.value %}
-                            <div class="row">
-                                <div class="col-md-6">
-                                    {% include 'cup/form.twig' with {
-                                        'label': 'Condition'|locale,
-                                        'type': 'number',
-                                        'name': 'value[' ~ loop.index0 ~ '][condition]',
-                                        'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Cart total must be greater than or equal.'|locale) ~ '"></i>',
-                                        'prefix': 'total >='|locale,
-                                        'args': {
-                                            'value': pair.condition,
-                                            'placeholder': 0,
-                                            'step': 'any',
-                                            'min': 0,
-                                        }
-                                    } %}
-                                </div>
-                                <div class="col-md-6">
-                                    {% include 'cup/form.twig' with {
-                                        'label': 'Product'|locale,
-                                        'type': 'text',
-                                        'name': 'value[' ~ loop.index0 ~ '][product]',
-                                        'postfix_btn': '<button type="button" class="btn btn-outline-primary btn-sm"><i class="fas fa-fw fa-hand-pointer"></i></button>',
-                                        'args': {
-                                            'value': pair.product,
-                                            'placeholder': NIL,
-                                            'readonly': true,
-                                        }
-                                    } %}
-                                </div>
-                            </div>
-                        {% endfor %}
-
                         <div class="row">
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
@@ -92,6 +59,32 @@
                     </div>
                     <div class="card-action">
                         {% include "cup/form-save.twig" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex align-items-center">
+                            <button type="button" data-btn-reference-deliveries-add class="btn btn-outline-secondary btn-icon ml-auto">
+                                <i class="far fa-fw fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        {% set products = catalog_product({'type': 'service'}).pluck('title', 'uuid').all() %}
+
+                        {% if item.value|count() %}
+                            {% for pair in item.value %}
+                                {% include 'cup/reference/deliveries/form-item.twig' with {'products': products, 'pair': pair} %}
+                            {% endfor %}
+                        {% else %}
+                            {% include 'cup/reference/deliveries/form-item.twig' with {'products': products} %}
+                        {% endif %}
                     </div>
                 </div>
             </div>

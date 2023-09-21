@@ -101,8 +101,10 @@ $(() => {
     $('[data-toggle="tooltip"]').tooltip();
 
     // select2 init
-    $('[data-input] select').each((i, el) => {
-        let $el = $(el);
+    let init_select2 = ($el) => {
+        if ($el.hasClass('select2-hidden-accessible')) {
+            $el.select2('destroy');
+        }
 
         $el.select2({
             theme: 'bootstrap',
@@ -111,7 +113,8 @@ $(() => {
             minimumResultsForSearch: $el.data('search') ? $el.data('search') : -1,
             allowClear: $el.data('allow-clear') ? $el.data('allow-clear') : false,
         });
-    });
+    }
+    $('[data-input] select').each((i, el) => init_select2($(el)));
 
     // publication preview
     $('form [data-click="preview"]').on('click', (e) => {
@@ -484,6 +487,49 @@ $(() => {
                 $.modal.close();
             }
         });
+    }
+
+    // reference forms
+    {
+        // deliveries
+        {
+            $('[data-btn-reference-deliveries-add]').click((e) => {
+                e.preventDefault();
+
+                let $btn = $(e.currentTarget), $card = $btn.parents('.card'), $body = $card.find('.card-body');
+
+                $body
+                    .find('[data-delivery-row]')
+                    .last()
+                    .find('select')
+                    .select2('destroy')
+                    .removeAttr('data-select2-id')
+                    .end()
+                    .clone()
+                    .find('select, input')
+                    .val('')
+                    .each((i, el) => {
+                        let nameAttr = $(el).attr('name');
+
+                        if (nameAttr) {
+                            let newIndex = parseInt(nameAttr.match(/\[(\d+)\]/)[1]) + 1;
+                            let newNameAttr = nameAttr.replace(/\[(\d+)\]/, '[' + newIndex + ']');
+                            $(el).attr('name', newNameAttr);
+                        }
+                    })
+                    .end()
+                    .appendTo($body)
+                ;
+
+                $body.find('[data-input] select').each((i, el) => init_select2($(el)))
+            });
+
+            $(document).on('click', '[data-btn-reference-deliveries-remove]', (e) => {
+                e.preventDefault();
+
+                $(e.currentTarget).parents('[data-delivery-row]').remove();
+            })
+        }
     }
 
     window.print_element = function (selector) {

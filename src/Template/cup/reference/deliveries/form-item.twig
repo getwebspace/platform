@@ -1,0 +1,31 @@
+<div class="row" data-delivery-row>
+    <div class="col-md-6">
+        {% include 'cup/form.twig' with {
+            'label': 'Service'|locale,
+            'type': 'select',
+            'name': 'value[' ~ (loop.index0 ?? 0) ~ '][product]',
+            'args': {
+                'option': products,
+                'selected': pair.product,
+                'required': true,
+            }
+        } %}
+    </div>
+    <div class="col-md-6">
+        {% include 'cup/form.twig' with {
+            'label': 'Condition'|locale,
+            'type': 'number',
+            'name': 'value[' ~ (loop.index0 ?? 0) ~ '][condition]',
+            'prefix': 'total >='|locale,
+            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Cart total must be greater than or equal.'|locale) ~ '"></i>',
+            'postfix_btn': '<button type="button" data-btn-reference-deliveries-remove class="btn btn-outline-danger btn-icon h-100"><i class="far fa-fw fa-trash"></i></button>',
+            'args': {
+                'value': pair.condition ?? 0,
+                'required': true,
+                'placeholder': 0,
+                'step': 'any',
+                'min': 0,
+            }
+        } %}
+    </div>
+</div>
