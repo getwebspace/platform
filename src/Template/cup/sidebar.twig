@@ -235,7 +235,9 @@
                             $buf.find('h5').text(task.title ? task.title : task.action);
                             $buf.find('.progress').toggle(task.progress > 0 && task.status === 'work');
                             $buf.find('.progress-bar').css('width', task.progress + '%');
-                            $buf.find('small.status').attr('class', color).text(text);
+                            $buf.find('small.status')
+                                .removeClass((i, cn) => (cn.match(/\btext-\S+/g) || []).join(' '))
+                                .addClass(color).text(text);
                             $buf.find('small.date').text(
                                 moment
                                     .tz(task.date, 'YYYY-MM-DD hh:mm:ss', 'utc')
