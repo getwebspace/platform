@@ -41,7 +41,7 @@
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
                             <div class="col-12 col-sm">{{ 'Title'|locale }}</div>
-                            <div class="col-4 col-sm-1 text-md-right">{{ 'Price'|locale }}</div>
+                            <div class="col-4 col-sm-2 text-md-right">{{ 'Price'|locale }}</div>
                             <div class="col-4 col-sm-2">{{ 'Vendor code'|locale }}</div>
                             <div class="col-4 col-sm-3 text-right"></div>
                         {% endblock %}
@@ -52,14 +52,13 @@
                                     <div class="col-12 col-sm">
                                         {{ item.title|u.truncate(35, '...') }}
 
-                                        <div class="text-black-50 float-right">
-                                            {% if item.special %}
-                                                <i class="fas fa-tag" data-toggle="tooltip" data-placement="right" title="{{ 'Special'|locale }}"></i>
-                                            {% endif %}
-                                        </div>
+                                        {% if item.special %}
+                                            <i class="fas fa-tag pl-1" title="{{ 'Special'|locale }}"></i>
+                                        {% endif %}
                                     </div>
-                                    <div class="col-4 col-sm-1 text-md-right">
-                                        {{ item.price|number_format(2, '.', ' ') }} {{ item.tax ? '[+'~ item.tax ~'%]'}}
+                                    <div class="col-4 col-sm-2 text-md-right">
+                                        {{ item.tax ? '[+'~ item.tax ~'%]'}}
+                                        {{ item.price|number_format(2, '.', ' ') }}
                                     </div>
                                     <div class="col-4 col-sm-2">
                                         {% if item.vendorcode %}

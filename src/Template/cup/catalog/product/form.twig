@@ -30,6 +30,11 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
+                                    <a class="nav-link" data-toggle="pill" href="#price" role="tab">
+                                        {{ 'Price'|locale }}
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a class="nav-link" data-toggle="pill" href="#related" role="tab">
                                         {{ 'Related'|locale }}
                                     </a>
@@ -130,7 +135,9 @@
                                                 'value': item.manufacturer,
                                             }
                                         } %}
+                                    </div>
 
+                                    <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Vendor code'|locale,
                                             'type': 'text',
@@ -151,7 +158,104 @@
                                             }
                                         } %}
                                     </div>
+                                </div>
 
+                                <hr>
+
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
+                                        <div class="row">
+                                            <div class="col-12 col-md-4">
+                                                {% include 'cup/form.twig' with {
+                                                    'label': 'Length'|locale,
+                                                    'type': 'number',
+                                                    'name': 'dimension[length]',
+                                                    'args': {
+                                                        'value': item.dimension.length ? item.dimension.length|number_format(2, '.', '') : '',
+                                                        'placeholder': '0.00',
+                                                        'min': '0',
+                                                        'step': 'any',
+                                                    }
+                                                } %}
+                                            </div>
+
+                                            <div class="col-12 col-md-4">
+                                                {% include 'cup/form.twig' with {
+                                                    'label': 'Width'|locale,
+                                                    'type': 'number',
+                                                    'name': 'dimension[width]',
+                                                    'args': {
+                                                        'value': item.dimension.width ? item.dimension.width|number_format(2, '.', '') : '',
+                                                        'placeholder': '0.00',
+                                                        'min': '0',
+                                                        'step': 'any',
+                                                    }
+                                                } %}
+                                            </div>
+
+                                            <div class="col-12 col-md-4">
+                                                {% include 'cup/form.twig' with {
+                                                    'label': 'Height'|locale,
+                                                    'type': 'number',
+                                                    'name': 'dimension[height]',
+                                                    'args': {
+                                                        'value': item.dimension.height ? item.dimension.height|number_format(2, '.', '') : '',
+                                                        'placeholder': '0.00',
+                                                        'min': '0',
+                                                        'step': 'any',
+                                                    }
+                                                } %}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Length class'|locale,
+                                            'type': 'select',
+                                            'name': 'dimension[length_class]',
+                                            'args': {
+                                                'option': {'': '---'}|merge(length_class.pluck('title', 'value.unit').all()),
+                                                'selected': item.dimension.length_class,
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Weight'|locale,
+                                            'type': 'number',
+                                            'name': 'dimension[weight]',
+                                            'args': {
+                                                'value': item.dimension.weight ? item.dimension.weight|number_format(2, '.', '') : '',
+                                                'placeholder': '1.000',
+                                                'step': 'any',
+                                                'min': '0',
+                                            }
+                                        } %}
+                                    </div>
+
+                                    <div class="col-12 col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Weight Class'|locale,
+                                            'type': 'select',
+                                            'name': 'dimension[weight_class]',
+                                            'args': {
+                                                'option': {'': '---'}|merge(weight_class.pluck('title', 'value.unit').all()),
+                                                'selected': item.dimension.weight_class,
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                {% include 'cup/form-image.twig' with { 'entity': item } %}
+                            </div>
+
+                            {# Tab: Цены #}
+                            <div class="tab-pane fade" id="price" role="tabpanel">
+                                <div class="row">
                                     <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'First price'|locale,
@@ -164,7 +268,9 @@
                                                 'min': '0',
                                             }
                                         } %}
+                                    </div>
 
+                                    <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Selling price'|locale,
                                             'type': 'number',
@@ -176,7 +282,9 @@
                                                 'min': '0',
                                             }
                                         } %}
+                                    </div>
 
+                                    <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Price wholesale'|locale,
                                             'type': 'number',
@@ -184,37 +292,6 @@
                                             'args': {
                                                 'value': item.priceWholesale|number_format(2, '.', ''),
                                                 'placeholder': '1.0',
-                                                'step': 'any',
-                                                'min': '0',
-                                            }
-                                        } %}
-                                    </div>
-                                </div>
-
-                                <hr>
-
-                                <div class="row">
-                                    <div class="col-12 col-md-6">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Quantity'|locale,
-                                            'type': 'number',
-                                            'name': 'quantity',
-                                            'args': {
-                                                'value': item.quantity ? item.quantity|number_format(2, '.', '') : '',
-                                                'placeholder': '1.00',
-                                                'step': 'any',
-                                                'min': '0',
-                                            }
-                                        } %}
-
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Minimum Quantity'|locale,
-                                            'type': 'number',
-                                            'name': 'quantityMin',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Force a minimum ordered amount'|locale) ~ '"></i>',
-                                            'args': {
-                                                'value': item.quantityMin ? item.quantityMin|number_format(2, '.', '') : '',
-                                                'placeholder': '1.00',
                                                 'step': 'any',
                                                 'min': '0',
                                             }
@@ -240,95 +317,18 @@
 
                                 <div class="row">
                                     <div class="col-12 col-md-6">
-                                        <div class="row">
-                                            <div class="col-4">
-                                                {% include 'cup/form.twig' with {
-                                                    'label': 'Length'|locale,
-                                                    'type': 'number',
-                                                    'name': 'dimension[length]',
-                                                    'args': {
-                                                        'value': item.dimension.length ? item.dimension.length|number_format(2, '.', '') : '',
-                                                        'placeholder': '0.00',
-                                                        'min': '0',
-                                                        'step': 'any',
-                                                    }
-                                                } %}
-                                            </div>
-                                            <div class="col-4">
-                                                {% include 'cup/form.twig' with {
-                                                    'label': 'Width'|locale,
-                                                    'type': 'number',
-                                                    'name': 'dimension[width]',
-                                                    'args': {
-                                                        'value': item.dimension.width ? item.dimension.width|number_format(2, '.', '') : '',
-                                                        'placeholder': '0.00',
-                                                        'min': '0',
-                                                        'step': 'any',
-                                                    }
-                                                } %}
-                                            </div>
-                                            <div class="col-4">
-                                                {% include 'cup/form.twig' with {
-                                                    'label': 'Height'|locale,
-                                                    'type': 'number',
-                                                    'name': 'dimension[height]',
-                                                    'args': {
-                                                        'value': item.dimension.height ? item.dimension.height|number_format(2, '.', '') : '',
-                                                        'placeholder': '0.00',
-                                                        'min': '0',
-                                                        'step': 'any',
-                                                    }
-                                                } %}
-                                            </div>
-                                        </div>
-
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Length class'|locale,
+                                            'label': 'Tax'|locale,
                                             'type': 'select',
-                                            'name': 'dimension[length_class]',
+                                            'name': 'tax',
                                             'args': {
-                                                'option': {'': '---'}|merge(length_class.sortBy('order').pluck('title', 'value.unit').all()),
-                                                'selected': item.dimension.length_class,
-                                            }
-                                        } %}
-
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Weight'|locale,
-                                            'type': 'number',
-                                            'name': 'dimension[weight]',
-                                            'args': {
-                                                'value': item.dimension.weight ? item.dimension.weight|number_format(2, '.', '') : '',
-                                                'placeholder': '1.000',
-                                                'step': 'any',
-                                                'min': '0',
-                                            }
-                                        } %}
-
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Weight Class'|locale,
-                                            'type': 'select',
-                                            'name': 'dimension[weight_class]',
-                                            'args': {
-                                                'option': {'': '---'}|merge(weight_class.sortBy('order').pluck('title', 'value.unit').all()),
-                                                'selected': item.dimension.weight_class,
+                                                'option': {0: '---'}|merge(tax_rates.pluck('title', 'value.rate').all()),
+                                                'selected': item.tax,
                                             }
                                         } %}
                                     </div>
 
                                     <div class="col-12 col-md-6">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Tax'|locale,
-                                            'type': 'number',
-                                            'name': 'tax',
-                                            'postfix': '%',
-                                            'args': {
-                                                'value': item.tax ? item.tax|number_format(2, '.', '') : '',
-                                                'placeholder': '20.00',
-                                                'step': 'any',
-                                                'min': '0',
-                                            }
-                                        } %}
-
                                         {% include 'cup/form.twig' with {
                                             'label': 'Discount'|locale,
                                             'type': 'number',
@@ -340,7 +340,46 @@
                                                 'min': '0',
                                             }
                                         } %}
+                                    </div>
+                                </div>
 
+                                <hr>
+
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Quantity'|locale,
+                                            'type': 'number',
+                                            'name': 'quantity',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Default amount for adding to the cart'|locale) ~ '"></i>',
+                                            'args': {
+                                                'value': item.quantity ? item.quantity|number_format(2, '.', '') : '',
+                                                'placeholder': '1.00',
+                                                'step': 'any',
+                                                'min': '0',
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Minimum Quantity'|locale,
+                                            'type': 'number',
+                                            'name': 'quantityMin',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Force a minimum ordered amount'|locale) ~ '"></i>',
+                                            'args': {
+                                                'value': item.quantityMin ? item.quantityMin|number_format(2, '.', '') : '',
+                                                'placeholder': '1.00',
+                                                'step': 'any',
+                                                'min': '0',
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <div class="row">
+                                    <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Special'|locale,
                                             'type': 'select',
@@ -350,7 +389,9 @@
                                                 'selected': item.special ? 'yes' : 'no'
                                             }
                                         } %}
+                                    </div>
 
+                                    <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'In stock'|locale,
                                             'type': 'number',
@@ -364,8 +405,6 @@
                                         } %}
                                     </div>
                                 </div>
-
-                                {% include 'cup/form-image.twig' with { 'entity': item } %}
                             </div>
 
                             {# Tab: Сопутствующие #}

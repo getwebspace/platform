@@ -85,10 +85,10 @@ class ProductCreateAction extends CatalogAction
             'category' => $categories->firstWhere('uuid', $category),
             'categories' => $categories,
             'attributes' => $attributes,
-            'stock_status' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_STOCK_STATUS]),
-            'length_class' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_LENGTH_CLASS]),
-            'weight_class' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_WEIGHT_CLASS]),
-            'measure' => $this->catalogMeasureService->read(),
+            'tax_rates' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_TAX_RATE, 'order' => ['order' => 'asc']]),
+            'stock_status' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_STOCK_STATUS, 'order' => ['order' => 'asc']]),
+            'length_class' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_LENGTH_CLASS, 'order' => ['order' => 'asc']]),
+            'weight_class' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_WEIGHT_CLASS, 'order' => ['order' => 'asc']]),
         ]);
     }
 }

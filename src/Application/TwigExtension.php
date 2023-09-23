@@ -7,7 +7,6 @@ use App\Domain\AbstractExtension;
 use App\Domain\Service\Catalog\AttributeService as CatalogAttributeService;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
-use App\Domain\Service\Catalog\OrderStatusService as CatalogOrderStatusService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\File\FileService;
 use App\Domain\Service\GuestBook\GuestBookService;
@@ -15,6 +14,8 @@ use App\Domain\Service\Page\PageService;
 use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
 use App\Domain\Service\Publication\PublicationService;
 use App\Domain\Service\Reference\ReferenceService;
+use App\Domain\Service\User\UserService;
+use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Types\ReferenceTypeType;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
@@ -122,6 +123,10 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('catalog_product_view', [$this, 'catalog_product_view']),
             new TwigFunction('catalog_order', [$this, 'catalog_order']),
             new TwigFunction('catalog_order_status', [$this, 'catalog_order_status']),
+
+            // user
+            new TwigFunction('user', [$this, 'user']),
+            new TwigFunction('user_group', [$this, 'user_group']),
         ];
     }
 
@@ -637,18 +642,37 @@ class TwigExtension extends AbstractExtension
     {
         $catalogOrderService = $this->container->get(CatalogOrderService::class);
 
-        return $catalogOrderService->read(array_merge($criteria, [
-            'order' => $order,
-            'limit' => $limit,
-            'offset' => $offset,
-        ]));
+        return $catalogOrderService->read(array_merge(
+            $criteria,
+            [
+                'order' => $order,
+                'limit' => $limit,
+                'offset' => $offset,
+            ]
+        ));
     }
 
-    // fetch order status list
-    public function catalog_order_status(array $criteria = [], $order = ['order' => 'asc'])
-    {
-        $catalogOrderStatusService = $this->container->get(CatalogOrderStatusService::class);
+    // user functions
 
-        return $catalogOrderStatusService->read(array_merge($criteria, ['order' => $order]));
+    // fetch user list
+    public function user(array $criteria = [], $order = ['email' => 'asc'])
+    {
+        $userService = $this->container->get(UserService::class);
+
+        return $userService->read(array_merge(
+            $criteria,
+            [
+                'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
+                'order' => $order,
+            ]
+        ));
+    }
+
+    // fetch user group list
+    public function user_group(array $criteria = [], $order = ['title' => 'asc'])
+    {
+        $userService = $this->container->get(UserGroupService::class);
+
+        return $userService->read(array_merge($criteria, ['order' => $order]));
     }
 }

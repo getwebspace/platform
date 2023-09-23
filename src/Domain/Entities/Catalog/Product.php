@@ -172,7 +172,7 @@ class Product extends AbstractEntity
     }
 
     #[ORM\Column(type: 'float', scale: 2, precision: 10, options: ['default' => 0])]
-    protected float $tax = 20.00;
+    protected float $tax = .00;
 
     public function setTax(float $value): self
     {

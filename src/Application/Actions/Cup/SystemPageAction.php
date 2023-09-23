@@ -4,8 +4,6 @@ namespace App\Application\Actions\Cup;
 
 use App\Domain\AbstractAction;
 use App\Domain\Entities\User;
-use App\Domain\Service\Catalog\MeasureService as CatalogMeasureService;
-use App\Domain\Service\Catalog\OrderStatusService as CatalogOrderStatusService;
 use App\Domain\Service\Parameter\ParameterService;
 use App\Domain\Service\User\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\User\GroupService as UserGroupService;

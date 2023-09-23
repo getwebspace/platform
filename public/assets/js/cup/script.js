@@ -98,7 +98,7 @@ $(() => {
         .parents('.nav-item, .submenu')
         .each((i, el) => $(el).find('[href^="#"]:first').click());
 
-    $('[data-toggle="tooltip"]').tooltip();
+    $('[data-toggle="tooltip"]').tooltip()
 
     // select2 init
     let init_select2 = ($el) => {

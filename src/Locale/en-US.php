@@ -91,7 +91,6 @@ return [
     // not found
     'EXCEPTION_ATTRIBUTE_NOT_FOUND' => 'Attribute not found',
     'EXCEPTION_CATEGORY_NOT_FOUND' => 'Category not found',
-    'EXCEPTION_MEASURE_NOT_FOUND' => 'Measure not found',
     'EXCEPTION_ORDER_NOT_FOUND' => 'Order not found',
     'EXCEPTION_ORDER_STATUS_NOT_FOUND' => 'Order status not found',
     'EXCEPTION_PRODUCT_NOT_FOUND' => 'Product not found',

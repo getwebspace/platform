@@ -3,12 +3,10 @@
 namespace tests\Domain\Service\Catalog;
 
 use App\Domain\Entities\Catalog\Order;
-use App\Domain\Entities\Catalog\OrderStatus;
 use App\Domain\Entities\Catalog\Product;
 use App\Domain\Repository\Catalog\OrderRepository;
 use App\Domain\Service\Catalog\Exception\OrderNotFoundException;
 use App\Domain\Service\Catalog\OrderService;
-use App\Domain\Service\Catalog\OrderStatusService;
 use App\Domain\Service\Catalog\ProductService;
 use Illuminate\Support\Collection;
 use tests\TestCase;
@@ -27,14 +25,6 @@ class OrderServiceTest extends TestCase
         parent::setUp();
 
         $this->service = $this->getService(OrderService::class);
-    }
-
-    protected function getRandomStatus(): OrderStatus
-    {
-        return $this->getService(OrderStatusService::class)->create([
-            'title' => $this->getFaker()->word,
-            'order' => $this->getFaker()->numberBetween(0, 1000),
-        ]);
     }
 
     protected function getRandomProduct(): Product
@@ -62,7 +52,6 @@ class OrderServiceTest extends TestCase
             ],
             'phone' => $this->getFaker()->e164PhoneNumber,
             'email' => $this->getFaker()->email,
-            'status' => $this->getRandomStatus(),
             'comment' => $this->getFaker()->text,
             'shipping' => $this->getFaker()->dateTime,
             'date' => $this->getFaker()->dateTime,

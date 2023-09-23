@@ -5,9 +5,7 @@ namespace App\Application\Actions\Cup\Catalog;
 use App\Domain\AbstractAction;
 use App\Domain\Service\Catalog\AttributeService as CatalogAttributeService;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
-use App\Domain\Service\Catalog\MeasureService as CatalogMeasureService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
-use App\Domain\Service\Catalog\OrderStatusService as CatalogOrderStatusService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\Notification\NotificationService;
 use App\Domain\Service\Reference\ReferenceService;
@@ -26,8 +24,6 @@ abstract class CatalogAction extends AbstractAction
 
     protected CatalogOrderService $catalogOrderService;
 
-    protected CatalogMeasureService $catalogMeasureService;
-
     protected NotificationService $notificationService;
 
     protected ReferenceService $referenceService;
@@ -41,7 +37,6 @@ abstract class CatalogAction extends AbstractAction
         $this->catalogCategoryService = $container->get(CatalogCategoryService::class);
         $this->catalogProductService = $container->get(CatalogProductService::class);
         $this->catalogOrderService = $container->get(CatalogOrderService::class);
-        $this->catalogMeasureService = $container->get(CatalogMeasureService::class);
         $this->notificationService = $container->get(NotificationService::class);
         $this->referenceService = $container->get(ReferenceService::class);
     }

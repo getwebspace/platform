@@ -86,10 +86,10 @@ class ProductUpdateAction extends CatalogAction
                     'category' => $categories->firstWhere('uuid', $product->getCategory()),
                     'categories' => $categories,
                     'attributes' => $attributes,
+                    'tax_rates' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_TAX_RATE]),
                     'stock_status' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_STOCK_STATUS]),
                     'length_class' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_LENGTH_CLASS]),
                     'weight_class' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_WEIGHT_CLASS]),
-                    'measure' => $this->catalogMeasureService->read(),
                     'item' => $product,
                 ]);
             }

@@ -3,19 +3,7 @@
 namespace App\Application\Actions\Cup\Reference;
 
 use App\Domain\AbstractAction;
-use App\Domain\Entities\Reference;
-use App\Domain\Service\Catalog\AttributeService as CatalogAttributeService;
-use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
-use App\Domain\Service\Catalog\MeasureService as CatalogMeasureService;
-use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
-use App\Domain\Service\Catalog\OrderStatusService as CatalogOrderStatusService;
-use App\Domain\Service\Catalog\ProductService as CatalogProductService;
-use App\Domain\Service\Notification\NotificationService;
-use App\Domain\Service\Reference\Exception\MissingTitleValueException;
-use App\Domain\Service\Reference\Exception\ReferenceNotFoundException;
-use App\Domain\Service\Reference\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\Reference\ReferenceService;
-use App\Domain\Service\User\UserService;
 use App\Domain\Types\ReferenceTypeType;
 use Psr\Container\ContainerInterface;
 
@@ -47,6 +35,9 @@ abstract class ReferenceAction extends AbstractAction
 
             case 'stock-status':
                 return ReferenceTypeType::TYPE_STOCK_STATUS;
+
+            case 'tax-rates':
+                return ReferenceTypeType::TYPE_TAX_RATE;
 
             case 'length-classes':
                 return ReferenceTypeType::TYPE_LENGTH_CLASS;

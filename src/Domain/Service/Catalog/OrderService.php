@@ -118,7 +118,7 @@ class OrderService extends AbstractService
         if ($data['email'] !== null) {
             $criteria['email'] = $data['email'];
         }
-        if ($data['status'] !== null && in_array($data['status'], \App\Domain\Types\Catalog\OrderStatusType::LIST, true)) {
+        if ($data['status'] !== null) {
             $criteria['status'] = $data['status'];
         }
         if ($data['external_id'] !== null) {
