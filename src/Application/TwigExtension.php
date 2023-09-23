@@ -463,6 +463,7 @@ class TwigExtension extends AbstractExtension
             return $referenceService->read([
                 'type' => $type,
                 'status' => true,
+                'order' => ['order' => 'asc'],
             ]);
         }
 
