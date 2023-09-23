@@ -377,20 +377,22 @@
                             'price_type': 'price', // price, price_wholesale
                             'quantity': 1,
                             'quantity_step': 1,
+                            'quantity_min': 1,
                             'group': '',
                             'type': options.item_type,
                         };
 
                     properties = merge({}, defaults, properties);
+                    properties['quantity_step'] = properties['quantity_step'] ? +properties['quantity_step'] : 1;
+                    properties['quantity_min'] = properties['quantity_min'] ? +properties['quantity_min'] : 1;
+                    properties['quantity'] = properties['quantity'] >= properties['quantity_min'] ? +properties['quantity'] : properties['quantity_min'];
                     properties['price'] = properties['price'] ? +properties['price'] : 0;
                     properties['price_wholesale'] = properties['price_wholesale'] ? +properties['price_wholesale'] : 0;
                     properties['price_wholesale_from'] = properties['price_wholesale_from'] ? +properties['price_wholesale_from'] : 0;
-                    properties['quantity'] = properties['quantity'] ? +properties['quantity'] : 1;
-                    properties['quantity_step'] = properties['quantity_step'] ? +properties['quantity_step'] : 1;
+                    properties['price_type'] = properties['price_wholesale_from'] > 0 && properties['quantity'] >= properties['price_wholesale_from'] ? 'price_wholesale' : 'price';
 
                     if ((index = this.cartFindItemByField(properties['uuid'], 'uuid')) >= 0) {
-                        cart[index].quantity += (+properties['quantity']);
-                        triggerEvent('cart:update', cart[index]);
+                        this.cartItemChangeCountById(index, cart[index].quantity + properties['quantity']);
                     } else {
                         cart.push(properties);
                         triggerEvent('cart:add', properties);
@@ -414,7 +416,7 @@
                     let index = this.cartFindItemByField(value, field);
 
                     if (index >= 0) {
-                        this.cartItemChangeCountById(index, cart[index].quantity + (cart[index].quantity_step || 1));
+                        this.cartItemChangeCountById(index, cart[index].quantity + cart[index].quantity_step);
                     }
                 }
 
@@ -427,7 +429,7 @@
                     let index = this.cartFindItemByField(value, field);
 
                     if (index >= 0) {
-                        this.cartItemChangeCountById(index, cart[index].quantity - (cart[index].quantity_step || 1));
+                        this.cartItemChangeCountById(index, cart[index].quantity - cart[index].quantity_step);
                     }
                 }
 
@@ -454,17 +456,22 @@
                     if (index >= 0 && cart[index]) {
                         cart[index].quantity = +count;
 
-                        if (
-                            cart[index].price_wholesale_from > 0 &&
-                            cart[index].quantity >= cart[index].price_wholesale_from
-                        ) {
+                        let {quantity, quantity_min, quantity_step, price_wholesale_from} = cart[index];
+
+                        if (price_wholesale_from > 0 && quantity >= price_wholesale_from) {
                             cart[index].price_type = 'price_wholesale';
                         } else {
                             cart[index].price_type = 'price';
                         }
 
-                        if (cart[index].quantity <= 0) {
+                        if (quantity < quantity_min) {
                             this.cartRemoveItemById(index);
+                        } else {
+                            let difference = quantity - quantity_min;
+
+                            if (difference % quantity_step !== 0) {
+                                cart[index].quantity = quantity_min + Math.ceil(difference / quantity_step) * quantity_step;
+                            }
                         }
 
                         triggerEvent('cart:update', cart[index]);
