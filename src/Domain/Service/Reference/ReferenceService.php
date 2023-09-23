@@ -70,6 +70,7 @@ class ReferenceService extends AbstractService
             'uuid' => null,
             'title' => null,
             'type' => null,
+            'status' => null,
         ];
         $data = array_merge($default, static::$default_read, $data);
 
@@ -83,6 +84,9 @@ class ReferenceService extends AbstractService
         }
         if ($data['type'] !== null && in_array($data['type'], \App\Domain\Types\ReferenceTypeType::LIST, true)) {
             $criteria['type'] = $data['type'];
+        }
+        if ($data['status'] !== null) {
+            $criteria['status'] = (bool) $data['status'];
         }
 
         try {
