@@ -246,6 +246,29 @@ class Product extends AbstractEntity
         return $this->priceWholesaleFrom;
     }
 
+    public function getPriceCalculated($type = 'price'): float
+    {
+        $price = 0;
+
+        switch ($type) {
+            case 'price':
+                $price = $this->price;
+                break;
+            case 'price_wholesale':
+                $price = $this->priceWholesale;
+                break;
+        }
+
+        if ($this->discount > 0) {
+            $price = max(0, $price - $this->discount);
+        }
+        if ($this->tax > 0) {
+            $price += $price * ($this->tax / 100);
+        }
+
+        return ceil($price);
+    }
+
     #[ORM\Column(type: 'float', scale: 2, precision: 10, options: ['default' => 0])]
     protected float $discount = .00;
 

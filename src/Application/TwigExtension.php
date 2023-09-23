@@ -118,7 +118,6 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('catalog_category_parents', [$this, 'catalog_category_parents']),
             new TwigFunction('catalog_product', [$this, 'catalog_product']),
             new TwigFunction('catalog_product_price_type', [$this, 'catalog_product_price_type'], ['needs_context' => true]),
-            new TwigFunction('catalog_product_show_price', [$this, 'catalog_product_show_price'], ['needs_context' => true]),
             new TwigFunction('catalog_product_popular', [$this, 'catalog_product_popular']),
             new TwigFunction('catalog_product_view', [$this, 'catalog_product_view']),
             new TwigFunction('catalog_order', [$this, 'catalog_order']),
@@ -566,23 +565,6 @@ class TwigExtension extends AbstractExtension
         }
 
         return \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE;
-    }
-
-    // show product price
-    public function catalog_product_show_price($context, $product)
-    {
-        $price_type = $this->parameter('catalog_price_type', \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE);
-
-        switch (
-            !empty($context['user']) &&
-            $price_type === \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE_WHOLESALE
-        ) {
-            case true:
-                return $product->getPriceWholesale();
-
-            default:
-                return $product->getPrice();
-        }
     }
 
     public function catalog_product_popular($limit = 10)
