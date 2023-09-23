@@ -46,18 +46,6 @@
                                     }
                                 } %}
                             </div>
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Group'|locale,
-                                    'type': 'select',
-                                    'name': 'value[group]',
-                                    'args': {
-                                        'required': true,
-                                        'option': _({(NIL): 'All'}|merge(user_group().pluck('title', 'uuid').all())),
-                                        'selected': item.value.group ?? NIL
-                                    }
-                                } %}
-                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6">
