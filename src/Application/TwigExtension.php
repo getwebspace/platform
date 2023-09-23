@@ -120,6 +120,7 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('catalog_product_price_type', [$this, 'catalog_product_price_type'], ['needs_context' => true]),
             new TwigFunction('catalog_product_popular', [$this, 'catalog_product_popular']),
             new TwigFunction('catalog_product_view', [$this, 'catalog_product_view']),
+            new TwigFunction('catalog_product_dimensional_weight', [$this, 'catalog_product_dimensional_weight'], ['needs_context' => true]),
             new TwigFunction('catalog_order', [$this, 'catalog_order']),
             new TwigFunction('catalog_order_status', [$this, 'catalog_order_status']),
 
@@ -618,6 +619,32 @@ class TwigExtension extends AbstractExtension
         }
 
         return $list;
+    }
+
+    // calculate dimension weight
+    public function catalog_product_dimensional_weight($context, $product = null)
+    {
+        if (empty($product) && !empty($context['product'])) {
+            $product = $context['product'];
+        }
+
+        if ($product) {
+            $dimension = $product->getDimension();
+
+            if ($dimension['length'] && $dimension['width'] && $dimension['height']) {
+                $ratio = $this->parameter('catalog_dimensional_weight', 5000);
+                $length_class = $this->reference(ReferenceTypeType::TYPE_LENGTH_CLASS)->firstWhere('value.unit', $dimension['length_class']);
+                $length_value = $length_class ? $length_class->getValue()['value'] : 1;
+
+                return (
+                    ($dimension['length'] * $length_value) *
+                    ($dimension['width'] * $length_value) *
+                    ($dimension['height'] * $length_value) / $ratio
+                );
+            }
+        }
+
+        return '';
     }
 
     // fetch order

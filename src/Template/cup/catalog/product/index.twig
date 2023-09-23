@@ -41,10 +41,9 @@
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
                             <div class="col-12 col-sm">{{ 'Title'|locale }}</div>
-                            <div class="col-3 col-sm-2 text-md-right">{{ 'Price'|locale }}</div>
-                            <div class="col-3 col-sm-2">{{ 'Vendor code'|locale }}</div>
-                            <div class="col-3 col-sm-1 text-right"></div>
-                            <div class="col-3 col-sm-3 text-right"></div>
+                            <div class="col-4 col-sm-2 text-md-right">{{ 'Price'|locale }}</div>
+                            <div class="col-4 col-sm-2">{{ 'Vendor code'|locale }}</div>
+                            <div class="col-4 col-sm-3 text-right"></div>
                         {% endblock %}
 
                         {% block tbody %}
@@ -52,11 +51,23 @@
                                 <div class="row">
                                     <div class="col-12 col-sm">
                                         {{ item.title|u.truncate(35, '...') }}
+
+                                        <div class="float-right d-none d-md-block">
+                                            {% if item.special %}
+                                                <i class="fas fa-fw fa-tag pl-1" title="{{ 'Special'|locale }}"></i>
+                                            {% endif %}
+                                            {% if item.discount %}
+                                                <i class="fas fa-fw fa-minus pl-1" title="{{ 'Discount'|locale }}"></i>
+                                            {% endif %}
+                                            {% if item.tax %}
+                                                <i class="fas fa-fw fa-percentage pl-1" title="{{ 'Tax'|locale }}"></i>
+                                            {% endif %}
+                                        </div>
                                     </div>
-                                    <div class="col-3 col-sm-2 text-md-right">
+                                    <div class="col-4 col-sm-2 text-md-right">
                                         {{ item.getPriceCalculated()|number_format(2, '.', ' ') }}
                                     </div>
-                                    <div class="col-3 col-sm-2">
+                                    <div class="col-4 col-sm-2">
                                         {% if item.vendorcode %}
                                             <div>{{ item.vendorcode }}</div>
                                         {% endif %}
@@ -67,18 +78,7 @@
                                             </div>
                                         {% endif %}
                                     </div>
-                                    <div class="col-3 col-sm-1 text-right">
-                                        {% if item.special %}
-                                            <i class="fas fa-fw fa-tag pl-1" title="{{ 'Special'|locale }}"></i>
-                                        {% endif %}
-                                        {% if item.discount %}
-                                            <i class="fas fa-fw fa-minus pl-1" title="{{ 'Discount'|locale }}"></i>
-                                        {% endif %}
-                                        {% if item.tax %}
-                                            <i class="fas fa-fw fa-percentage pl-1" title="{{ 'Tax'|locale }}"></i>
-                                        {% endif %}
-                                    </div>
-                                    <div class="col-3 col-sm-3 text-right">
+                                    <div class="col-4 col-sm-3 text-right">
                                         <form action="/cup/catalog/product/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to uninstall the product?'|locale }}');">
                                             <div class="btn-group">
                                                 <a href="/cup/catalog/product/{{ item.uuid }}/edit" class="btn btn-sm btn-info">

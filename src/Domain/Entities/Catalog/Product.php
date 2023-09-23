@@ -351,7 +351,7 @@ class Product extends AbstractEntity
 
     public function getSpecificationWithClass(): string
     {
-        return $this->getSpecification() . ($this->dimension['length_class'] ? ' ' . $this->dimension['length_class'] : '');
+        return $this->getSpecification() . (!empty($this->dimension['length_class']) ? ' ' . $this->dimension['length_class'] : '');
     }
 
     public function getWeight(): float
@@ -361,7 +361,7 @@ class Product extends AbstractEntity
 
     public function getWeightWithClass(): string
     {
-        return $this->getWeight() . ($this->dimension['weight_class'] ? ' ' . $this->dimension['weight_class'] : '');
+        return $this->getWeight() . (!empty($this->dimension['weight_class']) ? ' ' . $this->dimension['weight_class'] : '');
     }
 
     /** @deprecated  */

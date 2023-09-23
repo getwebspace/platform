@@ -8,6 +8,7 @@ use App\Domain\Service\Parameter\ParameterService;
 use App\Domain\Service\User\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\UserService;
+use App\Domain\Service\Reference\ReferenceService;
 
 class SystemPageAction extends AbstractAction
 {
@@ -109,6 +110,8 @@ class SystemPageAction extends AbstractAction
     protected function setup_data(): void
     {
         if ('system_default' === $this->getParam('fill', 'no')) {
+            $referenceService = $this->container->get(ReferenceService::class);
+
             $order_status = [
                 ['title' => __('New'), 'order' => 1],
                 ['title' => __('In processing'), 'order' => 2],
@@ -117,22 +120,78 @@ class SystemPageAction extends AbstractAction
                 ['title' => __('Canceled'), 'order' => 5],
             ];
             foreach ($order_status as $el) {
-                $this->container->get(CatalogOrderStatusService::class)->create($el);
+                $referenceService->create(array_merge($el, [
+                    'type' => \App\Domain\Types\ReferenceTypeType::TYPE_ORDER_STATUS,
+                ]));
             }
 
-            $product_measure = [
-                ['title' => __('Kilogram'), 'contraction' => __('kg'), 'value' => 1000],
-                ['title' => __('Gram'), 'contraction' => __('g'), 'value' => 1],
-                ['title' => __('Liter'), 'contraction' => __('l'), 'value' => 1000],
-                ['title' => __('Milliliter'), 'contraction' => __('ml'), 'value' => 1],
+            $stock_status = [
+                ['title' => __('Pre-Order'), 'order' => 1],
+                ['title' => __('Out Of Stock'), 'order' => 2],
+                ['title' => __('In Stock'), 'order' => 3],
+                ['title' => __('In Stock'), 'order' => 4],
             ];
-            foreach ($product_measure as $el) {
-                $this->container->get(CatalogMeasureService::class)->create($el);
+            foreach ($stock_status as $el) {
+                $referenceService->create(array_merge($el, [
+                    'type' => \App\Domain\Types\ReferenceTypeType::TYPE_STOCK_STATUS,
+                ]));
+            }
+
+            $weight_class = [
+                ['title' => __('Kilogram'),     'value' => ['unit' => __('kg'), 'value' => 1000]],
+                ['title' => __('Gram'),         'value' => ['unit' => __('g'),  'value' => 1]],
+                ['title' => __('Ounce'),        'value' => ['unit' => __('oz'), 'value' => 35.2739]],
+                ['title' => __('Pound'),        'value' => ['unit' => __('lb'), 'value' => 2.2046]],
+                ['title' => __('Liter'),        'value' => ['unit' => __('l'),  'value' => 1000]],
+                ['title' => __('Milliliter'),   'value' => ['unit' => __('ml'), 'value' => 1]],
+            ];
+            foreach ($weight_class as $el) {
+                $referenceService->create(array_merge($el, [
+                    'type' => \App\Domain\Types\ReferenceTypeType::TYPE_WEIGHT_CLASS,
+                ]));
+            }
+
+            $length_class = [
+                ['title' => __('Inch'),         'value' => ['unit' => __('kg'), 'value' => 0.3937]],
+                ['title' => __('Centimeter'),   'value' => ['unit' => __('cm'), 'value' => 1.0000]],
+                ['title' => __('Millimeter'),   'value' => ['unit' => __('mm'), 'value' => 10.0000]],
+            ];
+            foreach ($length_class as $el) {
+                $referenceService->create(array_merge($el, [
+                    'type' => \App\Domain\Types\ReferenceTypeType::TYPE_LENGTH_CLASS,
+                ]));
+            }
+
+            $tax_rates = [
+                ['title' => __('VAT (20%)'),    'value' => ['rate' => 20.0000]],
+                ['title' => __('VAT (10%)'),    'value' => ['rate' => 10.0000]],
+            ];
+            foreach ($tax_rates as $el) {
+                $referenceService->create(array_merge($el, [
+                    'type' => \App\Domain\Types\ReferenceTypeType::TYPE_TAX_RATE,
+                ]));
+            }
+
+            $social_networks = [
+                ['title' => __('Facebook'),     'value' => ['url' => '#']],
+                ['title' => __('Instagram'),    'value' => ['url' => '#']],
+                ['title' => __('VK'),           'value' => ['url' => '#']],
+                ['title' => __('Telegram'),     'value' => ['url' => '#']],
+                ['title' => __('WhatsApp'),     'value' => ['url' => '#']],
+            ];
+            foreach ($social_networks as $el) {
+                $referenceService->create(array_merge($el, [
+                    'type' => \App\Domain\Types\ReferenceTypeType::TYPE_SOCIAL_NETWORKS,
+                ]));
             }
 
             $this->container->get(ParameterService::class)->create([
                 'key' => 'catalog_invoice',
                 'value' => INVOICE_TEMPLATE,
+            ]);
+            $this->container->get(ParameterService::class)->create([
+                'key' => 'catalog_shipping',
+                'value' => SHIPPING_TEMPLATE,
             ]);
         }
     }
@@ -245,7 +304,7 @@ const INVOICE_TEMPLATE = <<<'EOD'
         </div>
 
         {% set total = 0 %}
-        {% for item in order.products %}
+        {% for item in order.getProducts().where('type', 'product') %}
             <div class="row py-1 {{ loop.last ?: 'border-bottom' }} {{ loop.index0 % 2 ? 'bg-grey1' }}">
                 <div class="col-8 col-md-6 overflow-hidden text-nowrap">{{ item.title }}</div>
                 <div class="d-none d-md-block col-md-2 text-right text-nowrap">{{ item.price|number_format(2, '.', ' ') }}</div>
@@ -258,4 +317,46 @@ const INVOICE_TEMPLATE = <<<'EOD'
             <div class="col-12 text-right text-nowrap font-weight-bold border-top">{{ 'Total price'|locale }}: {{ order.getTotalPrice()|number_format(2, '.', ' ') }}</div>
         </div>
     </div>
-    EOD;
+EOD;
+
+const SHIPPING_TEMPLATE = <<<'EOD'
+    <div class="m-5">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h3 class="font-weight-bold">{{ 'Shipping note'|locale }}</h3>
+                {#<img src="/images/logo.png" style="width: 100%; max-width: 300px" />#}
+            </div>
+            <div class="col-6">
+                {{ parameter('common_title') }}<br />
+                {{ 'Order'|locale }}: <b>{{ order.external_id ?: order.serial }}</b><br />
+                {{ 'Date'|locale }}: <b>{{ order.date|df('d.m.Y H:i') }}</b><br />
+                {{ 'Shipping'|locale }}: <b>{{ order.shipping|df('d.m.Y H:i') }}</b><br />
+                {{ 'Total price'|locale }}: <b>{{ order.getTotalPrice()|number_format(2, '.', ' ') }}</b>
+            </div>
+            <div class="col-6 text-right">
+                {{ order.delivery.client }}<br />
+                {{ order.phone ? order.phone : '-' }}<br />
+                {{ order.email ? order.email : '-' }}<br />
+                {{ order.delivery.address }}<br />
+                {{ order.comment }}
+            </div>
+        </div>
+    
+        <div class="row py-1 mt-3 bg-grey2">
+            <div class="col-6 text-nowrap font-weight-bold">{{ 'Item'|locale }}</div>
+            <div class="col-2 text-right text-nowrap font-weight-bold">{{ 'Volumetric weight'|locale }}</div>
+            <div class="col-2 text-right text-nowrap font-weight-bold">{{ 'Weight'|locale }}</div>
+            <div class="col-2 text-right text-nowrap font-weight-bold">{{ 'Quantity'|locale }}</div>
+        </div>
+    
+        {% set total = 0 %}
+        {% for item in order.getProducts().where('type', 'product') %}
+            <div class="row py-1 {{ loop.last ?: 'border-bottom' }} {{ loop.index0 % 2 ? 'bg-grey1' }}">
+                <div class="col-6 text-nowrap font-weight-bold">{{ item.title }}</div>
+                <div class="col-2 text-right text-nowrap font-weight-bold">{{ catalog_product_dimensional_weight(item) }}</div>
+                <div class="col-2 text-right text-nowrap font-weight-bold">{{ item.getWeightWithClass() }}</div>
+                <div class="col-2 text-right text-nowrap font-weight-bold">{{ item.count }}</div>
+            </div>
+        {% endfor %}
+    </div>
+EOD;

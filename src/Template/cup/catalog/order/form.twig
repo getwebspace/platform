@@ -11,7 +11,14 @@
             {% if order %}
                 <div class="ml-md-auto py-2 py-md-0">
                     <a href="/cup/catalog/order/{{ order.uuid }}/invoice" class="btn btn-secondary">
+                        <i class="fas fa-file-invoice"></i>
                         {{ 'Invoice'|locale }}
+                    </a>
+                </div>
+                <div class="ml-2 py-2 py-md-0">
+                    <a href="/cup/catalog/order/{{ order.uuid }}/shipping" class="btn btn-secondary">
+                        <i class="fas fa-dolly"></i>
+                        {{ 'Shipping'|locale }}
                     </a>
                 </div>
             {% endif %}
