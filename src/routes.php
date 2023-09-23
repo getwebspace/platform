@@ -18,15 +18,20 @@ return function (App $app, Container $container): void {
             // API section
             $proxy
                 ->group('/api', function (Group $proxy): void {
+                    // search
+                    $proxy
+                        ->map(['GET'], '/v1/search', \App\Application\Actions\Api\v1\SearchAction::class)
+                        ->setName('api:v1:search');
+
                     // entity getter/setter
                     $proxy
                         ->map(['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], '/v1/{args:.*}', \App\Application\Actions\Api\v1\EntityAction::class)
                         ->setName('api:v1:entity')
-                        ->add(\Slim\Middleware\BodyParsingMiddleware::class)
-                        ->add(\App\Application\Middlewares\AuthorizationAPIMiddleware::class)
-                        ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class)
-                        ->add(\App\Application\Middlewares\CORSMiddleware::class);
-                });
+                        ->add(\Slim\Middleware\BodyParsingMiddleware::class);
+                })
+                ->add(\App\Application\Middlewares\AuthorizationAPIMiddleware::class)
+                ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class)
+                ->add(\App\Application\Middlewares\CORSMiddleware::class);
 
             // Auth section
             $proxy

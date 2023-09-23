@@ -57,9 +57,10 @@ class SearchAction extends AbstractAction
         return $this
             ->respond($this->parameter('search_template', 'search.twig'), [
                 'query' => $query,
-                'type' => $query_type,
-                'strong' => $query_strong,
+                'query_strong' => $query_strong,
+                'query_type' => $query_type,
                 'count' => count($result),
+                'limit' => $limit,
                 'result' => $result,
             ])
             ->withAddedHeader('X-Robots-Tag', 'noindex, nofollow');
