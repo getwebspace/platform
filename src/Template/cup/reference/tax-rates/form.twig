@@ -48,18 +48,6 @@
                             </div>
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Type'|locale,
-                                    'type': 'select',
-                                    'name': 'value[type]',
-                                    'args': {
-                                        'required': true,
-                                        'option': _({'p': 'Percentage', 'f': 'Fixed Amount'}),
-                                        'selected': item.value.type is empty ? 'yes' : item.value.type
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
                                     'label': 'Group'|locale,
                                     'type': 'select',
                                     'name': 'value[group]',

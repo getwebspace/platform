@@ -256,7 +256,7 @@
                             {# Tab: Цены #}
                             <div class="tab-pane fade" id="price" role="tabpanel">
                                 <div class="row">
-                                    <div class="col-12 col-md-6">
+                                    <div class="col-12 col-md-6 order-md-0">
                                         {% include 'cup/form.twig' with {
                                             'label': 'First price'|locale,
                                             'type': 'number',
@@ -270,7 +270,7 @@
                                         } %}
                                     </div>
 
-                                    <div class="col-12 col-md-6">
+                                    <div class="col-12 col-md-6 order-md-2">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Selling price'|locale,
                                             'type': 'number',
@@ -284,7 +284,7 @@
                                         } %}
                                     </div>
 
-                                    <div class="col-12 col-md-6">
+                                    <div class="col-12 col-md-6 order-md-1">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Price wholesale'|locale,
                                             'type': 'number',
@@ -298,7 +298,7 @@
                                         } %}
                                     </div>
 
-                                    <div class="col-12 col-md-6">
+                                    <div class="col-12 col-md-6 order-md-3">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Price wholesale from'|locale,
                                             'type': 'number',
@@ -351,7 +351,7 @@
                                             'label': 'Quantity'|locale,
                                             'type': 'number',
                                             'name': 'quantity',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Default amount for adding to the cart'|locale) ~ '"></i>',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Default step for adding to the cart'|locale) ~ '"></i>',
                                             'args': {
                                                 'value': item.quantity ? item.quantity|number_format(2, '.', '') : '',
                                                 'placeholder': '1.00',
