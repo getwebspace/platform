@@ -5,6 +5,7 @@ namespace App\Application\Actions\Cup\Catalog\Category;
 use App\Application\Actions\Cup\Catalog\CatalogAction;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
+use App\Domain\Service\Catalog\Exception\WrongTitleValueException;
 
 class CategoryCreateAction extends CatalogAction
 {
@@ -47,7 +48,7 @@ class CategoryCreateAction extends CatalogAction
                     default:
                         return $this->respondWithRedirect('/cup/catalog/category/' . $category->getUuid() . '/edit');
                 }
-            } catch (MissingTitleValueException $e) {
+            } catch (MissingTitleValueException|WrongTitleValueException $e) {
                 $this->addError('title', $e->getMessage());
             } catch (AddressAlreadyExistsException $e) {
                 $this->addError('address', $e->getMessage());

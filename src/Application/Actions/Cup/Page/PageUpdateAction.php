@@ -3,7 +3,9 @@
 namespace App\Application\Actions\Cup\Page;
 
 use App\Domain\Service\Page\Exception\AddressAlreadyExistsException;
+use App\Domain\Service\Page\Exception\MissingTitleValueException;
 use App\Domain\Service\Page\Exception\TitleAlreadyExistsException;
+use App\Domain\Service\Page\Exception\WrongTitleValueException;
 
 class PageUpdateAction extends PageAction
 {
@@ -35,7 +37,7 @@ class PageUpdateAction extends PageAction
                             default:
                                 return $this->respondWithRedirect('/cup/page/' . $page->getUuid() . '/edit');
                         }
-                    } catch (TitleAlreadyExistsException $e) {
+                    } catch (MissingTitleValueException|WrongTitleValueException|TitleAlreadyExistsException $e) {
                         $this->addError('title', $e->getMessage());
                     } catch (AddressAlreadyExistsException $e) {
                         $this->addError('address', $e->getMessage());

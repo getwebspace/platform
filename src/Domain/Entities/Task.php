@@ -3,7 +3,7 @@
 namespace App\Domain\Entities;
 
 use App\Domain\AbstractEntity;
-use App\Domain\Service\Task\Exception\MissingTitleValueException;
+use App\Domain\Service\Task\Exception\WrongTitleValueException;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'task')]
@@ -33,7 +33,7 @@ class Task extends AbstractEntity
             if ($this->validName($title)) {
                 $this->title = $title;
             } else {
-                throw new MissingTitleValueException();
+                throw new WrongTitleValueException();
             }
         }
 

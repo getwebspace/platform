@@ -35,7 +35,7 @@ class User extends AbstractEntity
     public function setUsername(string $username): self
     {
         if ($username && $this->checkStrLenMax($username, 64)) {
-            if ($this->validName($username)) {
+            if ($this->validUsername($username)) {
                 $this->username = trim($username);
             } else {
                 throw new WrongUsernameValueException();

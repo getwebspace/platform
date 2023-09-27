@@ -112,6 +112,8 @@ return [
     // other
     'EXCEPTION_EMAIL_BANNED' => 'This domain cannot be used',
     'EXCEPTION_WRONG_USERNAME' => 'Wrong username',
+    'EXCEPTION_WRONG_NAME' => 'Wrong name',
+    'EXCEPTION_WRONG_TITLE' => 'Wrong title',
     'EXCEPTION_WRONG_EMAIL' => 'Wrong format E-Mail',
     'EXCEPTION_WRONG_PHONE' => 'Wrong format phone',
     'EXCEPTION_WRONG_IP' => 'Wrong format IP address',

@@ -3,7 +3,7 @@
 namespace App\Domain\Entities;
 
 use App\Domain\AbstractEntity;
-use App\Domain\Service\Notification\Exception\MissingTitleValueException;
+use App\Domain\Service\Notification\Exception\WrongTitleValueException;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
@@ -57,7 +57,7 @@ class Notification extends AbstractEntity
             if ($this->validName($title)) {
                 $this->title = $title;
             } else {
-                throw new MissingTitleValueException();
+                throw new WrongTitleValueException();
             }
         }
 

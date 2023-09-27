@@ -3,7 +3,9 @@
 namespace App\Application\Actions\Cup\User\Group;
 
 use App\Application\Actions\Cup\User\UserAction;
+use App\Domain\Service\User\Exception\MissingTitleValueException;
 use App\Domain\Service\User\Exception\TitleAlreadyExistsException;
+use App\Domain\Service\User\Exception\WrongTitleValueException;
 
 class UpdateAction extends UserAction
 {
@@ -30,7 +32,7 @@ class UpdateAction extends UserAction
                             default:
                                 return $this->respondWithRedirect('/cup/user/group/' . $userGroup->getUuid() . '/edit');
                         }
-                    } catch (TitleAlreadyExistsException $e) {
+                    } catch (MissingTitleValueException|WrongTitleValueException|TitleAlreadyExistsException $e) {
                         $this->addError('title', $e->getMessage());
                     }
                 }

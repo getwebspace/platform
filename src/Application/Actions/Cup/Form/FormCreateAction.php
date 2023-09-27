@@ -4,6 +4,7 @@ namespace App\Application\Actions\Cup\Form;
 
 use App\Domain\Service\Form\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Form\Exception\MissingTitleValueException;
+use App\Domain\Service\Form\Exception\WrongTitleValueException;
 use App\Domain\Service\Form\Exception\TitleAlreadyExistsException;
 
 class FormCreateAction extends FormAction
@@ -33,7 +34,7 @@ class FormCreateAction extends FormAction
                     default:
                         return $this->respondWithRedirect('/cup/form/' . $form->getUuid() . '/edit');
                 }
-            } catch (MissingTitleValueException|TitleAlreadyExistsException $e) {
+            } catch (MissingTitleValueException|WrongTitleValueException|TitleAlreadyExistsException $e) {
                 $this->addError('title', $e->getMessage());
             } catch (AddressAlreadyExistsException $e) {
                 $this->addError('address', $e->getMessage());

@@ -3,7 +3,7 @@
 namespace App\Domain\Entities;
 
 use App\Domain\AbstractEntity;
-use App\Domain\Service\GuestBook\Exception\MissingNameValueException;
+use App\Domain\Service\GuestBook\Exception\WrongNameValueException;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'guestbook')]
@@ -33,7 +33,7 @@ class GuestBook extends AbstractEntity
             if ($this->validName($name)) {
                 $this->name = $name;
             } else {
-                throw new MissingNameValueException();
+                throw new WrongNameValueException();
             }
         }
 

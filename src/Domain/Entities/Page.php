@@ -3,7 +3,7 @@
 namespace App\Domain\Entities;
 
 use App\Domain\AbstractEntity;
-use App\Domain\Service\Page\Exception\MissingTitleValueException;
+use App\Domain\Service\Page\Exception\WrongTitleValueException;
 use App\Domain\Traits\FileTrait;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -36,7 +36,7 @@ class Page extends AbstractEntity
             if ($this->validName($title)) {
                 $this->title = $title;
             } else {
-                throw new MissingTitleValueException();
+                throw new WrongTitleValueException();
             }
         }
 

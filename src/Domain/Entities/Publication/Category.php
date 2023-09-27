@@ -3,7 +3,7 @@
 namespace App\Domain\Entities\Publication;
 
 use App\Domain\AbstractEntity;
-use App\Domain\Service\Publication\Exception\MissingTitleValueException;
+use App\Domain\Service\Publication\Exception\WrongTitleValueException;
 use App\Domain\Traits\FileTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Illuminate\Support\Collection;
@@ -68,7 +68,7 @@ class Category extends AbstractEntity
             if ($this->validName($title)) {
                 $this->title = $title;
             } else {
-                throw new MissingTitleValueException();
+                throw new WrongTitleValueException();
             }
         }
 

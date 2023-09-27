@@ -3,7 +3,7 @@
 namespace App\Domain\Entities;
 
 use App\Domain\AbstractEntity;
-use App\Domain\Service\Reference\Exception\TitleAlreadyExistsException;
+use App\Domain\Service\Reference\Exception\WrongTitleValueException;
 use App\Domain\Traits\FileTrait;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -60,7 +60,7 @@ class Reference extends AbstractEntity
             if ($this->validName($title)) {
                 $this->title = $title;
             } else {
-                throw new TitleAlreadyExistsException();
+                throw new WrongTitleValueException();
             }
         }
 

@@ -2,8 +2,10 @@
 
 namespace App\Application\Actions\Cup\Reference;
 
+use App\Domain\Service\Reference\Exception\MissingTitleValueException;
 use App\Domain\Service\Reference\Exception\ReferenceNotFoundException;
 use App\Domain\Service\Reference\Exception\TitleAlreadyExistsException;
+use App\Domain\Service\Reference\Exception\WrongTitleValueException;
 
 class ReferenceUpdateAction extends ReferenceAction
 {
@@ -37,7 +39,7 @@ class ReferenceUpdateAction extends ReferenceAction
                             default:
                                 return $this->respondWithRedirect("/cup/reference/{$entity}/{$ref->getUuid()}/edit");
                         }
-                    } catch (TitleAlreadyExistsException $e) {
+                    } catch (MissingTitleValueException|WrongTitleValueException|TitleAlreadyExistsException $e) {
                         $this->addError('title', $e->getMessage());
                     }
                 }

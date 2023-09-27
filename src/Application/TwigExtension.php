@@ -637,9 +637,9 @@ class TwigExtension extends AbstractExtension
                 $length_value = $length_class ? $length_class->getValue()['value'] : 1;
 
                 return
-                    ($dimension['length'] * $length_value) *
-                    ($dimension['width'] * $length_value) *
-                    ($dimension['height'] * $length_value) / $ratio;
+                    ($dimension['length'] / $length_value) *
+                    ($dimension['width'] / $length_value) *
+                    ($dimension['height'] / $length_value) / $ratio;
             }
         }
 

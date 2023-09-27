@@ -3,7 +3,7 @@
 namespace App\Domain\Entities;
 
 use App\Domain\AbstractEntity;
-use App\Domain\Service\Form\Exception\MissingTitleValueException;
+use App\Domain\Service\Form\Exception\WrongTitleValueException;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'form')]
@@ -33,7 +33,7 @@ class Form extends AbstractEntity
             if ($this->validName($title)) {
                 $this->title = $title;
             } else {
-                throw new MissingTitleValueException();
+                throw new WrongTitleValueException();
             }
         }
 

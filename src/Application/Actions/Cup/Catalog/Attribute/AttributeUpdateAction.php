@@ -3,7 +3,9 @@
 namespace App\Application\Actions\Cup\Catalog\Attribute;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
+use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
+use App\Domain\Service\Catalog\Exception\WrongTitleValueException;
 
 class AttributeUpdateAction extends CatalogAction
 {
@@ -32,7 +34,7 @@ class AttributeUpdateAction extends CatalogAction
                             default:
                                 return $this->respondWithRedirect('/cup/catalog/attribute/' . $attribute->getUuid() . '/edit');
                         }
-                    } catch (TitleAlreadyExistsException $e) {
+                    } catch (MissingTitleValueException|WrongTitleValueException|TitleAlreadyExistsException $e) {
                         $this->addError('title', $e->getMessage());
                     }
                 }

@@ -5,6 +5,7 @@ namespace App\Application\Actions\Cup\Publication;
 use App\Domain\Service\Publication\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Publication\Exception\MissingTitleValueException;
 use App\Domain\Service\Publication\Exception\TitleAlreadyExistsException;
+use App\Domain\Service\Publication\Exception\WrongTitleValueException;
 
 class PublicationCreateAction extends PublicationAction
 {
@@ -36,7 +37,7 @@ class PublicationCreateAction extends PublicationAction
                     default:
                         return $this->response->withAddedHeader('Location', '/cup/publication/' . $publication->getUuid() . '/edit')->withStatus(301);
                 }
-            } catch (MissingTitleValueException|TitleAlreadyExistsException $e) {
+            } catch (MissingTitleValueException|WrongTitleValueException|TitleAlreadyExistsException $e) {
                 $this->addError('title', $e->getMessage());
             } catch (AddressAlreadyExistsException $e) {
                 $this->addError('address', $e->getMessage());

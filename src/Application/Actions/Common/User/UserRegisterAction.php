@@ -9,6 +9,7 @@ use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\Exception\WrongEmailValueException;
 use App\Domain\Service\User\Exception\WrongPhoneValueException;
+use App\Domain\Service\User\Exception\WrongUsernameValueException;
 
 class UserRegisterAction extends UserAction
 {
@@ -54,7 +55,7 @@ class UserRegisterAction extends UserAction
                         $this->addError('email', $e->getMessage());
                         $this->addError('username', $e->getMessage());
                         $this->addError('phone', $e->getMessage());
-                    } catch (UsernameAlreadyExistsException $e) {
+                    } catch (WrongUsernameValueException|UsernameAlreadyExistsException $e) {
                         $this->addError('username', $e->getMessage());
                     } catch (WrongEmailValueException|EmailAlreadyExistsException|EmailBannedException $e) {
                         $this->addError('email', $e->getMessage());

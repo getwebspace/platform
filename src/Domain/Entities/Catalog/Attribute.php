@@ -3,7 +3,7 @@
 namespace App\Domain\Entities\Catalog;
 
 use App\Domain\AbstractEntity;
-use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
+use App\Domain\Service\Catalog\Exception\WrongTitleValueException;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'catalog_attribute')]
@@ -33,7 +33,7 @@ class Attribute extends AbstractEntity
             if ($this->validName($title)) {
                 $this->title = $title;
             } else {
-                throw new TitleAlreadyExistsException();
+                throw new WrongTitleValueException();
             }
         }
 

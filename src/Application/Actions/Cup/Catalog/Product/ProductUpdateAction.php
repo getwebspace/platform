@@ -6,6 +6,7 @@ use App\Application\Actions\Cup\Catalog\CatalogAction;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
+use App\Domain\Service\Catalog\Exception\WrongTitleValueException;
 use App\Domain\Types\ReferenceTypeType;
 
 class ProductUpdateAction extends CatalogAction
@@ -68,7 +69,7 @@ class ProductUpdateAction extends CatalogAction
                             default:
                                 return $this->respondWithRedirect('/cup/catalog/product/' . $product->getUuid() . '/edit');
                         }
-                    } catch (MissingTitleValueException $e) {
+                    } catch (MissingTitleValueException|WrongTitleValueException $e) {
                         $this->addError('title', $e->getMessage());
                     } catch (AddressAlreadyExistsException $e) {
                         $this->addError('address', $e->getMessage());

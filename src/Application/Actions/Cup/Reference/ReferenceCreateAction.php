@@ -4,6 +4,7 @@ namespace App\Application\Actions\Cup\Reference;
 
 use App\Domain\Service\Reference\Exception\MissingTitleValueException;
 use App\Domain\Service\Reference\Exception\TitleAlreadyExistsException;
+use App\Domain\Service\Reference\Exception\WrongTitleValueException;
 
 class ReferenceCreateAction extends ReferenceAction
 {
@@ -30,7 +31,7 @@ class ReferenceCreateAction extends ReferenceAction
                     default:
                         return $this->respondWithRedirect("/cup/reference/{$entity}/{$ref->getUuid()}/edit");
                 }
-            } catch (MissingTitleValueException|TitleAlreadyExistsException $e) {
+            } catch (MissingTitleValueException|WrongTitleValueException|TitleAlreadyExistsException $e) {
                 $this->addError('title', $e->getMessage());
             }
         }
