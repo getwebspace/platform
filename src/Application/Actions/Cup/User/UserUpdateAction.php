@@ -7,6 +7,7 @@ use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\Exception\WrongEmailValueException;
 use App\Domain\Service\User\Exception\WrongPhoneValueException;
+use App\Domain\Service\User\Exception\WrongUsernameValueException;
 
 class UserUpdateAction extends UserAction
 {
@@ -57,7 +58,7 @@ class UserUpdateAction extends UserAction
                             default:
                                 return $this->respondWithRedirect('/cup/user/' . $user->getUuid() . '/edit');
                         }
-                    } catch (UsernameAlreadyExistsException $e) {
+                    } catch (WrongUsernameValueException|UsernameAlreadyExistsException $e) {
                         $this->addError('username', $e->getMessage());
                     } catch (WrongEmailValueException|EmailAlreadyExistsException $e) {
                         $this->addError('email', $e->getMessage());

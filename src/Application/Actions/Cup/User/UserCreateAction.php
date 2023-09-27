@@ -7,6 +7,7 @@ use App\Domain\Service\User\Exception\EmailBannedException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
 use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
+use App\Domain\Service\User\Exception\WrongUsernameValueException;
 use App\Domain\Service\User\Exception\WrongEmailValueException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
 use App\Domain\Service\User\Exception\WrongPhoneValueException;
@@ -61,7 +62,7 @@ class UserCreateAction extends UserAction
                 $this->addError('phone', $e->getMessage());
             } catch (WrongPasswordException $e) {
                 $this->addError('password', $e->getMessage());
-            } catch (UsernameAlreadyExistsException $e) {
+            } catch (WrongUsernameValueException|UsernameAlreadyExistsException $e) {
                 $this->addError('username', $e->getMessage());
             } catch (WrongEmailValueException|EmailAlreadyExistsException|EmailBannedException $e) {
                 $this->addError('email', $e->getMessage());

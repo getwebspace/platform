@@ -4,6 +4,7 @@ namespace App\Domain\Entities;
 
 use App\Domain\AbstractEntity;
 use App\Domain\Entities\User\Group as UserGroup;
+use App\Domain\Service\User\Exception\WrongUsernameValueException;
 use App\Domain\Traits\FileTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Illuminate\Support\Collection;
@@ -33,8 +34,12 @@ class User extends AbstractEntity
      */
     public function setUsername(string $username): self
     {
-        if ($this->checkStrLenMax($username, 64) && $this->validName($username)) {
-            $this->username = $username;
+        if ($username && $this->checkStrLenMax($username, 64)) {
+            if ($this->validName($username)) {
+                $this->username = trim($username);
+            } else {
+                throw new WrongUsernameValueException();
+            }
         }
 
         return $this;

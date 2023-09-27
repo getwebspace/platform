@@ -3,6 +3,7 @@
 namespace App\Domain\Entities;
 
 use App\Domain\AbstractEntity;
+use App\Domain\Service\GuestBook\Exception\MissingNameValueException;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'guestbook')]
@@ -28,8 +29,12 @@ class GuestBook extends AbstractEntity
      */
     public function setName(string $name)
     {
-        if ($this->checkStrLenMax($name, 255) && $this->validName($name)) {
-            $this->name = $name;
+        if ($this->checkStrLenMax($name, 255)) {
+            if ($this->validName($name)) {
+                $this->name = $name;
+            } else {
+                throw new MissingNameValueException();
+            }
         }
 
         return $this;

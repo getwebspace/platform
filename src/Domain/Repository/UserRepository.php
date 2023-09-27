@@ -19,7 +19,7 @@ class UserRepository extends AbstractRepository
     public function findOneByUsername(string $username): ?User
     {
         $query = $this->createQueryBuilder('u')
-            ->andWhere('LOWER(u.username) = LOWER(:username)')->setParameter('username', $username, Types::STRING)
+            ->andWhere('LOWER(u.username) = LOWER(:username)')->setParameter('username', trim($username), Types::STRING)
             ->getQuery();
 
         try {

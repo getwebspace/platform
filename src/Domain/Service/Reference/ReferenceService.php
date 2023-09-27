@@ -42,11 +42,11 @@ class ReferenceService extends AbstractService
         if (!$data['type']) {
             throw new MissingTypeValueException();
         }
-        if ($data['title'] && $this->service->findOneByTitle($data['title']) !== null) {
-            throw new TitleAlreadyExistsException();
-        }
         if (!$data['title']) {
             throw new MissingTitleValueException();
+        }
+        if ($data['title'] && $this->service->findOneByTitle($data['title']) !== null) {
+            throw new TitleAlreadyExistsException();
         }
 
         $reference = (new Reference())

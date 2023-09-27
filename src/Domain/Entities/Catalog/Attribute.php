@@ -3,6 +3,7 @@
 namespace App\Domain\Entities\Catalog;
 
 use App\Domain\AbstractEntity;
+use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'catalog_attribute')]
@@ -28,8 +29,12 @@ class Attribute extends AbstractEntity
      */
     public function setTitle(string $title)
     {
-        if ($this->checkStrLenMax($title, 255) && $this->validName($title)) {
-            $this->title = $title;
+        if ($this->checkStrLenMax($title, 255)) {
+            if ($this->validName($title)) {
+                $this->title = $title;
+            } else {
+                throw new TitleAlreadyExistsException();
+            }
         }
 
         return $this;
