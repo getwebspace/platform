@@ -41,7 +41,7 @@ class PublicationServiceTest extends TestCase
         $this->userService = $this->getService(UserService::class);
 
         $this->category = $this->getService(PublicationCategoryService::class)->create([
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'category-custom-address',
             'description' => $this->getFaker()->text(255),
         ]);
@@ -55,7 +55,7 @@ class PublicationServiceTest extends TestCase
                 'password' => $this->getFaker()->password,
                 'email' => $this->getFaker()->email,
             ]),
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'publication-custom-address',
             'category' => $this->category,
             'date' => new \DateTime(),
@@ -104,7 +104,7 @@ class PublicationServiceTest extends TestCase
         $this->expectException(TitleAlreadyExistsException::class);
 
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'category' => $this->category,
             'content' => [
                 'short' => $this->getFaker()->text(200),
@@ -129,7 +129,7 @@ class PublicationServiceTest extends TestCase
         $this->expectException(AddressAlreadyExistsException::class);
 
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'publication-custom-address-two',
             'category' => $this->category,
             'content' => [
@@ -154,7 +154,7 @@ class PublicationServiceTest extends TestCase
     public function testReadSuccess1(): void
     {
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text(255),
         ];
 
@@ -168,7 +168,7 @@ class PublicationServiceTest extends TestCase
     public function testReadSuccess2(): void
     {
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'publication-custom-address',
             'description' => $this->getFaker()->text(255),
         ];
@@ -195,7 +195,7 @@ class PublicationServiceTest extends TestCase
                 'password' => $this->getFaker()->password,
                 'email' => $this->getFaker()->email,
             ]),
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'publication-custom-address',
             'category' => $this->category,
             'date' => new \DateTime(),
@@ -217,7 +217,7 @@ class PublicationServiceTest extends TestCase
                 'password' => $this->getFaker()->password,
                 'email' => $this->getFaker()->email,
             ]),
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'publication-custom-address',
             'category' => $this->category,
             'content' => [
@@ -253,7 +253,7 @@ class PublicationServiceTest extends TestCase
     public function testDeleteSuccess(): void
     {
         $page = $this->service->create([
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text(255),
         ]);
 

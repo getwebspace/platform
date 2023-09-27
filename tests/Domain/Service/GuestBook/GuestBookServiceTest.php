@@ -30,7 +30,7 @@ class GuestBookServiceTest extends TestCase
     public function testCreateSuccess(): void
     {
         $data = [
-            'name' => $this->getFaker()->userName,
+            'name' => $this->getFaker()->firstName,
             'email' => $this->getFaker()->email,
             'message' => $this->getFaker()->text,
             'response' => $this->getFaker()->text,
@@ -112,7 +112,7 @@ class GuestBookServiceTest extends TestCase
         ]);
 
         $data = [
-            'name' => $this->getFaker()->title,
+            'name' => $this->getFaker()->word,
             'email' => $this->getFaker()->email,
             'message' => $this->getFaker()->text,
             'response' => $this->getFaker()->text,

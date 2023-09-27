@@ -44,7 +44,7 @@ class IntegrationServiceTest extends TestCase
         $data = [
             'user' => $this->user,
             'provider' => $this->getFaker()->word,
-            'unique' => (string) $this->getFaker()->randomNumber(),
+            'unique' => $this->getFaker()->password(),
         ];
 
         $integration = $this->service->create($data);
@@ -65,7 +65,7 @@ class IntegrationServiceTest extends TestCase
         $data = [
             'user' => $this->user,
             'provider' => $this->getFaker()->word,
-            'unique' => (string) $this->getFaker()->randomNumber(),
+            'unique' => $this->getFaker()->password(),
         ];
 
         $this->service->create($data);
@@ -85,7 +85,7 @@ class IntegrationServiceTest extends TestCase
         $data = [
             'user' => $this->user,
             'provider' => $this->getFaker()->word,
-            'unique' => $this->getFaker()->randomNumber(),
+            'unique' => $this->getFaker()->password(),
         ];
 
         $integration = $this->service->create($data);

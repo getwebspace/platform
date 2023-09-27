@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: 'reference')]
 #[ORM\Entity(repositoryClass: 'App\Domain\Repository\ReferenceRepository')]
+#[ORM\UniqueConstraint(name: 'reference_unique', columns: ['type', 'title'])]
 class Reference extends AbstractEntity
 {
     use FileTrait;
@@ -54,7 +55,7 @@ class Reference extends AbstractEntity
      */
     public function setTitle(string $title): static
     {
-        if ($this->checkStrLenMax($title, 255)) {
+        if ($this->checkStrLenMax($title, 255) && $this->validName($title)) {
             $this->title = $title;
         }
 

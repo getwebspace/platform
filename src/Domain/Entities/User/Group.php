@@ -28,7 +28,7 @@ class Group extends AbstractEntity
      */
     public function setTitle(string $title)
     {
-        if ($this->checkStrLenMax($title, 255)) {
+        if ($this->checkStrLenMax($title, 255) && $this->validName($title)) {
             $this->title = $title;
         }
 
@@ -48,7 +48,7 @@ class Group extends AbstractEntity
      */
     public function setDescription(string $description)
     {
-        if ($this->checkStrLenMax($description, 100000)) {
+        if ($this->checkStrLenMax($description, 100000) && $this->validText($description)) {
             $this->description = $description;
         }
 

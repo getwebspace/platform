@@ -42,13 +42,13 @@ class AttributeTest extends TestCase
             'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\AttributeTypeType::LIST),
         ]);
         $attr2 = $this->attributeService->create([
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\AttributeTypeType::LIST),
         ]);
 
         // create test category
         $category = $this->categoryService->create([
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text(100),
         ]);
         $this->assertInstanceOf(Category::class, $category);
@@ -92,13 +92,13 @@ class AttributeTest extends TestCase
             'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\AttributeTypeType::LIST),
         ]);
         $attr2 = $this->attributeService->create([
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\AttributeTypeType::LIST),
         ]);
 
         // create test product
         $product = $this->productService->create([
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text(100),
 
             // set attributes to product

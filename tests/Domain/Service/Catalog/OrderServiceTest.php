@@ -4,10 +4,13 @@ namespace tests\Domain\Service\Catalog;
 
 use App\Domain\Entities\Catalog\Order;
 use App\Domain\Entities\Catalog\Product;
+use App\Domain\Entities\Reference;
 use App\Domain\Repository\Catalog\OrderRepository;
 use App\Domain\Service\Catalog\Exception\OrderNotFoundException;
 use App\Domain\Service\Catalog\OrderService;
 use App\Domain\Service\Catalog\ProductService;
+use App\Domain\Service\Reference\ReferenceService;
+use App\Domain\Types\ReferenceTypeType;
 use Illuminate\Support\Collection;
 use tests\TestCase;
 
@@ -27,10 +30,19 @@ class OrderServiceTest extends TestCase
         $this->service = $this->getService(OrderService::class);
     }
 
+    protected function getRandomStatus(): Reference
+    {
+        return $this->getService(ReferenceService::class)->create([
+            'type' => ReferenceTypeType::TYPE_ORDER_STATUS,
+            'title' => $this->getFaker()->word,
+            'order' => $this->getFaker()->randomDigit(),
+        ]);
+    }
+
     protected function getRandomProduct(): Product
     {
         return $this->getService(ProductService::class)->create([
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => $this->getFaker()->word,
             'price' => $this->getFaker()->randomFloat(),
             'priceWholesale' => $this->getFaker()->randomFloat(),
@@ -52,6 +64,7 @@ class OrderServiceTest extends TestCase
             ],
             'phone' => $this->getFaker()->e164PhoneNumber,
             'email' => $this->getFaker()->email,
+            'status' => $this->getRandomStatus(),
             'comment' => $this->getFaker()->text,
             'shipping' => $this->getFaker()->dateTime,
             'date' => $this->getFaker()->dateTime,
@@ -218,7 +231,7 @@ class OrderServiceTest extends TestCase
     public function testDeleteSuccess(): void
     {
         $order = $this->service->create([
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'some-custom-address',
             'status' => $this->getRandomStatus(),
         ]);

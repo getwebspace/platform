@@ -31,7 +31,7 @@ class Page extends AbstractEntity
      */
     public function setTitle(string $title)
     {
-        if ($this->checkStrLenMax($title, 255)) {
+        if ($this->checkStrLenMax($title, 255) && $this->validName($title)) {
             $this->title = $title;
         }
 
@@ -51,8 +51,10 @@ class Page extends AbstractEntity
      */
     public function setAddress(string $address)
     {
-        if ($this->checkStrLenMax($address, 1000)) {
+        if ($this->checkStrLenMax($address, 1000) && $this->validText($address)) {
             $this->address = $this->getAddressByValue($address, $this->getTitle());
+        } else {
+            $this->address = $this->getAddressByValue($this->getTitle());
         }
 
         return $this;
@@ -89,7 +91,7 @@ class Page extends AbstractEntity
         return $this->date;
     }
 
-    #[ORM\Column(type: 'text', options: ['default' => ''])]
+    #[ORM\Column(type: 'text', length: 100000, options: ['default' => ''])]
     protected string $content = '';
 
     /**
@@ -97,7 +99,9 @@ class Page extends AbstractEntity
      */
     public function setContent(string $content)
     {
-        $this->content = $content;
+        if ($this->checkStrLenMax($content, 100000)) {
+            $this->content = $content;
+        }
 
         return $this;
     }
@@ -166,7 +170,7 @@ class Page extends AbstractEntity
         return $this->meta;
     }
 
-    #[ORM\Column(type: 'string', length: 50, options: ['default' => ''])]
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
     protected string $template = '';
 
     /**
@@ -174,7 +178,7 @@ class Page extends AbstractEntity
      */
     public function setTemplate(string $template)
     {
-        if ($this->checkStrLenMax($template, 50)) {
+        if ($this->checkStrLenMax($template, 255) && $this->validText($template)) {
             $this->template = $template;
         }
 

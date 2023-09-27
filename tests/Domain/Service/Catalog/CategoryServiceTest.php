@@ -33,7 +33,7 @@ class CategoryServiceTest extends TestCase
             'parent' => $this->getFaker()->uuid,
             'children' => $this->getFaker()->boolean,
             'hidden' => $this->getFaker()->boolean,
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text(100),
             'address' => $this->getFaker()->word,
             'field1' => $this->getFaker()->text,
@@ -54,7 +54,7 @@ class CategoryServiceTest extends TestCase
                 'direction' => $this->getFaker()->randomElement(\App\Domain\References\Catalog::ORDER_DIRECTION),
             ],
             'meta' => [
-                'title' => $this->getFaker()->title,
+                'title' => $this->getFaker()->word,
                 'description' => $this->getFaker()->text,
                 'keywords' => $this->getFaker()->words(5, true),
             ],
@@ -123,7 +123,7 @@ class CategoryServiceTest extends TestCase
         $this->expectException(AddressAlreadyExistsException::class);
 
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'some-custom-address',
         ];
 
@@ -140,7 +140,7 @@ class CategoryServiceTest extends TestCase
     public function testReadSuccess1(): void
     {
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'some-custom-address',
             'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\CategoryStatusType::LIST),
         ];
@@ -155,7 +155,7 @@ class CategoryServiceTest extends TestCase
     public function testReadSuccess2(): void
     {
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'some-custom-address',
             'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\CategoryStatusType::LIST),
         ];
@@ -170,7 +170,7 @@ class CategoryServiceTest extends TestCase
     {
         $this->expectException(CategoryNotFoundException::class);
 
-        $this->service->read(['title' => $this->getFaker()->title]);
+        $this->service->read(['title' => $this->getFaker()->word]);
     }
 
     public function testUpdate(): void
@@ -179,7 +179,7 @@ class CategoryServiceTest extends TestCase
             'parent' => $this->getFaker()->uuid,
             'children' => $this->getFaker()->boolean,
             'hidden' => $this->getFaker()->boolean,
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text(100),
             'address' => $this->getFaker()->word,
             'field1' => $this->getFaker()->text,
@@ -200,7 +200,7 @@ class CategoryServiceTest extends TestCase
                 'direction' => $this->getFaker()->randomElement(\App\Domain\References\Catalog::ORDER_DIRECTION),
             ],
             'meta' => [
-                'title' => $this->getFaker()->title,
+                'title' => $this->getFaker()->word,
                 'description' => $this->getFaker()->text,
                 'keywords' => $this->getFaker()->words(5, true),
             ],
@@ -216,7 +216,7 @@ class CategoryServiceTest extends TestCase
             'parent' => $this->getFaker()->uuid,
             'children' => $this->getFaker()->boolean,
             'hidden' => $this->getFaker()->boolean,
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text(100),
             'address' => $this->getFaker()->word,
             'field1' => $this->getFaker()->text,
@@ -237,7 +237,7 @@ class CategoryServiceTest extends TestCase
                 'direction' => $this->getFaker()->randomElement(\App\Domain\References\Catalog::ORDER_DIRECTION),
             ],
             'meta' => [
-                'title' => $this->getFaker()->title,
+                'title' => $this->getFaker()->word,
                 'description' => $this->getFaker()->text,
                 'keywords' => $this->getFaker()->words(5, true),
             ],
@@ -281,7 +281,7 @@ class CategoryServiceTest extends TestCase
     public function testDeleteSuccess(): void
     {
         $category = $this->service->create([
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'some-custom-address',
             'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\CategoryStatusType::LIST),
         ]);

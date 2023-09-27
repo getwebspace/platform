@@ -52,7 +52,7 @@ class Notification extends AbstractEntity
      */
     public function setTitle(string $title)
     {
-        if ($this->checkStrLenMax($title, 255)) {
+        if ($this->checkStrLenMax($title, 255) && $this->validName($title)) {
             $this->title = $title;
         }
 
@@ -64,7 +64,7 @@ class Notification extends AbstractEntity
         return $this->title;
     }
 
-    #[ORM\Column(type: 'text', options: ['default' => ''])]
+    #[ORM\Column(type: 'text', length: 10000, options: ['default' => ''])]
     protected string $message = '';
 
     /**
@@ -72,7 +72,9 @@ class Notification extends AbstractEntity
      */
     public function setMessage(string $message)
     {
-        $this->message = $message;
+        if ($this->checkStrLenMax($message, 10000) && $this->validText($message)) {
+            $this->message = $message;
+        }
 
         return $this;
     }

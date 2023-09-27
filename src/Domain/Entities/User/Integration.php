@@ -69,7 +69,7 @@ class Integration extends AbstractEntity
         return $this->provider;
     }
 
-    #[ORM\Column(name: '`unique`', type: 'string', length: 20, options: ['default' => ''])]
+    #[ORM\Column(name: '`unique`', type: 'string', length: 128, options: ['default' => ''])]
     protected string $unique = '';
 
     /**
@@ -79,7 +79,9 @@ class Integration extends AbstractEntity
      */
     public function setUnique($unique): self
     {
-        $this->unique = (string) $unique;
+        if ($this->checkStrLenMax($unique, 128) && $this->validText($unique)) {
+            $this->unique = (string) $unique;
+        }
 
         return $this;
     }

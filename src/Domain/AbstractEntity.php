@@ -6,6 +6,14 @@ use App\Application\i18n;
 
 abstract class AbstractEntity implements \JsonSerializable
 {
+    protected function validName($str) {
+        return preg_match('/^[\p{L}\p{N}\s\'-.]+$/u', $str);
+    }
+
+    protected function validText($str) {
+        return preg_match('/^[\p{L}\p{N}\s.,!?\'"-–—(){}[\]_+=*<>:;|\\/@#$%^&`~]+$/u', $str);
+    }
+
     /**
      * @param string[] $args
      *

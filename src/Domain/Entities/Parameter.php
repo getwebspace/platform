@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 class Parameter extends AbstractEntity
 {
     #[ORM\Id]
-    #[ORM\Column(name: 'name', type: 'string', length: 50, unique: true, options: ['default' => ''])]
+    #[ORM\Column(name: 'name', type: 'string', length: 255, unique: true, options: ['default' => ''])]
     protected string $key = '';
 
     /**
@@ -18,7 +18,7 @@ class Parameter extends AbstractEntity
      */
     public function setKey(string $key): static
     {
-        if ($this->checkStrLenMax($key, 50)) {
+        if ($this->checkStrLenMax($key, 255)) {
             $this->key = $key;
         }
 

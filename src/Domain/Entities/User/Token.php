@@ -121,12 +121,12 @@ class Token extends AbstractEntity
         return $this->ip;
     }
 
-    #[ORM\Column(type: 'string', length: 256, options: ['default' => ''])]
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
     protected string $agent = '';
 
     public function setAgent(string $agent)
     {
-        if ($this->checkStrLenMax($agent, 256)) {
+        if ($this->checkStrLenMax($agent, 255)) {
             $this->agent = $agent;
         }
 

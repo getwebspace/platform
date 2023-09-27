@@ -28,7 +28,7 @@ class GuestBook extends AbstractEntity
      */
     public function setName(string $name)
     {
-        if ($this->checkStrLenMax($name, 255)) {
+        if ($this->checkStrLenMax($name, 255) && $this->validName($name)) {
             $this->name = $name;
         }
 
@@ -66,7 +66,7 @@ class GuestBook extends AbstractEntity
         return $this->email;
     }
 
-    #[ORM\Column(type: 'text', options: ['default' => ''])]
+    #[ORM\Column(type: 'text', length: 10000, options: ['default' => ''])]
     protected string $message = '';
 
     /**
@@ -74,7 +74,9 @@ class GuestBook extends AbstractEntity
      */
     public function setMessage(string $message)
     {
-        $this->message = $message;
+        if ($this->checkStrLenMax($message, 10000) && $this->validText($message)) {
+            $this->message = $message;
+        }
 
         return $this;
     }
@@ -84,7 +86,7 @@ class GuestBook extends AbstractEntity
         return $this->message;
     }
 
-    #[ORM\Column(type: 'text', options: ['default' => ''])]
+    #[ORM\Column(type: 'text', length: 10000, options: ['default' => ''])]
     protected string $response = '';
 
     /**
@@ -92,7 +94,9 @@ class GuestBook extends AbstractEntity
      */
     public function setResponse(string $response)
     {
-        $this->response = $response;
+        if ($this->checkStrLenMax($response, 10000) && $this->validText($response)) {
+            $this->response = $response;
+        }
 
         return $this;
     }

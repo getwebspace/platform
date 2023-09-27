@@ -60,7 +60,7 @@ class Category extends AbstractEntity
      */
     public function setTitle(string $title)
     {
-        if ($this->checkStrLenMax($title, 255)) {
+        if ($this->checkStrLenMax($title, 255) && $this->validName($title)) {
             $this->title = $title;
         }
 
@@ -100,8 +100,10 @@ class Category extends AbstractEntity
      */
     public function setAddress(string $address)
     {
-        if ($this->checkStrLenMax($address, 1000)) {
+        if ($this->checkStrLenMax($address, 1000) && $this->validText($address)) {
             $this->address = $this->getAddressByValue($address, str_replace('/', '-', $this->getTitle()));
+        } else {
+            $this->address = $this->getAddressByValue(str_replace('/', '-', $this->getTitle()));
         }
 
         return $this;
@@ -419,7 +421,7 @@ class Category extends AbstractEntity
         return $this->external_id;
     }
 
-    #[ORM\Column(type: 'string', length: 50, options: ['default' => 'manual'])]
+    #[ORM\Column(type: 'string', length: 64, options: ['default' => 'manual'])]
     protected string $export = 'manual';
 
     /**
@@ -427,7 +429,9 @@ class Category extends AbstractEntity
      */
     public function setExport(string $export)
     {
-        $this->export = $export;
+        if ($this->checkStrLenMax($export, 64)) {
+            $this->export = $export;
+        }
 
         return $this;
     }

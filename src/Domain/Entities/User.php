@@ -25,7 +25,7 @@ class User extends AbstractEntity
         return $this->uuid;
     }
 
-    #[ORM\Column(type: 'string', length: 50, options: ['default' => ''])]
+    #[ORM\Column(type: 'string', length: 64, options: ['default' => ''])]
     protected string $username = '';
 
     /**
@@ -33,7 +33,7 @@ class User extends AbstractEntity
      */
     public function setUsername(string $username): self
     {
-        if ($this->checkStrLenMax($username, 50)) {
+        if ($this->checkStrLenMax($username, 64) && $this->validName($username)) {
             $this->username = $username;
         }
 
@@ -137,7 +137,7 @@ class User extends AbstractEntity
         return $this->password;
     }
 
-    #[ORM\Column(type: 'string', length: 50, options: ['default' => ''])]
+    #[ORM\Column(type: 'string', length: 64, options: ['default' => ''])]
     protected string $firstname = '';
 
     /**
@@ -145,7 +145,7 @@ class User extends AbstractEntity
      */
     public function setFirstname(string $firstname): self
     {
-        if ($this->checkStrLenMax($firstname, 50)) {
+        if ($this->checkStrLenMax($firstname, 64) && $this->validText($firstname)) {
             $this->firstname = $firstname;
         }
 
@@ -157,7 +157,7 @@ class User extends AbstractEntity
         return $this->firstname;
     }
 
-    #[ORM\Column(type: 'string', length: 50, options: ['default' => ''])]
+    #[ORM\Column(type: 'string', length: 64, options: ['default' => ''])]
     protected string $lastname = '';
 
     /**
@@ -165,7 +165,7 @@ class User extends AbstractEntity
      */
     public function setLastname(string $lastname): self
     {
-        if ($this->checkStrLenMax($lastname, 50)) {
+        if ($this->checkStrLenMax($lastname, 64) && $this->validText($lastname)) {
             $this->lastname = $lastname;
         }
 
@@ -177,7 +177,7 @@ class User extends AbstractEntity
         return $this->lastname;
     }
 
-    #[ORM\Column(type: 'string', length: 50, options: ['default' => ''])]
+    #[ORM\Column(type: 'string', length: 64, options: ['default' => ''])]
     protected string $patronymic = '';
 
     /**
@@ -185,7 +185,7 @@ class User extends AbstractEntity
      */
     public function setPatronymic(string $patronymic): self
     {
-        if ($this->checkStrLenMax($patronymic, 50)) {
+        if ($this->checkStrLenMax($patronymic, 64) && $this->validText($patronymic)) {
             $this->patronymic = $patronymic;
         }
 
@@ -255,7 +255,7 @@ class User extends AbstractEntity
         return $this->birthdate;
     }
 
-    #[ORM\Column(type: 'string', length: 25, options: ['default' => ''])]
+    #[ORM\Column(type: 'string', length: 64, options: ['default' => ''])]
     protected string $gender = '';
 
     /**
@@ -263,7 +263,7 @@ class User extends AbstractEntity
      */
     public function setGender(string $gender): self
     {
-        if ($this->checkStrLenMax($gender, 25)) {
+        if ($this->checkStrLenMax($gender, 64) && $this->validText($gender)) {
             $this->gender = $gender;
         }
 
@@ -275,7 +275,7 @@ class User extends AbstractEntity
         return $this->gender;
     }
 
-    #[ORM\Column(type: 'string', length: 100, options: ['default' => ''])]
+    #[ORM\Column(type: 'string', length: 128, options: ['default' => ''])]
     protected string $country = '';
 
     /**
@@ -283,7 +283,7 @@ class User extends AbstractEntity
      */
     public function setCountry(string $country): self
     {
-        if ($this->checkStrLenMax($country, 100)) {
+        if ($this->checkStrLenMax($country, 128) && $this->validText($country)) {
             $this->country = $country;
         }
 
@@ -295,7 +295,7 @@ class User extends AbstractEntity
         return $this->country;
     }
 
-    #[ORM\Column(type: 'string', length: 100, options: ['default' => ''])]
+    #[ORM\Column(type: 'string', length: 128, options: ['default' => ''])]
     protected string $city = '';
 
     /**
@@ -303,7 +303,7 @@ class User extends AbstractEntity
      */
     public function setCity(string $city): self
     {
-        if ($this->checkStrLenMax($city, 100)) {
+        if ($this->checkStrLenMax($city, 128) && $this->validText($city)) {
             $this->city = $city;
         }
 
@@ -315,7 +315,7 @@ class User extends AbstractEntity
         return $this->city;
     }
 
-    #[ORM\Column(type: 'string', length: 500, options: ['default' => ''])]
+    #[ORM\Column(type: 'string', length: 512, options: ['default' => ''])]
     protected string $address = '';
 
     /**
@@ -323,7 +323,7 @@ class User extends AbstractEntity
      */
     public function setAddress(string $address): self
     {
-        if ($this->checkStrLenMax($address, 500)) {
+        if ($this->checkStrLenMax($address, 512) && $this->validText($address)) {
             $this->address = $address;
         }
 
@@ -335,7 +335,7 @@ class User extends AbstractEntity
         return $this->address;
     }
 
-    #[ORM\Column(type: 'string', length: 50, options: ['default' => ''])]
+    #[ORM\Column(type: 'string', length: 32, options: ['default' => ''])]
     protected string $postcode = '';
 
     /**
@@ -343,7 +343,7 @@ class User extends AbstractEntity
      */
     public function setPostcode(string $postcode): self
     {
-        if ($this->checkStrLenMax($postcode, 50)) {
+        if ($this->checkStrLenMax($postcode, 32) && $this->validText($postcode)) {
             $this->postcode = $postcode;
         }
 
@@ -363,7 +363,7 @@ class User extends AbstractEntity
      */
     public function setAdditional(string $additional): self
     {
-        if ($this->checkStrLenMax($additional, 1000)) {
+        if ($this->checkStrLenMax($additional, 1000) && $this->validText($additional)) {
             $this->additional = $additional;
         }
 
@@ -594,7 +594,7 @@ class User extends AbstractEntity
         return $this->change;
     }
 
-    #[ORM\Column(type: 'string', length: 100, options: ['default' => ''])]
+    #[ORM\Column(type: 'string', length: 128, options: ['default' => ''])]
     protected string $website = '';
 
     /**
@@ -602,7 +602,7 @@ class User extends AbstractEntity
      */
     public function setWebsite(string $url): self
     {
-        if ($this->checkStrLenMax($url, 100)) {
+        if ($this->checkStrLenMax($url, 128) && $this->validText($url)) {
             $this->website = $url;
         }
 
@@ -614,7 +614,7 @@ class User extends AbstractEntity
         return $this->website;
     }
 
-    #[ORM\Column(type: 'string', length: 500, options: ['default' => ''])]
+    #[ORM\Column(type: 'string', length: 512, options: ['default' => ''])]
     protected string $source = '';
 
     /**
@@ -622,7 +622,7 @@ class User extends AbstractEntity
      */
     public function setSource(string $text): self
     {
-        if ($this->checkStrLenMax($text, 500)) {
+        if ($this->checkStrLenMax($text, 512) && $this->validText($text)) {
             $this->source = $text;
         }
 
@@ -642,7 +642,7 @@ class User extends AbstractEntity
      */
     public function setAuthCode(string $code): self
     {
-        if ($this->checkStrLenMax($code, 12)) {
+        if ($this->checkStrLenMax($code, 12) && $this->validText($code)) {
             $this->auth_code = $code;
         }
 
@@ -662,7 +662,7 @@ class User extends AbstractEntity
      */
     public function setLanguage(string $code): self
     {
-        if ($this->checkStrLenMax($code, 5)) {
+        if ($this->checkStrLenMax($code, 5) && $this->validText($code)) {
             $this->language = $code;
         }
 

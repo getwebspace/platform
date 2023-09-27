@@ -28,7 +28,7 @@ class Form extends AbstractEntity
      */
     public function setTitle(string $title): self
     {
-        if ($this->checkStrLenMax($title, 255)) {
+        if ($this->checkStrLenMax($title, 255) && $this->validName($title)) {
             $this->title = $title;
         }
 
@@ -48,8 +48,10 @@ class Form extends AbstractEntity
      */
     public function setAddress(string $address): self
     {
-        if ($this->checkStrLenMax($address, 1000)) {
+        if ($this->checkStrLenMax($address, 1000) && $this->validText($address)) {
             $this->address = $this->getAddressByValue($address, $this->getTitle());
+        } else {
+            $this->address = $this->getAddressByValue($this->getTitle());
         }
 
         return $this;
@@ -60,7 +62,7 @@ class Form extends AbstractEntity
         return $this->address;
     }
 
-    #[ORM\Column(type: 'text', options: ['default' => ''])]
+    #[ORM\Column(type: 'text', length: 255, options: ['default' => ''])]
     protected string $template = '';
 
     /**
@@ -68,7 +70,9 @@ class Form extends AbstractEntity
      */
     public function setTemplate(string $template): self
     {
-        $this->template = $template;
+        if ($this->checkStrLenMax($template, 255) && $this->validText($template)) {
+            $this->template = $template;
+        }
 
         return $this;
     }
@@ -78,7 +82,7 @@ class Form extends AbstractEntity
         return $this->template;
     }
 
-    #[ORM\Column(type: 'string', length: 50, options: ['default' => ''])]
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
     protected string $templateFile = '';
 
     /**
@@ -86,7 +90,7 @@ class Form extends AbstractEntity
      */
     public function setTemplateFile(string $template): self
     {
-        if ($this->checkStrLenMax($template, 50)) {
+        if ($this->checkStrLenMax($template, 255) && $this->validText($template)) {
             $this->templateFile = $template;
         }
 
@@ -178,7 +182,7 @@ class Form extends AbstractEntity
         return $this->mailto;
     }
 
-    #[ORM\Column(type: 'string', length: 250, options: ['default' => ''])]
+    #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
     protected string $duplicate = '';
 
     /**
@@ -186,7 +190,7 @@ class Form extends AbstractEntity
      */
     public function setDuplicate(string $duplicate): self
     {
-        if ($this->checkStrLenMax($duplicate, 250)) {
+        if ($this->checkStrLenMax($duplicate, 255) && $this->validText($duplicate)) {
             $this->duplicate = $duplicate;
         }
 

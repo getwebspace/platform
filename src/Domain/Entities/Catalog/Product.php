@@ -54,7 +54,7 @@ class Product extends AbstractEntity
 
     public function setTitle(string $title): self
     {
-        if ($this->checkStrLenMax($title, 255)) {
+        if ($this->checkStrLenMax($title, 255) && $this->validName($title)) {
             $this->title = $title;
         }
 
@@ -125,8 +125,10 @@ class Product extends AbstractEntity
 
     public function setAddress(string $address): self
     {
-        if ($this->checkStrLenMax($address, 1000)) {
+        if ($this->checkStrLenMax($address, 1000) && $this->validText($address)) {
             $this->address = $this->getAddressByValue($address, str_replace('/', '-', $this->getTitle()));
+        } else {
+            $this->address = $this->getAddressByValue(str_replace('/', '-', $this->getTitle()));
         }
 
         return $this;
@@ -154,12 +156,12 @@ class Product extends AbstractEntity
         return $this->vendorcode;
     }
 
-    #[ORM\Column(type: 'text', length: 100, options: ['default' => ''])]
+    #[ORM\Column(type: 'text', length: 64, options: ['default' => ''])]
     protected string $barcode = '';
 
     public function setBarCode(string $value): self
     {
-        if ($this->checkStrLenMax($value, 100)) {
+        if ($this->checkStrLenMax($value, 64)) {
             $this->barcode = $value;
         }
 
@@ -708,12 +710,14 @@ class Product extends AbstractEntity
         return $this->external_id;
     }
 
-    #[ORM\Column(type: 'string', length: 50, options: ['default' => 'manual'])]
+    #[ORM\Column(type: 'string', length: 64, options: ['default' => 'manual'])]
     protected string $export = 'manual';
 
     public function setExport(string $export): self
     {
-        $this->export = $export;
+        if ($this->checkStrLenMax($export, 64)) {
+            $this->export = $export;
+        }
 
         return $this;
     }

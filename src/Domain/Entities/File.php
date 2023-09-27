@@ -29,7 +29,7 @@ class File extends AbstractEntity
      */
     public function setName(string $name)
     {
-        if ($this->checkStrLenMax($name, 255)) {
+        if ($this->checkStrLenMax($name, 255) && $this->validText($name)) {
             $this->name = $name;
         }
 

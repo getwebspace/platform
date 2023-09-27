@@ -28,7 +28,7 @@ class Attribute extends AbstractEntity
      */
     public function setTitle(string $title)
     {
-        if ($this->checkStrLenMax($title, 255)) {
+        if ($this->checkStrLenMax($title, 255) && $this->validName($title)) {
             $this->title = $title;
         }
 
@@ -40,7 +40,7 @@ class Attribute extends AbstractEntity
         return $this->title;
     }
 
-    #[ORM\Column(type: 'string', length: 500, unique: true, options: ['default' => ''])]
+    #[ORM\Column(type: 'string', length: 255, unique: true, options: ['default' => ''])]
     protected string $address = '';
 
     /**
@@ -48,8 +48,10 @@ class Attribute extends AbstractEntity
      */
     public function setAddress(string $address)
     {
-        if ($this->checkStrLenMax($address, 500)) {
+        if ($this->checkStrLenMax($address, 255) && $this->validText($address)) {
             $this->address = $this->getAddressByValue($address, $this->getTitle());
+        } else {
+            $this->address = $this->getAddressByValue($this->getTitle());
         }
 
         return $this;

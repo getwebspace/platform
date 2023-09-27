@@ -29,7 +29,7 @@ class AttributeServiceTest extends TestCase
     public function testCreateSuccess(): void
     {
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => $this->getFaker()->word,
             'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\AttributeTypeType::LIST),
         ];
@@ -60,7 +60,7 @@ class AttributeServiceTest extends TestCase
         $this->expectException(TitleAlreadyExistsException::class);
 
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'some-custom-address',
         ];
 
@@ -79,7 +79,7 @@ class AttributeServiceTest extends TestCase
         $this->expectException(AddressAlreadyExistsException::class);
 
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'some-custom-address',
         ];
 
@@ -96,7 +96,7 @@ class AttributeServiceTest extends TestCase
     public function testReadSuccess1(): void
     {
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => $this->getFaker()->word,
             'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\AttributeTypeType::LIST),
         ];
@@ -113,7 +113,7 @@ class AttributeServiceTest extends TestCase
     public function testReadSuccess2(): void
     {
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'some-custom-address',
             'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\AttributeTypeType::LIST),
         ];
@@ -131,19 +131,19 @@ class AttributeServiceTest extends TestCase
     {
         $this->expectException(AttributeNotFoundException::class);
 
-        $this->service->read(['title' => $this->getFaker()->title]);
+        $this->service->read(['title' => $this->getFaker()->word]);
     }
 
     public function testUpdate(): void
     {
         $attribute = $this->service->create([
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => $this->getFaker()->word,
             'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\AttributeTypeType::LIST),
         ]);
 
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => $this->getFaker()->word,
             'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\AttributeTypeType::LIST),
         ];
@@ -165,7 +165,7 @@ class AttributeServiceTest extends TestCase
     public function testDeleteSuccess(): void
     {
         $attribute = $this->service->create([
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => $this->getFaker()->word,
             'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\AttributeTypeType::LIST),
         ]);

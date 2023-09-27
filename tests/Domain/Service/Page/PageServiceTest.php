@@ -30,12 +30,12 @@ class PageServiceTest extends TestCase
     public function testCreateSuccess(): void
     {
         $data = [
-            'title' => $this->getFaker()->title,
-            'address' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
+            'address' => $this->getFaker()->word,
             'content' => $this->getFaker()->text,
             'date' => $this->getFaker()->dateTime,
             'meta' => [
-                'title' => $this->getFaker()->title,
+                'title' => $this->getFaker()->word,
                 'description' => $this->getFaker()->text,
                 'keywords' => $this->getFaker()->text,
             ],
@@ -63,7 +63,7 @@ class PageServiceTest extends TestCase
         $this->expectException(MissingTitleValueException::class);
 
         $this->service->create([
-            'address' => $this->getFaker()->title,
+            'address' => $this->getFaker()->word,
             'content' => $this->getFaker()->text,
         ]);
     }
@@ -73,7 +73,7 @@ class PageServiceTest extends TestCase
         $this->expectException(TitleAlreadyExistsException::class);
 
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'content' => $this->getFaker()->text,
         ];
 
@@ -93,8 +93,8 @@ class PageServiceTest extends TestCase
         $this->expectException(AddressAlreadyExistsException::class);
 
         $data = [
-            'title' => $this->getFaker()->title,
-            'address' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
+            'address' => $this->getFaker()->word,
             'content' => $this->getFaker()->text,
         ];
 
@@ -117,8 +117,8 @@ class PageServiceTest extends TestCase
     public function testReadSuccess(): void
     {
         $data = [
-            'title' => $this->getFaker()->title,
-            'address' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
+            'address' => $this->getFaker()->word,
             'content' => $this->getFaker()->text,
         ];
 
@@ -137,23 +137,23 @@ class PageServiceTest extends TestCase
     {
         $this->expectException(PageNotFoundException::class);
 
-        $this->service->read(['title' => $this->getFaker()->title]);
+        $this->service->read(['title' => $this->getFaker()->word]);
     }
 
     public function testUpdateSuccess(): void
     {
         $page = $this->service->create([
-            'title' => $this->getFaker()->title,
-            'address' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
+            'address' => $this->getFaker()->word,
             'content' => $this->getFaker()->text,
         ]);
 
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'test-address-page',
             'content' => $this->getFaker()->text,
             'meta' => [
-                'title' => $this->getFaker()->title,
+                'title' => $this->getFaker()->word,
                 'description' => $this->getFaker()->text,
                 'keywords' => $this->getFaker()->text,
             ],
@@ -180,8 +180,8 @@ class PageServiceTest extends TestCase
     public function testDeleteSuccess(): void
     {
         $page = $this->service->create([
-            'title' => $this->getFaker()->title,
-            'address' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
+            'address' => $this->getFaker()->word,
             'content' => $this->getFaker()->text,
         ]);
 

@@ -30,7 +30,7 @@ class NotificationServiceTest extends TestCase
     {
         $data = [
             'user_uuid' => $this->getFaker()->uuid,
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'message' => $this->getFaker()->text,
             'params' => [
                 'test' => $this->getFaker()->text,
@@ -74,7 +74,7 @@ class NotificationServiceTest extends TestCase
     {
         $data = [
             'user_uuid' => $this->getFaker()->uuid,
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'message' => $this->getFaker()->text,
         ];
 
@@ -98,13 +98,13 @@ class NotificationServiceTest extends TestCase
     {
         $n = $this->service->create([
             'user_uuid' => $this->getFaker()->uuid,
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'message' => $this->getFaker()->text,
         ]);
 
         $data = [
             'user_uuid' => $this->getFaker()->uuid,
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'message' => $this->getFaker()->text,
             'params' => [
                 'test' => $this->getFaker()->text,
@@ -129,7 +129,7 @@ class NotificationServiceTest extends TestCase
     {
         $n = $this->service->create([
             'user_uuid' => $this->getFaker()->uuid,
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'message' => $this->getFaker()->text,
         ]);
 

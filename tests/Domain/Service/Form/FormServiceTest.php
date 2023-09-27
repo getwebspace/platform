@@ -30,7 +30,7 @@ class FormServiceTest extends TestCase
     public function testCreateSuccess(): void
     {
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'some-custom-address',
             'template' => $this->getFaker()->word,
             'authorSend' => $this->getFaker()->boolean,
@@ -77,7 +77,7 @@ class FormServiceTest extends TestCase
         $this->expectException(TitleAlreadyExistsException::class);
 
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'some-custom-address',
             'template' => $this->getFaker()->word,
         ];
@@ -98,7 +98,7 @@ class FormServiceTest extends TestCase
         $this->expectException(AddressAlreadyExistsException::class);
 
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'some-custom-address',
             'template' => $this->getFaker()->word,
         ];
@@ -117,7 +117,7 @@ class FormServiceTest extends TestCase
     public function testReadSuccess1(): void
     {
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'some-custom-address',
             'template' => $this->getFaker()->word,
         ];
@@ -132,7 +132,7 @@ class FormServiceTest extends TestCase
     public function testReadSuccess2(): void
     {
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'some-custom-address',
             'template' => $this->getFaker()->word,
         ];
@@ -148,13 +148,13 @@ class FormServiceTest extends TestCase
     {
         $this->expectException(FormNotFoundException::class);
 
-        $this->service->read(['title' => $this->getFaker()->title]);
+        $this->service->read(['title' => $this->getFaker()->word]);
     }
 
     public function testUpdate(): void
     {
         $form = $this->service->create([
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'some-custom-address',
             'template' => $this->getFaker()->word,
             'authorSend' => $this->getFaker()->boolean,
@@ -165,7 +165,7 @@ class FormServiceTest extends TestCase
         ]);
 
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'some-custom-address',
             'template' => $this->getFaker()->word,
             'authorSend' => $this->getFaker()->boolean,
@@ -197,7 +197,7 @@ class FormServiceTest extends TestCase
     public function testDeleteSuccess(): void
     {
         $form = $this->service->create([
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'some-custom-address',
             'template' => $this->getFaker()->word,
         ]);

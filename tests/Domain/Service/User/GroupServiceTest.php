@@ -29,7 +29,7 @@ class GroupServiceTest extends TestCase
     public function testCreateSuccess(): void
     {
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text,
             'access' => explode(' ', $this->getFaker()->text),
         ];
@@ -61,7 +61,7 @@ class GroupServiceTest extends TestCase
         $this->expectException(TitleAlreadyExistsException::class);
 
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text,
             'access' => explode(' ', $this->getFaker()->text),
         ];
@@ -80,7 +80,7 @@ class GroupServiceTest extends TestCase
     public function testReadSuccess(): void
     {
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text,
             'access' => explode(' ', $this->getFaker()->text),
         ];
@@ -104,13 +104,13 @@ class GroupServiceTest extends TestCase
     public function testUpdate(): void
     {
         $userGroup = $this->service->create([
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text,
             'access' => explode(' ', $this->getFaker()->text),
         ]);
 
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text,
             'access' => explode(' ', $this->getFaker()->text),
         ];
@@ -131,7 +131,7 @@ class GroupServiceTest extends TestCase
     public function testDelete(): void
     {
         $page = $this->service->create([
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text,
         ]);
 

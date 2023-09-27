@@ -29,7 +29,7 @@ class TaskServiceTest extends TestCase
     public function testCreateSuccess(): void
     {
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'action' => $this->getFaker()->word,
             'progress' => (float) $this->getFaker()->numberBetween(10, 100),
             'status' => \App\Domain\Types\TaskStatusType::STATUS_QUEUE,
@@ -74,7 +74,7 @@ class TaskServiceTest extends TestCase
     public function testReadSuccess(): void
     {
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'action' => $this->getFaker()->text,
             'params' => [
                 'test' => $this->getFaker()->text,
@@ -100,7 +100,7 @@ class TaskServiceTest extends TestCase
     public function testUpdateSuccess(): void
     {
         $t = $this->service->create([
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'action' => $this->getFaker()->text,
             'params' => [
                 'test' => $this->getFaker()->numberBetween(0, 1000),
@@ -109,7 +109,7 @@ class TaskServiceTest extends TestCase
         ]);
 
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'action' => $this->getFaker()->text,
             'progress' => (float) $this->getFaker()->numberBetween(10, 100),
             'status' => \App\Domain\Types\TaskStatusType::STATUS_WORK,
@@ -138,7 +138,7 @@ class TaskServiceTest extends TestCase
     public function testDeleteSuccess(): void
     {
         $t = $this->service->create([
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'action' => $this->getFaker()->text,
         ]);
 

@@ -5,7 +5,7 @@ namespace App\Domain\Service\Reference;
 use App\Domain\AbstractService;
 use App\Domain\Entities\Reference;
 use App\Domain\Repository\ReferenceRepository;
-use App\Domain\Service\Reference\Exception\AddressAlreadyExistsException;
+use App\Domain\Service\Reference\Exception\MissingTypeValueException;
 use App\Domain\Service\Reference\Exception\MissingTitleValueException;
 use App\Domain\Service\Reference\Exception\ReferenceNotFoundException;
 use App\Domain\Service\Reference\Exception\TitleAlreadyExistsException;
@@ -33,12 +33,15 @@ class ReferenceService extends AbstractService
         $default = [
             'type' => '',
             'title' => '',
-            'value' => '',
-            'order' => '',
-            'status' => '',
+            'value' => [],
+            'order' => 1,
+            'status' => true,
         ];
         $data = array_merge($default, $data);
 
+        if (!$data['type']) {
+            throw new MissingTypeValueException();
+        }
         if ($data['title'] && $this->service->findOneByTitle($data['title']) !== null) {
             throw new TitleAlreadyExistsException();
         }
@@ -92,7 +95,7 @@ class ReferenceService extends AbstractService
         try {
             switch (true) {
                 case !is_array($data['uuid']) && $data['uuid'] !== null:
-                case !is_array($data['title']) && $data['title'] !== null:
+                case !is_array($data['title']) && $data['title'] !== null && $data['type'] !== null:
                     $page = $this->service->findOneBy($criteria);
 
                     if (empty($page)) {
@@ -131,6 +134,7 @@ class ReferenceService extends AbstractService
                 'title' => null,
                 'value' => null,
                 'order' => null,
+                'status' => null,
             ];
             $data = array_merge($default, $data);
 
@@ -152,6 +156,9 @@ class ReferenceService extends AbstractService
                 }
                 if ($data['order'] !== null) {
                     $entity->setOrder(+$data['order']);
+                }
+                if ($data['status'] !== null) {
+                    $entity->setStatus($data['status']);
                 }
 
                 $this->entityManager->flush();

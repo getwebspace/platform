@@ -36,10 +36,11 @@ class Category extends AbstractEntity
      */
     public function setAddress(string $address)
     {
-        if ($this->checkStrLenMax($address, 1000)) {
-            $this->address = $this->getAddressByValue($address, $this->getTitle());
+        if ($this->checkStrLenMax($address, 1000) && $this->validText($address)) {
+            $this->address = $this->getAddressByValue($address, str_replace('/', '-', $this->getTitle()));
+        } else {
+            $this->address = $this->getAddressByValue(str_replace('/', '-', $this->getTitle()));
         }
-
         return $this;
     }
 
@@ -61,7 +62,7 @@ class Category extends AbstractEntity
      */
     public function setTitle(string $title)
     {
-        if ($this->checkStrLenMax($title, 255)) {
+        if ($this->checkStrLenMax($title, 255) && $this->validName($title)) {
             $this->title = $title;
         }
 

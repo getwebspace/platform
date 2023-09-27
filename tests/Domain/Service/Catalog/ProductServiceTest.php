@@ -31,7 +31,7 @@ class ProductServiceTest extends TestCase
     {
         $data = [
             'category' => $this->getFaker()->uuid,
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductTypeType::LIST),
             'description' => $this->getFaker()->text(100),
             'extra' => $this->getFaker()->text(100),
@@ -66,7 +66,7 @@ class ProductServiceTest extends TestCase
             'order' => $this->getFaker()->numberBetween(1, 10),
             'date' => $this->getFaker()->dateTime,
             'meta' => [
-                'title' => $this->getFaker()->title,
+                'title' => $this->getFaker()->word,
                 'description' => $this->getFaker()->text,
                 'keywords' => $this->getFaker()->words(5, true),
             ],
@@ -155,7 +155,7 @@ class ProductServiceTest extends TestCase
         $this->expectException(AddressAlreadyExistsException::class);
 
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'some-custom-address',
             'date' => 'now',
             'external_id' => $this->getFaker()->word,
@@ -176,7 +176,7 @@ class ProductServiceTest extends TestCase
     public function testReadSuccess1(): void
     {
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'some-custom-address',
             'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductStatusType::LIST),
         ];
@@ -191,7 +191,7 @@ class ProductServiceTest extends TestCase
     public function testReadSuccess2(): void
     {
         $data = [
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'some-custom-address',
             'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductStatusType::LIST),
         ];
@@ -206,14 +206,14 @@ class ProductServiceTest extends TestCase
     {
         $this->expectException(ProductNotFoundException::class);
 
-        $this->service->read(['title' => $this->getFaker()->title]);
+        $this->service->read(['title' => $this->getFaker()->word]);
     }
 
     public function testUpdate(): void
     {
         $product = $this->service->create([
             'category' => $this->getFaker()->uuid,
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductTypeType::LIST),
             'description' => $this->getFaker()->text(100),
             'extra' => $this->getFaker()->text(100),
@@ -247,7 +247,7 @@ class ProductServiceTest extends TestCase
             'order' => $this->getFaker()->numberBetween(1, 10),
             'date' => $this->getFaker()->dateTime,
             'meta' => [
-                'title' => $this->getFaker()->title,
+                'title' => $this->getFaker()->word,
                 'description' => $this->getFaker()->text,
                 'keywords' => $this->getFaker()->words(5, true),
             ],
@@ -257,7 +257,7 @@ class ProductServiceTest extends TestCase
 
         $data = [
             'category' => $this->getFaker()->uuid,
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductTypeType::LIST),
             'description' => $this->getFaker()->text(100),
             'extra' => $this->getFaker()->text(100),
@@ -291,7 +291,7 @@ class ProductServiceTest extends TestCase
             'order' => $this->getFaker()->numberBetween(1, 10),
             'date' => $this->getFaker()->dateTime,
             'meta' => [
-                'title' => $this->getFaker()->title,
+                'title' => $this->getFaker()->word,
                 'description' => $this->getFaker()->text,
                 'keywords' => $this->getFaker()->words(5, true),
             ],
@@ -343,7 +343,7 @@ class ProductServiceTest extends TestCase
     public function testDeleteSuccess(): void
     {
         $product = $this->service->create([
-            'title' => $this->getFaker()->title,
+            'title' => $this->getFaker()->word,
             'address' => 'some-custom-address',
             'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductStatusType::LIST),
         ]);

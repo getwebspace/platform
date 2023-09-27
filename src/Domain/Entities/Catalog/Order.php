@@ -34,7 +34,7 @@ class Order extends AbstractEntity
      */
     public function setSerial($serial)
     {
-        if (is_string($serial) && $this->checkStrLenMax($serial, 12) || is_int($serial)) {
+        if ((is_string($serial) && $this->checkStrLenMax($serial, 12)) || is_int($serial)) {
             $this->serial = (string) $serial;
         }
 
@@ -130,15 +130,15 @@ class Order extends AbstractEntity
         return $this->shipping;
     }
 
-    #[ORM\Column(type: 'string', length: 500, options: ['default' => ''])]
-    protected string $comment;
+    #[ORM\Column(type: 'string', length: 1000, options: ['default' => ''])]
+    protected string $comment = '';
 
     /**
      * @return $this
      */
     public function setComment(string $comment)
     {
-        if ($this->checkStrLenMax($comment, 500)) {
+        if ($this->checkStrLenMax($comment, 1000) && $this->validText($comment)) {
             $this->comment = $comment;
         }
 
@@ -312,7 +312,7 @@ class Order extends AbstractEntity
         return $this->external_id;
     }
 
-    #[ORM\Column(type: 'string', length: 50, options: ['default' => 'manual'])]
+    #[ORM\Column(type: 'string', length: 64, options: ['default' => 'manual'])]
     protected string $export = 'manual';
 
     /**
@@ -320,7 +320,9 @@ class Order extends AbstractEntity
      */
     public function setExport(string $export)
     {
-        $this->export = $export;
+        if ($this->checkStrLenMax($export, 64)) {
+            $this->export = $export;
+        }
 
         return $this;
     }
@@ -330,7 +332,7 @@ class Order extends AbstractEntity
         return $this->export;
     }
 
-    #[ORM\Column(type: 'string', length: 500, options: ['default' => ''])]
+    #[ORM\Column(type: 'string', length: 512, options: ['default' => ''])]
     protected string $system = '';
 
     /**
@@ -338,7 +340,9 @@ class Order extends AbstractEntity
      */
     public function setSystem(string $system)
     {
-        $this->system = $system;
+        if ($this->checkStrLenMax($system, 512) && $this->validText($system)) {
+            $this->system = $system;
+        }
 
         return $this;
     }
