@@ -2,6 +2,4 @@
 
 namespace App\Domain;
 
-abstract class AbstractNotFoundException extends AbstractException
-{
-}
+abstract class AbstractNotFoundException extends AbstractException {}

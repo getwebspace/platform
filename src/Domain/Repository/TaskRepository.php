@@ -12,6 +12,4 @@ use App\Domain\Entities\Task;
  * @method Task[]    findAll()
  * @method Task[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class TaskRepository extends AbstractRepository
-{
-}
+class TaskRepository extends AbstractRepository {}

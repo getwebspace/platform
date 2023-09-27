@@ -2,7 +2,6 @@
 
 namespace App\Application\Actions\Cup\Reference;
 
-use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Service\Reference\Exception\ReferenceNotFoundException;
 
 class ReferenceDeleteAction extends ReferenceAction

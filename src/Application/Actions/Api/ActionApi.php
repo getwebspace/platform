@@ -4,6 +4,4 @@ namespace App\Application\Actions\Api;
 
 use App\Domain\AbstractAction;
 
-abstract class ActionApi extends AbstractAction
-{
-}
+abstract class ActionApi extends AbstractAction {}

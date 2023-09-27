@@ -41,6 +41,7 @@ class Category extends AbstractEntity
         } else {
             $this->address = $this->getAddressByValue(str_replace('/', '-', $this->getTitle()));
         }
+
         return $this;
     }
 

@@ -6,7 +6,6 @@ use App\Domain\AbstractEntity;
 use App\Domain\Entities\Publication\Category as PublicationCategory;
 use App\Domain\Traits\FileTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\UuidInterface as Uuid;
 
 #[ORM\Table(name: 'publication')]
 #[ORM\Entity(repositoryClass: 'App\Domain\Repository\PublicationRepository')]

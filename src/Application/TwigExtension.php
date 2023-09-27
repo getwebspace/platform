@@ -14,8 +14,8 @@ use App\Domain\Service\Page\PageService;
 use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
 use App\Domain\Service\Publication\PublicationService;
 use App\Domain\Service\Reference\ReferenceService;
-use App\Domain\Service\User\UserService;
 use App\Domain\Service\User\GroupService as UserGroupService;
+use App\Domain\Service\User\UserService;
 use App\Domain\Types\ReferenceTypeType;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
@@ -458,7 +458,7 @@ class TwigExtension extends AbstractExtension
     // fetch reference by type
     public function reference(string $type = null)
     {
-        if (in_array($type, ReferenceTypeType::LIST)) {
+        if (in_array($type, ReferenceTypeType::LIST, true)) {
             $referenceService = $this->container->get(ReferenceService::class);
 
             return $referenceService->read([
@@ -636,11 +636,10 @@ class TwigExtension extends AbstractExtension
                 $length_class = $this->reference(ReferenceTypeType::TYPE_LENGTH_CLASS)->firstWhere('value.unit', $dimension['length_class']);
                 $length_value = $length_class ? $length_class->getValue()['value'] : 1;
 
-                return (
+                return
                     ($dimension['length'] * $length_value) *
                     ($dimension['width'] * $length_value) *
-                    ($dimension['height'] * $length_value) / $ratio
-                );
+                    ($dimension['height'] * $length_value) / $ratio;
             }
         }
 

@@ -12,6 +12,4 @@ use App\Domain\Entities\User\Token as UserToken;
  * @method UserToken[]    findAll()
  * @method UserToken[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class TokenRepository extends AbstractRepository
-{
-}
+class TokenRepository extends AbstractRepository {}

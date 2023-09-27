@@ -255,9 +255,12 @@ class Product extends AbstractEntity
         switch ($type) {
             case 'price':
                 $price = $this->price;
+
                 break;
+
             case 'price_wholesale':
                 $price = $this->priceWholesale;
+
                 break;
         }
 
@@ -366,13 +369,17 @@ class Product extends AbstractEntity
         return $this->getWeight() . (!empty($this->dimension['weight_class']) ? ' ' . $this->dimension['weight_class'] : '');
     }
 
-    /** @deprecated  */
+    /**
+     * @deprecated
+     */
     public function getVolume(): float|string
     {
         return $this->getWeight();
     }
 
-    /** @deprecated  */
+    /**
+     * @deprecated
+     */
     public function getVolumeWithUnit(): string
     {
         return $this->getWeightWithClass();

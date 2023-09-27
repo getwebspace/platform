@@ -3,13 +3,12 @@
 namespace tests\Domain\Service\Reference;
 
 use App\Domain\Entities\Reference;
-use App\Domain\Entities\Task;
 use App\Domain\Repository\ReferenceRepository;
+use App\Domain\Service\Reference\Exception\MissingTitleValueException;
 use App\Domain\Service\Reference\Exception\MissingTypeValueException;
 use App\Domain\Service\Reference\Exception\ReferenceNotFoundException;
-use App\Domain\Service\Reference\ReferenceService;
 use App\Domain\Service\Reference\Exception\TitleAlreadyExistsException;
-use App\Domain\Service\Reference\Exception\MissingTitleValueException;
+use App\Domain\Service\Reference\ReferenceService;
 use tests\TestCase;
 
 /**

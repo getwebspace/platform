@@ -12,6 +12,4 @@ use App\Domain\Entities\FileRelation;
  * @method FileRelation[]    findAll()
  * @method FileRelation[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class FileRelationRepository extends AbstractRepository
-{
-}
+class FileRelationRepository extends AbstractRepository {}

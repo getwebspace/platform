@@ -12,6 +12,4 @@ use App\Domain\Entities\Notification;
  * @method Notification[]    findAll()
  * @method Notification[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class NotificationRepository extends AbstractRepository
-{
-}
+class NotificationRepository extends AbstractRepository {}

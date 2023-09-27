@@ -5,10 +5,10 @@ namespace App\Application\Actions\Cup;
 use App\Domain\AbstractAction;
 use App\Domain\Entities\User;
 use App\Domain\Service\Parameter\ParameterService;
+use App\Domain\Service\Reference\ReferenceService;
 use App\Domain\Service\User\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\UserService;
-use App\Domain\Service\Reference\ReferenceService;
 
 class SystemPageAction extends AbstractAction
 {

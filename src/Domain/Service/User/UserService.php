@@ -430,8 +430,6 @@ class UserService extends AbstractService
      * @param string|User|Uuid $entity
      *
      * @throws UserNotFoundException
-     *
-     * @return User
      */
     public function block($entity): ?User
     {

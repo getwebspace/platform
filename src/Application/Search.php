@@ -103,7 +103,7 @@ class Search
 
                 if (mb_stristr($line, $search)) {
                     ++$wordCount;
-                    $wordCount = $wordCount * $mustNotFound;
+                    $wordCount *= $mustNotFound;
                 }
             }
 

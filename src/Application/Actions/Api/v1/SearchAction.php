@@ -21,7 +21,8 @@ class SearchAction extends ActionApi
             $query_strong = (bool) $this->getParam('query_strong', $this->getParam('qs', false));
             $limit = (int) $this->getParam('limit', $this->parameter('search_limit', 10));
 
-            if ($query && Search::isPossible()) {$services = [
+            if ($query && Search::isPossible()) {
+                $services = [
                     'page' => $this->container->get(PageService::class),
                     'publication' => $this->container->get(PublicationService::class),
                     'catalog_product' => $this->container->get(CatalogProductService::class),

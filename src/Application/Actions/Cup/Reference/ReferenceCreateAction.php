@@ -37,7 +37,7 @@ class ReferenceCreateAction extends ReferenceAction
 
         return $this->respondWithTemplate("cup/reference/{$entity}/form.twig", [
             'list' => $this->referenceService->read([
-                'type' => $this->getReferenceType($entity)
+                'type' => $this->getReferenceType($entity),
             ]),
         ]);
     }

@@ -12,6 +12,4 @@ use App\Domain\Entities\GuestBook;
  * @method GuestBook[]    findAll()
  * @method GuestBook[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class GuestBookRepository extends AbstractRepository
-{
-}
+class GuestBookRepository extends AbstractRepository {}

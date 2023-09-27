@@ -92,9 +92,7 @@ class IntegrationService extends AbstractService
         }
     }
 
-    public function update($entity, array $data = []): void
-    {
-    }
+    public function update($entity, array $data = []): void {}
 
     /**
      * @param mixed $entity

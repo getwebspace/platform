@@ -2,6 +2,4 @@
 
 namespace App\Domain;
 
-abstract class AbstractHttpException extends AbstractException
-{
-}
+abstract class AbstractHttpException extends AbstractException {}

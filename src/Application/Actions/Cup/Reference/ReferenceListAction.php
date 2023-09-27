@@ -11,7 +11,7 @@ class ReferenceListAction extends ReferenceAction
         return $this->respondWithTemplate("cup/reference/{$entity}/index.twig", [
             'list' => $this->referenceService->read([
                 'type' => $this->getReferenceType($entity),
-            ])
+            ]),
         ]);
     }
 }

@@ -104,8 +104,6 @@ class Reference extends AbstractEntity
     protected bool $status = false;
 
     /**
-     * @param mixed $value
-     *
      * @return $this
      */
     public function setStatus(mixed $value): static

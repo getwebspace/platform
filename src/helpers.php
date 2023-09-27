@@ -383,10 +383,12 @@ if (!function_exists('array_serialize')) {
         switch (true) {
             case is_a($array, Collection::class):
                 $array = $array->all();
+
                 break;
 
             case is_a($array, AbstractEntity::class):
                 $array = $array->toArray();
+
                 break;
         }
 
@@ -406,7 +408,7 @@ if (!function_exists('array_serialize')) {
 
                 case is_a($item, \Ramsey\Uuid\Uuid::class):
                 case is_a($item, \Ramsey\Uuid\Lazy\LazyUuidFromString::class):
-                   $array[$key] = (string) $item;
+                    $array[$key] = (string) $item;
 
                     break;
 
