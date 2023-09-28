@@ -5,7 +5,7 @@ services:
         build:
             context: .
             dockerfile: docker/Dockerfile
-        image: ghcr.io/getwebspace/platform:latest
+        image: ghcr.io/getwebspace/platform:dev
         environment:
             - TEST=1
             - DEBUG=1
