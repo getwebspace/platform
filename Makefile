@@ -1,5 +1,6 @@
 up:
-	@docker-compose -f docker-compose.dev.yml up -d --build
+	@docker-compose -f docker-compose.dev.yml up -d || :
+	@docker-compose -f docker-compose.dev.yml exec platform composer install || :
 	@chmod -R 0777 plugin || :
 	@chmod -R 0777 public/resource || :
 	@chmod -R 0777 theme || :

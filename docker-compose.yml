@@ -18,9 +18,9 @@ services:
             - ./src:/var/container/src:ro
             - ./tests:/var/container/tests:ro
             - ./theme:/var/container/theme:rw
+            - ./vendor:/var/container/vendor:rw
             - ./var:/var/container/var:rw
             - ./var/upload:/var/container/public/uploads:rw
-            - ./vendor:/var/container/vendor:rw
             - ./composer.json:/var/container/composer.json:rw
             - ./composer.lock:/var/container/composer.lock:rw
             - ./phpunit.xml:/var/container/phpunit.xml:rw

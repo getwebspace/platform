@@ -11,10 +11,9 @@
     ],
     "require": {
         "php": ">=8.2",
+        "ext-gd": "*",
         "ext-pdo": "*",
         "ext-json": "*",
-        "ext-yaml": "*",
-        "ext-soap": "*",
         "ext-curl": "*",
         "ext-openssl": "*",
         "slim/slim": "^4.12.0",

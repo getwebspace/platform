@@ -148,6 +148,11 @@ abstract class AbstractAction
         $this->error = array_merge($this->error, $check);
     }
 
+    protected function hasError(): bool
+    {
+        return !!$this->error;
+    }
+
     public function __invoke(Request $request, Response $response, array $args): Response
     {
         $this->request = $request;
