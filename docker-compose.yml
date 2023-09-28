@@ -24,6 +24,6 @@ services:
             - ./composer.json:/var/container/composer.json:rw
             - ./composer.lock:/var/container/composer.lock:rw
             - ./phpunit.xml:/var/container/phpunit.xml:rw
-        restart: always
+            - ./migrations.json:/var/container/migrations.json:rw
         ports:
             - 9000:80

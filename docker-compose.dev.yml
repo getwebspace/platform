@@ -5,9 +5,12 @@ services:
         build:
             context: .
             dockerfile: docker/Dockerfile
-        image: ghcr.io/getwebspace/platform:test
+        image: ghcr.io/getwebspace/platform:latest
         environment:
             - TEST=1
+            - DEBUG=1
+            # - DATABASE=mysql://user:password@hostname/database
+            # - SIMPLE_PHONE_CHECK=1
         volumes:
             - ./bin:/var/container/bin:rw
             - ./config:/var/container/config:rw
@@ -22,3 +25,6 @@ services:
             - ./composer.json:/var/container/composer.json:rw
             - ./composer.lock:/var/container/composer.lock:rw
             - ./phpunit.xml:/var/container/phpunit.xml:rw
+            - ./migrations.json:/var/container/migrations.json:rw
+        ports:
+            - 9000:80
