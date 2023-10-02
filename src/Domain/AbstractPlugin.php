@@ -201,7 +201,6 @@ abstract class AbstractPlugin
         $default = [
             'handler' => function (Request $request, Response $response) use ($self) {
                 $response = $response->withHeader('Content-Type', 'text/plain');
-
                 $response->getBody()->write(
                     'This is empty route for plugin: ' . $self::NAME . PHP_EOL .
                     'Change "handler" key in function arguments enableNavigationItem(["handler" => ??]).'

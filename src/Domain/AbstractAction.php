@@ -183,8 +183,10 @@ abstract class AbstractAction
                 $error['error']['type'] = self::NOT_IMPLEMENTED;
             }
 
+            $flags = ($_ENV['DEBUG'] ?? false) ? JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE : JSON_UNESCAPED_UNICODE;
+
             $result = new Response($error['code']);
-            $result->getBody()->write(json_encode($error, JSON_PRETTY_PRINT));
+            $result->getBody()->write(json_encode($error, $flags));
             $result = $result->withHeader('Content-Type', 'application/json');
         }
 
@@ -435,8 +437,10 @@ abstract class AbstractAction
 
     protected function respondWithJson(array $array = []): Response
     {
+        $flags = ($_ENV['DEBUG'] ?? false) ? JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE : JSON_UNESCAPED_UNICODE;
+
         $this->response->getBody()->write(
-            json_encode(array_serialize($array), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+            json_encode(array_serialize($array), $flags)
         );
 
         return $this->response->withHeader('Content-Type', 'application/json; charset=utf-8');
