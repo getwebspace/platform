@@ -51,9 +51,12 @@ class AuthorizationAPIMiddleware extends AbstractMiddleware
                 return $handler->handle($request);
             }
 
-            return (new Response())
-                ->withHeader('Content-Type', 'application/json; charset=utf-8')
-                ->withStatus(401);
+            $response = new Response();
+            $response = $response->withHeader('Content-Type', 'application/json; charset=utf-8');
+            $response = $response->withStatus(401);
+            $response->getBody()->write(json_encode(['status' => 401]));
+
+            return $response;
         }
 
         return (new Response())->withStatus(200);
