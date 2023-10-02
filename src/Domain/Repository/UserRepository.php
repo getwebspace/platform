@@ -97,4 +97,31 @@ class UserRepository extends AbstractRepository
 
         return $result;
     }
+
+    public function findByFirstNameOrLastName(?string $firstname, ?string $lastname): array
+    {
+        $query = $this->createQueryBuilder('u');
+
+        if ($firstname || $lastname) {
+            if ($firstname) {
+                $query
+                    ->orWhere('u.firstname LIKE :firstname')
+                    ->setParameter('firstname', $firstname . '%');
+            }
+            if ($lastname) {
+                $query
+                    ->orWhere('u.lastname LIKE :lastname')
+                    ->setParameter('lastname', $lastname . '%');
+            }
+
+            $query
+                ->andWhere('u.status = :status')
+                ->setParameter('status', \App\Domain\Types\UserStatusType::STATUS_WORK)
+                ->setMaxResults(15);
+
+            return $query->getQuery()->getResult();
+        }
+
+        return [];
+    }
 }

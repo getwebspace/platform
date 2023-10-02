@@ -139,6 +139,8 @@ class UserService extends AbstractService
             'identifier' => null, // field for: username, email, phone
             'uuid' => null,
             'username' => null,
+            'firstname' => null,
+            'lastname' => null,
             'email' => null,
             'phone' => null,
             'country' => null,
@@ -243,6 +245,13 @@ class UserService extends AbstractService
                 }
 
                 return $user;
+            }
+
+            if (
+                !is_array($data['firstname']) && $data['firstname'] !== null
+                || !is_array($data['lastname']) && $data['lastname'] !== null
+            ) {
+                return collect($this->service->findByFirstNameOrLastName($data['firstname'], $data['lastname']));
             }
 
             return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
