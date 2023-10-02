@@ -119,7 +119,12 @@ class OrderService extends AbstractService
             $criteria['email'] = $data['email'];
         }
         if ($data['status'] !== null) {
-            $criteria['status'] = $data['status'];
+            if (
+                is_string($data['status']) && \Ramsey\Uuid\Uuid::isValid($data['status']) ||
+                is_object($data['status']) && is_a($data['status'], Uuid::class)
+            ) {
+                $criteria['status'] = $data['status'];
+            }
         }
         if ($data['external_id'] !== null) {
             $criteria['external_id'] = $data['external_id'];
