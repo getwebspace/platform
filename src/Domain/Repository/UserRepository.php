@@ -98,7 +98,7 @@ class UserRepository extends AbstractRepository
         return $result;
     }
 
-    public function findByFirstNameOrLastName(?string $firstname, ?string $lastname): array
+    public function findByFirstnameOrLastname($firstname = null, $lastname = null): array
     {
         $query = $this->createQueryBuilder('u');
 
@@ -106,12 +106,12 @@ class UserRepository extends AbstractRepository
             if ($firstname) {
                 $query
                     ->orWhere('u.firstname LIKE :firstname')
-                    ->setParameter('firstname', $firstname . '%');
+                    ->setParameter('firstname', $firstname . '%', Types::STRING);
             }
             if ($lastname) {
                 $query
                     ->orWhere('u.lastname LIKE :lastname')
-                    ->setParameter('lastname', $lastname . '%');
+                    ->setParameter('lastname', $lastname . '%', Types::STRING);
             }
 
             $query
