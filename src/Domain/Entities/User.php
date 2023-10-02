@@ -782,4 +782,39 @@ class User extends AbstractEntity
     #[ORM\OneToMany(targetEntity: '\App\Domain\Entities\Catalog\Order', mappedBy: 'user', orphanRemoval: true)]
     #[ORM\OrderBy(['date' => 'ASC'])]
     protected $orders = [];
+
+    public function toArray(): array
+    {
+        return array_serialize([
+            'uuid' => $this->uuid,
+            'username' => $this->username,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'firstname' => $this->firstname,
+            'lastname' => $this->lastname,
+            'patronymic' => $this->patronymic,
+            'birthdate' => $this->birthdate,
+            'gender' => $this->gender,
+            'country' => $this->country,
+            'city' => $this->city,
+            'address' => $this->address,
+            'postcode' => $this->postcode,
+            'additional' => $this->additional,
+            'allow_mail' => $this->allow_mail,
+            'company' => $this->company,
+            'legal' => $this->legal,
+            'website' => $this->website,
+            'source' => $this->source,
+            'language' => $this->language,
+            'status' => $this->status,
+            'group' => [
+                'uuid' => $this->group->uuid,
+                'title' => $this->group->title,
+            ],
+            'register' => $this->register,
+            'change' => $this->change,
+            'files' => $this->files,
+            'external_id' => $this->external_id,
+        ]);
+    }
 }
