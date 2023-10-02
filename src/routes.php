@@ -262,8 +262,8 @@ return function (App $app, Container $container): void {
                                 ->setName('cup:catalog:order:delete');
                             $proxy->map(['GET', 'POST'], '/{order}/invoice', \App\Application\Actions\Cup\Catalog\Order\OrderInvoiceAction::class)
                                 ->setName('cup:catalog:order:invoice');
-                            $proxy->map(['GET', 'POST'], '/{order}/shipping', \App\Application\Actions\Cup\Catalog\Order\OrderShippingAction::class)
-                                ->setName('cup:catalog:order:shipping');
+                            $proxy->map(['GET', 'POST'], '/{order}/dispatch', \App\Application\Actions\Cup\Catalog\Order\OrderDispatchAction::class)
+                                ->setName('cup:catalog:order:dispatch');
                         });
                     });
 

@@ -351,7 +351,7 @@ const SHIPPING_TEMPLATE = <<<'EOD'
     <div class="m-5">
         <div class="row">
             <div class="col-12 text-center">
-                <h3 class="font-weight-bold">{{ 'Shipping note'|locale }}</h3>
+                <h3 class="font-weight-bold">{{ 'Dispatch Note'|locale }}</h3>
                 {#<img src="/images/logo.png" style="width: 100%; max-width: 300px" />#}
             </div>
             <div class="col-6">

@@ -4,7 +4,7 @@ namespace App\Application\Actions\Cup\Catalog\Order;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
 
-class OrderShippingAction extends CatalogAction
+class OrderDispatchAction extends CatalogAction
 {
     protected function action(): \Slim\Psr7\Response
     {
@@ -12,9 +12,9 @@ class OrderShippingAction extends CatalogAction
             $order = $this->catalogOrderService->read(['uuid' => $this->resolveArg('order')]);
 
             if ($order) {
-                return $this->respondWithTemplate('cup/catalog/order/shipping.twig', [
+                return $this->respondWithTemplate('cup/catalog/order/dispatch.twig', [
                     'order' => $order,
-                    'template' => $this->parameter('catalog_shipping', ''),
+                    'template' => $this->parameter('catalog_dispatch', ''),
                 ]);
             }
         }

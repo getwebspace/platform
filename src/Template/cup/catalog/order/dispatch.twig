@@ -1,15 +1,15 @@
 {% extends 'cup/layout.twig' %}
 
-{% block title %}{{ 'Shipping note'|locale }} #{{ order.external_id ?: order.serial }}{% endblock %}
+{% block title %}{{ 'Dispatch Note'|locale }} #{{ order.external_id ?: order.serial }}{% endblock %}
 
 {% block breadcrumb %}
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">{{ 'Shipping note'|locale }}</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Dispatch Note'|locale }}</h2>
             </div>
             <div class="ml-md-auto py-2 py-md-0">
-                <a href="#" onclick="print_element('#invoice')" class="btn btn-light">
+                <a href="#" onclick="print_element('#dispatch')" class="btn btn-light">
                     {{ 'Print'|locale }}
                 </a>
                 <a href="/cup/catalog/order/{{ order.uuid }}/edit" class="btn btn-secondary">
@@ -21,7 +21,7 @@
 {% endblock %}
 
 {% block content %}
-    <div id="invoice" class="card card-invoice">
+    <div id="dispatch" class="card">
         {{ include(template_from_string(template)) }}
     </div>
 {% endblock %}

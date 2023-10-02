@@ -4,7 +4,7 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">{{ 'Shipping List'|locale }}</h2>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Dispatch template'|locale }}</h2>
             </div>
         </div>
     </div>
@@ -13,18 +13,18 @@
 {% block content %}
     <div class="row">
         <div class="col-md-12">
-            <form action="/cup/parameters?return=/cup/reference/order-shipping" method="post">
+            <form action="/cup/parameters?return=/cup/reference/order-dispatch" method="post">
                 <div class="card">
                     <div class="card-body p-0">
-                        <div id="invoice">
-                            <style>#invoice [data-input] {padding: 0;}</style>
+                        <div id="shipping">
+                            <style>#shipping [data-input] {padding: 0;}</style>
 
                             {% include 'cup/editor.twig' with {
-                                'name': 'catalog[shipping]',
+                                'name': 'catalog[dispatch]',
                                 'args': {
                                     'id': 'code',
                                     'text_mode': true,
-                                    'value': parameter('catalog_shipping', ''),
+                                    'value': parameter('catalog_dispatch', ''),
                                 }
                             } %}
                         </div>
