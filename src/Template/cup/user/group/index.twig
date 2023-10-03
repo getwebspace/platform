@@ -35,7 +35,7 @@
                             {% for group in groups %}
                                 {% set users_in_group = users.where('group', group)|count %}
                                 <div class="row">
-                                    <div class="col-6 col-sm">{{ group.title }}</div>
+                                    <div class="col-6 col-sm">{{ group.title|u.truncate(25, '...') }}</div>
                                     <div class="col-sm-2 text-center d-none d-sm-block">{{ users_in_group }}</div>
                                     <div class="col-sm-2 d-none d-sm-block">
                                         <code>
