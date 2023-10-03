@@ -243,7 +243,6 @@ class ProductService extends AbstractService
         try {
             switch (true) {
                 case !is_array($data['uuid']) && $data['uuid'] !== null:
-                case !is_array($data['title']) && $data['title'] !== null:
                 case !is_array($data['address']) && $data['address'] !== null:
                 case !is_array($data['vendorcode']) && $data['vendorcode'] !== null:
                 case !is_array($data['barcode']) && $data['barcode'] !== null:
@@ -255,6 +254,9 @@ class ProductService extends AbstractService
                     }
 
                     return $product;
+
+                case !is_array($data['title']) && $data['title'] !== null:
+                    return collect($this->service->findByTitle($data['title'], $data['limit'], $data['offset']));
 
                 default:
                     return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));

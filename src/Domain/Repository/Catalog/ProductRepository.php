@@ -66,4 +66,24 @@ class ProductRepository extends AbstractRepository
 
         return $result;
     }
+
+    public function findByTitle($title = null, $limit = 1000, $offset = 0): array
+    {
+        $query = $this->createQueryBuilder('c');
+
+        if ($title) {
+            $query
+                ->where('c.title = :title1 OR c.title LIKE :title2')
+                ->setParameter('title1', $title, Types::STRING)
+                ->setParameter('title2', $title . '%', Types::STRING)
+                ->andWhere('c.status = :status')
+                ->setParameter('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK)
+                ->setMaxResults($limit)
+                ->setFirstResult($offset);
+
+            return $query->getQuery()->getResult();
+        }
+
+        return [];
+    }
 }
