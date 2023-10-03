@@ -189,6 +189,17 @@ class SystemPageAction extends AbstractAction
                     ]));
                 }
 
+                $address_formats = [
+                    ['title' => __('Default'),                  'value' => ['format' => "{address}"]],
+                    ['title' => __('Internal address'),         'value' => ['format' => "{firstname} {lastname}\n{address}"]],
+                    ['title' => __('International address'),    'value' => ['format' => "{firstname} {lastname}\n{company.title}\n{address}\n{city} {postcode}\n{country}"]],
+                ];
+                foreach ($address_formats as $el) {
+                    $referenceService->create(array_merge($el, [
+                        'type' => \App\Domain\Types\ReferenceTypeType::TYPE_ADDRESS_FORMAT,
+                    ]));
+                }
+
                 $this->container->get(ParameterService::class)->create([
                     'key' => 'catalog_invoice',
                     'value' => INVOICE_TEMPLATE,
