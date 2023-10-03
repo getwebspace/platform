@@ -38,92 +38,96 @@ class EntityAction extends ActionApi
             $params = $this->getParamsQuery();
             $service = $this->getService($entity);
 
-            switch ($this->request->getMethod()) {
-                case 'GET':
-                    try {
-                        $result = $service->read($params);
-                    } catch (AbstractNotFoundException|Exception $e) {
-                        $status = 404;
-                    }
-
-                    break;
-
-                case 'POST':
-                case 'PUT':
-                    if ($apikey) {
-                        $result = $service->create($this->getParamsBody());
-                        $result = $this->processEntityFiles($result);
-
-                        $status = 201;
-
-                        $this->container->get(\App\Application\PubSub::class)->publish('api:' . str_replace('/', ':', $entity) . ':create', $result);
-                        $this->logger->notice('Create entity via API', $params);
-                    } else {
-                        $status = 405;
-                    }
-
-                    break;
-
-                case 'PATCH':
-                    if ($apikey) {
+            if ($service !== null) {
+                switch ($this->request->getMethod()) {
+                    case 'GET':
                         try {
                             $result = $service->read($params);
-
-                            if ($result) {
-                                if (!is_array($result) && !is_a($result, Collection::class)) {
-                                    $result = [$result];
-                                }
-
-                                foreach ($result as &$item) {
-                                    $item = $service->update($item, $this->getParamsBody());
-                                    $item = $this->processEntityFiles($item);
-                                }
-
-                                $status = 202;
-
-                                $this->container->get(\App\Application\PubSub::class)->publish('api:' . str_replace('/', ':', $entity) . ':edit', $result);
-                                $this->logger->notice('Update entity via API', $params);
-                            } else {
-                                $status = 409;
-                            }
                         } catch (AbstractNotFoundException|Exception $e) {
                             $status = 404;
                         }
-                    } else {
-                        $status = 405;
-                    }
 
-                    break;
+                        break;
 
-                case 'DELETE':
-                    if ($apikey) {
-                        try {
-                            $result = $service->read($params);
+                    case 'POST':
+                    case 'PUT':
+                        if ($apikey) {
+                            $result = $service->create($this->getParamsBody());
+                            $result = $this->processEntityFiles($result);
 
-                            if ($result) {
-                                if (!is_array($result) && !is_a($result, Collection::class)) {
-                                    $result = [$result];
-                                }
+                            $status = 201;
 
-                                foreach ($result as &$item) {
-                                    $item = $service->delete($item);
-                                }
-
-                                $status = 410;
-
-                                $this->container->get(\App\Application\PubSub::class)->publish('api:' . str_replace('/', ':', $entity) . ':delete', $result);
-                                $this->logger->notice('Delete entity via API', $params);
-                            } else {
-                                $status = 409;
-                            }
-                        } catch (AbstractNotFoundException|Exception $e) {
-                            $status = 404;
+                            $this->container->get(\App\Application\PubSub::class)->publish('api:' . str_replace('/', ':', $entity) . ':create', $result);
+                            $this->logger->notice('Create entity via API', $params);
+                        } else {
+                            $status = 405;
                         }
-                    } else {
-                        $status = 405;
-                    }
 
-                    break;
+                        break;
+
+                    case 'PATCH':
+                        if ($apikey) {
+                            try {
+                                $result = $service->read($params);
+
+                                if ($result) {
+                                    if (!is_array($result) && !is_a($result, Collection::class)) {
+                                        $result = [$result];
+                                    }
+
+                                    foreach ($result as &$item) {
+                                        $item = $service->update($item, $this->getParamsBody());
+                                        $item = $this->processEntityFiles($item);
+                                    }
+
+                                    $status = 202;
+
+                                    $this->container->get(\App\Application\PubSub::class)->publish('api:' . str_replace('/', ':', $entity) . ':edit', $result);
+                                    $this->logger->notice('Update entity via API', $params);
+                                } else {
+                                    $status = 409;
+                                }
+                            } catch (AbstractNotFoundException|Exception $e) {
+                                $status = 404;
+                            }
+                        } else {
+                            $status = 405;
+                        }
+
+                        break;
+
+                    case 'DELETE':
+                        if ($apikey) {
+                            try {
+                                $result = $service->read($params);
+
+                                if ($result) {
+                                    if (!is_array($result) && !is_a($result, Collection::class)) {
+                                        $result = [$result];
+                                    }
+
+                                    foreach ($result as &$item) {
+                                        $item = $service->delete($item);
+                                    }
+
+                                    $status = 410;
+
+                                    $this->container->get(\App\Application\PubSub::class)->publish('api:' . str_replace('/', ':', $entity) . ':delete', $result);
+                                    $this->logger->notice('Delete entity via API', $params);
+                                } else {
+                                    $status = 409;
+                                }
+                            } catch (AbstractNotFoundException|Exception $e) {
+                                $status = 404;
+                            }
+                        } else {
+                            $status = 405;
+                        }
+
+                        break;
+                }
+            } else {
+                $status = 404;
             }
         } catch (ContainerExceptionInterface|AbstractException $exception) {
             $status = 503;
