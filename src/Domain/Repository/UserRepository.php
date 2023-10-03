@@ -98,26 +98,29 @@ class UserRepository extends AbstractRepository
         return $result;
     }
 
-    public function findByFirstnameOrLastname($firstname = null, $lastname = null): array
+    public function findByFirstnameOrLastname($firstname, $lastname, $limit = 1000, $offset = 0): array
     {
         $query = $this->createQueryBuilder('u');
 
         if ($firstname || $lastname) {
             if ($firstname) {
                 $query
-                    ->orWhere('u.firstname LIKE :firstname')
-                    ->setParameter('firstname', $firstname . '%', Types::STRING);
+                    ->orWhere('u.firstname = :firstname1 OR u.firstname LIKE :firstname2')
+                    ->setParameter('firstname1', $firstname, Types::STRING)
+                    ->setParameter('firstname2', $firstname . '%', Types::STRING);
             }
             if ($lastname) {
                 $query
-                    ->orWhere('u.lastname LIKE :lastname')
-                    ->setParameter('lastname', $lastname . '%', Types::STRING);
+                    ->orWhere('u.lastname = :lastname1 OR u.lastname LIKE :lastname2')
+                    ->setParameter('lastname1', $lastname, Types::STRING)
+                    ->setParameter('lastname2', $lastname . '%', Types::STRING);
             }
 
             $query
                 ->andWhere('u.status = :status')
                 ->setParameter('status', \App\Domain\Types\UserStatusType::STATUS_WORK)
-                ->setMaxResults(15);
+                ->setMaxResults($limit)
+                ->setFirstResult($offset);
 
             return $query->getQuery()->getResult();
         }

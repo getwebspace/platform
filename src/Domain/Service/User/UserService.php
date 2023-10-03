@@ -251,7 +251,7 @@ class UserService extends AbstractService
                 !is_array($data['firstname']) && $data['firstname'] !== null
                 || !is_array($data['lastname']) && $data['lastname'] !== null
             ) {
-                return collect($this->service->findByFirstnameOrLastname($data['firstname'], $data['lastname']));
+                return collect($this->service->findByFirstnameOrLastname($data['firstname'], $data['lastname'], $data['limit'], $data['offset']));
             }
 
             return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
