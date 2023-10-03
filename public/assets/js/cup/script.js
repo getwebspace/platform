@@ -394,99 +394,210 @@ $(() => {
 
     // order form
     {
-        let
-            $table = $('[data-table="order"]'),
-            $modal = $('[data-order-modal-products].modal'),
-            $category = $modal.find('[type="select"][name="category"]'),
-            $product = $modal.find('[type="select"][name="product"]'),
-            $option = $('<option>'),
-            $quantity = $modal.find('[type="number"]'),
-            $btnSuccess = $modal.find('button')
-        ;
+        // user select
+        {
+            let $modal = $('[data-order-modal-user]');
 
-        $table.find('tr [type="number"]').on('change', (e) => {
-            let $el = $(e.currentTarget);
+            // open modal
+            $('[data-btn-order-modal-user]').on('click', () => {
+                $modal.modal()
+            });
 
-            if ($el.val() <= 0) {
-                $el.parents('tr').remove();
-            }
-        });
+            // select user
+            $modal.find('input').on('keyup', throttle((e) => {
+                let $list = $modal.find('#users');
 
-        $('[data-btn-order-modal-products]').click((e) => {
-            e.preventDefault();
-            this.blur();
-            $category.html('');
+                if (e.target.value.trim().length) {
+                    $.get('/cup/api/v1/user', {firstname: e.target.value.trim()}, (res) => {
+                        if (res.status === 200) {
+                            $list.html('');
 
-            $.get('/cup/api/v1/catalog/category', (res) => {
-                if (res.status === 200) {
-                    (function renderTree(list, parent = '00000000-0000-0000-0000-000000000000', title = '') {
-                        let buf = 0;
-
-                        for (let item of list) {
-                            if (item.parent === parent) {
-                                let $el = $option.clone().text((title + ' ' + item.title).trim()).val(item.uuid);
-
-                                $category.append($el);
-
-                                if (renderTree(list, item.uuid, (title + ' ' + item.title).trim()) !== 0) {
-                                    $el.remove();
-                                }
-
-                                buf++;
+                            for (let item of res.data) {
+                                $list.append(
+                                    $('<option>')
+                                        .attr('data-json', JSON.stringify(item))
+                                        .attr('value', item.name.full)
+                                        .text([item.phone, item.email].join(' ').trim())
+                                )
                             }
                         }
-
-                        return buf;
-                    })(res.data);
-
-                    $category.trigger('change').trigger('change.select2');
-                    $modal.modal();
+                    });
                 }
+            }, 300))
+
+            // confirm select
+            $modal.find('button').on('click', (e) => {
+                let value = $modal.find('input').val();
+                let $option = $modal.find(`#users option[value="${value}"]`)
+
+                if ($option) {
+                    let json = $option.attr('data-json'),
+                        data = JSON.parse(json);
+
+                    // main form
+                    $('[name="user_uuid"]').val(data.uuid);
+                    $('[name="delivery[client]"]').val(value);
+                    $('[name="phone"]').val(data.phone);
+                    $('[name="email"]').val(data.email);
+                    $('[name="delivery[address]"]').val('');
+
+                    // user data
+                    $('[name="user[firstname]"]').val(data.firstname);
+                    $('[name="user[lastname]"]').val(data.lastname);
+                    $('[name="user[country]"]').val(data.country);
+                    $('[name="user[city]"]').val(data.city);
+                    $('[name="user[postcode]"]').val(data.postcode);
+                    $('[name="user[address]"]').val(data.address);
+                    $('[name="user[company][title]"]').val(data.company.title);
+                    $('[name="user[group_uuid]"]').val(data.group.uuid).trigger('change.select2');
+
+                    $.modal.close();
+                }
+            })
+        }
+
+        // user address select
+        {
+            let $modal = $('[data-order-modal-user-address]');
+
+            // open modal
+            $('[data-btn-order-modal-user-address]').on('click', () => {
+                $modal.modal()
             });
-        });
 
-        $category.on('change', (e) => {
-            $product.html('').prop('disabled', true);
+            // save data
+            $modal.find('button').on('click', (e) => {
+                let template = $modal.find('select[data-address-format]').val();
 
-            $.get('/cup/api/v1/catalog/product', {category: $(e.currentTarget).val()}, (res) => {
-                if (res.status === 200) {
-                    for (let item of res.data) {
-                        $product.append(
-                            $option.clone().text(item.title).val(item.uuid).data('price', item.price)
-                        );
+                if (template) {
+                    console.log(template);
+
+                    let data = {
+                        'firstname': $modal.find('[name="user[firstname]"]').val(),
+                        'lastname': $modal.find('[name="user[lastname]"]').val(),
+                        'phone': $modal.find('[name="phone"]').val(),
+                        'email': $modal.find('[name="email"]').val(),
+                        'country': $modal.find('[name="user[country]"]').val(),
+                        'city': $modal.find('[name="user[city]"]').val(),
+                        'postcode': $modal.find('[name="user[postcode]"]').val(),
+                        'address': $modal.find('[name="user[address]"]').val(),
+                        'company.title': $modal.find('[name="user[company][title]"]').val(),
                     }
-                }
 
-                $product.trigger('change.select2').prop('disabled', false);
+                    Object.keys(data).forEach((key) => {
+                        template = template.replace(new RegExp(`{${key}}`, 'g'), data[key])
+                    });
+
+                    $('[name="delivery[address]"]').val(template);
+
+                    $.modal.close();
+                }
+            })
+        }
+
+        // product select
+        {
+            let $modal = $('[data-order-modal-product]');
+            let $table = $('[data-table="order"]');
+
+            // open modal
+            $('[data-btn-order-modal-product]').on('click', () => {
+                $modal.find('#products').html('');
+                $modal.find('input[type="text"]').val('');
+                $modal.find('input[type="number"]').val(1);
+
+                $modal.modal()
             });
-        });
 
-        $btnSuccess.on('click', () => {
-            if ($product.val() && $quantity.val() >= 1) {
-                let $selected = $product.find(':selected'),
-                    $find = $('[name="products[' + $selected.attr('value') + ']"]');
+            // select product
+            $modal.find('input[type="text"]').on('keyup', throttle((e) => {
+                let $list = $modal.find('#products');
 
-                if ($find.length === 0) {
-                    let $tr = $('<tr>');
+                if (e.target.value.trim().length) {
+                    $.get('/cup/api/v1/catalog/product', {title: e.target.value.trim()}, (res) => {
+                        if (res.status === 200) {
+                            $list.html('');
 
-                    $tr.append(
-                        $('<td>').text($selected.text()),
-                        $('<td>').text($selected.data('price')),
-                        $('<td>').html(
-                            $('<input class="form-control" type="number" placeholder="1" min="0" step="any">')
-                                .attr('name', 'products[' + $selected.attr('value') + '][count]')
-                                .val($quantity.val())
-                        ),
-                    )
-
-                    $tr.appendTo($table);
-                } else {
-                    $find.val(parseFloat($find.val()) + parseFloat($quantity.val()));
+                            for (let item of res.data) {
+                                $list.append(
+                                    $('<option>')
+                                        .data('json', JSON.stringify(item))
+                                        .attr('value', item.title)
+                                        .text(item.price)
+                                )
+                            }
+                        }
+                    });
                 }
+            }, 300));
 
-                $.modal.close();
-            }
-        });
+            // confirm select
+            $modal.find('button').on('click', (e) => {
+                let value = $modal.find('input[type="text"]').val();
+                let price_type = $modal.find('select').val();
+                let count = $modal.find('input[type="number"]').val();
+                let $option = $modal.find(`#products option[value="${value}"]`)
+
+                if ($option) {
+                    let json = $option.data('json'),
+                        data = JSON.parse(json),
+                        $isExist = $table.find(`tr[data-product="${data.uuid}"]`);
+
+
+                    if ($isExist.length === 0) {
+                        let $tr = $('<tr>').attr('data-product', data.uuid);
+
+                        let price = price_type === 'price' ? data['price'] : data['priceWholesale'];
+
+                        $tr.append(
+                            $('<td>').text(data.title),
+                            $('<td data-price>').text((price).toFixed(2)),
+                            $('<td data-subtotal>').text((price * count).toFixed(2)),
+                            $('<td>')
+                                .append(
+                                    $('<input class="form-control" type="number" placeholder="1" min="0" step="any">')
+                                        .attr('name', 'products[' + data.uuid + '][count]')
+                                        .val(count)
+                                )
+                                .append(
+                                    $('<div>')
+                                        .attr('style', 'display: none')
+                                        .html(
+                                            $('<input class="form-control" type="hidden">')
+                                                .attr('name', 'products[' + data.uuid + '][price_type]')
+                                                .val(price_type)
+                                        )
+                                ),
+                        )
+
+                        $tr.appendTo($table);
+                    } else {
+                        let price = $isExist.find('[data-price]').text();
+                        let count_old = $isExist.find('input').val();
+                        let count_new = parseFloat(count_old) + parseFloat(count);
+
+                        $isExist.find('input[type="number"]').val(count_new);
+                        $isExist.find('[data-subtotal]').text((parseFloat(price) * count_new).toFixed(2));
+                    }
+
+                    $.modal.close();
+                }
+            })
+
+            // update price when change count
+            $table.on('change', 'input[type="number"]', (e) => {
+                let $input = $(e.currentTarget),
+                    $row = $input.parents('tr'),
+                    price = $row.find('[data-price]').text(),
+                    count = $input.val();
+
+                if (count > 0) {
+                    $row.find('[data-subtotal]').text((parseFloat(price) * parseFloat(count)).toFixed(2));
+                } else {
+                    $row.detach();
+                }
+            })
+        }
     }
 
     // reference forms

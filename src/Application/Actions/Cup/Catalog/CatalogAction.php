@@ -9,12 +9,15 @@ use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\Notification\NotificationService;
 use App\Domain\Service\Reference\ReferenceService;
+use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\UserService;
 use Psr\Container\ContainerInterface;
 
 abstract class CatalogAction extends AbstractAction
 {
     protected UserService $userService;
+
+    protected UserGroupService $userGroupService;
 
     protected CatalogCategoryService $catalogCategoryService;
 
@@ -33,6 +36,7 @@ abstract class CatalogAction extends AbstractAction
         parent::__construct($container);
 
         $this->userService = $container->get(UserService::class);
+        $this->userGroupService = $container->get(UserGroupService::class);
         $this->catalogAttributeService = $container->get(CatalogAttributeService::class);
         $this->catalogCategoryService = $container->get(CatalogCategoryService::class);
         $this->catalogProductService = $container->get(CatalogProductService::class);

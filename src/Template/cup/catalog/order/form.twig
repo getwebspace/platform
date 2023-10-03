@@ -31,81 +31,118 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-header">
-                        <div class="d-flex align-items-center">
-                            <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active show" data-toggle="pill" href="#client" role="tab">
-                                        {{ 'Client'|locale }}
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-toggle="pill" href="#delivery" role="tab">
-                                        {{ 'Delivery and status'|locale }}
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-toggle="pill" href="#other" role="tab">
-                                        {{ 'Other'|locale }}
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
                     <div class="card-body">
-                        <div class="tab-content">
-                            {# Tab: Клиент #}
-                            <div class="tab-pane fade show active" id="client" role="tabpanel">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Client'|locale,
-                                            'type': 'text',
-                                            'name': 'delivery[client]',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Client name'|locale) ~ '"></i>',
-                                            'args': {
-                                                'value': order.delivery.client,
-                                                'required': true,
-                                            }
-                                        } %}
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Phone'|locale,
-                                            'type': 'tel',
-                                            'name': 'phone',
-                                            'args': {
-                                                'value': order.phone,
-                                            }
-                                        } %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Client'|locale,
+                                    'type': 'text',
+                                    'name': 'delivery[client]',
+                                    'postfix_btn': '<button type="button" data-btn-order-modal-user class="btn btn-outline-secondary btn-icon h-100"><i class="fas fa-cog" style="padding-top: 2px;"></i></button>',
+                                    'args': {
+                                        'value': order.delivery.client,
+                                        'required': true,
+                                    }
+                                } %}
 
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'E-Mail',
-                                            'type': 'email',
-                                            'name': 'email',
-                                            'args': {
-                                                'value': order.email,
-                                            }
-                                        } %}
-                                    </div>
-                                    <div class="col-md-6">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Comment'|locale,
-                                            'type': 'textarea',
-                                            'name': 'comment',
-                                            'args': {
-                                                'value': order.comment,
-                                                'style': 'min-height: 133px;'
-                                            }
-                                        } %}
-                                    </div>
+                                <div style="display: none">
+                                    {% include 'cup/form.twig' with {
+                                        'type': 'hidden',
+                                        'name': 'user_uuid',
+                                        'args': {
+                                            'value': order.user ? order.user.uuid : ''
+                                        }
+                                    } %}
                                 </div>
                             </div>
+                        </div>
 
-                            {# Tab: Доставка и статус #}
-                            <div class="tab-pane fade" id="delivery" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Phone'|locale,
+                                    'type': 'tel',
+                                    'name': 'phone',
+                                    'args': {
+                                        'value': order.phone,
+                                    }
+                                } %}
+                            </div>
+
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'E-Mail',
+                                    'type': 'email',
+                                    'name': 'email',
+                                    'args': {
+                                        'value': order.email,
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Delivery address'|locale,
+                                    'type': 'textarea',
+                                    'name': 'delivery[address]',
+                                    'postfix_btn': '<button type="button" data-btn-order-modal-user-address class="btn btn-outline-secondary btn-icon h-100"><i class="fas fa-cog" style="padding-top: 2px;"></i></button>',
+                                    'args': {
+                                        'value': order.delivery.address,
+                                        'style': 'min-height: 133px;'
+                                    }
+                                } %}
+                            </div>
+
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Delivery date'|locale,
+                                    'type': 'datetime',
+                                    'name': 'shipping',
+                                    'args': {
+                                        'value': order.shipping|df('Y-m-d\\TH:i'),
+                                        'placeholder': '20.01.2019 12:34',
+                                    }
+                                } %}
+
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Status'|locale,
+                                    'type': 'select',
+                                    'name': 'status_uuid',
+                                    'message': '<a href="/cup/reference/order-status/add" class="btn btn-xs btn-info float-right" onclick="return confirm(\'' ~ ('Are you sure you want to go to another page?'|locale) ~ '\');"><i class="fa fa-plus"></i> ' ~ ('Create status'|locale) ~ '</a>',
+                                    'args': {
+                                        'option': status_list.sortBy('order').pluck('title', 'uuid').all(),
+                                        'selected': order.status_uuid ? order.status_uuid : status_list.sortBy('order').first.uuid
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Comment'|locale,
+                                    'type': 'textarea',
+                                    'name': 'comment',
+                                    'args': {
+                                        'value': order.comment,
+                                        'style': 'min-height: 60px;'
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <div class="accordion mt-3">
+                            <button class="btn btn-outline-white btn-block text-center" type="button" data-toggle="collapse" data-target="#order-more">
+                                {{ 'More'|locale }} <i class="fas fa-arrow-down"></i>
+                            </button>
+
+                            <div id="order-more" class="collapse" data-parent=".accordion">
                                 <div class="row">
                                     <div class="col-12 col-md-6">
                                         {% include 'cup/form.twig' with {
@@ -118,58 +155,6 @@
                                             }
                                         } %}
 
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Delivery date'|locale,
-                                            'type': 'datetime',
-                                            'name': 'shipping',
-                                            'args': {
-                                                'value': order.shipping|df('Y-m-d\\TH:i'),
-                                                'placeholder': '20.01.2019 12:34',
-                                            }
-                                        } %}
-                                    </div>
-                                    <div class="col-12 col-md-6">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Delivery address'|locale,
-                                            'type': 'textarea',
-                                            'name': 'delivery[address]',
-                                            'args': {
-                                                'value': order.delivery.address,
-                                                'style': 'min-height: 133px;'
-                                            }
-                                        } %}
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-12 col-md-6">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Status'|locale,
-                                            'type': 'select',
-                                            'name': 'status_uuid',
-                                            'message': '<a href="/cup/reference/order-status/add" class="btn btn-xs btn-info float-right" onclick="return confirm(\'' ~ ('Are you sure you want to go to another page?'|locale) ~ '\');"><i class="fa fa-plus"></i> ' ~ ('Create status'|locale) ~ '</a>',
-                                            'args': {
-                                                'option': status_list.sortBy('order').pluck('title', 'uuid').all(),
-                                                'selected': order.status_uuid ? order.status_uuid : status_list.sortBy('order').first.uuid
-                                            }
-                                        } %}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {# Tab: Другое #}
-                            <div class="tab-pane fade" id="other" role="tabpanel">
-                                <div class="row">
-                                    <div class="col-12 col-md-6">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'User ID'|locale,
-                                            'type': 'text',
-                                            'name': 'user_uuid',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('System field. If you don\'t know what this field is for, it\'s best not to touch it.'|locale) ~ '"></i>',
-                                            'args': {
-                                                'value': order.user ? order.user.uuid : ''
-                                            }
-                                        } %}
                                         {% include 'cup/form.twig' with {
                                             'label': 'External ID'|locale,
                                             'type': 'text',
@@ -196,6 +181,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="card-action">
                         {% include "cup/form-save.twig" %}
                     </div>
@@ -212,7 +198,7 @@
 
                             <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
                                 <li class="nav-item">
-                                    <button type="button" data-btn-order-modal-products class="btn btn-outline-secondary ml-auto">
+                                    <button type="button" data-btn-order-modal-product class="btn btn-outline-secondary ml-auto">
                                         <i class="fa fa-plus"></i>
                                         {{ 'Add product'|locale }}
                                     </button>
@@ -227,14 +213,16 @@
                                     <tr>
                                         <th class="no-sorting">{{ 'Item'|locale }}</th>
                                         <th width="15%" class="no-sorting">{{ 'Price'|locale }}</th>
+                                        <th width="15%" class="no-sorting">{{ 'Subtotal'|locale }}</th>
                                         <th width="15%" class="no-sorting">{{ 'Count'|locale }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for item in order.products %}
-                                        <tr>
+                                        <tr data-product="{{ item.product.uuid }}">
                                             <td>{{ item.title }}</td>
-                                            <td>{{ item.price|number_format(2, '.', ' ') }}</td>
+                                            <td data-price>{{ item.price|number_format(2, '.', ' ') }}</td>
+                                            <td data-subtotal>{{ (item.price * item.count)|number_format(2, '.', ' ') }}</td>
                                             <td>
                                                 {% include 'cup/form.twig' with {
                                                     'type': 'number',
@@ -246,6 +234,16 @@
                                                         'min': '0',
                                                     }
                                                 } %}
+
+                                                <div style="display: none">
+                                                    {% include 'cup/form.twig' with {
+                                                        'type': 'hidden',
+                                                        'name': 'products['~ item.product.uuid ~'][price_type]',
+                                                        'args': {
+                                                            'value': item.price_type,
+                                                        }
+                                                    } %}
+                                                </div>
                                             </td>
                                         </tr>
                                     {% endfor %}
@@ -256,47 +254,189 @@
                 </div>
             </div>
         </div>
-    </form>
 
-    <div data-order-modal-products class="modal">
-        <div class="row">
-            <div class="col-12">
-                {% include 'cup/form.twig' with {
-                    'label': 'Category'|locale,
-                    'name': 'category',
-                    'type': 'select',
-                    'args': {
-                        'data': {'search': 5, 'placeholder': 'Choose a category'|locale, 'allow-clear': true},
-                    }
-                } %}
-            </div>
-            <div class="col-12">
-                {% include 'cup/form.twig' with {
-                    'label': 'Item'|locale,
-                    'name': 'product',
-                    'type': 'select',
-                    'args': {
-                        'data': {'search': 5, 'placeholder': 'Choose a product'|locale}
-                    }
-                } %}
-            </div>
-            <div class="col-6">
-                {% include 'cup/form.twig' with {
-                    'label': 'Count'|locale,
-                    'type': 'number',
-                    'args': {
-                        'value': '1',
-                        'placeholder': '1',
-                        'step': 'any',
-                        'min': '0',
-                    }
-                } %}
-            </div>
-            <div class="col-6">
-                <div class="text-right" style="margin-top: 37px;">
-                    <button type="button" class="btn btn-outline-info">{{ 'Add product'|locale }}</button>
+        <div data-order-modal-user class="modal">
+            <div class="row">
+                <div class="col-12">
+                    {% include 'cup/form.twig' with {
+                        'label': 'User'|locale,
+                        'type': 'text',
+                        'postfix_btn': '<a href="/cup/user/add" target="_blank" class="btn btn-outline-secondary btn-icon h-100"><i class="fas fa-user-plus" style="padding-top: 2px;"></i></a>',
+                        'args': {
+                            'value': order.user ? order.user.getName() : '',
+                            'list': 'users',
+                            'autocomplete': 'off',
+                        }
+                    } %}
+
+                    <datalist id="users">
+                        {% if order.user %}
+                            <option data-json="{{ order.user }}" value="{{ order.user.getName() }}">{{ [order.user.phone, order.user.email]|join(' ')|trim }}</option>
+                        {% endif %}
+                    </datalist>
+                </div>
+
+                <div class="col-12">
+                    <div class="text-right">
+                        <button type="button" class="btn btn-outline-info">{{ 'Select user'|locale }}</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+
+        <div data-order-modal-user-address class="modal">
+            <div class="row">
+                <div class="col-md-6">
+                    {% include 'cup/form.twig' with {
+                        'label': 'Firstname'|locale,
+                        'type': 'text',
+                        'name': 'user[firstname]',
+                        'args': {
+                            'value': order.user ? order.user.firstname : '',
+                        }
+                    } %}
+                </div>
+
+                <div class="col-md-6">
+                    {% include 'cup/form.twig' with {
+                        'label': 'Lastname'|locale,
+                        'type': 'text',
+                        'name': 'user[lastname]',
+                        'args': {
+                            'value': order.user ? order.user.lastname : '',
+                        }
+                    } %}
+                </div>
+
+                <div class="col-md-6">
+                    {% include 'cup/form.twig' with {
+                        'label': 'Country'|locale,
+                        'type': 'text',
+                        'name': 'user[country]',
+                        'args': {
+                            'value': order.user ? order.user.country : '',
+                        }
+                    } %}
+                </div>
+
+                <div class="col-md-6">
+                    {% include 'cup/form.twig' with {
+                        'label': 'City'|locale,
+                        'type': 'text',
+                        'name': 'user[city]',
+                        'args': {
+                            'value': order.user ? order.user.city : '',
+                        }
+                    } %}
+                </div>
+
+                <div class="col-md-12">
+                    {% include 'cup/form.twig' with {
+                        'label': 'Postcode'|locale,
+                        'type': 'text',
+                        'name': 'user[postcode]',
+                        'args': {
+                            'value': order.user ? order.user.postcode : '',
+                        }
+                    } %}
+                    {% include 'cup/form.twig' with {
+                        'label': 'Address'|locale,
+                        'type': 'textarea',
+                        'name': 'user[address]',
+                        'args': {
+                            'value': order.user ? order.user.address : '',
+                            'style': 'min-height: 80px;'
+                        }
+                    } %}
+                </div>
+
+                <div class="col-6">
+                    {% include 'cup/form.twig' with {
+                        'label': 'Company'|locale,
+                        'type': 'text',
+                        'name': 'user[company][title]',
+                        'args': {
+                            'value': order.user ? order.user.company.title : '',
+                        }
+                    } %}
+                </div>
+
+                <div class="col-6">
+                    {% include 'cup/form.twig' with {
+                        'label': 'Group'|locale,
+                        'type': 'select',
+                        'name': 'user[group_uuid]',
+                        'args': {
+                            'option': _({(NIL): 'WITHOUT_GROUP'}|merge(groups.pluck('title', 'uuid').all())),
+                            'selected': order.user ? order.user.group_uuid ?? parameter('user_group')
+                        }
+                    } %}
+                </div>
+
+                <div class="col-12">
+                    {% include 'cup/form.twig' with {
+                        'label': 'Address format'|locale,
+                        'type': 'select',
+                        'args': {
+                            'data': {'address-format': ''},
+                            'option': reference('address_format').pluck('title', 'value.format'),
+                        }
+                    } %}
+                </div>
+
+                <div class="col-12">
+                    <div class="text-right">
+                        <button type="button" class="btn btn-outline-info">{{ 'Save'|locale }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div data-order-modal-product class="modal">
+            <div class="row">
+                <div class="col-12">
+                    {% include 'cup/form.twig' with {
+                        'label': 'Item'|locale,
+                        'type': 'text',
+                        'args': {
+                            'list': 'products',
+                            'autocomplete': 'off',
+                        }
+                    } %}
+
+                    <datalist id="products"></datalist>
+                </div>
+
+                <div class="col-6">
+                    {% include 'cup/form.twig' with {
+                        'label': 'Price type'|locale,
+                        'type': 'select',
+                        'args': {
+                            'required': true,
+                            'option': _(constant('/App/Domain/References/Catalog::PRODUCT_PRICE_TYPE')),
+                        }
+                    } %}
+                </div>
+
+                <div class="col-6">
+                    {% include 'cup/form.twig' with {
+                        'label': 'Count'|locale,
+                        'type': 'number',
+                        'args': {
+                            'value': '1',
+                            'placeholder': '1',
+                            'step': 'any',
+                            'min': '1',
+                        }
+                    } %}
+                </div>
+
+                <div class="col-12">
+                    <div class="text-right" style="margin-top: 37px;">
+                        <button type="button" class="btn btn-outline-info">{{ 'Add product'|locale }}</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 {% endblock %}

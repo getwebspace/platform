@@ -17,6 +17,37 @@ class OrderCreateAction extends CatalogAction
             $status_uuid = $this->getParam('status_uuid');
 
             try {
+//                if (!$user_uuid) {
+//                    try {
+//                        $group_uuid = $this->getParam('group_uuid');
+//                        $user = $this->userService->create([
+//                            'firstname' => $this->getParam('firstname'),
+//                            'lastname' => $this->getParam('lastname'),
+//                            'patronymic' => $this->getParam('patronymic'),
+//                            'gender' => $this->getParam('gender'),
+//                            'birthdate' => $this->getParam('birthdate'),
+//                            'country' => $this->getParam('country'),
+//                            'city' => $this->getParam('city'),
+//                            'address' => $this->getParam('address'),
+//                            'postcode' => $this->getParam('postcode'),
+//                            'additional' => $this->getParam('additional'),
+//                            'email' => $this->getParam('email'),
+//                            'allow_mail' => $this->getParam('allow_mail'),
+//                            'phone' => $this->getParam('phone'),
+//                            'password' => $this->getParam('password'),
+//                            'company' => $this->getParam('company'),
+//                            'legal' => $this->getParam('legal'),
+//                            'website' => $this->getParam('website'),
+//                            'source' => $this->getParam('source'),
+//                            'group' => $group_uuid !== \Ramsey\Uuid\Uuid::NIL ? $this->userGroupService->read(['uuid' => $group_uuid]) : '',
+//                            'language' => $this->getParam('language'),
+//                            'external_id' => $this->getParam('external_id'),
+//                        ]);
+//                    } catch (\Exception $e) {
+//                        $user_uuid = null;
+//                    }
+//                }
+
                 $order = $this->catalogOrderService->create([
                     'user' => $user_uuid ? $this->userService->read(['uuid' => $user_uuid]) : null,
                     'delivery' => $this->getParam('delivery'),
@@ -62,6 +93,7 @@ class OrderCreateAction extends CatalogAction
         }
 
         return $this->respondWithTemplate('cup/catalog/order/form.twig', [
+            'groups' => $this->userGroupService->read(),
             'status_list' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_ORDER_STATUS]),
         ]);
     }
