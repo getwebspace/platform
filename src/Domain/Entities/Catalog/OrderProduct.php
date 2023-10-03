@@ -121,6 +121,23 @@ class OrderProduct extends AbstractEntity
         return $this->price;
     }
 
+    #[ORM\Column(type: 'string', length: 16, options: ['default' => 'price'])]
+    protected string $price_type = 'price';
+
+    public function setPriceType(string $value): self
+    {
+        if (in_array($value, \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE, true)) {
+            $this->price_type = $value;
+        }
+
+        return $this;
+    }
+
+    public function getPriceType(): string
+    {
+        return $this->price_type;
+    }
+
     #[ORM\Column(type: 'float', precision: 10, scale: 2, options: ['default' => 1])]
     public float $count = 1;
 
@@ -154,6 +171,7 @@ class OrderProduct extends AbstractEntity
             'vendorCode' => $this->product->getVendorCode(),
             'external_id' => $this->product->getExternalId(),
             'price' => $this->getPrice(),
+            'price_type' => $this->getPriceType(),
             'count' => $this->getCount(),
             'total' => $this->getPrice() * $this->getCount(),
             'files' => $this->product->getFiles(),

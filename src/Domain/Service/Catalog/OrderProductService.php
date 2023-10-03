@@ -50,6 +50,7 @@ class OrderProductService extends AbstractService
                             'order' => $order,
                             'product' => $product,
                             'price' => $price,
+                            'price_type' => $type,
                             'count' => $count,
                         ])
                     );
@@ -66,6 +67,7 @@ class OrderProductService extends AbstractService
             'order' => '',
             'product' => '',
             'price' => 0.0,
+            'price_type' => 'price',
             'count' => 1,
         ];
         $data = array_merge($default, $data);
@@ -74,6 +76,7 @@ class OrderProductService extends AbstractService
             ->setOrder($data['order'])
             ->setProduct($data['product'])
             ->setPrice($data['price'])
+            ->setPriceType($data['price_type'])
             ->setCount($data['count']);
 
         // trigger populate fields
