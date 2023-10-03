@@ -214,11 +214,14 @@ class User extends AbstractEntity
 
                 case 'initials':
                     return trim(
-                        implode(' ', [
-                            $this->lastname ? mb_substr($this->lastname, 0, 1) . '.' : '',
-                            $this->patronymic ? mb_substr($this->patronymic, 0, 1) . '.' : '',
-                            $this->firstname ?: '',
-                        ])
+                        implode(' ', array_filter(
+                            [
+                                $this->lastname ? mb_substr($this->lastname, 0, 1) . '.' : '',
+                                $this->patronymic ? mb_substr($this->patronymic, 0, 1) . '.' : '',
+                                $this->firstname ?: '',
+                            ],
+                            fn($el) => !!$el
+                        ))
                     );
 
                 case 'short':
@@ -793,6 +796,10 @@ class User extends AbstractEntity
             'firstname' => $this->firstname,
             'lastname' => $this->lastname,
             'patronymic' => $this->patronymic,
+            'name' => [
+                'full' => $this->getName('full'),
+                'short' => $this->getName('short'),
+            ],
             'birthdate' => $this->birthdate,
             'gender' => $this->gender,
             'country' => $this->country,
