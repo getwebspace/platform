@@ -96,10 +96,12 @@ class OrderServiceTest extends TestCase
         $this->assertEquals($data['system'], $order->getSystem());
 
         foreach ($products as $i => $product) {
+            $productPriceType = ($i === 1 ? 'price' : 'price_wholesale');
             $productPrice = ($i === 1 ? $product->getPrice() : $product->getPriceWholesale());
             $orderProduct = $order->getProducts()->firstWhere('product.uuid', $product->getUuid()->toString());
 
             $this->assertEquals($product->getTitle(), $orderProduct->getTitle());
+            $this->assertEquals($productPriceType, $orderProduct->getPriceType());
             $this->assertEquals($productPrice, $orderProduct->getPrice());
         }
 
