@@ -191,8 +191,7 @@ class SystemPageAction extends AbstractAction
 
                 $address_formats = [
                     ['title' => __('Default'),                  'value' => ['format' => "{address}"]],
-                    ['title' => __('Internal address'),         'value' => ['format' => "{firstname} {lastname}\n{address}"]],
-                    ['title' => __('International address'),    'value' => ['format' => "{firstname} {lastname}\n{company.title}\n{address}\n{city} {postcode}\n{country}"]],
+                    ['title' => __('International address'),    'value' => ['format' => "{company.title}\n{address}\n{city} {postcode}\n{country}"]],
                 ];
                 foreach ($address_formats as $el) {
                     $referenceService->create(array_merge($el, [
