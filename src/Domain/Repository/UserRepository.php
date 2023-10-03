@@ -103,20 +103,20 @@ class UserRepository extends AbstractRepository
         $query = $this->createQueryBuilder('u');
 
         if ($firstname || $lastname) {
-            if ($firstname) {
-                $query
-                    ->orWhere('u.firstname = :firstname1 OR u.firstname LIKE :firstname2')
-                    ->setParameter('firstname1', $firstname, Types::STRING)
-                    ->setParameter('firstname2', $firstname . '%', Types::STRING);
+            if ($firstname && !$lastname) {
+                $lastname = $firstname;
             }
-            if ($lastname) {
-                $query
-                    ->orWhere('u.lastname = :lastname1 OR u.lastname LIKE :lastname2')
-                    ->setParameter('lastname1', $lastname, Types::STRING)
-                    ->setParameter('lastname2', $lastname . '%', Types::STRING);
+            if ($lastname && !$firstname) {
+                $firstname = $lastname;
             }
 
             $query
+                ->orWhere('u.firstname = :firstname1 OR u.firstname LIKE :firstname2')
+                ->setParameter('firstname1', $firstname, Types::STRING)
+                ->setParameter('firstname2', $firstname . '%', Types::STRING)
+                ->orWhere('u.lastname = :lastname1 OR u.lastname LIKE :lastname2')
+                ->setParameter('lastname1', $lastname, Types::STRING)
+                ->setParameter('lastname2', $lastname . '%', Types::STRING)
                 ->andWhere('u.status = :status')
                 ->setParameter('status', \App\Domain\Types\UserStatusType::STATUS_WORK)
                 ->setMaxResults($limit)
