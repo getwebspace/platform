@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-12">
             {% include 'cup/form.twig' with {
-                'label': 'User'|locale,
+                'label': 'Client'|locale,
                 'type': 'text',
                 'postfix_btn': '<a href="/cup/user/add" target="_blank" class="btn btn-outline-secondary btn-icon h-100"><i class="fas fa-user-plus" style="padding-top: 2px;"></i></a>',
                 'args': {
@@ -17,6 +17,139 @@
                     <option data-json="{{ order.user }}" value="{{ order.user.getName() }}">{{ [order.user.phone, order.user.email]|join(' ')|trim }}</option>
                 {% endif %}
             </datalist>
+
+            <div style="display: none">
+                {% include 'cup/form.twig' with {
+                    'type': 'hidden',
+                    'name': 'user_uuid',
+                    'args': {
+                        'value': order.user ? order.user.uuid : ''
+                    }
+                } %}
+            </div>
+        </div>
+
+        <div class="col-6">
+            {% include 'cup/form.twig' with {
+                'label': 'Firstname'|locale,
+                'type': 'text',
+                'name': 'firstname',
+                'args': {
+                    'value': order.user ? order.user.firstname : '',
+                }
+            } %}
+        </div>
+
+        <div class="col-6">
+            {% include 'cup/form.twig' with {
+                'label': 'Lastname'|locale,
+                'type': 'text',
+                'name': 'lastname',
+                'args': {
+                    'value': order.user ? order.user.lastname : '',
+                }
+            } %}
+        </div>
+
+        <div class="col-6">
+            {% include 'cup/form.twig' with {
+                'label': 'Phone'|locale,
+                'type': 'tel',
+                'name': 'phone',
+                'args': {
+                    'value': order.phone,
+                }
+            } %}
+        </div>
+
+        <div class="col-6">
+            {% include 'cup/form.twig' with {
+                'label': 'E-Mail',
+                'type': 'email',
+                'name': 'email',
+                'args': {
+                    'value': order.email,
+                }
+            } %}
+        </div>
+
+        <div class="col-6">
+            {% include 'cup/form.twig' with {
+                'label': 'Country'|locale,
+                'type': 'text',
+                'name': 'country',
+                'args': {
+                    'value': order.user ? order.user.country : '',
+                }
+            } %}
+        </div>
+
+        <div class="col-6">
+            {% include 'cup/form.twig' with {
+                'label': 'City'|locale,
+                'type': 'text',
+                'name': 'city',
+                'args': {
+                    'value': order.user ? order.user.city : '',
+                }
+            } %}
+        </div>
+
+        <div class="col-6">
+            {% include 'cup/form.twig' with {
+                'label': 'Postcode'|locale,
+                'type': 'text',
+                'name': 'postcode',
+                'args': {
+                    'value': order.user ? order.user.postcode : '',
+                }
+            } %}
+        </div>
+
+        <div class="col-6">
+            {% include 'cup/form.twig' with {
+                'label': 'Company'|locale,
+                'type': 'text',
+                'name': 'company[title]',
+                'args': {
+                    'value': order.user ? order.user.company.title : '',
+                }
+            } %}
+        </div>
+
+        <div class="col-12">
+            {% include 'cup/form.twig' with {
+                'label': 'Address'|locale,
+                'type': 'textarea',
+                'name': 'address',
+                'args': {
+                    'value': order.user ? order.user.address : '',
+                    'style': 'min-height: 80px;'
+                }
+            } %}
+        </div>
+
+        <div class="col-6">
+            {% include 'cup/form.twig' with {
+                'label': 'Group'|locale,
+                'type': 'select',
+                'name': 'group_uuid',
+                'args': {
+                    'option': _({(NIL): 'WITHOUT_GROUP'}|merge(groups.pluck('title', 'uuid').all())),
+                    'selected': order.user.group_uuid ?? parameter('user_group')
+                }
+            } %}
+        </div>
+
+        <div class="col-6">
+            {% include 'cup/form.twig' with {
+                'label': 'Address format'|locale,
+                'type': 'select',
+                'args': {
+                    'data': {'address-format': ''},
+                    'option': reference('address_format').pluck('title', 'value.format'),
+                }
+            } %}
         </div>
 
         <div class="col-12">

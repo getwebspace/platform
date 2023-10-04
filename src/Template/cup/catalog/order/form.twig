@@ -89,7 +89,6 @@
                                     'label': 'Delivery address'|locale,
                                     'type': 'textarea',
                                     'name': 'delivery[address]',
-                                    'postfix_btn': '<button type="button" data-btn-order-modal-user-address class="btn btn-outline-secondary btn-icon h-100"><i class="fas fa-cog" style="padding-top: 2px;"></i></button>',
                                     'args': {
                                         'value': order.delivery.address,
                                         'style': 'min-height: 133px;'
@@ -257,7 +256,6 @@
     </form>
 
     {% include 'cup/catalog/order/form-modal-user.twig' %}
-    {% include 'cup/catalog/order/form-modal-user-address.twig' %}
     {% include 'cup/catalog/order/form-modal-product.twig' %}
 
 {% endblock %}
