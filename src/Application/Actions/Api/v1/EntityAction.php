@@ -38,6 +38,11 @@ class EntityAction extends ActionApi
             $params = $this->getParamsQuery();
             $service = $this->getService($entity);
 
+            // allow access if is CUP level
+            if (str_starts_with($this->request->getUri()->getPath(), '/cup/api')) {
+                $apikey = true;
+            }
+
             if ($service !== null) {
                 switch ($this->request->getMethod()) {
                     case 'GET':
