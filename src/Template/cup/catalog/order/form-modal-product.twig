@@ -1,0 +1,46 @@
+<div data-order-modal-product class="modal">
+    <div class="row">
+        <div class="col-12">
+            {% include 'cup/form.twig' with {
+                'label': 'Item'|locale,
+                'type': 'text',
+                'args': {
+                    'list': 'products',
+                    'autocomplete': 'off',
+                }
+            } %}
+
+            <datalist id="products"></datalist>
+        </div>
+
+        <div class="col-6">
+            {% include 'cup/form.twig' with {
+                'label': 'Price type'|locale,
+                'type': 'select',
+                'args': {
+                    'required': true,
+                    'option': _(constant('/App/Domain/References/Catalog::PRODUCT_PRICE_TYPE')),
+                }
+            } %}
+        </div>
+
+        <div class="col-6">
+            {% include 'cup/form.twig' with {
+                'label': 'Count'|locale,
+                'type': 'number',
+                'args': {
+                    'value': '1',
+                    'placeholder': '1',
+                    'step': 'any',
+                    'min': '1',
+                }
+            } %}
+        </div>
+
+        <div class="col-12">
+            <div class="text-right" style="margin-top: 37px;">
+                <button type="button" class="btn btn-outline-info">{{ 'Add product'|locale }}</button>
+            </div>
+        </div>
+    </div>
+</div>

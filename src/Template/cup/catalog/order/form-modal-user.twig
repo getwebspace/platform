@@ -1,0 +1,28 @@
+<div data-order-modal-user class="modal">
+    <div class="row">
+        <div class="col-12">
+            {% include 'cup/form.twig' with {
+                'label': 'User'|locale,
+                'type': 'text',
+                'postfix_btn': '<a href="/cup/user/add" target="_blank" class="btn btn-outline-secondary btn-icon h-100"><i class="fas fa-user-plus" style="padding-top: 2px;"></i></a>',
+                'args': {
+                    'value': order.user ? order.user.getName() : '',
+                    'list': 'users',
+                    'autocomplete': 'off',
+                }
+            } %}
+
+            <datalist id="users">
+                {% if order.user %}
+                    <option data-json="{{ order.user }}" value="{{ order.user.getName() }}">{{ [order.user.phone, order.user.email]|join(' ')|trim }}</option>
+                {% endif %}
+            </datalist>
+        </div>
+
+        <div class="col-12">
+            <div class="text-right">
+                <button type="button" class="btn btn-outline-info">{{ 'Select user'|locale }}</button>
+            </div>
+        </div>
+    </div>
+</div>

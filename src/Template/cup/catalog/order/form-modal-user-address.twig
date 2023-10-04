@@ -1,0 +1,107 @@
+<div data-order-modal-user-address class="modal">
+    <div class="row">
+        <div class="col-md-6">
+            {% include 'cup/form.twig' with {
+                'label': 'Firstname'|locale,
+                'type': 'text',
+                'name': 'user[firstname]',
+                'args': {
+                    'value': order.user ? order.user.firstname : '',
+                }
+            } %}
+        </div>
+
+        <div class="col-md-6">
+            {% include 'cup/form.twig' with {
+                'label': 'Lastname'|locale,
+                'type': 'text',
+                'name': 'user[lastname]',
+                'args': {
+                    'value': order.user ? order.user.lastname : '',
+                }
+            } %}
+        </div>
+
+        <div class="col-md-6">
+            {% include 'cup/form.twig' with {
+                'label': 'Country'|locale,
+                'type': 'text',
+                'name': 'user[country]',
+                'args': {
+                    'value': order.user ? order.user.country : '',
+                }
+            } %}
+        </div>
+
+        <div class="col-md-6">
+            {% include 'cup/form.twig' with {
+                'label': 'City'|locale,
+                'type': 'text',
+                'name': 'user[city]',
+                'args': {
+                    'value': order.user ? order.user.city : '',
+                }
+            } %}
+        </div>
+
+        <div class="col-md-12">
+            {% include 'cup/form.twig' with {
+                'label': 'Postcode'|locale,
+                'type': 'text',
+                'name': 'user[postcode]',
+                'args': {
+                    'value': order.user ? order.user.postcode : '',
+                }
+            } %}
+            {% include 'cup/form.twig' with {
+                'label': 'Address'|locale,
+                'type': 'textarea',
+                'name': 'user[address]',
+                'args': {
+                    'value': order.user ? order.user.address : '',
+                    'style': 'min-height: 80px;'
+                }
+            } %}
+        </div>
+
+        <div class="col-6">
+            {% include 'cup/form.twig' with {
+                'label': 'Company'|locale,
+                'type': 'text',
+                'name': 'user[company][title]',
+                'args': {
+                    'value': order.user ? order.user.company.title : '',
+                }
+            } %}
+        </div>
+
+        <div class="col-6">
+            {% include 'cup/form.twig' with {
+                'label': 'Group'|locale,
+                'type': 'select',
+                'name': 'user[group_uuid]',
+                'args': {
+                    'option': _({(NIL): 'WITHOUT_GROUP'}|merge(groups.pluck('title', 'uuid').all())),
+                    'selected': order.user ? order.user.group_uuid ?? parameter('user_group')
+                }
+            } %}
+        </div>
+
+        <div class="col-12">
+            {% include 'cup/form.twig' with {
+                'label': 'Address format'|locale,
+                'type': 'select',
+                'args': {
+                    'data': {'address-format': ''},
+                    'option': reference('address_format').pluck('title', 'value.format'),
+                }
+            } %}
+        </div>
+
+        <div class="col-12">
+            <div class="text-right">
+                <button type="button" class="btn btn-outline-info">{{ 'Save'|locale }}</button>
+            </div>
+        </div>
+    </div>
+</div>

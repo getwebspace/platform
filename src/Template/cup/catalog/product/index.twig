@@ -25,7 +25,7 @@
                         <a href="#btn-modal-import" rel="modal:open" class="btn btn-secondary btn-icon ml-auto text-white" data-toggle="tooltip" data-placement="top" title="{{ 'Import products'|locale }}">
                             <i class="fas fa-file-import"></i>
                         </a>
-                        {% include "cup/catalog/product/import-modal.twig" %}
+                        {% include "cup/catalog/product/index-modal-import.twig" %}
 
                         <a href="{{ path_for('cup:catalog:product:export', [], {'category': category.uuid.toString()}) }}" class="btn btn-secondary btn-icon ml-1 text-white" data-toggle="tooltip" data-placement="top" title="{{ 'Export current product list'|locale }}">
                             <i class="fas fa-file-export"></i>
