@@ -1,62 +1,76 @@
 <div data-order-modal-user-address class="modal">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-6">
             {% include 'cup/form.twig' with {
                 'label': 'Firstname'|locale,
                 'type': 'text',
-                'name': 'user[firstname]',
+                'name': 'firstname',
                 'args': {
                     'value': order.user ? order.user.firstname : '',
                 }
             } %}
         </div>
 
-        <div class="col-md-6">
+        <div class="col-6">
             {% include 'cup/form.twig' with {
                 'label': 'Lastname'|locale,
                 'type': 'text',
-                'name': 'user[lastname]',
+                'name': 'lastname',
                 'args': {
                     'value': order.user ? order.user.lastname : '',
                 }
             } %}
         </div>
 
-        <div class="col-md-6">
+        <div class="col-6">
             {% include 'cup/form.twig' with {
                 'label': 'Country'|locale,
                 'type': 'text',
-                'name': 'user[country]',
+                'name': 'country',
                 'args': {
                     'value': order.user ? order.user.country : '',
                 }
             } %}
         </div>
 
-        <div class="col-md-6">
+        <div class="col-6">
             {% include 'cup/form.twig' with {
                 'label': 'City'|locale,
                 'type': 'text',
-                'name': 'user[city]',
+                'name': 'city',
                 'args': {
                     'value': order.user ? order.user.city : '',
                 }
             } %}
         </div>
 
-        <div class="col-md-12">
+        <div class="col-6">
             {% include 'cup/form.twig' with {
                 'label': 'Postcode'|locale,
                 'type': 'text',
-                'name': 'user[postcode]',
+                'name': 'postcode',
                 'args': {
                     'value': order.user ? order.user.postcode : '',
                 }
             } %}
+        </div>
+
+        <div class="col-6">
+            {% include 'cup/form.twig' with {
+                'label': 'Company'|locale,
+                'type': 'text',
+                'name': 'company[title]',
+                'args': {
+                    'value': order.user ? order.user.company.title : '',
+                }
+            } %}
+        </div>
+
+        <div class="col-12">
             {% include 'cup/form.twig' with {
                 'label': 'Address'|locale,
                 'type': 'textarea',
-                'name': 'user[address]',
+                'name': 'address',
                 'args': {
                     'value': order.user ? order.user.address : '',
                     'style': 'min-height: 80px;'
@@ -66,28 +80,17 @@
 
         <div class="col-6">
             {% include 'cup/form.twig' with {
-                'label': 'Company'|locale,
-                'type': 'text',
-                'name': 'user[company][title]',
+                'label': 'Group'|locale,
+                'type': 'select',
+                'name': 'group_uuid',
                 'args': {
-                    'value': order.user ? order.user.company.title : '',
+                    'option': _({(NIL): 'WITHOUT_GROUP'}|merge(groups.pluck('title', 'uuid').all())),
+                    'selected': order.user.group_uuid ?? parameter('user_group')
                 }
             } %}
         </div>
 
         <div class="col-6">
-            {% include 'cup/form.twig' with {
-                'label': 'Group'|locale,
-                'type': 'select',
-                'name': 'user[group_uuid]',
-                'args': {
-                    'option': _({(NIL): 'WITHOUT_GROUP'}|merge(groups.pluck('title', 'uuid').all())),
-                    'selected': order.user ? order.user.group_uuid ?? parameter('user_group')
-                }
-            } %}
-        </div>
-
-        <div class="col-12">
             {% include 'cup/form.twig' with {
                 'label': 'Address format'|locale,
                 'type': 'select',

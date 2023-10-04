@@ -400,7 +400,7 @@ $(() => {
 
             // open modal
             $('[data-btn-order-modal-user]').on('click', () => {
-                $modal.modal()
+                $modal.modal();
             });
 
             // select user
@@ -442,14 +442,16 @@ $(() => {
                     $('[name="delivery[address]"]').val('');
 
                     // user data
-                    $('[name="user[firstname]"]').val(data.firstname);
-                    $('[name="user[lastname]"]').val(data.lastname);
-                    $('[name="user[country]"]').val(data.country);
-                    $('[name="user[city]"]').val(data.city);
-                    $('[name="user[postcode]"]').val(data.postcode);
-                    $('[name="user[address]"]').val(data.address);
-                    $('[name="user[company][title]"]').val(data.company.title);
-                    $('[name="user[group_uuid]"]').val(data.group.uuid).trigger('change.select2');
+                    let $user_data_modal = $('[data-order-modal-user-address]');
+
+                    $user_data_modal.find('[name="firstname"]').val(data.firstname);
+                    $user_data_modal.find('[name="lastname"]').val(data.lastname);
+                    $user_data_modal.find('[name="country"]').val(data.country);
+                    $user_data_modal.find('[name="city"]').val(data.city);
+                    $user_data_modal.find('[name="postcode"]').val(data.postcode);
+                    $user_data_modal.find('[name="address"]').val(data.address);
+                    $user_data_modal.find('[name="company[title]"]').val(data.company.title);
+                    $user_data_modal.find('[name="group_uuid"]').val(data.group.uuid).trigger('change.select2');
 
                     $.modal.close();
                 }
@@ -462,7 +464,7 @@ $(() => {
 
             // open modal
             $('[data-btn-order-modal-user-address]').on('click', () => {
-                $modal.modal()
+                $modal.modal();
             });
 
             // save data
@@ -470,18 +472,19 @@ $(() => {
                 let template = $modal.find('select[data-address-format]').val();
 
                 if (template) {
-                    console.log(template);
-
+                    let $user_uuid = $('[name="user_uuid"]');
                     let data = {
-                        'firstname': $modal.find('[name="user[firstname]"]').val(),
-                        'lastname': $modal.find('[name="user[lastname]"]').val(),
-                        'phone': $modal.find('[name="phone"]').val(),
-                        'email': $modal.find('[name="email"]').val(),
-                        'country': $modal.find('[name="user[country]"]').val(),
-                        'city': $modal.find('[name="user[city]"]').val(),
-                        'postcode': $modal.find('[name="user[postcode]"]').val(),
-                        'address': $modal.find('[name="user[address]"]').val(),
-                        'company.title': $modal.find('[name="user[company][title]"]').val(),
+                        'uuid': $user_uuid.val(),
+                        'firstname': $modal.find('[name="firstname"]').val(),
+                        'lastname': $modal.find('[name="lastname"]').val(),
+                        'phone': $('[name="phone"]').val(),
+                        'email': $('[name="email"]').val(),
+                        'country': $modal.find('[name="country"]').val(),
+                        'city': $modal.find('[name="city"]').val(),
+                        'postcode': $modal.find('[name="postcode"]').val(),
+                        'address': $modal.find('[name="address"]').val(),
+                        'company.title': $modal.find('[name="company[title]"]').val(),
+                        'group_uuid': $modal.find('[name="group_uuid"]').val(),
                     }
 
                     Object.keys(data).forEach((key) => {
@@ -489,6 +492,25 @@ $(() => {
                     });
 
                     $('[name="delivery[address]"]').val(template);
+                    $('[name="delivery[client]"]').val(function (i, val) {
+                        let buf = [data.lastname, data.firstname].filter((el) => !!el).join(' ');
+
+                        return buf && val !== buf ? buf : val;
+                    });
+
+                    // save or update user data
+                    if ((data.phone || data.email) && data.firstname && data.address) {
+                        $.ajax({
+                            method: data.uuid ? 'patch' : 'post',
+                            url: '/cup/api/v1/user' + (data.uuid ? `?uuid=${data.uuid}` : ''),
+                            data: unflatten(data),
+                            complete: (res) => {
+                                if (res.status === 201) {
+                                    $user_uuid.val(res.data.uuid)
+                                }
+                            }
+                        });
+                    }
 
                     $.modal.close();
                 }
@@ -506,7 +528,7 @@ $(() => {
                 $modal.find('input[type="text"]').val('');
                 $modal.find('input[type="number"]').val(1);
 
-                $modal.modal()
+                $modal.modal();
             });
 
             // select product
@@ -542,7 +564,6 @@ $(() => {
                     let json = $option.data('json'),
                         data = JSON.parse(json),
                         $isExist = $table.find(`tr[data-product="${data.uuid}"]`);
-
 
                     if ($isExist.length === 0) {
                         let $tr = $('<tr>').attr('data-product', data.uuid);
