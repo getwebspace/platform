@@ -815,8 +815,8 @@ class User extends AbstractEntity
             'language' => $this->language,
             'status' => $this->status,
             'group' => [
-                'uuid' => $this->group->uuid,
-                'title' => $this->group->title,
+                'uuid' => $this->group->uuid ?? \Ramsey\Uuid\Uuid::NIL,
+                'title' => $this->group->title ?? '',
             ],
             'register' => $this->register,
             'change' => $this->change,
