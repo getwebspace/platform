@@ -4,7 +4,9 @@ namespace App\Domain\Service\User;
 
 use App\Domain\AbstractService;
 use App\Domain\Entities\User;
+use App\Domain\Entities\User\Group as UserGroup;
 use App\Domain\Repository\UserRepository;
+use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\EmailBannedException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
@@ -24,9 +26,15 @@ class UserService extends AbstractService
      */
     protected mixed $service;
 
+    /**
+     * @var UserGroupService
+     */
+    protected mixed $userGroupService;
+
     protected function init(): void
     {
         $this->service = $this->entityManager->getRepository(User::class);
+        $this->userGroupService = $this->container->get(UserGroupService::class);
     }
 
     /**
@@ -63,6 +71,7 @@ class UserService extends AbstractService
             'website' => '',
             'source' => '',
             'group' => null,
+            'group_uuid' => null,
             'auth_code' => '',
             'language' => '',
             'external_id' => '',
@@ -87,8 +96,10 @@ class UserService extends AbstractService
         if (!$data['username'] && !$data['email'] && !$data['phone']) {
             throw new MissingUniqueValueException();
         }
-        if (!$data['password']) {
-            throw new WrongPasswordException();
+
+        // retrieve user group by uuid
+        if (!is_a($data['group'], UserGroup::class) && $data['group_uuid']) {
+            $data['group'] = $this->userGroupService->read(['uuid' => $data['group_uuid']]);
         }
 
         $user = (new User())
@@ -305,6 +316,7 @@ class UserService extends AbstractService
                 'website' => null,
                 'source' => null,
                 'group' => null,
+                'group_uuid' => null,
                 'auth_code' => null,
                 'language' => null,
                 'external_id' => null,
@@ -406,7 +418,12 @@ class UserService extends AbstractService
                 if ($data['source'] !== null) {
                     $entity->setSource($data['source']);
                 }
-                if ($data['group'] !== null) {
+                if ($data['group'] !== null || $data['group_uuid'] !== null) {
+                    // retrieve user group by uuid
+                    if (!is_a($data['group'], UserGroup::class) && $data['group_uuid']) {
+                        $data['group'] = $this->userGroupService->read(['uuid' => $data['group_uuid']]);
+                    }
+
                     $entity->setGroup($data['group']);
                 }
                 if ($data['auth_code'] !== null) {
