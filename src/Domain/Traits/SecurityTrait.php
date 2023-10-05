@@ -127,26 +127,7 @@ trait SecurityTrait
             $payload = [
                 'sub' => 'user',
                 'uuid' => $user->getUuid()->toString(),
-                'data' => [
-                    'firstname' => $user->getFirstname(),
-                    'lastname' => $user->getLastname(),
-                    'username' => $user->getUsername(),
-                    'email' => $user->getEmail(),
-                    'phone' => $user->getPhone(),
-                    'gender' => $user->getGender(),
-                    'birthdate' => $user->getBirthdate(),
-                    'additional' => $user->getAdditional(),
-                    'shipping' => [
-                        'country' => $user->getCountry(),
-                        'city' => $user->getCity(),
-                        'address' => $user->getAddress(),
-                        'postcode' => $user->getPostcode(),
-                    ],
-                    'avatar' => $user->avatar(100),
-                    'external_id' => $user->getExternalId(),
-                    'group' => $user->getGroup() ? $user->getGroup()->getUuid()->toString() : \Ramsey\Uuid\Uuid::NIL,
-                    'language' => $user->getLanguage(),
-                ],
+                'data' => $user->toArray(),
                 'iat' => time(),
                 'exp' => time() + (\App\Domain\References\Date::MINUTE * 10),
             ];
