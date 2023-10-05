@@ -61,21 +61,23 @@ class CartAction extends CatalogAction
 
             if ($this->isRecaptchaChecked()) {
                 try {
-                    $date = datetime($data['shipping'], $this->parameter('common_timezone', 'UTC'))->format(\App\Domain\References\Date::DATE);
-                    $limit = $this->parameter('catalog_order_limit', 0);
-                    $qb = $this->entityManager->createQueryBuilder();
-                    $count = $qb
-                        ->select('count(o.serial)')
-                        ->from(\App\Domain\Entities\Catalog\Order::class, 'o')
-                        ->where('o.date >= :dateFrom')
-                        ->andWhere('o.date <= :dateTo')
-                        ->setParameter('dateFrom', $date . ' 00:00:00', ParameterType::STRING)
-                        ->setParameter('dateTo', $date . ' 23:59:59', ParameterType::STRING)
-                        ->getQuery()
-                        ->getSingleScalarResult();
+                    if (($limit = $this->parameter('catalog_order_limit', 0)) > 0) {
+                        $date = datetime($data['shipping'], $this->parameter('common_timezone', 'UTC'))->format(\App\Domain\References\Date::DATE);
 
-                    if ($limit && $count >= $limit) {
-                        throw new OrderShippingLimitException();
+                        $qb = $this->entityManager->createQueryBuilder();
+                        $count = $qb
+                            ->select('count(o.serial)')
+                            ->from(\App\Domain\Entities\Catalog\Order::class, 'o')
+                            ->where('o.date >= :dateFrom')
+                            ->andWhere('o.date <= :dateTo')
+                            ->setParameter('dateFrom', $date . ' 00:00:00', ParameterType::STRING)
+                            ->setParameter('dateTo', $date . ' 23:59:59', ParameterType::STRING)
+                            ->getQuery()
+                            ->getSingleScalarResult();
+
+                        if ($count >= $limit) {
+                            throw new OrderShippingLimitException();
+                        }
                     }
 
                     $order = $this->catalogOrderService->create($data);
