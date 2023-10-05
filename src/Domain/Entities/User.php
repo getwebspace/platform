@@ -821,6 +821,7 @@ class User extends AbstractEntity
             'register' => $this->register,
             'change' => $this->change,
             'files' => $this->files,
+            'avatar' => $this->avatar(100),
             'external_id' => $this->external_id,
         ]);
     }
