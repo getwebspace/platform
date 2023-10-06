@@ -31,11 +31,10 @@ class LoginAction extends AuthAction
 
             $this->container->get(\App\Application\PubSub::class)->publish('auth:user:login', $user);
 
-            return $this
-                ->respondWithJson([
-                    'access_token' => $tokens['access_token'],
-                    'refresh_token' => $tokens['refresh_token'],
-                ]);
+            return $this->respondWithJson([
+                'access_token' => $tokens['access_token'],
+                'refresh_token' => $tokens['refresh_token'],
+            ]);
         } catch (UserNotFoundException|WrongPasswordException $exception) {
             return $this->response->withStatus(404);
         }

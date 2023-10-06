@@ -13,7 +13,7 @@ class UserSubscribeAction extends UserAction
         $email = $this->getParam('email', null);
         $action = $this->getParam('action', 'subscribe');
         $output = [
-            'status' => 0,
+            'status' => 200,
             'description' => '',
         ];
 

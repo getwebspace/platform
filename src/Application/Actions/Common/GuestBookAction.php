@@ -65,16 +65,18 @@ class GuestBookAction extends AbstractAction
         $offset = (int) ($this->args['page'] ?? 0);
 
         // fetch list and hide part of email
-        $list = $guestBookService->read([
-            'status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK,
-            'limit' => $pagination,
-            'offset' => $pagination * $offset,
-        ])->map(function ($model) {
-            /** @var GuestBook $model */
-            $model->setEmail(str_mask_email($model->getEmail()));
+        $list = $guestBookService
+            ->read([
+                'status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK,
+                'limit' => $pagination,
+                'offset' => $pagination * $offset,
+            ])
+            ->map(function ($model) {
+                /** @var GuestBook $model */
+                $model->setEmail(str_mask_email($model->getEmail()));
 
-            return $model;
-        });
+                return $model;
+            });
 
         return $this->respond($this->parameter('guestbook_template', 'guestbook.twig'), [
             'messages' => $list,
