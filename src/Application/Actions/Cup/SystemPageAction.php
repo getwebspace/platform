@@ -214,34 +214,38 @@ class SystemPageAction extends AbstractAction
     protected function setup_user(): void
     {
         if ($databaseData = $this->getParam('database', [])) {
-            $userData = $this->getParam('user', []);
+            $user = $this->request->getAttribute('user', false);
 
-            if ($userData && $databaseData['action'] !== 'delete') {
-                $userGroupService = $this->container->get(UserGroupService::class);
-                $userService = $this->container->get(UserService::class);
+            if (!$user) {
+                $userData = $this->getParam('user', []);
 
-                // create or read group
-                try {
-                    $userData['group'] = $userGroupService->create([
-                        'title' => __('Administrators'),
-                        'access' => $this->getRoutes()->values()->all(),
-                    ]);
-                } catch (TitleAlreadyExistsException $e) {
-                    $userData['group'] = $userGroupService->read([
-                        'title' => __('Administrators'),
-                    ]);
-                }
+                if ($userData && $databaseData['action'] !== 'delete') {
+                    $userGroupService = $this->container->get(UserGroupService::class);
+                    $userService = $this->container->get(UserService::class);
 
-                try {
-                    // create user with administrator group
-                    $userService->create($userData);
-                } catch (MissingUniqueValueException $e) {
-                    $this->addError('user[email]', $e->getMessage());
-                    $this->addError('user[username]', $e->getMessage());
-                } catch (WrongUsernameValueException|UsernameAlreadyExistsException $e) {
-                    $this->addError('user[username]', $e->getMessage());
-                } catch (WrongEmailValueException|EmailAlreadyExistsException|EmailBannedException $e) {
-                    $this->addError('user[email]', $e->getMessage());
+                    // create or read group
+                    try {
+                        $userData['group'] = $userGroupService->create([
+                            'title' => __('Administrators'),
+                            'access' => $this->getRoutes()->values()->all(),
+                        ]);
+                    } catch (TitleAlreadyExistsException $e) {
+                        $userData['group'] = $userGroupService->read([
+                            'title' => __('Administrators'),
+                        ]);
+                    }
+
+                    try {
+                        // create user with administrator group
+                        $userService->create($userData);
+                    } catch (MissingUniqueValueException $e) {
+                        $this->addError('user[email]', $e->getMessage());
+                        $this->addError('user[username]', $e->getMessage());
+                    } catch (WrongUsernameValueException|UsernameAlreadyExistsException $e) {
+                        $this->addError('user[username]', $e->getMessage());
+                    } catch (WrongEmailValueException|EmailAlreadyExistsException|EmailBannedException $e) {
+                        $this->addError('user[email]', $e->getMessage());
+                    }
                 }
             }
         }
