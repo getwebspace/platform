@@ -136,7 +136,7 @@ class ProductService extends AbstractService
             ->setExport($data['export']);
 
         // if address generation is enabled
-        if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
+        if ($this->parameter('common_auto_generate_address', 'yes') === 'yes') {
             $product->setAddress(
                 implode('/', array_filter(
                     [
@@ -442,7 +442,7 @@ class ProductService extends AbstractService
                     $this->catalogProductRelationService->process($entity, $data['relation']);
                 }
                 // if address generation is enabled
-                if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
+                if ($this->parameter('common_auto_generate_address', 'yes') === 'yes') {
                     $data['address'] = implode('/', array_filter(
                         [
                             $entity->getCategory()->getAddress(),

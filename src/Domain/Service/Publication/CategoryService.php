@@ -85,7 +85,7 @@ class CategoryService extends AbstractService
             ->setTemplate($data['template']);
 
         // if address generation is enabled
-        if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
+        if ($this->parameter('common_auto_generate_address', 'yes') === 'yes') {
             $category->setAddress(
                 implode('/', array_filter(
                     [
@@ -235,7 +235,7 @@ class CategoryService extends AbstractService
                     $entity->setTemplate($data['template']);
                 }
                 // if address generation is enabled
-                if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
+                if ($this->parameter('common_auto_generate_address', 'yes') === 'yes') {
                     $data['address'] = implode('/', array_filter(
                         [
                             $entity->getParent()?->getAddress(),

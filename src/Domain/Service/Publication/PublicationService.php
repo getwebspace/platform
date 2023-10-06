@@ -86,7 +86,7 @@ class PublicationService extends AbstractService
             ->setExternalId($data['external_id']);
 
         // if address generation is enabled
-        if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
+        if ($this->parameter('common_auto_generate_address', 'yes') === 'yes') {
             $publication->setAddress(
                 implode('/', array_filter(
                     [
@@ -233,7 +233,7 @@ class PublicationService extends AbstractService
                     $entity->setExternalId($data['external_id']);
                 }
                 // if address generation is enabled
-                if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
+                if ($this->parameter('common_auto_generate_address', 'yes') === 'yes') {
                     $data['address'] = implode('/', array_filter(
                         [
                             $entity->getCategory()?->getAddress(),
