@@ -102,7 +102,9 @@ class i18n
             }
         }
 
-        static::addLocale($code, $strings);
+        if (is_array($strings)) {
+            static::addLocale($code, $strings);
+        }
     }
 
     /**
