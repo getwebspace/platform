@@ -12,17 +12,17 @@ down:
 run-test:
 	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/phpunit --color=always --configuration phpunit.xml
 
-lint:
+run-lint:
 	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php
 
-migrate:
+migrate-up:
 	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/doctrine-migrations --em=sqlite migrate --no-interaction
 
-rollback:
+migrate-down:
 	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/doctrine-migrations --em=sqlite migrate prev
 
-status:
+migrate-status:
 	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/doctrine-migrations --em=sqlite status
 
-diff:
+migrate-diff:
 	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/doctrine-migrations --em=sqlite diff
