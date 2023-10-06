@@ -20,7 +20,6 @@ class UserCreateAction extends UserAction
 
         if ($this->isPost()) {
             try {
-                $group_uuid = $this->getParam('group_uuid');
                 $user = $this->userService->create([
                     'username' => $this->getParam('username'),
                     'firstname' => $this->getParam('firstname'),
@@ -41,7 +40,7 @@ class UserCreateAction extends UserAction
                     'legal' => $this->getParam('legal'),
                     'website' => $this->getParam('website'),
                     'source' => $this->getParam('source'),
-                    'group' => $group_uuid !== \Ramsey\Uuid\Uuid::NIL ? $userGroups->firstWhere('uuid', $group_uuid) : '',
+                    'group_uuid' => $this->getParam('group_uuid'),
                     'language' => $this->getParam('language'),
                     'external_id' => $this->getParam('external_id'),
                 ]);
