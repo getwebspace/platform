@@ -112,15 +112,7 @@ class PublicationServiceTest extends TestCase
             ],
         ];
 
-        $publication = (new Publication())
-            ->setTitle($data['title'])
-            ->setCategory($data['category'])
-            ->setContent($data['content'])
-            ->setDate('now');
-
-        $this->em->persist($publication);
-        $this->em->flush();
-
+        $this->service->create($data);
         $this->service->create($data);
     }
 
@@ -128,7 +120,7 @@ class PublicationServiceTest extends TestCase
     {
         $this->expectException(AddressAlreadyExistsException::class);
 
-        $data = [
+        $this->service->create([
             'title' => $this->getFaker()->word,
             'address' => 'publication-custom-address-two',
             'category' => $this->category,
@@ -136,19 +128,17 @@ class PublicationServiceTest extends TestCase
                 'short' => $this->getFaker()->text(200),
                 'full' => $this->getFaker()->realText(500),
             ],
-        ];
+        ]);
 
-        $publication = (new Publication())
-            ->setTitle($data['title'] . '-miss')
-            ->setAddress($data['address'])
-            ->setCategory($data['category'])
-            ->setContent($data['content'])
-            ->setDate('now');
-
-        $this->em->persist($publication);
-        $this->em->flush();
-
-        $this->service->create($data);
+        $this->service->create([
+            'title' => $this->getFaker()->word,
+            'address' => 'publication-custom-address-two',
+            'category' => $this->category,
+            'content' => [
+                'short' => $this->getFaker()->text(200),
+                'full' => $this->getFaker()->realText(500),
+            ],
+        ]);
     }
 
     public function testReadSuccess1(): void
@@ -156,6 +146,7 @@ class PublicationServiceTest extends TestCase
         $data = [
             'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text(255),
+            'category' => $this->category,
         ];
 
         $this->service->create($data);
@@ -171,6 +162,7 @@ class PublicationServiceTest extends TestCase
             'title' => $this->getFaker()->word,
             'address' => 'publication-custom-address',
             'description' => $this->getFaker()->text(255),
+            'category' => $this->category,
         ];
 
         $this->service->create($data);
@@ -255,6 +247,7 @@ class PublicationServiceTest extends TestCase
         $page = $this->service->create([
             'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text(255),
+            'category' => $this->category,
         ]);
 
         $result = $this->service->delete($page);

@@ -48,10 +48,10 @@ class CategoryRepository extends AbstractRepository
         return $result;
     }
 
-    public function findOneUnique(string $parent, string $address, string $external_id): ?Category
+    public function findOneUnique(?string $parent, string $address, string $external_id): ?Category
     {
         $query = $this->createQueryBuilder('c')
-            ->andWhere('c.parent = :parent')->setParameter('parent', $parent, Types::STRING)
+            ->andWhere('c.parent_uuid = :parent OR c.parent_uuid IS NULL')->setParameter('parent', $parent, Types::STRING)
             ->andWhere('c.address = :address')->setParameter('address', $address, Types::STRING)
             ->andWhere('c.external_id = :external_id')->setParameter('external_id', $external_id, Types::STRING)
             ->getQuery();

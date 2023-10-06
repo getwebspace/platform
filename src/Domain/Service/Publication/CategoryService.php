@@ -35,7 +35,8 @@ class CategoryService extends AbstractService
             'title' => '',
             'address' => '',
             'description' => '',
-            'parent' => '',
+            'parent' => null,
+            'parent_uuid' => null,
             'pagination' => 10,
             'children' => false,
             'public' => true,
@@ -66,7 +67,12 @@ class CategoryService extends AbstractService
             throw new AddressAlreadyExistsException();
         }
 
-        $publicationCategory = (new PublicationCategory())
+        // retrieve category by uuid
+        if (!is_a($data['parent'], PublicationCategory::class) && $data['parent_uuid']) {
+            $data['parent'] = $this->read(['uuid' => $data['parent_uuid']]);
+        }
+
+        $category = (new PublicationCategory())
             ->setTitle($data['title'])
             ->setAddress($data['address'])
             ->setDescription($data['description'])
@@ -78,10 +84,27 @@ class CategoryService extends AbstractService
             ->setMeta($data['meta'])
             ->setTemplate($data['template']);
 
-        $this->entityManager->persist($publicationCategory);
+        // if address generation is enabled
+        if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
+            $category->setAddress(
+                implode('/', array_filter(
+                    [
+                        $category->getParent()?->getAddress(),
+                        $category->setAddress('')->getAddress(),
+                    ],
+                    fn ($el) => (bool) $el
+                ))
+            );
+        }
+
+        if ($this->service->findOneByAddress($category->getAddress()) !== null) {
+            throw new AddressAlreadyExistsException();
+        }
+
+        $this->entityManager->persist($category);
         $this->entityManager->flush();
 
-        return $publicationCategory;
+        return $category;
     }
 
     /**
@@ -162,6 +185,7 @@ class CategoryService extends AbstractService
                 'address' => null,
                 'description' => null,
                 'parent' => null,
+                'parent_uuid' => null,
                 'pagination' => null,
                 'children' => null,
                 'public' => null,
@@ -181,19 +205,15 @@ class CategoryService extends AbstractService
                         throw new TitleAlreadyExistsException();
                     }
                 }
-                if ($data['address'] !== null) {
-                    $found = $this->service->findOneByAddress($data['address']);
-
-                    if ($found === null || $found === $entity) {
-                        $entity->setAddress($data['address']);
-                    } else {
-                        throw new AddressAlreadyExistsException();
-                    }
-                }
                 if ($data['description'] !== null) {
                     $entity->setDescription($data['description']);
                 }
-                if ($data['parent'] !== null) {
+                if ($data['parent'] !== null || $data['parent_uuid'] !== null) {
+                    // retrieve category by uuid
+                    if (!is_a($data['parent'], PublicationCategory::class) && $data['parent_uuid']) {
+                        $data['parent'] = $this->read(['uuid' => $data['parent_uuid']]);
+                    }
+
                     $entity->setParent($data['parent']);
                 }
                 if ($data['pagination'] !== null) {
@@ -213,6 +233,25 @@ class CategoryService extends AbstractService
                 }
                 if ($data['template'] !== null) {
                     $entity->setTemplate($data['template']);
+                }
+                // if address generation is enabled
+                if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
+                    $data['address'] = implode('/', array_filter(
+                        [
+                            $entity->getParent()?->getAddress(),
+                            $entity->setAddress('')->getAddress(),
+                        ],
+                        fn ($el) => (bool) $el
+                    ));
+                }
+                if ($data['address'] !== null) {
+                    $found = $this->service->findOneByAddress($data['address']);
+
+                    if ($found === null || $found === $entity) {
+                        $entity->setAddress($data['address']);
+                    } else {
+                        throw new AddressAlreadyExistsException();
+                    }
                 }
 
                 $this->entityManager->flush();

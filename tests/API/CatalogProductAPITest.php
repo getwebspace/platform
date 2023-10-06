@@ -23,9 +23,29 @@ class CatalogProductAPITest extends TestCase
         $parameters->create(['key' => 'entity_keys', 'value' => $this->apikey = $this->getFaker()->word]);
     }
 
+    protected function getCategory(): ?string
+    {
+        $data = [
+            'title' => $this->getFaker()->word,
+            'description' => $this->getFaker()->text,
+            'field1' => $this->getFaker()->word,
+            'field2' => $this->getFaker()->word,
+            'field3' => $this->getFaker()->word,
+            'export' => 'api',
+        ];
+        $response = $this->createRequest()->put('/api/v1/catalog/category', [
+            'headers' => ['key' => $this->apikey],
+            'form_params' => $data,
+        ]);
+        $json = json_decode($response->getBody()->getContents(), true);
+
+        return $json['status'] === 201 ? $json['data']['uuid'] : null;
+    }
+
     public function testAPICreateSuccess(): void
     {
         $data = [
+            'category_uuid' => $this->getCategory(),
             'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text,
             'extra' => $this->getFaker()->text,
@@ -43,6 +63,7 @@ class CatalogProductAPITest extends TestCase
     {
         // create
         $data = [
+            'category_uuid' => $this->getCategory(),
             'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text,
             'extra' => $this->getFaker()->text,
@@ -77,6 +98,7 @@ class CatalogProductAPITest extends TestCase
     {
         // create
         $data = [
+            'category_uuid' => $this->getCategory(),
             'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text,
             'extra' => $this->getFaker()->text,
@@ -92,6 +114,7 @@ class CatalogProductAPITest extends TestCase
 
         // update
         $data = [
+            'category_uuid' => $this->getCategory(),
             'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text,
             'extra' => $this->getFaker()->text,
@@ -128,6 +151,7 @@ class CatalogProductAPITest extends TestCase
     {
         // create
         $data = [
+            'category_uuid' => $this->getCategory(),
             'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text,
             'extra' => $this->getFaker()->text,

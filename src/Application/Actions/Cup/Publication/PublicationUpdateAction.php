@@ -3,6 +3,7 @@
 namespace App\Application\Actions\Cup\Publication;
 
 use App\Domain\Service\Publication\Exception\AddressAlreadyExistsException;
+use App\Domain\Service\Publication\Exception\MissingCategoryValueException;
 use App\Domain\Service\Publication\Exception\MissingTitleValueException;
 use App\Domain\Service\Publication\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\Publication\Exception\WrongTitleValueException;
@@ -41,6 +42,8 @@ class PublicationUpdateAction extends PublicationAction
                         }
                     } catch (MissingTitleValueException|WrongTitleValueException|TitleAlreadyExistsException $e) {
                         $this->addError('title', $e->getMessage());
+                    } catch (MissingCategoryValueException $e) {
+                        $this->addError('category', $e->getMessage());
                     } catch (AddressAlreadyExistsException $e) {
                         $this->addError('address', $e->getMessage());
                     }

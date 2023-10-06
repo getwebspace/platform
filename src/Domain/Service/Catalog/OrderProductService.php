@@ -35,6 +35,7 @@ class OrderProductService extends AbstractService
         foreach ($products as $uuid => $opts) {
             $type = ($opts['price_type'] ?? 'price');
             $count = (float) ($opts['count'] ?? 0);
+            $price = (float) ($opts['price'] ?? 0);
 
             if ($count > 0) {
                 try {
@@ -43,6 +44,7 @@ class OrderProductService extends AbstractService
                     $price = match ($type) {
                         'price' => $product->getPrice(),
                         'price_wholesale' => $product->getPriceWholesale(),
+                        'self' => $price,
                     };
 
                     $order->addProduct(

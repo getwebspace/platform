@@ -2,10 +2,13 @@
 
 namespace tests\Domain\Service\Catalog;
 
+use App\Domain\Entities\Catalog\Category;
 use App\Domain\Entities\Catalog\Order;
+use App\Domain\Entities\Catalog\OrderProduct;
 use App\Domain\Entities\Catalog\Product;
 use App\Domain\Entities\Reference;
 use App\Domain\Repository\Catalog\OrderRepository;
+use App\Domain\Service\Catalog\CategoryService;
 use App\Domain\Service\Catalog\Exception\OrderNotFoundException;
 use App\Domain\Service\Catalog\OrderService;
 use App\Domain\Service\Catalog\ProductService;
@@ -39,20 +42,36 @@ class OrderServiceTest extends TestCase
         ]);
     }
 
+    protected function getRandomCategory(): Category
+    {
+        return $this->getService(CategoryService::class)->create([
+            'title' => implode(' ', $this->getFaker()->words(5)),
+        ]);
+    }
+
     protected function getRandomProduct(): Product
     {
         return $this->getService(ProductService::class)->create([
+            'category' => $this->getRandomCategory(),
             'title' => $this->getFaker()->word,
             'address' => $this->getFaker()->word,
-            'price' => $this->getFaker()->randomFloat(),
-            'priceWholesale' => $this->getFaker()->randomFloat(),
-            'priceWholesaleFrom' => $this->getFaker()->randomDigit(),
+            'price' => $this->getFaker()->randomFloat(2, 10, 10000),
+            'priceWholesale' => $this->getFaker()->randomFloat(2, 10, 10000),
+            'priceWholesaleFrom' => $this->getFaker()->randomFloat(1, 10),
         ]);
     }
 
     public function testCreateSuccess(): void
     {
         $products = [
+            $this->getRandomProduct(),
+            $this->getRandomProduct(),
+            $this->getRandomProduct(),
+            $this->getRandomProduct(),
+            $this->getRandomProduct(),
+            $this->getRandomProduct(),
+            $this->getRandomProduct(),
+            $this->getRandomProduct(),
             $this->getRandomProduct(),
             $this->getRandomProduct(),
         ];
@@ -77,10 +96,17 @@ class OrderServiceTest extends TestCase
 
         foreach ($products as $i => $product) {
             $data['products'][$product->getUuid()->toString()] = [
-                'count' => $this->getFaker()->randomDigit(),
-                'price_type' => ($i === 1 ? 'price' : 'price_wholesale'),
+                'count' => $this->getFaker()->randomFloat(2, 2, 10),
+                'price' => ($i % 2 === 0 ? $product->getPrice() : $product->getPriceWholesale()),
+                'price_type' => ($i % 2 === 0 ? 'price' : 'price_wholesale'),
             ];
         }
+        $extra = $this->getRandomProduct();
+        $data['products'][$extra->getUuid()->toString()] = [
+            'count' => $this->getFaker()->randomFloat(2, 2, 10),
+            'price' => $this->getFaker()->randomFloat(2, 2, 10000),
+            'price_type' => 'self',
+        ];
 
         $order = $this->service->create($data);
         $this->assertInstanceOf(Order::class, $order);
@@ -95,14 +121,15 @@ class OrderServiceTest extends TestCase
         $this->assertEquals($data['export'], $order->getExport());
         $this->assertEquals($data['system'], $order->getSystem());
 
-        foreach ($products as $i => $product) {
-            $productPriceType = ($i === 1 ? 'price' : 'price_wholesale');
-            $productPrice = ($i === 1 ? $product->getPrice() : $product->getPriceWholesale());
-            $orderProduct = $order->getProducts()->firstWhere('product.uuid', $product->getUuid()->toString());
+        foreach ($data['products'] as $uuid => $opts) {
+            $op = $order->getProducts()->firstWhere('product.uuid', $uuid);
 
-            $this->assertEquals($product->getTitle(), $orderProduct->getTitle());
-            $this->assertEquals($productPriceType, $orderProduct->getPriceType());
-            $this->assertEquals($productPrice, $orderProduct->getPrice());
+            $this->assertInstanceOf(OrderProduct::class, $op);
+            $this->assertInstanceOf(Product::class, $op->getProduct());
+
+            $this->assertEquals($uuid, $op->getProduct()->getUuid()->toString());
+            $this->assertEquals($opts['price'], $op->getPrice());
+            $this->assertEquals($opts['price_type'], $op->getPriceType());
         }
 
         /** @var OrderRepository $orderRepo */

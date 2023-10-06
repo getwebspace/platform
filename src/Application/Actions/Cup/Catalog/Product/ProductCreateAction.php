@@ -5,6 +5,7 @@ namespace App\Application\Actions\Cup\Catalog\Product;
 use App\Application\Actions\Cup\Catalog\CatalogAction;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;
+use App\Domain\Service\Catalog\Exception\MissingCategoryValueException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\WrongTitleValueException;
 use App\Domain\Types\ReferenceTypeType;
@@ -70,6 +71,8 @@ class ProductCreateAction extends CatalogAction
                 }
             } catch (MissingTitleValueException|WrongTitleValueException $e) {
                 $this->addError('title', $e->getMessage());
+            } catch (MissingCategoryValueException $e) {
+                $this->addError('category', $e->getMessage());
             } catch (AddressAlreadyExistsException $e) {
                 $this->addError('address', $e->getMessage());
             } catch (AttributeNotFoundException $e) {

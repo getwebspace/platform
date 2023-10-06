@@ -4,6 +4,7 @@ namespace tests\Domain\Service\Catalog;
 
 use App\Domain\Entities\Catalog\Product;
 use App\Domain\Repository\Catalog\ProductRepository;
+use App\Domain\Service\Catalog\CategoryService;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\ProductNotFoundException;
@@ -20,17 +21,20 @@ class ProductServiceTest extends TestCase
 {
     protected ProductService $service;
 
+    protected CategoryService $categoryService;
+
     public function setUp(): void
     {
         parent::setUp();
 
         $this->service = $this->getService(ProductService::class);
+        $this->categoryService = $this->getService(CategoryService::class);
     }
 
     public function testCreateSuccess(): void
     {
         $data = [
-            'category' => $this->getFaker()->uuid,
+            'category' => $this->categoryService->create(['title' => $this->getFaker()->word]),
             'title' => $this->getFaker()->word,
             'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductTypeType::LIST),
             'description' => $this->getFaker()->text(100),
@@ -76,7 +80,7 @@ class ProductServiceTest extends TestCase
 
         $product = $this->service->create($data);
         $this->assertInstanceOf(Product::class, $product);
-        $this->assertEquals($data['category'], $product->getCategory()->toString());
+        $this->assertEquals($data['category'], $product->getCategory());
         $this->assertEquals($data['title'], $product->getTitle());
         $this->assertEquals($data['type'], $product->getType());
         $this->assertEquals($data['description'], $product->getDescription());
@@ -112,7 +116,7 @@ class ProductServiceTest extends TestCase
         $productRepo = $this->em->getRepository(Product::class);
         $p = $productRepo->findOneByTitle($data['title']);
         $this->assertInstanceOf(Product::class, $p);
-        $this->assertEquals($data['category'], $p->getCategory()->toString());
+        $this->assertEquals($data['category'], $p->getCategory());
         $this->assertEquals($data['title'], $p->getTitle());
         $this->assertEquals($data['type'], $p->getType());
         $this->assertEquals($data['description'], $p->getDescription());
@@ -156,20 +160,13 @@ class ProductServiceTest extends TestCase
 
         $data = [
             'title' => $this->getFaker()->word,
+            'category' => $this->categoryService->create(['title' => $this->getFaker()->word]),
             'address' => 'some-custom-address',
             'date' => 'now',
             'external_id' => $this->getFaker()->word,
         ];
 
-        $product = (new Product())
-            ->setTitle($data['title'] . '-miss')
-            ->setAddress($data['address'])
-            ->setDate($data['date'])
-            ->setExternalId($data['external_id']);
-
-        $this->em->persist($product);
-        $this->em->flush();
-
+        $this->service->create($data);
         $this->service->create($data);
     }
 
@@ -177,21 +174,45 @@ class ProductServiceTest extends TestCase
     {
         $data = [
             'title' => $this->getFaker()->word,
+            'category' => $this->categoryService->create(['title' => $this->getFaker()->word]),
             'address' => 'some-custom-address',
             'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductStatusType::LIST),
         ];
 
         $this->service->create($data);
 
-        $product = $this->service->read(['title' => $data['title']]);
+        $product = $this->service->read(['address' => $data['address']]);
         $this->assertInstanceOf(Product::class, $product);
         $this->assertEquals($data['title'], $product->getTitle());
+        $this->assertEquals($data['address'], $product->getAddress());
+        $this->assertEquals($data['status'], $product->getStatus());
     }
 
     public function testReadSuccess2(): void
     {
         $data = [
             'title' => $this->getFaker()->word,
+            'category' => $this->categoryService->create(['title' => $this->getFaker()->word]),
+            'address' => 'some-custom-address',
+            'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductStatusType::LIST),
+            'external_id' => $this->getFaker()->postcode,
+        ];
+
+        $this->service->create($data);
+
+        $product = $this->service->read(['external_id' => $data['external_id']]);
+        $this->assertInstanceOf(Product::class, $product);
+        $this->assertEquals($data['title'], $product->getTitle());
+        $this->assertEquals($data['address'], $product->getAddress());
+        $this->assertEquals($data['status'], $product->getStatus());
+        $this->assertEquals($data['external_id'], $product->getExternalId());
+    }
+
+    public function testReadSuccess3(): void
+    {
+        $data = [
+            'title' => $this->getFaker()->word,
+            'category' => $this->categoryService->create(['title' => $this->getFaker()->word]),
             'address' => 'some-custom-address',
             'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductStatusType::LIST),
         ];
@@ -206,13 +227,13 @@ class ProductServiceTest extends TestCase
     {
         $this->expectException(ProductNotFoundException::class);
 
-        $this->service->read(['title' => $this->getFaker()->word]);
+        $this->service->read(['address' => 'some-custom-address']);
     }
 
     public function testUpdate(): void
     {
         $product = $this->service->create([
-            'category' => $this->getFaker()->uuid,
+            'category' => $this->categoryService->create(['title' => $this->getFaker()->word]),
             'title' => $this->getFaker()->word,
             'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductTypeType::LIST),
             'description' => $this->getFaker()->text(100),
@@ -256,7 +277,7 @@ class ProductServiceTest extends TestCase
         ]);
 
         $data = [
-            'category' => $this->getFaker()->uuid,
+            'category' => $this->categoryService->create(['title' => $this->getFaker()->word]),
             'title' => $this->getFaker()->word,
             'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductTypeType::LIST),
             'description' => $this->getFaker()->text(100),
@@ -301,7 +322,7 @@ class ProductServiceTest extends TestCase
 
         $product = $this->service->update($product, $data);
         $this->assertInstanceOf(Product::class, $product);
-        $this->assertEquals($data['category'], $product->getCategory()->toString());
+        $this->assertEquals($data['category'], $product->getCategory());
         $this->assertEquals($data['title'], $product->getTitle());
         $this->assertEquals($data['type'], $product->getType());
         $this->assertEquals($data['description'], $product->getDescription());
@@ -344,6 +365,7 @@ class ProductServiceTest extends TestCase
     {
         $product = $this->service->create([
             'title' => $this->getFaker()->word,
+            'category' => $this->categoryService->create(['title' => $this->getFaker()->word]),
             'address' => 'some-custom-address',
             'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductStatusType::LIST),
         ]);

@@ -5,6 +5,7 @@ namespace App\Application\Actions\Cup\Catalog\Product;
 use App\Application\Actions\Cup\Catalog\CatalogAction;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;
+use App\Domain\Service\Catalog\Exception\MissingCategoryValueException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\WrongTitleValueException;
 use App\Domain\Types\ReferenceTypeType;
@@ -71,6 +72,8 @@ class ProductUpdateAction extends CatalogAction
                         }
                     } catch (MissingTitleValueException|WrongTitleValueException $e) {
                         $this->addError('title', $e->getMessage());
+                    } catch (MissingCategoryValueException $e) {
+                        $this->addError('category', $e->getMessage());
                     } catch (AddressAlreadyExistsException $e) {
                         $this->addError('address', $e->getMessage());
                     } catch (AttributeNotFoundException $e) {
@@ -84,7 +87,7 @@ class ProductUpdateAction extends CatalogAction
                 $attributes = $this->catalogAttributeService->read();
 
                 return $this->respondWithTemplate('cup/catalog/product/form.twig', [
-                    'category' => $categories->firstWhere('uuid', $product->getCategory()),
+                    'category' => $product->getCategory(),
                     'categories' => $categories,
                     'attributes' => $attributes,
                     'tax_rates' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_TAX_RATE]),

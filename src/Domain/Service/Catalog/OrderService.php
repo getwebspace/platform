@@ -120,8 +120,8 @@ class OrderService extends AbstractService
         }
         if ($data['status'] !== null) {
             if (
-                is_string($data['status']) && \Ramsey\Uuid\Uuid::isValid($data['status']) ||
-                is_object($data['status']) && is_a($data['status'], Uuid::class)
+                is_string($data['status']) && \Ramsey\Uuid\Uuid::isValid($data['status'])
+                || is_object($data['status']) && is_a($data['status'], Uuid::class)
             ) {
                 $criteria['status'] = $data['status'];
             }

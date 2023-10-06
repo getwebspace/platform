@@ -7,13 +7,12 @@ use App\Domain\Service\Catalog\Exception\WrongTitleValueException;
 use App\Domain\Traits\FileTrait;
 use Doctrine\ORM\Mapping as ORM;
 use Illuminate\Support\Collection;
-use Ramsey\Uuid\UuidInterface as Uuid;
 
 #[ORM\Table(name: 'catalog_category')]
 #[ORM\Index(name: 'catalog_category_address_idx', columns: ['address'])]
-#[ORM\Index(name: 'catalog_category_parent_idx', columns: ['parent'])]
+#[ORM\Index(name: 'catalog_category_parent_idx', columns: ['parent_uuid'])]
 #[ORM\Index(name: 'catalog_category_order_idx', columns: ['order'])]
-#[ORM\UniqueConstraint(name: 'catalog_category_unique', columns: ['parent', 'address', 'external_id'])]
+#[ORM\UniqueConstraint(name: 'catalog_category_unique', columns: ['parent_uuid', 'address', 'external_id'])]
 #[ORM\Entity(repositoryClass: 'App\Domain\Repository\Catalog\CategoryRepository')]
 class Category extends AbstractEntity
 {
@@ -30,25 +29,30 @@ class Category extends AbstractEntity
         return $this->uuid;
     }
 
-    /**
-     * @var Uuid
-     */
-    #[ORM\Column(type: 'uuid', options: ['default' => \Ramsey\Uuid\Uuid::NIL])]
-    protected $parent = \Ramsey\Uuid\Uuid::NIL;
+    #[ORM\Column(type: 'uuid', nullable: true)]
+    protected ?\Ramsey\Uuid\UuidInterface $parent_uuid;
+
+    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\Catalog\Category')]
+    #[ORM\JoinColumn(name: 'parent_uuid', referencedColumnName: 'uuid')]
+    protected ?Category $parent;
 
     /**
-     * @param string|Uuid $uuid
-     *
      * @return $this
      */
-    public function setParent($uuid)
+    public function setParent(mixed $category)
     {
-        $this->parent = $this->getUuidByValue($uuid);
+        if (is_a($category, self::class)) {
+            $this->parent_uuid = $category->getUuid();
+            $this->parent = $category;
+        } else {
+            $this->parent_uuid = null;
+            $this->parent = null;
+        }
 
         return $this;
     }
 
-    public function getParent(): \Ramsey\Uuid\UuidInterface
+    public function getParent(): ?self
     {
         return $this->parent;
     }
@@ -502,10 +506,21 @@ class Category extends AbstractEntity
     #[ORM\OrderBy(['order' => 'ASC'])]
     protected $files = [];
 
-    /**
-     * @return Collection
-     */
-    public function getNested(Collection &$categories)
+    public function getParents(): Collection
+    {
+        $collect = collect([$this]);
+
+        // @var \App\Domain\Entities\Catalog\Category $parent
+        $parent = $this->parent;
+        while ($parent !== null) {
+            $collect[] = $parent;
+            $parent = $parent->parent;
+        }
+
+        return $collect;
+    }
+
+    public function getNested(Collection &$categories): Collection
     {
         $result = collect([$this]);
 
@@ -517,5 +532,33 @@ class Category extends AbstractEntity
         }
 
         return $result;
+    }
+
+    public function toArray(): array
+    {
+        return array_serialize([
+            'uuid' => $this->uuid,
+            'parent_uuid' => $this->parent_uuid,
+            'parent' => $this->parent,
+            'title' => $this->title,
+            'description' => $this->description,
+            'address' => $this->address,
+            'field1' => $this->field1,
+            'field2' => $this->field2,
+            'field3' => $this->field3,
+            'product' => $this->product,
+            'pagination' => $this->pagination,
+            'children' => $this->children,
+            'hidden' => $this->hidden,
+            'order' => $this->order,
+            'status' => $this->status,
+            'sort' => $this->sort,
+            'meta' => $this->meta,
+            'template' => $this->template,
+            'external_id' => $this->external_id,
+            'export' => $this->export,
+            'attributes' => $this->attributes,
+            'files' => $this->files,
+        ]);
     }
 }

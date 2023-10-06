@@ -13,7 +13,7 @@ run-test:
 	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/phpunit --color=always --configuration phpunit.xml
 
 lint:
-	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php --diff
+	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php
 
 migrate:
 	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/doctrine-migrations --em=sqlite migrate --no-interaction

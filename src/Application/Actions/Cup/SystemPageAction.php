@@ -190,7 +190,7 @@ class SystemPageAction extends AbstractAction
                 }
 
                 $address_formats = [
-                    ['title' => __('Default'),                  'value' => ['format' => "{address}"]],
+                    ['title' => __('Default'),                  'value' => ['format' => '{address}']],
                     ['title' => __('International address'),    'value' => ['format' => "{company.title}\n{address}\n{city} {postcode}\n{country}"]],
                 ];
                 foreach ($address_formats as $el) {

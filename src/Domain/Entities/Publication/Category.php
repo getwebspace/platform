@@ -100,25 +100,30 @@ class Category extends AbstractEntity
         return $this->description;
     }
 
-    /**
-     * @var string|uuid
-     */
-    #[ORM\Column(type: 'uuid', options: ['default' => \Ramsey\Uuid\Uuid::NIL])]
-    protected $parent = \Ramsey\Uuid\Uuid::NIL;
+    #[ORM\Column(type: 'uuid', nullable: true)]
+    protected ?\Ramsey\Uuid\UuidInterface $parent_uuid;
+
+    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\Publication\Category')]
+    #[ORM\JoinColumn(name: 'parent_uuid', referencedColumnName: 'uuid')]
+    protected ?Category $parent;
 
     /**
-     * @param string|Uuid $uuid
-     *
      * @return $this
      */
-    public function setParent($uuid)
+    public function setParent(mixed $category)
     {
-        $this->parent = $this->getUuidByValue($uuid);
+        if (is_a($category, self::class)) {
+            $this->parent_uuid = $category->getUuid();
+            $this->parent = $category;
+        } else {
+            $this->parent_uuid = null;
+            $this->parent = null;
+        }
 
         return $this;
     }
 
-    public function getParent(): string
+    public function getParent(): ?self
     {
         return $this->parent;
     }

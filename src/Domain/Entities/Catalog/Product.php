@@ -3,8 +3,8 @@
 namespace App\Domain\Entities\Catalog;
 
 use App\Domain\AbstractEntity;
-use App\Domain\Service\Catalog\Exception\WrongTitleValueException;
 use App\Domain\Entities\Catalog\Category as CatalogCategory;
+use App\Domain\Service\Catalog\Exception\WrongTitleValueException;
 use App\Domain\Traits\FileTrait;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -32,7 +32,7 @@ class Product extends AbstractEntity
         return $this->uuid;
     }
 
-    #[ORM\Column(type: 'uuid', nullable: true, options: ['default' => \Ramsey\Uuid\Uuid::NIL])]
+    #[ORM\Column(type: 'uuid', nullable: false)]
     protected ?\Ramsey\Uuid\UuidInterface $category_uuid;
 
     #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\Catalog\Category')]
@@ -760,4 +760,49 @@ class Product extends AbstractEntity
     #[ORM\OneToMany(targetEntity: '\App\Domain\Entities\File\CatalogProductFileRelation', mappedBy: 'catalog_product', orphanRemoval: true)]
     #[ORM\OrderBy(['order' => 'ASC'])]
     protected $files = [];
+
+    public function toArray(): array
+    {
+        return array_serialize([
+            'uuid' => $this->uuid,
+            'category_uuid' => $this->category_uuid,
+            'category' => $this->category,
+            'title' => $this->title,
+            'type' => $this->type,
+            'description' => $this->description,
+            'extra' => $this->extra,
+            'address' => $this->address,
+            'vendorcode' => $this->vendorcode,
+            'barcode' => $this->barcode,
+            'tax' => $this->tax,
+            'priceFirst' => $this->priceFirst,
+            'price' => $this->price,
+            'priceWholesale' => $this->priceWholesale,
+            'priceWholesaleFrom' => $this->priceWholesaleFrom,
+            'discount' => $this->discount,
+            'special' => $this->special,
+            'dimension' => $this->dimension,
+            'quantity' => $this->quantity,
+            'quantityMin' => $this->quantityMin,
+            'stock' => $this->stock,
+            'field1' => $this->field1,
+            'field2' => $this->field2,
+            'field3' => $this->field3,
+            'field4' => $this->field4,
+            'field5' => $this->field5,
+            'attributes' => $this->attributes,
+            'country' => $this->country,
+            'manufacturer' => $this->manufacturer,
+            'tags' => $this->tags,
+            'related' => $this->related,
+            'relation' => $this->relation,
+            'order' => $this->order,
+            'status' => $this->status,
+            'date' => $this->date,
+            'meta' => $this->meta,
+            'external_id' => $this->external_id,
+            'export' => $this->export,
+            'files' => $this->files,
+        ]);
+    }
 }

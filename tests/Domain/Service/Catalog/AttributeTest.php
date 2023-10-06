@@ -96,8 +96,16 @@ class AttributeTest extends TestCase
             'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\AttributeTypeType::LIST),
         ]);
 
+        // create test category
+        $category = $this->categoryService->create([
+            'title' => $this->getFaker()->word,
+            'description' => $this->getFaker()->text(100),
+        ]);
+        $this->assertInstanceOf(Category::class, $category);
+
         // create test product
         $product = $this->productService->create([
+            'category' => $category,
             'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text(100),
 

@@ -150,7 +150,7 @@ abstract class AbstractAction
 
     protected function hasError(): bool
     {
-        return !!$this->error;
+        return (bool) $this->error;
     }
 
     public function __invoke(Request $request, Response $response, array $args): Response

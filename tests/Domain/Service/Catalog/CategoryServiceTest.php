@@ -30,7 +30,6 @@ class CategoryServiceTest extends TestCase
     public function testCreateSuccess(): void
     {
         $data = [
-            'parent' => $this->getFaker()->uuid,
             'children' => $this->getFaker()->boolean,
             'hidden' => $this->getFaker()->boolean,
             'title' => $this->getFaker()->word,
@@ -68,7 +67,6 @@ class CategoryServiceTest extends TestCase
 
         $category = $this->service->create($data);
         $this->assertInstanceOf(Category::class, $category);
-        $this->assertEquals($data['parent'], $category->getParent()->toString());
         $this->assertEquals($data['children'], $category->getChildren());
         $this->assertEquals($data['hidden'], $category->getHidden());
         $this->assertEquals($data['title'], $category->getTitle());
@@ -91,7 +89,6 @@ class CategoryServiceTest extends TestCase
         $categoryRepo = $this->em->getRepository(Category::class);
         $c = $categoryRepo->findOneByTitle($data['title']);
         $this->assertInstanceOf(Category::class, $c);
-        $this->assertEquals($data['parent'], $c->getParent()->toString());
         $this->assertEquals($data['children'], $c->getChildren());
         $this->assertEquals($data['hidden'], $c->getHidden());
         $this->assertEquals($data['title'], $c->getTitle());
@@ -118,7 +115,7 @@ class CategoryServiceTest extends TestCase
         $this->service->create();
     }
 
-    public function testCreateWithAddressExistent(): void
+    public function testCreateWithAddressExistent1(): void
     {
         $this->expectException(AddressAlreadyExistsException::class);
 
@@ -127,13 +124,21 @@ class CategoryServiceTest extends TestCase
             'address' => 'some-custom-address',
         ];
 
-        $category = (new Category())
-            ->setTitle($data['title'] . '-miss')
-            ->setAddress($data['address']);
+        $this->service->create($data);
+        $this->service->create($data);
+    }
 
-        $this->em->persist($category);
-        $this->em->flush();
+    public function testCreateWithAddressExistent2(): void
+    {
+        $this->expectException(AddressAlreadyExistsException::class);
 
+        $data = [
+            'parent' => $this->service->create(['title' => $this->getFaker()->word]),
+            'title' => $this->getFaker()->word,
+            'address' => 'some-custom-address',
+        ];
+
+        $d = $this->service->create($data);
         $this->service->create($data);
     }
 
@@ -176,7 +181,7 @@ class CategoryServiceTest extends TestCase
     public function testUpdate(): void
     {
         $category = $this->service->create([
-            'parent' => $this->getFaker()->uuid,
+            'parent' => $this->service->create(['title' => $this->getFaker()->word]),
             'children' => $this->getFaker()->boolean,
             'hidden' => $this->getFaker()->boolean,
             'title' => $this->getFaker()->word,
@@ -213,7 +218,7 @@ class CategoryServiceTest extends TestCase
         ]);
 
         $data = [
-            'parent' => $this->getFaker()->uuid,
+            'parent' => $this->service->create(['title' => $this->getFaker()->word]),
             'children' => $this->getFaker()->boolean,
             'hidden' => $this->getFaker()->boolean,
             'title' => $this->getFaker()->word,

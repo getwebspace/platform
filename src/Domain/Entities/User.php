@@ -220,7 +220,7 @@ class User extends AbstractEntity
                                 $this->patronymic ? mb_substr($this->patronymic, 0, 1) . '.' : '',
                                 $this->firstname ?: '',
                             ],
-                            fn($el) => !!$el
+                            fn ($el) => (bool) $el
                         ))
                     );
 

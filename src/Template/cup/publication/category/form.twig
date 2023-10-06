@@ -32,16 +32,26 @@
                                     }
                                 } %}
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-6 col-md-3">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Address'|locale,
-                                    'type': 'text',
-                                    'name': 'address',
-                                    'prefix': base_url() ~ '/',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Used to view all articles in a given category. You can leave it blank, then the value will be generated automatically. It is allowed to use only Latin characters and numbers without spaces'|locale) ~ '"></i>',
+                                    'label': 'Primary category'|locale,
+                                    'type': 'select',
+                                    'name': 'parent',
                                     'args': {
-                                        'value': item.address,
-                                        'placeholder': 'news',
+                                        'option': {'': '---'}|merge(list.whereNotIn('uuid', [item.uuid]).pluck('title', 'uuid').all()),
+                                        'selected': item.parent_uuid
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-6 col-md-3">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Public category'|locale,
+                                    'message': 'Whether to show the category in the general list'|locale,
+                                    'type': 'select',
+                                    'name': 'public',
+                                    'args': {
+                                        'option': _(['yes', 'no']),
+                                        'selected': item.public ? 'yes' : 'no'
                                     }
                                 } %}
                             </div>
@@ -62,12 +72,11 @@
                         <div class="row">
                             <div class="col-md-3">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Primary category'|locale,
-                                    'type': 'select',
-                                    'name': 'parent',
+                                    'label': 'Number of entries per page'|locale,
+                                    'type': 'text',
+                                    'name': 'pagination',
                                     'args': {
-                                        'option': {(NIL): '---'}|merge(list.whereNotIn('uuid', [item.uuid]).pluck('title', 'uuid').all()),
-                                        'selected': item.parent
+                                        'value': item.pagination is not empty ? item.pagination : '10',
                                     }
                                 } %}
                             </div>
@@ -82,25 +91,16 @@
                                     }
                                 } %}
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Number of entries per page'|locale,
+                                    'label': 'Address'|locale,
                                     'type': 'text',
-                                    'name': 'pagination',
+                                    'name': 'address',
+                                    'prefix': base_url() ~ '/',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Used to view all articles in a given category. You can leave it blank, then the value will be generated automatically. It is allowed to use only Latin characters and numbers without spaces'|locale) ~ '"></i>',
                                     'args': {
-                                        'value': item.pagination is not empty ? item.pagination : '10',
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-3">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Public category'|locale,
-                                    'message': 'Whether to show the category in the general list'|locale,
-                                    'type': 'select',
-                                    'name': 'public',
-                                    'args': {
-                                        'option': _(['yes', 'no']),
-                                        'selected': item.public ? 'yes' : 'no'
+                                        'value': item.address,
+                                        'placeholder': 'news',
                                     }
                                 } %}
                             </div>

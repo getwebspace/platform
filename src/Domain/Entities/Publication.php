@@ -101,7 +101,7 @@ class Publication extends AbstractEntity
         return $this->title;
     }
 
-    #[ORM\Column(type: 'uuid', nullable: true, options: ['default' => \Ramsey\Uuid\Uuid::NIL])]
+    #[ORM\Column(type: 'uuid', nullable: false)]
     protected ?\Ramsey\Uuid\UuidInterface $category_uuid;
 
     #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\Publication\Category')]

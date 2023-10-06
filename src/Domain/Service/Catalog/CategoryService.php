@@ -3,7 +3,7 @@
 namespace App\Domain\Service\Catalog;
 
 use App\Domain\AbstractService;
-use App\Domain\Entities\Catalog\Category;
+use App\Domain\Entities\Catalog\Category as CatalogCategory;
 use App\Domain\Repository\Catalog\CategoryRepository;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\CategoryNotFoundException;
@@ -20,17 +20,18 @@ class CategoryService extends AbstractService
 
     protected function init(): void
     {
-        $this->service = $this->entityManager->getRepository(Category::class);
+        $this->service = $this->entityManager->getRepository(CatalogCategory::class);
     }
 
     /**
      * @throws MissingTitleValueException
      * @throws AddressAlreadyExistsException
      */
-    public function create(array $data = []): Category
+    public function create(array $data = []): CatalogCategory
     {
         $default = [
-            'parent' => \Ramsey\Uuid\Uuid::NIL,
+            'parent' => null,
+            'parent_uuid' => null,
             'children' => false,
             'hidden' => false,
             'title' => '',
@@ -72,7 +73,12 @@ class CategoryService extends AbstractService
             throw new MissingTitleValueException();
         }
 
-        $category = (new Category())
+        // retrieve category by uuid
+        if (!is_a($data['parent'], CatalogCategory::class) && $data['parent_uuid']) {
+            $data['parent'] = $this->read(['uuid' => $data['parent_uuid']]);
+        }
+
+        $category = (new CatalogCategory())
             ->setParent($data['parent'])
             ->setChildren($data['children'])
             ->setHidden($data['hidden'])
@@ -94,21 +100,26 @@ class CategoryService extends AbstractService
             ->setExport($data['export']);
 
         // if address generation is enabled
-        if (!$data['address'] && $this->parameter('common_auto_generate_address', 'no') === 'yes' && \Ramsey\Uuid\Uuid::isValid((string) $data['parent']) && $data['parent'] !== \Ramsey\Uuid\Uuid::NIL) {
-            try {
-                $parent = $this->read(['uuid' => $data['parent']]);
-
-                // combine address category with parent category
-                $category->setAddress(
-                    implode('/', [$parent->getAddress(), $category->setAddress('')->getAddress()])
-                );
-            } catch (CategoryNotFoundException $e) {
-                // nothing
-            }
+        if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
+            $category->setAddress(
+                implode('/', array_filter(
+                    [
+                        $category->getParent()?->getAddress(),
+                        $category->setAddress('')->getAddress(),
+                    ],
+                    fn ($el) => (bool) $el
+                ))
+            );
         }
 
-        /** @var Category $category */
-        if ($this->service->findOneUnique($category->getParent()->toString(), $category->getAddress(), $category->getExternalId()) !== null) {
+        $found = $this->service->findOneUnique(
+            $category->getParent()?->getUuid()->toString(),
+            $category->getAddress(),
+            $category->getExternalId()
+        );
+
+        /** @var CatalogCategory $category */
+        if ($found !== null) {
             throw new AddressAlreadyExistsException();
         }
 
@@ -121,7 +132,7 @@ class CategoryService extends AbstractService
     /**
      * @throws CategoryNotFoundException
      *
-     * @return Category|Collection
+     * @return CatalogCategory|Collection
      */
     public function read(array $data = [])
     {
@@ -203,12 +214,12 @@ class CategoryService extends AbstractService
     }
 
     /**
-     * @param Category|string|Uuid $entity
+     * @param CatalogCategory|string|Uuid $entity
      *
      * @throws AddressAlreadyExistsException
      * @throws CategoryNotFoundException
      */
-    public function update($entity, array $data = []): Category
+    public function update($entity, array $data = []): CatalogCategory
     {
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
@@ -218,9 +229,10 @@ class CategoryService extends AbstractService
                 break;
         }
 
-        if (is_object($entity) && is_a($entity, Category::class)) {
+        if (is_object($entity) && is_a($entity, CatalogCategory::class)) {
             $default = [
                 'parent' => null,
+                'parent_uuid' => null,
                 'children' => null,
                 'hidden' => null,
                 'title' => null,
@@ -243,7 +255,12 @@ class CategoryService extends AbstractService
             $data = array_merge($default, $data);
 
             if ($data !== $default) {
-                if ($data['parent'] !== null) {
+                if ($data['parent'] !== null || $data['parent_uuid'] !== null) {
+                    // retrieve category by uuid
+                    if (!is_a($data['parent'], CatalogCategory::class) && $data['parent_uuid']) {
+                        $data['parent'] = $this->read(['uuid' => $data['parent_uuid']]);
+                    }
+
                     $entity->setParent($data['parent']);
                 }
                 if ($data['children'] !== null) {
@@ -257,19 +274,6 @@ class CategoryService extends AbstractService
                 }
                 if ($data['description'] !== null) {
                     $entity->setDescription($data['description']);
-                }
-                if ($data['address'] !== null) {
-                    $found = $this->service->findOneUnique(
-                        $data['parent'] ?? $entity->getParent()->toString(),
-                        $data['address'] ?? $entity->getAddress(),
-                        $data['external_id'] ?? $entity->getExternalId()
-                    );
-
-                    if ($found === null || $found === $entity) {
-                        $entity->setAddress($data['address']);
-                    } else {
-                        throw new AddressAlreadyExistsException();
-                    }
                 }
                 if ($data['field1'] !== null) {
                     $entity->setField1($data['field1']);
@@ -310,6 +314,29 @@ class CategoryService extends AbstractService
                 if ($data['export'] !== null) {
                     $entity->setExport($data['export']);
                 }
+                // if address generation is enabled
+                if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
+                    $data['address'] = implode('/', array_filter(
+                        [
+                            $entity->getParent()?->getAddress(),
+                            $entity->setAddress('')->getAddress(),
+                        ],
+                        fn ($el) => (bool) $el
+                    ));
+                }
+                if ($data['address'] !== null) {
+                    $found = $this->service->findOneUnique(
+                        $entity->getParent()?->getUuid()->toString(),
+                        $entity->getAddress(),
+                        $entity->getExternalId()
+                    );
+
+                    if ($found === null || $found === $entity) {
+                        $entity->setAddress($data['address']);
+                    } else {
+                        throw new AddressAlreadyExistsException();
+                    }
+                }
 
                 $this->entityManager->flush();
             }
@@ -321,7 +348,7 @@ class CategoryService extends AbstractService
     }
 
     /**
-     * @param Category|string|Uuid $entity
+     * @param CatalogCategory|string|Uuid $entity
      *
      * @throws CategoryNotFoundException
      */
@@ -335,7 +362,7 @@ class CategoryService extends AbstractService
                 break;
         }
 
-        if (is_object($entity) && is_a($entity, Category::class)) {
+        if (is_object($entity) && is_a($entity, CatalogCategory::class)) {
             if (($files = $entity->getFiles()) && $files->isNotEmpty()) {
                 $fileService = $this->container->get(\App\Domain\Service\File\FileService::class);
 

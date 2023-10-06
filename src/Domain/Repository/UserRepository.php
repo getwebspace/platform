@@ -100,8 +100,6 @@ class UserRepository extends AbstractRepository
 
     public function findByFirstnameOrLastname($firstname, $lastname, $limit = 1000, $offset = 0): array
     {
-        $query = $this->createQueryBuilder('u');
-
         if ($firstname || $lastname) {
             if ($firstname && !$lastname) {
                 $lastname = $firstname;
@@ -110,11 +108,11 @@ class UserRepository extends AbstractRepository
                 $firstname = $lastname;
             }
 
-            $query
-                ->orWhere('u.firstname = :firstname1 OR u.firstname LIKE :firstname2')
+            $query = $this->createQueryBuilder('u')
+                ->orWhere('LOWER(u.firstname) = LOWER(:firstname1) OR LOWER(u.firstname) LIKE LOWER(:firstname2)')
                 ->setParameter('firstname1', $firstname, Types::STRING)
                 ->setParameter('firstname2', $firstname . '%', Types::STRING)
-                ->orWhere('u.lastname = :lastname1 OR u.lastname LIKE :lastname2')
+                ->orWhere('LOWER(u.lastname) = LOWER(:lastname1) OR LOWER(u.lastname) LIKE LOWER(:lastname2)')
                 ->setParameter('lastname1', $lastname, Types::STRING)
                 ->setParameter('lastname2', $lastname . '%', Types::STRING)
                 ->andWhere('u.status = :status')

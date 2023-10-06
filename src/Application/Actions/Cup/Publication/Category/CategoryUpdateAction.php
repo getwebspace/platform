@@ -13,16 +13,16 @@ class CategoryUpdateAction extends PublicationAction
     protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            $publicationCategory = $this->publicationCategoryService->read(['uuid' => $this->resolveArg('uuid')]);
+            $category = $this->publicationCategoryService->read(['uuid' => $this->resolveArg('uuid')]);
 
-            if ($publicationCategory) {
+            if ($category) {
                 if ($this->isPost()) {
                     try {
-                        $publicationCategory = $this->publicationCategoryService->update($publicationCategory, [
+                        $category = $this->publicationCategoryService->update($category, [
                             'title' => $this->getParam('title'),
                             'address' => $this->getParam('address'),
                             'description' => $this->getParam('description'),
-                            'parent' => $this->getParam('parent'),
+                            'parent_uuid' => $this->getParam('parent'),
                             'public' => $this->getParam('public'),
                             'children' => $this->getParam('children'),
                             'pagination' => $this->getParam('pagination'),
@@ -30,16 +30,16 @@ class CategoryUpdateAction extends PublicationAction
                             'meta' => $this->getParam('meta'),
                             'template' => $this->getParam('template'),
                         ]);
-                        $publicationCategory = $this->processEntityFiles($publicationCategory);
+                        $category = $this->processEntityFiles($category);
 
-                        $this->container->get(\App\Application\PubSub::class)->publish('cup:publication:category:edit', $publicationCategory);
+                        $this->container->get(\App\Application\PubSub::class)->publish('cup:publication:category:edit', $category);
 
                         switch (true) {
                             case $this->getParam('save', 'exit') === 'exit':
                                 return $this->response->withAddedHeader('Location', '/cup/publication/category')->withStatus(301);
 
                             default:
-                                return $this->response->withAddedHeader('Location', '/cup/publication/category/' . $publicationCategory->getUuid() . '/edit')->withStatus(301);
+                                return $this->response->withAddedHeader('Location', '/cup/publication/category/' . $category->getUuid() . '/edit')->withStatus(301);
                         }
                     } catch (MissingTitleValueException|WrongTitleValueException|TitleAlreadyExistsException $e) {
                         $this->addError('title', $e->getMessage());
@@ -48,7 +48,7 @@ class CategoryUpdateAction extends PublicationAction
                     }
                 }
 
-                return $this->respondWithTemplate('cup/publication/category/form.twig', ['list' => $this->publicationCategoryService->read(), 'item' => $publicationCategory]);
+                return $this->respondWithTemplate('cup/publication/category/form.twig', ['list' => $this->publicationCategoryService->read(), 'item' => $category]);
             }
         }
 

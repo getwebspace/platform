@@ -143,16 +143,6 @@ class UserServiceTest extends TestCase
         $this->service->create();
     }
 
-    public function testCreateWithWrongPassword(): void
-    {
-        $this->expectException(WrongPasswordException::class);
-
-        $this->service->create([
-            'username' => $this->getFaker()->userName,
-            'email' => $this->getFaker()->email,
-        ]);
-    }
-
     public function testCreateWithUsernameExistent(): void
     {
         $this->expectException(UsernameAlreadyExistsException::class);

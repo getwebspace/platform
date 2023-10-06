@@ -3,12 +3,12 @@
 namespace App\Domain\Service\Catalog;
 
 use App\Domain\AbstractService;
-use App\Domain\Entities\Catalog\Product;
 use App\Domain\Entities\Catalog\Category as CatalogCategory;
+use App\Domain\Entities\Catalog\Product;
 use App\Domain\Repository\Catalog\ProductRepository;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
-use App\Domain\Service\Catalog\Exception\CategoryNotFoundException;
+use App\Domain\Service\Catalog\Exception\MissingCategoryValueException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\ProductNotFoundException;
 use App\Domain\Service\Catalog\ProductAttributeService as CatalogProductAttributeService;
@@ -91,6 +91,9 @@ class ProductService extends AbstractService
         if (!$data['title']) {
             throw new MissingTitleValueException();
         }
+        if (!$data['category'] && !$data['category_uuid']) {
+            throw new MissingCategoryValueException();
+        }
 
         // retrieve category by uuid
         if (!is_a($data['category'], CatalogCategory::class) && $data['category_uuid']) {
@@ -133,23 +136,22 @@ class ProductService extends AbstractService
             ->setExport($data['export']);
 
         // if address generation is enabled
-        if (!$data['address'] && $this->parameter('common_auto_generate_address', 'no') === 'yes' && \Ramsey\Uuid\Uuid::isValid((string) $data['category'])) {
-            try {
-                $catalogCategory = $this->catalogCategoryService->read(['uuid' => $data['category']]);
-
-                // combine address category with product address
-                $product->setAddress(
-                    implode('/', [$catalogCategory->getAddress(), $product->setAddress('')->getAddress()])
-                );
-            } catch (CategoryNotFoundException $e) {
-                // nothing
-            }
+        if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
+            $product->setAddress(
+                implode('/', array_filter(
+                    [
+                        $product->getCategory()->getAddress(),
+                        $product->setAddress('')->getAddress(),
+                    ],
+                    fn ($el) => (bool) $el
+                ))
+            );
         }
 
         /** @var Product $product */
         if (
             $this->service->findOneUnique(
-                $product->getCategory()->getTitle(),
+                $product->getCategory()->getUuid()->toString(),
                 $product->getAddress(),
                 $product->getDimension(),
                 $product->getExternalId()
@@ -353,20 +355,6 @@ class ProductService extends AbstractService
                 if ($data['extra'] !== null) {
                     $entity->setExtra($data['extra']);
                 }
-                if ($data['address'] !== null) {
-                    $found = $this->service->findOneUnique(
-                        $data['category']->getTitle() ?? $entity->getCategory()->getTitle(),
-                        $data['address'] ?? $entity->getAddress(),
-                        $data['dimension'] ?? $entity->getDimension(),
-                        $data['external_id'] ?? $entity->getExternalId()
-                    );
-
-                    if ($found === null || $found === $entity) {
-                        $entity->setAddress($data['address']);
-                    } else {
-                        throw new AddressAlreadyExistsException();
-                    }
-                }
                 if ($data['vendorcode'] !== null) {
                     $entity->setVendorCode($data['vendorcode']);
                 }
@@ -452,6 +440,30 @@ class ProductService extends AbstractService
                 if ($data['relation'] !== null) {
                     // update relation products
                     $this->catalogProductRelationService->process($entity, $data['relation']);
+                }
+                // if address generation is enabled
+                if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
+                    $data['address'] = implode('/', array_filter(
+                        [
+                            $entity->getCategory()->getAddress(),
+                            $entity->setAddress('')->getAddress(),
+                        ],
+                        fn ($el) => (bool) $el
+                    ));
+                }
+                if ($data['address'] !== null) {
+                    $found = $this->service->findOneUnique(
+                        $entity->getCategory()->getUuid()->toString(),
+                        $entity->getAddress(),
+                        $entity->getDimension(),
+                        $entity->getExternalId()
+                    );
+
+                    if ($found === null || $found === $entity) {
+                        $entity->setAddress($data['address']);
+                    } else {
+                        throw new AddressAlreadyExistsException();
+                    }
                 }
 
                 $entity->setDate('now', $this->parameter('common_timezone', 'UTC'));
