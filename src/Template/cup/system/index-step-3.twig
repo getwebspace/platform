@@ -14,7 +14,7 @@
                     'type': 'text',
                     'name': 'user[username]',
                     'args': {
-                        'required': true,
+                        'required': user == false,
                         'placeholder': 'administrator',
                         'value': user.username ?? 'administrator'
                     }
@@ -26,7 +26,7 @@
                     'type': 'email',
                     'name': 'user[email]',
                     'args': {
-                        'required': true,
+                        'required': user == false,
                         'placeholder': 'administrator@example.com',
                         'value': user.email
                     }
@@ -38,7 +38,7 @@
                     'type': 'password',
                     'name': 'user[password]',
                     'args': {
-                        'required': true,
+                        'required': user == false,
                     }
                 } %}
             </div>
