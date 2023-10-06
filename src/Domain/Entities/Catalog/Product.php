@@ -4,18 +4,18 @@ namespace App\Domain\Entities\Catalog;
 
 use App\Domain\AbstractEntity;
 use App\Domain\Service\Catalog\Exception\WrongTitleValueException;
+use App\Domain\Entities\Catalog\Category as CatalogCategory;
 use App\Domain\Traits\FileTrait;
 use Doctrine\ORM\Mapping as ORM;
-use Ramsey\Uuid\UuidInterface as Uuid;
 
 #[ORM\Table(name: 'catalog_product')]
 #[ORM\Index(name: 'catalog_product_address_idx', columns: ['address'])]
-#[ORM\Index(name: 'catalog_product_category_idx', columns: ['category'])]
+#[ORM\Index(name: 'catalog_product_category_idx', columns: ['category_uuid'])]
 #[ORM\Index(name: 'catalog_product_price_idx', columns: ['price', 'priceFirst', 'priceWholesale'])]
 #[ORM\Index(name: 'catalog_product_manufacturer_idx', columns: ['manufacturer'])]
 #[ORM\Index(name: 'catalog_product_country_idx', columns: ['country'])]
 #[ORM\Index(name: 'catalog_product_order_idx', columns: ['order'])]
-#[ORM\UniqueConstraint(name: 'catalog_product_unique', columns: ['category', 'address', 'dimension', 'external_id'])]
+#[ORM\UniqueConstraint(name: 'catalog_product_unique', columns: ['category_uuid', 'address', 'dimension', 'external_id'])]
 #[ORM\Entity(repositoryClass: 'App\Domain\Repository\Catalog\ProductRepository')]
 class Product extends AbstractEntity
 {
@@ -32,20 +32,30 @@ class Product extends AbstractEntity
         return $this->uuid;
     }
 
-    /**
-     * @var string|Uuid
-     */
-    #[ORM\Column(type: 'uuid', options: ['default' => \Ramsey\Uuid\Uuid::NIL])]
-    protected $category = \Ramsey\Uuid\Uuid::NIL;
+    #[ORM\Column(type: 'uuid', nullable: true, options: ['default' => \Ramsey\Uuid\Uuid::NIL])]
+    protected ?\Ramsey\Uuid\UuidInterface $category_uuid;
 
-    public function setCategory(mixed $uuid): self
+    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\Catalog\Category')]
+    #[ORM\JoinColumn(name: 'category_uuid', referencedColumnName: 'uuid')]
+    protected ?CatalogCategory $category;
+
+    /**
+     * @return $this
+     */
+    public function setCategory(?CatalogCategory $category)
     {
-        $this->category = $this->getUuidByValue($uuid);
+        if (is_a($category, CatalogCategory::class)) {
+            $this->category_uuid = $category->getUuid();
+            $this->category = $category;
+        } else {
+            $this->category_uuid = null;
+            $this->category = null;
+        }
 
         return $this;
     }
 
-    public function getCategory(): \Ramsey\Uuid\UuidInterface
+    public function getCategory(): ?CatalogCategory
     {
         return $this->category;
     }

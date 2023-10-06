@@ -4,6 +4,7 @@ namespace App\Domain\Service\Catalog;
 
 use App\Domain\AbstractService;
 use App\Domain\Entities\Catalog\Product;
+use App\Domain\Entities\Catalog\Category as CatalogCategory;
 use App\Domain\Repository\Catalog\ProductRepository;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
@@ -22,6 +23,8 @@ class ProductService extends AbstractService
      */
     protected mixed $service;
 
+    protected CatalogCategoryService $catalogCategoryService;
+
     protected CatalogProductAttributeService $catalogProductAttributeService;
 
     protected CatalogProductRelationService $catalogProductRelationService;
@@ -29,6 +32,7 @@ class ProductService extends AbstractService
     protected function init(): void
     {
         $this->service = $this->entityManager->getRepository(Product::class);
+        $this->catalogCategoryService = $this->container->get(CatalogCategoryService::class);
         $this->catalogProductAttributeService = $this->container->get(CatalogProductAttributeService::class);
         $this->catalogProductRelationService = $this->container->get(CatalogProductRelationService::class);
     }
@@ -40,7 +44,8 @@ class ProductService extends AbstractService
     public function create(array $data = []): Product
     {
         $default = [
-            'category' => \Ramsey\Uuid\Uuid::NIL,
+            'category' => null,
+            'category_uuid' => null,
             'title' => '',
             'type' => \App\Domain\Types\Catalog\ProductTypeType::TYPE_PRODUCT,
             'description' => '',
@@ -87,6 +92,11 @@ class ProductService extends AbstractService
             throw new MissingTitleValueException();
         }
 
+        // retrieve category by uuid
+        if (!is_a($data['category'], CatalogCategory::class) && $data['category_uuid']) {
+            $data['category'] = $this->catalogCategoryService->read(['uuid' => $data['category_uuid']]);
+        }
+
         $product = (new Product())
             ->setCategory($data['category'])
             ->setTitle($data['title'])
@@ -125,8 +135,7 @@ class ProductService extends AbstractService
         // if address generation is enabled
         if (!$data['address'] && $this->parameter('common_auto_generate_address', 'no') === 'yes' && \Ramsey\Uuid\Uuid::isValid((string) $data['category'])) {
             try {
-                $catalogCategoryService = $this->container->get(CatalogCategoryService::class);
-                $catalogCategory = $catalogCategoryService->read(['uuid' => $data['category']]);
+                $catalogCategory = $this->catalogCategoryService->read(['uuid' => $data['category']]);
 
                 // combine address category with product address
                 $product->setAddress(
@@ -140,7 +149,7 @@ class ProductService extends AbstractService
         /** @var Product $product */
         if (
             $this->service->findOneUnique(
-                $product->getCategory()->toString(),
+                $product->getCategory()->getTitle(),
                 $product->getAddress(),
                 $product->getDimension(),
                 $product->getExternalId()
@@ -285,6 +294,7 @@ class ProductService extends AbstractService
         if (is_object($entity) && is_a($entity, Product::class)) {
             $default = [
                 'category' => null,
+                'category_uuid' => null,
                 'title' => null,
                 'type' => null,
                 'description' => null,
@@ -323,7 +333,12 @@ class ProductService extends AbstractService
             $data = array_merge($default, $data);
 
             if ($data !== $default) {
-                if ($data['category'] !== null) {
+                if ($data['category'] !== null || $data['category_uuid'] !== null) {
+                    // retrieve category by uuid
+                    if (!is_a($data['category'], CatalogCategory::class) && $data['category_uuid']) {
+                        $data['category'] = $this->catalogCategoryService->read(['uuid' => $data['category_uuid']]);
+                    }
+
                     $entity->setCategory($data['category']);
                 }
                 if ($data['title'] !== null) {
@@ -340,7 +355,7 @@ class ProductService extends AbstractService
                 }
                 if ($data['address'] !== null) {
                     $found = $this->service->findOneUnique(
-                        $data['category'] ?? $entity->getCategory()->toString(),
+                        $data['category']->getTitle() ?? $entity->getCategory()->getTitle(),
                         $data['address'] ?? $entity->getAddress(),
                         $data['dimension'] ?? $entity->getDimension(),
                         $data['external_id'] ?? $entity->getExternalId()

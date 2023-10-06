@@ -4,6 +4,7 @@ namespace App\Domain\Service\Publication;
 
 use App\Domain\AbstractService;
 use App\Domain\Entities\Publication;
+use App\Domain\Entities\Publication\Category as PublicationCategory;
 use App\Domain\Repository\PublicationRepository;
 use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
 use App\Domain\Service\Publication\Exception\AddressAlreadyExistsException;
@@ -20,9 +21,15 @@ class PublicationService extends AbstractService
      */
     protected mixed $service;
 
+    /**
+     * @var PublicationCategoryService
+     */
+    protected mixed $publicationCategoryService;
+
     protected function init(): void
     {
         $this->service = $this->entityManager->getRepository(Publication::class);
+        $this->publicationCategoryService = $this->container->get(PublicationCategoryService::class);
     }
 
     /**
@@ -37,6 +44,7 @@ class PublicationService extends AbstractService
             'title' => '',
             'address' => '',
             'category' => null,
+            'category_uuid' => null,
             'date' => 'now',
             'content' => [
                 'short' => '',
@@ -59,6 +67,11 @@ class PublicationService extends AbstractService
         }
         if ($data['address'] && $this->service->findOneByAddress($data['address']) !== null) {
             throw new AddressAlreadyExistsException();
+        }
+
+        // retrieve category by uuid
+        if (!is_a($data['category'], PublicationCategory::class) && $data['category_uuid']) {
+            $data['category'] = $this->publicationCategoryService->read(['uuid' => $data['category_uuid']]);
         }
 
         $publication = (new Publication())
@@ -171,6 +184,7 @@ class PublicationService extends AbstractService
                 'title' => null,
                 'address' => null,
                 'category' => null,
+                'category_uuid' => null,
                 'date' => null,
                 'content' => null,
                 'meta' => null,
@@ -200,7 +214,12 @@ class PublicationService extends AbstractService
                         throw new AddressAlreadyExistsException();
                     }
                 }
-                if ($data['category'] !== null) {
+                if ($data['category'] !== null || $data['category_uuid'] !== null) {
+                    // retrieve category by uuid
+                    if (!is_a($data['category'], PublicationCategory::class) && $data['category_uuid']) {
+                        $data['category'] = $this->publicationCategoryService->read(['uuid' => $data['category_uuid']]);
+                    }
+
                     $entity->setCategory($data['category']);
                 }
                 if ($data['date'] !== null) {

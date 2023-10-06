@@ -18,7 +18,7 @@ class ProductCreateAction extends CatalogAction
         if ($this->isPost()) {
             try {
                 $product = $this->catalogProductService->create([
-                    'category' => $this->getParam('category'),
+                    'category_uuid' => $this->getParam('category'),
                     'title' => $this->getParam('title'),
                     'type' => $this->getParam('type'),
                     'description' => $this->getParam('description'),
