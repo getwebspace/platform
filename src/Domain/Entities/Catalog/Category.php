@@ -458,15 +458,21 @@ class Category extends AbstractEntity
 
     public function toArray(): array
     {
+        $parent = [];
+
+        if ($this->parent_uuid) {
+            $parent = [
+                'uuid' => $this->parent->uuid,
+                'parent_uuid' => $this->parent->parent_uuid,
+                'title' => $this->parent->title,
+                'external_id' => $this->parent->external_id,
+            ];
+        }
+
         return array_serialize([
             'uuid' => $this->uuid,
             'parent_uuid' => $this->parent_uuid,
-            'parent' => [
-                'uuid' => $this->uuid,
-                'parent_uuid' => $this->parent_uuid,
-                'title' => $this->title,
-                'external_id' => $this->external_id,
-            ],
+            'parent' => $parent,
             'title' => $this->title,
             'description' => $this->description,
             'address' => $this->address,
