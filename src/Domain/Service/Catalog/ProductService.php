@@ -64,11 +64,6 @@ class ProductService extends AbstractService
             'quantity' => 1.0,
             'quantityMin' => 1.0,
             'stock' => 0.0,
-            'field1' => '',
-            'field2' => '',
-            'field3' => '',
-            'field4' => '',
-            'field5' => '',
             'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
             'country' => '',
             'manufacturer' => '',
@@ -120,11 +115,6 @@ class ProductService extends AbstractService
             ->setQuantity((float) $data['quantity'])
             ->setQuantityMin((float) $data['quantityMin'])
             ->setStock((float) $data['stock'])
-            ->setField1($data['field1'])
-            ->setField2($data['field2'])
-            ->setField3($data['field3'])
-            ->setField4($data['field4'])
-            ->setField5($data['field5'])
             ->setStatus($data['status'])
             ->setCountry($data['country'])
             ->setManufacturer($data['manufacturer'])
@@ -136,7 +126,7 @@ class ProductService extends AbstractService
             ->setExport($data['export']);
 
         // if address generation is enabled
-        if ($this->parameter('common_auto_generate_address', 'yes') === 'yes') {
+        if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
             $product->setAddress(
                 implode('/', array_filter(
                     [
@@ -189,11 +179,6 @@ class ProductService extends AbstractService
             'vendorcode' => null,
             'barcode' => null,
             'special' => null,
-            'field1' => null,
-            'field2' => null,
-            'field3' => null,
-            'field4' => null,
-            'field5' => null,
             'status' => null,
             'external_id' => null,
             'export' => null,
@@ -225,21 +210,6 @@ class ProductService extends AbstractService
         }
         if ($data['special'] !== null) {
             $criteria['special'] = (bool) $data['special'];
-        }
-        if ($data['field1'] !== null) {
-            $criteria['field1'] = $data['field1'];
-        }
-        if ($data['field2'] !== null) {
-            $criteria['field2'] = $data['field2'];
-        }
-        if ($data['field3'] !== null) {
-            $criteria['field3'] = $data['field3'];
-        }
-        if ($data['field4'] !== null) {
-            $criteria['field4'] = $data['field4'];
-        }
-        if ($data['field5'] !== null) {
-            $criteria['field5'] = $data['field5'];
         }
         if ($data['status'] !== null && in_array($data['status'], \App\Domain\Types\Catalog\ProductStatusType::LIST, true)) {
             $criteria['status'] = $data['status'];
@@ -315,11 +285,6 @@ class ProductService extends AbstractService
                 'quantity' => null,
                 'quantityMin' => null,
                 'stock' => null,
-                'field1' => null,
-                'field2' => null,
-                'field3' => null,
-                'field4' => null,
-                'field5' => null,
                 'status' => null,
                 'country' => null,
                 'manufacturer' => null,
@@ -394,21 +359,6 @@ class ProductService extends AbstractService
                 if ($data['stock'] !== null) {
                     $entity->setStock((float) $data['stock']);
                 }
-                if ($data['field1'] !== null) {
-                    $entity->setField1($data['field1']);
-                }
-                if ($data['field2'] !== null) {
-                    $entity->setField2($data['field2']);
-                }
-                if ($data['field3'] !== null) {
-                    $entity->setField3($data['field3']);
-                }
-                if ($data['field4'] !== null) {
-                    $entity->setField4($data['field4']);
-                }
-                if ($data['field5'] !== null) {
-                    $entity->setField5($data['field5']);
-                }
                 if ($data['status'] !== null) {
                     $entity->setStatus($data['status']);
                 }
@@ -442,7 +392,7 @@ class ProductService extends AbstractService
                     $this->catalogProductRelationService->process($entity, $data['relation']);
                 }
                 // if address generation is enabled
-                if ($this->parameter('common_auto_generate_address', 'yes') === 'yes') {
+                if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
                     $data['address'] = implode('/', array_filter(
                         [
                             $entity->getCategory()->getAddress(),

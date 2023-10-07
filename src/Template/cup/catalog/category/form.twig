@@ -35,11 +35,6 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="pill" href="#fields" role="tab">
-                                        {{ 'Fields'|locale }}
-                                    </a>
-                                </li>
-                                <li class="nav-item">
                                     <a class="nav-link" data-toggle="pill" href="#other" role="tab">
                                         {{ 'Additionally'|locale }}
                                     </a>
@@ -168,118 +163,10 @@
                                                        '<a href="/cup/catalog/attribute/add" class="btn btn-xs btn-info mr-1 float-right" onclick="return confirm(\'' ~ ('Are you sure you want to go to another page?'|locale) ~ '\');"><i class="fa fa-plus"></i> ' ~ ('Create attribute'|locale) ~ '</a>',
                                             'args': {
                                                 'multiple': true,
-                                                'option': attributes.pluck('title', 'uuid').all(),
+                                                'option': attributes.sortBy('title').pluck('title', 'uuid').all(),
                                                 'selected': category.hasAttributes() ? category.getAttributes().pluck('uuid').all() : ''
                                             }
                                         } %}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {# Tab: Поля #}
-                            <div class="tab-pane fade" id="fields" role="tabpanel">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        {% include 'cup/form.twig' with {
-                                            'label': fields.catalog_category_field_1 ?? ('Field'|locale ~ ' 1'),
-                                            'type': 'text',
-                                            'name': 'field1',
-                                            'message': 'Individual field'|locale,
-                                            'args': {
-                                                'value': category.field1,
-                                            }
-                                        } %}
-                                    </div>
-                                    <div class="col-md-4">
-                                        {% include 'cup/form.twig' with {
-                                            'label': fields.catalog_category_field_2 ?? ('Field'|locale ~ ' 2'),
-                                            'type': 'text',
-                                            'name': 'field2',
-                                            'message': 'Individual field'|locale,
-                                            'args': {
-                                                'value': category.field2,
-                                            }
-                                        } %}
-                                    </div>
-                                    <div class="col-md-4">
-                                        {% include 'cup/form.twig' with {
-                                            'label': fields.catalog_category_field_3 ?? ('Field'|locale ~ ' 3'),
-                                            'type': 'text',
-                                            'name': 'field3',
-                                            'message': 'Individual field'|locale,
-                                            'args': {
-                                                'value': category.field3,
-                                            }
-                                        } %}
-                                    </div>
-                                </div>
-
-                                <hr>
-
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="row">
-                                            <div class="col-md-4">
-                                                {% include 'cup/form.twig' with {
-                                                    'label': ('Field name'|locale ~ ' 1'),
-                                                    'type': 'text',
-                                                    'name': 'product[field_1]',
-                                                    'message': 'Customized product field'|locale,
-                                                    'args': {
-                                                        'value': category.product.field_1 is not empty ? category.product.field_1 : '',
-                                                        'placeholder': ('Field'|locale ~ ' 1'),
-                                                    }
-                                                } %}
-                                            </div>
-                                            <div class="col-md-4">
-                                                {% include 'cup/form.twig' with {
-                                                    'label': ('Field name'|locale ~ ' 2'),
-                                                    'type': 'text',
-                                                    'name': 'product[field_2]',
-                                                    'message': 'Customized product field'|locale,
-                                                    'args': {
-                                                        'value': category.product.field_2 is not empty ? category.product.field_2 : '',
-                                                        'placeholder': ('Field'|locale ~ ' 2'),
-                                                    }
-                                                } %}
-                                            </div>
-                                            <div class="col-md-4">
-                                                {% include 'cup/form.twig' with {
-                                                    'label': ('Field name'|locale ~ ' 3'),
-                                                    'type': 'text',
-                                                    'name': 'product[field_3]',
-                                                    'message': 'Customized product field'|locale,
-                                                    'args': {
-                                                        'value': category.product.field_3 is not empty ? category.product.field_3 : '',
-                                                        'placeholder': ('Field'|locale ~ ' 3'),
-                                                    }
-                                                } %}
-                                            </div>
-                                            <div class="col-md-4">
-                                                {% include 'cup/form.twig' with {
-                                                    'label': ('Field name'|locale ~ ' 4'),
-                                                    'type': 'text',
-                                                    'name': 'product[field_4]',
-                                                    'message': 'Customized product field'|locale,
-                                                    'args': {
-                                                        'value': category.product.field_4 is not empty ? category.product.field_4 : '',
-                                                        'placeholder': ('Field'|locale ~ ' 4'),
-                                                    }
-                                                } %}
-                                            </div>
-                                            <div class="col-md-4">
-                                                {% include 'cup/form.twig' with {
-                                                    'label': ('Field name'|locale ~ ' 5'),
-                                                    'type': 'text',
-                                                    'name': 'product[field_5]',
-                                                    'message': 'Customized product field'|locale,
-                                                    'args': {
-                                                        'value': category.product.field_5 is not empty ? category.product.field_5 : '',
-                                                        'placeholder': ('Field'|locale ~ ' 5'),
-                                                    }
-                                                } %}
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -300,7 +187,7 @@
                                             }
                                         } %}
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Sort order'|locale,
                                             'type': 'number',
@@ -311,8 +198,7 @@
                                                 'min': '0'
                                             }
                                         } %}
-                                    </div>
-                                    <div class="col-md-3">
+
                                         {% include 'cup/form.twig' with {
                                             'label': 'External ID'|locale,
                                             'type': 'text',
@@ -320,6 +206,18 @@
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('System field. If you don\'t know what this field is for, it\'s best not to touch it.'|locale) ~ '"></i>',
                                             'args': {
                                                 'value': category.external_id,
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Technical information'|locale,
+                                            'type': 'textarea',
+                                            'name': 'system',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('System field. If you don\'t know what this field is for, it\'s best not to touch it.'|locale) ~ '"></i>',
+                                            'args': {
+                                                'value': category.system,
+                                                'style': 'min-height: 133px;'
                                             }
                                         } %}
                                     </div>

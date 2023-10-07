@@ -742,27 +742,17 @@ class User extends AbstractEntity
     #[ORM\OneToMany(targetEntity: 'App\Domain\Entities\User\Token', mappedBy: 'user', orphanRemoval: true)]
     protected $tokens = [];
 
-    /**
-     * @param mixed $raw
-     *
-     * @return array|Collection
-     */
-    public function getTokens($raw = false)
+    public function getTokens(): Collection
     {
-        return $raw ? $this->tokens : collect($this->tokens);
+        return collect($this->tokens);
     }
 
     #[ORM\OneToMany(targetEntity: 'App\Domain\Entities\User\Integration', mappedBy: 'user', orphanRemoval: true)]
     protected $integrations = [];
 
-    /**
-     * @param mixed $raw
-     *
-     * @return array|Collection
-     */
-    public function getIntegrations($raw = false)
+    public function getIntegrations(): Collection
     {
-        return $raw ? $this->integrations : collect($this->integrations);
+        return collect($this->integrations);
     }
 
     /**

@@ -6,6 +6,7 @@ use App\Domain\AbstractEntity;
 use App\Domain\Entities\Reference;
 use App\Domain\Entities\User;
 use Doctrine\ORM\Mapping as ORM;
+use Illuminate\Support\Collection;
 
 #[ORM\Table(name: 'catalog_order')]
 #[ORM\Index(name: 'catalog_order_serial_idx', columns: ['serial'])]
@@ -228,9 +229,9 @@ class Order extends AbstractEntity
         return $this;
     }
 
-    public function getProducts($raw = false)
+    public function getProducts(): Collection
     {
-        return $raw ? $this->products : collect($this->products);
+        return collect($this->products);
     }
 
     public function getTotalPrice(): float

@@ -201,7 +201,7 @@
                                                     'name': 'common[auto_generate_address]',
                                                     'args': {
                                                         'option': _(['yes', 'no']),
-                                                        'selected': 'yes'
+                                                        'selected': 'no'
                                                     }
                                                 } %}
                                             </div>
@@ -1068,18 +1068,13 @@
                                                             'address': 'address',
                                                             'vendorcode': 'vendorcode',
                                                             'barcode': 'barcode',
-                                                            'field1': 'field1',
-                                                            'field2': 'field2',
-                                                            'field3': 'field3',
-                                                            'field4': 'field4',
-                                                            'field5': 'field5',
                                                         },
                                                     },
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': '<b>Import</b> column order',
-                                                    'description': ('Possible columns:'|locale) ~ ' <i>' ~ constant('/App/Domain/References/Catalog::IMPORT_FIELDS')|merge(attributes.pluck('address'))|join(', ') ~ '</i><br>' ~
+                                                    'description': ('Possible columns:'|locale) ~ ' <i>' ~ constant('/App/Domain/References/Catalog::IMPORT_FIELDS')|merge(attributes.sortBy('title').pluck('address'))|join(', ') ~ '</i><br>' ~
                                                                    ('Skip column:'|locale) ~ ' <i>empty</i>',
                                                     'message': 'Alias each column on a new line',
                                                     'type': 'textarea',
@@ -1092,7 +1087,7 @@
 
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': '<b>Export</b> column order',
-                                                    'description': ('Possible columns:'|locale) ~ ' <i>' ~ constant('/App/Domain/References/Catalog::EXPORT_FIELDS')|merge(attributes.pluck('address'))|join(', ') ~ '</i><br>',
+                                                    'description': ('Possible columns:'|locale) ~ ' <i>' ~ constant('/App/Domain/References/Catalog::EXPORT_FIELDS')|merge(attributes.sortBy('title').pluck('address'))|join(', ') ~ '</i><br>',
                                                     'message': 'Alias each column on a new line',
                                                     'type': 'textarea',
                                                     'name': 'catalog[export_columns]',
@@ -1135,39 +1130,6 @@
                                                     'args': {
                                                         'option': _(['yes', 'no']),
                                                         'selected': 'no'
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Additional field',
-                                                    'description': ('Field'|locale) ~ ' 1',
-                                                    'type': 'text',
-                                                    'name': 'catalog[category_field_1]',
-                                                    'args': {
-                                                        'placeholder': ('Field'|locale) ~ ' 1',
-                                                        'value': ('Field'|locale) ~ ' 1'
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Additional field',
-                                                    'description': ('Field'|locale) ~ ' 2',
-                                                    'type': 'text',
-                                                    'name': 'catalog[category_field_2]',
-                                                    'args': {
-                                                        'placeholder': ('Field'|locale) ~ ' 2',
-                                                        'value': ('Field'|locale) ~ ' 2'
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Additional field',
-                                                    'description': ('Field'|locale) ~ ' 3',
-                                                    'type': 'text',
-                                                    'name': 'catalog[category_field_3]',
-                                                    'args': {
-                                                        'placeholder': ('Field'|locale) ~ ' 3',
-                                                        'value': ('Field'|locale) ~ ' 3'
                                                     }
                                                 } %}
 

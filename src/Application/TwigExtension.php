@@ -115,7 +115,6 @@ class TwigExtension extends AbstractExtension
             // catalog functions
             new TwigFunction('catalog_attribute', [$this, 'catalog_attribute']),
             new TwigFunction('catalog_category', [$this, 'catalog_category']),
-            new TwigFunction('catalog_category_parents', [$this, 'catalog_category_parents']),
             new TwigFunction('catalog_product', [$this, 'catalog_product']),
             new TwigFunction('catalog_product_price_type', [$this, 'catalog_product_price_type'], ['needs_context' => true]),
             new TwigFunction('catalog_product_popular', [$this, 'catalog_product_popular']),
@@ -530,24 +529,6 @@ class TwigExtension extends AbstractExtension
                 'order' => $order,
             ]
         ));
-    }
-
-    // return parent categories
-    public function catalog_category_parents(\App\Domain\Entities\Catalog\Category $category = null)
-    {
-        $categories = $this->catalog_category(['hidden' => null]); // without hidden filter
-        $breadcrumb = [];
-
-        if (!is_null($category)) {
-            $breadcrumb[] = $category;
-
-            while ($category->getParent()->toString() !== \Ramsey\Uuid\Uuid::NIL) {
-                $category = $categories->firstWhere('uuid', $category->getParent());
-                $breadcrumb[] = $category;
-            }
-        }
-
-        return collect($breadcrumb)->reverse();
     }
 
     // returns a product or a list of products by criteria

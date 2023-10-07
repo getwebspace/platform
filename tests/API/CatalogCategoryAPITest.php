@@ -28,9 +28,6 @@ class CatalogCategoryAPITest extends TestCase
         $data = [
             'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text,
-            'field1' => $this->getFaker()->word,
-            'field2' => $this->getFaker()->word,
-            'field3' => $this->getFaker()->word,
             'export' => 'api',
         ];
         $response = $this->createRequest()->put('/api/v1/catalog/category', [
@@ -47,9 +44,6 @@ class CatalogCategoryAPITest extends TestCase
         $data = [
             'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text,
-            'field1' => $this->getFaker()->word,
-            'field2' => $this->getFaker()->word,
-            'field3' => $this->getFaker()->word,
             'export' => 'api',
         ];
 
@@ -73,9 +67,6 @@ class CatalogCategoryAPITest extends TestCase
         // check
         $this->assertEquals($data['title'], $json['data']['title']);
         $this->assertEquals($data['description'], $json['data']['description']);
-        $this->assertEquals($data['field1'], $json['data']['field1']);
-        $this->assertEquals($data['field2'], $json['data']['field2']);
-        $this->assertEquals($data['field3'], $json['data']['field3']);
         $this->assertEquals($data['export'], $json['data']['export']);
     }
 
@@ -85,9 +76,6 @@ class CatalogCategoryAPITest extends TestCase
         $data = [
             'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text,
-            'field1' => $this->getFaker()->word,
-            'field2' => $this->getFaker()->word,
-            'field3' => $this->getFaker()->word,
             'export' => 'api',
         ];
 
@@ -102,9 +90,6 @@ class CatalogCategoryAPITest extends TestCase
         $data = [
             'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text,
-            'field1' => $this->getFaker()->word,
-            'field2' => $this->getFaker()->word,
-            'field3' => $this->getFaker()->word,
             'export' => 'api',
         ];
 
@@ -130,9 +115,6 @@ class CatalogCategoryAPITest extends TestCase
         // check
         $this->assertEquals($data['title'], $json['data']['title']);
         $this->assertEquals($data['description'], $json['data']['description']);
-        $this->assertEquals($data['field1'], $json['data']['field1']);
-        $this->assertEquals($data['field2'], $json['data']['field2']);
-        $this->assertEquals($data['field3'], $json['data']['field3']);
         $this->assertEquals($data['export'], $json['data']['export']);
     }
 
@@ -142,9 +124,6 @@ class CatalogCategoryAPITest extends TestCase
         $data = [
             'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text,
-            'field1' => $this->getFaker()->word,
-            'field2' => $this->getFaker()->word,
-            'field3' => $this->getFaker()->word,
             'export' => 'api',
         ];
 

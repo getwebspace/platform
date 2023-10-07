@@ -37,17 +37,7 @@ class CategoryService extends AbstractService
             'title' => '',
             'description' => '',
             'address' => '',
-            'field1' => '',
-            'field2' => '',
-            'field3' => '',
             'attributes' => [],
-            'product' => [
-                'field_1' => '',
-                'field_2' => '',
-                'field_3' => '',
-                'field_4' => '',
-                'field_5' => '',
-            ],
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
             'pagination' => 10,
             'order' => 1,
@@ -66,6 +56,7 @@ class CategoryService extends AbstractService
             ],
             'external_id' => '',
             'export' => 'manual',
+            'system' => '',
         ];
         $data = array_merge($default, $data);
 
@@ -85,10 +76,6 @@ class CategoryService extends AbstractService
             ->setDescription($data['description'])
             ->setTitle($data['title'])
             ->setAddress($data['address'])
-            ->setField1($data['field1'])
-            ->setField2($data['field2'])
-            ->setField3($data['field3'])
-            ->setProduct($data['product'])
             ->setAttributes($data['attributes'])
             ->setStatus($data['status'])
             ->setPagination((int) $data['pagination'])
@@ -97,10 +84,11 @@ class CategoryService extends AbstractService
             ->setMeta($data['meta'])
             ->setTemplate($data['template'])
             ->setExternalId($data['external_id'])
-            ->setExport($data['export']);
+            ->setExport($data['export'])
+            ->setSystem($data['system']);
 
         // if address generation is enabled
-        if ($this->parameter('common_auto_generate_address', 'yes') === 'yes') {
+        if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
             $category->setAddress(
                 implode('/', array_filter(
                     [
@@ -143,9 +131,6 @@ class CategoryService extends AbstractService
             'hidden' => null,
             'title' => null,
             'address' => null,
-            'field1' => null,
-            'field2' => null,
-            'field3' => null,
             'status' => null,
             'external_id' => null,
             'export' => null,
@@ -171,15 +156,6 @@ class CategoryService extends AbstractService
         }
         if ($data['address'] !== null) {
             $criteria['address'] = $data['address'];
-        }
-        if ($data['field1'] !== null) {
-            $criteria['field1'] = $data['field1'];
-        }
-        if ($data['field2'] !== null) {
-            $criteria['field2'] = $data['field2'];
-        }
-        if ($data['field3'] !== null) {
-            $criteria['field3'] = $data['field3'];
         }
         if ($data['status'] !== null && in_array($data['status'], \App\Domain\Types\Catalog\CategoryStatusType::LIST, true)) {
             $criteria['status'] = $data['status'];
@@ -238,11 +214,7 @@ class CategoryService extends AbstractService
                 'title' => null,
                 'description' => null,
                 'address' => null,
-                'field1' => null,
-                'field2' => null,
-                'field3' => null,
                 'attributes' => null,
-                'product' => null,
                 'status' => null,
                 'pagination' => null,
                 'order' => null,
@@ -251,6 +223,7 @@ class CategoryService extends AbstractService
                 'template' => null,
                 'external_id' => null,
                 'export' => null,
+                'system' => null,
             ];
             $data = array_merge($default, $data);
 
@@ -275,20 +248,8 @@ class CategoryService extends AbstractService
                 if ($data['description'] !== null) {
                     $entity->setDescription($data['description']);
                 }
-                if ($data['field1'] !== null) {
-                    $entity->setField1($data['field1']);
-                }
-                if ($data['field2'] !== null) {
-                    $entity->setField2($data['field2']);
-                }
-                if ($data['field3'] !== null) {
-                    $entity->setField3($data['field3']);
-                }
                 if ($data['attributes'] !== null) {
                     $entity->setAttributes($data['attributes']);
-                }
-                if ($data['product'] !== null) {
-                    $entity->setProduct($data['product']);
                 }
                 if ($data['status'] !== null) {
                     $entity->setStatus($data['status']);
@@ -314,8 +275,11 @@ class CategoryService extends AbstractService
                 if ($data['export'] !== null) {
                     $entity->setExport($data['export']);
                 }
+                if ($data['system'] !== null) {
+                    $entity->setSystem($data['system']);
+                }
                 // if address generation is enabled
-                if ($this->parameter('common_auto_generate_address', 'yes') === 'yes') {
+                if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
                     $data['address'] = implode('/', array_filter(
                         [
                             $entity->getParent()?->getAddress(),

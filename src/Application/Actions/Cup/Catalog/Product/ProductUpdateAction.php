@@ -43,11 +43,6 @@ class ProductUpdateAction extends CatalogAction
                             'quantityMin' => $this->getParam('quantityMin'),
                             'dimension' => $this->getParam('dimension'),
                             'stock' => $this->getParam('stock'),
-                            'field1' => $this->getParam('field1'),
-                            'field2' => $this->getParam('field2'),
-                            'field3' => $this->getParam('field3'),
-                            'field4' => $this->getParam('field4'),
-                            'field5' => $this->getParam('field5'),
                             'country' => $this->getParam('country'),
                             'manufacturer' => $this->getParam('manufacturer'),
                             'tags' => $this->getParam('tags'),
@@ -98,7 +93,7 @@ class ProductUpdateAction extends CatalogAction
                 ]);
             }
 
-            return $this->respondWithRedirect('/cup/catalog/product/' . $product->getCategory());
+            return $this->respondWithRedirect('/cup/catalog/product/' . $product->getCategory()->getUuid());
         }
 
         return $this->respondWithRedirect('/cup/catalog/product');

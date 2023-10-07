@@ -20,7 +20,7 @@ class CategoryRepository extends AbstractRepository
     {
         if (\Ramsey\Uuid\Uuid::isValid((string) $uuid)) {
             $query = $this->createQueryBuilder('pc')
-                ->andWhere('pc.parent = :parent')->setParameter('parent', (string) $uuid, \Ramsey\Uuid\Doctrine\UuidType::NAME)
+                ->andWhere('pc.parent_uuid = :parent')->setParameter('parent', (string) $uuid, \Ramsey\Uuid\Doctrine\UuidType::NAME)
                 ->getQuery();
 
             return $query->getArrayResult();

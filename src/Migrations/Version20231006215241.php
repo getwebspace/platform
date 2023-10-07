@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20231006175237 extends AbstractMigration
+final class Version20231006215241 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -26,8 +26,7 @@ final class Version20231006175237 extends AbstractMigration
         $this->addSql('CREATE UNIQUE INDEX UNIQ_470546D4E6F81 ON catalog_attribute (address)');
         $this->addSql('CREATE TABLE catalog_category (uuid CHAR(36) NOT NULL --(DC2Type:uuid)
         , parent_uuid CHAR(36) DEFAULT NULL --(DC2Type:uuid)
-        , title VARCHAR(255) DEFAULT \'\' NOT NULL, description CLOB DEFAULT \'\' NOT NULL, address VARCHAR(1000) DEFAULT \'\' NOT NULL, field1 CLOB DEFAULT \'\' NOT NULL, field2 CLOB DEFAULT \'\' NOT NULL, field3 CLOB DEFAULT \'\' NOT NULL, product CLOB DEFAULT \'{}\' NOT NULL --(DC2Type:json)
-        , pagination INTEGER DEFAULT 10 NOT NULL, children BOOLEAN DEFAULT 0 NOT NULL, hidden BOOLEAN DEFAULT 0 NOT NULL, "order" INTEGER DEFAULT 1 NOT NULL, status VARCHAR(100) DEFAULT \'work\' NOT NULL --(DC2Type:CatalogCategoryStatusType)
+        , title VARCHAR(255) DEFAULT \'\' NOT NULL, description CLOB DEFAULT \'\' NOT NULL, address VARCHAR(1000) DEFAULT \'\' NOT NULL, pagination INTEGER DEFAULT 10 NOT NULL, children BOOLEAN DEFAULT 0 NOT NULL, hidden BOOLEAN DEFAULT 0 NOT NULL, "order" INTEGER DEFAULT 1 NOT NULL, status VARCHAR(100) DEFAULT \'work\' NOT NULL --(DC2Type:CatalogCategoryStatusType)
         , sort CLOB DEFAULT \'{}\' NOT NULL --(DC2Type:json)
         , meta CLOB DEFAULT \'{}\' NOT NULL --(DC2Type:json)
         , template CLOB DEFAULT \'{}\' NOT NULL --(DC2Type:json)
@@ -59,7 +58,7 @@ final class Version20231006175237 extends AbstractMigration
         , category_uuid CHAR(36) NOT NULL --(DC2Type:uuid)
         , title VARCHAR(255) DEFAULT \'\' NOT NULL, type VARCHAR(100) DEFAULT \'product\' NOT NULL --(DC2Type:CatalogProductTypeType)
         , description CLOB DEFAULT \'\' NOT NULL, extra CLOB DEFAULT \'\' NOT NULL, address VARCHAR(1000) DEFAULT \'\' NOT NULL, vendorcode CLOB DEFAULT \'\' NOT NULL, barcode CLOB DEFAULT \'\' NOT NULL, tax DOUBLE PRECISION DEFAULT \'0\' NOT NULL, priceFirst DOUBLE PRECISION DEFAULT \'0\' NOT NULL, price DOUBLE PRECISION DEFAULT \'0\' NOT NULL, priceWholesale DOUBLE PRECISION DEFAULT \'0\' NOT NULL, priceWholesaleFrom DOUBLE PRECISION DEFAULT \'0\' NOT NULL, discount DOUBLE PRECISION DEFAULT \'0\' NOT NULL, special BOOLEAN DEFAULT 0 NOT NULL, dimension CLOB DEFAULT \'{}\' NOT NULL --(DC2Type:json)
-        , quantity DOUBLE PRECISION DEFAULT \'1\' NOT NULL, quantityMin DOUBLE PRECISION DEFAULT \'1\' NOT NULL, stock DOUBLE PRECISION DEFAULT \'0\' NOT NULL, field1 CLOB DEFAULT \'\' NOT NULL, field2 CLOB DEFAULT \'\' NOT NULL, field3 CLOB DEFAULT \'\' NOT NULL, field4 CLOB DEFAULT \'\' NOT NULL, field5 CLOB DEFAULT \'\' NOT NULL, country VARCHAR(255) DEFAULT \'\' NOT NULL, manufacturer VARCHAR(255) DEFAULT \'\' NOT NULL, tags CLOB DEFAULT \'{}\' NOT NULL --(DC2Type:json)
+        , quantity DOUBLE PRECISION DEFAULT \'1\' NOT NULL, quantityMin DOUBLE PRECISION DEFAULT \'1\' NOT NULL, stock DOUBLE PRECISION DEFAULT \'0\' NOT NULL, country VARCHAR(255) DEFAULT \'\' NOT NULL, manufacturer VARCHAR(255) DEFAULT \'\' NOT NULL, tags CLOB DEFAULT \'{}\' NOT NULL --(DC2Type:json)
         , "order" INTEGER DEFAULT 1 NOT NULL, status VARCHAR(100) DEFAULT \'work\' NOT NULL --(DC2Type:CatalogProductStatusType)
         , date DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, meta CLOB DEFAULT \'{}\' NOT NULL --(DC2Type:json)
         , external_id VARCHAR(255) DEFAULT \'\' NOT NULL, export VARCHAR(64) DEFAULT \'manual\' NOT NULL, PRIMARY KEY(uuid), CONSTRAINT FK_DCF8F9815AE42AE1 FOREIGN KEY (category_uuid) REFERENCES catalog_category (uuid) NOT DEFERRABLE INITIALLY IMMEDIATE)');

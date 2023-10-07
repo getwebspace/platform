@@ -93,11 +93,11 @@ class ProductExportAction extends CatalogAction
             // Write table data row by row
             foreach ($products->sortBy('category') as $model) {
                 /** @var \App\Domain\Entities\Catalog\Product $model */
-                if ($lastCategory !== $model->getCategory()->toString()) {
+                if ($lastCategory !== $model->getCategory()->getUuid()) {
                     // get header cell
                     $sheet
                         ->getCell($this->getCellCoordinate(0 + $offset['cols'], $row + 1 + $offset['rows']))
-                        ->setValue($categories->firstWhere('uuid', $model->getCategory())->title ?? 'Без категории')
+                        ->setValue($model->getCategory()->getTitle())
                         ->getStyle()
                         ->getAlignment()
                         ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
@@ -108,7 +108,7 @@ class ProductExportAction extends CatalogAction
                         $this->getCellCoordinate(count($fields) - 1 + $offset['cols'], $row + 1 + $offset['rows'])
                     );
 
-                    $lastCategory = $model->getCategory()->toString();
+                    $lastCategory = $model->getCategory()->getUuid();
                     ++$row;
                 }
 
@@ -132,7 +132,7 @@ class ProductExportAction extends CatalogAction
                                 break;
 
                             case 'category':
-                                $cell->setValue($categories->firstWhere('uuid', $model->getCategory())->title ?? 'Без категории');
+                                $cell->setValue($model->getCategory()->getTitle());
 
                                 break;
 
@@ -142,6 +142,8 @@ class ProductExportAction extends CatalogAction
                             case 'priceWholesaleFrom':
                             case 'tax':
                             case 'discount':
+                            case 'quantity':
+                            case 'quantityMin':
                                 $cell
                                     ->setValue($model->{$field})
                                     ->getStyle()

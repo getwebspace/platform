@@ -123,96 +123,6 @@ class Category extends AbstractEntity
         return $this->address;
     }
 
-    #[ORM\Column(type: 'text', length: 255, options: ['default' => ''])]
-    protected string $field1 = '';
-
-    public function setField1(string $field1)
-    {
-        if ($this->checkStrLenMax($field1, 255)) {
-            $this->field1 = $field1;
-        }
-
-        return $this;
-    }
-
-    public function getField1(): string
-    {
-        return $this->field1;
-    }
-
-    #[ORM\Column(type: 'text', length: 255, options: ['default' => ''])]
-    protected string $field2 = '';
-
-    public function setField2(string $field2)
-    {
-        if ($this->checkStrLenMax($field2, 255)) {
-            $this->field2 = $field2;
-        }
-
-        return $this;
-    }
-
-    public function getField2(): string
-    {
-        return $this->field2;
-    }
-
-    #[ORM\Column(type: 'text', length: 255, options: ['default' => ''])]
-    protected string $field3 = '';
-
-    public function setField3(string $field3)
-    {
-        if ($this->checkStrLenMax($field3, 255)) {
-            $this->field3 = $field3;
-        }
-
-        return $this;
-    }
-
-    public function getField3(): string
-    {
-        return $this->field3;
-    }
-
-    #[ORM\Column(type: 'json', options: ['default' => '{}'])]
-    protected array $product = [
-        'field_1' => '',
-        'field_2' => '',
-        'field_3' => '',
-        'field_4' => '',
-        'field_5' => '',
-    ];
-
-    /**
-     * @return $this
-     */
-    public function setProduct(array $data)
-    {
-        $default = [
-            'field_1' => '',
-            'field_2' => '',
-            'field_3' => '',
-            'field_4' => '',
-            'field_5' => '',
-        ];
-        $data = array_merge($default, $data);
-
-        $this->product = [
-            'field_1' => $data['field_1'],
-            'field_2' => $data['field_2'],
-            'field_3' => $data['field_3'],
-            'field_4' => $data['field_4'],
-            'field_5' => $data['field_5'],
-        ];
-
-        return $this;
-    }
-
-    public function getProduct(): array
-    {
-        return $this->product;
-    }
-
     #[ORM\Column(type: 'integer', options: ['default' => 10])]
     protected int $pagination = 10;
 
@@ -450,6 +360,26 @@ class Category extends AbstractEntity
         return $this->export;
     }
 
+    #[ORM\Column(type: 'string', length: 512, options: ['default' => ''])]
+    protected string $system = '';
+
+    /**
+     * @return $this
+     */
+    public function setSystem(string $system)
+    {
+        if ($this->checkStrLenMax($system, 512) && $this->validText($system)) {
+            $this->system = $system;
+        }
+
+        return $this;
+    }
+
+    public function getSystem(): string
+    {
+        return $this->system;
+    }
+
     /**
      * @var array
      */
@@ -476,26 +406,18 @@ class Category extends AbstractEntity
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function hasAttributes()
+    public function hasAttributes(): int
     {
         return count($this->attributes);
     }
 
-    /**
-     * @param false $raw
-     *
-     * @return array|Collection
-     */
-    public function getAttributes($raw = false)
+    public function getAttributes(): Collection
     {
-        return $raw ? $this->attributes : collect($this->attributes);
+        return collect($this->attributes);
     }
 
     /**
-     * @var mixed буфурное поле для обработки интеграций
+     * @var mixed temp variable
      */
     public $buf;
 
@@ -517,7 +439,7 @@ class Category extends AbstractEntity
             $parent = $parent->parent;
         }
 
-        return $collect;
+        return $collect->reverse();
     }
 
     public function getNested(Collection &$categories): Collection
@@ -526,7 +448,7 @@ class Category extends AbstractEntity
 
         if ($this->getChildren()) {
             // @var \App\Domain\Entities\Catalog\Category $child
-            foreach ($categories->where('parent', $this->getUuid()) as $child) {
+            foreach ($categories->where('parent_uuid', $this->getUuid()) as $child) {
                 $result = $result->merge($child->getNested($categories));
             }
         }
@@ -543,10 +465,6 @@ class Category extends AbstractEntity
             'title' => $this->title,
             'description' => $this->description,
             'address' => $this->address,
-            'field1' => $this->field1,
-            'field2' => $this->field2,
-            'field3' => $this->field3,
-            'product' => $this->product,
             'pagination' => $this->pagination,
             'children' => $this->children,
             'hidden' => $this->hidden,
@@ -557,6 +475,7 @@ class Category extends AbstractEntity
             'template' => $this->template,
             'external_id' => $this->external_id,
             'export' => $this->export,
+            'system' => $this->system,
             'attributes' => $this->attributes,
             'files' => $this->files,
         ]);

@@ -28,9 +28,6 @@ class CatalogProductAPITest extends TestCase
         $data = [
             'title' => $this->getFaker()->word,
             'description' => $this->getFaker()->text,
-            'field1' => $this->getFaker()->word,
-            'field2' => $this->getFaker()->word,
-            'field3' => $this->getFaker()->word,
             'export' => 'api',
         ];
         $response = $this->createRequest()->put('/api/v1/catalog/category', [

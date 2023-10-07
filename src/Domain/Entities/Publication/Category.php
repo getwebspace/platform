@@ -300,7 +300,7 @@ class Category extends AbstractEntity
 
         if ($this->getChildren()) {
             // @var \App\Domain\Entities\Publication\Category $category
-            foreach ($categories->where('parent', $this->getUuid()) as $child) {
+            foreach ($categories->where('parent_uuid', $this->getUuid()) as $child) {
                 $result = $result->merge($child->getNested($categories));
             }
         }

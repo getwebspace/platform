@@ -21,8 +21,6 @@ class ListAction extends CatalogAction
             'hidden' => false,
         ]);
 
-        // todo check category parents
-
         try {
             // Catalog main
             if ($buf = $this->prepareMain($params, $categories)) {
@@ -62,20 +60,11 @@ class ListAction extends CatalogAction
 
             $products = collect($query->select('p')->getQuery()->getResult());
 
-            for ($i = 1; $i <= 5; ++$i) {
-                if (($field = $this->getParam('field' . $i, false)) !== false) {
-                    $params['field'][$i] = $field;
-                    $query
-                        ->andWhere('p.field' . $i . ' = :field' . $i . '')
-                        ->setParameter('field' . $i, str_escape($field), \Doctrine\DBAL\ParameterType::STRING);
-                }
-            }
             $attributes = [];
             foreach ($this->getParams() as $key => $value) {
                 if (
                     (
                         !in_array($key, ['price', 'country', 'manufacturer', 'order', 'direction'], true)
-                        && !str_starts_with($key, 'field')
                         && $key !== 'format' // kostil
                     ) && $value
                 ) {
@@ -134,7 +123,7 @@ class ListAction extends CatalogAction
                 $direction = mb_strtolower($this->getParam('direction', 'asc'));
                 $direction = in_array($direction, ['asc', 'desc'], true) ? $direction : 'ASC';
 
-                if (in_array($order, ['title', 'price', 'field1', 'field2', 'field3', 'field4', 'field5'], true)) {
+                if (in_array($order, ['title', 'price'], true)) {
                     $query->orderBy('p.' . $order, $direction);
                     $params['order'][$order] = $direction;
                 }
@@ -207,20 +196,11 @@ class ListAction extends CatalogAction
 
             $products = collect($query->select('p')->getQuery()->getResult());
 
-            for ($i = 1; $i <= 5; ++$i) {
-                if (($field = $this->getParam('field' . $i, false)) !== false) {
-                    $params['field'][$i] = $field;
-                    $query
-                        ->andWhere('p.field' . $i . ' = :field' . $i . '')
-                        ->setParameter('field' . $i, str_escape($field), \Doctrine\DBAL\ParameterType::STRING);
-                }
-            }
             $attributes = [];
             foreach ($this->getParams() as $key => $value) {
                 if (
                     (
                         !in_array($key, ['price', 'country', 'manufacturer', 'order', 'direction'], true)
-                        && !str_starts_with($key, 'field')
                         && $key !== 'format' // kostil
                     ) && $value
                 ) {
@@ -279,7 +259,7 @@ class ListAction extends CatalogAction
                 $direction = mb_strtolower($this->getParam('direction', 'asc'));
                 $direction = in_array($direction, ['asc', 'desc'], true) ? $direction : 'ASC';
 
-                if (in_array($order, ['title', 'price', 'field1', 'field2', 'field3', 'field4', 'field5'], true)) {
+                if (in_array($order, ['title', 'price'], true)) {
                     $query->orderBy('p.' . $order, $direction);
                     $params['order'][$order] = $direction;
                 }
@@ -342,17 +322,15 @@ class ListAction extends CatalogAction
              * @var \App\Domain\Entities\Catalog\Product $product
              */
             $product = $products->first();
-            $category = $categories->firstWhere('uuid', $product->getCategory());
+            $category = $product->getCategory();
 
-            if ($category) {
-                return $this->respond($category->template['product'] ?? '', [
-                    'categories' => $categories,
-                    'category' => $category,
-                    'product' => $product,
-                    'products' => $products,
-                    'params' => $params,
-                ]);
-            }
+            return $this->respond($category->template['product'] ?? '', [
+                'categories' => $categories,
+                'category' => $category,
+                'product' => $product,
+                'products' => $products,
+                'params' => $params,
+            ]);
         }
 
         return null;

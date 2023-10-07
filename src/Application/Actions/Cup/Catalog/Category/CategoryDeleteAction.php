@@ -21,7 +21,7 @@ class CategoryDeleteAction extends CatalogAction
                 /**
                  * @var \App\Domain\Entities\Catalog\Category $child
                  */
-                foreach ($this->catalogCategoryService->read(['parent' => $childrenUuids]) as $child) {
+                foreach ($this->catalogCategoryService->read(['parent_uuid' => $childrenUuids]) as $child) {
                     $child->setStatus(\App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE);
                     $this->catalogCategoryService->write($child);
                 }
@@ -29,7 +29,7 @@ class CategoryDeleteAction extends CatalogAction
                 /**
                  * @var \App\Domain\Entities\Catalog\Product $product
                  */
-                foreach ($this->catalogProductService->read(['category' => $childrenUuids]) as $product) {
+                foreach ($this->catalogProductService->read(['category_uuid' => $childrenUuids]) as $product) {
                     $product->setStatus(\App\Domain\Types\Catalog\ProductStatusType::STATUS_DELETE);
                     $this->catalogProductService->write($product);
                 }

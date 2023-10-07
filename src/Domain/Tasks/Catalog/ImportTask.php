@@ -9,7 +9,6 @@ use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\CategoryNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\ProductNotFoundException;
-use App\Domain\Service\Catalog\ProductAttributeService as CatalogProductAttributeService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\File\Exception\FileNotFoundException;
 use App\Domain\Service\File\FileService;
@@ -49,7 +48,6 @@ class ImportTask extends AbstractTask
         $catalogCategoryService = $this->container->get(CatalogCategoryService::class);
         $catalogProductService = $this->container->get(CatalogProductService::class);
         $catalogAttributeService = $this->container->get(CatalogAttributeService::class);
-        $catalogProductAttributeService = $this->container->get(CatalogProductAttributeService::class);
 
         // parse excel file
         /** @var Collection $data */
@@ -70,27 +68,27 @@ class ImportTask extends AbstractTask
             foreach ($data as $index => $item) {
                 switch ($item['type']) {
                     case 'category':
-                        if ($action === 'insert') {
-                            try {
-                                $this->logger->info('Search category', ['title' => $item]);
-                                $category = $catalogCategoryService
-                                    ->read([
-                                        'title' => [
-                                            '' . $item['raw'],
-                                            '' . $item['formatted'],
-                                            '' . $item['trimmed'],
-                                            floatval($item['raw']),
-                                        ],
-                                        'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
-                                    ])
-                                    ->first();
-                            } catch (CategoryNotFoundException $e) {
+                        try {
+                            $this->logger->info('Search category', ['title' => $item]);
+                            $category = $catalogCategoryService
+                                ->read([
+                                    'title' => [
+                                        '' . $item['raw'],
+                                        '' . $item['formatted'],
+                                        '' . $item['trimmed'],
+                                        floatval($item['raw']),
+                                    ],
+                                    'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+                                ])
+                                ->first();
+                        } catch (CategoryNotFoundException $e) {
+                            if ($action === 'insert') {
                                 $this->logger->info('Create category', ['title' => $item]);
 
                                 try {
                                     $category = $catalogCategoryService->create([
                                         'title' => $item['title'],
-                                        'parent' => $nested === true ? $category->getUuid() : \Ramsey\Uuid\Uuid::NIL,
+                                        'parent' => $nested === true ? $category : null,
                                         'pagination' => $pagination,
                                         'template' => $template,
                                         'export' => 'excel',
@@ -103,11 +101,11 @@ class ImportTask extends AbstractTask
                             }
                         }
 
-                        $nested = true;
+                        $nested = (bool) $category;
 
                         break;
 
-                    case 'product':
+                    case 'item':
                         $product = null;
                         $data = collect($item['data'] ?? []);
 
@@ -182,12 +180,10 @@ class ImportTask extends AbstractTask
                                         $update[$key] = $value['raw'];
                                     }
                                 }
-                                if ($category) {
-                                    $update['category'] = $category->getUuid();
-                                }
                                 $catalogProductService->update($product, array_merge(
                                     $update,
                                     [
+                                        'category' => $category,
                                         'date' => $now,
                                         'attributes' => $data
                                             ->intersectByKeys($attributes->pluck('title', 'address'))
@@ -215,15 +211,19 @@ class ImportTask extends AbstractTask
         return $this->setStatusDone();
     }
 
-    protected function getCellIndex($index): bool|int|string
+    protected function getCellIndex($column): int
     {
-        static $alphabet;
+        $column = mb_strtoupper($column);
+        $length = mb_strlen($column);
+        $number = 0;
 
-        if (!$alphabet) {
-            $alphabet = range('A', 'Z');
+        for ($i = 0; $i < $length; ++$i) {
+            $char = $column[$i];
+            $value = ord($char) - ord('A') + 1;
+            $number = $number * 26 + $value;
         }
 
-        return array_search($index, $alphabet, true);
+        return $number - 1;
     }
 
     /**
@@ -251,7 +251,7 @@ class ImportTask extends AbstractTask
 
                 $empty = true;
                 $buf = [
-                    'type' => 'product',
+                    'type' => 'item',
                     'data' => [],
                 ];
 

@@ -4,7 +4,6 @@ namespace App\Domain\Traits;
 
 use App\Domain\Entities\File;
 use App\Domain\Entities\FileRelation;
-use Doctrine\Common\Collections\ArrayCollection;
 use Illuminate\Support\Collection;
 
 /**
@@ -47,9 +46,9 @@ trait FileTrait
         }
     }
 
-    public function getFiles($raw = false): array|ArrayCollection|Collection
+    public function getFiles(): Collection
     {
-        return $raw ? $this->files : collect($this->files);
+        return collect($this->files);
     }
 
     public function getAudios(): array|Collection

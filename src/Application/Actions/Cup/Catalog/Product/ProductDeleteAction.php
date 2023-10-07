@@ -24,6 +24,6 @@ class ProductDeleteAction extends CatalogAction
             }
         }
 
-        return $this->respondWithRedirect('/cup/catalog/product' . ($product ? '/' . $product->getCategory() : ''));
+        return $this->respondWithRedirect('/cup/catalog/product' . ($product ? '/' . $product->getCategory()->toString() : ''));
     }
 }

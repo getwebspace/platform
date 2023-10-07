@@ -7,6 +7,7 @@ use App\Domain\Entities\Catalog\Category as CatalogCategory;
 use App\Domain\Service\Catalog\Exception\WrongTitleValueException;
 use App\Domain\Traits\FileTrait;
 use Doctrine\ORM\Mapping as ORM;
+use Illuminate\Support\Collection;
 
 #[ORM\Table(name: 'catalog_product')]
 #[ORM\Index(name: 'catalog_product_address_idx', columns: ['address'])]
@@ -445,91 +446,6 @@ class Product extends AbstractEntity
         return $this->stock;
     }
 
-    #[ORM\Column(type: 'text', length: 512, options: ['default' => ''])]
-    protected string $field1 = '';
-
-    public function setField1(string $value): self
-    {
-        if ($this->checkStrLenMax($value, 512)) {
-            $this->field1 = $value;
-        }
-
-        return $this;
-    }
-
-    public function getField1(): string
-    {
-        return $this->field1;
-    }
-
-    #[ORM\Column(type: 'text', length: 512, options: ['default' => ''])]
-    protected string $field2 = '';
-
-    public function setField2(string $value): self
-    {
-        if ($this->checkStrLenMax($value, 512)) {
-            $this->field2 = $value;
-        }
-
-        return $this;
-    }
-
-    public function getField2(): string
-    {
-        return $this->field2;
-    }
-
-    #[ORM\Column(type: 'text', length: 512, options: ['default' => ''])]
-    protected string $field3 = '';
-
-    public function setField3(string $value): self
-    {
-        if ($this->checkStrLenMax($value, 512)) {
-            $this->field3 = $value;
-        }
-
-        return $this;
-    }
-
-    public function getField3(): string
-    {
-        return $this->field3;
-    }
-
-    #[ORM\Column(type: 'text', length: 512, options: ['default' => ''])]
-    protected string $field4 = '';
-
-    public function setField4(string $value): self
-    {
-        if ($this->checkStrLenMax($value, 512)) {
-            $this->field4 = $value;
-        }
-
-        return $this;
-    }
-
-    public function getField4(): string
-    {
-        return $this->field4;
-    }
-
-    #[ORM\Column(type: 'text', length: 512, options: ['default' => ''])]
-    protected string $field5 = '';
-
-    public function setField5(string $value): self
-    {
-        if ($this->checkStrLenMax($value, 512)) {
-            $this->field5 = $value;
-        }
-
-        return $this;
-    }
-
-    public function getField5(): string
-    {
-        return $this->field5;
-    }
-
     /**
      * @var array
      */
@@ -541,14 +457,9 @@ class Product extends AbstractEntity
         return count($this->attributes);
     }
 
-    /**
-     * @param false $raw
-     *
-     * @return array|\Illuminate\Support\Collection
-     */
-    public function getAttributes($raw = false)
+    public function getAttributes(): Collection
     {
-        return $raw ? $this->attributes : collect($this->attributes);
+        return collect($this->attributes);
     }
 
     #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
@@ -609,9 +520,9 @@ class Product extends AbstractEntity
     #[ORM\OneToMany(targetEntity: 'App\Domain\Entities\Catalog\ProductRelation', mappedBy: 'product', orphanRemoval: true)]
     protected $relation = [];
 
-    public function getRelations($raw = false)
+    public function getRelations(): Collection
     {
-        return $raw ? $this->relation : collect($this->relation);
+        return collect($this->relation);
     }
 
     public function hasRelations(): int
@@ -625,9 +536,9 @@ class Product extends AbstractEntity
     #[ORM\OneToMany(targetEntity: 'App\Domain\Entities\Catalog\ProductRelation', mappedBy: 'related', orphanRemoval: true)]
     protected $related = [];
 
-    public function getRelated($raw = false)
+    public function getRelated(): Collection
     {
-        return $raw ? $this->related : collect($this->related);
+        return collect($this->related);
     }
 
     public function hasRelated(): int
@@ -785,11 +696,6 @@ class Product extends AbstractEntity
             'quantity' => $this->quantity,
             'quantityMin' => $this->quantityMin,
             'stock' => $this->stock,
-            'field1' => $this->field1,
-            'field2' => $this->field2,
-            'field3' => $this->field3,
-            'field4' => $this->field4,
-            'field5' => $this->field5,
             'attributes' => $this->attributes,
             'country' => $this->country,
             'manufacturer' => $this->manufacturer,

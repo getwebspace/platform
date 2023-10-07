@@ -58,11 +58,6 @@ class ProductServiceTest extends TestCase
                 'weight_class' => $this->getFaker()->word,
             ],
             'stock' => $this->getFaker()->randomFloat(),
-            'field1' => $this->getFaker()->word,
-            'field2' => $this->getFaker()->word,
-            'field3' => $this->getFaker()->word,
-            'field4' => $this->getFaker()->word,
-            'field5' => $this->getFaker()->word,
             'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductStatusType::LIST),
             'country' => $this->getFaker()->word,
             'manufacturer' => $this->getFaker()->word,
@@ -97,11 +92,6 @@ class ProductServiceTest extends TestCase
         $this->assertEquals($data['special'], $product->getSpecial());
         $this->assertEquals($data['dimension'], $product->getDimension());
         $this->assertEquals($data['stock'], $product->getStock());
-        $this->assertEquals($data['field1'], $product->getField1());
-        $this->assertEquals($data['field2'], $product->getField2());
-        $this->assertEquals($data['field3'], $product->getField3());
-        $this->assertEquals($data['field4'], $product->getField4());
-        $this->assertEquals($data['field5'], $product->getField5());
         $this->assertEquals($data['status'], $product->getStatus());
         $this->assertEquals($data['country'], $product->getCountry());
         $this->assertEquals($data['manufacturer'], $product->getManufacturer());
@@ -131,11 +121,6 @@ class ProductServiceTest extends TestCase
         $this->assertEquals($data['discount'], $p->getDiscount());
         $this->assertEquals($data['special'], $p->getSpecial());
         $this->assertEquals($data['stock'], $p->getStock());
-        $this->assertEquals($data['field1'], $p->getField1());
-        $this->assertEquals($data['field2'], $p->getField2());
-        $this->assertEquals($data['field3'], $p->getField3());
-        $this->assertEquals($data['field4'], $p->getField4());
-        $this->assertEquals($data['field5'], $p->getField5());
         $this->assertEquals($data['status'], $p->getStatus());
         $this->assertEquals($data['country'], $p->getCountry());
         $this->assertEquals($data['manufacturer'], $p->getManufacturer());
@@ -256,11 +241,6 @@ class ProductServiceTest extends TestCase
                 'weight_class' => $this->getFaker()->word,
             ],
             'stock' => $this->getFaker()->randomFloat(),
-            'field1' => $this->getFaker()->word,
-            'field2' => $this->getFaker()->word,
-            'field3' => $this->getFaker()->word,
-            'field4' => $this->getFaker()->word,
-            'field5' => $this->getFaker()->word,
             'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductStatusType::LIST),
             'country' => $this->getFaker()->word,
             'manufacturer' => $this->getFaker()->word,
@@ -300,11 +280,6 @@ class ProductServiceTest extends TestCase
                 'weight_class' => $this->getFaker()->word,
             ],
             'stock' => $this->getFaker()->randomFloat(),
-            'field1' => $this->getFaker()->word,
-            'field2' => $this->getFaker()->word,
-            'field3' => $this->getFaker()->word,
-            'field4' => $this->getFaker()->word,
-            'field5' => $this->getFaker()->word,
             'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductStatusType::LIST),
             'country' => $this->getFaker()->word,
             'manufacturer' => $this->getFaker()->word,
@@ -338,11 +313,6 @@ class ProductServiceTest extends TestCase
         $this->assertEquals($data['special'], $product->getSpecial());
         $this->assertEquals($data['dimension'], $product->getDimension());
         $this->assertEquals($data['stock'], $product->getStock());
-        $this->assertEquals($data['field1'], $product->getField1());
-        $this->assertEquals($data['field2'], $product->getField2());
-        $this->assertEquals($data['field3'], $product->getField3());
-        $this->assertEquals($data['field4'], $product->getField4());
-        $this->assertEquals($data['field5'], $product->getField5());
         $this->assertEquals($data['status'], $product->getStatus());
         $this->assertEquals($data['country'], $product->getCountry());
         $this->assertEquals($data['manufacturer'], $product->getManufacturer());

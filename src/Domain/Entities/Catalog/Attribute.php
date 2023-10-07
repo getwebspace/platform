@@ -5,6 +5,7 @@ namespace App\Domain\Entities\Catalog;
 use App\Domain\AbstractEntity;
 use App\Domain\Service\Catalog\Exception\WrongTitleValueException;
 use Doctrine\ORM\Mapping as ORM;
+use Illuminate\Support\Collection;
 
 #[ORM\Table(name: 'catalog_attribute')]
 #[ORM\Entity(repositoryClass: 'App\Domain\Repository\Catalog\AttributeRepository')]
@@ -93,28 +94,18 @@ class Attribute extends AbstractEntity
     #[ORM\ManyToMany(targetEntity: 'App\Domain\Entities\Catalog\Category', mappedBy: 'attributes')]
     protected $categories = [];
 
-    /**
-     * @param mixed $raw
-     *
-     * @return array|\Illuminate\Support\Collection
-     */
-    public function getCategories($raw = false)
+    public function getCategories(): Collection
     {
-        return $raw ? $this->categories : collect($this->categories);
+        return collect($this->categories);
     }
 
     #[ORM\OneToMany(targetEntity: 'App\Domain\Entities\Catalog\ProductAttribute', mappedBy: 'attribute', orphanRemoval: true)]
     #[ORM\JoinColumn(name: 'uuid', referencedColumnName: 'attribute_uuid')]
     protected $productAttributes = [];
 
-    /**
-     * @param mixed $raw
-     *
-     * @return array|\Illuminate\Support\Collection
-     */
-    public function getProductAttributes($raw = false)
+    public function getProductAttributes(): Collection
     {
-        return $raw ? $this->productAttributes : collect($this->productAttributes);
+        return collect($this->productAttributes);
     }
 
     public function getProducts(\Illuminate\Support\Collection $categories = null): \Illuminate\Support\Collection

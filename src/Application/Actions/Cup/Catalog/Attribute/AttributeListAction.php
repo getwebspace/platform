@@ -8,7 +8,11 @@ class AttributeListAction extends CatalogAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        $list = $this->catalogAttributeService->read();
+        $list = $this->catalogAttributeService->read([
+            'order' => [
+                'title' => 'asc',
+            ],
+        ]);
 
         return $this->respondWithTemplate('cup/catalog/attribute/index.twig', [
             'attributes' => $list,
