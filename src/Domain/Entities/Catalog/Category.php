@@ -461,7 +461,12 @@ class Category extends AbstractEntity
         return array_serialize([
             'uuid' => $this->uuid,
             'parent_uuid' => $this->parent_uuid,
-            'parent' => $this->parent,
+            'parent' => [
+                'uuid' => $this->uuid,
+                'parent_uuid' => $this->parent_uuid,
+                'title' => $this->title,
+                'external_id' => $this->external_id,
+            ],
             'title' => $this->title,
             'description' => $this->description,
             'address' => $this->address,
