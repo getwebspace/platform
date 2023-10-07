@@ -42,9 +42,9 @@ class OrderProductService extends AbstractService
                     $product = $this->catalogProductService->read(['uuid' => $uuid]);
 
                     $price = match ($type) {
-                        'price' => $product->getPrice(),
-                        'price_wholesale' => $product->getPriceWholesale(),
-                        'self' => $price,
+                        \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE => $product->getPrice(),
+                        \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE_WHOLESALE => $product->getPriceWholesale(),
+                        \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE_SELF => $price,
                     };
 
                     $order->addProduct(

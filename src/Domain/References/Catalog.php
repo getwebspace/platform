@@ -64,14 +64,14 @@ class Catalog
     ];
 
     // possible product price types
-    public const PRODUCT_PRICE_TYPE_SELF = 'self';
     public const PRODUCT_PRICE_TYPE_PRICE = 'price';
     public const PRODUCT_PRICE_TYPE_PRICE_WHOLESALE = 'price_wholesale';
+    public const PRODUCT_PRICE_TYPE_PRICE_SELF = 'price_self';
 
     // list of product price types
     public const PRODUCT_PRICE_TYPE = [
-        self::PRODUCT_PRICE_TYPE_SELF,
         self::PRODUCT_PRICE_TYPE_PRICE,
         self::PRODUCT_PRICE_TYPE_PRICE_WHOLESALE,
+        self::PRODUCT_PRICE_TYPE_PRICE_SELF,
     ];
 }

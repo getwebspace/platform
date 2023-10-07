@@ -105,7 +105,7 @@ class OrderServiceTest extends TestCase
         $data['products'][$extra->getUuid()->toString()] = [
             'count' => $this->getFaker()->randomFloat(2, 2, 10),
             'price' => $this->getFaker()->randomFloat(2, 2, 10000),
-            'price_type' => 'self',
+            'price_type' => 'price_self',
         ];
 
         $order = $this->service->create($data);
