@@ -123,8 +123,9 @@ class SystemPageAction extends AbstractAction
                     ['title' => __('Delivered'),        'order' => 4],
                     ['title' => __('Canceled'),         'order' => 5],
                 ];
-                foreach ($order_status as $el) {
+                foreach ($order_status as $i => $el) {
                     $referenceService->create(array_merge($el, [
+                        'order' => $i + 1,
                         'type' => \App\Domain\Types\ReferenceTypeType::TYPE_ORDER_STATUS,
                     ]));
                 }
@@ -135,8 +136,9 @@ class SystemPageAction extends AbstractAction
                     ['title' => __('In Stock'),         'order' => 3],
                     ['title' => __('2-3 Days'),         'order' => 4],
                 ];
-                foreach ($stock_status as $el) {
+                foreach ($stock_status as $i => $el) {
                     $referenceService->create(array_merge($el, [
+                        'order' => $i + 1,
                         'type' => \App\Domain\Types\ReferenceTypeType::TYPE_STOCK_STATUS,
                     ]));
                 }
@@ -149,8 +151,9 @@ class SystemPageAction extends AbstractAction
                     ['title' => __('Liter'),            'value' => ['unit' => __('l'),  'value' => 1000]],
                     ['title' => __('Milliliter'),       'value' => ['unit' => __('ml'), 'value' => 1]],
                 ];
-                foreach ($weight_class as $el) {
+                foreach ($weight_class as $i => $el) {
                     $referenceService->create(array_merge($el, [
+                        'order' => $i + 1,
                         'type' => \App\Domain\Types\ReferenceTypeType::TYPE_WEIGHT_CLASS,
                     ]));
                 }
@@ -160,8 +163,9 @@ class SystemPageAction extends AbstractAction
                     ['title' => __('Centimeter'),       'value' => ['unit' => __('cm'), 'value' => 1.0000]],
                     ['title' => __('Millimeter'),       'value' => ['unit' => __('mm'), 'value' => 10.0000]],
                 ];
-                foreach ($length_class as $el) {
+                foreach ($length_class as $i => $el) {
                     $referenceService->create(array_merge($el, [
+                        'order' => $i + 1,
                         'type' => \App\Domain\Types\ReferenceTypeType::TYPE_LENGTH_CLASS,
                     ]));
                 }
@@ -170,8 +174,9 @@ class SystemPageAction extends AbstractAction
                     ['title' => __('VAT 20'),           'value' => ['rate' => 20.0000]],
                     ['title' => __('VAT 10'),           'value' => ['rate' => 10.0000]],
                 ];
-                foreach ($tax_rates as $el) {
+                foreach ($tax_rates as $i => $el) {
                     $referenceService->create(array_merge($el, [
+                        'order' => $i + 1,
                         'type' => \App\Domain\Types\ReferenceTypeType::TYPE_TAX_RATE,
                     ]));
                 }
@@ -183,8 +188,9 @@ class SystemPageAction extends AbstractAction
                     ['title' => __('Telegram'),         'value' => ['url' => '#']],
                     ['title' => __('WhatsApp'),         'value' => ['url' => '#']],
                 ];
-                foreach ($social_networks as $el) {
+                foreach ($social_networks as $i => $el) {
                     $referenceService->create(array_merge($el, [
+                        'order' => $i + 1,
                         'type' => \App\Domain\Types\ReferenceTypeType::TYPE_SOCIAL_NETWORKS,
                     ]));
                 }
@@ -193,8 +199,9 @@ class SystemPageAction extends AbstractAction
                     ['title' => __('Default'),                  'value' => ['format' => '{address}']],
                     ['title' => __('International address'),    'value' => ['format' => "{company.title}\n{address}\n{city} {postcode}\n{country}"]],
                 ];
-                foreach ($address_formats as $el) {
+                foreach ($address_formats as $i => $el) {
                     $referenceService->create(array_merge($el, [
+                        'order' => $i + 1,
                         'type' => \App\Domain\Types\ReferenceTypeType::TYPE_ADDRESS_FORMAT,
                     ]));
                 }
