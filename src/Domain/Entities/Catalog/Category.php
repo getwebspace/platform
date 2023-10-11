@@ -33,7 +33,7 @@ class Category extends AbstractEntity
     protected ?\Ramsey\Uuid\UuidInterface $parent_uuid;
 
     #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\Catalog\Category')]
-    #[ORM\JoinColumn(name: 'parent_uuid', referencedColumnName: 'uuid')]
+    #[ORM\JoinColumn(name: 'parent_uuid', referencedColumnName: 'uuid', onDelete: 'CASCADE')]
     protected ?Category $parent;
 
     /**

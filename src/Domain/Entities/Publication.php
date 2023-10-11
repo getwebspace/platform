@@ -105,7 +105,7 @@ class Publication extends AbstractEntity
     protected ?\Ramsey\Uuid\UuidInterface $category_uuid;
 
     #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\Publication\Category')]
-    #[ORM\JoinColumn(name: 'category_uuid', referencedColumnName: 'uuid')]
+    #[ORM\JoinColumn(name: 'category_uuid', referencedColumnName: 'uuid', onDelete: 'CASCADE')]
     protected ?PublicationCategory $category;
 
     /**
