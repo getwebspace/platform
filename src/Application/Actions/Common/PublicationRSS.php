@@ -23,20 +23,18 @@ class PublicationRSS extends AbstractAction
 
     protected function action(): \Slim\Psr7\Response
     {
+        $url = $this->parameter('common_homepage', (string) $this->request->getUri()->withPath('/'));
         $feed = new \Bhaktaraz\RSSGenerator\Feed();
 
-        if (
-            ($url = $this->parameter('common_homepage', false)) !== false
-            && ($channel = $this->resolveArg('channel'))
-        ) {
-            $category = $this->publicationCategoryService->read(['address' => str_escape($channel)]);
+        if ($channel = $this->resolveArg('channel')) {
+            $category = $this->publicationCategoryService->read(['address' => $channel]);
 
             $channel = new \Bhaktaraz\RSSGenerator\Channel();
             $channel
                 ->title($category->getTitle())
                 ->description(strip_tags($category->getDescription()))
                 ->url($url . $category->getAddress())
-                ->atomLinkSelf($url . '/rss/' . $category->getAddress())
+                ->atomLinkSelf($url . 'rss/' . $category->getAddress())
                 ->appendTo($feed);
 
             /** @var \App\Domain\Entities\Publication $publication */
