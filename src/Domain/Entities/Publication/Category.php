@@ -291,17 +291,14 @@ class Category extends AbstractEntity
     #[ORM\OrderBy(['order' => 'ASC'])]
     protected $files = [];
 
-    /**
-     * @return Collection
-     */
-    public function getNested(Collection $categories)
+    public function getNested(Collection $categories, bool $force = false)
     {
         $result = collect([$this]);
 
-        if ($this->getChildren()) {
+        if ($this->getChildren() || $force) {
             // @var \App\Domain\Entities\Publication\Category $category
             foreach ($categories->where('parent_uuid', $this->getUuid()) as $child) {
-                $result = $result->merge($child->getNested($categories));
+                $result = $result->merge($child->getNested($categories, $force));
             }
         }
 

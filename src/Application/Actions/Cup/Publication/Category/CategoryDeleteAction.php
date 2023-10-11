@@ -9,17 +9,31 @@ class CategoryDeleteAction extends PublicationAction
     protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            $publicationCategory = $this->publicationCategoryService->read([
+            $category = $this->publicationCategoryService->read([
                 'uuid' => $this->resolveArg('uuid'),
             ]);
 
-            if ($publicationCategory) {
-                foreach ($this->publicationService->read(['category' => $publicationCategory]) as $publication) {
+            if ($category) {
+                $categories = $this->publicationCategoryService->read();
+                $childrenUuids = $category->getNested($categories, true)->pluck('uuid')->all();
+
+                /**
+                 * @var \App\Domain\Entities\Publication $publication
+                 */
+                foreach ($this->publicationService->read(['category_uuid' => $childrenUuids]) as $publication) {
                     $this->publicationService->delete($publication);
                 }
-                $this->publicationCategoryService->delete($publicationCategory);
 
-                $this->container->get(\App\Application\PubSub::class)->publish('cup:publication:category:delete', $publicationCategory);
+                /**
+                 * @var \App\Domain\Entities\Publication\Category $child
+                 */
+                foreach ($this->publicationCategoryService->read(['parent_uuid' => $childrenUuids]) as $child) {
+                    $this->publicationCategoryService->delete($child);
+                }
+
+                $this->publicationCategoryService->delete($category);
+
+                $this->container->get(\App\Application\PubSub::class)->publish('cup:publication:category:delete', $category);
             }
         }
 

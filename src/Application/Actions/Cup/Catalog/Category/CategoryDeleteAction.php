@@ -16,26 +16,29 @@ class CategoryDeleteAction extends CatalogAction
 
             if ($category) {
                 $categories = $this->catalogCategoryService->read();
-                $childrenUuids = $category->getNested($categories)->pluck('uuid')->all();
+                $childrenUuids = $category->getNested($categories, true)->pluck('uuid')->all();
 
                 /**
                  * @var \App\Domain\Entities\Catalog\Category $child
                  */
                 foreach ($this->catalogCategoryService->read(['parent_uuid' => $childrenUuids]) as $child) {
-                    $child->setStatus(\App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE);
-                    $this->catalogCategoryService->write($child);
+                    $this->catalogCategoryService->update($child, [
+                        'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE,
+                    ]);
                 }
 
                 /**
                  * @var \App\Domain\Entities\Catalog\Product $product
                  */
                 foreach ($this->catalogProductService->read(['category_uuid' => $childrenUuids]) as $product) {
-                    $product->setStatus(\App\Domain\Types\Catalog\ProductStatusType::STATUS_DELETE);
-                    $this->catalogProductService->write($product);
+                    $this->catalogProductService->update($product, [
+                        'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_DELETE,
+                    ]);
                 }
 
-                $category->setStatus(\App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE);
-                $this->catalogCategoryService->write($category);
+                $this->catalogCategoryService->update($category, [
+                    'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE,
+                ]);
 
                 $this->container->get(\App\Application\PubSub::class)->publish('cup:catalog:category:delete', $category);
             }

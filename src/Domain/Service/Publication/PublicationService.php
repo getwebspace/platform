@@ -121,7 +121,7 @@ class PublicationService extends AbstractService
             'user' => null,
             'address' => null,
             'title' => null,
-            'category' => null,
+            'category_uuid' => null,
             'external_id' => null,
         ];
         $data = array_merge($default, static::$default_read, $data);
@@ -140,8 +140,8 @@ class PublicationService extends AbstractService
         if ($data['title'] !== null) {
             $criteria['title'] = $data['title'];
         }
-        if ($data['category'] !== null) {
-            $criteria['category'] = $data['category'];
+        if ($data['category_uuid'] !== null) {
+            $criteria['category_uuid'] = $data['category_uuid'];
         }
         if ($data['external_id'] !== null) {
             $criteria['external_id'] = $data['external_id'];

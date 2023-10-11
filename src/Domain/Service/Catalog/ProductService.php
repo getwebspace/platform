@@ -170,7 +170,7 @@ class ProductService extends AbstractService
     {
         $default = [
             'uuid' => null,
-            'category' => null,
+            'category_uuid' => null,
             'title' => null,
             'type' => null,
             'address' => null,
@@ -188,8 +188,8 @@ class ProductService extends AbstractService
         if ($data['uuid'] !== null) {
             $criteria['uuid'] = $data['uuid'];
         }
-        if ($data['category'] !== null) {
-            $criteria['category'] = $data['category'];
+        if ($data['category_uuid'] !== null) {
+            $criteria['category_uuid'] = $data['category_uuid'];
         }
         if ($data['title'] !== null) {
             $criteria['title'] = $data['title'];

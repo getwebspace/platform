@@ -124,7 +124,7 @@ class CategoryService extends AbstractService
     {
         $default = [
             'uuid' => null,
-            'parent' => null,
+            'parent_uuid' => null,
             'children' => null,
             'hidden' => null,
             'title' => null,
@@ -140,8 +140,8 @@ class CategoryService extends AbstractService
         if ($data['uuid'] !== null) {
             $criteria['uuid'] = $data['uuid'];
         }
-        if ($data['parent'] !== null) {
-            $criteria['parent'] = $data['parent'];
+        if ($data['parent_uuid'] !== null) {
+            $criteria['parent_uuid'] = $data['parent_uuid'];
         }
         if ($data['children'] !== null) {
             $criteria['children'] = $data['children'];

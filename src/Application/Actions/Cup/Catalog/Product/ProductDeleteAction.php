@@ -17,13 +17,14 @@ class ProductDeleteAction extends CatalogAction
             ]);
 
             if ($product) {
-                $product->setStatus(\App\Domain\Types\Catalog\ProductStatusType::STATUS_DELETE);
-                $this->catalogProductService->write($product);
+                $this->catalogProductService->update($product, [
+                    'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_DELETE,
+                ]);
 
                 $this->container->get(\App\Application\PubSub::class)->publish('cup:catalog:product:delete', $product);
             }
         }
 
-        return $this->respondWithRedirect('/cup/catalog/product' . ($product ? '/' . $product->getCategory()->toString() : ''));
+        return $this->respondWithRedirect('/cup/catalog/product' . ($product ? '/' . $product->getCategory()->getUuid()->toString() : ''));
     }
 }

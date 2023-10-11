@@ -40,7 +40,7 @@ class PublicationRSS extends AbstractAction
                 ->appendTo($feed);
 
             /** @var \App\Domain\Entities\Publication $publication */
-            foreach ($this->publicationService->read(['category' => $category->getUuid(), 'order' => [$category->getSort()['by'] => $category->getSort()['direction']]]) as $publication) {
+            foreach ($this->publicationService->read(['category_uuid' => $category->getUuid(), 'order' => [$category->getSort()['by'] => $category->getSort()['direction']]]) as $publication) {
                 $item = new \Bhaktaraz\RSSGenerator\Item();
                 $item
                     ->guid($publication->getUuid()->toString())

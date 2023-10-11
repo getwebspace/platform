@@ -12,6 +12,10 @@ class FormDeleteAction extends FormAction
             ]);
 
             if ($form) {
+                foreach ($this->formDataService->read(['form_uuid' => $this->resolveArg('uuid')]) as $item) {
+                    $this->formDataService->delete($item);
+                }
+
                 $this->formService->delete($form);
 
                 $this->container->get(\App\Application\PubSub::class)->publish('cup:form:delete', $form);

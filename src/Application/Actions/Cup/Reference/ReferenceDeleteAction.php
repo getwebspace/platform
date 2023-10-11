@@ -10,12 +10,12 @@ class ReferenceDeleteAction extends ReferenceAction
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
             try {
-                $ref = $this->referenceService->read([
+                $reference = $this->referenceService->read([
                     'uuid' => $this->resolveArg('uuid'),
                 ]);
-                $this->referenceService->delete($ref);
+                $this->referenceService->delete($reference);
 
-                $this->container->get(\App\Application\PubSub::class)->publish('cup:reference:delete', $ref);
+                $this->container->get(\App\Application\PubSub::class)->publish('cup:reference:delete', $reference);
             } catch (ReferenceNotFoundException $e) {
                 // nothing
             }

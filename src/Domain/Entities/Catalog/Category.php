@@ -442,14 +442,14 @@ class Category extends AbstractEntity
         return $collect->reverse();
     }
 
-    public function getNested(Collection &$categories): Collection
+    public function getNested(Collection &$categories, bool $force = false): Collection
     {
         $result = collect([$this]);
 
-        if ($this->getChildren()) {
+        if ($this->getChildren() || $force) {
             // @var \App\Domain\Entities\Catalog\Category $child
             foreach ($categories->where('parent_uuid', $this->getUuid()) as $child) {
-                $result = $result->merge($child->getNested($categories));
+                $result = $result->merge($child->getNested($categories, $force));
             }
         }
 
