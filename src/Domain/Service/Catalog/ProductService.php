@@ -138,15 +138,13 @@ class ProductService extends AbstractService
             );
         }
 
-        /** @var Product $product */
-        if (
-            $this->service->findOneUnique(
-                $product->getCategory()->getUuid()->toString(),
-                $product->getAddress(),
-                $product->getDimension(),
-                $product->getExternalId()
-            ) !== null
-        ) {
+        $found = $this->service->findOneUnique(
+            $product->getCategory()->getUuid()->toString(),
+            $product->getAddress(),
+            $product->getDimension(),
+            $product->getExternalId()
+        );
+        if ($found !== null) {
             throw new AddressAlreadyExistsException();
         }
 

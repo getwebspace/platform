@@ -105,8 +105,6 @@ class CategoryService extends AbstractService
             $category->getAddress(),
             $category->getExternalId()
         );
-
-        /** @var CatalogCategory $category */
         if ($found !== null) {
             throw new AddressAlreadyExistsException();
         }

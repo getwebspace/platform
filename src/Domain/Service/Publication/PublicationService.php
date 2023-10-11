@@ -98,7 +98,8 @@ class PublicationService extends AbstractService
             );
         }
 
-        if ($this->service->findOneByAddress($publication->getAddress()) !== null) {
+        $found = $this->service->findOneByAddress($publication->getAddress());
+        if ($found !== null) {
             throw new AddressAlreadyExistsException();
         }
 

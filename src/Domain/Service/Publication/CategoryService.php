@@ -63,9 +63,6 @@ class CategoryService extends AbstractService
         if (!$data['title']) {
             throw new MissingTitleValueException();
         }
-        if ($data['address'] && $this->service->findOneByAddress($data['address']) !== null) {
-            throw new AddressAlreadyExistsException();
-        }
 
         // retrieve category by uuid
         if (!is_a($data['parent'], PublicationCategory::class) && $data['parent_uuid']) {
@@ -97,7 +94,8 @@ class CategoryService extends AbstractService
             );
         }
 
-        if ($this->service->findOneByAddress($category->getAddress()) !== null) {
+        $found = $this->service->findOneByAddress($category->getAddress());
+        if ($found !== null) {
             throw new AddressAlreadyExistsException();
         }
 
