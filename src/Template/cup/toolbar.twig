@@ -13,12 +13,9 @@
 
     <ul class="navbar-nav topbar-nav ml-md-2 align-items-center">
         {% for plugin in plugins.where('toolbar', true) %}
-            {% for param in plugin.getToolbarItem() %}
-                {% if param.twig %}
-                    {% include param.twig %}
-                {% elseif param.html %}
-                    {{ param.html|raw }}
-                {% endif %}
+            {% for item in plugin.getToolbarItems() %}
+                <!-- {{ plugin.getCredentials('name') }} -->
+                {% include item %}
             {% endfor %}
         {% endfor %}
 

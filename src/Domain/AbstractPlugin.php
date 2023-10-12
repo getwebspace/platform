@@ -44,6 +44,10 @@ abstract class AbstractPlugin
 
     private array $settingsField = [];
 
+    public bool $script = false;
+
+    private array $scripts = [];
+
     public bool $toolbar = false;
 
     private array $toolbars = [];
@@ -161,22 +165,29 @@ abstract class AbstractPlugin
     }
 
     /**
-     * Add toolbar button
+     * Add script element
      */
-    protected function addToolbarItem(array $params = []): void
+    protected function addScript(array|string $params = []): void
     {
-        $default = [
-            'twig' => '',
-            'html' => '',
-        ];
-        $params = array_merge($default, $params);
-
-        $this->toolbar = true;
-
-        $this->toolbars[] = $params;
+        $this->script = true;
+        $this->scripts[] = is_array($params) ? array_first($params) : $params;
     }
 
-    public function getToolbarItem(): array
+    public function getScripts(): array
+    {
+        return $this->scripts;
+    }
+
+    /**
+     * Add toolbar button
+     */
+    protected function addToolbarItem(array|string $params = []): void
+    {
+        $this->toolbar = true;
+        $this->toolbars[] = is_array($params) ? array_first($params) : $params;
+    }
+
+    public function getToolbarItems(): array
     {
         return $this->toolbars;
     }
@@ -184,20 +195,13 @@ abstract class AbstractPlugin
     /**
      * Add sidebar tab
      */
-    protected function addSidebarTab(array $params = []): void
+    protected function addSidebarTab(array|string $params = []): void
     {
-        $default = [
-            'twig' => '',
-            'html' => '',
-        ];
-        $params = array_merge($default, $params);
-
         $this->sidebar = true;
-
-        $this->sidebars[] = $params;
+        $this->sidebars[] = is_array($params) ? array_first($params) : $params;
     }
 
-    public function getSidebarTab(): array
+    public function getSidebarTabs(): array
     {
         return $this->sidebars;
     }
@@ -226,11 +230,6 @@ abstract class AbstractPlugin
         return $this->router
             ->map(['GET', 'POST'], '/cup/plugin/' . static::NAME, $params['handler'])
             ->setName('cup:' . mb_strtolower(static::NAME));
-    }
-
-    public function isNavigationItemEnabled(): bool
-    {
-        return $this->navigation;
     }
 
     protected function map(array $params): RouteInterface

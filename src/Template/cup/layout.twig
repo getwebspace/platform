@@ -111,7 +111,6 @@
                                                             </a>
                                                         </div>
 
-
                                                         {% if parameter('publication_is_enabled', 'yes') != 'no' %}
                                                             <div class="col-12 col-sm-6 col-lg-4">
                                                                 <a href="/cup/publication" class="card card-stats card-primary card-round">
@@ -447,6 +446,14 @@
     <script src="/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js?v={{ SHA }}"></script>
 
     <script src="/assets/js/cup/script.js?v={{ SHA }}"></script>
+
+    {# plugin scripts #}
+    {% for plugin in plugins.where('script', true) %}
+        {% for item in plugin.getScripts() %}
+            <!-- {{ plugin.getCredentials('name') }} -->
+            {% include item %}
+        {% endfor %}
+    {% endfor %}
 
     {% block script '' %}
 {% endblock %}

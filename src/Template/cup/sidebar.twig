@@ -107,16 +107,13 @@
 
             {# TAB: Plugin tabs #}
             {% for plugin in plugins.where('sidebar', true) %}
-                {% for param in plugin.getSidebarTab() %}
+                {% for item in plugin.getSidebarTabs() %}
+                    <!-- {{ plugin.getCredentials('name') }} -->
                     <div class="tab-pane fade" id="plugin-{{ plugin.getCredentials('name') }}">
                         <div class="quick-wrapper">
                             <div class="quick-scroll scrollbar-outer">
                                 <div class="quick-content">
-                                    {% if param.twig %}
-                                        {% include param.twig %}
-                                    {% elseif param.html %}
-                                        {{ param.html|raw }}
-                                    {% endif %}
+                                    {% include item %}
                                 </div>
                             </div>
                         </div>
