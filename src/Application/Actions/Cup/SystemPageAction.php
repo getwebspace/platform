@@ -117,93 +117,121 @@ class SystemPageAction extends AbstractAction
                 $referenceService = $this->container->get(ReferenceService::class);
 
                 $order_status = [
-                    ['title' => __('New'),              'order' => 1],
-                    ['title' => __('In processing'),    'order' => 2],
-                    ['title' => __('Sent'),             'order' => 3],
-                    ['title' => __('Delivered'),        'order' => 4],
-                    ['title' => __('Canceled'),         'order' => 5],
+                    ['title' => __('New'), 'order' => 1],
+                    ['title' => __('In processing'), 'order' => 2],
+                    ['title' => __('Sent'), 'order' => 3],
+                    ['title' => __('Delivered'), 'order' => 4],
+                    ['title' => __('Canceled'), 'order' => 5],
                 ];
                 foreach ($order_status as $i => $el) {
-                    $referenceService->create(array_merge($el, [
-                        'order' => $i + 1,
-                        'type' => \App\Domain\Types\ReferenceTypeType::TYPE_ORDER_STATUS,
-                    ]));
+                    try {
+                        $referenceService->create(array_merge($el, [
+                            'order' => $i + 1,
+                            'type' => \App\Domain\Types\ReferenceTypeType::TYPE_ORDER_STATUS,
+                        ]));
+                    } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
+                        // nothing
+                    }
                 }
 
                 $stock_status = [
-                    ['title' => __('Pre-Order'),        'order' => 1],
-                    ['title' => __('Out Of Stock'),     'order' => 2],
-                    ['title' => __('In Stock'),         'order' => 3],
-                    ['title' => __('2-3 Days'),         'order' => 4],
+                    ['title' => __('Pre-Order'), 'order' => 1],
+                    ['title' => __('Out Of Stock'), 'order' => 2],
+                    ['title' => __('In Stock'), 'order' => 3],
+                    ['title' => __('2-3 Days'), 'order' => 4],
                 ];
                 foreach ($stock_status as $i => $el) {
-                    $referenceService->create(array_merge($el, [
-                        'order' => $i + 1,
-                        'type' => \App\Domain\Types\ReferenceTypeType::TYPE_STOCK_STATUS,
-                    ]));
+                    try {
+                        $referenceService->create(array_merge($el, [
+                            'order' => $i + 1,
+                            'type' => \App\Domain\Types\ReferenceTypeType::TYPE_STOCK_STATUS,
+                        ]));
+                    } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
+                        // nothing
+                    }
                 }
 
                 $weight_class = [
-                    ['title' => __('Kilogram'),         'value' => ['unit' => __('kg'), 'value' => 1000]],
-                    ['title' => __('Gram'),             'value' => ['unit' => __('g'),  'value' => 1]],
-                    ['title' => __('Ounce'),            'value' => ['unit' => __('oz'), 'value' => 35.2739]],
-                    ['title' => __('Pound'),            'value' => ['unit' => __('lb'), 'value' => 2.2046]],
-                    ['title' => __('Liter'),            'value' => ['unit' => __('l'),  'value' => 1000]],
-                    ['title' => __('Milliliter'),       'value' => ['unit' => __('ml'), 'value' => 1]],
+                    ['title' => __('Kilogram'), 'value' => ['unit' => __('kg'), 'value' => 1000]],
+                    ['title' => __('Gram'), 'value' => ['unit' => __('g'), 'value' => 1]],
+                    ['title' => __('Ounce'), 'value' => ['unit' => __('oz'), 'value' => 35.2739]],
+                    ['title' => __('Pound'), 'value' => ['unit' => __('lb'), 'value' => 2.2046]],
+                    ['title' => __('Liter'), 'value' => ['unit' => __('l'), 'value' => 1000]],
+                    ['title' => __('Milliliter'), 'value' => ['unit' => __('ml'), 'value' => 1]],
                 ];
                 foreach ($weight_class as $i => $el) {
-                    $referenceService->create(array_merge($el, [
-                        'order' => $i + 1,
-                        'type' => \App\Domain\Types\ReferenceTypeType::TYPE_WEIGHT_CLASS,
-                    ]));
+                    try {
+                        $referenceService->create(array_merge($el, [
+                            'order' => $i + 1,
+                            'type' => \App\Domain\Types\ReferenceTypeType::TYPE_WEIGHT_CLASS,
+                        ]));
+                    } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
+                        // nothing
+                    }
                 }
 
                 $length_class = [
-                    ['title' => __('Inch'),             'value' => ['unit' => __('kg'), 'value' => 0.3937]],
-                    ['title' => __('Centimeter'),       'value' => ['unit' => __('cm'), 'value' => 1.0000]],
-                    ['title' => __('Millimeter'),       'value' => ['unit' => __('mm'), 'value' => 10.0000]],
+                    ['title' => __('Inch'), 'value' => ['unit' => __('kg'), 'value' => 0.3937]],
+                    ['title' => __('Centimeter'), 'value' => ['unit' => __('cm'), 'value' => 1.0000]],
+                    ['title' => __('Millimeter'), 'value' => ['unit' => __('mm'), 'value' => 10.0000]],
                 ];
                 foreach ($length_class as $i => $el) {
-                    $referenceService->create(array_merge($el, [
-                        'order' => $i + 1,
-                        'type' => \App\Domain\Types\ReferenceTypeType::TYPE_LENGTH_CLASS,
-                    ]));
+                    try {
+                        $referenceService->create(array_merge($el, [
+                            'order' => $i + 1,
+                            'type' => \App\Domain\Types\ReferenceTypeType::TYPE_LENGTH_CLASS,
+                        ]));
+                    } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
+                        // nothing
+                    }
                 }
 
                 $tax_rates = [
-                    ['title' => __('VAT 20'),           'value' => ['rate' => 20.0000]],
-                    ['title' => __('VAT 10'),           'value' => ['rate' => 10.0000]],
+                    ['title' => __('VAT 20'), 'value' => ['rate' => 20.0000]],
+                    ['title' => __('VAT 10'), 'value' => ['rate' => 10.0000]],
                 ];
                 foreach ($tax_rates as $i => $el) {
-                    $referenceService->create(array_merge($el, [
-                        'order' => $i + 1,
-                        'type' => \App\Domain\Types\ReferenceTypeType::TYPE_TAX_RATE,
-                    ]));
+                    try {
+                        $referenceService->create(array_merge($el, [
+                            'order' => $i + 1,
+                            'type' => \App\Domain\Types\ReferenceTypeType::TYPE_TAX_RATE,
+                        ]));
+                    } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
+                        // nothing
+                    }
                 }
 
                 $social_networks = [
-                    ['title' => __('Facebook'),         'value' => ['url' => '#']],
-                    ['title' => __('Instagram'),        'value' => ['url' => '#']],
-                    ['title' => __('VK'),               'value' => ['url' => '#']],
-                    ['title' => __('Telegram'),         'value' => ['url' => '#']],
-                    ['title' => __('WhatsApp'),         'value' => ['url' => '#']],
+                    ['title' => __('Facebook'), 'value' => ['url' => '#']],
+                    ['title' => __('Instagram'), 'value' => ['url' => '#']],
+                    ['title' => __('VK'), 'value' => ['url' => '#']],
+                    ['title' => __('Telegram'), 'value' => ['url' => '#']],
+                    ['title' => __('WhatsApp'), 'value' => ['url' => '#']],
                 ];
                 foreach ($social_networks as $i => $el) {
-                    $referenceService->create(array_merge($el, [
-                        'order' => $i + 1,
-                        'type' => \App\Domain\Types\ReferenceTypeType::TYPE_SOCIAL_NETWORKS,
-                    ]));
+                    try {
+                        $referenceService->create(array_merge($el, [
+                            'order' => $i + 1,
+                            'type' => \App\Domain\Types\ReferenceTypeType::TYPE_SOCIAL_NETWORKS,
+                        ]));
+                    } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
+                        // nothing
+                    }
                 }
 
                 $address_formats = [
-                    ['title' => __('Default'),                  'value' => ['format' => '{address}']],
-                    ['title' => __('International address'),    'value' => ['format' => "{company.title}\n{address}\n{city} {postcode}\n{country}"]],
+                    ['title' => __('Default'), 'value' => ['format' => '{address}']],
+                    ['title' => __('International address'), 'value' => ['format' => "{company.title}\n{address}\n{city} {postcode}\n{country}"]],
                 ];
                 foreach ($address_formats as $i => $el) {
-                    $referenceService->create(array_merge($el, [
-                        'order' => $i + 1,
-                        'type' => \App\Domain\Types\ReferenceTypeType::TYPE_ADDRESS_FORMAT,
-                    ]));
+                    try {
+                        $referenceService->create(array_merge($el, [
+                            'order' => $i + 1,
+                            'type' => \App\Domain\Types\ReferenceTypeType::TYPE_ADDRESS_FORMAT,
+                        ]));
+                    } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
+                        // nothing
+                    }
                 }
 
                 $this->container->get(ParameterService::class)->create([
@@ -352,18 +380,24 @@ const INVOICE_TEMPLATE = <<<'EOD'
             <div class="col-4 col-md-2 text-right text-nowrap font-weight-bold">{{ 'Sum'|locale }}</div>
         </div>
 
-        {% set total = 0 %}
         {% for item in order.getProducts().where('type', 'product') %}
             <div class="row py-1 {{ loop.last ?: 'border-bottom' }} {{ loop.index0 % 2 ? 'bg-grey1' }}">
                 <div class="col-8 col-md-6 overflow-hidden text-nowrap">{{ item.title }}</div>
-                <div class="d-none d-md-block col-md-2 text-right text-nowrap">{{ item.price|number_format(2, '.', ' ') }}</div>
-                <div class="d-none d-md-block col-md-2 text-right text-nowrap">{{ item.count }}</div>
-                <div class="col-4 col-md-2 text-right text-nowrap">{{ (item.price * item.count)|number_format(2, '.', ' ') }}</div>
+                <div class="d-none d-md-block col-md-2 text-right text-nowrap">{{ item.getPriceCalculated()|number_format(2, '.', ' ') }}</div>
+                <div class="d-none d-md-block col-md-2 text-right text-nowrap">{{ item.getCount() }}</div>
+                <div class="col-4 col-md-2 text-right text-nowrap">{{ item.getTotalCalculated()|number_format(2, '.', ' ') }}</div>
             </div>
         {% endfor %}
 
-        <div class="row py-1">
-            <div class="col-12 text-right text-nowrap font-weight-bold border-top">{{ 'Total price'|locale }}: {{ order.getTotalPrice()|number_format(2, '.', ' ') }}</div>
+        <div class="row border-top">
+            <div class="col-6 text-nowrap font-weight-bold border-top">{{ 'Discount'|locale }}:</div>
+			<div class="col-6 text-right text-nowrap font-weight-bold border-top">{{ order.getTotalDiscount()|number_format(2, '.', ' ') }}</div>
+
+            <div class="col-6 text-nowrap font-weight-bold border-top">{{ 'Tax'|locale }}:</div>
+			<div class="col-6 text-right text-nowrap font-weight-bold border-top">{{ order.getTotalTax()|number_format(2, '.', ' ') }}</div>
+
+            <div class="col-6 text-nowrap font-weight-bold border-top">{{ 'Total'|locale }}:</div>
+            <div class="col-6 text-right text-nowrap font-weight-bold border-top">{{ order.getTotalPriceCalculated()|number_format(2, '.', ' ') }}</div>
         </div>
     </div>
 EOD;
