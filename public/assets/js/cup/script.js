@@ -591,10 +591,10 @@ $(() => {
             })
 
             // update price when change count
-            $table.on('change', 'input[type="number"]', (e) => {
+            $table.on('change keyup', 'input[type="number"]', (e) => {
                 let $input = $(e.currentTarget),
                     $row = $input.parents('tr'),
-                    price = $row.find('[data-price]').text(),
+                    price = $row.find('[data-price]').text().replace(' ', ''),
                     count = $input.val();
 
                 if (count > 0) {

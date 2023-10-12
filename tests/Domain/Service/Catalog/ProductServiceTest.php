@@ -47,7 +47,7 @@ class ProductServiceTest extends TestCase
             'price' => $this->getFaker()->randomFloat(),
             'priceWholesale' => $this->getFaker()->randomFloat(),
             'priceWholesaleFrom' => $this->getFaker()->randomFloat(),
-            'discount' => $this->getFaker()->randomFloat(),
+            'discount' => -$this->getFaker()->randomFloat(),
             'special' => $this->getFaker()->boolean(),
             'dimension' => [
                 'length' => $this->getFaker()->randomFloat(),
@@ -230,7 +230,7 @@ class ProductServiceTest extends TestCase
             'price' => $this->getFaker()->randomFloat(),
             'priceWholesale' => $this->getFaker()->randomFloat(),
             'priceWholesaleFrom' => $this->getFaker()->randomFloat(),
-            'discount' => $this->getFaker()->randomFloat(),
+            'discount' => -$this->getFaker()->randomFloat(),
             'special' => $this->getFaker()->boolean(),
             'dimension' => [
                 'length' => $this->getFaker()->randomFloat(),
