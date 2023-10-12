@@ -4,6 +4,7 @@ namespace App\Application\Actions\Cup\Catalog\Category;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
+use App\Domain\Service\Catalog\Exception\CategoryNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\WrongTitleValueException;
 
@@ -12,12 +13,12 @@ class CategoryUpdateAction extends CatalogAction
     protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('category') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('category'))) {
-            $category = $this->catalogCategoryService->read([
-                'uuid' => $this->resolveArg('category'),
-                'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
-            ]);
+            try {
+                $category = $this->catalogCategoryService->read([
+                    'uuid' => $this->resolveArg('category'),
+                    'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+                ]);
 
-            if ($category) {
                 if ($this->isPost()) {
                     try {
                         $attributes = from_service_to_array(
@@ -70,6 +71,8 @@ class CategoryUpdateAction extends CatalogAction
                     'category' => $category,
                     'params' => $this->parameter(['catalog_category_template', 'catalog_product_template', 'catalog_category_pagination']),
                 ]);
+            } catch (CategoryNotFoundException $e) {
+                // nothing
             }
         }
 

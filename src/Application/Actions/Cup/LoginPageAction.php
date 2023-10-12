@@ -54,6 +54,8 @@ class LoginPageAction extends UserAction
             }
         }
 
-        return $this->respondWithTemplate('cup/auth/login.twig', ['identifier' => $identifier]);
+        return $this->respondWithTemplate('cup/auth/login.twig', [
+            'identifier' => $identifier
+        ]);
     }
 }

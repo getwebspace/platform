@@ -2,7 +2,9 @@
 
 namespace App\Application\Actions\Cup\Form;
 
+use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Service\Form\Exception\AddressAlreadyExistsException;
+use App\Domain\Service\Form\Exception\FormNotFoundException;
 use App\Domain\Service\Form\Exception\MissingTitleValueException;
 use App\Domain\Service\Form\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\Form\Exception\WrongTitleValueException;
@@ -12,9 +14,9 @@ class FormUpdateAction extends FormAction
     protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            $form = $this->formService->read(['uuid' => $this->resolveArg('uuid')]);
+            try {
+                $form = $this->formService->read(['uuid' => $this->resolveArg('uuid')]);
 
-            if ($form) {
                 if ($this->isPost()) {
                     try {
                         $form = $this->formService->update($form, [
@@ -45,7 +47,11 @@ class FormUpdateAction extends FormAction
                     }
                 }
 
-                return $this->respondWithTemplate('cup/form/form.twig', ['item' => $form]);
+                return $this->respondWithTemplate('cup/form/form.twig', [
+                    'item' => $form
+                ]);
+            } catch (FormNotFoundException $e) {
+                // nothing
             }
         }
 

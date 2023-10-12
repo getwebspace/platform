@@ -51,7 +51,7 @@
                                             'name': 'title',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('The title of the publication is required and can contain no more than 255 characters'|locale) ~ '"></i>',
                                             'args': {
-                                                'value': publication.title,
+                                                'value': item.title,
                                                 'required': true,
                                                 'placeholder': 'About Us',
                                             }
@@ -63,7 +63,7 @@
                                             'type': 'datetime',
                                             'name': 'Date',
                                             'args': {
-                                                'value': publication.date|df('Y-m-d\\TH:i'),
+                                                'value': item.date|df('Y-m-d\\TH:i'),
                                                 'placeholder': '20.01.2019 12:34',
                                             }
                                         } %}
@@ -79,8 +79,8 @@
                                             'message': '<a href="/cup/publication/category/add" class="btn btn-xs btn-info float-right" onclick="return confirm(\'' ~ ('Are you sure you want to go to another page?'|locale) ~ '\');"><i class="fa fa-plus"></i> ' ~ ('Create category'|locale) ~ '</a>',
                                             'args': {
                                                 'required': true,
-                                                'option': list.pluck('title', 'uuid').all(),
-                                                'selected': publication.category_uuid
+                                                'option': categories.sortBy('title').pluck('title', 'uuid'),
+                                                'selected': item.category_uuid
                                             }
                                         } %}
                                     </div>
@@ -92,7 +92,7 @@
                                             'label': 'Brief content'|locale,
                                             'name': 'content[short]',
                                             'args': {
-                                                'value': publication.content.short
+                                                'value': item.content.short
                                             }
                                         } %}
                                     </div>
@@ -103,7 +103,7 @@
                                             'label': 'Full content'|locale,
                                             'name': 'content[full]',
                                             'args': {
-                                                'value': publication.content.full
+                                                'value': item.content.full
                                             }
                                         } %}
                                     </div>
@@ -121,7 +121,7 @@
                                             'name': 'poll[question]',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="Укажите вопрос вашего голосования."></i>',
                                             'args': {
-                                                'value': publication.question,
+                                                'value': item.question,
                                                 'placeholder': 'Как вы думаете...',
                                             }
                                         } %}
@@ -136,7 +136,7 @@
                                             'type': 'textarea',
                                             'name': 'poll[answer]',
                                             'args': {
-                                                'value': publication.answer,
+                                                'value': item.answer,
                                                 'placeholder': 'Вот так..',
                                                 'style': 'min-height: 150px;'
                                             }
@@ -156,7 +156,7 @@
                                             'prefix': base_url() ~ '/',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Link to view the article. You can leave it blank, then the value will be generated automatically. Only Latin characters and numbers without spaces are allowed'|locale) ~ '"></i>',
                                             'args': {
-                                                'value': publication.address,
+                                                'value': item.address,
                                                 'placeholder': 'my-publication',
                                             }
                                         } %}

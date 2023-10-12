@@ -2,10 +2,13 @@
 
 namespace App\Application\Actions\Cup\User;
 
+use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
+use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongEmailValueException;
+use App\Domain\Service\User\Exception\WrongPasswordException;
 use App\Domain\Service\User\Exception\WrongPhoneValueException;
 use App\Domain\Service\User\Exception\WrongUsernameValueException;
 
@@ -14,10 +17,10 @@ class UserUpdateAction extends UserAction
     protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('uuid')) {
-            $user = $this->userService->read(['uuid' => $this->resolveArg('uuid')]);
-
-            if ($user) {
-                $userGroups = $this->userGroupService->read();
+            try {
+                $user = $this->userService->read([
+                    'uuid' => $this->resolveArg('uuid')
+                ]);
 
                 if ($this->isPost()) {
                     try {
@@ -66,7 +69,14 @@ class UserUpdateAction extends UserAction
                     }
                 }
 
-                return $this->respondWithTemplate('cup/user/form.twig', ['item' => $user, 'groups' => $userGroups]);
+                $userGroups = $this->userGroupService->read();
+
+                return $this->respondWithTemplate('cup/user/form.twig', [
+                    'item' => $user,
+                    'groups' => $userGroups
+                ]);
+            } catch (UserNotFoundException $e) {
+                // nothing
             }
         }
 

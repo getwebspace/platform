@@ -3,7 +3,9 @@
 namespace App\Application\Actions\Cup\Publication\Category;
 
 use App\Application\Actions\Cup\Publication\PublicationAction;
+use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Service\Publication\Exception\AddressAlreadyExistsException;
+use App\Domain\Service\Publication\Exception\CategoryNotFoundException;
 use App\Domain\Service\Publication\Exception\MissingTitleValueException;
 use App\Domain\Service\Publication\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\Publication\Exception\WrongTitleValueException;
@@ -13,9 +15,11 @@ class CategoryUpdateAction extends PublicationAction
     protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            $category = $this->publicationCategoryService->read(['uuid' => $this->resolveArg('uuid')]);
+            try {
+                $category = $this->publicationCategoryService->read([
+                    'uuid' => $this->resolveArg('uuid'),
+                ]);
 
-            if ($category) {
                 if ($this->isPost()) {
                     try {
                         $category = $this->publicationCategoryService->update($category, [
@@ -48,7 +52,14 @@ class CategoryUpdateAction extends PublicationAction
                     }
                 }
 
-                return $this->respondWithTemplate('cup/publication/category/form.twig', ['list' => $this->publicationCategoryService->read(), 'item' => $category]);
+                $categories = $this->publicationCategoryService->read();
+
+                return $this->respondWithTemplate('cup/publication/category/form.twig', [
+                    'categories' => $categories,
+                    'item' => $category,
+                ]);
+            } catch (CategoryNotFoundException $e) {
+                // nothing
             }
         }
 

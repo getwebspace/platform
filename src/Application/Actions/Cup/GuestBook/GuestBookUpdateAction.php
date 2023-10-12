@@ -2,14 +2,19 @@
 
 namespace App\Application\Actions\Cup\GuestBook;
 
+use App\Domain\Exceptions\HttpBadRequestException;
+use App\Domain\Service\GuestBook\Exception\EntryNotFoundException;
+
 class GuestBookUpdateAction extends GuestBookAction
 {
     protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            $entry = $this->guestBookService->read(['uuid' => $this->resolveArg('uuid')]);
+            try {
+                $entry = $this->guestBookService->read([
+                    'uuid' => $this->resolveArg('uuid'),
+                ]);
 
-            if ($entry) {
                 if ($this->isPost()) {
                     // todo try/catch
                     $entry = $this->guestBookService->update($entry, [
@@ -32,7 +37,11 @@ class GuestBookUpdateAction extends GuestBookAction
                     }
                 }
 
-                return $this->respondWithTemplate('cup/guestbook/form.twig', ['item' => $entry]);
+                return $this->respondWithTemplate('cup/guestbook/form.twig', [
+                    'item' => $entry
+                ]);
+            } catch (EntryNotFoundException $e) {
+                // nothing
             }
         }
 

@@ -7,6 +7,7 @@ use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingCategoryValueException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
+use App\Domain\Service\Catalog\Exception\ProductNotFoundException;
 use App\Domain\Service\Catalog\Exception\WrongTitleValueException;
 use App\Domain\Types\ReferenceTypeType;
 
@@ -15,12 +16,12 @@ class ProductUpdateAction extends CatalogAction
     protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('product') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('product'))) {
-            $product = $this->catalogProductService->read([
-                'uuid' => $this->resolveArg('product'),
-                'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
-            ]);
+            try {
+                $product = $this->catalogProductService->read([
+                    'uuid' => $this->resolveArg('product'),
+                    'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+                ]);
 
-            if ($product) {
                 if ($this->isPost()) {
                     try {
                         $product = $this->catalogProductService->update($product, [
@@ -91,9 +92,10 @@ class ProductUpdateAction extends CatalogAction
                     'weight_class' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_WEIGHT_CLASS]),
                     'item' => $product,
                 ]);
-            }
 
-            return $this->respondWithRedirect('/cup/catalog/product/' . $product->getCategory()->getUuid());
+            } catch (ProductNotFoundException $e) {
+                // nothing
+            }
         }
 
         return $this->respondWithRedirect('/cup/catalog/product');

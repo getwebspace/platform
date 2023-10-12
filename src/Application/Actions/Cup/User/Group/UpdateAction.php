@@ -3,8 +3,10 @@
 namespace App\Application\Actions\Cup\User\Group;
 
 use App\Application\Actions\Cup\User\UserAction;
+use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Service\User\Exception\MissingTitleValueException;
 use App\Domain\Service\User\Exception\TitleAlreadyExistsException;
+use App\Domain\Service\User\Exception\UserGroupNotFoundException;
 use App\Domain\Service\User\Exception\WrongTitleValueException;
 
 class UpdateAction extends UserAction
@@ -12,9 +14,11 @@ class UpdateAction extends UserAction
     protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('uuid')) {
-            $userGroup = $this->userGroupService->read(['uuid' => $this->resolveArg('uuid')]);
+            try {
+                $userGroup = $this->userGroupService->read([
+                    'uuid' => $this->resolveArg('uuid')
+                ]);
 
-            if ($userGroup) {
                 if ($this->isPost()) {
                     try {
                         $userGroup = $this->userGroupService->update($userGroup, [
@@ -43,6 +47,8 @@ class UpdateAction extends UserAction
                         'all' => $this->getRoutes()->all(),
                     ],
                 ]);
+            } catch (UserGroupNotFoundException $e) {
+                // nothing
             }
         }
 

@@ -2,9 +2,11 @@
 
 namespace App\Application\Actions\Cup\Publication;
 
+use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Service\Publication\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Publication\Exception\MissingCategoryValueException;
 use App\Domain\Service\Publication\Exception\MissingTitleValueException;
+use App\Domain\Service\Publication\Exception\PublicationNotFoundException;
 use App\Domain\Service\Publication\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\Publication\Exception\WrongTitleValueException;
 
@@ -13,9 +15,11 @@ class PublicationUpdateAction extends PublicationAction
     protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            $publication = $this->publicationService->read(['uuid' => $this->resolveArg('uuid')]);
+            try {
+                $publication = $this->publicationService->read([
+                    'uuid' => $this->resolveArg('uuid')
+                ]);
 
-            if ($publication) {
                 if ($this->isPost()) {
                     try {
                         $publication = $this->publicationService->update($publication, [
@@ -49,10 +53,14 @@ class PublicationUpdateAction extends PublicationAction
                     }
                 }
 
+                $categories = $this->publicationCategoryService->read();
+
                 return $this->respondWithTemplate('cup/publication/form.twig', [
-                    'list' => $this->publicationCategoryService->read(),
-                    'publication' => $publication,
+                    'categories' => $categories,
+                    'item' => $publication,
                 ]);
+            } catch (PublicationNotFoundException $e) {
+                // nothing
             }
         }
 

@@ -10,7 +10,9 @@ class UserViewAction extends UserAction
             $user = $this->userService->read(['uuid' => $this->resolveArg('uuid')]);
 
             if ($user) {
-                return $this->respondWithTemplate('cup/user/view.twig', ['item' => $user]);
+                return $this->respondWithTemplate('cup/user/view.twig', [
+                    'item' => $user
+                ]);
             }
         }
 

@@ -96,13 +96,13 @@ class ReferenceService extends AbstractService
             switch (true) {
                 case !is_array($data['uuid']) && $data['uuid'] !== null:
                 case !is_array($data['title']) && $data['title'] !== null && $data['type'] !== null:
-                    $page = $this->service->findOneBy($criteria);
+                    $reference = $this->service->findOneBy($criteria);
 
-                    if (empty($page)) {
+                    if (empty($reference)) {
                         throw new ReferenceNotFoundException();
                     }
 
-                    return $page;
+                    return $reference;
 
                 default:
                     return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));

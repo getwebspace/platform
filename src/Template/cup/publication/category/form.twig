@@ -38,7 +38,7 @@
                                     'type': 'select',
                                     'name': 'parent',
                                     'args': {
-                                        'option': {'': '---'}|merge(list.whereNotIn('uuid', [item.uuid]).pluck('title', 'uuid').all()),
+                                        'option': {'': '---'}|merge(categories.whereNotIn('uuid', [item.uuid]).sortBy('title').pluck('title', 'uuid')),
                                         'selected': item.parent_uuid
                                     }
                                 } %}

@@ -70,6 +70,8 @@ class UserCreateAction extends UserAction
             }
         }
 
-        return $this->respondWithTemplate('cup/user/form.twig', ['groups' => $userGroups]);
+        return $this->respondWithTemplate('cup/user/form.twig', [
+            'groups' => $userGroups,
+        ]);
     }
 }

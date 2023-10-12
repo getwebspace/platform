@@ -3,6 +3,8 @@
 namespace App\Application\Actions\Cup\Catalog\Attribute;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
+use App\Domain\Exceptions\HttpBadRequestException;
+use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\WrongTitleValueException;
@@ -12,11 +14,11 @@ class AttributeUpdateAction extends CatalogAction
     protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('attribute') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('attribute'))) {
-            $attribute = $this->catalogAttributeService->read([
-                'uuid' => $this->resolveArg('attribute'),
-            ]);
+            try {
+                $attribute = $this->catalogAttributeService->read([
+                    'uuid' => $this->resolveArg('attribute'),
+                ]);
 
-            if ($attribute) {
                 if ($this->isPost()) {
                     try {
                         $attribute = $this->catalogAttributeService->update($attribute, [
@@ -42,6 +44,8 @@ class AttributeUpdateAction extends CatalogAction
                 return $this->respondWithTemplate('cup/catalog/attribute/form.twig', [
                     'attribute' => $attribute,
                 ]);
+            } catch (AttributeNotFoundException $e) {
+                // nothing
             }
         }
 

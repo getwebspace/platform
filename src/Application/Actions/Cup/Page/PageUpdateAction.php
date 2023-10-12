@@ -2,8 +2,10 @@
 
 namespace App\Application\Actions\Cup\Page;
 
+use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Service\Page\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Page\Exception\MissingTitleValueException;
+use App\Domain\Service\Page\Exception\PageNotFoundException;
 use App\Domain\Service\Page\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\Page\Exception\WrongTitleValueException;
 
@@ -12,9 +14,11 @@ class PageUpdateAction extends PageAction
     protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            $page = $this->pageService->read(['uuid' => $this->resolveArg('uuid')]);
+            try {
+                $page = $this->pageService->read([
+                    'uuid' => $this->resolveArg('uuid'),
+                ]);
 
-            if ($page) {
                 if ($this->isPost()) {
                     try {
                         $page = $this->pageService->update($page, [
@@ -44,7 +48,11 @@ class PageUpdateAction extends PageAction
                     }
                 }
 
-                return $this->respondWithTemplate('cup/page/form.twig', ['item' => $page]);
+                return $this->respondWithTemplate('cup/page/form.twig', [
+                    'item' => $page
+                ]);
+            } catch (PageNotFoundException $e) {
+                // nothing
             }
         }
 
