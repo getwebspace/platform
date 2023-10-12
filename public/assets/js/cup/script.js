@@ -109,6 +109,8 @@ $(() => {
         $el.select2({
             theme: 'bootstrap',
             width: '100%',
+            data: $el.data('data') ? $el.data('data') : null,
+            ajax: $el.data('ajax') ? {url: $el.data('ajax'), dataType: 'json'} : null,
             placeholder: $el.data('placeholder') ? $el.data('placeholder') : null,
             minimumResultsForSearch: $el.data('search') ? $el.data('search') : -1,
             allowClear: $el.data('allow-clear') ? $el.data('allow-clear') : false,
