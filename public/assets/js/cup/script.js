@@ -297,100 +297,72 @@ $(() => {
 
     // product relation
     {
-        let
-            $that = $('[id="related"]'),
-            $modal = $('[data-related-modal-products].modal'),
-            $category = $modal.find('[type="select"][name="category"]'),
-            $product = $modal.find('[type="select"][name="product"]'),
-            $option = $('<option>'),
-            $quantity = $modal.find('[type="number"]'),
-            $btnSuccess = $modal.find('button'),
-            $template = $that.find('.list-group [style="display: none!important;"]').show().detach()
-        ;
+        let $modal = $('[data-product-modal-product]');
+        let $tab = $('#related');
+        let $template = $tab.find('.list-group [style="display: none!important;"]').show().detach();
 
-        $category.on('change', (e) => {
-            $product
-                .html('')
-                .prop('disabled', true)
-                .trigger('change.select2');
+        // open modal
+        $('[data-btn-product-modal-related]').on('click', () => {
+            $modal.find('#products').html('');
+            $modal.find('input[type="text"]').val('');
+            $modal.find('input[type="number"]').val(1);
 
-            $.get('/cup/api/v1/catalog/product', {category: $(e.currentTarget).val()}, (res) => {
-                if (res.status === 200) {
-                    for (let item of res.data) {
-                        $product.append(
-                            $option.clone().text(item.title).val(item.uuid).data('price', item.price)
-                        );
-                    }
-                }
-
-                $product
-                    .trigger('change.select2')
-                    .prop('disabled', false);
-            });
-        })
-
-        $that.find('[data-btn-related-modal-products]').click((e) => {
-            e.preventDefault();
-            this.blur();
-
-            $category.html('');
-
-            $.get('/cup/api/v1/catalog/category', (res) => {
-                if (res.status === 200) {
-                    (function renderTree(list, parent = '00000000-0000-0000-0000-000000000000', title = '') {
-                        let buf = 0;
-
-                        for (let item of list) {
-                            if (item.parent === parent) {
-                                let $el = $option.clone().text((title + ' ' + item.title).trim()).val(item.uuid);
-
-                                $category.append($el);
-
-                                if (renderTree(list, item.uuid, (title + ' ' + item.title).trim()) !== 0) {
-                                    $el.remove();
-                                }
-
-                                buf++;
-                            }
-                        }
-
-                        return buf;
-                    })(res.data);
-
-                    $category.trigger('change').trigger('change.select2');
-                    $modal.modal();
-                }
-            });
+            $modal.modal();
         });
 
-        $that.find('ul.list-group button').on('click', (e) => {
+        // select product
+        $modal.find('input[type="text"]').on('keyup', throttle((e) => {
+            let $list = $modal.find('#products');
+
+            if (e.target.value.trim().length) {
+                $.get('/cup/api/v1/catalog/product', {title: e.target.value.trim()}, (res) => {
+                    if (res.status === 200) {
+                        $list.html('');
+
+                        for (let item of res.data) {
+                            $list.append(
+                                $('<option>')
+                                    .data('json', JSON.stringify(item))
+                                    .attr('value', item.title)
+                                    .text(item.price)
+                            )
+                        }
+                    }
+                });
+            }
+        }, 300));
+
+        // confirm select
+        $modal.find('[type="button"]').on('click', (e) => {
+            let value = $modal.find('input[type="text"]').val();
+            let $option = $modal.find(`#products option[value="${value}"]`)
+
+            if ($option) {
+                let json = $option.data('json'),
+                    data = JSON.parse(json),
+                    $isExist = $tab.find('[name="relation[' + value + ']"]');
+
+                if ($isExist.length === 0) {
+                    let $el = $template.clone();
+
+                    $el.find('a').attr('href', `/cup/catalog/product/${data.uuid}/edit`).text(data.title);
+                    $el.find('[name="relation[]"]').attr('name', 'relation[' + data.uuid + ']');
+
+                    $el.appendTo($tab.find('ul.list-group'));
+                } else {
+                    $isExist.parents('li').addClass('has-error');
+                    setTimeout(() => $isExist.parents('li').removeClass('has-error'), 2500);
+                }
+            }
+
+            $.modal.close();
+        })
+
+        // remove product
+        $tab.find('ul.list-group button').on('click', (e) => {
             e.preventDefault();
 
             $(e.currentTarget).parents('li').remove();
-        });
-
-        $btnSuccess.on('click', () => {
-            if ($product.val() && $quantity.val() >= 1) {
-                let $selected = $product.find(':selected'),
-                    $find = $('[name="relation[' + $selected.attr('value') + ']"]');
-
-                if ($find.length === 0) {
-                    let $buf = $template.clone(),
-                        $a = $buf.find('a'),
-                        $input = $buf.find('[name="relation[]"]');
-
-                    $a.attr('href', $a.attr('href').replace('%UUID%', $selected.val()));
-                    $a.text($selected.text());
-                    $input.attr('name', 'relation[' + $selected.attr('value') + ']');
-                    $input.val($quantity.val());
-
-                    $buf.appendTo($that.find('ul.list-group'));
-                } else {
-                    $find.val(parseFloat($find.val()) + parseFloat($quantity.val()));
-                }
-
-                $.modal.close();
-            }
         });
     }
 
@@ -541,7 +513,7 @@ $(() => {
             }, 300));
 
             // confirm select
-            $modal.find('button').on('click', (e) => {
+            $modal.find('button').on('click', () => {
                 let value = $modal.find('input[type="text"]').val();
                 let price_type = $modal.find('select').val();
                 let count = $modal.find('input[type="number"]').val();
@@ -558,7 +530,12 @@ $(() => {
                         let price = price_type === 'price' ? data['price'] : data['priceWholesale'];
 
                         $tr.append(
-                            $('<td>').text(data.title),
+                            $('<td>').html(
+                                $('<a>')
+                                    .attr('href', `/cup/catalog/product/${data.uuid}/edit`)
+                                    .attr('target', '_blank')
+                                    .text(data.title)
+                            ),
                             $('<td data-price>').text((price).toFixed(2)),
                             $('<td data-subtotal>').text((price * count).toFixed(2)),
                             $('<td>')

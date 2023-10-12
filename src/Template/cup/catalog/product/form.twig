@@ -417,7 +417,7 @@
                                             </p>
                                         </small>
 
-                                        <button type="button" data-btn-related-modal-products class="btn btn-secondary">
+                                        <button type="button" data-btn-product-modal-related class="btn btn-secondary">
                                             <i class="fa fa-plus"></i>
                                             {{ 'Add product'|locale }}
                                         </button>
@@ -426,12 +426,12 @@
                                     <div class="col-12 col-md-6">
                                         <ul class="list-group list-group-bordered">
                                             <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center" style="display: none!important;">
-                                                <a href="/cup/catalog/product/%UUID%/edit" target="_blank">{{ related.title }}</a>
+                                                <a href="#" target="_blank">{{ related.title }}</a>
                                                 {% include 'cup/form.twig' with {
                                                     'type': 'number',
                                                     'name': 'relation[]',
                                                     'postfix_btn': '<button type="button" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>',
-                                                    'args': { 'min': 1, 'placeholder': 1 }
+                                                    'args': {'value': 1, 'min': 0, 'placeholder': '1.00'}
                                                 } %}
                                             </li>
 
@@ -611,45 +611,5 @@
         </div>
     </div>
 
-    <div data-related-modal-products class="modal">
-        <div class="row">
-            <div class="col-12">
-                {% include 'cup/form.twig' with {
-                    'label': 'Category'|locale,
-                    'name': 'category',
-                    'type': 'select',
-                    'args': {
-                        'data': {'search': 5, 'placeholder': 'Choose a category', 'allow-clear': true},
-                    }
-                } %}
-            </div>
-            <div class="col-12">
-                {% include 'cup/form.twig' with {
-                    'label': 'Product'|locale,
-                    'name': 'product',
-                    'type': 'select',
-                    'args': {
-                        'data': {'search': 5, 'placeholder': 'Choose a product'|locale}
-                    }
-                } %}
-            </div>
-            <div class="col-6">
-                {% include 'cup/form.twig' with {
-                    'label': 'Quantity'|locale,
-                    'type': 'number',
-                    'args': {
-                        'value': '1',
-                        'placeholder': '1',
-                        'step': 'any',
-                        'min': '0',
-                    }
-                } %}
-            </div>
-            <div class="col-6">
-                <div class="text-right" style="margin-top: 37px;">
-                    <button type="button" class="btn btn-outline-info">{{ 'Add product'|locale }}</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% include 'cup/catalog/product/form-modal-related.twig' %}
 {% endblock %}

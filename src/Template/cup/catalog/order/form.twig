@@ -217,7 +217,9 @@
                                 <tbody>
                                     {% for item in order.getProducts() %}
                                         <tr data-product="{{ item.product.uuid }}">
-                                            <td>{{ item.title }}</td>
+                                            <td>
+                                                <a href="/cup/catalog/product/{{ item.product.uuid }}/edit" target="_blank">{{ item.title }}</a>
+                                            </td>
                                             <td data-price>{{ item.price|number_format(2, '.', ' ') }}</td>
                                             <td data-subtotal>{{ (item.price * item.count)|number_format(2, '.', ' ') }}</td>
                                             <td>

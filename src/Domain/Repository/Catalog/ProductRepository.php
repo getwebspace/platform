@@ -75,7 +75,7 @@ class ProductRepository extends AbstractRepository
             $query
                 ->where('LOWER(c.title) = LOWER(:title1) OR LOWER(c.title) LIKE LOWER(:title2)')
                 ->setParameter('title1', $title, Types::STRING)
-                ->setParameter('title2', $title . '%', Types::STRING)
+                ->setParameter('title2', '%' . $title . '%', Types::STRING)
                 ->andWhere('c.status = :status')
                 ->setParameter('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK)
                 ->setMaxResults($limit)
