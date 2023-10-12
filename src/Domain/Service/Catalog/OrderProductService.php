@@ -54,6 +54,8 @@ class OrderProductService extends AbstractService
                             'price' => $price,
                             'price_type' => $type,
                             'count' => $count,
+                            'discount' => $product->getDiscount(),
+                            'tax' => $product->getTax(),
                         ])
                     );
                 } catch (Exception\ProductNotFoundException $e) {
@@ -71,6 +73,8 @@ class OrderProductService extends AbstractService
             'price' => 0.0,
             'price_type' => 'price',
             'count' => 1,
+            'discount' => 0.0,
+            'tax' => 0.0,
         ];
         $data = array_merge($default, $data);
 
@@ -79,7 +83,9 @@ class OrderProductService extends AbstractService
             ->setProduct($data['product'])
             ->setPrice($data['price'])
             ->setPriceType($data['price_type'])
-            ->setCount($data['count']);
+            ->setCount($data['count'])
+            ->setDiscount($data['discount'])
+            ->setTax($data['tax']);
 
         // trigger populate fields
         $productRelation->_populate_fields();

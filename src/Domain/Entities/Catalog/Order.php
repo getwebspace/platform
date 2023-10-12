@@ -28,12 +28,7 @@ class Order extends AbstractEntity
     #[ORM\Column(type: 'string', length: 12, options: ['default' => ''])]
     protected string $serial = '';
 
-    /**
-     * @param string $serial
-     *
-     * @return $this
-     */
-    public function setSerial($serial)
+    public function setSerial(string|int $serial): self
     {
         if ((is_string($serial) && $this->checkStrLenMax($serial, 12)) || is_int($serial)) {
             $this->serial = (string) $serial;
@@ -54,10 +49,7 @@ class Order extends AbstractEntity
     #[ORM\JoinColumn(name: 'user_uuid', referencedColumnName: 'uuid')]
     protected ?User $user = null;
 
-    /**
-     * @return $this
-     */
-    public function setUser(?User $user)
+    public function setUser(?User $user): self
     {
         if (is_a($user, User::class)) {
             $this->user_uuid = $user->getUuid();
@@ -81,10 +73,7 @@ class Order extends AbstractEntity
         'address' => '',
     ];
 
-    /**
-     * @return $this
-     */
-    public function setDelivery(array $data)
+    public function setDelivery(array $data): self
     {
         $default = [
             'client' => '',
@@ -109,14 +98,9 @@ class Order extends AbstractEntity
     protected \DateTime $shipping;
 
     /**
-     * @param mixed $timezone
-     * @param mixed $date
-     *
      * @throws \Exception
-     *
-     * @return $this
      */
-    public function setShipping($date, $timezone = 'UTC')
+    public function setShipping(mixed $date, string $timezone = 'UTC'): self
     {
         $this->shipping = $this->getDateTimeByValue($date, $timezone);
 
@@ -134,10 +118,7 @@ class Order extends AbstractEntity
     #[ORM\Column(type: 'string', length: 1000, options: ['default' => ''])]
     protected string $comment = '';
 
-    /**
-     * @return $this
-     */
-    public function setComment(string $comment)
+    public function setComment(string $comment): self
     {
         if ($this->checkStrLenMax($comment, 1000) && $this->validText($comment)) {
             $this->comment = $comment;
@@ -156,10 +137,8 @@ class Order extends AbstractEntity
 
     /**
      * @throws \App\Domain\Service\Catalog\Exception\WrongPhoneValueException
-     *
-     * @return $this
      */
-    public function setPhone(string $phone = null)
+    public function setPhone(string $phone = null): self
     {
         if ($phone) {
             try {
@@ -186,10 +165,8 @@ class Order extends AbstractEntity
 
     /**
      * @throws \App\Domain\Service\Catalog\Exception\WrongEmailValueException
-     *
-     * @return $this
      */
-    public function setEmail(string $email = null)
+    public function setEmail(string $email = null): self
     {
         if ($email) {
             try {
@@ -222,7 +199,7 @@ class Order extends AbstractEntity
         return count($this->products);
     }
 
-    public function addProduct(OrderProduct $product)
+    public function addProduct(OrderProduct $product): self
     {
         $this->products[] = $product;
 
@@ -231,12 +208,27 @@ class Order extends AbstractEntity
 
     public function getProducts(): Collection
     {
-        return collect($this->products);
+        return collect($this->products)->sortBy('title');
     }
 
     public function getTotalPrice(): float
     {
         return $this->getProducts()->sum(fn ($el) => $el->getTotal());
+    }
+
+    public function getTotalPriceCalculated(): float
+    {
+        return $this->getProducts()->sum(fn ($el) => $el->getTotalCalculated());
+    }
+
+    public function getTotalDiscount(): float
+    {
+        return $this->getProducts()->sum(fn ($el) => $el->getDiscount() * $el->getCount());
+    }
+
+    public function getTotalTax(): float
+    {
+        return $this->getProducts()->sum(fn ($el) => (($el->getPrice() + $el->getDiscount()) * ($el->getTax() / 100)) * $el->getCount());
     }
 
     #[ORM\Column(type: 'uuid', nullable: true, options: ['default' => null])]
@@ -246,10 +238,7 @@ class Order extends AbstractEntity
     #[ORM\JoinColumn(name: 'status_uuid', referencedColumnName: 'uuid')]
     protected ?Reference $status = null;
 
-    /**
-     * @return $this
-     */
-    public function setStatus(?Reference $status)
+    public function setStatus(?Reference $status): self
     {
         if (is_a($status, Reference::class)) {
             $this->status_uuid = $status->getUuid();
@@ -271,14 +260,9 @@ class Order extends AbstractEntity
     protected \DateTime $date;
 
     /**
-     * @param mixed $timezone
-     * @param mixed $date
-     *
      * @throws \Exception
-     *
-     * @return $this
      */
-    public function setDate($date, $timezone = 'UTC')
+    public function setDate(mixed $date, string $timezone = 'UTC'): self
     {
         $this->date = $this->getDateTimeByValue($date, $timezone);
 
@@ -296,10 +280,7 @@ class Order extends AbstractEntity
     #[ORM\Column(type: 'string', length: 255, options: ['default' => ''])]
     protected string $external_id = '';
 
-    /**
-     * @return $this
-     */
-    public function setExternalId(string $external_id)
+    public function setExternalId(string $external_id): self
     {
         if ($this->checkStrLenMax($external_id, 255)) {
             $this->external_id = $external_id;
@@ -316,10 +297,7 @@ class Order extends AbstractEntity
     #[ORM\Column(type: 'string', length: 64, options: ['default' => 'manual'])]
     protected string $export = 'manual';
 
-    /**
-     * @return $this
-     */
-    public function setExport(string $export)
+    public function setExport(string $export): self
     {
         if ($this->checkStrLenMax($export, 64)) {
             $this->export = $export;
@@ -336,10 +314,7 @@ class Order extends AbstractEntity
     #[ORM\Column(type: 'string', length: 512, options: ['default' => ''])]
     protected string $system = '';
 
-    /**
-     * @return $this
-     */
-    public function setSystem(string $system)
+    public function setSystem(string $system): self
     {
         if ($this->checkStrLenMax($system, 512) && $this->validText($system)) {
             $this->system = $system;

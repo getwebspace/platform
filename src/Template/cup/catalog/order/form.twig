@@ -215,7 +215,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for item in order.products %}
+                                    {% for item in order.getProducts() %}
                                         <tr data-product="{{ item.product.uuid }}">
                                             <td>{{ item.title }}</td>
                                             <td data-price>{{ item.price|number_format(2, '.', ' ') }}</td>

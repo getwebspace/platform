@@ -28,9 +28,6 @@ class OrderProduct extends AbstractEntity
     #[ORM\JoinColumn(name: 'order_uuid', referencedColumnName: 'uuid')]
     protected Order $order;
 
-    /**
-     * @return $this
-     */
     public function setOrder(Order $order): self
     {
         if (is_a($order, Order::class)) {
@@ -53,9 +50,6 @@ class OrderProduct extends AbstractEntity
     #[ORM\JoinColumn(name: 'product_uuid', referencedColumnName: 'uuid')]
     protected Product $product;
 
-    /**
-     * @return $this
-     */
     public function setProduct(Product $product): self
     {
         if (is_a($product, Product::class)) {
@@ -141,9 +135,6 @@ class OrderProduct extends AbstractEntity
     #[ORM\Column(type: 'float', precision: 10, scale: 2, options: ['default' => 1])]
     public float $count = 1;
 
-    /**
-     * @return $this
-     */
     public function setCount(float $count): self
     {
         $this->count = $count;
@@ -156,9 +147,61 @@ class OrderProduct extends AbstractEntity
         return $this->count;
     }
 
+    #[ORM\Column(type: 'float', precision: 10, scale: 2, options: ['default' => 0])]
+    public float $discount = .00;
+
+    public function setDiscount(float $value): self
+    {
+        if ($value > 0) {
+            $value = -$value;
+        }
+        $this->discount = $value;
+
+        return $this;
+    }
+
+    public function getDiscount(): float
+    {
+        return $this->discount;
+    }
+
+    #[ORM\Column(type: 'float', precision: 10, scale: 2, options: ['default' => 0])]
+    public float $tax = .00;
+
+    public function setTax(float $value): self
+    {
+        $this->tax = $value;
+
+        return $this;
+    }
+
+    public function getTax(): float
+    {
+        return $this->tax;
+    }
+
     public function getTotal(): float
     {
         return $this->price * $this->count;
+    }
+
+    public function getPriceCalculated(): float
+    {
+        $price = $this->price;
+
+        if ($this->discount < 0) {
+            $price = max(0, $price + $this->discount);
+        }
+        if ($this->tax > 0) {
+            $price += $price * ($this->tax / 100);
+        }
+
+        return ceil($price);
+    }
+
+    public function getTotalCalculated(): float
+    {
+        return $this->getPriceCalculated() * $this->count;
     }
 
     public function toArray(): array
@@ -172,8 +215,10 @@ class OrderProduct extends AbstractEntity
             'external_id' => $this->product->getExternalId(),
             'price' => $this->getPrice(),
             'price_type' => $this->getPriceType(),
+            'discount' => $this->getDiscount(),
+            'tax' => $this->getTax(),
             'count' => $this->getCount(),
-            'total' => $this->getPrice() * $this->getCount(),
+            'total' => $this->getTotal(),
             'files' => $this->product->getFiles(),
         ]);
     }

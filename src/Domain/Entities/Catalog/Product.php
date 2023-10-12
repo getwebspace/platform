@@ -280,8 +280,8 @@ class Product extends AbstractEntity
                 break;
         }
 
-        if ($this->discount > 0) {
-            $price = max(0, $price - $this->discount);
+        if ($this->discount < 0) {
+            $price = max(0, $price + $this->discount);
         }
         if ($this->tax > 0) {
             $price += $price * ($this->tax / 100);
@@ -295,6 +295,9 @@ class Product extends AbstractEntity
 
     public function setDiscount(float $value): self
     {
+        if ($value > 0) {
+            $value = -$value;
+        }
         $this->discount = $value;
 
         return $this;
