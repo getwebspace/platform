@@ -1166,11 +1166,27 @@
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-5 col-md-4">
                                         <div class="nav flex-column nav-pills nav-secondary">
-                                            <a class="nav-link active"  data-toggle="pill" href="#plugins-recaptcha">reCAPTCHA</a>
+                                            <a class="nav-link active" data-toggle="pill" href="#plugins-recaptcha">
+                                                reCAPTCHA
+                                                <span class="d-inline-block float-right pr-3" style="width: 40px;">&nbsp;</span>
+                                            </a>
 
                                             {% for plugin in plugins %}
                                                 <a class="nav-link" data-toggle="pill" href="#plugins-{{ plugin.getCredentials('name') }}">
                                                     {{ plugin.getCredentials('title')|locale }}
+                                                    <span class="d-inline-block float-right pr-3" style="width: 40px;">
+                                                        {% set type = plugin.getCredentials('type') %}
+
+                                                        {% if type == 'language' %}
+                                                            <i class="fas fa-language"></i>
+                                                        {% elseif type == 'delivery' %}
+                                                            <i class="fas fa-truck"></i>
+                                                        {% elseif type == 'payment' %}
+                                                            <i class="fas fa-cash-register"></i>
+                                                        {% else %}
+                                                            &nbsp;
+                                                        {% endif %}
+                                                    </span>
                                                 </a>
                                             {% endfor %}
                                         </div>

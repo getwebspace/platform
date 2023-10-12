@@ -26,7 +26,13 @@ abstract class AbstractPlugin
     public const AUTHOR = 'Undefined author';
     public const AUTHOR_EMAIL = '';
     public const AUTHOR_SITE = '';
+    public const TYPE = null;
     public const VERSION = '1.0';
+
+    // possible type
+    protected const TYPE_LANGUAGE = \App\Domain\References\Plugin::TYPE_LANGUAGE;
+    protected const TYPE_DELIVERY = \App\Domain\References\Plugin::TYPE_DELIVERY;
+    protected const TYPE_PAYMENT = \App\Domain\References\Plugin::TYPE_PAYMENT;
 
     protected ContainerInterface $container;
 
@@ -59,6 +65,9 @@ abstract class AbstractPlugin
         if (empty(static::NAME) || empty(static::TITLE) || empty(static::AUTHOR)) {
             throw new \RuntimeException('Plugin credentials have empty fields');
         }
+        if (!empty(static::TYPE) && !in_array(static::TYPE, \App\Domain\References\Plugin::TYPES)) {
+            throw new \RuntimeException('Wrong plugin type');
+        }
 
         $this->container = $container;
         $this->container->set(static::NAME, $this);
@@ -67,7 +76,7 @@ abstract class AbstractPlugin
         $this->renderer = $container->get('view');
     }
 
-    public function getCredentials(string $field = null): array|string
+    public function getCredentials(string $field = null): array|string|null
     {
         $credentials = [
             'title' => static::TITLE,
@@ -77,6 +86,7 @@ abstract class AbstractPlugin
             'author_site' => static::AUTHOR_SITE,
             'name' => static::NAME,
             'version' => static::VERSION,
+            'type' => static::TYPE,
         ];
 
         if (in_array($field, array_keys($credentials), true)) {
@@ -131,7 +141,7 @@ abstract class AbstractPlugin
                 'value' => null,
                 'force-value' => null,
                 'placeholder' => '',
-                'options' => [],
+                'option' => [],
                 'selected' => null,
                 'checked' => null,
             ],
