@@ -23,6 +23,7 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 use Slim\Interfaces\RouteCollectorInterface;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
+use Twig\TwigTest;
 
 class TwigExtension extends AbstractExtension
 {
@@ -56,6 +57,18 @@ class TwigExtension extends AbstractExtension
             new TwigFilter('locale', '__', ['is_safe' => ['html']]),
             new TwigFilter('trans', [$this, 'trans'], ['is_safe' => ['html']]),
         ];
+    }
+
+    public function getTests()
+    {
+        return [
+            new TwigTest('instanceof', [$this, 'instanceof'])
+        ];
+    }
+
+    public function instanceof($var, $instance): bool
+    {
+        return $var instanceof $instance;
     }
 
     public function getFunctions()

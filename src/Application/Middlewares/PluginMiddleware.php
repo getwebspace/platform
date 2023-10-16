@@ -16,11 +16,11 @@ class PluginMiddleware extends AbstractMiddleware
     public function __invoke(Request $request, RequestHandlerInterface $handler): \Slim\Psr7\Response
     {
         /** @var \Illuminate\Support\Collection $plugins */
-        $plugins = $this->container->get('plugin')->get();
+        $plugins = $this->container->get('plugin')
+            ->get()
+            ->filter(fn ($el) => $el instanceof \App\Domain\Plugin\AbstractLegacyPlugin);
 
         if ($plugins->count()) {
-            $plugins = $plugins->where('routes', true);
-
             $routeContext = RouteContext::fromRequest($request);
             $route = $routeContext->getRoute();
             $routeName = $route->getName();

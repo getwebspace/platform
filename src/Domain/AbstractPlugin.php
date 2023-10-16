@@ -2,7 +2,6 @@
 
 namespace App\Domain;
 
-use App\Application\i18n;
 use App\Domain\Traits\ParameterTrait;
 use App\Domain\Traits\RendererTrait;
 use App\Domain\Traits\StorageTrait;
@@ -26,13 +25,7 @@ abstract class AbstractPlugin
     public const AUTHOR = 'Undefined author';
     public const AUTHOR_EMAIL = '';
     public const AUTHOR_SITE = '';
-    public const TYPE = null;
     public const VERSION = '1.0';
-
-    // possible type
-    protected const TYPE_LANGUAGE = \App\Domain\References\Plugin::TYPE_LANGUAGE;
-    protected const TYPE_DELIVERY = \App\Domain\References\Plugin::TYPE_DELIVERY;
-    protected const TYPE_PAYMENT = \App\Domain\References\Plugin::TYPE_PAYMENT;
 
     protected ContainerInterface $container;
 
@@ -69,9 +62,6 @@ abstract class AbstractPlugin
         if (empty(static::NAME) || empty(static::TITLE) || empty(static::AUTHOR)) {
             throw new \RuntimeException('Plugin credentials have empty fields');
         }
-        if (!empty(static::TYPE) && !in_array(static::TYPE, \App\Domain\References\Plugin::TYPES)) {
-            throw new \RuntimeException('Wrong plugin type');
-        }
 
         $this->container = $container;
         $this->container->set(static::NAME, $this);
@@ -90,7 +80,6 @@ abstract class AbstractPlugin
             'author_site' => static::AUTHOR_SITE,
             'name' => static::NAME,
             'version' => static::VERSION,
-            'type' => static::TYPE,
         ];
 
         if (in_array($field, array_keys($credentials), true)) {
@@ -98,6 +87,26 @@ abstract class AbstractPlugin
         }
 
         return $credentials;
+    }
+
+    /**
+     * Publish a data to a channel
+     */
+    public function publish(string $channel, mixed $data = []): self
+    {
+        $this->container->get(\App\Application\PubSub::class)->publish($channel, $data);
+
+        return $this;
+    }
+
+    /**
+     * Subscribe a handler to a channel
+     */
+    public function subscribe(string|array $channels, callable|array $handler): self
+    {
+        $this->container->get(\App\Application\PubSub::class)->subscribe($channels, $handler);
+
+        return $this;
     }
 
     /**
@@ -258,73 +267,5 @@ abstract class AbstractPlugin
             ->add(\App\Application\Middlewares\AccessCheckerMiddleware::class)
             ->add(\App\Application\Middlewares\AuthorizationMiddleware::class)
             ->add(\App\Application\Middlewares\CORSMiddleware::class);
-    }
-
-    /**
-     * Add new line in current locale table
-     */
-    public function addLocale(string $code, array $strings = []): void
-    {
-        i18n::addLocale($code, $strings);
-    }
-
-    /**
-     * Add new array of lines in current locale table
-     */
-    public function addLocaleFromFile(string $code, string $path): void
-    {
-        i18n::addLocaleFromFile($code, $path);
-    }
-
-    /**
-     * Add locale editor words
-     */
-    public function addLocaleEditor(string $code, array $translate): void
-    {
-        i18n::addLocaleEditor($code, $translate);
-    }
-
-    /**
-     * Add translate letters
-     */
-    public function addLocaleTranslateLetters(string $code, array $original, array $latin): void
-    {
-        i18n::addLocaleTranslateLetters($code, $original, $latin);
-    }
-
-    /**
-     * Publish a data to a channel
-     */
-    public function publish(string $channel, mixed $data = []): self
-    {
-        $this->container->get(\App\Application\PubSub::class)->publish($channel, $data);
-
-        return $this;
-    }
-
-    /**
-     * Subscribe a handler to a channel
-     */
-    public function subscribe(string|array $channels, callable|array $handler): self
-    {
-        $this->container->get(\App\Application\PubSub::class)->subscribe($channels, $handler);
-
-        return $this;
-    }
-
-    /**
-     * The function will be executed BEFORE processing the selected group of routes
-     */
-    public function before(Request $request, string $routeName): void
-    {
-        // empty method
-    }
-
-    /**
-     * The function will be executed AFTER processing the selected group of routes
-     */
-    public function after(Request $request, Response $response, string $routeName): Response
-    {
-        return $response;
     }
 }

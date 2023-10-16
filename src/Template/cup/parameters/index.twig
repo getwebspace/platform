@@ -1175,13 +1175,11 @@
                                                 <a class="nav-link" data-toggle="pill" href="#plugins-{{ plugin.getCredentials('name') }}">
                                                     {{ plugin.getCredentials('title')|locale }}
                                                     <span class="d-inline-block float-right pr-3" style="width: 40px;">
-                                                        {% set type = plugin.getCredentials('type') %}
-
-                                                        {% if type == 'language' %}
+                                                        {% if plugin is instanceof('\\App\\Domain\\Plugin\\AbstractLanguagePlugin') %}
                                                             <i class="fas fa-language"></i>
-                                                        {% elseif type == 'delivery' %}
+                                                        {% elseif plugin is instanceof('\\App\\Domain\\Plugin\\AbstractDeliveryPlugin') %}
                                                             <i class="fas fa-truck"></i>
-                                                        {% elseif type == 'payment' %}
+                                                        {% elseif plugin is instanceof('\\App\\Domain\\Plugin\\AbstractPaymentPlugin') %}
                                                             <i class="fas fa-cash-register"></i>
                                                         {% else %}
                                                             &nbsp;
