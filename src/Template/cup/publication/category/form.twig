@@ -26,7 +26,7 @@
                                     'name': 'title',
                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Name of the new category'|locale) ~ '"></i>',
                                     'args': {
-                                        'value': item.title,
+                                        'value': category.title,
                                         'required': true,
                                         'placeholder': 'News'|locale,
                                     }
@@ -38,8 +38,8 @@
                                     'type': 'select',
                                     'name': 'parent',
                                     'args': {
-                                        'option': {'': '---'}|merge(categories.whereNotIn('uuid', [item.uuid]).sortBy('title').pluck('title', 'uuid')),
-                                        'selected': item.parent_uuid
+                                        'option': {'': '---'}|merge(categories.whereNotIn('uuid', category.getNested(categories, true).pluck('uuid')).sortBy('title').pluck('title', 'uuid')),
+                                        'selected': category.parent_uuid
                                     }
                                 } %}
                             </div>
@@ -51,7 +51,7 @@
                                     'name': 'public',
                                     'args': {
                                         'option': _(['yes', 'no']),
-                                        'selected': item.public ? 'yes' : 'no'
+                                        'selected': category.public ? 'yes' : 'no'
                                     }
                                 } %}
                             </div>
@@ -63,7 +63,7 @@
                                     'label': 'Description'|locale,
                                     'name': 'description',
                                     'args': {
-                                        'value': item.description
+                                        'value': category.description
                                     }
                                 } %}
                             </div>
@@ -76,7 +76,7 @@
                                     'type': 'text',
                                     'name': 'pagination',
                                     'args': {
-                                        'value': item.pagination is not empty ? item.pagination : '10',
+                                        'value': category.pagination is not empty ? category.pagination : '10',
                                     }
                                 } %}
                             </div>
@@ -87,7 +87,7 @@
                                     'name': 'children',
                                     'args': {
                                         'option': _(['yes', 'no']),
-                                        'selected': item.children ? 'yes' : 'no'
+                                        'selected': category.children ? 'yes' : 'no'
                                     }
                                 } %}
                             </div>
@@ -99,7 +99,7 @@
                                     'prefix': base_url() ~ '/',
                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Used to view all articles in a given category. You can leave it blank, then the value will be generated automatically. It is allowed to use only Latin characters and numbers without spaces'|locale) ~ '"></i>',
                                     'args': {
-                                        'value': item.address,
+                                        'value': category.address,
                                         'placeholder': 'news',
                                     }
                                 } %}
@@ -118,7 +118,7 @@
                                     'name': 'sort[by]',
                                     'args': {
                                         'option': _(constant('/App/Domain/References/Publication::ORDER_BY')),
-                                        'selected': item.sort['by']
+                                        'selected': category.sort['by']
                                     }
                                 } %}
                             </div>
@@ -129,7 +129,7 @@
                                     'name': 'sort[direction]',
                                     'args': {
                                         'option': _(constant('/App/Domain/References/Publication::ORDER_DIRECTION')),
-                                        'selected': item.sort['direction']
+                                        'selected': category.sort['direction']
                                     }
                                 } %}
                             </div>
@@ -145,7 +145,7 @@
                                     'name': 'template[list]',
                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('You can set a separate template for this category or leave <b>publication.list.twig</b>'|locale) ~ '"></i>',
                                     'args': {
-                                        'value': item.template.list is not empty ? item.template.list : 'publication.list.twig',
+                                        'value': category.template.list is not empty ? category.template.list : 'publication.list.twig',
                                     }
                                 } %}
                             </div>
@@ -157,7 +157,7 @@
                                     'name': 'template[short]',
                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('Specify the name of the template you want to use to display the short version of the publication, or leave <b>publication.short.twig</b>'|locale) ~ '"></i>',
                                     'args': {
-                                        'value': item.template.short is not empty ? item.template.short : 'publication.short.twig',
+                                        'value': category.template.short is not empty ? category.template.short : 'publication.short.twig',
                                     }
                                 } %}
                             </div>
@@ -169,7 +169,7 @@
                                     'name': 'template[full]',
                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('Specify the name of the template you want to use to display the full version of the publication, or leave <b>publication.full.twig</b>'|locale) ~ '"></i>',
                                     'args': {
-                                        'value': item.template.full is not empty ? item.template.full : 'publication.full.twig',
+                                        'value': category.template.full is not empty ? category.template.full : 'publication.full.twig',
                                     }
                                 } %}
                             </div>
