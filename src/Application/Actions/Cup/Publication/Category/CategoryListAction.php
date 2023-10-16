@@ -9,7 +9,7 @@ class CategoryListAction extends PublicationAction
     protected function action(): \Slim\Psr7\Response
     {
         return $this->respondWithTemplate('cup/publication/category/index.twig', [
-            'list' => $this->publicationCategoryService->read(['order' => ['title' => 'asc']]),
+            'categories' => $this->publicationCategoryService->read(['order' => ['title' => 'asc']]),
         ]);
     }
 }
