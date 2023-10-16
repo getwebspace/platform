@@ -15,7 +15,7 @@ class CategoryDeleteAction extends PublicationAction
 
             if ($category) {
                 $categories = $this->publicationCategoryService->read();
-                $childrenUuids = $category->getNested($categories, true)->pluck('uuid')->all();
+                $childrenUuids = $category->getNested($categories, true)->reverse()->pluck('uuid')->all();
 
                 /**
                  * @var \App\Domain\Entities\Publication $publication
@@ -30,6 +30,8 @@ class CategoryDeleteAction extends PublicationAction
                 foreach ($this->publicationCategoryService->read(['parent_uuid' => $childrenUuids]) as $child) {
                     $this->publicationCategoryService->delete($child);
                 }
+
+                $this->publicationCategoryService->delete($category);
 
                 $this->container->get(\App\Application\PubSub::class)->publish('cup:publication:category:delete', $category);
             }

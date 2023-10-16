@@ -103,7 +103,7 @@ class Category extends AbstractEntity
     #[ORM\Column(type: 'uuid', nullable: true)]
     protected ?\Ramsey\Uuid\UuidInterface $parent_uuid;
 
-    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\Publication\Category')]
+    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\Publication\Category', cascade: ['persist'])]
     #[ORM\JoinColumn(name: 'parent_uuid', referencedColumnName: 'uuid', onDelete: 'CASCADE')]
     protected ?Category $parent;
 
@@ -146,8 +146,8 @@ class Category extends AbstractEntity
         return $this->pagination;
     }
 
-    #[ORM\Column(type: 'boolean', options: ['default' => false])]
-    protected bool $children = false;
+    #[ORM\Column(type: 'boolean', options: ['default' => true])]
+    protected bool $children = true;
 
     /**
      * @param mixed $value

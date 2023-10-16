@@ -51,7 +51,7 @@
                                     'name': 'public',
                                     'args': {
                                         'option': _(['yes', 'no']),
-                                        'selected': category.public ? 'yes' : 'no'
+                                        'selected': (category ? category.public : true) ? 'yes' : 'no'
                                     }
                                 } %}
                             </div>

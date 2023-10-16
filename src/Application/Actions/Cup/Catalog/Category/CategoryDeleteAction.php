@@ -16,7 +16,7 @@ class CategoryDeleteAction extends CatalogAction
 
             if ($category) {
                 $categories = $this->catalogCategoryService->read();
-                $childrenUuids = $category->getNested($categories, true)->pluck('uuid')->all();
+                $childrenUuids = $category->getNested($categories, true)->reverse()->pluck('uuid')->all();
 
                 /**
                  * @var \App\Domain\Entities\Catalog\Category $child
@@ -35,6 +35,10 @@ class CategoryDeleteAction extends CatalogAction
                         'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_DELETE,
                     ]);
                 }
+
+                $this->catalogCategoryService->update($category, [
+                    'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE,
+                ]);
 
                 $this->container->get(\App\Application\PubSub::class)->publish('cup:catalog:category:delete', $category);
             }
