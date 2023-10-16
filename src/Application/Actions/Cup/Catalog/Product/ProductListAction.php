@@ -29,7 +29,7 @@ class ProductListAction extends CatalogAction
             'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
         ]);
         $products = $this->catalogProductService->read([
-            'category' => $category ? $category->getNested($categories)->pluck('uuid')->all() : null,
+            'category_uuid' => $category ? $category->getNested($categories)->pluck('uuid')->all() : null,
             'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
             'order' => [
                 'category' => 'ASC',
