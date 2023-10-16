@@ -31,8 +31,6 @@ class CategoryDeleteAction extends PublicationAction
                     $this->publicationCategoryService->delete($child);
                 }
 
-                $this->publicationCategoryService->delete($category);
-
                 $this->container->get(\App\Application\PubSub::class)->publish('cup:publication:category:delete', $category);
             }
         }

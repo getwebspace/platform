@@ -36,10 +36,6 @@ class CategoryDeleteAction extends CatalogAction
                     ]);
                 }
 
-                $this->catalogCategoryService->update($category, [
-                    'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE,
-                ]);
-
                 $this->container->get(\App\Application\PubSub::class)->publish('cup:catalog:category:delete', $category);
             }
         }
