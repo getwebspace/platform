@@ -16,7 +16,7 @@ ENV COMMIT_BRANCH=${VERSION} \
     COMMIT_SHA=${COMMIT} \
     BUILD_DEPENDENSIES="g++ make autoconf" \
     DEPENDENSIES="" \
-    EXTRA_EXTENSIONS="pdo_mysql pdo_pgsql" \
+    EXTRA_EXTENSIONS="pdo_mysql" \
     PLATFORM_HOME="/var/container"
 
 # Copy configs
