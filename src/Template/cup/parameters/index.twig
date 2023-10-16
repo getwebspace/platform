@@ -33,11 +33,16 @@
                                         {{ 'Catalog'|locale }}
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-toggle="pill" href="#plugins" role="tab">
-                                        {{ 'Plugins'|locale }}
-                                    </a>
-                                </li>
+
+                                {% if plugins.count() %}
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="pill" href="#plugins" role="tab">
+                                            {{ 'Plugins'|locale }}
+                                            <span class="badge badge-count" style="padding: 4px 7px">{{ plugins.count() }}</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="pill" href="#variables" role="tab">
                                         {{ 'Variables'|locale }}
@@ -64,6 +69,7 @@
                                             <a class="nav-link"         data-toggle="pill" href="#other-search">{{ 'Search Options'|locale }}</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-guestbook">{{ 'Guestbook'|locale }}</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-api">{{ 'API'|locale }}</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#plugins-recaptcha">reCAPTCHA</a>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-7 col-md-8 mt-3 mt-sm-0">
@@ -655,6 +661,41 @@
                                                 </div>
                                             </div>
 
+                                            {# TAB: Plugin recaptcha #}
+                                            <div class="tab-pane fade show active" id="plugins-recaptcha">
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Turning reCAPTCHA on and off',
+                                                    'description': 'Robot protection',
+                                                    'type': 'select',
+                                                    'name': 'integration[recaptcha]',
+                                                    'args': {
+                                                        'option': _(['off', 'on'])
+                                                    }
+                                                } %}
+
+                                                <hr/>
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Public key of the reCAPTCHA service',
+                                                    'description': 'This key will be used in the HTML code of the site for users devices',
+                                                    'type': 'text',
+                                                    'name': 'integration[recaptcha_public]',
+                                                    'args': {
+                                                        'placeholder': '6Le_gY8UAAAAAKv9EUVJxlAQTchtx2ACG6B616Eu'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'reCAPTCHA secret key',
+                                                    'description': 'This key is needed for communication between the site and the reCAPTCHA service. Do not tell it to anyone',
+                                                    'type': 'text',
+                                                    'name': 'integration[recaptcha_private]',
+                                                    'args': {
+                                                        'placeholder': '6Le_gY8UAAAAAAx1_Lv3aKo-L1QnxE2QWhOHCgxS'
+                                                    }
+                                                } %}
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -1166,13 +1207,8 @@
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-5 col-md-4">
                                         <div class="nav flex-column nav-pills nav-secondary">
-                                            <a class="nav-link active" data-toggle="pill" href="#plugins-recaptcha">
-                                                reCAPTCHA
-                                                <span class="d-inline-block float-right pr-3" style="width: 40px;">&nbsp;</span>
-                                            </a>
-
                                             {% for plugin in plugins %}
-                                                <a class="nav-link" data-toggle="pill" href="#plugins-{{ plugin.getCredentials('name') }}">
+                                                <a class="nav-link {{ loop.first ? 'active' : '' }}" data-toggle="pill" href="#plugins-{{ plugin.getCredentials('name') }}">
                                                     {{ plugin.getCredentials('title')|locale }}
                                                     <span class="d-inline-block float-right pr-3" style="width: 40px;">
                                                         {% if plugin is instanceof('\\App\\Domain\\Plugin\\AbstractLanguagePlugin') %}
@@ -1191,46 +1227,10 @@
                                     </div>
                                     <div class="col-xs-12 col-sm-7 col-md-8 mt-5 mt-sm-0">
                                         <div class="tab-content">
-
-                                            {# TAB: Plugin recaptcha #}
-                                            <div class="tab-pane fade show active" id="plugins-recaptcha">
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Turning reCAPTCHA on and off',
-                                                    'description': 'Robot protection',
-                                                    'type': 'select',
-                                                    'name': 'integration[recaptcha]',
-                                                    'args': {
-                                                        'option': _(['off', 'on'])
-                                                    }
-                                                } %}
-
-                                                <hr/>
-
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Public key of the reCAPTCHA service',
-                                                    'description': 'This key will be used in the HTML code of the site for users devices',
-                                                    'type': 'text',
-                                                    'name': 'integration[recaptcha_public]',
-                                                    'args': {
-                                                        'placeholder': '6Le_gY8UAAAAAKv9EUVJxlAQTchtx2ACG6B616Eu'
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'reCAPTCHA secret key',
-                                                    'description': 'This key is needed for communication between the site and the reCAPTCHA service. Do not tell it to anyone',
-                                                    'type': 'text',
-                                                    'name': 'integration[recaptcha_private]',
-                                                    'args': {
-                                                        'placeholder': '6Le_gY8UAAAAAAx1_Lv3aKo-L1QnxE2QWhOHCgxS'
-                                                    }
-                                                } %}
-                                            </div>
-
                                             {% for plugin in plugins %}
                                                 {% set credentials = plugin.getCredentials() %}
 
-                                                <div class="tab-pane fade" id="plugins-{{ plugin.getCredentials('name') }}">
+                                                <div class="tab-pane fade {{ loop.first ? 'show active' : '' }}" id="plugins-{{ plugin.getCredentials('name') }}">
                                                     <d1>
                                                         <dt>{{ 'Author'|locale }}</dt>
                                                         <dd>
