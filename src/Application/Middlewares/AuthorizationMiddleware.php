@@ -29,27 +29,25 @@ class AuthorizationMiddleware extends AbstractMiddleware
                 $uuid = $this->decodeJWT($access_token)['uuid'] ?? null;
 
                 if ($uuid && \Ramsey\Uuid\Uuid::isValid($uuid)) {
-                    try {
-                        /** @var UserService $userService */
-                        $userService = $this->container->get(UserService::class);
+                    /** @var UserService $userService */
+                    $userService = $this->container->get(UserService::class);
 
-                        /** @var User $user */
-                        $user = $userService->read([
-                            'uuid' => $uuid,
-                            'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
-                        ]);
+                    /** @var User $user */
+                    $user = $userService->read([
+                        'uuid' => $uuid,
+                        'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
+                    ]);
 
-                        $request = $request->withAttribute('user', $user);
-                    } catch (UserNotFoundException $e) {
-                        return (new Response())
-                            ->withHeader('Location', '/auth/logout?redirect=' . $request->getUri()->getPath())
-                            ->withStatus(307);
-                    }
+                    $request = $request->withAttribute('user', $user);
                 }
             } catch (SignatureInvalidException|ExpiredException $e) {
                 return (new Response())
                     ->withHeader('Location', '/auth/refresh-token?redirect=' . $request->getUri()->getPath())
                     ->withStatus(308);
+            } catch (\RuntimeException|UserNotFoundException $e) {
+                return (new Response())
+                    ->withHeader('Location', '/auth/logout?redirect=' . $request->getUri()->getPath())
+                    ->withStatus(307);
             }
         }
 
