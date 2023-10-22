@@ -4,6 +4,7 @@ namespace App\Application;
 
 use App\Application\Twig\LocaleParser;
 use App\Domain\AbstractExtension;
+use App\Domain\Entities\Catalog\Product;
 use App\Domain\Service\Catalog\AttributeService as CatalogAttributeService;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
@@ -101,8 +102,8 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('build_query', [$this, 'build_query'], ['is_safe' => ['html']]),
             new TwigFunction('base64_encode', [$this, 'base64_encode']),
             new TwigFunction('base64_decode', [$this, 'base64_decode']),
-            new TwigFunction('json_encode', [$this, 'json_encode']),
-            new TwigFunction('json_decode', [$this, 'json_decode']),
+            new TwigFunction('json_encode', [$this, 'json_encode'], ['is_safe' => ['html']]),
+            new TwigFunction('json_decode', [$this, 'json_decode'], ['is_safe' => ['html']]),
             new TwigFunction('convert_size', [$this, 'convert_size']),
             new TwigFunction('qr_code', [$this, 'qr_code'], ['is_safe' => ['html']]),
 
@@ -133,6 +134,7 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('catalog_product_popular', [$this, 'catalog_product_popular']),
             new TwigFunction('catalog_product_view', [$this, 'catalog_product_view']),
             new TwigFunction('catalog_product_dimensional_weight', [$this, 'catalog_product_dimensional_weight'], ['needs_context' => true]),
+            new TwigFunction('catalog_product_options', [$this, 'catalog_product_options'], ['needs_context' => true, 'is_safe' => ['html']]),
             new TwigFunction('catalog_order', [$this, 'catalog_order']),
             new TwigFunction('catalog_order_status', [$this, 'catalog_order_status']),
 
@@ -618,7 +620,7 @@ class TwigExtension extends AbstractExtension
     // calculate dimension weight
     public function catalog_product_dimensional_weight($context, $product = null)
     {
-        if (empty($product) && !empty($context['product'])) {
+        if ($product === null && !empty($context['product'])) {
             $product = $context['product'];
         }
 
@@ -638,6 +640,101 @@ class TwigExtension extends AbstractExtension
         }
 
         return '';
+    }
+
+    public function catalog_product_options($context, ?Product $product = null)
+    {
+        if ($product === null && !empty($context['product'])) {
+            $product = $context['product'];
+        }
+
+        if ($product) {
+            $host = $this->currentHost();
+            $currency = $this->reference(ReferenceTypeType::TYPE_CURRENCY)->firstWhere('value.value', 1);
+
+            $jsonLD = [
+                '@context' => 'https://schema.org/',
+                '@type' => $product->getType() === \App\Domain\Types\Catalog\ProductTypeType::TYPE_PRODUCT ? 'Product' : 'Service',
+                'uuid' => $product->getUuid()->toString(),
+                'name' => $product->getTitle(),
+                'external_id' => $product->getExternalId(),
+                'url' => $host . '/' . $product->getAddress(),
+                'offers' => [],
+            ];
+
+            if (($description = $product->getDescription())) {
+                $jsonLD['description'] = $description;
+            }
+            if (($tags = $product->getTags())) {
+                $jsonLD['keywords'] = implode(', ', $tags);
+            }
+            if ($product->hasFiles()) {
+                $jsonLD['image'] = $product->getFiles()->map(fn($el) => $host . $el->getPublicPath())->all();
+            }
+            if (($sku = $product->getVendorCode()) !== '') {
+                $jsonLD['sku'] = $sku;
+            }
+            if (($mpn = $product->getBarCode()) !== '') {
+                $jsonLD['mpn'] = $mpn;
+            }
+            if (($country = $product->getCountry()) !== '') {
+                $jsonLD['countryOfOrigin'] = $country;
+            }
+            if (($brand = $product->getManufacturer()) !== '') {
+                $jsonLD['brand'] = [
+                    '@type' => 'Brand',
+                    'name' => $brand,
+                ];
+            }
+
+            foreach (['Retail Price' => 'getPrice', 'Wholesale Price' => 'getPriceWholesale'] as $name => $method) {
+                if (($value = call_user_func([$product, $method])) > 0) {
+                    $jsonLD['offers'][] = [
+                        '@type' => 'Offer',
+                        'name' => $name,
+                        'price' => $value,
+                        'priceCurrency' => $currency ? $currency->get('value.code') : '',
+                    ];
+                }
+            }
+            if (($tax = $product->getTax()) > 0) {
+                $jsonLD['tax'] = $tax;
+            }
+
+            $dimension = $product->getDimension();
+            if (($weight = $dimension['weight']) > 0) {
+                $jsonLD['weight'] = [
+                    '@type' => 'QuantitativeValue',
+                    'value' => $weight,
+                    'unitCode' => $dimension['weight_class'],
+                ];
+            }
+            foreach (['length', 'width', 'height'] as $type) {
+                if (($value = $dimension[$type]) > 0) {
+                    $jsonLD[$type] = [
+                        '@type' => 'QuantitativeValue',
+                        'value' => $value,
+                        'unitCode' => $dimension['length_class'],
+                    ];
+                }
+            }
+
+            if ($product->hasAttributes()) {
+                $jsonLD['additionalProperty'] = [];
+
+                foreach ($product->getAttributes() as $attribute) {
+                    $jsonLD['additionalProperty'][] = [
+                        '@type' => 'PropertyValue',
+                        'name' => $attribute->getTitle(),
+                        'value' => $attribute->getValue(),
+                    ];
+                }
+            }
+
+            return $jsonLD;
+        }
+
+        return [];
     }
 
     // fetch order
