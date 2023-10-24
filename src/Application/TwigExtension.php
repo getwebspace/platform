@@ -469,16 +469,22 @@ class TwigExtension extends AbstractExtension
     // reference functions
 
     // fetch reference by type
-    public function reference(string $type = null)
+    public function reference(string $type = null, bool $pluck = false)
     {
         if (in_array($type, ReferenceTypeType::LIST, true)) {
             $referenceService = $this->container->get(ReferenceService::class);
 
-            return $referenceService->read([
+            $output = $referenceService->read([
                 'type' => $type,
                 'status' => true,
                 'order' => ['order' => 'asc'],
             ]);
+
+            if ($pluck) {
+                $output = $output->pluck('value', 'title');
+            }
+
+            return $output;
         }
 
         return ReferenceTypeType::LIST;
