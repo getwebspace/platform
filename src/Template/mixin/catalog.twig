@@ -418,7 +418,7 @@
 
                 changeDelivery(uuid) {
                     if (this.cartTotal(false)) {
-                        if (uuid !== delivery) {
+                        if (uuid && uuid !== delivery) {
                             delivery = uuid;
 
                             // first remove exist
