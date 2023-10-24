@@ -56,7 +56,9 @@ class ListAction extends CatalogAction
             $query = $qb
                 ->from(\App\Domain\Entities\Catalog\Product::class, 'p')
                 ->where('p.status = :status')
-                ->setParameter('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK, \App\Domain\Types\Catalog\ProductStatusType::NAME);
+                ->andWhere('p.category IN (:category)')
+                ->setParameter('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK, \App\Domain\Types\Catalog\ProductStatusType::NAME)
+                ->setParameter('category', $categories->pluck('uuid'));
 
             $products = collect($query->select('p')->getQuery()->getResult());
 
@@ -184,15 +186,13 @@ class ListAction extends CatalogAction
         $category = $categories->firstWhere('address', $params['address']);
 
         if ($category) {
-            $categoryUUIDs = $category->getNested($categories)->pluck('uuid')->all();
-
             $qb = $this->entityManager->createQueryBuilder();
             $query = $qb
                 ->from(\App\Domain\Entities\Catalog\Product::class, 'p')
                 ->where('p.status = :status')
                 ->andWhere('p.category IN (:category)')
                 ->setParameter('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK, \App\Domain\Types\Catalog\ProductStatusType::NAME)
-                ->setParameter('category', $categoryUUIDs);
+                ->setParameter('category', $category->getNested($categories)->pluck('uuid'));
 
             $products = collect($query->select('p')->getQuery()->getResult());
 
