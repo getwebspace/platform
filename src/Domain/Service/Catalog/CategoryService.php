@@ -123,8 +123,8 @@ class CategoryService extends AbstractService
     public function read(array $data = [])
     {
         $default = [
+            'parent_uuid' => '',
             'uuid' => null,
-            'parent_uuid' => null,
             'children' => null,
             'hidden' => null,
             'title' => null,
@@ -137,11 +137,11 @@ class CategoryService extends AbstractService
 
         $criteria = [];
 
+        if ($data['parent_uuid'] !== '') {
+            $criteria['parent_uuid'] = $data['parent_uuid'];
+        }
         if ($data['uuid'] !== null) {
             $criteria['uuid'] = $data['uuid'];
-        }
-        if ($data['parent_uuid'] !== null) {
-            $criteria['parent_uuid'] = $data['parent_uuid'];
         }
         if ($data['children'] !== null) {
             $criteria['children'] = $data['children'];
