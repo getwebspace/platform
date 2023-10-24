@@ -251,21 +251,7 @@
                             {# Tab: Цены #}
                             <div class="tab-pane fade" id="price" role="tabpanel">
                                 <div class="row">
-                                    <div class="col-12 col-md-6 order-md-0">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'First price'|locale,
-                                            'type': 'number',
-                                            'name': 'priceFirst',
-                                            'args': {
-                                                'value': item.priceFirst|number_format(2, '.', ''),
-                                                'placeholder': '1.0',
-                                                'step': 'any',
-                                                'min': '0',
-                                            }
-                                        } %}
-                                    </div>
-
-                                    <div class="col-12 col-md-6 order-md-2">
+                                    <div class="col-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Selling price'|locale,
                                             'type': 'number',
@@ -279,7 +265,7 @@
                                         } %}
                                     </div>
 
-                                    <div class="col-12 col-md-6 order-md-1">
+                                    <div class="col-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Price wholesale'|locale,
                                             'type': 'number',
@@ -293,7 +279,21 @@
                                         } %}
                                     </div>
 
-                                    <div class="col-12 col-md-6 order-md-3">
+                                    <div class="col-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'First price'|locale,
+                                            'type': 'number',
+                                            'name': 'priceFirst',
+                                            'args': {
+                                                'value': item.priceFirst|number_format(2, '.', ''),
+                                                'placeholder': '1.0',
+                                                'step': 'any',
+                                                'min': '0',
+                                            }
+                                        } %}
+                                    </div>
+
+                                    <div class="col-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Price wholesale from'|locale,
                                             'type': 'number',

@@ -37,7 +37,15 @@
                             {% for item in list.sortBy('order') %}
                                 <div class="row">
                                     <div class="col col-sm-1 d-none d-sm-block">{{ item.order }}</div>
-                                    <div class="col">{{ item.title }}</div>
+                                    <div class="col">
+                                        {{ item.title }}
+
+                                        <div class="text-black-50 float-right d-none d-lg-inline">
+                                            {% if item.value.value == 1 %}
+                                                <i class="fas fa-check" data-toggle="tooltip" data-placement="right" title="{{ 'Default currency'|locale }}"></i>
+                                            {% endif %}
+                                        </div>
+                                    </div>
                                     <div class="col-2 text-center">{{ item.value.code }}</div>
                                     <div class="col-2 text-right">{{ item.value.value|number_format(3, '.', ' ') }}</div>
                                     <div class="col-4 col-sm-3 text-right">

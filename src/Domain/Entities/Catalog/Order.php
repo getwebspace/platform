@@ -206,9 +206,11 @@ class Order extends AbstractEntity
         return $this;
     }
 
-    public function getProducts(): Collection
+    public function getProducts(string $type = null): Collection
     {
-        return collect($this->products)->sortBy('title');
+        $products = collect($this->products)->sortBy('title');
+
+        return $type === null ? $products : $products->where('type', $type);
     }
 
     public function getTotalPrice(): float

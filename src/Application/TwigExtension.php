@@ -4,6 +4,7 @@ namespace App\Application;
 
 use App\Application\Twig\LocaleParser;
 use App\Domain\AbstractExtension;
+use App\Domain\Entities\Catalog\Product;
 use App\Domain\Service\Catalog\AttributeService as CatalogAttributeService;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
@@ -101,8 +102,8 @@ class TwigExtension extends AbstractExtension
             new TwigFunction('build_query', [$this, 'build_query'], ['is_safe' => ['html']]),
             new TwigFunction('base64_encode', [$this, 'base64_encode']),
             new TwigFunction('base64_decode', [$this, 'base64_decode']),
-            new TwigFunction('json_encode', [$this, 'json_encode']),
-            new TwigFunction('json_decode', [$this, 'json_decode']),
+            new TwigFunction('json_encode', [$this, 'json_encode'], ['is_safe' => ['html']]),
+            new TwigFunction('json_decode', [$this, 'json_decode'], ['is_safe' => ['html']]),
             new TwigFunction('convert_size', [$this, 'convert_size']),
             new TwigFunction('qr_code', [$this, 'qr_code'], ['is_safe' => ['html']]),
 
@@ -468,16 +469,22 @@ class TwigExtension extends AbstractExtension
     // reference functions
 
     // fetch reference by type
-    public function reference(string $type = null)
+    public function reference(string $type = null, bool $pluck = false)
     {
         if (in_array($type, ReferenceTypeType::LIST, true)) {
             $referenceService = $this->container->get(ReferenceService::class);
 
-            return $referenceService->read([
+            $output = $referenceService->read([
                 'type' => $type,
                 'status' => true,
                 'order' => ['order' => 'asc'],
             ]);
+
+            if ($pluck) {
+                $output = $output->pluck('value', 'title');
+            }
+
+            return $output;
         }
 
         return ReferenceTypeType::LIST;
@@ -618,7 +625,7 @@ class TwigExtension extends AbstractExtension
     // calculate dimension weight
     public function catalog_product_dimensional_weight($context, $product = null)
     {
-        if (empty($product) && !empty($context['product'])) {
+        if ($product === null && !empty($context['product'])) {
             $product = $context['product'];
         }
 
