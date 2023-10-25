@@ -92,7 +92,6 @@ class ProductUpdateAction extends CatalogAction
                     'weight_class' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_WEIGHT_CLASS]),
                     'item' => $product,
                 ]);
-
             } catch (ProductNotFoundException $e) {
                 // nothing
             }

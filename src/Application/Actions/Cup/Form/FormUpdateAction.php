@@ -2,7 +2,6 @@
 
 namespace App\Application\Actions\Cup\Form;
 
-use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Service\Form\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Form\Exception\FormNotFoundException;
 use App\Domain\Service\Form\Exception\MissingTitleValueException;
@@ -48,7 +47,7 @@ class FormUpdateAction extends FormAction
                 }
 
                 return $this->respondWithTemplate('cup/form/form.twig', [
-                    'item' => $form
+                    'item' => $form,
                 ]);
             } catch (FormNotFoundException $e) {
                 // nothing

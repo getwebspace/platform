@@ -45,7 +45,7 @@ class CategoryCreateAction extends PublicationAction
         }
 
         return $this->respondWithTemplate('cup/publication/category/form.twig', [
-            'categories' => $this->publicationCategoryService->read()
+            'categories' => $this->publicationCategoryService->read(),
         ]);
     }
 }

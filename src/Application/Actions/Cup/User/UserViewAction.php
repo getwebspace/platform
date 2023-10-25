@@ -11,7 +11,7 @@ class UserViewAction extends UserAction
 
             if ($user) {
                 return $this->respondWithTemplate('cup/user/view.twig', [
-                    'item' => $user
+                    'item' => $user,
                 ]);
             }
         }

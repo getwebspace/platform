@@ -2,7 +2,6 @@
 
 namespace App\Application\Actions\Cup\Page;
 
-use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Service\Page\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Page\Exception\MissingTitleValueException;
 use App\Domain\Service\Page\Exception\PageNotFoundException;
@@ -49,7 +48,7 @@ class PageUpdateAction extends PageAction
                 }
 
                 return $this->respondWithTemplate('cup/page/form.twig', [
-                    'item' => $page
+                    'item' => $page,
                 ]);
             } catch (PageNotFoundException $e) {
                 // nothing

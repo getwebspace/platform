@@ -2,13 +2,11 @@
 
 namespace App\Application\Actions\Cup\User;
 
-use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongEmailValueException;
-use App\Domain\Service\User\Exception\WrongPasswordException;
 use App\Domain\Service\User\Exception\WrongPhoneValueException;
 use App\Domain\Service\User\Exception\WrongUsernameValueException;
 
@@ -19,7 +17,7 @@ class UserUpdateAction extends UserAction
         if ($this->resolveArg('uuid')) {
             try {
                 $user = $this->userService->read([
-                    'uuid' => $this->resolveArg('uuid')
+                    'uuid' => $this->resolveArg('uuid'),
                 ]);
 
                 if ($this->isPost()) {
@@ -73,7 +71,7 @@ class UserUpdateAction extends UserAction
 
                 return $this->respondWithTemplate('cup/user/form.twig', [
                     'item' => $user,
-                    'groups' => $userGroups
+                    'groups' => $userGroups,
                 ]);
             } catch (UserNotFoundException $e) {
                 // nothing

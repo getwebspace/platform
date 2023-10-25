@@ -3,7 +3,6 @@
 namespace App\Application\Actions\Cup\User\Group;
 
 use App\Application\Actions\Cup\User\UserAction;
-use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Service\User\Exception\MissingTitleValueException;
 use App\Domain\Service\User\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\User\Exception\UserGroupNotFoundException;
@@ -16,7 +15,7 @@ class UpdateAction extends UserAction
         if ($this->resolveArg('uuid')) {
             try {
                 $userGroup = $this->userGroupService->read([
-                    'uuid' => $this->resolveArg('uuid')
+                    'uuid' => $this->resolveArg('uuid'),
                 ]);
 
                 if ($this->isPost()) {

@@ -62,7 +62,7 @@ class TwigExtension extends AbstractExtension
     public function getTests()
     {
         return [
-            new TwigTest('instanceof', [$this, 'instanceof'])
+            new TwigTest('instanceof', [$this, 'instanceof']),
         ];
     }
 
