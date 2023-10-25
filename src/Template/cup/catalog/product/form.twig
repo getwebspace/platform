@@ -89,7 +89,7 @@
                                             'name': 'type',
                                             'args': {
                                                 'option': _(constant('/App/Domain/Types/Catalog/ProductTypeType::LIST')),
-                                                'selected': constant('/App/Domain/Types/Catalog/ProductTypeType::TYPE_PRODUCT')
+                                                'selected': item.type ?? constant('/App/Domain/Types/Catalog/ProductTypeType::TYPE_PRODUCT'),
                                             }
                                         } %}
                                     </div>
