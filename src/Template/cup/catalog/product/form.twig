@@ -257,7 +257,7 @@
                                             'type': 'number',
                                             'name': 'price',
                                             'args': {
-                                                'value': item.price|number_format(2, '.', ''),
+                                                'value': item.price ? item.price|number_format(2, '.', '') : '',
                                                 'placeholder': '1.0',
                                                 'step': 'any',
                                                 'min': '0',
@@ -271,7 +271,7 @@
                                             'type': 'number',
                                             'name': 'priceWholesale',
                                             'args': {
-                                                'value': item.priceWholesale|number_format(2, '.', ''),
+                                                'value': item.priceWholesale ? item.priceWholesale|number_format(2, '.', '') : '',
                                                 'placeholder': '1.0',
                                                 'step': 'any',
                                                 'min': '0',
@@ -285,7 +285,7 @@
                                             'type': 'number',
                                             'name': 'priceFirst',
                                             'args': {
-                                                'value': item.priceFirst|number_format(2, '.', ''),
+                                                'value': item.priceFirst ? item.priceFirst|number_format(2, '.', '') : '',
                                                 'placeholder': '1.0',
                                                 'step': 'any',
                                                 'min': '0',
@@ -299,7 +299,7 @@
                                             'type': 'number',
                                             'name': 'priceWholesaleFrom',
                                             'args': {
-                                                'value': item.priceWholesaleFrom|number_format(0, '.', ''),
+                                                'value': item.priceWholesaleFrom ? item.priceWholesaleFrom|number_format(0, '.', '') : '',
                                                 'placeholder': '0',
                                                 'step': 'any',
                                                 'min': '0',
@@ -317,7 +317,7 @@
                                             'type': 'select',
                                             'name': 'tax',
                                             'args': {
-                                                'option': collect({0: '---'}).union(tax_rates.pluck('title', 'value.rate').all()),
+                                                'option': collect({0: '---'}).union(tax_rates.pluck('title', 'value.rate')),
                                                 'selected': item.tax,
                                             }
                                         } %}
