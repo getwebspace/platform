@@ -459,7 +459,7 @@
                                 {% if category.hasAttributes() %}
                                     <div class="row">
                                         {% for attribute in category.getAttributes().where('type', '!=', 'boolean').sortBy('title') %}
-                                            <div class="col-12 col-sm-6">
+                                            <div class="col-12 col-sm-6 col-xl-3">
                                                 {% include 'cup/form.twig' with {
                                                     'label': attribute.title,
                                                     'type': attribute.type == 'string' ? 'text' : 'number',
@@ -474,7 +474,7 @@
 
                                     <div class="row">
                                         {% for attribute in category.getAttributes().where('type', '==', 'boolean') %}
-                                            <div class="col-12 col-sm-6">
+                                            <div class="col-12 col-sm-6 col-xl-3">
                                                 <div data-input="" class="form-group ">
                                                     <label class="placeholder">
                                                         <b>{{ attribute.title }}</b>
