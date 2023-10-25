@@ -347,7 +347,7 @@
                                             'name': 'quantity',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Default step for adding to the cart'|locale) ~ '"></i>',
                                             'args': {
-                                                'value': item.quantity ? item.quantity|number_format(2, '.', '') : '',
+                                                'value': item.quantity ? item.quantity|number_format(2, '.', '') : 1,
                                                 'placeholder': '1.00',
                                                 'step': 'any',
                                                 'min': '0',
@@ -361,7 +361,7 @@
                                             'name': 'quantityMin',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Force a minimum ordered amount'|locale) ~ '"></i>',
                                             'args': {
-                                                'value': item.quantityMin ? item.quantityMin|number_format(2, '.', '') : '',
+                                                'value': item.quantityMin ? item.quantityMin|number_format(2, '.', '') : 1,
                                                 'placeholder': '1.00',
                                                 'step': 'any',
                                                 'min': '0',
