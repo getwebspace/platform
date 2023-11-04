@@ -8,6 +8,8 @@ class TaskRunAction extends AbstractAction
 {
     protected function action(): \Slim\Psr7\Response
     {
+        $redirect = $this->request->getHeaderLine('Referer') ?? '/cup';
+
         if ($this->isPost()) {
             if (
                 ($name = $this->getParam('task', null)) !== null
@@ -22,7 +24,7 @@ class TaskRunAction extends AbstractAction
 
                 $this->container->get(\App\Application\PubSub::class)->publish('cup:task:run', $task);
 
-                $this->response = $this->response->withAddedHeader('Location', '/cup')->withStatus(301);
+                $this->response = $this->response->withAddedHeader('Location', $redirect)->withStatus(301);
             }
         }
 

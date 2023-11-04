@@ -2,7 +2,6 @@
 
 namespace App\Application\Actions\Cup\Publication;
 
-use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Service\Publication\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Publication\Exception\MissingCategoryValueException;
 use App\Domain\Service\Publication\Exception\MissingTitleValueException;
@@ -17,7 +16,7 @@ class PublicationUpdateAction extends PublicationAction
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
             try {
                 $publication = $this->publicationService->read([
-                    'uuid' => $this->resolveArg('uuid')
+                    'uuid' => $this->resolveArg('uuid'),
                 ]);
 
                 if ($this->isPost()) {

@@ -67,6 +67,14 @@ class CategoryService extends AbstractService
         // retrieve category by uuid
         if (!is_a($data['parent'], CatalogCategory::class) && $data['parent_uuid']) {
             $data['parent'] = $this->read(['uuid' => $data['parent_uuid']]);
+
+            // copy attributes from parent
+            if ($data['parent']->hasAttributes()) {
+                $data['attributes'] = array_merge(
+                    from_service_to_array($data['parent']->getAttributes()),
+                    $data['attributes']
+                );
+            }
         }
 
         $category = (new CatalogCategory())
@@ -123,8 +131,8 @@ class CategoryService extends AbstractService
     public function read(array $data = [])
     {
         $default = [
+            'parent_uuid' => '',
             'uuid' => null,
-            'parent_uuid' => null,
             'children' => null,
             'hidden' => null,
             'title' => null,
@@ -137,11 +145,11 @@ class CategoryService extends AbstractService
 
         $criteria = [];
 
+        if ($data['parent_uuid'] !== '') {
+            $criteria['parent_uuid'] = $data['parent_uuid'];
+        }
         if ($data['uuid'] !== null) {
             $criteria['uuid'] = $data['uuid'];
-        }
-        if ($data['parent_uuid'] !== null) {
-            $criteria['parent_uuid'] = $data['parent_uuid'];
         }
         if ($data['children'] !== null) {
             $criteria['children'] = $data['children'];

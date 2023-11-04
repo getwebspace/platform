@@ -2,7 +2,6 @@
 
 namespace App\Application\Actions\Cup\GuestBook;
 
-use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Service\GuestBook\Exception\EntryNotFoundException;
 
 class GuestBookUpdateAction extends GuestBookAction
@@ -16,7 +15,6 @@ class GuestBookUpdateAction extends GuestBookAction
                 ]);
 
                 if ($this->isPost()) {
-                    // todo try/catch
                     $entry = $this->guestBookService->update($entry, [
                         'name' => $this->getParam('name'),
                         'email' => $this->getParam('email'),
@@ -38,7 +36,7 @@ class GuestBookUpdateAction extends GuestBookAction
                 }
 
                 return $this->respondWithTemplate('cup/guestbook/form.twig', [
-                    'item' => $entry
+                    'item' => $entry,
                 ]);
             } catch (EntryNotFoundException $e) {
                 // nothing

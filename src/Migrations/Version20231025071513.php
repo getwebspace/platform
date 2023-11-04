@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20231006215241 extends AbstractMigration
+final class Version20231025071513 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -30,7 +30,7 @@ final class Version20231006215241 extends AbstractMigration
         , sort CLOB DEFAULT \'{}\' NOT NULL --(DC2Type:json)
         , meta CLOB DEFAULT \'{}\' NOT NULL --(DC2Type:json)
         , template CLOB DEFAULT \'{}\' NOT NULL --(DC2Type:json)
-        , external_id VARCHAR(255) DEFAULT \'\' NOT NULL, export VARCHAR(64) DEFAULT \'manual\' NOT NULL, PRIMARY KEY(uuid), CONSTRAINT FK_349BC7DFEC9C6612 FOREIGN KEY (parent_uuid) REFERENCES catalog_category (uuid) NOT DEFERRABLE INITIALLY IMMEDIATE)');
+        , external_id VARCHAR(255) DEFAULT \'\' NOT NULL, export VARCHAR(64) DEFAULT \'manual\' NOT NULL, system VARCHAR(512) DEFAULT \'\' NOT NULL, PRIMARY KEY(uuid), CONSTRAINT FK_349BC7DFEC9C6612 FOREIGN KEY (parent_uuid) REFERENCES catalog_category (uuid) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE)');
         $this->addSql('CREATE INDEX catalog_category_address_idx ON catalog_category (address)');
         $this->addSql('CREATE INDEX catalog_category_parent_idx ON catalog_category (parent_uuid)');
         $this->addSql('CREATE INDEX catalog_category_order_idx ON catalog_category ("order")');
@@ -51,7 +51,7 @@ final class Version20231006215241 extends AbstractMigration
         $this->addSql('CREATE TABLE catalog_order_product (uuid CHAR(36) NOT NULL --(DC2Type:uuid)
         , order_uuid CHAR(36) NOT NULL --(DC2Type:uuid)
         , product_uuid CHAR(36) NOT NULL --(DC2Type:uuid)
-        , price DOUBLE PRECISION DEFAULT \'0\' NOT NULL, price_type VARCHAR(16) DEFAULT \'price\' NOT NULL, count DOUBLE PRECISION DEFAULT \'1\' NOT NULL, PRIMARY KEY(uuid), CONSTRAINT FK_59DD3D6B9C8E6AB1 FOREIGN KEY (order_uuid) REFERENCES catalog_order (uuid) NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_59DD3D6B5C977207 FOREIGN KEY (product_uuid) REFERENCES catalog_product (uuid) NOT DEFERRABLE INITIALLY IMMEDIATE)');
+        , price DOUBLE PRECISION DEFAULT \'0\' NOT NULL, price_type VARCHAR(16) DEFAULT \'price\' NOT NULL, count DOUBLE PRECISION DEFAULT \'1\' NOT NULL, discount DOUBLE PRECISION DEFAULT \'0\' NOT NULL, tax DOUBLE PRECISION DEFAULT \'0\' NOT NULL, PRIMARY KEY(uuid), CONSTRAINT FK_59DD3D6B9C8E6AB1 FOREIGN KEY (order_uuid) REFERENCES catalog_order (uuid) NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_59DD3D6B5C977207 FOREIGN KEY (product_uuid) REFERENCES catalog_product (uuid) NOT DEFERRABLE INITIALLY IMMEDIATE)');
         $this->addSql('CREATE INDEX IDX_59DD3D6B9C8E6AB1 ON catalog_order_product (order_uuid)');
         $this->addSql('CREATE INDEX IDX_59DD3D6B5C977207 ON catalog_order_product (product_uuid)');
         $this->addSql('CREATE TABLE catalog_product (uuid CHAR(36) NOT NULL --(DC2Type:uuid)
@@ -61,7 +61,7 @@ final class Version20231006215241 extends AbstractMigration
         , quantity DOUBLE PRECISION DEFAULT \'1\' NOT NULL, quantityMin DOUBLE PRECISION DEFAULT \'1\' NOT NULL, stock DOUBLE PRECISION DEFAULT \'0\' NOT NULL, country VARCHAR(255) DEFAULT \'\' NOT NULL, manufacturer VARCHAR(255) DEFAULT \'\' NOT NULL, tags CLOB DEFAULT \'{}\' NOT NULL --(DC2Type:json)
         , "order" INTEGER DEFAULT 1 NOT NULL, status VARCHAR(100) DEFAULT \'work\' NOT NULL --(DC2Type:CatalogProductStatusType)
         , date DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, meta CLOB DEFAULT \'{}\' NOT NULL --(DC2Type:json)
-        , external_id VARCHAR(255) DEFAULT \'\' NOT NULL, export VARCHAR(64) DEFAULT \'manual\' NOT NULL, PRIMARY KEY(uuid), CONSTRAINT FK_DCF8F9815AE42AE1 FOREIGN KEY (category_uuid) REFERENCES catalog_category (uuid) NOT DEFERRABLE INITIALLY IMMEDIATE)');
+        , external_id VARCHAR(255) DEFAULT \'\' NOT NULL, export VARCHAR(64) DEFAULT \'manual\' NOT NULL, PRIMARY KEY(uuid), CONSTRAINT FK_DCF8F9815AE42AE1 FOREIGN KEY (category_uuid) REFERENCES catalog_category (uuid) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE)');
         $this->addSql('CREATE INDEX catalog_product_address_idx ON catalog_product (address)');
         $this->addSql('CREATE INDEX catalog_product_category_idx ON catalog_product (category_uuid)');
         $this->addSql('CREATE INDEX catalog_product_price_idx ON catalog_product (price, priceFirst, priceWholesale)');
@@ -117,16 +117,16 @@ final class Version20231006215241 extends AbstractMigration
         , address VARCHAR(1000) DEFAULT \'\' NOT NULL, title VARCHAR(255) DEFAULT \'\' NOT NULL, date DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL, content CLOB DEFAULT \'{}\' NOT NULL --(DC2Type:json)
         , poll CLOB DEFAULT \'{}\' NOT NULL --(DC2Type:json)
         , meta CLOB DEFAULT \'{}\' NOT NULL --(DC2Type:json)
-        , external_id VARCHAR(255) DEFAULT \'\' NOT NULL, PRIMARY KEY(uuid), CONSTRAINT FK_AF3C6779ABFE1C6F FOREIGN KEY (user_uuid) REFERENCES user (uuid) NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_AF3C67795AE42AE1 FOREIGN KEY (category_uuid) REFERENCES publication_category (uuid) NOT DEFERRABLE INITIALLY IMMEDIATE)');
+        , external_id VARCHAR(255) DEFAULT \'\' NOT NULL, PRIMARY KEY(uuid), CONSTRAINT FK_AF3C6779ABFE1C6F FOREIGN KEY (user_uuid) REFERENCES user (uuid) NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_AF3C67795AE42AE1 FOREIGN KEY (category_uuid) REFERENCES publication_category (uuid) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE)');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_AF3C6779D4E6F81 ON publication (address)');
         $this->addSql('CREATE INDEX IDX_AF3C6779ABFE1C6F ON publication (user_uuid)');
         $this->addSql('CREATE INDEX IDX_AF3C67795AE42AE1 ON publication (category_uuid)');
         $this->addSql('CREATE TABLE publication_category (uuid CHAR(36) NOT NULL --(DC2Type:uuid)
         , parent_uuid CHAR(36) DEFAULT NULL --(DC2Type:uuid)
-        , address VARCHAR(1000) DEFAULT \'\' NOT NULL, title VARCHAR(255) DEFAULT \'\' NOT NULL, description CLOB DEFAULT \'\' NOT NULL, pagination INTEGER DEFAULT 10 NOT NULL, children BOOLEAN DEFAULT 0 NOT NULL, public BOOLEAN DEFAULT 1 NOT NULL, sort CLOB DEFAULT \'{}\' NOT NULL --(DC2Type:json)
+        , address VARCHAR(1000) DEFAULT \'\' NOT NULL, title VARCHAR(255) DEFAULT \'\' NOT NULL, description CLOB DEFAULT \'\' NOT NULL, pagination INTEGER DEFAULT 10 NOT NULL, children BOOLEAN DEFAULT 1 NOT NULL, public BOOLEAN DEFAULT 1 NOT NULL, sort CLOB DEFAULT \'{}\' NOT NULL --(DC2Type:json)
         , meta CLOB DEFAULT \'{}\' NOT NULL --(DC2Type:json)
         , template CLOB DEFAULT \'{}\' NOT NULL --(DC2Type:json)
-        , PRIMARY KEY(uuid), CONSTRAINT FK_292BEC90EC9C6612 FOREIGN KEY (parent_uuid) REFERENCES publication_category (uuid) NOT DEFERRABLE INITIALLY IMMEDIATE)');
+        , PRIMARY KEY(uuid), CONSTRAINT FK_292BEC90EC9C6612 FOREIGN KEY (parent_uuid) REFERENCES publication_category (uuid) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE)');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_292BEC90D4E6F81 ON publication_category (address)');
         $this->addSql('CREATE INDEX IDX_292BEC90EC9C6612 ON publication_category (parent_uuid)');
         $this->addSql('CREATE TABLE reference (uuid CHAR(36) NOT NULL --(DC2Type:uuid)

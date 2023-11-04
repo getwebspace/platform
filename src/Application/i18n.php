@@ -59,6 +59,7 @@ class i18n
 
         // add default locale
         static::addLocaleFromFile('en-US', SRC_LOCALE_DIR . '/en-US.php');
+        $priority->insert('en-US', -10);
 
         // load
         static::$locale = static::load($priority);

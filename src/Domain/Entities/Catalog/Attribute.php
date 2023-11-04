@@ -113,7 +113,7 @@ class Attribute extends AbstractEntity
         $buf = $this->getProductAttributes();
 
         if ($categories) {
-            $buf = $buf->whereIn('product.category', $categories->pluck('uuid'));
+            $buf = $buf->whereIn('product.category_uuid', $categories->pluck('uuid'));
         }
 
         return $buf->pluck('product');
@@ -124,7 +124,7 @@ class Attribute extends AbstractEntity
         $buf = $this->getProductAttributes();
 
         if ($categories) {
-            $buf = $buf->whereIn('product.category', $categories->pluck('uuid'));
+            $buf = $buf->whereIn('product.category_uuid', $categories->pluck('uuid'));
         }
 
         return $buf->unique('value')->sortBy('value')->pluck('value');
@@ -135,7 +135,7 @@ class Attribute extends AbstractEntity
         $buf = $this->getProductAttributes();
 
         if ($categories) {
-            $buf = $buf->whereIn('product.category', $categories->pluck('uuid'));
+            $buf = $buf->whereIn('product.category_uuid', $categories->pluck('uuid'));
         }
 
         $result = collect();

@@ -4,6 +4,4 @@ namespace App\Domain\Plugin;
 
 use App\Domain\AbstractPlugin;
 
-abstract class AbstractPaymentPlugin extends AbstractPlugin
-{
-}
+abstract class AbstractPaymentPlugin extends AbstractPlugin {}

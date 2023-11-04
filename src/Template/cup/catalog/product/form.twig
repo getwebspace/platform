@@ -77,7 +77,7 @@
                                             'name': 'category',
                                             'message': '<a href="/cup/catalog/category/add" class="btn btn-xs btn-info float-right" onclick="return confirm(\'' ~ ('Are you sure you want to go to another page?'|locale) ~ '\');"><i class="fa fa-plus"></i> ' ~ ('Create category'|locale) ~ '</a>',
                                             'args': {
-                                                'option': categories.pluck('title', 'uuid').all(),
+                                                'option': categories.sortBy('title').pluck('title', 'uuid').all(),
                                                 'selected': item.category_uuid ?? category.uuid
                                             }
                                         } %}
@@ -89,7 +89,7 @@
                                             'name': 'type',
                                             'args': {
                                                 'option': _(constant('/App/Domain/Types/Catalog/ProductTypeType::LIST')),
-                                                'selected': constant('/App/Domain/Types/Catalog/ProductTypeType::TYPE_PRODUCT')
+                                                'selected': item.type ?? constant('/App/Domain/Types/Catalog/ProductTypeType::TYPE_PRODUCT'),
                                             }
                                         } %}
                                     </div>
@@ -257,7 +257,7 @@
                                             'type': 'number',
                                             'name': 'price',
                                             'args': {
-                                                'value': item.price|number_format(2, '.', ''),
+                                                'value': item.price ? item.price|number_format(2, '.', '') : '',
                                                 'placeholder': '1.0',
                                                 'step': 'any',
                                                 'min': '0',
@@ -271,7 +271,7 @@
                                             'type': 'number',
                                             'name': 'priceWholesale',
                                             'args': {
-                                                'value': item.priceWholesale|number_format(2, '.', ''),
+                                                'value': item.priceWholesale ? item.priceWholesale|number_format(2, '.', '') : '',
                                                 'placeholder': '1.0',
                                                 'step': 'any',
                                                 'min': '0',
@@ -285,7 +285,7 @@
                                             'type': 'number',
                                             'name': 'priceFirst',
                                             'args': {
-                                                'value': item.priceFirst|number_format(2, '.', ''),
+                                                'value': item.priceFirst ? item.priceFirst|number_format(2, '.', '') : '',
                                                 'placeholder': '1.0',
                                                 'step': 'any',
                                                 'min': '0',
@@ -299,7 +299,7 @@
                                             'type': 'number',
                                             'name': 'priceWholesaleFrom',
                                             'args': {
-                                                'value': item.priceWholesaleFrom|number_format(0, '.', ''),
+                                                'value': item.priceWholesaleFrom ? item.priceWholesaleFrom|number_format(0, '.', '') : '',
                                                 'placeholder': '0',
                                                 'step': 'any',
                                                 'min': '0',
@@ -317,7 +317,7 @@
                                             'type': 'select',
                                             'name': 'tax',
                                             'args': {
-                                                'option': collect({0: '---'}).union(tax_rates.pluck('title', 'value.rate').all()),
+                                                'option': collect({0: '---'}).union(tax_rates.pluck('title', 'value.rate')),
                                                 'selected': item.tax,
                                             }
                                         } %}
@@ -347,7 +347,7 @@
                                             'name': 'quantity',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Default step for adding to the cart'|locale) ~ '"></i>',
                                             'args': {
-                                                'value': item.quantity ? item.quantity|number_format(2, '.', '') : '',
+                                                'value': item.quantity ? item.quantity|number_format(2, '.', '') : 1,
                                                 'placeholder': '1.00',
                                                 'step': 'any',
                                                 'min': '0',
@@ -361,7 +361,7 @@
                                             'name': 'quantityMin',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Force a minimum ordered amount'|locale) ~ '"></i>',
                                             'args': {
-                                                'value': item.quantityMin ? item.quantityMin|number_format(2, '.', '') : '',
+                                                'value': item.quantityMin ? item.quantityMin|number_format(2, '.', '') : 1,
                                                 'placeholder': '1.00',
                                                 'step': 'any',
                                                 'min': '0',
@@ -459,7 +459,7 @@
                                 {% if category.hasAttributes() %}
                                     <div class="row">
                                         {% for attribute in category.getAttributes().where('type', '!=', 'boolean').sortBy('title') %}
-                                            <div class="col-12 col-sm-6">
+                                            <div class="col-12 col-sm-6 col-xl-3">
                                                 {% include 'cup/form.twig' with {
                                                     'label': attribute.title,
                                                     'type': attribute.type == 'string' ? 'text' : 'number',
@@ -474,7 +474,7 @@
 
                                     <div class="row">
                                         {% for attribute in category.getAttributes().where('type', '==', 'boolean') %}
-                                            <div class="col-12 col-sm-6">
+                                            <div class="col-12 col-sm-6 col-xl-3">
                                                 <div data-input="" class="form-group ">
                                                     <label class="placeholder">
                                                         <b>{{ attribute.title }}</b>
@@ -551,7 +551,7 @@
                                             'type': 'number',
                                             'name': 'order',
                                             'args': {
-                                                'value': item.order is not empty ? item.order : '1',
+                                                'value': item.order ? item.order : '1',
                                                 'placeholder': '1',
                                                 'min': '0'
                                             }
