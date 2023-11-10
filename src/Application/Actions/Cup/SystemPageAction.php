@@ -156,8 +156,6 @@ class SystemPageAction extends AbstractAction
                     ['title' => __('Gram'), 'value' => ['unit' => __('g'), 'value' => 1]],
                     ['title' => __('Ounce'), 'value' => ['unit' => __('oz'), 'value' => 35.2739]],
                     ['title' => __('Pound'), 'value' => ['unit' => __('lb'), 'value' => 2.2046]],
-                    ['title' => __('Liter'), 'value' => ['unit' => __('l'), 'value' => 1000]],
-                    ['title' => __('Milliliter'), 'value' => ['unit' => __('ml'), 'value' => 1]],
                 ];
                 foreach ($weight_class as $i => $el) {
                     try {
@@ -171,9 +169,10 @@ class SystemPageAction extends AbstractAction
                 }
 
                 $length_class = [
-                    ['title' => __('Inch'), 'value' => ['unit' => __('inch'), 'value' => 0.3937]],
+                    ['title' => __('Meter'), 'value' => ['unit' => __('m'), 'value' => 100.0000]],
                     ['title' => __('Centimeter'), 'value' => ['unit' => __('cm'), 'value' => 1.0000]],
-                    ['title' => __('Millimeter'), 'value' => ['unit' => __('mm'), 'value' => 10.0000]],
+                    ['title' => __('Millimeter'), 'value' => ['unit' => __('mm'), 'value' => 0.1000]],
+                    ['title' => __('Inch'), 'value' => ['unit' => __('inch'), 'value' => 2.5400]],
                 ];
                 foreach ($length_class as $i => $el) {
                     try {

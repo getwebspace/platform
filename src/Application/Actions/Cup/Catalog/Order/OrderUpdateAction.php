@@ -58,7 +58,7 @@ class OrderUpdateAction extends CatalogAction
                 return $this->respondWithTemplate('cup/catalog/order/form.twig', [
                     'order' => $order,
                     'groups' => $this->userGroupService->read(),
-                    'status_list' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_ORDER_STATUS]),
+                    'status_list' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_ORDER_STATUS, 'status' => true, 'order' => ['order' => 'asc']]),
                 ]);
             } catch (OrderNotFoundException $e) {
                 // nothing

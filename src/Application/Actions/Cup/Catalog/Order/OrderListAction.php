@@ -38,9 +38,7 @@ class OrderListAction extends CatalogAction
             'date' => ['from' => $data['from'], 'to' => $data['to']],
             'list' => collect($query->getQuery()->getResult()),
             'status' => $data['status'],
-            'status_list' => $this->referenceService->read([
-                'type' => ReferenceTypeType::TYPE_ORDER_STATUS,
-            ]),
+            'status_list' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_ORDER_STATUS, 'status' => true, 'order' => ['order' => 'asc']]),
         ]);
     }
 }
