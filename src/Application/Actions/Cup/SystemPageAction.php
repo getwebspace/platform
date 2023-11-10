@@ -239,8 +239,8 @@ class SystemPageAction extends AbstractAction
                     'value' => INVOICE_TEMPLATE,
                 ]);
                 $this->container->get(ParameterService::class)->create([
-                    'key' => 'catalog_shipping',
-                    'value' => SHIPPING_TEMPLATE,
+                    'key' => 'catalog_dispatch',
+                    'value' => DISPATCH_TEMPLATE,
                 ]);
             }
         }
@@ -402,7 +402,7 @@ const INVOICE_TEMPLATE = <<<'EOD'
     </div>
 EOD;
 
-const SHIPPING_TEMPLATE = <<<'EOD'
+const DISPATCH_TEMPLATE = <<<'EOD'
     <div class="m-5">
         <div class="row">
             <div class="col-12 text-center">
