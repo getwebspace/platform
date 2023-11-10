@@ -1,13 +1,13 @@
-{% if parameter('integration_recaptcha', 'off') == 'on' %}
+{% if parameter('recaptcha_is_enabled', 'off') == 'on' %}
     {% htmlcompress %}
-        <script src="https://www.google.com/recaptcha/api.js?render={{ parameter('integration_recaptcha_public') }}"></script>
+        <script src="https://www.google.com/recaptcha/api.js?render={{ parameter('recaptcha_public') }}"></script>
         <script>
             grecaptcha.ready(() => {
                 // Just get token
                 // Usage: let token = await window.getRCToken();
                 grecaptcha.getToken = async function () {
                     console.debug('reCAPTCHA token');
-                    let token = await grecaptcha.execute('{{ parameter('integration_recaptcha_public') }}');
+                    let token = await grecaptcha.execute('{{ parameter('recaptcha_public') }}');
                     console.debug('reCAPTCHA token: done');
 
                     return token;

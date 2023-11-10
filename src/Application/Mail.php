@@ -22,6 +22,7 @@ class Mail
             'attachments' => [],
 
             // sendpulse section
+            'sendpulse_is_enabled' => 'off',
             'sendpulse_id' => '',
             'sendpulse_secret' => '',
 
@@ -37,7 +38,7 @@ class Mail
         $data = array_merge($default, $data);
 
         return match (true) {
-            $data['sendpulse_id'] && $data['sendpulse_secret'] => SPProvider::send($data),
+            $data['sendpulse_is_enabled'] && $data['sendpulse_id'] && $data['sendpulse_secret'] => SPProvider::send($data),
             default => SMTPProvider::send($data),
         };
     }
