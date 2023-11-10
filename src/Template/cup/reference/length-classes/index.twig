@@ -28,7 +28,7 @@
                         {% block thead %}
                             <div class="col col-sm-1 d-none d-sm-block">#</div>
                             <div class="col">{{ 'Title'|locale }}</div>
-                            <div class="col-2 text-center">{{ 'Utit'|locale }}</div>
+                            <div class="col-2 text-center">{{ 'Unit'|locale }}</div>
                             <div class="col-2 text-right">{{ 'Value'|locale }}</div>
                             <div class="col-4 col-sm-3 text-right"></div>
                         {% endblock %}
@@ -41,6 +41,9 @@
                                         {{ item.title }}
 
                                         <div class="text-black-50 float-right d-none d-lg-inline">
+                                            {% if item.value.value == 1 %}
+                                                <i class="fas fa-check" data-toggle="tooltip" data-placement="right" title="{{ 'Default length'|locale }}"></i>
+                                            {% endif %}
                                             {% if item.status == 0 %}
                                                 <i class="fas fa-eye-slash" data-toggle="tooltip" data-placement="right" title="{{ 'Disabled'|locale }}"></i>
                                             {% endif %}

@@ -369,9 +369,9 @@ abstract class AbstractAction
      */
     protected function isRecaptchaChecked(): bool
     {
-        if ($this->isPost() && $this->parameter('integration_recaptcha', 'off') === 'on') {
+        if ($this->isPost() && $this->parameter('recaptcha_is_enabled', 'off') === 'on') {
             $query = http_build_query([
-                'secret' => $this->parameter('integration_recaptcha_private'),
+                'secret' => $this->parameter('recaptcha_private'),
                 'response' => $this->getParam('recaptcha', ''),
                 'remoteip' => $this->getRequestRemoteIP(),
             ]);

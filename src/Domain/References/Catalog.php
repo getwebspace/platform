@@ -74,4 +74,10 @@ class Catalog
         self::PRODUCT_PRICE_TYPE_PRICE_WHOLESALE,
         self::PRODUCT_PRICE_TYPE_PRICE_SELF,
     ];
+
+    // list of product price types
+    public const PRODUCT_PRICE_TYPE_USER_SELECT = [
+        self::PRODUCT_PRICE_TYPE_PRICE,
+        self::PRODUCT_PRICE_TYPE_PRICE_WHOLESALE,
+    ];
 }

@@ -46,9 +46,9 @@
                             </div>
                             <div class="col-md-12">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Adress format'|locale,
+                                    'label': 'Address format'|locale,
                                     'type': 'select',
-                                    'name': 'value[adress_format]',
+                                    'name': 'value[address_format]',
                                     'args': {
                                         'required': true,
                                         'value': item.order is not empty ? item.order : list.count() + 1,

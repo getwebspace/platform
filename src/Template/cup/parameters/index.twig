@@ -69,7 +69,8 @@
                                             <a class="nav-link"         data-toggle="pill" href="#other-search">{{ 'Search Options'|locale }}</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-guestbook">{{ 'Guestbook'|locale }}</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-api">{{ 'API'|locale }}</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#plugins-recaptcha">reCAPTCHA</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#other-sendpulse">SendPulse</a>
+                                            <a class="nav-link"         data-toggle="pill" href="#other-recaptcha">reCAPTCHA</a>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-sm-7 col-md-8 mt-3 mt-sm-0">
@@ -238,99 +239,53 @@
                                                     'name': 'mail[subject]',
                                                 } %}
 
-                                                <ul class="nav nav-pills nav-info justify-content-end" role="tablist">
-                                                    <li class="nav-item">
-                                                        <a class="nav-link active show" data-toggle="pill" href="#other-mail-smtp" role="tab">
-                                                            {{ 'SMTP'|locale }}
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="nav-link" data-toggle="pill" href="#other-mail-sendpulse" role="tab">
-                                                            {{ 'SendPulse'|locale }}
-                                                        </a>
-                                                    </li>
-                                                </ul>
-
                                                 <hr>
 
-                                                <div class="tab-content">
+                                                <p>{% locale %}Setup SMTP or use SendPulse{% endlocale %}</p>
 
-                                                    {# TAB: SMTP #}
-                                                    <div class="tab-pane fade show active" id="other-mail-smtp" role="tabpanel">
-                                                        {% include 'cup/parameters/field.twig' with {
-                                                            'label': 'SMTP server host',
-                                                            'description': 'Usually - localhost',
-                                                            'type': 'text',
-                                                            'name': 'smtp[host]',
-                                                            'args': {
-                                                                'placeholder': 'smtp.gmail.com'
-                                                            }
-                                                        } %}
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'SMTP server host',
+                                                    'description': 'Usually - localhost',
+                                                    'type': 'text',
+                                                    'name': 'smtp[host]',
+                                                    'args': {
+                                                        'placeholder': 'smtp.gmail.com'
+                                                    }
+                                                } %}
 
-                                                        {% include 'cup/parameters/field.twig' with {
-                                                            'label': 'SMTP server port',
-                                                            'description': 'Usually — 465',
-                                                            'type': 'select',
-                                                            'name': 'smtp[port]',
-                                                            'args': {
-                                                                'option': {'25':25, '587':587, '465':465}
-                                                            }
-                                                        } %}
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'SMTP server port',
+                                                    'description': 'Usually — 465',
+                                                    'type': 'select',
+                                                    'name': 'smtp[port]',
+                                                    'args': {
+                                                        'option': {'25':25, '587':587, '465':465}
+                                                    }
+                                                } %}
 
-                                                        {% include 'cup/parameters/field.twig' with {
-                                                            'label': 'Use secure protocol to send emails through SMTP server',
-                                                            'description': 'Select the encryption protocol when sending emails using an SMTP server',
-                                                            'type': 'select',
-                                                            'name': 'smtp[secure]',
-                                                            'args': {
-                                                                'option': {'':'---', 'ssl':'SSL', 'tls':'TLS'}
-                                                            }
-                                                        } %}
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Use secure protocol to send emails through SMTP server',
+                                                    'description': 'Select the encryption protocol when sending emails using an SMTP server',
+                                                    'type': 'select',
+                                                    'name': 'smtp[secure]',
+                                                    'args': {
+                                                        'option': {'':'---', 'ssl':'SSL', 'tls':'TLS'}
+                                                    }
+                                                } %}
 
-                                                        {% include 'cup/parameters/field.twig' with {
-                                                            'label': 'SMTP username',
-                                                            'description': 'Not required in most cases when using "localhost"',
-                                                            'type': 'text',
-                                                            'name': 'smtp[login]',
-                                                        } %}
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'SMTP username',
+                                                    'description': 'Not required in most cases when using "localhost"',
+                                                    'type': 'text',
+                                                    'name': 'smtp[login]',
+                                                } %}
 
-                                                        {% include 'cup/parameters/field.twig' with {
-                                                            'label': 'SMTP password',
-                                                            'description': 'Not required in most cases when using "localhost"',
-                                                            'type': 'text',
-                                                            'name': 'smtp[pass]',
-                                                        } %}
-                                                    </div>
-
-                                                    {# TAB: SendPulse #}
-                                                    <div class="tab-pane fade" id="other-mail-sendpulse" role="tabpanel">
-                                                        <p>
-                                                            {% locale %}
-                                                                The required parameters can be found in
-                                                                the account settings, in
-                                                            {% endlocale %}
-                                                            <a href="https://login.sendpulse.com/settings/#api" target="_blank">{{ 'the API tab'|locale }}</a>.
-                                                        </p>
-
-                                                        {% include 'cup/parameters/field.twig' with {
-                                                            'label': 'Client ID',
-                                                            'type': 'text',
-                                                            'name': 'sendpulse[id]',
-                                                            'args': {
-                                                                'placeholder': '70e07ce45532e8acae69f385de908449'
-                                                            }
-                                                        } %}
-
-                                                        {% include 'cup/parameters/field.twig' with {
-                                                            'label': 'Client Secret',
-                                                            'type': 'text',
-                                                            'name': 'sendpulse[secret]',
-                                                            'args': {
-                                                                'placeholder': '5d8f75e2ea712abccc5b9bfcc9453acc'
-                                                            }
-                                                        } %}
-                                                    </div>
-                                                </div>
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'SMTP password',
+                                                    'description': 'Not required in most cases when using "localhost"',
+                                                    'type': 'text',
+                                                    'name': 'smtp[pass]',
+                                                } %}
                                             </div>
 
                                             {# TAB: Other Files and Image #}
@@ -661,13 +616,53 @@
                                                 </div>
                                             </div>
 
-                                            {# TAB: Plugin recaptcha #}
-                                            <div class="tab-pane fade show active" id="plugins-recaptcha">
+                                            {# TAB: SendPulse #}
+                                            <div class="tab-pane fade" id="other-sendpulse">
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Turning SendPulse on and off',
+                                                    'type': 'select',
+                                                    'name': 'sendpulse[is_enabled]',
+                                                    'args': {
+                                                        'option': _(['off', 'on'])
+                                                    }
+                                                } %}
+
+                                                <hr/>
+
+                                                <p>
+                                                    {% locale %}
+                                                        The required parameters can be found in
+                                                        the account settings, in
+                                                    {% endlocale %}
+                                                    <a href="https://login.sendpulse.com/settings/#api" target="_blank">{{ 'the API tab'|locale }}</a>.
+                                                </p>
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Client ID',
+                                                    'type': 'text',
+                                                    'name': 'sendpulse[id]',
+                                                    'args': {
+                                                        'placeholder': '70e07ce45532e8acae69f385de908449'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Client Secret',
+                                                    'type': 'text',
+                                                    'name': 'sendpulse[secret]',
+                                                    'args': {
+                                                        'placeholder': '5d8f75e2ea712abccc5b9bfcc9453acc'
+                                                    }
+                                                } %}
+                                            </div>
+
+                                            {# TAB: reCAPTCHA #}
+                                            <div class="tab-pane fade" id="other-recaptcha">
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Turning reCAPTCHA on and off',
                                                     'description': 'Robot protection',
                                                     'type': 'select',
-                                                    'name': 'integration[recaptcha]',
+                                                    'name': 'recaptcha[is_enabled]',
                                                     'args': {
                                                         'option': _(['off', 'on'])
                                                     }
@@ -679,7 +674,7 @@
                                                     'label': 'Public key of the reCAPTCHA service',
                                                     'description': 'This key will be used in the HTML code of the site for users devices',
                                                     'type': 'text',
-                                                    'name': 'integration[recaptcha_public]',
+                                                    'name': 'recaptcha[public]',
                                                     'args': {
                                                         'placeholder': '6Le_gY8UAAAAAKv9EUVJxlAQTchtx2ACG6B616Eu'
                                                     }
@@ -689,7 +684,7 @@
                                                     'label': 'reCAPTCHA secret key',
                                                     'description': 'This key is needed for communication between the site and the reCAPTCHA service. Do not tell it to anyone',
                                                     'type': 'text',
-                                                    'name': 'integration[recaptcha_private]',
+                                                    'name': 'recaptcha[private]',
                                                     'args': {
                                                         'placeholder': '6Le_gY8UAAAAAAx1_Lv3aKo-L1QnxE2QWhOHCgxS'
                                                     }
@@ -1285,7 +1280,6 @@
 
                             {# TAB: Variables #}
                             <div class="tab-pane fade" id="variables" role="tabpanel">
-
                                 <div class="row">
                                     <div class="col-xs-12 col-sm-6">
                                         <p>

@@ -87,13 +87,13 @@
                                 'insertTable', 'insertLink', 'insertImage', 'insertVideo', 'embedly', 'insertFile', '|', 'clearFormatting', '|', 'undo', 'redo', '|', 'html'
                             ],
 
-                            fileMaxSize: 1024 * 1024 * 3,
+                            fileMaxSize: 1024 * 1024 * 30,
                             fileUploadMethod: 'POST',
                             fileUploadParam: 'file',
                             fileUploadParams: {'path_only': true},
                             fileUploadURL: '/file/upload',
 
-                            imageMaxSize: 5 * 1024 * 1024,
+                            imageMaxSize: 1024 * 1024 * 30,
                             imageAllowedTypes: ['jpeg', 'jpg', 'png'],
                             imageUploadMethod: 'POST',
                             imageUploadParam: 'image',
@@ -103,7 +103,7 @@
                             imageManagerDeleteURL: '/cup/file/image/delete',
 
                             videoAllowedProviders: ['youtube', 'vimeo'],
-                            videoMaxSize: 1024 * 1024 * 15,
+                            videoMaxSize: 1024 * 1024 * 30,
                             videoAllowedTypes: ['mp4', 'webm'],
                             videoUploadMethod: 'POST',
                             videoUploadParam: 'video',

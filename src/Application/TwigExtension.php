@@ -636,10 +636,12 @@ class TwigExtension extends AbstractExtension
                 $length_class = $this->reference(ReferenceTypeType::TYPE_LENGTH_CLASS)->firstWhere('value.unit', $dimension['length_class']);
                 $length_value = $length_class ? $length_class->getValue()['value'] : 1;
 
-                return
-                    ($dimension['length'] / $length_value) *
-                    ($dimension['width'] / $length_value) *
-                    ($dimension['height'] / $length_value) / $ratio;
+                return round(
+                    ($dimension['length'] * $length_value) *
+                    ($dimension['width'] * $length_value) *
+                    ($dimension['height'] * $length_value) / $ratio,
+                    4
+                );
             }
         }
 

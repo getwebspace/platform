@@ -63,7 +63,7 @@ class OrderCreateAction extends CatalogAction
 
         return $this->respondWithTemplate('cup/catalog/order/form.twig', [
             'groups' => $this->userGroupService->read(),
-            'status_list' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_ORDER_STATUS]),
+            'status_list' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_ORDER_STATUS, 'status' => true, 'order' => ['order' => 'asc']]),
         ]);
     }
 }
