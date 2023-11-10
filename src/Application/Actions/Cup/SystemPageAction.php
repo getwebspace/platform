@@ -171,7 +171,7 @@ class SystemPageAction extends AbstractAction
                 }
 
                 $length_class = [
-                    ['title' => __('Inch'), 'value' => ['unit' => __('kg'), 'value' => 0.3937]],
+                    ['title' => __('Inch'), 'value' => ['unit' => __('inch'), 'value' => 0.3937]],
                     ['title' => __('Centimeter'), 'value' => ['unit' => __('cm'), 'value' => 1.0000]],
                     ['title' => __('Millimeter'), 'value' => ['unit' => __('mm'), 'value' => 10.0000]],
                 ];
