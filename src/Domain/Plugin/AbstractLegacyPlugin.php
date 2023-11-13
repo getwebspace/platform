@@ -8,19 +8,28 @@ use Slim\Psr7\Response;
 
 abstract class AbstractLegacyPlugin extends AbstractPlugin
 {
-    /**
-     * The function will be executed BEFORE processing the selected group of routes
-     */
-    public function before(Request $request, string $routeName): void
+    public bool $routes = false;
+
+    private array $handledRoutes = [];
+
+    protected function setHandledRoute(...$name): void
     {
-        // empty method
+        $this->routes = true;
+        $this->handledRoutes = array_merge($this->handledRoutes, $name);
+    }
+
+    public function getHandledRoute(): array
+    {
+        return $this->handledRoutes;
     }
 
     /**
-     * The function will be executed AFTER processing the selected group of routes
+     * The function will be executed BEFORE processing the selected route
      */
-    public function after(Request $request, Response $response, string $routeName): Response
-    {
-        return $response;
-    }
+    abstract public function before(Request $request, string $routeName): void;
+
+    /**
+     * The function will be executed AFTER processing the selected route
+     */
+    abstract function after(Request $request, Response $response, string $routeName): Response;
 }
