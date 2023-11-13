@@ -172,17 +172,25 @@ class EntityAction extends ActionApi
 
     private function getParamsQuery(): array
     {
-        $params = [
+        $default = [
             'status' => 'work',
             'order' => [],
             'limit' => 1000,
             'offset' => 0,
         ];
+        $params = $this->request->getQueryParams();
+
+        // fix nullable values
+        foreach ($params as &$value) {
+            if ($value === 'null') {
+                $value = null;
+            }
+        }
 
         return array_merge(
-            $params,
+            $default,
             $this->getUser(),
-            $this->request->getQueryParams(),
+            $params,
         );
     }
 
