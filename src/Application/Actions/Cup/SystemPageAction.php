@@ -413,7 +413,7 @@ const DISPATCH_TEMPLATE = <<<'EOD'
                 {{ 'Order'|locale }}: <b>{{ order.external_id ?: order.serial }}</b><br />
                 {{ 'Date'|locale }}: <b>{{ order.date|df('d.m.Y H:i') }}</b><br />
                 {{ 'Shipping'|locale }}: <b>{{ order.shipping|df('d.m.Y H:i') }}</b><br />
-                {{ 'Total price'|locale }}: <b>{{ order.getTotalPrice()|number_format(2, '.', ' ') }}</b>
+                {{ 'Total price'|locale }}: <b>{{ order.getTotalPriceCalculated()|number_format(2, '.', ' ') }}</b>
             </div>
             <div class="col-6 text-right">
                 {{ order.delivery.client }}<br />

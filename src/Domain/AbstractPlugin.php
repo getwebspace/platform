@@ -33,8 +33,6 @@ abstract class AbstractPlugin
 
     private RouteCollectorInterface $router;
 
-    private array $handledRoutes = [];
-
     private array $settingsField = [];
 
     public bool $script = false;
@@ -50,8 +48,6 @@ abstract class AbstractPlugin
     private array $sidebars = [];
 
     public bool $navigation = false;
-
-    public bool $routes = false;
 
     /**
      * @throws \Psr\Container\NotFoundExceptionInterface
@@ -117,17 +113,6 @@ abstract class AbstractPlugin
         if (realpath($path) !== false) {
             $this->renderer->getLoader()->addPath($path);
         }
-    }
-
-    protected function setHandledRoute(...$name): void
-    {
-        $this->routes = true;
-        $this->handledRoutes = array_merge($this->handledRoutes, $name);
-    }
-
-    public function getHandledRoute(): array
-    {
-        return $this->handledRoutes;
     }
 
     /**
