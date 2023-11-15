@@ -3,11 +3,11 @@
         {% include 'cup/form.twig' with {
             'label': 'Service'|locale,
             'type': 'select',
-            'name': 'value[' ~ (loop.index0 ?? 0) ~ '][product]',
+            'name': 'value[' ~ (loop.index0 ?? 0) ~ '][uuid]',
             'args': {
                 'required': true,
                 'option': products,
-                'selected': pair.product,
+                'selected': pair.uuid,
             }
         } %}
     </div>
