@@ -213,12 +213,14 @@ class OrderProduct extends AbstractEntity
             'address' => $this->product->getAddress(),
             'vendorCode' => $this->product->getVendorCode(),
             'external_id' => $this->product->getExternalId(),
-            'price' => $this->getPrice(),
+            'count' => $this->getCount(),
             'price_type' => $this->getPriceType(),
+            'price' => $this->getPrice(),
+            'price_calculated' => $this->getPriceCalculated(),
             'discount' => $this->getDiscount(),
             'tax' => $this->getTax(),
-            'count' => $this->getCount(),
             'total' => $this->getTotal(),
+            'total_calculated' => $this->getTotalCalculated(),
             'files' => $this->product->getFiles(),
         ]);
     }
