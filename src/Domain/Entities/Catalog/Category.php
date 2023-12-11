@@ -487,7 +487,7 @@ class Category extends AbstractEntity
             'external_id' => $this->external_id,
             'export' => $this->export,
             'system' => $this->system,
-            'attributes' => $this->attributes,
+            'attributes' => $this->getAttributes()->keyBy('address'),
             'files' => $this->files,
         ]);
     }

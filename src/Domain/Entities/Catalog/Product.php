@@ -699,7 +699,7 @@ class Product extends AbstractEntity
             'quantity' => $this->quantity,
             'quantityMin' => $this->quantityMin,
             'stock' => $this->stock,
-            'attributes' => $this->attributes,
+            'attributes' => $this->getAttributes()->keyBy('address'),
             'country' => $this->country,
             'manufacturer' => $this->manufacturer,
             'tags' => $this->tags,
