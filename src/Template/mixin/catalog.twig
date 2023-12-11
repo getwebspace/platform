@@ -397,12 +397,12 @@
                                     (typeof item.condition === 'string' && total >= parseFloat(item.condition)) ||
                                     (typeof item.condition === 'boolean' && item.condition.toString() === 'true')
                                 ) {
-                                    let properties = getItemPropertiesFromJQuery($(getSelector('item', item.product)));
+                                    let properties = getItemPropertiesFromJQuery($(getSelector('item', item.uuid)));
 
                                     $collect = $collect.add(
                                         $('<option>')
                                             .prop('selected', selected && selected === type)
-                                            .data('uuid', item.product)
+                                            .data('uuid', item.uuid)
                                             .val(type)
                                             .text(properties.title)
                                     );
