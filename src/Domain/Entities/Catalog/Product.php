@@ -453,6 +453,7 @@ class Product extends AbstractEntity
      * @var array
      */
     #[ORM\OneToMany(targetEntity: 'App\Domain\Entities\Catalog\ProductAttribute', mappedBy: 'product', orphanRemoval: true)]
+    #[ORM\OrderBy(['attribute_uuid' => 'ASC'])]
     protected $attributes = [];
 
     public function hasAttributes(): int
