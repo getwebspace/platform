@@ -424,7 +424,7 @@
                             // first remove exist
                             for (let type in options.delivery) {
                                 for (let item of options.delivery[type]) {
-                                    this.cartRemoveItemByField(item.product, 'uuid');
+                                    this.cartRemoveItemByField(item.uuid, 'uuid');
                                 }
                             }
 
@@ -441,7 +441,7 @@
                             // remove exist
                             for (let type in options.delivery) {
                                 for (let item of options.delivery[type]) {
-                                    this.cartRemoveItemByField(item.product, 'uuid');
+                                    this.cartRemoveItemByField(item.uuid, 'uuid');
                                 }
                             }
 
