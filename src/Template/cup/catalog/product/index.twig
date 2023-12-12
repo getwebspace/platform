@@ -50,7 +50,7 @@
                             {% for item in products %}
                                 <div class="row">
                                     <div class="col-12 col-sm">
-                                        {{ item.title|u.truncate(35, '...') }}
+                                        {{ item.title|u.truncate(42, '...') }}
 
                                         <div class="float-right d-none d-md-block">
                                             {% if item.special %}
