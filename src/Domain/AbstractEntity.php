@@ -8,7 +8,7 @@ abstract class AbstractEntity implements \JsonSerializable
 {
     protected function validName($str)
     {
-        return preg_match('/^[\p{L}\p{N}\s\-\.\':,!?()]+$/u', $str);
+        return preg_match('/^[^!@#$%^&*()_+={}[\]:;<>,.?~\\/]+$/u', $str);
     }
 
     protected function validText($str)
