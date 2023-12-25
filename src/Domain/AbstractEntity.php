@@ -179,11 +179,6 @@ abstract class AbstractEntity implements \JsonSerializable
         return [];
     }
 
-    public function get($key)
-    {
-        return array_get($this->toArray(), $key);
-    }
-
     public function clone(): self
     {
         return clone $this;
