@@ -51,7 +51,7 @@ class ProductRepository extends AbstractRepository
     public function findOneUnique(string $category, string $address, array $dimension, string $external_id): ?Product
     {
         $query = $this->createQueryBuilder('c')
-            ->andWhere('c.category_uuid = :category')->setParameter('category', $category, Types::STRING)
+            ->andWhere('c.category_uuid = :uuid')->setParameter('uuid', $category, Types::STRING)
             ->andWhere('c.address = :address')->setParameter('address', $address, Types::STRING)
             ->andWhere('c.dimension = :dimension')->setParameter('dimension', $dimension, Types::JSON)
             ->andWhere('c.external_id = :external_id')->setParameter('external_id', $external_id, Types::STRING)

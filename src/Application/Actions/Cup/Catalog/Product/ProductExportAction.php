@@ -53,7 +53,7 @@ class ProductExportAction extends CatalogAction
 
                     $category = $categories->firstWhere('uuid', $category);
                     $products = $this->catalogProductService->read([
-                        'category' => $category->getNested($categories)->pluck('uuid')->all(),
+                        'category_uuid' => $category->getNested($categories)->pluck('uuid')->all(),
                         'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
                         'order' => [
                             'order' => 'ASC',

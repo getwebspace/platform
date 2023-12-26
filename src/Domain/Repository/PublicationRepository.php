@@ -20,7 +20,8 @@ class PublicationRepository extends AbstractRepository
     {
         if (\Ramsey\Uuid\Uuid::isValid((string) $uuid)) {
             $query = $this->createQueryBuilder('p')
-                ->andWhere('p.category_uuid = :category')->setParameter('category', (string) $uuid, \Ramsey\Uuid\Doctrine\UuidType::NAME)
+                ->andWhere('p.category_uuid = :uuids')
+                ->setParameter('uuids', (string) $uuid, \Ramsey\Uuid\Doctrine\UuidType::NAME)
                 ->getQuery();
 
             return $query->getArrayResult();

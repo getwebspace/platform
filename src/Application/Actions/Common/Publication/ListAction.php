@@ -26,16 +26,16 @@ class ListAction extends AbstractAction
                 // publication category
                 case '':
                     $category = $categories->firstWhere('address', $params['category']);
-                    $childrenCategories = $category->getNested($categories)->pluck('uuid')->all();
+                    $childrenCategories = $category->getNested($categories)->pluck('uuid');
                     $order = $category->sort['by'] ?? \App\Domain\References\Publication::ORDER_BY_DATE;
                     $direction = $category->sort['direction'] ?? \App\Domain\References\Publication::ORDER_DIRECTION_ASC;
 
                     $qb = $this->entityManager->createQueryBuilder();
                     $query = $qb
                         ->from(\App\Domain\Entities\Publication::class, 'p')
-                        ->where('p.category IN (:category)')
+                        ->where('p.category_uuid IN (:uuids)')
                         ->andWhere('p.date <= :now')
-                        ->setParameter('category', $childrenCategories)
+                        ->setParameter('uuids', $childrenCategories)
                         ->setParameter('now', datetime('now', 'UTC'))
                         ->orderBy('p.' . $order, $direction)
                         ->setFirstResult($params['offset'] * $category->pagination)

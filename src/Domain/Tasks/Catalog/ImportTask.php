@@ -148,7 +148,7 @@ class ImportTask extends AbstractTask
                                             array_merge(
                                                 $create,
                                                 [
-                                                    'category' => $category->getUuid(),
+                                                    'category' => $category,
                                                     'date' => $now,
                                                     'export' => 'excel',
                                                     'attributes' => $data

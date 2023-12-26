@@ -56,9 +56,9 @@ class ListAction extends CatalogAction
             $query = $qb
                 ->from(\App\Domain\Entities\Catalog\Product::class, 'p')
                 ->where('p.status = :status')
-                ->andWhere('p.category IN (:category)')
+                ->andWhere('p.category_uuid IN (:uuids)')
                 ->setParameter('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK, \App\Domain\Types\Catalog\ProductStatusType::NAME)
-                ->setParameter('category', $categories->pluck('uuid'));
+                ->setParameter('uuids', $categories->pluck('uuid'));
 
             $products = collect($query->select('p')->getQuery()->getResult());
 
@@ -190,9 +190,9 @@ class ListAction extends CatalogAction
             $query = $qb
                 ->from(\App\Domain\Entities\Catalog\Product::class, 'p')
                 ->where('p.status = :status')
-                ->andWhere('p.category IN (:category)')
+                ->andWhere('p.category_uuid IN (:uuids)')
                 ->setParameter('status', \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK, \App\Domain\Types\Catalog\ProductStatusType::NAME)
-                ->setParameter('category', $category->getNested($categories)->pluck('uuid'));
+                ->setParameter('uuids', $category->getNested($categories)->pluck('uuid'));
 
             $products = collect($query->select('p')->getQuery()->getResult());
 
