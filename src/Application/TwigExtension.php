@@ -51,6 +51,7 @@ class TwigExtension extends AbstractExtension
     public function getFilters()
     {
         return [
+            new TwigFilter('preg_replace', [$this, 'preg_replace']),
             new TwigFilter('count', [$this, 'count']),
             new TwigFilter('df', [$this, 'df']),
             new TwigFilter('dfm', [$this, 'dfm']),
@@ -272,6 +273,18 @@ class TwigExtension extends AbstractExtension
         foreach ($args as $obj) {
             dump(is_array($obj) || is_object($obj) ? array_serialize($obj) : $obj);
         }
+    }
+
+    /**
+     * @param $subject
+     * @param $pattern
+     * @param $replacement
+     *
+     * @return array|string|string[]|null
+     */
+    public function preg_replace($subject, $pattern, $replacement)
+    {
+        return preg_replace($pattern, $replacement, $subject);
     }
 
     /**
