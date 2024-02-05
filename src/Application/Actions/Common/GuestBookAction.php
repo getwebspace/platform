@@ -16,7 +16,10 @@ class GuestBookAction extends AbstractAction
 {
     protected function action(): \Slim\Psr7\Response
     {
+        /** @var GuestBookService $guestBookService */
         $guestBookService = $this->container->get(GuestBookService::class);
+
+        /** @var NotificationService $notificationService */
         $notificationService = $this->container->get(NotificationService::class);
 
         if ($this->isPost()) {
@@ -68,6 +71,7 @@ class GuestBookAction extends AbstractAction
         $list = $guestBookService
             ->read([
                 'status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK,
+                'order' => ['date' => 'desc'],
                 'limit' => $pagination,
                 'offset' => $pagination * $offset,
             ])
