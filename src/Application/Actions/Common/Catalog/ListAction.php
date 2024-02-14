@@ -80,17 +80,17 @@ class ListAction extends CatalogAction
                     $buf['address'][] = $key;
 
                     foreach ((array) $value as $val) {
-                        $buf['value'][] = "%{$val}%";
+                        $buf['value'][] = $query->expr()->like('ap.value', $query->expr()->literal('%' . $val . '%'));
                     }
                 }
+                $valueCondition = call_user_func_array([$query->expr(), 'orX'], $buf['value']);
 
                 $query
                     ->join('p.attributes', 'ap')
                     ->join('ap.attribute', 'a')
                     ->andWhere('a.address IN (:address)')
-                    ->andWhere($query->expr()->like('ap.value', ':value'))
+                    ->andWhere($valueCondition)
                     ->setParameter('address', $buf['address'])
-                    ->setParameter('value', $buf['value'])
                     ->groupBy('p.uuid')
                     ->having('(count(distinct a.address) = ' . count($attributes) . ')');
 
@@ -214,17 +214,17 @@ class ListAction extends CatalogAction
                     $buf['address'][] = $key;
 
                     foreach ((array) $value as $val) {
-                        $buf['value'][] = "%{$val}%";
+                        $buf['value'][] = $query->expr()->like('ap.value', $query->expr()->literal('%' . $val . '%'));
                     }
                 }
+                $valueCondition = call_user_func_array([$query->expr(), 'orX'], $buf['value']);
 
                 $query
                     ->join('p.attributes', 'ap')
                     ->join('ap.attribute', 'a')
                     ->andWhere('a.address IN (:address)')
-                    ->andWhere($query->expr()->like('ap.value', ':value'))
+                    ->andWhere($valueCondition)
                     ->setParameter('address', $buf['address'])
-                    ->setParameter('value', $buf['value'])
                     ->groupBy('p.uuid')
                     ->having('(count(distinct a.address) = ' . count($attributes) . ')');
 
