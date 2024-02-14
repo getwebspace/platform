@@ -73,13 +73,14 @@ class ListAction extends CatalogAction
                     $attributes[$key] = $value;
                 }
             }
+
             if ($attributes) {
                 $buf = ['address' => [], 'value' => []];
                 foreach ($attributes as $key => $value) {
                     $buf['address'][] = $key;
 
                     foreach ((array) $value as $val) {
-                        $buf['value'][] = $val;
+                        $buf['value'][] = "%{$val}%";
                     }
                 }
 
@@ -87,7 +88,7 @@ class ListAction extends CatalogAction
                     ->join('p.attributes', 'ap')
                     ->join('ap.attribute', 'a')
                     ->andWhere('a.address IN (:address)')
-                    ->andWhere('ap.value IN (:value)')
+                    ->andWhere($query->expr()->like('ap.value', ':value'))
                     ->setParameter('address', $buf['address'])
                     ->setParameter('value', $buf['value'])
                     ->groupBy('p.uuid')
@@ -213,7 +214,7 @@ class ListAction extends CatalogAction
                     $buf['address'][] = $key;
 
                     foreach ((array) $value as $val) {
-                        $buf['value'][] = $val;
+                        $buf['value'][] = "%{$val}%";
                     }
                 }
 
@@ -221,7 +222,7 @@ class ListAction extends CatalogAction
                     ->join('p.attributes', 'ap')
                     ->join('ap.attribute', 'a')
                     ->andWhere('a.address IN (:address)')
-                    ->andWhere('ap.value IN (:value)')
+                    ->andWhere($query->expr()->like('ap.value', ':value'))
                     ->setParameter('address', $buf['address'])
                     ->setParameter('value', $buf['value'])
                     ->groupBy('p.uuid')
