@@ -196,7 +196,7 @@ class OrderProduct extends AbstractEntity
             $price += $price * ($this->tax / 100);
         }
 
-        return ceil($price);
+        return $price;
     }
 
     public function getTotalCalculated(): float

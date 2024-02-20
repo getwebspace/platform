@@ -75,7 +75,7 @@
 
                 // format settings
                 format: {
-                    count: {decimalPlaces: 2}, // in item counts
+                    count: {decimalPlaces: 2, thousandsSeparator: ',', decimalSeparator: '.'}, // in item counts
                     price: {decimalPlaces: 2, currencySymbolStart: '$',  currencySymbolEnd: '', thousandsSeparator: ',', decimalSeparator: '.'}, // in item prices and totals
                 },
 
@@ -916,23 +916,6 @@
                 }
 
                 return target;
-            }
-
-            /**
-             * Format numbers
-             */
-            function formatNumber(number, {decimalPlaces = 0, currencySymbolStart = '',  currencySymbolEnd = '', thousandsSeparator = '', decimalSeparator = ''}) {
-                let roundedNumber = number.toFixed(decimalPlaces);
-                let parts = roundedNumber.split('.');
-                    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandsSeparator);
-
-                let formattedNumber = parts.join(decimalSeparator);
-
-                if (currencySymbolStart || currencySymbolEnd) {
-                    formattedNumber = `${currencySymbolStart}${formattedNumber}${currencySymbolEnd}`.trim();
-                }
-
-                return formattedNumber;
             }
         })(window.jQuery);
     </script>
