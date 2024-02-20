@@ -75,8 +75,8 @@
 
                 // format settings
                 format: {
-                    count: ['{{ _language }}', {}], // in item counts
-                    price: ['{{ _language }}', {}], // in item prices and totals
+                    count: {decimalPlaces: 2}, // in item counts
+                    price: {decimalPlaces: 2, currencySymbolStart: '$',  currencySymbolEnd: '', thousandsSeparator: ',', decimalSeparator: '.'}, // in item prices and totals
                 },
 
                 // default selectors
@@ -299,8 +299,18 @@
                                                 $column.html(
                                                     $('<input>')
                                                         .attr('type', 'number')
+                                                        .attr('pattern', '[0-9]*')
+                                                        .attr('inputmode', 'numeric')
                                                         .attr('step', item.quantity_step || 1)
-                                                        .val(item.quantity.toLocaleString(...options.format.count).replace(',', '.')) // I'm shocked too
+                                                        .val(
+                                                            formatNumber(item.quantity, {
+                                                                ...options.format.count,
+                                                                currencySymbolStart: '',
+                                                                currencySymbolEnd: '',
+                                                                thousandsSeparator: '',
+                                                                decimalSeparator: '.'
+                                                            })
+                                                        )
                                                         .on('change', (e) => {
                                                             this.cartItemChangeCount($(e.currentTarget).val(), item.uuid, 'uuid');
                                                         })
@@ -308,12 +318,12 @@
                                                 break;
                                             case 'price':
                                                 $column.text(
-                                                    (item[item.price_type]).toLocaleString(...options.format.price)
+                                                    formatNumber(item[item.price_type], options.format.price)
                                                 );
                                                 break;
                                             case 'total':
                                                 $column.text(
-                                                    (item[item.price_type] * item.quantity).toLocaleString(...options.format.price)
+                                                    formatNumber(item[item.price_type] * item.quantity, options.format.price)
                                                 );
                                                 break;
                                             case 'remove':
@@ -621,7 +631,7 @@
                         let count = cart
                             .reduce((count, item) => item['type'] === options.item_type ? count + 1 : count, 0);
 
-                        return !ret_str ? count : count.toLocaleString(...options.format.count);
+                        return !ret_str ? count : formatNumber(count, options.format.count);
                     }
 
                     return 0;
@@ -638,7 +648,7 @@
                             .map((el) => el.quantity * el[el.price_type])
                             .reduce((a, b) => a + b, 0);
 
-                        return !ret_str ? price : price.toLocaleString(...options.format.price);
+                        return !ret_str ? price : formatNumber(price, options.format.price);
                     }
 
                     return 0;
@@ -906,6 +916,23 @@
                 }
 
                 return target;
+            }
+
+            /**
+             * Format numbers
+             */
+            function formatNumber(number, {decimalPlaces = 0, currencySymbolStart = '',  currencySymbolEnd = '', thousandsSeparator = '', decimalSeparator = ''}) {
+                let roundedNumber = number.toFixed(decimalPlaces);
+                let parts = roundedNumber.split('.');
+                    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandsSeparator);
+
+                let formattedNumber = parts.join(decimalSeparator);
+
+                if (currencySymbolStart || currencySymbolEnd) {
+                    formattedNumber = `${currencySymbolStart}${formattedNumber}${currencySymbolEnd}`.trim();
+                }
+
+                return formattedNumber;
             }
         })(window.jQuery);
     </script>
