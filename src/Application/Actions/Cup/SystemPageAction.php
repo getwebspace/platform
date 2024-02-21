@@ -119,9 +119,10 @@ class SystemPageAction extends AbstractAction
                 $order_status = [
                     ['title' => __('New'), 'order' => 1],
                     ['title' => __('In processing'), 'order' => 2],
-                    ['title' => __('Sent'), 'order' => 3],
-                    ['title' => __('Delivered'), 'order' => 4],
-                    ['title' => __('Canceled'), 'order' => 5],
+                    ['title' => __('Payed'), 'order' => 3],
+                    ['title' => __('Sent'), 'order' => 4],
+                    ['title' => __('Delivered'), 'order' => 5],
+                    ['title' => __('Canceled'), 'order' => 6],
                 ];
                 foreach ($order_status as $i => $el) {
                     try {
