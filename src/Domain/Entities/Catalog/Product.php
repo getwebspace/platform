@@ -287,7 +287,7 @@ class Product extends AbstractEntity
             $price += $price * ($this->tax / 100);
         }
 
-        return ceil($price);
+        return $price;
     }
 
     #[ORM\Column(type: 'float', scale: 2, precision: 10, options: ['default' => 0])]

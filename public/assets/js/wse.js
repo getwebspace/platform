@@ -224,6 +224,22 @@ if (window.flatten === undefined && window.unflatten === undefined) {
     }
 }
 
+if (window.formatNumber === undefined) {
+    window.formatNumber = function (number, {decimalPlaces = 0, currencySymbolStart = '',  currencySymbolEnd = '', thousandsSeparator = '', decimalSeparator = ''}) {
+        let roundedNumber = number.toFixed(decimalPlaces);
+        let parts = roundedNumber.split('.');
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, thousandsSeparator);
+
+        let formattedNumber = parts.join(decimalSeparator);
+
+        if (currencySymbolStart || currencySymbolEnd) {
+            formattedNumber = `${currencySymbolStart}${formattedNumber}${currencySymbolEnd}`.trim();
+        }
+
+        return formattedNumber;
+    }
+}
+
 
 // ****
 // Polyfill section
