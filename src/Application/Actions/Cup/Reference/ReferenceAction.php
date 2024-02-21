@@ -27,6 +27,9 @@ abstract class ReferenceAction extends AbstractAction
             case 'deliveries':
                 return ReferenceTypeType::TYPE_DELIVERY;
 
+            case 'payments':
+                return ReferenceTypeType::TYPE_PAYMENT;
+
             case 'countries':
                 return ReferenceTypeType::TYPE_COUNTRY;
 

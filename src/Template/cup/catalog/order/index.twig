@@ -17,18 +17,7 @@
                 <form method="get">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-4">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Status'|locale,
-                                    'type': 'select',
-                                    'name': 'status',
-                                    'args': {
-                                        'option': {'': '---'}|merge(status_list.sortBy('order').pluck('title', 'uuid').all()),
-                                        'selected': status,
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-md-4">
+                            <div class="col-6 col-md-3">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Date From'|locale,
                                     'type': 'date',
@@ -38,13 +27,36 @@
                                     }
                                 } %}
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-6 col-md-3">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Date To'|locale,
                                     'type': 'date',
                                     'name': 'date[to]',
                                     'args': {
                                         'value': date.to
+                                    }
+                                } %}
+                            </div>
+
+                            <div class="col-6 col-md-3">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Status'|locale,
+                                    'type': 'select',
+                                    'name': 'status',
+                                    'args': {
+                                        'option': {'': '---'}|merge(status_list.pluck('title', 'uuid').all()),
+                                        'selected': status,
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-6 col-md-3">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Payment method'|locale,
+                                    'type': 'select',
+                                    'name': 'payment',
+                                    'args': {
+                                        'option': {'': '---'}|merge(payment_list.pluck('title', 'uuid').all()),
+                                        'selected': payment,
                                     }
                                 } %}
                             </div>
@@ -79,9 +91,9 @@
                 <div class="card-body">
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
-                            <div class="col-4 col-sm-2">#</div>
+                            <div class="col-4 col-sm-1">#</div>
                             <div class="col-5 col-sm">{{ 'Client'|locale }}</div>
-                            <div class="col-3 col-sm-2">{{ 'Status'|locale }}</div>
+                            <div class="col-3 col-sm-2"></div>
                             <div class="col-6 col-sm-2">{{ 'Added date'|locale }}</div>
                             <div class="col-6 col-sm-4 text-right"></div>
                         {% endblock %}
@@ -89,29 +101,35 @@
                         {% block tbody %}
                             {% for item in list.sortByDesc('Date') %}
                                 <div class="row">
-                                    <div class="col-4 col-sm-2">
-                                        {{ item.serial }}
+                                    <div class="col-4 col-sm-1">
+                                        {{ item.serial|slice(-5) }}
                                         {% if item.external_id %}
                                             <br/>{{ item.external_id }}
                                         {% endif %}
+                                        <span class="d-none">{{ item.serial }}</span>
                                     </div>
                                     <div class="col-5 col-sm">
                                         {% if item.user %}
-                                            <a href="/cup/user/{{ item.user_uuid }}/view">{{ item.delivery.client|u.truncate(15, '...') }}</a>
+                                            <a href="/cup/user/{{ item.user_uuid }}/view">
+                                                <span class="d-none d-md-inline">{{ item.delivery.client }}</span>
+                                                <span class="d-inline d-md-none">{{ item.delivery.client|u.truncate(10, '..') }}</span>
+                                            </a>
                                         {% else %}
-                                            {{ item.delivery.client|u.truncate(15, '...') }}
+                                            <span class="d-none d-md-inline">{{ item.delivery.client }}</span>
+                                            <span class="d-inline d-md-none">{{ item.delivery.client|u.truncate(10, '..') }}</span>
                                         {% endif %}
+                                        <span class="d-none">{{ item.delivery.client }}</span>
                                     </div>
                                     <div class="col-3 col-sm-2">
+                                        {% if item.payment_uuid %}
+                                            <span class="d-block badge badge-text">{{ item.payment.title }}</span>
+                                        {% endif %}
                                         {% if item.status_uuid %}
-                                            <span class="badge badge-secondary">{{ item.status.title }}</span>
-                                        {% else %}
-                                            <code>&mdash;</code>
+                                            <span class="d-block badge badge-secondary">{{ item.status.title }}</span>
                                         {% endif %}
                                     </div>
                                     <div class="col-6 col-sm-2">
-                                        <span class="d-none d-md-inline">{{ item.date|df('d.m.Y H:i') }}</span>
-                                        <span class="d-inline d-md-none">{{ item.date|df('d.m.y') }}</span>
+                                        {{ item.date|df('d.m.Y H:i') }}
                                     </div>
                                     <div class="col-6 col-sm-4 text-right">
                                         <form action="/cup/catalog/order/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the order?'|locale }}');">

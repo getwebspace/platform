@@ -43,8 +43,9 @@ class OrderService extends AbstractService
             'phone' => '',
             'email' => '',
             'status' => null,
-            'comment' => '',
+            'payment' => '',
             'shipping' => '',
+            'comment' => '',
             'date' => 'now',
             'external_id' => '',
             'export' => 'manual',
@@ -61,8 +62,9 @@ class OrderService extends AbstractService
             ->setPhone($data['phone'])
             ->setEmail($data['email'])
             ->setStatus($data['status'])
-            ->setComment($data['comment'])
+            ->setPayment($data['payment'])
             ->setShipping($data['shipping'], $this->parameter('common_timezone', 'UTC'))
+            ->setComment($data['comment'])
             ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'))
             ->setExternalId($data['external_id'])
             ->setExport($data['export'])
@@ -93,6 +95,7 @@ class OrderService extends AbstractService
             'phone' => null,
             'email' => null,
             'status' => null,
+            'payment' => null,
             'external_id' => null,
             'export' => null,
         ];
@@ -124,6 +127,14 @@ class OrderService extends AbstractService
                 || is_object($data['status']) && is_a($data['status'], Uuid::class)
             ) {
                 $criteria['status'] = $data['status'];
+            }
+        }
+        if ($data['payment'] !== null) {
+            if (
+                is_string($data['payment']) && \Ramsey\Uuid\Uuid::isValid($data['payment'])
+                || is_object($data['payment']) && is_a($data['payment'], Uuid::class)
+            ) {
+                $criteria['payment'] = $data['payment'];
             }
         }
         if ($data['external_id'] !== null) {
@@ -179,8 +190,9 @@ class OrderService extends AbstractService
                 'phone' => null,
                 'email' => null,
                 'status' => null,
-                'comment' => null,
+                'payment' => null,
                 'shipping' => null,
+                'comment' => null,
                 'date' => null,
                 'external_id' => null,
                 'export' => null,
@@ -213,11 +225,14 @@ class OrderService extends AbstractService
                 if ($data['status'] !== null) {
                     $entity->setStatus($data['status']);
                 }
-                if ($data['comment'] !== null) {
-                    $entity->setComment($data['comment']);
+                if ($data['payment'] !== null) {
+                    $entity->setPayment($data['payment']);
                 }
                 if ($data['shipping'] !== null) {
                     $entity->setShipping($data['shipping'], $this->parameter('common_timezone', 'UTC'));
+                }
+                if ($data['comment'] !== null) {
+                    $entity->setComment($data['comment']);
                 }
                 if ($data['date'] !== null) {
                     $entity->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));

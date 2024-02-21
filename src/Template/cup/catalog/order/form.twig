@@ -79,8 +79,6 @@
                             </div>
                         </div>
 
-                        <hr>
-
                         <div class="row">
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
@@ -104,21 +102,35 @@
                                         'placeholder': '20.01.2019 12:34',
                                     }
                                 } %}
+                            </div>
+                        </div>
 
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Payment method'|locale,
+                                    'type': 'select',
+                                    'name': 'payment_uuid',
+                                    'message': '<a href="/cup/reference/payments/add" class="btn btn-xs btn-info float-right" onclick="return confirm(\'' ~ ('Are you sure you want to go to another page?'|locale) ~ '\');"><i class="fa fa-plus"></i> ' ~ ('Create method'|locale) ~ '</a>',
+                                    'args': {
+                                        'option': ({(null):'---'})|merge(payment_list.pluck('title', 'uuid').all()),
+                                        'selected': order.payment_uuid ? order.payment_uuid : null
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Status'|locale,
                                     'type': 'select',
                                     'name': 'status_uuid',
                                     'message': '<a href="/cup/reference/order-status/add" class="btn btn-xs btn-info float-right" onclick="return confirm(\'' ~ ('Are you sure you want to go to another page?'|locale) ~ '\');"><i class="fa fa-plus"></i> ' ~ ('Create status'|locale) ~ '</a>',
                                     'args': {
-                                        'option': status_list.sortBy('order').pluck('title', 'uuid').all(),
-                                        'selected': order.status_uuid ? order.status_uuid : status_list.sortBy('order').first.uuid
+                                        'option': ({(null):'---'})|merge(status_list.pluck('title', 'uuid').all()),
+                                        'selected': order.status_uuid ? order.status_uuid : null
                                     }
                                 } %}
                             </div>
                         </div>
-
-                        <hr>
 
                         <div class="row">
                             <div class="col-md-12">

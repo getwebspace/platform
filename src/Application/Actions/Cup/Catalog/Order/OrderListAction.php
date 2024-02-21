@@ -11,9 +11,10 @@ class OrderListAction extends CatalogAction
     protected function action(): \Slim\Psr7\Response
     {
         $data = [
-            'status' => $this->getParam('status', ''),
             'from' => date(\App\Domain\References\Date::DATE, strtotime('-1 month')),
             'to' => date(\App\Domain\References\Date::DATE),
+            'status' => $this->getParam('status', ''),
+            'payment' => $this->getParam('payment', ''),
         ];
         $data = array_merge($data, $this->getParam('date', []));
 
@@ -30,8 +31,15 @@ class OrderListAction extends CatalogAction
         // filter by status
         if ($data['status']) {
             $query
-                ->andWhere('o.status = :status')
+                ->andWhere('o.status_uuid = :status')
                 ->setParameter('status', $data['status'], ParameterType::STRING);
+        }
+
+        // filter by payment
+        if ($data['payment']) {
+            $query
+                ->andWhere('o.payment_uuid = :payment')
+                ->setParameter('payment', $data['payment'], ParameterType::STRING);
         }
 
         return $this->respondWithTemplate('cup/catalog/order/index.twig', [
@@ -39,6 +47,8 @@ class OrderListAction extends CatalogAction
             'list' => collect($query->getQuery()->getResult()),
             'status' => $data['status'],
             'status_list' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_ORDER_STATUS, 'status' => true, 'order' => ['order' => 'asc']]),
+            'payment' => $data['payment'],
+            'payment_list' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_PAYMENT, 'status' => true, 'order' => ['order' => 'asc']]),
         ]);
     }
 }

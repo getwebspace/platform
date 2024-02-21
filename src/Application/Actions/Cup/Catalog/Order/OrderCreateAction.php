@@ -15,6 +15,7 @@ class OrderCreateAction extends CatalogAction
         if ($this->isPost()) {
             $user_uuid = $this->getParam('user_uuid');
             $status_uuid = $this->getParam('status_uuid');
+            $payment_uuid = $this->getParam('payment_uuid');
 
             try {
                 $order = $this->catalogOrderService->create([
@@ -24,8 +25,9 @@ class OrderCreateAction extends CatalogAction
                     'phone' => $this->getParam('phone'),
                     'email' => $this->getParam('email'),
                     'status' => $status_uuid ? $this->referenceService->read(['uuid' => $status_uuid, 'type' => ReferenceTypeType::TYPE_ORDER_STATUS]) : null,
-                    'comment' => $this->getParam('comment'),
+                    'payment' => $payment_uuid ? $this->referenceService->read(['uuid' => $payment_uuid, 'type' => ReferenceTypeType::TYPE_PAYMENT]) : null,
                     'shipping' => $this->getParam('shipping'),
+                    'comment' => $this->getParam('comment'),
                     'external_id' => $this->getParam('external_id'),
                     'system' => $this->getParam('system', ''),
 
@@ -64,6 +66,7 @@ class OrderCreateAction extends CatalogAction
         return $this->respondWithTemplate('cup/catalog/order/form.twig', [
             'groups' => $this->userGroupService->read(),
             'status_list' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_ORDER_STATUS, 'status' => true, 'order' => ['order' => 'asc']]),
+            'payment_list' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_PAYMENT, 'status' => true, 'order' => ['order' => 'asc']]),
         ]);
     }
 }

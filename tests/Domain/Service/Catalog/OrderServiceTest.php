@@ -42,6 +42,15 @@ class OrderServiceTest extends TestCase
         ]);
     }
 
+    protected function getRandomPayment(): Reference
+    {
+        return $this->getService(ReferenceService::class)->create([
+            'type' => ReferenceTypeType::TYPE_PAYMENT,
+            'title' => $this->getFaker()->word,
+            'order' => $this->getFaker()->randomDigit(),
+        ]);
+    }
+
     protected function getRandomCategory(): Category
     {
         return $this->getService(CategoryService::class)->create([
@@ -84,6 +93,7 @@ class OrderServiceTest extends TestCase
             'phone' => $this->getFaker()->e164PhoneNumber,
             'email' => $this->getFaker()->email,
             'status' => $this->getRandomStatus(),
+            'payment' => $this->getRandomPayment(),
             'comment' => $this->getFaker()->text,
             'shipping' => $this->getFaker()->dateTime,
             'date' => $this->getFaker()->dateTime,
@@ -114,6 +124,7 @@ class OrderServiceTest extends TestCase
         $this->assertEquals($data['phone'], $order->getPhone());
         $this->assertEquals($data['email'], $order->getEmail());
         $this->assertEquals($data['status'], $order->getStatus());
+        $this->assertEquals($data['payment'], $order->getPayment());
         $this->assertEquals($data['comment'], $order->getComment());
         $this->assertEquals($data['shipping'], $order->getShipping());
         $this->assertEquals($data['date'], $order->getDate());
@@ -140,6 +151,7 @@ class OrderServiceTest extends TestCase
         $this->assertEquals($data['phone'], $o->getPhone());
         $this->assertEquals($data['email'], $o->getEmail());
         $this->assertEquals($data['status'], $o->getStatus());
+        $this->assertEquals($data['payment'], $order->getPayment());
         $this->assertEquals($data['comment'], $o->getComment());
         $this->assertEquals($data['shipping'], $o->getShipping());
         $this->assertEquals($data['date'], $o->getDate());
@@ -158,6 +170,7 @@ class OrderServiceTest extends TestCase
             'phone' => $this->getFaker()->e164PhoneNumber,
             'email' => $this->getFaker()->email,
             'status' => $this->getRandomStatus(),
+            'payment' => $this->getRandomPayment(),
             'comment' => $this->getFaker()->text,
             'shipping' => $this->getFaker()->dateTime,
             'date' => $this->getFaker()->dateTime,
@@ -182,6 +195,7 @@ class OrderServiceTest extends TestCase
             'phone' => $this->getFaker()->e164PhoneNumber,
             'email' => $this->getFaker()->email,
             'status' => $this->getRandomStatus(),
+            'payment' => $this->getRandomPayment(),
             'comment' => $this->getFaker()->text,
             'shipping' => $this->getFaker()->dateTime,
             'date' => $this->getFaker()->dateTime,
@@ -192,6 +206,30 @@ class OrderServiceTest extends TestCase
         $this->service->create($data);
 
         $order = $this->service->read(['status' => $data['status']]);
+        $this->assertInstanceOf(Collection::class, $order);
+    }
+
+    public function testReadSuccess3(): void
+    {
+        $data = [
+            'delivery' => [
+                'client' => $this->getFaker()->word,
+                'address' => $this->getFaker()->text,
+            ],
+            'phone' => $this->getFaker()->e164PhoneNumber,
+            'email' => $this->getFaker()->email,
+            'status' => $this->getRandomStatus(),
+            'payment' => $this->getRandomPayment(),
+            'comment' => $this->getFaker()->text,
+            'shipping' => $this->getFaker()->dateTime,
+            'date' => $this->getFaker()->dateTime,
+            'external_id' => $this->getFaker()->word,
+            'export' => $this->getFaker()->word,
+        ];
+
+        $this->service->create($data);
+
+        $order = $this->service->read(['payment' => $data['payment']]);
         $this->assertInstanceOf(Collection::class, $order);
     }
 
@@ -212,6 +250,7 @@ class OrderServiceTest extends TestCase
             'phone' => $this->getFaker()->e164PhoneNumber,
             'email' => $this->getFaker()->email,
             'status' => $this->getRandomStatus(),
+            'payment' => $this->getRandomPayment(),
             'comment' => $this->getFaker()->text,
             'shipping' => $this->getFaker()->dateTime,
             'date' => $this->getFaker()->dateTime,
@@ -228,6 +267,7 @@ class OrderServiceTest extends TestCase
             'phone' => $this->getFaker()->e164PhoneNumber,
             'email' => $this->getFaker()->email,
             'status' => $this->getRandomStatus(),
+            'payment' => $this->getRandomPayment(),
             'comment' => $this->getFaker()->text,
             'shipping' => $this->getFaker()->dateTime,
             'date' => $this->getFaker()->dateTime,
@@ -242,6 +282,7 @@ class OrderServiceTest extends TestCase
         $this->assertEquals($data['phone'], $order->getPhone());
         $this->assertEquals($data['email'], $order->getEmail());
         $this->assertEquals($data['status'], $order->getStatus());
+        $this->assertEquals($data['payment'], $order->getPayment());
         $this->assertEquals($data['comment'], $order->getComment());
         $this->assertEquals($data['shipping'], $order->getShipping());
         $this->assertEquals($data['date'], $order->getDate());
@@ -263,6 +304,7 @@ class OrderServiceTest extends TestCase
             'title' => $this->getFaker()->word,
             'address' => 'some-custom-address',
             'status' => $this->getRandomStatus(),
+            'payment' => $this->getRandomPayment(),
         ]);
 
         $result = $this->service->delete($order);

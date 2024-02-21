@@ -13,6 +13,7 @@ class ReferenceTypeType extends AbstractEnumType
     public const TYPE_CURRENCY = 'currency';
     public const TYPE_ORDER_STATUS = 'order_status';
     public const TYPE_STOCK_STATUS = 'stock_status';
+    public const TYPE_PAYMENT = 'payment';
     public const TYPE_DELIVERY = 'delivery';
     public const TYPE_COUNTRY = 'country';
     public const TYPE_TAX_RATE = 'tax_rate';
@@ -27,6 +28,7 @@ class ReferenceTypeType extends AbstractEnumType
         self::TYPE_CURRENCY,
         self::TYPE_ORDER_STATUS,
         self::TYPE_STOCK_STATUS,
+        self::TYPE_PAYMENT,
         self::TYPE_DELIVERY,
         self::TYPE_COUNTRY,
         self::TYPE_TAX_RATE,

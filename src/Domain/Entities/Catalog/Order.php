@@ -94,6 +94,31 @@ class Order extends AbstractEntity
         return $this->delivery;
     }
 
+    #[ORM\Column(type: 'uuid', nullable: true, options: ['default' => null])]
+    protected ?\Ramsey\Uuid\UuidInterface $payment_uuid;
+
+    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\Reference')]
+    #[ORM\JoinColumn(name: 'payment_uuid', referencedColumnName: 'uuid')]
+    protected ?Reference $payment = null;
+
+    public function setPayment(?Reference $method): self
+    {
+        if (is_a($method, Reference::class)) {
+            $this->payment_uuid = $method->getUuid();
+            $this->payment = $method;
+        } else {
+            $this->payment_uuid = null;
+            $this->payment = null;
+        }
+
+        return $this;
+    }
+
+    public function getPayment(): ?Reference
+    {
+        return $this->payment;
+    }
+
     #[ORM\Column(type: 'datetime', options: ['default' => 'CURRENT_TIMESTAMP'])]
     protected \DateTime $shipping;
 
@@ -363,6 +388,7 @@ class Order extends AbstractEntity
             'total' => $this->getTotalPrice(),
             'total_calculated' => $this->getTotalPriceCalculated(),
             'status' => $this->status,
+            'payment' => $this->payment,
             'date' => $this->date,
             'external_id' => $this->external_id,
             'export' => $this->export,

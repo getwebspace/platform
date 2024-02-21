@@ -20,6 +20,7 @@ class OrderUpdateAction extends CatalogAction
                 if ($this->isPost()) {
                     $user_uuid = $this->getParam('user_uuid');
                     $status_uuid = $this->getParam('status_uuid');
+                    $payment_uuid = $this->getParam('payment_uuid');
 
                     try {
                         $order = $this->catalogOrderService->update($order, [
@@ -29,8 +30,9 @@ class OrderUpdateAction extends CatalogAction
                             'phone' => $this->getParam('phone'),
                             'email' => $this->getParam('email'),
                             'status' => $status_uuid ? $this->referenceService->read(['uuid' => $status_uuid, 'type' => ReferenceTypeType::TYPE_ORDER_STATUS]) : null,
-                            'comment' => $this->getParam('comment'),
+                            'payment' => $payment_uuid ? $this->referenceService->read(['uuid' => $payment_uuid, 'type' => ReferenceTypeType::TYPE_PAYMENT]) : null,
                             'shipping' => $this->getParam('shipping'),
+                            'comment' => $this->getParam('comment'),
                             'external_id' => $this->getParam('external_id'),
                             'system' => $this->getParam('system', ''),
 
@@ -59,6 +61,7 @@ class OrderUpdateAction extends CatalogAction
                     'order' => $order,
                     'groups' => $this->userGroupService->read(),
                     'status_list' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_ORDER_STATUS, 'status' => true, 'order' => ['order' => 'asc']]),
+                    'payment_list' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_PAYMENT, 'status' => true, 'order' => ['order' => 'asc']]),
                 ]);
             } catch (OrderNotFoundException $e) {
                 // nothing
