@@ -70,6 +70,12 @@
                     // ],
                 },
 
+                payment: {
+                    // Example:
+                    // "Cash": "00000000-0000-0000-0000-000000000000"
+                    // "Card": "00000000-0000-0000-0000-000000000000"
+                },
+
                 // item type by default (e.g. 'product')
                 item_type: 'product',
 
@@ -87,6 +93,7 @@
                     'item-add': 'data-catalog-item-add', // button add to cart
                     'cart': 'data-catalog-cart', // cart place
                     'cart-delivery': 'data-catalog-cart-delivery', // select delivery
+                    'cart-payment': 'data-catalog-cart-payment', // select payment method
                     'cart-data': 'data-catalog-cart-data', // cart data (client field: name, phone, etc)
                     'cart-checkout': 'data-catalog-cart-checkout', // button cart checkout
                     'count-items': 'data-catalog-cart-count', // counter place (count items in cart)
@@ -129,6 +136,9 @@
                             // render delivery options
                             $(getSelector('cart-delivery')).html(this.cartRenderDelivery()).trigger('change');
 
+                            // render payment options
+                            $(getSelector('cart-payment')).html(this.cartRenderPayment());
+
                             // render cart
                             let $cart = $(getSelector('cart')).html(this.cartRender());
 
@@ -161,7 +171,7 @@
                             e.preventDefault();
                             e.stopPropagation();
 
-                            this.cartCheckout($(getSelector('cart-data')));
+                            this.cartCheckout($(`${getSelector('cart-data')}, ${getSelector('cart-payment')}`));
                         });
                         $document.on('change', getSelector('cart-delivery'), (e) => {
                             this.changeDelivery($(e.currentTarget).find('option:selected').data('uuid'));
@@ -420,6 +430,30 @@
                                     break;
                                 }
                             }
+                        }
+                    }
+
+                    return $collect;
+                }
+
+                /**
+                 * Render payment select options
+                 * @return {*|jQuery|HTMLElement}
+                 */
+                cartRenderPayment() {
+                    let $payment = $(getSelector('cart-payment')),
+                        $collect = $();
+
+                    if ($payment.length) {
+                        let selected = $payment.val();
+
+                        for (let [uuid, title] of Object.entries(options.payment)) {
+                            $collect = $collect.add(
+                                $('<option>')
+                                    .prop('selected', selected && selected === uuid)
+                                    .val(uuid)
+                                    .text(title)
+                            );
                         }
                     }
 

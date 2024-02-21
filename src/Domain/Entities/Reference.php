@@ -85,8 +85,12 @@ class Reference extends AbstractEntity
         return $this;
     }
 
-    public function getValue(): array
+    public function getValue(string $key = null, mixed $default = null): mixed
     {
+        if ($key) {
+            return $this->value[$key] ?? $default;
+        }
+
         return $this->value;
     }
 

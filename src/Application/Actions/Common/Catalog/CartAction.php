@@ -2,6 +2,7 @@
 
 namespace App\Application\Actions\Common\Catalog;
 
+use App\Domain\Plugin\AbstractPaymentPlugin;
 use App\Domain\Service\Catalog\Exception\OrderShippingLimitException;
 use App\Domain\Service\Catalog\Exception\WrongEmailValueException;
 use App\Domain\Service\Catalog\Exception\WrongPhoneValueException;
@@ -21,6 +22,7 @@ class CartAction extends CatalogAction
                 'phone' => $this->getParam('phone'),
                 'email' => $this->getParam('email'),
                 'comment' => $this->getParam('comment', ''),
+                'payment' => $this->getParam('payment'),
                 'shipping' => $this->getParam('shipping'),
                 'system' => $this->getParam('system', ''),
 
@@ -104,13 +106,25 @@ class CartAction extends CatalogAction
 
                     $this->container->get(\App\Application\PubSub::class)->publish('common:catalog:order:create', $order);
 
+                    // default redirect path
+                    $url = '/cart/done/' . $order->getUuid();
+
+                    // if order has plugin payment
+                    if (($payment = $order->getPayment()) && ($plugin = $payment->getValue('plugin', false)) !== false) {
+                        $plugin = $this->container->get('plugin')->get()->firstWhere(fn($_, $name) => str_ends_with($name, $plugin));
+
+                        if ($plugin instanceof AbstractPaymentPlugin) {
+                            $url = $plugin->getRedirectURL($order);
+                        }
+                    }
+
                     if (
                         (empty($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') && !empty($_SERVER['HTTP_REFERER'])
                     ) {
-                        $this->response = $this->response->withHeader('Location', '/cart/done/' . $order->getUuid())->withStatus(301);
+                        $this->response = $this->response->withHeader('Location', $url)->withStatus(301);
                     }
 
-                    return $this->respondWithJson(['redirect' => '/cart/done/' . $order->getUuid()]);
+                    return $this->respondWithJson(['redirect' => $url]);
                 } catch (WrongEmailValueException $e) {
                     $this->addError('email', $e->getMessage());
                 } catch (WrongPhoneValueException $e) {
