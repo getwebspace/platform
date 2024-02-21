@@ -2,8 +2,11 @@
 
 namespace App\Application;
 
+use App\Domain\Service\Catalog\OrderService;
+use App\Domain\Service\Reference\ReferenceService;
 use App\Domain\Traits\ParameterTrait;
 use App\Domain\Traits\RendererTrait;
+use App\Domain\Types\ReferenceTypeType;
 use Psr\Container\ContainerInterface;
 
 class PubSub
@@ -103,6 +106,18 @@ class PubSub
                 }
             }
         );
+
+        // automatic update order status after payment via plugin
+        $this->subscribe('plugin:order:payment', function ($order, $container): void {
+            if (($status_uuid = $this->parameter('catalog_order_status_payed', '')) !== '') {
+                $referenceService = $container->get(ReferenceService::class);
+                $orderService = $container->get(OrderService::class);
+
+                $orderService->update($order, [
+                    'status' => $status_uuid ? $referenceService->read(['uuid' => $status_uuid, 'type' => ReferenceTypeType::TYPE_ORDER_STATUS]) : null,
+                ]);
+            }
+        });
 
         // ----------------------------------------------------
     }

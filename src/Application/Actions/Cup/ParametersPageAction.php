@@ -5,7 +5,9 @@ namespace App\Application\Actions\Cup;
 use App\Domain\AbstractAction;
 use App\Domain\Service\Catalog\AttributeService as CatalogAttributeService;
 use App\Domain\Service\Parameter\ParameterService;
+use App\Domain\Service\Reference\ReferenceService;
 use App\Domain\Service\User\GroupService as UserGroupService;
+use App\Domain\Types\ReferenceTypeType;
 
 class ParametersPageAction extends AbstractAction
 {
@@ -40,6 +42,8 @@ class ParametersPageAction extends AbstractAction
             return $this->respondWithRedirect($this->getQueryParam('return', '/cup/parameters'));
         }
 
+        $referenceService = $this->container->get(ReferenceService::class);
+
         return $this->respondWithTemplate('cup/parameters/index.twig', [
             'timezone' => collect(\DateTimeZone::listIdentifiers())->mapWithKeys(fn ($item) => [$item => $item]),
             'routes' => [
@@ -48,6 +52,12 @@ class ParametersPageAction extends AbstractAction
             ],
             'groups' => $this->container->get(UserGroupService::class)->read(),
             'attributes' => $this->container->get(CatalogAttributeService::class)->read()->whereNotIn('type', \App\Domain\Types\Catalog\AttributeTypeType::TYPE_BOOLEAN),
+            'reference' => $referenceService->read([
+                'type' => ReferenceTypeType::TYPE_ORDER_STATUS, // todo usage with array of types
+                'order' => [
+                    'order' => 'asc'
+                ]
+            ]),
             'parameter' => $parameters,
         ]);
     }

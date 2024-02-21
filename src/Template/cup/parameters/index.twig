@@ -1039,6 +1039,7 @@
                                                         'selected': 'off'
                                                     }
                                                 } %}
+
                                                 {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Administrator mail template',
                                                     'description': 'If there is no value, the email will not be sent',
@@ -1190,6 +1191,17 @@
                                                     <option value="5000">5000 cm3/kg</option>
                                                     <option value="6000">6000 cm3/kg</option>
                                                 </datalist>
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Payment order status ',
+                                                    'description': 'Automatic change status after order payment via plugin',
+                                                    'type': 'select',
+                                                    'name': 'catalog[order_status_payed]',
+                                                    'args': {
+                                                        'option': {'': '---'}|merge(reference.where('type', 'order_status').pluck('title', 'uuid')),
+                                                        'selected': ''
+                                                    }
+                                                } %}
                                             </div>
                                         </div>
                                     </div>
