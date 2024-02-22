@@ -6,7 +6,5 @@ use App\Domain\AbstractPlugin;
 use App\Domain\Entities\Catalog\Order;
 
 abstract class AbstractPaymentPlugin extends AbstractPlugin {
-    //plugin:order:payment
-
-    abstract public function getRedirectURL(Order $order): string;
+    abstract public function getRedirectURL(Order $order): ?string;
 }

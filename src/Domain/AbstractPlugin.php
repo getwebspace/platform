@@ -26,6 +26,7 @@ abstract class AbstractPlugin
     public const AUTHOR_EMAIL = '';
     public const AUTHOR_SITE = '';
     public const VERSION = '1.0';
+    public const NOTE = '';
 
     protected ContainerInterface $container;
 
@@ -76,6 +77,7 @@ abstract class AbstractPlugin
             'author_site' => static::AUTHOR_SITE,
             'name' => static::NAME,
             'version' => static::VERSION,
+            'note' => static::NOTE,
         ];
 
         if (in_array($field, array_keys($credentials), true)) {

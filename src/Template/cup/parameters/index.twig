@@ -1238,7 +1238,7 @@
                                                 {% set credentials = plugin.getCredentials() %}
 
                                                 <div class="tab-pane fade {{ loop.first ? 'show active' : '' }}" id="plugins-{{ plugin.getCredentials('name') }}">
-                                                    <d1>
+                                                    <dl>
                                                         <dt>{{ 'Author'|locale }}</dt>
                                                         <dd>
                                                             {% if credentials.author_email %}
@@ -1249,28 +1249,34 @@
                                                                 {% endfor %}
                                                             {% endif %}
                                                         </dd>
-                                                    </d1>
+                                                    </dl>
                                                     {% if credentials.author_site %}
-                                                        <d1>
+                                                        <dl>
                                                             <dt>{{ 'Site'|locale }}</dt>
                                                             <dd>
                                                                 {% for link in credentials.author_site|split(';') %}
                                                                     <a href="{{ link|trim }}" target="_blank">{{ link|trim }}</a><br>
                                                                 {% endfor %}
                                                             </dd>
-                                                        </d1>
+                                                        </dl>
                                                     {% endif %}
                                                     {% if credentials.description %}
-                                                        <d1>
+                                                        <dl>
                                                             <dt>{{ 'Description'|locale }}</dt>
                                                             <dd>{{ credentials.description|locale|raw }}</dd>
-                                                        </d1>
+                                                        </dl>
                                                     {% endif %}
                                                     {% if credentials.version %}
-                                                        <d1>
+                                                        <dl>
                                                             <dt>{{ 'Version'|locale }}</dt>
                                                             <dd>{{ credentials.version }}</dd>
-                                                        </d1>
+                                                        </dl>
+                                                    {% endif %}
+                                                    {% if credentials.note %}
+                                                        <div class="alert alert-success my-3" role="alert">
+                                                            <h4 class="alert-heading">{{ 'Note'|locale }}</h4>
+                                                            <p class="mb-0">{{ credentials.note|locale|raw }}</p>
+                                                        </div>
                                                     {% endif %}
 
                                                     <hr>
