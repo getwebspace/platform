@@ -109,12 +109,19 @@ class CartAction extends CatalogAction
                     // default redirect path
                     $url = '/cart/done/' . $order->getUuid();
 
-                    // if order has plugin payment
-                    if (($payment = $order->getPayment()) && ($plugin = $payment->getValue('plugin', false)) !== false) {
-                        $plugin = $this->container->get('plugin')->get()->firstWhere(fn($_, $name) => str_ends_with($name, $plugin));
+                    // if order has payment with plugin
+                    if (
+                        ($payment = $order->getPayment()) &&
+                        ($plugin = $payment->getValue('plugin', false)) !== false
+                    ) {
+                        $plugin = $this->container
+                            ->get('plugin')->get()
+                            ->firstWhere(fn($_, $name) => str_ends_with($name, $plugin));
 
                         if ($plugin instanceof AbstractPaymentPlugin) {
-                            $url = $plugin->getRedirectURL($order);
+                            if (($buf = $plugin->getRedirectURL($order))) {
+                                $url = $buf;
+                            }
                         }
                     }
 
