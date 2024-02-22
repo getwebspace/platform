@@ -6,19 +6,19 @@ use App\Application\i18n;
 
 abstract class AbstractEntity implements \JsonSerializable
 {
-    protected function validName($str)
+    protected function validName(string $str): bool
     {
-        return preg_match('/^[\p{L}\p{N}\s.,!?\'"-–—(){}[\]_+=*<>:;|\\/@#$%^&`~]+$/u', $str);
+        return !$str || !!preg_match('/^[\p{L}\p{N}\s.,!?\'"-–—(){}[\]_+=*<>:;|\\/@#$%^&`~]+$/u', $str);
     }
 
-    protected function validText($str)
+    protected function validText(string $str): bool
     {
-        return preg_match('/^[\p{L}\p{N}\s.,!?\'"-–—(){}[\]_+=*<>:;|\\/@#$%^&`~]+$/u', $str);
+        return !$str || !!preg_match('/^[\p{L}\p{N}\s.,!?\'"-–—(){}[\]_+=*<>:;|\\/@#$%^&`~]+$/u', $str);
     }
 
-    protected function validUsername($str)
+    protected function validUsername(string $str): bool
     {
-        return preg_match('/^[\p{L}\p{N}\s\-\.]+$/u', $str);
+        return !$str || !!preg_match('/^[\p{L}\p{N}\s\-\.]+$/u', $str);
     }
 
     /**
