@@ -135,6 +135,22 @@ class SystemPageAction extends AbstractAction
                     }
                 }
 
+                $payment_methods = [
+                    ['title' => __('Cash'), 'order' => 1],
+                    ['title' => __('Card'), 'order' => 2],
+                    ['title' => __('To the courier'), 'order' => 3],
+                ];
+                foreach ($payment_methods as $i => $el) {
+                    try {
+                        $referenceService->create(array_merge($el, [
+                            'order' => $i + 1,
+                            'type' => \App\Domain\Types\ReferenceTypeType::TYPE_PAYMENT,
+                        ]));
+                    } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
+                        // nothing
+                    }
+                }
+
                 $stock_status = [
                     ['title' => __('Pre-Order'), 'order' => 1],
                     ['title' => __('Out Of Stock'), 'order' => 2],
@@ -204,7 +220,6 @@ class SystemPageAction extends AbstractAction
                 $social_networks = [
                     ['title' => __('Facebook'), 'value' => ['url' => '#']],
                     ['title' => __('Instagram'), 'value' => ['url' => '#']],
-                    ['title' => __('VK'), 'value' => ['url' => '#']],
                     ['title' => __('Telegram'), 'value' => ['url' => '#']],
                     ['title' => __('WhatsApp'), 'value' => ['url' => '#']],
                 ];
