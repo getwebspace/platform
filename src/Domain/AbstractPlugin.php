@@ -25,7 +25,7 @@ abstract class AbstractPlugin
     public const AUTHOR = 'Undefined author';
     public const AUTHOR_EMAIL = '';
     public const AUTHOR_SITE = '';
-    public const VERSION = '1.0';
+    public const VERSION = '1.0.0';
     public const NOTE = '';
 
     protected ContainerInterface $container;
