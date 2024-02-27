@@ -1,13 +1,23 @@
 {% extends 'layout.twig' %}
 
-{% block title %}Dashboard{% endblock %}
+{% block title %}WebSpace Dashboard{% endblock %}
 
 {% block head %}
-    <link rel="stylesheet" href="/assets/css/bootstrap.min.css?v={{ SHA }}">
-    <link rel="stylesheet" href="/assets/js/plugin/jquery.modal/jquery.modal.min.css?v={{ SHA }}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="/assets/css/atlantis.css?v={{ SHA }}">
+    <meta name="google" content="notranslate">
     <meta name="theme-color" content="#1572e8">
+    <meta name="apple-mobile-web-app-title" content="WebSpace Engine">
+
+    <link rel="icon" href="/assets/img/icon/32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/icon/16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/icon/32.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="/assets/img/icon/64.png">
+    <link rel="icon" type="image/png" sizes="128x128" href="/assets/img/icon/128.png">
+    <link rel="icon" type="image/png" sizes="128x128" href="/assets/img/icon/192.png">
+    <link rel="icon" type="image/png" sizes="256x256" href="/assets/img/icon/256.png">
+    <link rel="icon" type="image/png" sizes="256x256" href="/assets/img/icon/512.png">
+
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css?v={{ SHA }}">
+    <link rel="stylesheet" href="/assets/css/atlantis.css?v={{ SHA }}">
 {% endblock %}
 
 {% block body %}
@@ -425,6 +435,9 @@
             </div>
         {% endblock %}
     </body>
+
+    <link rel="stylesheet" href="/assets/js/plugin/jquery.modal/jquery.modal.min.css?v={{ SHA }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css">
 
     <script src="/assets/js/core/jquery.3.7.1.min.js?v={{ SHA }}"></script>
     <script src="/assets/js/core/popper.min.js?v={{ SHA }}"></script>
