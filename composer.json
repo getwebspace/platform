@@ -1,6 +1,6 @@
 {
     "name": "getwebspace/platform",
-    "description": "Content Management System structure",
+    "description": "Content Management System",
     "authors": [
         {
             "name": "Aleksey Ilyin",
@@ -23,7 +23,9 @@
         "php-di/php-di": "^6.4.0",
         "doctrine/orm": "^2.14.2",
         "doctrine/migrations": "^3.6",
-        "illuminate/collections": "^v9.52.6",
+        "illuminate/events": "^v10.46.0",
+        "illuminate/database": "^v10.46.0",
+        "illuminate/collections": "^v10.46.0",
         "firebase/php-jwt": "^6.4.0",
         "alksily/support": "^2.0.0",
         "twig/twig": "^v3.5.1",

@@ -22,7 +22,7 @@ class PageCreateAction extends PageAction
                     'meta' => $this->getParam('meta'),
                     'template' => $this->getParam('template'),
                 ]);
-                $page = $this->processEntityFiles($page);
+                //$page = $this->processEntityFiles($page);
 
                 $this->container->get(\App\Application\PubSub::class)->publish('cup:page:create', $page);
 
@@ -31,7 +31,7 @@ class PageCreateAction extends PageAction
                         return $this->respondWithRedirect('/cup/page');
 
                     default:
-                        return $this->respondWithRedirect('/cup/page/' . $page->getUuid() . '/edit');
+                        return $this->respondWithRedirect('/cup/page/' . $page->uuid . '/edit');
                 }
             } catch (MissingTitleValueException|WrongTitleValueException|TitleAlreadyExistsException $e) {
                 $this->addError('title', $e->getMessage());

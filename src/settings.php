@@ -6,6 +6,18 @@ return function (ContainerBuilder $containerBuilder): void {
     $_DEBUG = (bool) ($_ENV['DEBUG'] ?? false);
     $_DATABASE = ($_ENV['DATABASE'] ?? false);
 
+    // database
+    $containerBuilder->addDefinitions([
+        'database' => [
+            'driver' => 'sqlite',
+            'url' => $_DATABASE,
+            'database' => VAR_DIR . '/database.sqlite',
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => '',
+        ],
+    ]);
+
     // doctrine
     $containerBuilder->addDefinitions([
         'doctrine' => [

@@ -3,8 +3,7 @@
 namespace App\Domain\Service\Page;
 
 use App\Domain\AbstractService;
-use App\Domain\Entities\Page;
-use App\Domain\Repository\PageRepository;
+use App\Domain\Models\Page;
 use App\Domain\Service\Page\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Page\Exception\MissingTitleValueException;
 use App\Domain\Service\Page\Exception\PageNotFoundException;
@@ -14,15 +13,8 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class PageService extends AbstractService
 {
-    /**
-     * @var PageRepository
-     */
-    protected mixed $service;
-
     protected function init(): void
-    {
-        $this->service = $this->entityManager->getRepository(Page::class);
-    }
+    {}
 
     /**
      * @throws TitleAlreadyExistsException
@@ -46,37 +38,27 @@ class PageService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        if ($data['title'] && $this->service->findOneByTitle($data['title']) !== null) {
+        if ($data['title'] && Page::firstWhere(['title' => $data['title']]) !== null) {
             throw new TitleAlreadyExistsException();
         }
         if (!$data['title']) {
             throw new MissingTitleValueException();
         }
-        if ($data['address'] && $this->service->findOneByAddress($data['address']) !== null) {
+        if ($data['address'] && Page::firstWhere(['address' => $data['address']]) !== null) {
             throw new AddressAlreadyExistsException();
         }
 
-        $page = (new Page())
-            ->setTitle($data['title'])
-            ->setAddress($data['address'])
-            ->setContent($data['content'])
-            ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'))
-            ->setMeta($data['meta'])
-            ->setTemplate($data['template'])
-            ->setType($data['type']);
-
-        $this->entityManager->persist($page);
-        $this->entityManager->flush();
+        $page = Page::create($data);
 
         return $page;
     }
 
     /**
+     * @return Collection|Page
      * @throws PageNotFoundException
      *
-     * @return Collection|Page
      */
-    public function read(array $data = [])
+    public function read(array $data = []): Collection|Page
     {
         $default = [
             'uuid' => null,
@@ -105,24 +87,16 @@ class PageService extends AbstractService
             $criteria['type'] = $data['type'];
         }
 
-        try {
-            switch (true) {
-                case !is_array($data['uuid']) && $data['uuid'] !== null:
-                case !is_array($data['title']) && $data['title'] !== null:
-                case !is_array($data['address']) && $data['address'] !== null:
-                    $page = $this->service->findOneBy($criteria);
+        switch (true) {
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
+            case !is_array($data['title']) && $data['title'] !== null:
+            case !is_array($data['address']) && $data['address'] !== null:
+                $page = Page::firstWhere($criteria);
 
-                    if (empty($page)) {
-                        throw new PageNotFoundException();
-                    }
+                return $page ?: throw new PageNotFoundException();
 
-                    return $page;
-
-                default:
-                    return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
-            }
-        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
-            return null;
+            default:
+                return Page::where($criteria)->get();
         }
     }
 
@@ -138,7 +112,7 @@ class PageService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
@@ -156,41 +130,7 @@ class PageService extends AbstractService
             $data = array_merge($default, $data);
 
             if ($data !== $default) {
-                if ($data['title'] !== null) {
-                    $found = $this->service->findOneByTitle($data['title']);
-
-                    if ($found === null || $found === $entity) {
-                        $entity->setTitle($data['title']);
-                    } else {
-                        throw new TitleAlreadyExistsException();
-                    }
-                }
-                if ($data['address'] !== null) {
-                    $found = $this->service->findOneByAddress($data['address']);
-
-                    if ($found === null || $found === $entity) {
-                        $entity->setAddress($data['address']);
-                    } else {
-                        throw new AddressAlreadyExistsException();
-                    }
-                }
-                if ($data['content'] !== null) {
-                    $entity->setContent($data['content']);
-                }
-                if ($data['date'] !== null) {
-                    $entity->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
-                }
-                if ($data['meta'] !== null) {
-                    $entity->setMeta($data['meta']);
-                }
-                if ($data['template'] !== null) {
-                    $entity->setTemplate($data['template']);
-                }
-                if ($data['type'] !== null) {
-                    $entity->setType($data['type']);
-                }
-
-                $this->entityManager->flush();
+                $entity->update($data);
             }
 
             return $entity;
@@ -209,31 +149,13 @@ class PageService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
 
         if (is_object($entity) && is_a($entity, Page::class)) {
-            if (($files = $entity->getFiles()) && $files->isNotEmpty()) {
-                $fileService = $this->container->get(\App\Domain\Service\File\FileService::class);
-
-                /**
-                 * @var \App\Domain\Entities\File $file
-                 */
-                foreach ($files as $file) {
-                    try {
-                        $fileService->delete($file);
-                    } catch (\Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException $e) {
-                        // nothing, file not found
-                    } catch (\App\Domain\Service\File\Exception\FileNotFoundException $e) {
-                        // nothing, file not found
-                    }
-                }
-            }
-
-            $this->entityManager->remove($entity);
-            $this->entityManager->flush();
+            $entity->delete();
 
             return true;
         }

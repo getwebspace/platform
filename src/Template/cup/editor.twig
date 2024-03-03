@@ -53,7 +53,7 @@
                     $('#spinner-{{ editorId }}').hide();
                     $editor.css('opacity', 1);
 
-                    if ('{{ item.type }}' === 'text' || '{{ args.text_mode }}') {
+                    if ('{{ item.type.value }}' === 'text' || '{{ args.text_mode }}') {
                         CodeMirror.fromTextArea($editor.get(0), {
                             lineNumbers: true,
                             readOnly: '{{ args.readonly }}',

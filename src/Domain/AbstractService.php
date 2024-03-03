@@ -5,6 +5,7 @@ namespace App\Domain;
 use App\Domain\Traits\ParameterTrait;
 use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
+use Illuminate\Database\Connection as DataBase;
 
 abstract class AbstractService
 {
@@ -13,6 +14,8 @@ abstract class AbstractService
     protected ContainerInterface $container;
 
     protected EntityManager $entityManager;
+
+    protected DataBase $db;
 
     /**
      * @var AbstractRepository
@@ -25,10 +28,11 @@ abstract class AbstractService
         'offset' => null,
     ];
 
-    public function __construct(ContainerInterface $container, EntityManager $entityManager)
+    public function __construct(ContainerInterface $container, EntityManager $entityManager, DataBase $db)
     {
         $this->container = $container;
         $this->entityManager = $entityManager;
+        $this->db = $db;
 
         $this->init();
     }

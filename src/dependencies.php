@@ -24,6 +24,29 @@ return function (ContainerBuilder $containerBuilder): void {
         },
     ]);
 
+    // laravel database
+    $containerBuilder->addDefinitions([
+        \Illuminate\Database\Connection::class => function (ContainerInterface $c): \Illuminate\Database\Connection {
+            $settings = $c->get('database');
+
+            if ($_ENV['TEST'] ?? false) {
+                $settings['url'] = '';
+                $settings['database'] = VAR_DIR . '/database-test.sqlite';
+            }
+
+            $capsule = new Illuminate\Database\Capsule\Manager();
+            $capsule->addConnection($settings);
+
+            // Make this Capsule instance available globally via static methods
+            $capsule->setAsGlobal();
+
+            // Setup the Eloquent ORM
+            $capsule->bootEloquent();
+
+            return $capsule->getConnection();
+        }
+    ]);
+
     // doctrine
     $containerBuilder->addDefinitions([
         \Doctrine\ORM\EntityManager::class => function (ContainerInterface $c): EntityManager {
