@@ -91,6 +91,7 @@ class PageService extends AbstractService
             case !is_array($data['uuid']) && $data['uuid'] !== null:
             case !is_array($data['title']) && $data['title'] !== null:
             case !is_array($data['address']) && $data['address'] !== null:
+                /** @var Page $page */
                 $page = Page::firstWhere($criteria);
 
                 return $page ?: throw new PageNotFoundException();

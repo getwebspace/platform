@@ -2,8 +2,9 @@
 
 namespace App\Domain\Traits;
 
-use App\Domain\Entities\File;
-use App\Domain\Entities\FileRelation;
+use App\Domain\Models\File;
+use App\Domain\Models\FileRelated;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Collection;
 
 /**
@@ -11,68 +12,46 @@ use Illuminate\Support\Collection;
  */
 trait FileTrait
 {
-    public function addFile(FileRelation $file): void
+    public function files()
     {
-        $this->files[] = $file;
-    }
-
-    public function addFiles(array $files): void
-    {
-        foreach ($files as $file) {
-            $this->addFile($file);
-        }
-    }
-
-    public function removeFile(FileRelation $file): void
-    {
-        foreach ($this->files as $key => $value) {
-            if ($file === $value) {
-                unset($this->files[$key]);
-            }
-        }
-    }
-
-    public function removeFiles(array $files): void
-    {
-        foreach ($files as $file) {
-            $this->removeFile($file);
-        }
-    }
-
-    public function clearFiles(): void
-    {
-        foreach ($this->files as $key => $file) {
-            unset($this->files[$key]);
-        }
-    }
-
-    public function getFiles(): Collection
-    {
-        return collect($this->files);
-    }
-
-    public function getAudios(): array|Collection
-    {
-        return $this->getFiles()->filter(fn ($item) => str_starts_with($item->getType(), 'audio/'));
-    }
-
-    public function getDocuments(): array|Collection
-    {
-        return $this->getFiles()->filter(fn ($item) => str_starts_with($item->getType(), 'application/') || str_starts_with($item->getType(), 'text/'));
-    }
-
-    public function getImages(): array|Collection
-    {
-        return $this->getFiles()->filter(fn ($item) => str_starts_with($item->getType(), 'image/'));
-    }
-
-    public function getVideos(): array|Collection
-    {
-        return $this->getFiles()->filter(fn ($item) => str_starts_with($item->getType(), 'video/'));
+        return $this->hasManyThrough(
+            File::class,
+            FileRelated::class,
+            'entity_uuid',
+            'uuid',
+            'uuid',
+            'file_uuid',
+        );
     }
 
     public function hasFiles(): int
     {
-        return count($this->files);
+        return $this->files()->count();
+    }
+
+    /** @deprecated */
+    public function getFiles(): HasManyThrough
+    {
+        return $this->files();
+    }
+
+    public function getDocuments(): HasManyThrough
+    {
+        return $this->files()->where(fn ($query) => $query->where('type', 'LIKE', 'application/%')->orWhere('type', 'LIKE', 'text/%'));
+    }
+
+    public function getImages(): HasManyThrough
+    {
+        return $this->files()->where(fn ($query) => $query->where('type', 'LIKE', 'image/%'));
+    }
+
+    public function getAudios(): HasManyThrough
+    {
+        return $this->files()->where(fn ($query) => $query->where('type', 'LIKE', 'audio/%'));
+    }
+
+    public function getVideos(): HasManyThrough
+    {
+        return $this->files()->where(fn ($query) => $query->where('type', 'LIKE', 'video/%'));
     }
 }

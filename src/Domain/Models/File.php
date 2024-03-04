@@ -3,57 +3,50 @@
 namespace App\Domain\Models;
 
 use App\Domain\Casts\AddressUrl;
+use App\Domain\Casts\Boolean;
 use App\Domain\Casts\Meta;
 use App\Domain\Enums\PageType;
 use App\Domain\Traits\FileTrait;
-use DateTime;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-/**
- * @property string $title
- * @property string $address
- * @property DateTime $date
- * @property string $content
- * @property string $type
- * @property array $meta
- * @property string $template
- */
-class Page extends Model
+class File extends Model
 {
     use HasFactory;
     use HasUuids;
-    use FileTrait;
 
-    protected $table = 'page';
+    protected $table = 'file';
     protected $primaryKey = 'uuid';
 
     const CREATED_AT = 'date';
     const UPDATED_AT = 'date';
 
     protected $fillable = [
-        'title',
-        'address',
-        'date',
-        'content',
+        'name',
+        'ext',
         'type',
-        'meta',
-        'template',
+        'size',
+        'salt',
+        'hash',
+        'private',
+        'date',
     ];
 
     protected $guarded = [];
 
     protected $casts = [
-        'title' => 'string',
-        'address' => AddressUrl::class,
+        'name' => 'string',
+        'ext' => 'string',
+        'type' => 'string',
+        'size' => 'int',
+        'salt' => 'string',
+        'hash' => 'string',
+        'private' => Boolean::class,
         'date' => 'datetime',
-        'content' => 'string',
-        'type' => PageType::class,
-        'meta' => Meta::class,
-        'template' => 'string',
     ];
 
     protected $attributes = [
+        'private' => false,
     ];
 }

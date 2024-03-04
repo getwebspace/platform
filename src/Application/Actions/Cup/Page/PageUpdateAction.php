@@ -29,7 +29,7 @@ class PageUpdateAction extends PageAction
                             'meta' => $this->getParam('meta'),
                             'template' => $this->getParam('template'),
                         ]);
-                        //$page = $this->processEntityFiles($page);
+                        $page = $this->processEntityFiles($page);
 
                         $this->container->get(\App\Application\PubSub::class)->publish('cup:page:edit', $page);
 

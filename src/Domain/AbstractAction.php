@@ -15,6 +15,8 @@ use App\Domain\Traits\ParameterTrait;
 use App\Domain\Traits\RendererTrait;
 use App\Domain\Traits\StorageTrait;
 use Doctrine\ORM\EntityManager;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -226,32 +228,23 @@ abstract class AbstractAction
     /**
      * For add or remove files for AbstractEntity with files
      */
-    protected function processEntityFiles(AbstractEntity $entity, string $field = 'files'): AbstractEntity
+    protected function processEntityFiles(Model $entity, string $field = 'files'): Model
     {
         if (in_array(FileTrait::class, class_uses($entity), true)) {
-            $fileRelationService = $this->container->get(FileRelationService::class);
-
             // new
             if (($uploaded = $this->getUploadedFiles($field)) !== []) {
-                $index = $entity->hasFiles();
-
                 foreach ($uploaded as $name => $files) {
                     if (is_numeric($name)) {
                         $name = '';
                     }
 
                     foreach ($files as $file) {
-                        $fileRelation = $fileRelationService->create([
+                        $entity->files()->create([
                             'entity' => $entity,
                             'file' => $file,
                             'comment' => $name,
-                            'order' => ++$index,
+                            'order' => $entity->files()->count(),
                         ]);
-
-                        // link file to entity
-                        if ($fileRelation) {
-                            $entity->addFile($fileRelation);
-                        }
                     }
                 }
             }
@@ -266,16 +259,16 @@ abstract class AbstractAction
                     ];
                     $data = array_merge($default, $data);
 
-                    $relation = $entity->getFiles()->firstWhere('uuid', $uuid);
+                    $file = $entity->files()->firstWhere(['uuid' => $uuid]);
 
-                    if ($relation) {
+                    if ($file) {
                         if ($data['delete'] !== null) {
-                            $fileRelationService->delete($relation);
+                            $file->delete();
 
                             continue;
                         }
 
-                        $fileRelationService->update($relation, $data);
+                        $file->update($data);
                     }
                 }
             }
