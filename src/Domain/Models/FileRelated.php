@@ -11,6 +11,13 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property string $file_uuid
+ * @property string $entity_uuid
+ * @property int $order
+ * @property string $comment
+ * @property string $object_type
+ */
 class FileRelated extends Model
 {
     use HasFactory;
@@ -24,10 +31,10 @@ class FileRelated extends Model
 
     protected $fillable = [
         'file_uuid',
-        'entity_uuid', // rename to model_uuid
+        'entity_uuid', // todo rename to model_uuid
         'order',
         'comment',
-        'object_type',
+        'object_type', // todo remove
     ];
 
     protected $guarded = [];
@@ -43,5 +50,6 @@ class FileRelated extends Model
     protected $attributes = [
         'order' => 1,
         'comment' => '',
+        'object_type' => '-',
     ];
 }

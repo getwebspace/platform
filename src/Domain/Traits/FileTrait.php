@@ -4,11 +4,10 @@ namespace App\Domain\Traits;
 
 use App\Domain\Models\File;
 use App\Domain\Models\FileRelated;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
- * @property File[] $files
+ * @property Collection $files
  */
 trait FileTrait
 {
@@ -30,28 +29,28 @@ trait FileTrait
     }
 
     /** @deprecated */
-    public function getFiles(): HasManyThrough
+    public function getFiles(): Collection
     {
-        return $this->files();
+        return $this->files;
     }
 
-    public function getDocuments(): HasManyThrough
+    public function getDocuments(): Collection
     {
-        return $this->files()->where(fn ($query) => $query->where('type', 'LIKE', 'application/%')->orWhere('type', 'LIKE', 'text/%'));
+        return $this->files()->where(fn ($query) => $query->where('type', 'LIKE', 'application/%')->orWhere('type', 'LIKE', 'text/%'))->getResults();
     }
 
-    public function getImages(): HasManyThrough
+    public function getImages(): Collection
     {
-        return $this->files()->where(fn ($query) => $query->where('type', 'LIKE', 'image/%'));
+        return $this->files()->where(fn ($query) => $query->where('type', 'LIKE', 'image/%'))->getResults();
     }
 
-    public function getAudios(): HasManyThrough
+    public function getAudios(): Collection
     {
-        return $this->files()->where(fn ($query) => $query->where('type', 'LIKE', 'audio/%'));
+        return $this->files()->where(fn ($query) => $query->where('type', 'LIKE', 'audio/%'))->getResults();
     }
 
-    public function getVideos(): HasManyThrough
+    public function getVideos(): Collection
     {
-        return $this->files()->where(fn ($query) => $query->where('type', 'LIKE', 'video/%'));
+        return $this->files()->where(fn ($query) => $query->where('type', 'LIKE', 'video/%'))->getResults();
     }
 }

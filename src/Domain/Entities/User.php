@@ -85,9 +85,9 @@ class User extends AbstractEntity
      */
     public function avatar(int $size = 40): string
     {
-        if ($this->hasFiles()) {
-            return $this->getFiles()->first()->getPublicPath('small');
-        }
+        //if ($this->hasFiles()) {
+///            return $this->getFiles()->first()->getPublicPath('small');
+   //     }
 
         return 'https://www.gravatar.com/avatar/' . md5(mb_strtolower(trim($this->email))) . '?d=identicon&s=' . $size;
     }
@@ -810,8 +810,8 @@ class User extends AbstractEntity
             ],
             'register' => $this->register,
             'change' => $this->change,
-            'files' => $this->files,
-            'avatar' => $this->avatar(100),
+            //'files' => $this->files,
+            //'avatar' => $this->avatar(100),
             'external_id' => $this->external_id,
         ]);
     }

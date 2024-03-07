@@ -225,9 +225,7 @@ abstract class AbstractAction
         );
     }
 
-    /**
-     * For add or remove files for AbstractEntity with files
-     */
+    // work with files
     protected function processEntityFiles(Model $entity, string $field = 'files'): Model
     {
         if (in_array(FileTrait::class, class_uses($entity), true)) {
@@ -307,8 +305,8 @@ abstract class AbstractAction
                             $uploaded[$name][$index] = $model;
 
                             // is image
-                            if (str_starts_with($model->getType(), 'image/')) {
-                                $image_uuids[] = $model->getUuid();
+                            if (str_starts_with($model->type, 'image/')) {
+                                $image_uuids[] = $model->uuid;
                             }
                         }
                     }

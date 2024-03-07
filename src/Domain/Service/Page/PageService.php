@@ -48,9 +48,7 @@ class PageService extends AbstractService
             throw new AddressAlreadyExistsException();
         }
 
-        $page = Page::create($data);
-
-        return $page;
+        return Page::create($data);
     }
 
     /**

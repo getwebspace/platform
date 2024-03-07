@@ -34,15 +34,15 @@
                         </thead>
 
                         <tbody>
-                            {% for relation in entity.getDocuments() %}
+                            {% for file in entity.getDocuments() %}
                                 <tr>
-                                    <td>{{ relation.getFileName() }}</td>
-                                    <td>{{ relation.getFileSize() }}</td>
+                                    <td>{{ file.getFileName() }}</td>
+                                    <td>{{ file.getFileSize() }}</td>
                                     <td class="text-right">
                                         {% include 'cup/form.twig' with {
                                             'label': '<i class="fa fa-trash"></i>',
                                             'type': 'checkbox',
-                                            'name': 'files[' ~ relation.uuid.toString() ~ '][delete]',
+                                            'name': 'files[' ~ file.uuid ~ '][delete]',
                                             'args': {
                                                 'value': 1
                                             }

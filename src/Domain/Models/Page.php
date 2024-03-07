@@ -55,5 +55,6 @@ class Page extends Model
     ];
 
     protected $attributes = [
+        'type' => PageType::HTML,
     ];
 }

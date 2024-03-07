@@ -3,8 +3,7 @@
 namespace App\Domain\Service\File;
 
 use App\Domain\AbstractService;
-use App\Domain\Entities\File;
-use App\Domain\Repository\FileRepository;
+use App\Domain\Models\File;
 use App\Domain\Service\File\Exception\FileAlreadyExistsException;
 use App\Domain\Service\File\Exception\FileNotFoundException;
 use Illuminate\Support\Collection;
@@ -12,26 +11,11 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class FileService extends AbstractService
 {
-    /**
-     * @var FileRepository
-     */
-    protected mixed $service;
-
-    /**
-     * @var FileRelationService
-     */
-    protected $serviceFileRelation;
-
     protected function init(): void
     {
-        $this->service = $this->entityManager->getRepository(File::class);
-        $this->serviceFileRelation = $this->container->get(FileRelationService::class);
     }
 
-    /**
-     * @return null|File
-     */
-    public function createFromPath(string $path, string $name_with_ext = null)
+    public function createFromPath(string $path, string $name_with_ext = null): ?File
     {
         $saved = false;
 
@@ -55,7 +39,7 @@ class FileService extends AbstractService
 
         if ($saved) {
             $salt = uniqid();
-            $dir = UPLOAD_DIR . '/' . $salt . '/' . File::prepareName($name_with_ext ? $name_with_ext : basename($path));
+            $dir = UPLOAD_DIR . '/' . $salt . '/' . File::prepareName($name_with_ext ?: basename($path));
 
             if (!is_dir(dirname($dir))) {
                 mkdir(dirname($dir), 0o777, true);
@@ -90,14 +74,9 @@ class FileService extends AbstractService
     }
 
     /**
-     * Get file from url
-     * recursion when redirect
-     *
-     * @param mixed $path
-     *
-     * @return bool|string
+     * Get file from url, recursion when redirect
      */
-    protected static function getFileFromRemote($path)
+    protected static function getFileFromRemote(string $path): false|string
     {
         $headers = get_headers($path, true);
         $code = (int) mb_substr($headers[0], 9, 3);
@@ -140,23 +119,11 @@ class FileService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        if ($data['hash'] && $this->service->findOneByHash($data['hash']) !== null) {
+        if ($data['hash'] && File::firstWhere(['hash' => $data['hash']]) !== null) {
             throw new FileAlreadyExistsException();
         }
 
-        $file = (new File())
-            ->setName($data['name'])
-            ->setExt($data['ext'])
-            ->setType($data['type'])
-            ->setSize($data['size'])
-            ->setSalt($data['salt'])
-            ->setHash($data['hash'])
-            ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
-
-        $this->entityManager->persist($file);
-        $this->entityManager->flush();
-
-        return $file;
+        return File::create($data);
     }
 
     /**
@@ -197,32 +164,33 @@ class FileService extends AbstractService
             $criteria['size'] = $data['size'];
         }
 
-        try {
-            switch (true) {
-                case !is_array($data['uuid']) && $data['uuid'] !== null:
-                case !is_array($data['hash']) && $data['hash'] !== null:
-                    $file = $this->service->findOneBy($criteria);
+        switch (true) {
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
+            case !is_array($data['hash']) && $data['hash'] !== null:
+                /** @var File $file */
+                $file = File::firstWhere($criteria);
 
-                    if (empty($file)) {
-                        throw new FileNotFoundException();
-                    }
+                if (empty($file)) {
+                    throw new FileNotFoundException();
+                }
 
-                    return $file;
+                return $file;
 
-                case !is_array($data['name']) && $data['name'] !== null && !is_array($data['ext']) && $data['ext'] !== null:
-                    $file = $this->service->findOneByFilename($data['name'], $data['ext']);
+            case !is_array($data['name']) && $data['name'] !== null && !is_array($data['ext']) && $data['ext'] !== null:
+                /** @var File $file */
+                $file = File::firstWhere([
+                    'name' => $data['name'],
+                    'ext' => $data['ext'],
+                ]);
 
-                    if (empty($file)) {
-                        throw new FileNotFoundException();
-                    }
+                if (empty($file)) {
+                    throw new FileNotFoundException();
+                }
 
-                    return $file;
+                return $file;
 
-                default:
-                    return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
-            }
-        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
-            return null;
+            default:
+                return File::where($criteria)->get();
         }
     }
 
@@ -236,7 +204,7 @@ class FileService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
@@ -254,35 +222,7 @@ class FileService extends AbstractService
             $data = array_merge($default, $data);
 
             if ($data !== $default) {
-                if ($data['hash'] !== null) {
-                    $found = $this->service->findOneByTitle($data['hash']);
-
-                    if ($found === null || $found === $entity) {
-                        $entity->setHash($data['hash']);
-                    } else {
-                        throw new FileAlreadyExistsException();
-                    }
-                }
-                if ($data['name'] !== null) {
-                    $entity->setName($data['name']);
-                }
-                if ($data['ext'] !== null) {
-                    $entity->setExt($data['ext']);
-                }
-                if ($data['type'] !== null) {
-                    $entity->setType($data['type']);
-                }
-                if ($data['size'] !== null) {
-                    $entity->setSize($data['size']);
-                }
-                if ($data['salt'] !== null) {
-                    $entity->setSalt($data['salt']);
-                }
-                if ($data['date'] !== null) {
-                    $entity->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
-                }
-
-                $this->entityManager->flush();
+                $entity->update($data);
             }
 
             return $entity;
@@ -301,7 +241,7 @@ class FileService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
@@ -317,6 +257,12 @@ class FileService extends AbstractService
 
             $this->entityManager->remove($entity);
             $this->entityManager->flush();
+
+            return true;
+        }
+
+        if (is_object($entity) && is_a($entity, File::class)) {
+            $entity->delete();
 
             return true;
         }
