@@ -359,15 +359,7 @@
 
                                 $tbody.append($row);
                             }
-
-                            // append system line with all item data
-                            $items.append(
-                                $('<input ' + options.selectors['cart-data'] + '>')
-                                    .attr('type', 'text')
-                                    .attr('name', 'item[' + item.uuid + ']')
-                                    .val(JSON.stringify(item))
-                            );
-
+                            
                             // append system line with uuid => quantity
                             $items.append(
                                 $('<input ' + options.selectors['cart-data'] + '>')
