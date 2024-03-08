@@ -141,18 +141,6 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Theme auto-update',
-                                                    'description': 'The system will check for changes in the theme',
-                                                    'type': 'select',
-                                                    'name': 'common[theme_reload]',
-                                                    'message': 'May increase server load, not recommended in <code>Production</code> mode',
-                                                    'args': {
-                                                        'option': _(['off', 'on']),
-                                                        'selected': 'off'
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Home page template',
                                                     'type': 'text',
                                                     'name': 'common[template]',
@@ -1165,7 +1153,7 @@
                                                     'type': 'select',
                                                     'name': 'catalog[order_address]',
                                                     'args': {
-                                                        'option': _(['yes', 'no']),
+                                                        'option': _(['off', 'on']),
                                                         'selected': 'no'
                                                     }
                                                 } %}
