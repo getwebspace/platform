@@ -70,7 +70,7 @@ class FileServiceTest extends TestCase
         $file2 = $this->service->createFromPath($file1->internal_path());
 
         $this->assertInstanceOf(File::class, $file2);
-        $this->assertEquals((array)$file1, (array)$file2);
+        $this->assertEquals($file1->attributesToArray(), $file2->attributesToArray());
     }
 
     public function testReadSuccess(): void

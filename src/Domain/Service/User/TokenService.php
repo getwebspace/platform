@@ -134,8 +134,7 @@ class TokenService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, UserToken::class)) {
-            $this->entityManager->remove($entity);
-            $this->entityManager->flush();
+            $entity->delete();
 
             return true;
         }

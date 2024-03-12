@@ -2,8 +2,8 @@
 
 namespace Domain\Service\User;
 
-use App\Domain\Entities\User;
-use App\Domain\Entities\User\Token as UserToken;
+use App\Domain\Models\User;
+use App\Domain\Models\UserToken;
 use App\Domain\Repository\User\TokenRepository as UserTokenRepository;
 use App\Domain\Service\User\Exception\TokenNotFoundException;
 use App\Domain\Service\User\TokenService as UserTokenService;
@@ -31,7 +31,7 @@ class TokenServiceTest extends TestCase
         $this->service = $this->getService(UserTokenService::class);
 
         $this->user = $this->getService(UserService::class)->create([
-            'username' => $this->getFaker()->word,
+            'username' => $this->getFaker()->userName,
             'email' => $this->getFaker()->email,
             'phone' => $this->getFaker()->e164PhoneNumber,
             'password' => $this->getFaker()->password,
@@ -45,7 +45,7 @@ class TokenServiceTest extends TestCase
     public function testCreateSuccess(): void
     {
         $data = [
-            'user' => $this->user,
+            'user_uuid' => $this->user->uuid,
             'unique' => $this->getFaker()->word,
             'comment' => $this->getFaker()->word,
             'agent' => $this->getFaker()->userAgent,
@@ -55,25 +55,16 @@ class TokenServiceTest extends TestCase
 
         $token = $this->service->create($data);
         $this->assertInstanceOf(UserToken::class, $token);
-        $this->assertEquals($data['unique'], $token->getUnique());
-        $this->assertEquals($data['comment'], $token->getComment());
-        $this->assertEquals($data['agent'], $token->getAgent());
-        $this->assertEquals($data['ip'], $token->getIp());
-
-        /** @var UserTokenRepository $userTokenRepo */
-        $userTokenRepo = $this->em->getRepository(UserToken::class);
-        $t = $userTokenRepo->findOneByUuid($token->getUuid());
-        $this->assertInstanceOf(UserToken::class, $t);
-        $this->assertEquals($data['unique'], $t->getUnique());
-        $this->assertEquals($data['comment'], $t->getComment());
-        $this->assertEquals($data['agent'], $t->getAgent());
-        $this->assertEquals($data['ip'], $t->getIp());
+        $this->assertEquals($data['unique'], $token->unique);
+        $this->assertEquals($data['comment'], $token->comment);
+        $this->assertEquals($data['agent'], $token->agent);
+        $this->assertEquals($data['ip'], $token->ip);
     }
 
     public function testReadSuccess(): void
     {
         $data = [
-            'user' => $this->user,
+            'user_uuid' => $this->user->uuid,
             'unique' => $this->getFaker()->word,
             'comment' => $this->getFaker()->word,
             'agent' => $this->getFaker()->userAgent,
@@ -87,7 +78,7 @@ class TokenServiceTest extends TestCase
             'unique' => $data['unique'],
         ]);
         $this->assertInstanceOf(UserToken::class, $token);
-        $this->assertEquals($data['user'], $token->getUser());
+        $this->assertEquals($this->user->attributesToArray(), $token->user->attributesToArray());
     }
 
     public function testDelete(): void
@@ -95,7 +86,7 @@ class TokenServiceTest extends TestCase
         $this->expectException(TokenNotFoundException::class);
 
         $data = [
-            'user' => $this->user,
+            'user_uuid' => $this->user->uuid,
             'unique' => $this->getFaker()->word,
             'comment' => $this->getFaker()->word,
             'agent' => $this->getFaker()->userAgent,
