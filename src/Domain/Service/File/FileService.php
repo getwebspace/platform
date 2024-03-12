@@ -233,7 +233,7 @@ class FileService extends AbstractService
                 'salt' => null,
                 'date' => null,
             ];
-            $data = array_merge($default, $data);
+            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
 
             if ($data !== $default) {
                 $entity->update($data);

@@ -2,7 +2,7 @@
 
 namespace tests\Domain\Service\File;
 
-use App\Domain\Entities\File;
+use App\Domain\Models\File;
 use App\Domain\Service\File\Exception\FileNotFoundException;
 use App\Domain\Service\File\FileService;
 use tests\TestCase;
@@ -25,7 +25,7 @@ class FileServiceTest extends TestCase
 
     protected function getTestFileUrl()
     {
-        return 'https://loremflickr.com/800/600?t=' . time();
+        return 'https://loremflickr.com/300/400?t=' . time();
     }
 
     protected function getTestFile()
@@ -45,11 +45,11 @@ class FileServiceTest extends TestCase
 
         $file = $this->service->createFromPath($path);
         $this->assertInstanceOf(File::class, $file);
-        $this->assertEquals($info['name'], $file->getName());
-        $this->assertEquals($info['ext'], $file->getExt());
-        $this->assertEquals($info['type'], $file->getType());
-        $this->assertEquals($info['size'], $file->getSize());
-        $this->assertTrue(file_exists($file->getInternalPath()));
+        $this->assertEquals($info['name'], $file->name);
+        $this->assertEquals($info['ext'], $file->ext);
+        $this->assertEquals($info['type'], $file->type);
+        $this->assertEquals($info['size'], $file->size);
+        $this->assertTrue(file_exists($file->internal_path()));
         $this->assertTrue(!file_exists($path));
     }
 
@@ -59,7 +59,7 @@ class FileServiceTest extends TestCase
 
         $file = $this->service->createFromPath($path);
         $this->assertInstanceOf(File::class, $file);
-        $this->assertTrue(file_exists($file->getInternalPath()));
+        $this->assertTrue(file_exists($file->internal_path()));
     }
 
     public function testCreateWithFileAlreadyExistent(): void
@@ -67,23 +67,23 @@ class FileServiceTest extends TestCase
         $file1 = $this->service->createFromPath($this->getTestFile());
 
         // create new file obj from previously processed file
-        $file2 = $this->service->createFromPath($file1->getInternalPath());
+        $file2 = $this->service->createFromPath($file1->internal_path());
 
         $this->assertInstanceOf(File::class, $file2);
-        $this->assertEquals($file1, $file2);
+        $this->assertEquals((array)$file1, (array)$file2);
     }
 
     public function testReadSuccess(): void
     {
         $file = $this->service->createFromPath($this->getTestFile());
 
-        $f1 = $this->service->read(['uuid' => $file->getUuid()]);
+        $f1 = $this->service->read(['uuid' => $file->uuid]);
         $this->assertInstanceOf(File::class, $f1);
-        $this->assertEquals($file->getFileName(), $f1->getFileName());
+        $this->assertEquals($file->filename(), $f1->filename());
 
-        $f2 = $this->service->read(['hash' => $file->getHash()]);
+        $f2 = $this->service->read(['hash' => $file->hash]);
         $this->assertInstanceOf(File::class, $f2);
-        $this->assertEquals($file->getFileName(), $f2->getFileName());
+        $this->assertEquals($file->filename(), $f2->filename());
     }
 
     public function testReadWithFileNotFound(): void
@@ -102,7 +102,7 @@ class FileServiceTest extends TestCase
         ];
 
         $page = $this->service->update($file, $data);
-        $this->assertEquals($data['name'], $page->getName());
+        $this->assertEquals($data['name'], $page->name);
     }
 
     public function testUpdateWithFileNotFound(): void
