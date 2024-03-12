@@ -3,7 +3,7 @@
 namespace App\Application\Middlewares;
 
 use App\Domain\AbstractMiddleware;
-use App\Domain\Entities\User;
+use App\Domain\Models\User;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
@@ -29,8 +29,8 @@ class AccessCheckerMiddleware extends AbstractMiddleware
 
         $access = $this->parameter('user_access', false);
         $access = $access === false ? [] : explode(',', $access);
-        if ($user && $user->getGroup()) {
-            $access = array_unique(array_merge($access, $user->getGroup()->getAccess()));
+        if ($user && $user->group()) {
+            $access = array_unique(array_merge($access, $user->group->access));
         }
 
         if (

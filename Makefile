@@ -26,3 +26,6 @@ migrate-status:
 
 migrate-diff:
 	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/doctrine-migrations --em=sqlite diff
+
+migrate-test:
+	@docker-compose -f // php artisan make:migration create_users_table --create=users

@@ -4,6 +4,7 @@ namespace App\Application\Middlewares;
 
 use App\Application\i18n;
 use App\Domain\AbstractMiddleware;
+use App\Domain\Models\User;
 use Psr\Http\Server\RequestHandlerInterface;
 use Slim\Psr7\Request;
 
@@ -26,7 +27,8 @@ class LocaleMiddleware extends AbstractMiddleware
 
         // change lang by user settings
         if (!$user_locale && ($user = $request->getAttribute('user')) !== null) {
-            if ($code = $user->getLanguage()) {
+            /** @var User $user */
+            if ($code = $user->language) {
                 $user_locale = $code;
             }
         }

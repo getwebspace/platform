@@ -2,8 +2,8 @@
 
 namespace App\Domain\Traits;
 
-use App\Domain\Entities\User;
-use App\Domain\Entities\User\Token as UserToken;
+use App\Domain\Models\User;
+use App\Domain\Models\UserToken;
 use App\Domain\Service\User\TokenService as UserTokenService;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
@@ -63,7 +63,7 @@ trait SecurityTrait
         $userTokenService = $this->container->get(UserTokenService::class);
 
         $access_token = $this->getAccessToken($data['user']);
-        $refresh_token = $this->getRefreshToken($data['user']->getUuid(), $data['agent'], $data['ip']);
+        $refresh_token = $this->getRefreshToken($data['user']->uuid, $data['agent'], $data['ip']);
 
         if ($data['user_token'] && is_a($data['user_token'], UserToken::class)) {
             $userTokenService->update($data['user_token'], [
@@ -82,7 +82,7 @@ trait SecurityTrait
             }
 
             $userTokenService->create([
-                'user' => $data['user'],
+                'user_uuid' => $data['user']->uuid,
                 'unique' => $refresh_token,
                 'comment' => $data['comment'],
                 'ip' => $data['ip'],
@@ -126,7 +126,7 @@ trait SecurityTrait
         if ($privateKey !== false) {
             $payload = [
                 'sub' => 'user',
-                'uuid' => $user->getUuid()->toString(),
+                'uuid' => $user->uuid,
                 'data' => $user->toArray(),
                 'iat' => time(),
                 'exp' => time() + (\App\Domain\References\Date::MINUTE * 10),
@@ -141,7 +141,7 @@ trait SecurityTrait
     /*
      * Generate sha1 hash
      */
-    protected function getRefreshToken(\Ramsey\Uuid\UuidInterface $uuid, string $ip, string $agent): string
+    protected function getRefreshToken(string $uuid, string $ip, string $agent): string
     {
         return sha1(
             'uuid:' . $uuid . ';' .

@@ -36,8 +36,8 @@
                         <tbody>
                             {% for file in entity.getDocuments() %}
                                 <tr>
-                                    <td>{{ file.getFileName() }}</td>
-                                    <td>{{ file.getFileSize() }}</td>
+                                    <td>{{ file.filename() }}</td>
+                                    <td>{{ file.size() }}</td>
                                     <td class="text-right">
                                         {% include 'cup/form.twig' with {
                                             'label': '<i class="fa fa-trash"></i>',

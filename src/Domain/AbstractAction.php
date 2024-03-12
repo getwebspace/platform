@@ -8,6 +8,7 @@ use App\Domain\Exceptions\HttpForbiddenException;
 use App\Domain\Exceptions\HttpMethodNotAllowedException;
 use App\Domain\Exceptions\HttpNotFoundException;
 use App\Domain\Exceptions\HttpNotImplementedException;
+use App\Domain\Models\FileRelated;
 use App\Domain\Service\File\FileRelationService;
 use App\Domain\Service\File\FileService;
 use App\Domain\Traits\FileTrait;
@@ -237,22 +238,21 @@ abstract class AbstractAction
                     }
 
                     foreach ($files as $file) {
-                        $entity->files()->create([
-                            'entity' => $entity,
-                            'file' => $file,
+                        $entity->files()->attach($file, [
                             'comment' => $name,
-                            'order' => $entity->files()->count(),
+                            'order' => $entity->hasFiles(),
                         ]);
                     }
                 }
+
             }
 
             // update
             if (($files = $this->getParam($field)) !== null && is_array($files)) {
                 foreach ($files as $uuid => $data) {
                     $default = [
-                        'order' => null,
-                        'comment' => null,
+                        'order' => 0,
+                        'comment' => '',
                         'delete' => null,
                     ];
                     $data = array_merge($default, $data);
@@ -261,12 +261,15 @@ abstract class AbstractAction
 
                     if ($file) {
                         if ($data['delete'] !== null) {
-                            $file->delete();
+                            $entity->files()->detach($file);
 
                             continue;
                         }
 
-                        $file->update($data);
+                        $entity->files()->updateExistingPivot($file, [
+                            'order' => $data['order'],
+                            'comment' => $data['comment'],
+                        ]);
                     }
                 }
             }

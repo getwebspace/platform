@@ -6,7 +6,7 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
 class Password implements CastsAttributes
 {
-    public function get($model, string $key, mixed $value, array $attributes): array
+    public function get($model, string $key, mixed $value, array $attributes): string
     {
         return $value;
     }

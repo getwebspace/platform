@@ -3,24 +3,20 @@
 namespace App\Domain\Service\User;
 
 use App\Domain\AbstractService;
-use App\Domain\Entities\User\Group as UserGroup;
+use App\Domain\Models\Page;
+use App\Domain\Models\UserGroup;
 use App\Domain\Repository\User\GroupRepository as UserGroupRepository;
 use App\Domain\Service\User\Exception\MissingTitleValueException;
 use App\Domain\Service\User\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\User\Exception\UserGroupNotFoundException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class GroupService extends AbstractService
 {
-    /**
-     * @var UserGroupRepository
-     */
-    protected mixed $service;
-
     protected function init(): void
     {
-        $this->service = $this->entityManager->getRepository(UserGroup::class);
     }
 
     /**
@@ -76,33 +72,30 @@ class GroupService extends AbstractService
             $criteria['title'] = $data['title'];
         }
 
-        try {
-            if (
-                !is_array($data['uuid']) && $data['uuid'] !== null
-                || !is_array($data['title']) && $data['title'] !== null
-            ) {
-                switch (true) {
-                    case $data['uuid']:
-                        $userGroup = $this->service->findOneByUuid($data['uuid']);
 
-                        break;
+        switch (true) {
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
+            case !is_array($data['title']) && $data['title'] !== null:
+                /** @var UserGroup $userGroup */
+            $userGroup = UserGroup::firstWhere($criteria);
 
-                    case $data['title']:
-                        $userGroup = $this->service->findOneByTitle($data['title']);
+                return $userGroup ?: throw new UserGroupNotFoundException();
 
-                        break;
+            default:
+                $query = UserGroup::where($criteria);
+                /** @var Builder $query */
+
+                foreach ($data['order'] as $column => $direction) {
+                    $query = $query->orderBy($column, $direction);
+                }
+                if ($data['limit']) {
+                    $query = $query->limit($data['limit']);
+                }
+                if ($data['offset']) {
+                    $query = $query->offset($data['offset']);
                 }
 
-                if (empty($userGroup)) {
-                    throw new UserGroupNotFoundException();
-                }
-
-                return $userGroup;
-            }
-
-            return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
-        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
-            return null;
+                return $query->get();
         }
     }
 

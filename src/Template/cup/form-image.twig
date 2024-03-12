@@ -31,19 +31,9 @@
                                     'type': 'number',
                                     'name': 'files[' ~ file.uuid ~ '][order]',
                                     'args': {
-                                        'value': file.order,
+                                        'value': file.pivot.order,
                                     }
                                 } %}
-
-                                {#<div class="col-12">
-                                    {% include 'cup/form.twig' with {
-                                        'type': 'textarea',
-                                        'name': 'files[' ~ relation.uuid.toString() ~ '][comment]',
-                                        'args': {
-                                            'placeholder': 'Comment..'
-                                        }
-                                    } %}
-                                </div>#}
                             </div>
                         {% endif %}
 

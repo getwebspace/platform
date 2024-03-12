@@ -10,6 +10,7 @@ use App\Domain\Service\Page\Exception\PageNotFoundException;
 use App\Domain\Service\Page\Exception\TitleAlreadyExistsException;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
+use Illuminate\Database\Eloquent\Builder;
 
 class PageService extends AbstractService
 {
@@ -95,7 +96,20 @@ class PageService extends AbstractService
                 return $page ?: throw new PageNotFoundException();
 
             default:
-                return Page::where($criteria)->get();
+                $query = Page::where($criteria);
+                /** @var Builder $query */
+
+                foreach ($data['order'] as $column => $direction) {
+                    $query = $query->orderBy($column, $direction);
+                }
+                if ($data['limit']) {
+                    $query = $query->limit($data['limit']);
+                }
+                if ($data['offset']) {
+                    $query = $query->offset($data['offset']);
+                }
+
+                return $query->get();
         }
     }
 
@@ -126,7 +140,7 @@ class PageService extends AbstractService
                 'template' => null,
                 'type' => null,
             ];
-            $data = array_merge($default, $data);
+            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
 
             if ($data !== $default) {
                 $entity->update($data);

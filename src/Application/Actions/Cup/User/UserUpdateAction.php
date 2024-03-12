@@ -56,7 +56,7 @@ class UserUpdateAction extends UserAction
                                 return $this->respondWithRedirect('/cup/user');
 
                             default:
-                                return $this->respondWithRedirect('/cup/user/' . $user->getUuid() . '/edit');
+                                return $this->respondWithRedirect('/cup/user/' . $user->uuid . '/edit');
                         }
                     } catch (WrongUsernameValueException|UsernameAlreadyExistsException $e) {
                         $this->addError('username', $e->getMessage());

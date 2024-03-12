@@ -12,11 +12,14 @@ use App\Domain\Traits\FileTrait;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
+ * @property string $uuid
  * @property string $title
  * @property string $description
  * @property array $access
+ * @property User[] $users
  */
 class UserGroup extends Model
 {
@@ -48,7 +51,7 @@ class UserGroup extends Model
         'access' => [],
     ];
 
-    public function users()
+    public function users(): HasMany
     {
         return $this->hasMany(User::class, 'group_uuid', 'uuid');
     }

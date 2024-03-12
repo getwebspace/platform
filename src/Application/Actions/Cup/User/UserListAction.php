@@ -2,13 +2,18 @@
 
 namespace App\Application\Actions\Cup\User;
 
+use App\Domain\Enums\UserStatus;
+use App\Domain\Models\User;
+
 class UserListAction extends UserAction
 {
     protected function action(): \Slim\Psr7\Response
     {
         $criteria = [
-            'status' => [\App\Domain\Types\UserStatusType::STATUS_WORK],
+            'status' => [UserStatus::WORK],
         ];
+
+        $query = User::query();
 
         if ($this->isPost()) {
             $data = [
@@ -21,45 +26,37 @@ class UserListAction extends UserAction
             ];
 
             if ($data['username']) {
-                $criteria['username'] = $data['username'];
-
                 if (!$data['username_strong']) {
-                    $criteria['username'] = '%' . $criteria['username'] . '%';
+                    $query = $query->where('username', 'like', '%' . $data['username'] . '%');
+                } else {
+                    $query = $query->where('username', '=', $data['username']);
                 }
             }
 
             if ($data['email']) {
-                $criteria['email'] = $data['email'];
+                $query = $query->where('email', '=', $data['email']);
             }
 
             if ($data['group_uuid']) {
-                $criteria['group_uuid'] = $data['group_uuid'];
+                $query = $query->where('group_uuid', '=', $data['group_uuid']);
             }
 
             if ($data['status_block']) {
-                $criteria['status'][] = \App\Domain\Types\UserStatusType::STATUS_BLOCK;
+                $criteria['status'][] = UserStatus::BLOCK;
             }
 
             if ($data['status_delete']) {
-                $criteria['status'][] = \App\Domain\Types\UserStatusType::STATUS_DELETE;
+                $criteria['status'][] = UserStatus::DELETE;
             }
         }
 
-        $query = $this->userService->createQueryBuilder('u');
-
-        foreach ($criteria as $criterion => $value) {
-            if (is_array($value)) {
-                $query->andWhere("u.{$criterion} IN (:{$criterion})");
-            } elseif (!str_starts_with($value, '%')) {
-                $query->andWhere("u.{$criterion} = :{$criterion}");
-            } else {
-                $query->andWhere("u.{$criterion} LIKE :{$criterion}");
-            }
-            $query->setParameter($criterion, $value);
-        }
+        $query = $query
+            ->whereIn('status', $criteria['status'])
+            ->orderBy('group_uuid', 'desc')
+            ->orderBy('register', 'desc');
 
         return $this->respondWithTemplate('cup/user/index.twig', [
-            'list' => collect($query->getQuery()->getResult()),
+            'list' => $query->get(),
             'groups' => $this->userGroupService->read(['order' => ['title' => 'asc']]),
         ]);
     }

@@ -11,12 +11,16 @@ use App\Domain\Casts\User\Legal;
 use App\Domain\Casts\User\Messenger;
 use App\Domain\Enums\UserStatus;
 use App\Domain\Traits\FileTrait;
+use App\Domain\Traits\SecurityTrait;
 use DateTime;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
+ * @property string $uuid
  * @property string $email
  * @property string $phone
  * @property string $username
@@ -38,11 +42,13 @@ use Illuminate\Database\Eloquent\Model;
  * @property DateTime $change
  * @property string $language
  * @property string $additional
- * @property string $status
+ * @property UserStatus $status
  * @property string $group_uuid
+ * @property UserGroup $group
  * @property bool $allow_mail
  * @property string $password
- * @property string $token
+ * @property UserToken $token
+ * @property UserIntegration[] $integrations
  * @property string $auth_code
  * @property string $external_id
  */
@@ -51,6 +57,7 @@ class User extends Model
     use HasFactory;
     use HasUuids;
     use FileTrait;
+    use SecurityTrait;
 
     protected $table = 'user';
     protected $primaryKey = 'uuid';
@@ -114,10 +121,10 @@ class User extends Model
         'language' => 'string',
         'additional' => 'string',
         'status' => UserStatus::class,
-        'group_uuid' => 'uuid',
+        'group_uuid' => 'string',
         'allow_mail' => Boolean::class,
         'password' => Password::class,
-        'token' => 'string',
+        'token' => 'array',
         'auth_code' => 'string',
         'external_id' => 'string',
     ];
@@ -126,15 +133,28 @@ class User extends Model
         'status' => UserStatus::WORK,
     ];
 
-    public function group()
+    public function group(): HasOne
     {
         return $this->hasOne(UserGroup::class, 'uuid', 'group_uuid');
+    }
+
+    public function token(): HasOne
+    {
+        return $this->hasOne(UserToken::class, 'uuid', 'user_uuid');
+    }
+
+    public function integrations(): HasMany
+    {
+        return $this->hasMany(UserIntegration::class, 'uuid', 'user_uuid');
     }
 
     public function avatar(int $size = 40): string
     {
         if ($this->hasFiles()) {
-            return $this->files()->first()->public_path('small');
+            /** @var File $file */
+            $file = $this->files->first();
+
+            return $file->public_path('small');
         }
 
         return 'https://www.gravatar.com/avatar/' . md5(mb_strtolower(trim($this->email))) . '?d=identicon&s=' . $size;

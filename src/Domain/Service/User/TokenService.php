@@ -3,28 +3,25 @@
 namespace App\Domain\Service\User;
 
 use App\Domain\AbstractService;
-use App\Domain\Entities\User\Token as UserToken;
+use App\Domain\Models\User;
+use App\Domain\Models\UserGroup;
+use App\Domain\Models\UserToken;
 use App\Domain\Repository\User\TokenRepository as UserTokenRepository;
 use App\Domain\Service\User\Exception\TokenNotFoundException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class TokenService extends AbstractService
 {
-    /**
-     * @var UserTokenRepository
-     */
-    protected mixed $service;
-
     protected function init(): void
     {
-        $this->service = $this->entityManager->getRepository(UserToken::class);
     }
 
     public function create(array $data = []): UserToken
     {
         $default = [
-            'user' => '',
+            'user_uuid' => '',
             'unique' => '',
             'comment' => '',
             'ip' => '',
@@ -33,22 +30,11 @@ class TokenService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        if (!$data['user']) {
+        if (!$data['user_uuid']) {
             throw new \RuntimeException();
         }
 
-        $userToken = (new UserToken())
-            ->setUser($data['user'])
-            ->setUnique($data['unique'])
-            ->setComment($data['comment'])
-            ->setIp($data['ip'])
-            ->setAgent($data['agent'])
-            ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
-
-        $this->entityManager->persist($userToken);
-        $this->entityManager->flush();
-
-        return $userToken;
+        return UserToken::create($data);
     }
 
     /**
@@ -59,7 +45,7 @@ class TokenService extends AbstractService
     public function read(array $data = [])
     {
         $default = [
-            'user' => null,
+            'user_uuid' => null,
             'unique' => null,
             'agent' => null,
             'ip' => null,
@@ -68,8 +54,8 @@ class TokenService extends AbstractService
 
         $criteria = [];
 
-        if ($data['user'] !== null) {
-            $criteria['user_uuid'] = $data['user']->getUuid();
+        if ($data['user_uuid'] !== null) {
+            $criteria['user_uuid'] = $data['user_uuid'];
         }
         if ($data['unique'] !== null) {
             $criteria['unique'] = $data['unique'];
@@ -81,22 +67,28 @@ class TokenService extends AbstractService
             $criteria['ip'] = $data['ip'];
         }
 
-        try {
-            switch (true) {
-                case !is_array($data['unique']) && $data['unique'] !== null:
-                    $userToken = $this->service->findOneBy($criteria);
+        switch (true) {
+            case !is_array($data['unique']) && $data['unique'] !== null:
+                /** @var UserToken $userToken */
+                $userToken = UserToken::firstWhere($criteria);
 
-                    if (empty($userToken)) {
-                        throw new TokenNotFoundException();
-                    }
+                return $userToken ?: throw new TokenNotFoundException();
 
-                    return $userToken;
+            default:
+                $query = UserToken::where($criteria);
+                /** @var Builder $query */
 
-                default:
-                    return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
-            }
-        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
-            return null;
+                foreach ($data['order'] as $column => $direction) {
+                    $query = $query->orderBy($column, $direction);
+                }
+                if ($data['limit']) {
+                    $query = $query->limit($data['limit']);
+                }
+                if ($data['offset']) {
+                    $query = $query->offset($data['offset']);
+                }
+
+                return $query->get();
         }
     }
 
@@ -105,7 +97,7 @@ class TokenService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
@@ -119,29 +111,10 @@ class TokenService extends AbstractService
                 'agent' => null,
                 'date' => null,
             ];
-            $data = array_merge($default, $data);
+            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
 
             if ($data !== $default) {
-                if ($data['user'] !== null) {
-                    $entity->setUser($data['user']);
-                }
-                if ($data['unique'] !== null) {
-                    $entity->setUnique($data['unique']);
-                }
-                if ($data['comment'] !== null) {
-                    $entity->setComment($data['comment']);
-                }
-                if ($data['ip'] !== null) {
-                    $entity->setIp($data['ip']);
-                }
-                if ($data['agent'] !== null) {
-                    $entity->setAgent($data['agent']);
-                }
-                if ($data['date'] !== null) {
-                    $entity->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
-                }
-
-                $this->entityManager->flush($entity);
+                $entity->update($data);
             }
 
             return $entity;

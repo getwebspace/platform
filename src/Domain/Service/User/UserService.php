@@ -3,8 +3,10 @@
 namespace App\Domain\Service\User;
 
 use App\Domain\AbstractService;
-use App\Domain\Entities\User;
-use App\Domain\Entities\User\Group as UserGroup;
+use App\Domain\Enums\UserStatus;
+use App\Domain\Models\User;
+use App\Domain\Models\UserGroup;
+use App\Domain\Models\UserToken;
 use App\Domain\Repository\UserRepository;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\EmailBannedException;
@@ -16,25 +18,14 @@ use App\Domain\Service\User\Exception\WrongEmailValueException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
 use App\Domain\Service\User\Exception\WrongPhoneValueException;
 use App\Domain\Service\User\GroupService as UserGroupService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class UserService extends AbstractService
 {
-    /**
-     * @var UserRepository
-     */
-    protected mixed $service;
-
-    /**
-     * @var UserGroupService
-     */
-    protected mixed $userGroupService;
-
     protected function init(): void
     {
-        $this->service = $this->entityManager->getRepository(User::class);
-        $this->userGroupService = $this->container->get(UserGroupService::class);
     }
 
     /**
@@ -79,70 +70,37 @@ class UserService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        if ($data['username'] && $this->service->findOneByUsername($data['username']) !== null) {
-            throw new UsernameAlreadyExistsException();
-        }
-        if ($data['email']) {
-            if ($this->service->findOneByEmail($data['email']) !== null) {
-                throw new EmailAlreadyExistsException();
-            }
-            if ($this->check_email($data['email'])) {
-                throw new EmailBannedException();
-            }
-        }
-        if ($data['phone'] && $this->service->findOneByPhone($data['phone']) !== null) {
-            throw new PhoneAlreadyExistsException();
-        }
-        if (!$data['username'] && !$data['email'] && !$data['phone']) {
-            throw new MissingUniqueValueException();
-        }
+//        if ($data['username'] && $this->service->findOneByUsername($data['username']) !== null) {
+//            throw new UsernameAlreadyExistsException();
+//        }
+//        if ($data['email']) {
+//            if ($this->service->findOneByEmail($data['email']) !== null) {
+//                throw new EmailAlreadyExistsException();
+//            }
+//            if ($this->check_email($data['email'])) {
+//                throw new EmailBannedException();
+//            }
+//        }
+//        if ($data['phone'] && $this->service->findOneByPhone($data['phone']) !== null) {
+//            throw new PhoneAlreadyExistsException();
+//        }
+//        if (!$data['username'] && !$data['email'] && !$data['phone']) {
+//            throw new MissingUniqueValueException();
+//        }
+//
+//        // retrieve user group by uuid
+//        if (!is_a($data['group'], UserGroup::class) && $data['group_uuid']) {
+//            $data['group'] = $this->userGroupService->read(['uuid' => $data['group_uuid']]);
+//        }
 
-        // retrieve user group by uuid
-        if (!is_a($data['group'], UserGroup::class) && $data['group_uuid']) {
-            $data['group'] = $this->userGroupService->read(['uuid' => $data['group_uuid']]);
-        }
-
-        $user = (new User())
-            ->setUsername($data['username'])
-            ->setEmail($data['email'])
-            ->setPhone($data['phone'])
-            ->setPassword($data['password'])
-            ->setFirstname($data['firstname'])
-            ->setLastname($data['lastname'])
-            ->setPatronymic($data['patronymic'])
-            ->setGender($data['gender'])
-            ->setBirthdate($data['birthdate'])
-            ->setCountry($data['country'])
-            ->setCity($data['city'])
-            ->setAddress($data['address'])
-            ->setPostcode($data['postcode'])
-            ->setAdditional($data['additional'])
-            ->setAllowMail($data['allow_mail'])
-            ->setStatus($data['status'])
-            ->setCompany($data['company'])
-            ->setLegal($data['legal'])
-            ->setMessanger($data['messenger'])
-            ->setWebsite($data['website'])
-            ->setSource($data['source'])
-            ->setGroup($data['group'])
-            ->setAuthCode($data['auth_code'])
-            ->setLanguage($data['language'])
-            ->setExternalId($data['external_id'])
-            ->setToken($data['token'])
-            ->setRegister('now', $this->parameter('common_timezone', 'UTC'))
-            ->setChange('now', $this->parameter('common_timezone', 'UTC'));
-
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
-
-        return $user;
+        return User::create($data);
     }
 
     /**
-     * @throws UserNotFoundException
+     * @return Collection|User
      * @throws WrongPasswordException
      *
-     * @return Collection|User
+     * @throws UserNotFoundException
      */
     public function read(array $data = [])
     {
@@ -192,7 +150,7 @@ class UserService extends AbstractService
             $criteria['additional'] = $data['additional'];
         }
         if ($data['allow_mail'] !== null) {
-            $criteria['allow_mail'] = (bool) $data['allow_mail'];
+            $criteria['allow_mail'] = (bool)$data['allow_mail'];
         }
         if ($data['status'] !== null && in_array($data['status'], \App\Domain\Types\UserStatusType::LIST, true)) {
             $criteria['status'] = $data['status'];
@@ -201,73 +159,54 @@ class UserService extends AbstractService
             $criteria['external_id'] = $data['external_id'];
         }
 
-        try {
-            if (
-                $data['identifier'] !== null
-                || !is_array($data['uuid']) && $data['uuid'] !== null
-                || !is_array($data['username']) && $data['username'] !== null
-                || !is_array($data['email']) && $data['email'] !== null
-                || !is_array($data['phone']) && $data['phone'] !== null
-                || !is_array($data['external_id']) && $data['external_id'] !== null
-            ) {
-                switch (true) {
-                    case $data['identifier']:
-                        $user = $this->service->findOneByIdentifier($data['identifier']);
+        switch (true) {
+            case $data['identifier'] !== null:
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
+            case !is_array($data['username']) && $data['username'] !== null:
+            case !is_array($data['email']) && $data['email'] !== null:
+            case !is_array($data['phone']) && $data['phone'] !== null:
+            case !is_array($data['external_id']) && $data['external_id'] !== null:
+                /** @var User $user */
+                $user = User::firstWhere($criteria);
 
-                        break;
-
-                    case $data['uuid']:
-                        $user = $this->service->findOneByUuid($data['uuid']);
-
-                        break;
-
-                    case $data['username']:
-                        $user = $this->service->findOneByUsername((string) $data['username']);
-
-                        break;
-
-                    case $data['email']:
-                        $user = $this->service->findOneByEmail((string) $data['email']);
-
-                        break;
-
-                    case $data['phone']:
-                        $user = $this->service->findOneByPhone((string) $data['phone']);
-
-                        break;
-
-                    case $data['external_id']:
-                        $user = $this->service->findOneByExternalId($data['external_id']);
-
-                        break;
-                }
-
-                if (
-                    empty($user) || (!empty($data['status']) && $data['status'] !== $user->getStatus())
-                ) {
+                if (!$user || ($data['status'] !== null && $data['status'] !== $user->status->value)) {
                     throw new UserNotFoundException();
                 }
 
                 // optional: check password
                 if ($data['password'] !== null) {
-                    if (!password_verify($data['password'], $user->getPassword())) {
+                    if (!password_verify($data['password'], $user->password)) {
                         throw new WrongPasswordException();
                     }
                 }
 
                 return $user;
-            }
 
-            if (
-                !is_array($data['firstname']) && $data['firstname'] !== null
-                || !is_array($data['lastname']) && $data['lastname'] !== null
-            ) {
-                return collect($this->service->findByFirstnameOrLastname($data['firstname'], $data['lastname'], $data['limit'], $data['offset']));
-            }
+            case !is_array($data['firstname']) && $data['firstname'] !== null:
+            case !is_array($data['lastname']) && $data['lastname'] !== null:
+                $criteria = [
+                    'firstname' => $data['firstname'],
+                    'lastname' => $data['lastname'],
+                ];
+                $criteria = array_filter($criteria, fn ($v) => $v !== null);
 
-            return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
-        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
-            return null;
+                return User::where($criteria)->get();
+
+            default:
+                $query = User::where($criteria);
+                /** @var Builder $query */
+
+                foreach ($data['order'] as $column => $direction) {
+                    $query = $query->orderBy($column, $direction);
+                }
+                if ($data['limit']) {
+                    $query = $query->limit($data['limit']);
+                }
+                if ($data['offset']) {
+                    $query = $query->offset($data['offset']);
+                }
+
+                return $query->get();
         }
     }
 
@@ -287,7 +226,7 @@ class UserService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
@@ -322,128 +261,10 @@ class UserService extends AbstractService
                 'external_id' => null,
                 'token' => null,
             ];
-            $data = array_merge($default, $data);
+            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
 
             if ($data !== $default) {
-                if ($data['username'] !== null) {
-                    $found = $this->service->findOneByUsername($data['username']);
-
-                    if ($found === null || $found === $entity) {
-                        $entity->setUsername($data['username']);
-                    } else {
-                        throw new UsernameAlreadyExistsException();
-                    }
-                }
-                if ($data['email'] !== null) {
-                    if (blank($data['email'])) {
-                        $entity->setEmail();
-                    } else {
-                        if ($this->check_email($data['email'])) {
-                            throw new EmailBannedException();
-                        }
-
-                        $found = $this->service->findOneByEmail($data['email']);
-
-                        if ($found === null || $found === $entity) {
-                            $entity->setEmail($data['email']);
-                        } else {
-                            throw new EmailAlreadyExistsException();
-                        }
-                    }
-                }
-                if ($data['phone'] !== null) {
-                    if (blank($data['phone'])) {
-                        $entity->setPhone();
-                    } else {
-                        $found = $this->service->findOneByPhone($data['phone']);
-
-                        if ($found === null || $found === $entity) {
-                            $entity->setPhone($data['phone']);
-                        } else {
-                            throw new PhoneAlreadyExistsException();
-                        }
-                    }
-                }
-                if ($data['password'] !== null) {
-                    $entity->setPassword($data['password']);
-                }
-                if ($data['firstname'] !== null) {
-                    $entity->setFirstname($data['firstname']);
-                }
-                if ($data['lastname'] !== null) {
-                    $entity->setLastname($data['lastname']);
-                }
-                if ($data['patronymic'] !== null) {
-                    $entity->setPatronymic($data['patronymic']);
-                }
-                if ($data['gender'] !== null) {
-                    $entity->setGender($data['gender']);
-                }
-                if ($data['birthdate'] !== null) {
-                    $entity->setBirthdate($data['birthdate']);
-                }
-                if ($data['country'] !== null) {
-                    $entity->setCountry($data['country']);
-                }
-                if ($data['city'] !== null) {
-                    $entity->setCity($data['city']);
-                }
-                if ($data['address'] !== null) {
-                    $entity->setAddress($data['address']);
-                }
-                if ($data['postcode'] !== null) {
-                    $entity->setPostcode($data['postcode']);
-                }
-                if ($data['additional'] !== null) {
-                    $entity->setAdditional($data['additional']);
-                }
-                if ($data['allow_mail'] !== null) {
-                    $entity->setAllowMail($data['allow_mail']);
-                }
-                if ($data['status'] !== null) {
-                    $entity->setStatus($data['status']);
-                }
-                if ($data['company'] !== null) {
-                    $entity->setCompany($data['company']);
-                }
-                if ($data['legal'] !== null) {
-                    $entity->setLegal($data['legal']);
-                }
-                if ($data['messenger'] !== null) {
-                    $entity->setMessanger($data['messenger']);
-                }
-                if ($data['website'] !== null) {
-                    $entity->setWebsite($data['website']);
-                }
-                if ($data['source'] !== null) {
-                    $entity->setSource($data['source']);
-                }
-                if ($data['group'] !== null || $data['group_uuid'] !== null) {
-                    // retrieve user group by uuid
-                    if (!is_a($data['group'], UserGroup::class) && $data['group_uuid']) {
-                        $data['group'] = $this->userGroupService->read(['uuid' => $data['group_uuid']]);
-                    }
-
-                    $entity->setGroup($data['group']);
-                }
-                if ($data['auth_code'] !== null) {
-                    $entity->setAuthCode($data['auth_code']);
-                }
-                if ($data['language'] !== null) {
-                    $entity->setLanguage($data['language']);
-                }
-                if ($data['external_id'] !== null) {
-                    $entity->setExternalId($data['external_id']);
-                }
-                if ($data['token'] !== null) {
-                    foreach ($data['token'] as $token => $value) {
-                        $entity->changeToken($token, $value);
-                    }
-                }
-
-                $entity->setChange('now', $this->parameter('common_timezone', 'UTC'));
-
-                $this->entityManager->flush();
+                $entity->update($data);
             }
 
             return $entity;
@@ -462,15 +283,15 @@ class UserService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
 
         if (is_object($entity) && is_a($entity, User::class)) {
-            $entity->setStatus(\App\Domain\Types\UserStatusType::STATUS_BLOCK)->setChange('now');
-
-            $this->entityManager->flush();
+            $entity->update([
+                'status' => UserStatus::BLOCK,
+            ]);
 
             return $entity;
         }
@@ -488,15 +309,15 @@ class UserService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
 
         if (is_object($entity) && is_a($entity, User::class)) {
-            $entity->setStatus(\App\Domain\Types\UserStatusType::STATUS_DELETE)->setChange('now');
-
-            $this->entityManager->flush();
+            $entity->update([
+                'status' => UserStatus::DELETE,
+            ]);
 
             return $entity;
         }
@@ -511,7 +332,7 @@ class UserService extends AbstractService
     {
         $emails = $this->parameter('user_email_list', '');
 
-        if (trim($email) && $emails) {
+        if (trim($emails) && trim($email)) {
             $list = array_map('trim', explode(PHP_EOL, $emails));
 
             switch ($this->parameter('user_email_list_mode', 'blacklist')) {

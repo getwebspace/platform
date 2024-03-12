@@ -2,6 +2,7 @@
 
 namespace App\Application\Actions\Auth;
 
+use App\Domain\Models\UserToken;
 use App\Domain\Service\User\Exception\TokenNotFoundException;
 use App\Domain\Traits\SecurityTrait;
 
@@ -17,27 +18,28 @@ class RefreshTokenAction extends AuthAction
 
         if ($refresh_token) {
             try {
+                /** @var UserToken $token */
                 $token = $this->userTokenService->read([
                     'unique' => $refresh_token,
                     'agent' => $this->getServerParam('HTTP_USER_AGENT'),
                 ]);
-                $expired = $token->getDate()->getTimestamp() + \App\Domain\References\Date::MONTH;
+                $expired = $token->date->getTimestamp() + \App\Domain\References\Date::MONTH;
 
                 if ($expired >= time()) {
-                    $tokens = $this->getTokenPair([
-                        'user' => $token->getUser(),
+                    $pairs = $this->getTokenPair([
+                        'user' => $token->user,
                         'user_token' => $token,
                         'ip' => $this->getRequestRemoteIP(),
                     ]);
 
-                    setcookie('access_token', $tokens['access_token'], time() + \App\Domain\References\Date::MONTH, '/');
-                    setcookie('refresh_token', $tokens['refresh_token'], time() + \App\Domain\References\Date::MONTH, '/auth');
+                    setcookie('access_token', $pairs['access_token'], time() + \App\Domain\References\Date::MONTH, '/');
+                    setcookie('refresh_token', $pairs['refresh_token'], time() + \App\Domain\References\Date::MONTH, '/auth');
 
-                    $this->container->get(\App\Application\PubSub::class)->publish('auth:user:refresh-token', $token->getUser());
+                    $this->container->get(\App\Application\PubSub::class)->publish('auth:user:refresh-token', $token->user);
 
                     $output = [
-                        'access_token' => $tokens['access_token'],
-                        'refresh_token' => $tokens['refresh_token'],
+                        'access_token' => $pairs['access_token'],
+                        'refresh_token' => $pairs['refresh_token'],
                     ];
                 } else {
                     $this->userTokenService->delete($token);

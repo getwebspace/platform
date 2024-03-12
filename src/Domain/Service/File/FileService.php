@@ -8,6 +8,7 @@ use App\Domain\Service\File\Exception\FileAlreadyExistsException;
 use App\Domain\Service\File\Exception\FileNotFoundException;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
+use Illuminate\Database\Eloquent\Builder;
 
 class FileService extends AbstractService
 {
@@ -190,7 +191,20 @@ class FileService extends AbstractService
                 return $file;
 
             default:
-                return File::where($criteria)->get();
+                $query = File::where($criteria);
+                /** @var Builder $query */
+
+                foreach ($data['order'] as $column => $direction) {
+                    $query = $query->orderBy($column, $direction);
+                }
+                if ($data['limit']) {
+                    $query = $query->limit($data['limit']);
+                }
+                if ($data['offset']) {
+                    $query = $query->offset($data['offset']);
+                }
+
+                return $query->get();
         }
     }
 
@@ -247,21 +261,8 @@ class FileService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, File::class)) {
-            $relations = $this->serviceFileRelation->read(['file_uuid' => $entity->getUuid()]);
-
-            foreach ($relations as $relation) {
-                $this->serviceFileRelation->delete($relation);
-            }
-
-            @exec('rm -rf ' . $entity->getDir());
-
-            $this->entityManager->remove($entity);
-            $this->entityManager->flush();
-
-            return true;
-        }
-
-        if (is_object($entity) && is_a($entity, File::class)) {
+            $this->db->table('file_related')->where('file_uuid', $entity->uuid)->delete();
+            @exec('rm -rf ' . $entity->dir());
             $entity->delete();
 
             return true;
