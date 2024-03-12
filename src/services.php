@@ -6,7 +6,6 @@ use App\Domain\Service\Catalog\OrderProductService as CatalogOrderProductService
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
 use App\Domain\Service\Catalog\ProductAttributeService as CatalogProductAttributeService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
-use App\Domain\Service\File\FileRelationService;
 use App\Domain\Service\File\FileService;
 use App\Domain\Service\Form\DataService as FormDataService;
 use App\Domain\Service\Form\FormService;
@@ -19,7 +18,6 @@ use App\Domain\Service\Publication\PublicationService;
 use App\Domain\Service\Reference\ReferenceService;
 use App\Domain\Service\Task\TaskService;
 use App\Domain\Service\User\GroupService as UserGroupService;
-use App\Domain\Service\User\IntegrationService as UserIntegrationService;
 use App\Domain\Service\User\SubscriberService as UserSubscriberService;
 use App\Domain\Service\User\TokenService as UserTokenService;
 use App\Domain\Service\User\UserService;
@@ -36,7 +34,6 @@ return function (ContainerBuilder $containerBuilder): void {
         CatalogProductService::class => \DI\autowire(CatalogProductService::class),
 
         // file
-        FileRelationService::class => \DI\autowire(FileRelationService::class),
         FileService::class => \DI\autowire(FileService::class),
 
         // form
@@ -67,7 +64,6 @@ return function (ContainerBuilder $containerBuilder): void {
 
         // user
         UserGroupService::class => \DI\autowire(UserGroupService::class),
-        UserIntegrationService::class => \DI\autowire(UserIntegrationService::class),
         UserTokenService::class => \DI\autowire(UserTokenService::class),
         UserSubscriberService::class => \DI\autowire(UserSubscriberService::class),
         UserService::class => \DI\autowire(UserService::class),

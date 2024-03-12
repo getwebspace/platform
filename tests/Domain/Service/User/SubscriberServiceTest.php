@@ -2,7 +2,7 @@
 
 namespace tests\Domain\Service\User;
 
-use App\Domain\Entities\User\Subscriber as UserSubscriber;
+use App\Domain\Models\UserSubscriber;
 use App\Domain\Repository\User\SubscriberRepository as UserSubscriberRepository;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
@@ -35,13 +35,7 @@ class SubscriberServiceTest extends TestCase
 
         $userSubscriber = $this->service->create($data);
         $this->assertInstanceOf(UserSubscriber::class, $userSubscriber);
-        $this->assertEquals($data['email'], $userSubscriber->getEmail());
-
-        /** @var UserSubscriberRepository $userSubscriberRepo */
-        $userSubscriberRepo = $this->em->getRepository(UserSubscriber::class);
-        $us = $userSubscriberRepo->findOneByEmail($data['email']);
-        $this->assertInstanceOf(UserSubscriber::class, $us);
-        $this->assertEquals($data['email'], $us->getEmail());
+        $this->assertEquals($data['email'], $userSubscriber->email);
     }
 
     public function testCreateWithMissingUniqueValue(): void
@@ -60,12 +54,7 @@ class SubscriberServiceTest extends TestCase
             'date' => $this->getFaker()->dateTime,
         ];
 
-        $userSubscriber = (new UserSubscriber())
-            ->setEmail($data['email'])
-            ->setDate($data['date']);
-
-        $this->em->persist($userSubscriber);
-        $this->em->flush();
+        UserSubscriber::create($data);
 
         $this->service->create($data);
     }
@@ -81,7 +70,7 @@ class SubscriberServiceTest extends TestCase
 
         $userSubscriber = $this->service->read(['email' => $data['email']]);
         $this->assertInstanceOf(UserSubscriber::class, $userSubscriber);
-        $this->assertEquals($data['email'], $userSubscriber->getEmail());
+        $this->assertEquals($data['email'], $userSubscriber->email);
     }
 
     public function testReadWithUserNotFound1(): void
@@ -110,7 +99,7 @@ class SubscriberServiceTest extends TestCase
         ];
 
         $user = $this->service->update($userSubscriber, $data);
-        $this->assertEquals($data['email'], $user->getEmail());
+        $this->assertEquals($data['email'], $user->email);
     }
 
     public function testUpdateWithUserNotFound(): void

@@ -3,7 +3,7 @@
 namespace App\Application\Actions\Cup;
 
 use App\Domain\AbstractAction;
-use App\Domain\Entities\User;
+use App\Domain\Models\User;
 
 class MainPageAction extends AbstractAction
 {
@@ -13,10 +13,10 @@ class MainPageAction extends AbstractAction
         $user = $this->request->getAttribute('user', false);
 
         return $this->respondWithTemplate('cup/layout.twig', [
-            'notepad' => $this->parameter('notepad_' . $user->getUsername(), ''),
+            'notepad' => $this->parameter('notepad_' . $user->username, ''),
             'stats' => [
-                'pages' => $this->entityManager->getRepository(\App\Domain\Entities\Page::class)->count([]),
-                'users' => $this->entityManager->getRepository(\App\Domain\Entities\User::class)->count(['status' => \App\Domain\Types\UserStatusType::STATUS_WORK]),
+                'pages' => \App\Domain\Models\Page::count(),
+                'users' => \App\Domain\Models\User::where(['status' => \App\Domain\Enums\UserStatus::WORK])->count(),
                 'publications' => $this->entityManager->getRepository(\App\Domain\Entities\Publication::class)->count([]),
                 'guestbook' => $this->entityManager->getRepository(\App\Domain\Entities\GuestBook::class)->count([]),
                 'catalog' => [
@@ -24,7 +24,7 @@ class MainPageAction extends AbstractAction
                     'product' => $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class)->count(['status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK]),
                     'order' => $this->entityManager->getRepository(\App\Domain\Entities\Catalog\Order::class)->count([]),
                 ],
-                'files' => $this->entityManager->getRepository(\App\Domain\Entities\File::class)->count([]),
+                'files' => \App\Domain\Models\File::count(),
             ],
             'properties' => [
                 'version' => [

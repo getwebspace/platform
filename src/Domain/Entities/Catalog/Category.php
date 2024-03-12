@@ -421,13 +421,6 @@ class Category extends AbstractEntity
      */
     public $buf;
 
-    /**
-     * @var array
-     */
-    #[ORM\OneToMany(targetEntity: '\App\Domain\Entities\File\CatalogCategoryFileRelation', mappedBy: 'catalog_category', orphanRemoval: true)]
-    #[ORM\OrderBy(['order' => 'ASC'])]
-    protected $files = [];
-
     public function getParents(): Collection
     {
         $collect = collect([$this]);

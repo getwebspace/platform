@@ -25,36 +25,6 @@ class Publication extends AbstractEntity
         return $this->uuid;
     }
 
-    #[ORM\Column(type: 'uuid', nullable: true, options: ['default' => null])]
-    protected ?\Ramsey\Uuid\UuidInterface $user_uuid;
-
-    #[ORM\ManyToOne(targetEntity: 'App\Domain\Entities\User')]
-    #[ORM\JoinColumn(name: 'user_uuid', referencedColumnName: 'uuid')]
-    protected ?User $user;
-
-    /**
-     * @param string|User $user
-     *
-     * @return $this
-     */
-    public function setUser($user)
-    {
-        if (is_a($user, User::class)) {
-            $this->user_uuid = $user->getUuid();
-            $this->user = $user;
-        } else {
-            $this->user_uuid = null;
-            $this->user = null;
-        }
-
-        return $this;
-    }
-
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
     #[ORM\Column(type: 'string', length: 1000, unique: true, options: ['default' => ''])]
     protected string $address = '';
 
@@ -243,13 +213,6 @@ class Publication extends AbstractEntity
     {
         return $this->external_id;
     }
-
-    /**
-     * @var array
-     */
-    #[ORM\OneToMany(targetEntity: '\App\Domain\Entities\File\PublicationFileRelation', mappedBy: 'publication', orphanRemoval: true)]
-    #[ORM\OrderBy(['order' => 'ASC'])]
-    protected $files = [];
 
     /**
      * Return model as array

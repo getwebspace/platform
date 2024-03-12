@@ -108,11 +108,4 @@ class Data extends AbstractEntity
     {
         return $this->date;
     }
-
-    /**
-     * @var array
-     */
-    #[ORM\OneToMany(targetEntity: '\App\Domain\Entities\File\FormDataFileRelation', mappedBy: 'form_data', orphanRemoval: true)]
-    #[ORM\OrderBy(['order' => 'ASC'])]
-    protected $files = [];
 }

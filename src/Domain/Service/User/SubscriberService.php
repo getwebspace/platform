@@ -3,25 +3,19 @@
 namespace App\Domain\Service\User;
 
 use App\Domain\AbstractService;
-use App\Domain\Entities\User\Subscriber as UserSubscriber;
-use App\Domain\Repository\User\SubscriberRepository as UserSubscriberRepository;
+use App\Domain\Models\UserSubscriber;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongEmailValueException;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
+use Illuminate\Database\Eloquent\Builder;
 
 class SubscriberService extends AbstractService
 {
-    /**
-     * @var UserSubscriberRepository
-     */
-    protected mixed $service;
-
     protected function init(): void
     {
-        $this->service = $this->entityManager->getRepository(UserSubscriber::class);
     }
 
     /**
@@ -36,21 +30,14 @@ class SubscriberService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        if ($data['email'] && $this->service->findOneByEmail($data['email']) !== null) {
-            throw new EmailAlreadyExistsException();
-        }
         if (!$data['email']) {
             throw new MissingUniqueValueException();
         }
+        if ($data['email'] && UserSubscriber::firstWhere(['email' => $data['email']]) !== null) {
+            throw new EmailAlreadyExistsException();
+        }
 
-        $userSubscriber = (new UserSubscriber())
-            ->setEmail($data['email'])
-            ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
-
-        $this->entityManager->persist($userSubscriber);
-        $this->entityManager->flush();
-
-        return $userSubscriber;
+        return UserSubscriber::create($data);
     }
 
     /**
@@ -79,23 +66,29 @@ class SubscriberService extends AbstractService
             $criteria['date'] = $data['date'];
         }
 
-        try {
-            switch (true) {
-                case !is_array($data['uuid']) && $data['uuid'] !== null:
-                case !is_array($data['email']) && $data['email'] !== null:
-                    $userSubscriber = $this->service->findOneBy($criteria);
+        switch (true) {
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
+            case !is_array($data['email']) && $data['email'] !== null:
+                /** @var UserSubscriber $page */
+                $subscriber = UserSubscriber::firstWhere($criteria);
 
-                    if (empty($userSubscriber)) {
-                        throw new UserNotFoundException();
-                    }
+                return $subscriber ?: throw new UserNotFoundException();
 
-                    return $userSubscriber;
+            default:
+                $query = UserSubscriber::where($criteria);
+                /** @var Builder $query */
 
-                default:
-                    return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
-            }
-        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
-            return null;
+                foreach ($data['order'] as $column => $direction) {
+                    $query = $query->orderBy($column, $direction);
+                }
+                if ($data['limit']) {
+                    $query = $query->limit($data['limit']);
+                }
+                if ($data['offset']) {
+                    $query = $query->offset($data['offset']);
+                }
+
+                return $query->get();
         }
     }
 
@@ -121,23 +114,12 @@ class SubscriberService extends AbstractService
         if (is_object($entity) && is_a($entity, UserSubscriber::class)) {
             $default = [
                 'email' => null,
+                'date' => null,
             ];
-            $data = array_merge($default, $data);
+            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
 
             if ($data !== $default) {
-                if ($data['email'] !== null) {
-                    $found = $this->service->findOneByEmail($data['email']);
-
-                    if ($found === null || $found === $entity) {
-                        $entity->setEmail($data['email']);
-                    } else {
-                        throw new EmailAlreadyExistsException();
-                    }
-                }
-
-                $entity->setDate('now', $this->parameter('common_timezone', 'UTC'));
-
-                $this->entityManager->flush();
+                $entity->update($data);
             }
 
             return $entity;
@@ -156,14 +138,13 @@ class SubscriberService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
 
         if (is_object($entity) && is_a($entity, UserSubscriber::class)) {
-            $this->entityManager->remove($entity);
-            $this->entityManager->flush();
+            $entity->delete();
 
             return true;
         }

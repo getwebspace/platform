@@ -669,13 +669,6 @@ class Product extends AbstractEntity
      */
     public mixed $buf;
 
-    /**
-     * @var array
-     */
-    #[ORM\OneToMany(targetEntity: '\App\Domain\Entities\File\CatalogProductFileRelation', mappedBy: 'catalog_product', orphanRemoval: true)]
-    #[ORM\OrderBy(['order' => 'ASC'])]
-    protected $files = [];
-
     public function toArray(): array
     {
         return array_serialize([

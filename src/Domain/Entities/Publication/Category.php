@@ -284,13 +284,6 @@ class Category extends AbstractEntity
         return $this->template;
     }
 
-    /**
-     * @var array
-     */
-    #[ORM\OneToMany(targetEntity: '\App\Domain\Entities\File\PublicationCategoryFileRelation', mappedBy: 'publication_category', orphanRemoval: true)]
-    #[ORM\OrderBy(['order' => 'ASC'])]
-    protected $files = [];
-
     public function getNested(Collection $categories, bool $force = false)
     {
         $result = collect([$this]);

@@ -48,7 +48,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property bool $allow_mail
  * @property string $password
  * @property UserToken $token
- * @property UserIntegration[] $integrations
  * @property string $auth_code
  * @property string $external_id
  */
@@ -141,11 +140,6 @@ class User extends Model
     public function token(): HasOne
     {
         return $this->hasOne(UserToken::class, 'uuid', 'user_uuid');
-    }
-
-    public function integrations(): HasMany
-    {
-        return $this->hasMany(UserIntegration::class, 'uuid', 'user_uuid');
     }
 
     public function avatar(int $size = 40): string
