@@ -2,8 +2,7 @@
 
 namespace tests\Domain\Service\User;
 
-use App\Domain\Entities\User\Group as UserGroup;
-use App\Domain\Repository\User\GroupRepository as GroupServiceRepository;
+use App\Domain\Models\UserGroup;
 use App\Domain\Service\User\Exception\MissingTitleValueException;
 use App\Domain\Service\User\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\User\Exception\UserGroupNotFoundException;
@@ -36,17 +35,9 @@ class GroupServiceTest extends TestCase
 
         $userGroup = $this->service->create($data);
         $this->assertInstanceOf(UserGroup::class, $userGroup);
-        $this->assertEquals($data['title'], $userGroup->getTitle());
-        $this->assertEquals($data['description'], $userGroup->getDescription());
-        $this->assertEquals($data['access'], $userGroup->getAccess());
-
-        /** @var GroupServiceRepository $userGroupRepo */
-        $userGroupRepo = $this->em->getRepository(UserGroup::class);
-        $ug = $userGroupRepo->findOneByTitle($data['title']);
-        $this->assertInstanceOf(UserGroup::class, $ug);
-        $this->assertEquals($data['title'], $ug->getTitle());
-        $this->assertEquals($data['description'], $ug->getDescription());
-        $this->assertEquals($data['access'], $ug->getAccess());
+        $this->assertEquals($data['title'], $userGroup->title);
+        $this->assertEquals($data['description'], $userGroup->description);
+        $this->assertEquals($data['access'], $userGroup->access);
     }
 
     public function testCreateWithMissingTitle(): void
@@ -66,13 +57,7 @@ class GroupServiceTest extends TestCase
             'access' => explode(' ', $this->getFaker()->text),
         ];
 
-        $userGroup = (new UserGroup())
-            ->setTitle($data['title'])
-            ->setDescription($data['description'])
-            ->setAccess($data['access']);
-
-        $this->em->persist($userGroup);
-        $this->em->flush();
+        UserGroup::create($data);
 
         $this->service->create($data);
     }
@@ -89,9 +74,9 @@ class GroupServiceTest extends TestCase
 
         $userGroup = $this->service->read(['title' => $data['title']]);
         $this->assertInstanceOf(UserGroup::class, $userGroup);
-        $this->assertEquals($data['title'], $userGroup->getTitle());
-        $this->assertEquals($data['description'], $userGroup->getDescription());
-        $this->assertEquals($data['access'], $userGroup->getAccess());
+        $this->assertEquals($data['title'], $userGroup->title);
+        $this->assertEquals($data['description'], $userGroup->description);
+        $this->assertEquals($data['access'], $userGroup->access);
     }
 
     public function testReadWithUserGroupNotFound(): void
@@ -116,9 +101,9 @@ class GroupServiceTest extends TestCase
         ];
 
         $userGroup = $this->service->update($userGroup, $data);
-        $this->assertEquals($data['title'], $userGroup->getTitle());
-        $this->assertEquals($data['description'], $userGroup->getDescription());
-        $this->assertEquals($data['access'], $userGroup->getAccess());
+        $this->assertEquals($data['title'], $userGroup->title);
+        $this->assertEquals($data['description'], $userGroup->description);
+        $this->assertEquals($data['access'], $userGroup->access);
     }
 
     public function testUpdateWithUserGroupNotFound(): void

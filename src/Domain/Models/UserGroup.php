@@ -30,8 +30,8 @@ class UserGroup extends Model
     protected $table = 'user_group';
     protected $primaryKey = 'uuid';
 
-    const CREATED_AT = 'register';
-    const UPDATED_AT = 'change';
+    const CREATED_AT = null;
+    const UPDATED_AT = null;
 
     protected $fillable = [
         'title',

@@ -35,19 +35,11 @@ class GroupService extends AbstractService
         if (!$data['title']) {
             throw new MissingTitleValueException();
         }
-        if ($data['title'] && $this->service->findOneByTitle($data['title']) !== null) {
+        if ($data['title'] && UserGroup::firstWhere(['title' => $data['title']]) !== null) {
             throw new TitleAlreadyExistsException();
         }
 
-        $userGroup = (new UserGroup())
-            ->setTitle($data['title'])
-            ->setDescription($data['description'])
-            ->setAccess($data['access']);
-
-        $this->entityManager->persist($userGroup);
-        $this->entityManager->flush();
-
-        return $userGroup;
+        return UserGroup::create($data);
     }
 
     /**
@@ -72,12 +64,11 @@ class GroupService extends AbstractService
             $criteria['title'] = $data['title'];
         }
 
-
         switch (true) {
             case !is_array($data['uuid']) && $data['uuid'] !== null:
             case !is_array($data['title']) && $data['title'] !== null:
                 /** @var UserGroup $userGroup */
-            $userGroup = UserGroup::firstWhere($criteria);
+                $userGroup = UserGroup::firstWhere($criteria);
 
                 return $userGroup ?: throw new UserGroupNotFoundException();
 
@@ -121,26 +112,10 @@ class GroupService extends AbstractService
                 'description' => null,
                 'access' => null,
             ];
-            $data = array_merge($default, $data);
+            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
 
             if ($data !== $default) {
-                if ($data['title'] !== null) {
-                    $found = $this->service->findOneByTitle($data['title']);
-
-                    if ($found === null || $found === $entity) {
-                        $entity->setTitle($data['title']);
-                    } else {
-                        throw new TitleAlreadyExistsException();
-                    }
-                }
-                if ($data['description'] !== null) {
-                    $entity->setDescription($data['description']);
-                }
-                if ($data['access'] !== null) {
-                    $entity->setAccess($data['access']);
-                }
-
-                $this->entityManager->flush();
+                $entity->update($data);
             }
 
             return $entity;
@@ -165,8 +140,7 @@ class GroupService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, UserGroup::class)) {
-            $this->entityManager->remove($entity);
-            $this->entityManager->flush();
+            $entity->delete();
 
             return true;
         }
