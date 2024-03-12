@@ -2,7 +2,8 @@
 
 namespace tests\Domain\Service\Page;
 
-use App\Domain\Entities\Page;
+use App\Domain\Enums\PageType;
+use App\Domain\Models\Page;
 use App\Domain\Repository\PageRepository;
 use App\Domain\Service\Page\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Page\Exception\MissingTitleValueException;
@@ -40,22 +41,15 @@ class PageServiceTest extends TestCase
                 'keywords' => $this->getFaker()->text,
             ],
             'template' => $this->getFaker()->text(50),
-            'type' => $this->getFaker()->randomElement(\App\Domain\Types\PageTypeType::LIST),
+            'type' => $this->getFaker()->randomElement(PageType::cases()),
         ];
 
         $page = $this->service->create($data);
         $this->assertInstanceOf(Page::class, $page);
-        $this->assertEquals($data['title'], $page->getTitle());
-        // $this->assertEquals($data['address'], $page->getAddress());
-        $this->assertEquals($data['content'], $page->getContent());
-        $this->assertEquals($data['template'], $page->getTemplate());
-        $this->assertEquals($data['type'], $page->getType());
-
-        /** @var PageRepository $pageRepo */
-        $pageRepo = $this->em->getRepository(Page::class);
-        $p = $pageRepo->findOneByTitle($data['title']);
-        $this->assertInstanceOf(Page::class, $p);
-        $this->assertEquals($data['title'], $p->getTitle());
+        $this->assertEquals($data['title'], $page->title);
+        $this->assertEquals($data['content'], $page->content);
+        $this->assertEquals($data['template'], $page->template);
+        $this->assertEquals($data['type'], $page->type);
     }
 
     public function testCreateWithMissingTitleValue(): void
@@ -77,13 +71,7 @@ class PageServiceTest extends TestCase
             'content' => $this->getFaker()->text,
         ];
 
-        $page = (new Page())
-            ->setTitle($data['title'])
-            ->setContent($data['content'])
-            ->setDate('now');
-
-        $this->em->persist($page);
-        $this->em->flush();
+        Page::create($data);
 
         $this->service->create($data);
     }
@@ -98,19 +86,12 @@ class PageServiceTest extends TestCase
             'content' => $this->getFaker()->text,
         ];
 
-        $page = (new Page())
-            ->setTitle($data['title'])
-            ->setAddress($data['address'])
-            ->setContent($data['content'])
-            ->setDate('now');
-
-        $this->em->persist($page);
-        $this->em->flush();
+        $page = Page::create($data);
 
         $this->service->create([
-            'title' => $page->getTitle() . '-skip',
-            'address' => $page->getAddress(),
-            'content' => $page->getContent(),
+            'title' => $page->title . '-skip',
+            'address' => $page->address,
+            'content' => $page->content,
         ]);
     }
 
@@ -126,11 +107,11 @@ class PageServiceTest extends TestCase
 
         $page = $this->service->read(['title' => $data['title']]);
         $this->assertInstanceOf(Page::class, $page);
-        $this->assertEquals($data['title'], $page->getTitle());
+        $this->assertEquals($data['title'], $page->title);
 
-        $page = $this->service->read(['address' => $page->getAddress()]);
+        $page = $this->service->read(['address' => $page->address]);
         $this->assertInstanceOf(Page::class, $page);
-        $this->assertEquals($data['title'], $page->getTitle());
+        $this->assertEquals($data['title'], $page->title);
     }
 
     public function testReadWithPageNotFound(): void
@@ -158,16 +139,16 @@ class PageServiceTest extends TestCase
                 'keywords' => $this->getFaker()->text,
             ],
             'template' => 'page.derect.twig',
-            'type' => $this->getFaker()->randomElement(\App\Domain\Types\PageTypeType::LIST),
+            'type' => $this->getFaker()->randomElement(PageType::cases()),
         ];
 
         $page = $this->service->update($page, $data);
-        $this->assertEquals($data['title'], $page->getTitle());
-        $this->assertEquals($data['address'], $page->getAddress());
-        $this->assertEquals($data['content'], $page->getContent());
-        $this->assertEquals($data['meta'], $page->getMeta());
-        $this->assertEquals($data['template'], $page->getTemplate());
-        $this->assertEquals($data['type'], $page->getType());
+        $this->assertEquals($data['title'], $page->title);
+        $this->assertEquals($data['address'], $page->address);
+        $this->assertEquals($data['content'], $page->content);
+        $this->assertEquals($data['meta'], $page->meta);
+        $this->assertEquals($data['template'], $page->template);
+        $this->assertEquals($data['type'], $page->type);
     }
 
     public function testUpdateWithPageNotFound(): void

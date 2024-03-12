@@ -34,15 +34,13 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 
     public function setUp(): void
     {
-        $this->em = $em = static::$container->get(EntityManager::class);
-
         /*
          * for each test, we will use an empty database
          * delete the scheme and create it again
          */
-        $schema = new \Doctrine\ORM\Tools\SchemaTool($em);
-        $schema->dropSchema($em->getMetadataFactory()->getAllMetadata());
-        $schema->createSchema($em->getMetadataFactory()->getAllMetadata());
+//        $schema = new \Doctrine\ORM\Tools\SchemaTool($em);
+//        $schema->dropSchema($em->getMetadataFactory()->getAllMetadata());
+//        $schema->createSchema($em->getMetadataFactory()->getAllMetadata());
     }
 
     protected function getService($class): mixed
