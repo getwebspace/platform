@@ -8,6 +8,7 @@ use App\Domain\Models\User;
 use App\Domain\Models\UserGroup;
 use App\Domain\Models\UserToken;
 use App\Domain\Repository\UserRepository;
+use App\Domain\Service\Page\Exception\PageNotFoundException;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\EmailBannedException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
@@ -70,28 +71,23 @@ class UserService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-//        if ($data['username'] && $this->service->findOneByUsername($data['username']) !== null) {
-//            throw new UsernameAlreadyExistsException();
-//        }
-//        if ($data['email']) {
-//            if ($this->service->findOneByEmail($data['email']) !== null) {
-//                throw new EmailAlreadyExistsException();
-//            }
-//            if ($this->check_email($data['email'])) {
-//                throw new EmailBannedException();
-//            }
-//        }
-//        if ($data['phone'] && $this->service->findOneByPhone($data['phone']) !== null) {
-//            throw new PhoneAlreadyExistsException();
-//        }
-//        if (!$data['username'] && !$data['email'] && !$data['phone']) {
-//            throw new MissingUniqueValueException();
-//        }
-//
-//        // retrieve user group by uuid
-//        if (!is_a($data['group'], UserGroup::class) && $data['group_uuid']) {
-//            $data['group'] = $this->userGroupService->read(['uuid' => $data['group_uuid']]);
-//        }
+        if ($data['username'] && User::firstWhere(['username' => $data['username']]) !== null) {
+            throw new UsernameAlreadyExistsException();
+        }
+        if ($data['email']) {
+            if (User::firstWhere(['email' => $data['email']]) !== null) {
+                throw new EmailAlreadyExistsException();
+            }
+            if ($this->check_email($data['email'])) {
+                throw new EmailBannedException();
+            }
+        }
+        if ($data['phone'] && User::firstWhere(['phone' => $data['phone']]) !== null) {
+            throw new PhoneAlreadyExistsException();
+        }
+        if (!$data['username'] && !$data['email'] && !$data['phone']) {
+            throw new MissingUniqueValueException();
+        }
 
         return User::create($data);
     }
@@ -161,6 +157,14 @@ class UserService extends AbstractService
 
         switch (true) {
             case $data['identifier'] !== null:
+                /** @var User $user */
+                $user = User::where('email', $data['identifier'])
+                    ->orWhere('phone', $data['identifier'])
+                    ->orWhere('username', $data['identifier'])
+                    ->first();
+
+                return $user ?: throw new UserNotFoundException();
+
             case !is_array($data['uuid']) && $data['uuid'] !== null:
             case !is_array($data['username']) && $data['username'] !== null:
             case !is_array($data['email']) && $data['email'] !== null:
