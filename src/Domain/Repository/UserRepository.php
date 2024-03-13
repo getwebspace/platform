@@ -116,7 +116,7 @@ class UserRepository extends AbstractRepository
                 ->setParameter('lastname1', $lastname, Types::STRING)
                 ->setParameter('lastname2', $lastname . '%', Types::STRING)
                 ->andWhere('u.status = :status')
-                ->setParameter('status', \App\Domain\Types\UserStatusType::STATUS_WORK)
+                ->setParameter('status', \App\Domain\Casts\User\Status::WORK)
                 ->setMaxResults($limit)
                 ->setFirstResult($offset);
 

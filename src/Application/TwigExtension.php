@@ -686,7 +686,7 @@ class TwigExtension extends AbstractExtension
         return $userService->read(array_merge(
             $criteria,
             [
-                'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
+                'status' => \App\Domain\Casts\User\Status::WORK,
                 'order' => $order,
             ]
         ));

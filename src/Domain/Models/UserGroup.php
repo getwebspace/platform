@@ -7,7 +7,6 @@ use App\Domain\Casts\Json;
 use App\Domain\Casts\User\Company;
 use App\Domain\Casts\User\Legal;
 use App\Domain\Casts\User\Messenger;
-use App\Domain\Enums\UserStatus;
 use App\Domain\Traits\FileTrait;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

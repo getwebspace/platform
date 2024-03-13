@@ -6,7 +6,6 @@ use App\Application\i18n;
 use App\Domain\Casts\AddressUrl;
 use App\Domain\Casts\Boolean;
 use App\Domain\Casts\Meta;
-use App\Domain\Enums\PageType;
 use App\Domain\Traits\FileTrait;
 use DateTime;
 use Illuminate\Database\Eloquent\Casts\Attribute;

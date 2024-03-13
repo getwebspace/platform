@@ -16,11 +16,11 @@ class LogoutAction extends AuthAction
 
         if ($refresh_token) {
             try {
-                /** @var \App\Domain\Entities\User\Token $token */
+                /** @var \App\Domain\Models\UserToken $token */
                 $token = $this->userTokenService->read(['unique' => $refresh_token]);
 
-                /** @var \App\Domain\Entities\User $user */
-                $user = $token->getUser();
+                /** @var \App\Domain\Models\User $user */
+                $user = $token->user;
 
                 $this->userTokenService->delete($token);
 

@@ -35,7 +35,7 @@ class PageService extends AbstractService
                 'keywords' => '',
             ],
             'template' => '',
-            'type' => \App\Domain\Types\PageTypeType::TYPE_HTML,
+            'type' => \App\Domain\Casts\Page\Type::HTML,
         ];
         $data = array_merge($default, $data);
 
@@ -82,7 +82,7 @@ class PageService extends AbstractService
         if ($data['template'] !== null) {
             $criteria['template'] = $data['template'];
         }
-        if ($data['type'] !== null && in_array($data['type'], \App\Domain\Types\PageTypeType::LIST, true)) {
+        if ($data['type'] !== null && in_array($data['type'], \App\Domain\Casts\Page\Type::LIST, true)) {
             $criteria['type'] = $data['type'];
         }
 

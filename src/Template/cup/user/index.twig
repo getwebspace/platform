@@ -115,10 +115,10 @@
                             {% for user in list %}
                                 <div class="row
                                     {{
-                                        user.status == constant('/App/Domain/Types/UserStatusType::STATUS_DELETE')
+                                        user.status == constant('/App/Domain/Casts/User/Status::DELETE')
                                         ? 'bg-danger'
                                         : (
-                                            user.status == constant('/App/Domain/Types/UserStatusType::STATUS_BLOCK')
+                                            user.status == constant('/App/Domain/Casts/User/Status::BLOCK')
                                             ? 'bg-warning'
                                             : ''
                                         )
@@ -153,7 +153,7 @@
                                                     <i class="fas fa-fw fa-edit"></i>
                                                     <span class="d-none d-md-inline-block">{{ 'Change'|locale }}</span>
                                                 </a>
-                                                {% if user.status != constant('/App/Domain/Types/UserStatusType::STATUS_DELETE') %}
+                                                {% if user.status != constant('/App/Domain/Casts/User/Status::DELETE') %}
                                                     <button type="submit" class="btn btn-sm btn-danger">
                                                         <i class="fas fa-fw fa-trash-alt"></i>
                                                         <span class="d-none d-md-inline-block">{{ 'Delete'|locale }}</span>

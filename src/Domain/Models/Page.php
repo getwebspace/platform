@@ -4,7 +4,7 @@ namespace App\Domain\Models;
 
 use App\Domain\Casts\AddressUrl;
 use App\Domain\Casts\Meta;
-use App\Domain\Enums\PageType;
+use App\Domain\Casts\Page\Type as PageType;
 use App\Domain\Traits\FileTrait;
 use DateTime;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;

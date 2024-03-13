@@ -2,7 +2,7 @@
 
 namespace App\Application\Actions\Cup\User;
 
-use App\Domain\Enums\UserStatus;
+use App\Domain\Casts\User\Status as UserStatus;
 use App\Domain\Models\User;
 
 class UserListAction extends UserAction

@@ -35,7 +35,7 @@ class AuthorizationMiddleware extends AbstractMiddleware
                     /** @var User $user */
                     $user = $userService->read([
                         'uuid' => $uuid,
-                        'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
+                        'status' => \App\Domain\Casts\User\Status::WORK,
                     ]);
 
                     $request = $request->withAttribute('user', $user);

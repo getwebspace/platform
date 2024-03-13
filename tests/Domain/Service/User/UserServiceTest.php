@@ -11,7 +11,7 @@ use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
 use App\Domain\Service\User\UserService;
-use App\Domain\Enums\UserStatus;
+use App\Domain\Casts\User\Status as UserStatus;
 use tests\TestCase;
 
 /**

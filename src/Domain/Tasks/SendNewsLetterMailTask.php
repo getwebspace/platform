@@ -54,7 +54,7 @@ class SendNewsLetterMailTask extends AbstractTask
         switch ($args['type']) {
             case 'all':
                 $list = collect()
-                    ->merge($userService->read(['status' => \App\Domain\Types\UserStatusType::STATUS_WORK, 'allow_mail' => true])->pluck('email')->all())
+                    ->merge($userService->read(['status' => \App\Domain\Casts\User\Status::WORK, 'allow_mail' => true])->pluck('email')->all())
                     ->merge($userSubscriberService->read()->pluck('email')->all())
                     ->unique();
 
@@ -68,7 +68,7 @@ class SendNewsLetterMailTask extends AbstractTask
 
             case 'users':
                 $list = collect()
-                    ->merge($userService->read(['status' => \App\Domain\Types\UserStatusType::STATUS_WORK, 'allow_mail' => true])->pluck('email')->all());
+                    ->merge($userService->read(['status' => \App\Domain\Casts\User\Status::WORK, 'allow_mail' => true])->pluck('email')->all());
 
                 break;
         }

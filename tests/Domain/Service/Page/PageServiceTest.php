@@ -2,7 +2,7 @@
 
 namespace tests\Domain\Service\Page;
 
-use App\Domain\Enums\PageType;
+use App\Domain\Casts\Page\Type as PageType;
 use App\Domain\Models\Page;
 use App\Domain\Repository\PageRepository;
 use App\Domain\Service\Page\Exception\AddressAlreadyExistsException;
@@ -31,8 +31,8 @@ class PageServiceTest extends TestCase
     public function testCreateSuccess(): void
     {
         $data = [
-            'title' => $this->getFaker()->word,
-            'address' => $this->getFaker()->word,
+            'title' => $this->getFaker()->name,
+            'address' => $this->getFaker()->url,
             'content' => $this->getFaker()->text,
             'date' => $this->getFaker()->dateTime,
             'meta' => [
@@ -41,7 +41,7 @@ class PageServiceTest extends TestCase
                 'keywords' => $this->getFaker()->text,
             ],
             'template' => $this->getFaker()->text(50),
-            'type' => $this->getFaker()->randomElement(PageType::cases()),
+            'type' => $this->getFaker()->randomElement(PageType::LIST),
         ];
 
         $page = $this->service->create($data);
@@ -139,7 +139,7 @@ class PageServiceTest extends TestCase
                 'keywords' => $this->getFaker()->text,
             ],
             'template' => 'page.derect.twig',
-            'type' => $this->getFaker()->randomElement(PageType::cases()),
+            'type' => $this->getFaker()->randomElement(PageType::LIST),
         ];
 
         $page = $this->service->update($page, $data);

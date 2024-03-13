@@ -19,7 +19,7 @@ class LoginAction extends AuthAction
             $user = $this->userService->read([
                 'identifier' => $identifier,
                 'password' => $password,
-                'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
+                'status' => \App\Domain\Casts\User\Status::WORK,
             ]);
 
             $tokens = $this->getTokenPair([

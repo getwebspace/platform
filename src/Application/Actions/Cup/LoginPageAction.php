@@ -13,8 +13,6 @@ class LoginPageAction extends UserAction
 
     protected function action(): \Slim\Psr7\Response
     {
-        $identifier = $this->parameter('user_login_type', 'username');
-
         if ($this->isPost()) {
             $data = [
                 'identifier' => $this->getParam('identifier', ''),
@@ -28,7 +26,7 @@ class LoginPageAction extends UserAction
                     $user = $this->userService->read([
                         'identifier' => $data['identifier'],
                         'password' => $data['password'],
-                        'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
+                        'status' => \App\Domain\Casts\User\Status::WORK,
                     ]);
 
                     $tokens = $this->getTokenPair([
@@ -45,7 +43,7 @@ class LoginPageAction extends UserAction
 
                     return $this->respondWithRedirect($data['redirect'] ?: '/cup');
                 } catch (UserNotFoundException $exception) {
-                    $this->addError($identifier, $exception->getMessage());
+                    $this->addError('identifier', $exception->getMessage());
                 } catch (WrongPasswordException $exception) {
                     $this->addError('password', $exception->getMessage());
                 }
@@ -54,8 +52,6 @@ class LoginPageAction extends UserAction
             }
         }
 
-        return $this->respondWithTemplate('cup/auth/login.twig', [
-            'identifier' => $identifier,
-        ]);
+        return $this->respondWithTemplate('cup/auth/login.twig');
     }
 }

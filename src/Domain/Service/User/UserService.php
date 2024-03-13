@@ -3,7 +3,7 @@
 namespace App\Domain\Service\User;
 
 use App\Domain\AbstractService;
-use App\Domain\Enums\UserStatus;
+use App\Domain\Casts\User\Status as UserStatus;
 use App\Domain\Models\User;
 use App\Domain\Models\UserGroup;
 use App\Domain\Models\UserToken;
@@ -56,7 +56,7 @@ class UserService extends AbstractService
             'postcode' => '',
             'additional' => '',
             'allow_mail' => true,
-            'status' => \App\Domain\Types\UserStatusType::STATUS_WORK,
+            'status' => \App\Domain\Casts\User\Status::WORK,
             'company' => [],
             'legal' => [],
             'messenger' => [],
@@ -148,7 +148,7 @@ class UserService extends AbstractService
         if ($data['allow_mail'] !== null) {
             $criteria['allow_mail'] = (bool)$data['allow_mail'];
         }
-        if ($data['status'] !== null && in_array($data['status'], \App\Domain\Types\UserStatusType::LIST, true)) {
+        if ($data['status'] !== null && in_array($data['status'], \App\Domain\Casts\User\Status::LIST, true)) {
             $criteria['status'] = $data['status'];
         }
         if ($data['external_id'] !== null) {
@@ -173,7 +173,7 @@ class UserService extends AbstractService
                 /** @var User $user */
                 $user = User::firstWhere($criteria);
 
-                if (!$user || ($data['status'] !== null && $data['status'] !== $user->status->value)) {
+                if (!$user || ($data['status'] !== null && $data['status'] !== $user->status)) {
                     throw new UserNotFoundException();
                 }
 

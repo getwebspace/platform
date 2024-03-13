@@ -16,7 +16,7 @@ class MainPageAction extends AbstractAction
             'notepad' => $this->parameter('notepad_' . $user->username, ''),
             'stats' => [
                 'pages' => \App\Domain\Models\Page::count(),
-                'users' => \App\Domain\Models\User::where(['status' => \App\Domain\Enums\UserStatus::WORK])->count(),
+                'users' => \App\Domain\Models\User::where(['status' => \App\Domain\Casts\User\Status::WORK])->count(),
                 'publications' => $this->entityManager->getRepository(\App\Domain\Entities\Publication::class)->count([]),
                 'guestbook' => $this->entityManager->getRepository(\App\Domain\Entities\GuestBook::class)->count([]),
                 'catalog' => [

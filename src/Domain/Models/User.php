@@ -6,10 +6,10 @@ use App\Domain\Casts\Boolean;
 use App\Domain\Casts\Email;
 use App\Domain\Casts\Password;
 use App\Domain\Casts\Phone;
-use App\Domain\Casts\User\Company;
-use App\Domain\Casts\User\Legal;
-use App\Domain\Casts\User\Messenger;
-use App\Domain\Enums\UserStatus;
+use App\Domain\Casts\User\Company as UserCompany;
+use App\Domain\Casts\User\Legal as UserLegal;
+use App\Domain\Casts\User\Messenger as UserMessenger;
+use App\Domain\Casts\User\Status as UserStatus;
 use App\Domain\Traits\FileTrait;
 use App\Domain\Traits\SecurityTrait;
 use DateTime;
@@ -110,9 +110,9 @@ class User extends Model
         'city' => 'string',
         'address' => 'string',
         'postcode' => 'string',
-        'company' => Company::class,
-        'legal' => Legal::class,
-        'messenger' => Messenger::class,
+        'company' => UserCompany::class,
+        'legal' => UserLegal::class,
+        'messenger' => UserMessenger::class,
         'website' => 'string',
         'source' => 'string',
         'register' => 'datetime',
