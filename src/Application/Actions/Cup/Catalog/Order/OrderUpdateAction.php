@@ -46,7 +46,7 @@ class OrderUpdateAction extends CatalogAction
                                 return $this->respondWithRedirect('/cup/catalog/order');
 
                             default:
-                                return $this->respondWithRedirect('/cup/catalog/order/' . $order->getUuid() . '/edit');
+                                return $this->respondWithRedirect('/cup/catalog/order/' . $order->uuid . '/edit');
                         }
                     } catch (WrongEmailValueException $e) {
                         $this->addError('email', $e->getMessage());

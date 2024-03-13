@@ -32,7 +32,7 @@ class FormCreateAction extends FormAction
                         return $this->respondWithRedirect('/cup/form');
 
                     default:
-                        return $this->respondWithRedirect('/cup/form/' . $form->getUuid() . '/edit');
+                        return $this->respondWithRedirect('/cup/form/' . $form->uuid . '/edit');
                 }
             } catch (MissingTitleValueException|WrongTitleValueException|TitleAlreadyExistsException $e) {
                 $this->addError('title', $e->getMessage());

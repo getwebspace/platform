@@ -62,7 +62,7 @@ class ProductCreateAction extends CatalogAction
                         return $this->respondWithRedirect('/cup/catalog/product');
 
                     default:
-                        return $this->respondWithRedirect('/cup/catalog/product/' . $product->getUuid() . '/edit');
+                        return $this->respondWithRedirect('/cup/catalog/product/' . $product->uuid . '/edit');
                 }
             } catch (MissingTitleValueException|WrongTitleValueException $e) {
                 $this->addError('title', $e->getMessage());

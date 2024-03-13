@@ -43,7 +43,7 @@ class CategoryCreateAction extends CatalogAction
                         return $this->respondWithRedirect('/cup/catalog/category');
 
                     default:
-                        return $this->respondWithRedirect('/cup/catalog/category/' . $category->getUuid() . '/edit');
+                        return $this->respondWithRedirect('/cup/catalog/category/' . $category->uuid . '/edit');
                 }
             } catch (MissingTitleValueException|WrongTitleValueException $e) {
                 $this->addError('title', $e->getMessage());

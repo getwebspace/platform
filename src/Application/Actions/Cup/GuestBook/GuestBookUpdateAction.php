@@ -31,7 +31,7 @@ class GuestBookUpdateAction extends GuestBookAction
                             return $this->respondWithRedirect('/cup/guestbook');
 
                         default:
-                            return $this->respondWithRedirect('/cup/guestbook/' . $entry->getUuid() . '/edit');
+                            return $this->respondWithRedirect('/cup/guestbook/' . $entry->uuid . '/edit');
                     }
                 }
 

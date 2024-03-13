@@ -33,7 +33,7 @@ class AttributeUpdateAction extends CatalogAction
                                 return $this->respondWithRedirect('/cup/catalog/attribute');
 
                             default:
-                                return $this->respondWithRedirect('/cup/catalog/attribute/' . $attribute->getUuid() . '/edit');
+                                return $this->respondWithRedirect('/cup/catalog/attribute/' . $attribute->uuid . '/edit');
                         }
                     } catch (MissingTitleValueException|WrongTitleValueException|TitleAlreadyExistsException $e) {
                         $this->addError('title', $e->getMessage());
