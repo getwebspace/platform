@@ -3,26 +3,22 @@
 namespace App\Domain\Service\GuestBook;
 
 use App\Domain\AbstractService;
-use App\Domain\Entities\GuestBook;
+use App\Domain\Models\GuestBook;
+use App\Domain\Models\Page;
 use App\Domain\Repository\GuestBookRepository;
 use App\Domain\Service\GuestBook\Exception\EntryNotFoundException;
 use App\Domain\Service\GuestBook\Exception\MissingEmailValueException;
 use App\Domain\Service\GuestBook\Exception\MissingMessageValueException;
 use App\Domain\Service\GuestBook\Exception\MissingNameValueException;
 use App\Domain\Service\GuestBook\Exception\WrongEmailValueException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class GuestBookService extends AbstractService
 {
-    /**
-     * @var GuestBookRepository
-     */
-    protected mixed $service;
-
     protected function init(): void
     {
-        $this->service = $this->entityManager->getRepository(GuestBook::class);
     }
 
     /**
@@ -38,7 +34,7 @@ class GuestBookService extends AbstractService
             'email' => '',
             'message' => '',
             'response' => '',
-            'status' => \App\Domain\Types\GuestBookStatusType::STATUS_MODERATE,
+            'status' => \App\Domain\Casts\GuestBook\Status::MODERATE,
             'date' => 'now',
         ];
         $data = array_merge($default, $data);
@@ -53,18 +49,7 @@ class GuestBookService extends AbstractService
             throw new MissingMessageValueException();
         }
 
-        $item = (new GuestBook())
-            ->setName($data['name'])
-            ->setEmail($data['email'])
-            ->setMessage($data['message'])
-            ->setResponse($data['response'])
-            ->setStatus($data['status'])
-            ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
-
-        $this->entityManager->persist($item);
-        $this->entityManager->flush();
-
-        return $item;
+        return GuestBook::create($data);
     }
 
     /**
@@ -96,16 +81,26 @@ class GuestBookService extends AbstractService
         try {
             switch (true) {
                 case !is_array($data['uuid']) && $data['uuid'] !== null:
-                    $entry = $this->service->findOneBy($criteria);
+                    /** @var GuestBook $entry */
+                    $entry = GuestBook::firstWhere($criteria);
 
-                    if (empty($entry)) {
-                        throw new EntryNotFoundException();
-                    }
-
-                    return $entry;
+                    return $entry ?: throw new EntryNotFoundException();
 
                 default:
-                    return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
+                    $query = GuestBook::where($criteria);
+                    /** @var Builder $query */
+
+                    foreach ($data['order'] as $column => $direction) {
+                        $query = $query->orderBy($column, $direction);
+                    }
+                    if ($data['limit']) {
+                        $query = $query->limit($data['limit']);
+                    }
+                    if ($data['offset']) {
+                        $query = $query->offset($data['offset']);
+                    }
+
+                    return $query->get();
             }
         } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
             return null;
@@ -137,29 +132,10 @@ class GuestBookService extends AbstractService
                 'status' => null,
                 'date' => null,
             ];
-            $data = array_merge($default, $data);
+            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
 
             if ($data !== $default) {
-                if ($data['name'] !== null) {
-                    $entity->setName($data['name']);
-                }
-                if ($data['email'] !== null) {
-                    $entity->setEmail($data['email']);
-                }
-                if ($data['message'] !== null) {
-                    $entity->setMessage($data['message']);
-                }
-                if ($data['response'] !== null) {
-                    $entity->setResponse($data['response']);
-                }
-                if ($data['status'] !== null) {
-                    $entity->setStatus($data['status']);
-                }
-                if ($data['date'] !== null) {
-                    $entity->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
-                }
-
-                $this->entityManager->flush();
+                $entity->update($data);
             }
 
             return $entity;
@@ -178,14 +154,13 @@ class GuestBookService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
 
         if (is_object($entity) && is_a($entity, GuestBook::class)) {
-            $this->entityManager->remove($entity);
-            $this->entityManager->flush();
+            $entity->delete();
 
             return true;
         }

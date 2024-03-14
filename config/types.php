@@ -10,7 +10,6 @@ return [
     App\Domain\Types\Catalog\ProductStatusType::NAME => App\Domain\Types\Catalog\ProductStatusType::class,
     App\Domain\Types\Catalog\ProductTypeType::NAME => App\Domain\Types\Catalog\ProductTypeType::class,
     App\Domain\Types\FileItemType::NAME => App\Domain\Types\FileItemType::class,
-    App\Domain\Types\GuestBookStatusType::NAME => App\Domain\Types\GuestBookStatusType::class,
     App\Domain\Types\PageTypeType::NAME => App\Domain\Types\PageTypeType::class,
     App\Domain\Types\ReferenceTypeType::NAME => App\Domain\Types\ReferenceTypeType::class,
     App\Domain\Types\TaskStatusType::NAME => App\Domain\Types\TaskStatusType::class,

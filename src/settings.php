@@ -15,6 +15,8 @@ return function (ContainerBuilder $containerBuilder): void {
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
+            'strict'    => true,
+            'timezone'  => '+00:00',
         ],
     ]);
 

@@ -3,7 +3,7 @@
 namespace App\Application\Actions\Common;
 
 use App\Domain\AbstractAction;
-use App\Domain\Entities\GuestBook;
+use App\Domain\Models\GuestBook;
 use App\Domain\Service\GuestBook\Exception\MissingEmailValueException;
 use App\Domain\Service\GuestBook\Exception\MissingMessageValueException;
 use App\Domain\Service\GuestBook\Exception\MissingNameValueException;
@@ -70,14 +70,14 @@ class GuestBookAction extends AbstractAction
         // fetch list and hide part of email
         $list = $guestBookService
             ->read([
-                'status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK,
+                'status' => \App\Domain\Casts\GuestBook\Status::WORK,
                 'order' => ['date' => 'desc'],
                 'limit' => $pagination,
                 'offset' => $pagination * $offset,
             ])
             ->map(function ($model) {
                 /** @var GuestBook $model */
-                $model->setEmail(str_mask_email($model->getEmail()));
+                $model->email = str_mask_email($model->email);
 
                 return $model;
             });
@@ -85,7 +85,7 @@ class GuestBookAction extends AbstractAction
         return $this->respond($this->parameter('guestbook_template', 'guestbook.twig'), [
             'messages' => $list,
             'pagination' => [
-                'count' => $guestBookService->count(['status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK]),
+                'count' => $guestBookService->count(['status' => \App\Domain\Casts\GuestBook\Status::WORK]),
                 'page' => $pagination,
                 'offset' => $offset,
             ],

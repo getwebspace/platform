@@ -315,7 +315,7 @@ class TwigExtension extends AbstractExtension
         }
 
         return $obj
-            ->setTimezone(new \DateTimeZone($timezone ?: $this->parameter('common_timezone', 'UTC')))
+            //->setTimezone(new \DateTimeZone($timezone ?: $this->parameter('common_timezone', 'UTC'))) // todo check it
             ->format($format ?: $this->parameter('common_date_format', 'j-m-Y, H:i'));
     }
 
@@ -519,13 +519,13 @@ class TwigExtension extends AbstractExtension
 
         return $guestBookService
             ->read([
-                'status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK,
+                'status' => \App\Domain\Casts\GuestBook\Status::WORK,
                 'order' => $order,
                 'limit' => $limit,
                 'offset' => $offset,
             ])
             ->map(function ($model) {
-                /** @var \App\Domain\Entities\GuestBook $model */
+                /** @var \App\Domain\Models\GuestBook $model */
                 $email = explode('@', $model->getEmail());
                 $name = implode('@', array_slice($email, 0, count($email) - 1));
                 $len = (int) floor(mb_strlen($name) / 2);

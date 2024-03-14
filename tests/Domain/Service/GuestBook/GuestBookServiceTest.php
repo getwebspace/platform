@@ -2,7 +2,7 @@
 
 namespace tests\Domain\Service\GuestBook;
 
-use App\Domain\Entities\GuestBook;
+use App\Domain\Models\GuestBook;
 use App\Domain\Repository\GuestBookRepository;
 use App\Domain\Service\GuestBook\Exception\EntryNotFoundException;
 use App\Domain\Service\GuestBook\Exception\MissingEmailValueException;
@@ -34,23 +34,17 @@ class GuestBookServiceTest extends TestCase
             'email' => $this->getFaker()->email,
             'message' => $this->getFaker()->text,
             'response' => $this->getFaker()->text,
-            'status' => $this->getFaker()->randomElement(\App\Domain\Types\GuestBookStatusType::LIST),
+            'status' => $this->getFaker()->randomElement(\App\Domain\Casts\GuestBook\Status::LIST),
             'date' => $this->getFaker()->dateTime,
         ];
 
         $gb = $this->service->create($data);
         $this->assertInstanceOf(GuestBook::class, $gb);
-        $this->assertEquals($data['name'], $gb->getName());
-        $this->assertEquals($data['email'], $gb->getEmail());
-        $this->assertEquals($data['message'], $gb->getMessage());
-        $this->assertEquals($data['response'], $gb->getResponse());
-        $this->assertEquals($data['status'], $gb->getStatus());
-
-        /** @var GuestBookRepository $guestBookRepo */
-        $guestBookRepo = $this->em->getRepository(GuestBook::class);
-        $gb = $guestBookRepo->findOneByUuid($gb->getUuid());
-        $this->assertInstanceOf(GuestBook::class, $gb);
-        $this->assertEquals($data['name'], $gb->getName());
+        $this->assertEquals($data['name'], $gb->name);
+        $this->assertEquals($data['email'], $gb->email);
+        $this->assertEquals($data['message'], $gb->message);
+        $this->assertEquals($data['response'], $gb->response);
+        $this->assertEquals($data['status'], $gb->status);
     }
 
     public function testCreateWithMissingNameValue(): void
@@ -89,11 +83,11 @@ class GuestBookServiceTest extends TestCase
 
         $gb = $this->service->create($data);
 
-        $gb = $this->service->read(['uuid' => $gb->getUuid()]);
+        $gb = $this->service->read(['uuid' => $gb->uuid]);
         $this->assertInstanceOf(GuestBook::class, $gb);
-        $this->assertEquals($data['name'], $gb->getName());
-        $this->assertEquals($data['email'], $gb->getEmail());
-        $this->assertEquals($data['message'], $gb->getMessage());
+        $this->assertEquals($data['name'], $gb->name);
+        $this->assertEquals($data['email'], $gb->email);
+        $this->assertEquals($data['message'], $gb->message);
     }
 
     public function testReadWithEntryNotFound(): void
@@ -112,19 +106,19 @@ class GuestBookServiceTest extends TestCase
         ]);
 
         $data = [
-            'name' => $this->getFaker()->word,
+            'name' => $this->getFaker()->userName,
             'email' => $this->getFaker()->email,
             'message' => $this->getFaker()->text,
             'response' => $this->getFaker()->text,
-            'status' => \App\Domain\Types\GuestBookStatusType::STATUS_WORK,
+            'status' => \App\Domain\Casts\GuestBook\Status::WORK,
         ];
 
         $gb = $this->service->update($gb, $data);
-        $this->assertEquals($data['name'], $gb->getName());
-        $this->assertEquals($data['email'], $gb->getEmail());
-        $this->assertEquals($data['message'], $gb->getMessage());
-        $this->assertEquals($data['response'], $gb->getResponse());
-        $this->assertEquals($data['status'], $gb->getStatus());
+        $this->assertEquals($data['name'], $gb->name);
+        $this->assertEquals($data['email'], $gb->email);
+        $this->assertEquals($data['message'], $gb->message);
+        $this->assertEquals($data['response'], $gb->response);
+        $this->assertEquals($data['status'], $gb->status);
     }
 
     public function testUpdateWithEntryNotFound(): void
