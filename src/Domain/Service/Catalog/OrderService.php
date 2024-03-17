@@ -43,7 +43,7 @@ class OrderService extends AbstractService
             'phone' => '',
             'email' => '',
             'status' => null,
-            'payment' => '',
+            'payment' => null,
             'shipping' => '',
             'comment' => '',
             'date' => 'now',

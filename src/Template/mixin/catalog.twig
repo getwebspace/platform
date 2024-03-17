@@ -145,7 +145,7 @@
                             $(getSelector('count-items')).attr(options.selectors['count-items'], this.cartCount(false)).text(this.cartCount(true));
                             $(getSelector('count-total')).attr(options.selectors['count-total'], this.cartTotal(false)).text(this.cartTotal(true, options.item_type));
                             $(getSelector('count-total-service')).attr(options.selectors['count-total-service'], this.cartTotal(false, 'service')).text(this.cartTotal(true, 'service'));
-                            $(getSelector('count-total-all')).attr(options.selectors['count-total'], this.cartTotal(false)).text(this.cartTotal(true, null));
+                            $(getSelector('count-total-all')).attr(options.selectors['count-total-all'], this.cartTotal(false)).text(this.cartTotal(true, null));
 
                             if (focus) {
                                 $cart.find('[data-uuid="' + focus + '"] [data-attr="quantity"] input').focus();
@@ -359,14 +359,6 @@
 
                                 $tbody.append($row);
                             }
-
-                            // append system line with all item data
-                            $items.append(
-                                $('<input ' + options.selectors['cart-data'] + '>')
-                                    .attr('type', 'text')
-                                    .attr('name', 'item[' + item.uuid + ']')
-                                    .val(JSON.stringify(item))
-                            );
 
                             // append system line with uuid => quantity
                             $items.append(

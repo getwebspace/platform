@@ -37,13 +37,6 @@ trait RendererTrait
                 $data
             );
 
-            // auto reload template
-            if ($this->parameter('common_theme_reload', 'off') === 'on') {
-                if (!$this->renderer->getEnvironment()->isAutoReload()) {
-                    $this->renderer->getEnvironment()->enableAutoReload();
-                }
-            }
-
             if (($path = realpath(THEME_DIR . '/' . $this->parameter('common_theme', 'default'))) !== false) {
                 $this->renderer->getLoader()->addPath($path);
             }
