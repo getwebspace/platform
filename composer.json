@@ -43,8 +43,6 @@
         "symfony/var-dumper": "^v6.2.8",
         "voku/html-compress-twig": "^4.0.2",
         "rybakit/twig-deferred-extension": "^v3.0.4",
-        "socialconnect/http-client": "^1.0.0",
-        "socialconnect/auth": "^3.3.4",
         "bhaktaraz/php-rss-generator": "dev-master"
     },
     "require-dev": {

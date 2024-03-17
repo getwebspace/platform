@@ -10,7 +10,6 @@ use App\Domain\Service\File\FileService;
 use App\Domain\Service\Form\DataService as FormDataService;
 use App\Domain\Service\Form\FormService;
 use App\Domain\Service\GuestBook\GuestBookService;
-use App\Domain\Service\Notification\NotificationService;
 use App\Domain\Service\Page\PageService;
 use App\Domain\Service\Parameter\ParameterService;
 use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
@@ -42,9 +41,6 @@ return function (ContainerBuilder $containerBuilder): void {
 
         // guest book
         GuestBookService::class => \DI\autowire(GuestBookService::class),
-
-        // notification
-        NotificationService::class => \DI\autowire(NotificationService::class),
 
         // page
         PageService::class => \DI\autowire(PageService::class),

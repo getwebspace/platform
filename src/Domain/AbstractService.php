@@ -30,21 +30,22 @@ abstract class AbstractService
 
     public function __construct(ContainerInterface $container, EntityManager $entityManager, DataBase $db)
     {
-        $this->container = $container;
-        $this->entityManager = $entityManager;
+        $this->container = $container; // deprecated
+        $this->entityManager = $entityManager; // deprecated
         $this->db = $db;
 
-        $this->init();
+        $this->init(); // deprecated
     }
 
-    abstract protected function init();
+    abstract protected function init(); // deprecated
 
     /**
+     * @deprecated
      * @param null|string $indexBy the index for the from
      */
     public function createQueryBuilder(string $alias, ?string $indexBy = null): \Doctrine\ORM\QueryBuilder
     {
-        return $this->service->createQueryBuilder($alias, $indexBy);
+        throw new \RuntimeException('Deprecated method');
     }
 
     /**
@@ -52,13 +53,16 @@ abstract class AbstractService
      */
     public function query(string $sql): \Doctrine\DBAL\Statement
     {
-        return $this->entityManager->getConnection()->prepare($sql);
+        throw new \RuntimeException('Deprecated method');
     }
 
     abstract public function create(array $data = []);
 
     abstract public function read(array $data = []);
 
+    /**
+     * @deprecated
+     */
     public function count(array $criteria = []): int
     {
         return $this->service->count($criteria);
@@ -69,13 +73,12 @@ abstract class AbstractService
     abstract public function delete($entity);
 
     /**
+     * @deprecated
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function write(AbstractEntity $entity): AbstractEntity
     {
-        $this->entityManager->flush($entity);
-
-        return $entity;
+        throw new \RuntimeException('Deprecated method');
     }
 }

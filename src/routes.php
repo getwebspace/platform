@@ -348,11 +348,6 @@ return function (App $app, Container $container): void {
                                 ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
 
                             $proxy
-                                ->map(['GET', 'POST'], '/oauth/{provider}', \App\Application\Actions\Common\User\UserOAuthAction::class)
-                                ->setName('common:user:oauth')
-                                ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
-
-                            $proxy
                                 ->map(['GET', 'POST'], '/register', \App\Application\Actions\Common\User\UserRegisterAction::class)
                                 ->setName('common:user:register')
                                 ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);

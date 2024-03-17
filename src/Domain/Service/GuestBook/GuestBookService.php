@@ -107,6 +107,11 @@ class GuestBookService extends AbstractService
         }
     }
 
+    public function count(array $criteria = []): int
+    {
+        return GuestBook::where($criteria)->count();
+    }
+
     /**
      * @param GuestBook|string|Uuid $entity
      *

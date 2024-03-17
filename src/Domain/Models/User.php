@@ -16,6 +16,7 @@ use DateTime;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -47,7 +48,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property UserGroup $group
  * @property bool $allow_mail
  * @property string $password
- * @property UserToken $token
+ * @property UserToken[] $tokens
  * @property string $auth_code
  * @property string $external_id
  */
@@ -129,6 +130,7 @@ class User extends Model
     ];
 
     protected $attributes = [
+        'group_uuid' => null,
         'status' => UserStatus::WORK,
     ];
 
@@ -137,12 +139,55 @@ class User extends Model
         return $this->hasOne(UserGroup::class, 'uuid', 'group_uuid');
     }
 
-    public function token(): HasOne
+    public function tokens(): HasMany
     {
-        return $this->hasOne(UserToken::class, 'uuid', 'user_uuid');
+        return $this->hasMany(UserToken::class, 'user_uuid', 'uuid');
     }
 
-    public function avatar(int $size = 40): string
+    public function getName(string $type = 'full'): string
+    {
+        if ($this->lastname || $this->patronymic || $this->firstname) {
+            switch ($type) {
+                case 'full':
+                    return trim(implode(' ', [$this->lastname, $this->firstname, $this->patronymic]));
+
+                case 'name':
+                    return trim(implode(' ', [$this->lastname, $this->firstname]));
+
+                case 'initials':
+                    return trim(
+                        implode(' ', array_filter(
+                            [
+                                $this->lastname ? mb_substr($this->lastname, 0, 1) . '.' : '',
+                                $this->patronymic ? mb_substr($this->patronymic, 0, 1) . '.' : '',
+                                $this->firstname ?: '',
+                            ],
+                            fn ($el) => (bool) $el
+                        ))
+                    );
+
+                case 'short':
+                    return trim(
+                        implode(' ', [
+                            $this->lastname ? mb_substr($this->lastname, 0, 1) . '.' : '',
+                            $this->firstname,
+                        ])
+                    );
+            }
+        }
+
+        if ($this->username) {
+            return $this->username;
+        }
+
+        if ($this->email) {
+            return explode('@', $this->email)[0];
+        }
+
+        return '';
+    }
+
+    public function avatar(int $size = 64, string $background = '0D8ABC', string $color = '000000'): string
     {
         if ($this->hasFiles()) {
             /** @var File $file */
@@ -151,6 +196,6 @@ class User extends Model
             return $file->public_path('small');
         }
 
-        return 'https://www.gravatar.com/avatar/' . md5(mb_strtolower(trim($this->email))) . '?d=identicon&s=' . $size;
+        return "https://ui-avatars.com/api/?name={$this->getName('name')}&size=$size?background=$background&color=$color";
     }
 }

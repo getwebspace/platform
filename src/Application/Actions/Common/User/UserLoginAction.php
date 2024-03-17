@@ -2,7 +2,7 @@
 
 namespace App\Application\Actions\Common\User;
 
-use App\Domain\Entities\User;
+use App\Domain\Models\User;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
 use App\Domain\Traits\SecurityTrait;
@@ -36,7 +36,6 @@ class UserLoginAction extends UserAction
         return $this->respond($this->parameter('user_login_template', 'user.login.twig'), [
             'identifier' => $identifier,
             'provider' => $provider,
-            'oauth' => $this->getOAuthProviders(true),
         ]);
     }
 

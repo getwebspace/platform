@@ -849,21 +849,6 @@
                                                         'value': 'user.mail.code.twig'
                                                     }
                                                 } %}
-
-                                                <hr>
-
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'oAuth',
-                                                    'description': 'Open authorization protocol',
-                                                    'postfix': '<i class="fas fa-exclamation-triangle" data-toggle="tooltip" data-placement="top" title="' ~ ('A careful check of the value is required!'|locale) ~ '"></i>',
-                                                    'message': 'Before filling, see the <a href="https://github.com/getwebspace/platform/wiki/oAuth" target="_blank">documentation</a>',
-                                                    'type': 'textarea',
-                                                    'name': 'user[oauth]',
-                                                    'args': {
-                                                        'placeholder': '[]',
-                                                        'style': 'height: 200px!important;',
-                                                    },
-                                                } %}
                                             </div>
 
                                         </div>

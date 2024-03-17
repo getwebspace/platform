@@ -16,7 +16,7 @@ class PageAction extends AbstractAction
         try {
             $page = $pageService->read(['address' => ltrim($this->resolveArg('args'), '/')]);
 
-            return $this->respond($page->getTemplate(), [
+            return $this->respond($page->template, [
                 'page' => $page,
             ]);
         } catch (HttpBadRequestException $e) {

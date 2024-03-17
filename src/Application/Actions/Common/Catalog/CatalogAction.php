@@ -6,7 +6,6 @@ use App\Domain\AbstractAction;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
-use App\Domain\Service\Notification\NotificationService;
 use App\Domain\Service\Reference\ReferenceService;
 use App\Domain\Service\User\UserService;
 use Psr\Container\ContainerInterface;
@@ -21,8 +20,6 @@ abstract class CatalogAction extends AbstractAction
 
     protected CatalogOrderService $catalogOrderService;
 
-    protected NotificationService $notificationService;
-
     protected ReferenceService $referenceService;
 
     public function __construct(ContainerInterface $container)
@@ -33,7 +30,6 @@ abstract class CatalogAction extends AbstractAction
         $this->catalogCategoryService = $container->get(CatalogCategoryService::class);
         $this->catalogProductService = $container->get(CatalogProductService::class);
         $this->catalogOrderService = $container->get(CatalogOrderService::class);
-        $this->notificationService = $container->get(NotificationService::class);
         $this->referenceService = $container->get(ReferenceService::class);
     }
 }

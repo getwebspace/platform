@@ -10,7 +10,6 @@ use App\Domain\Service\GuestBook\Exception\MissingNameValueException;
 use App\Domain\Service\GuestBook\Exception\WrongEmailValueException;
 use App\Domain\Service\GuestBook\Exception\WrongNameValueException;
 use App\Domain\Service\GuestBook\GuestBookService;
-use App\Domain\Service\Notification\NotificationService;
 
 class GuestBookAction extends AbstractAction
 {
@@ -18,9 +17,6 @@ class GuestBookAction extends AbstractAction
     {
         /** @var GuestBookService $guestBookService */
         $guestBookService = $this->container->get(GuestBookService::class);
-
-        /** @var NotificationService $notificationService */
-        $notificationService = $this->container->get(NotificationService::class);
 
         if ($this->isPost()) {
             if ($this->isRecaptchaChecked()) {
@@ -30,16 +26,6 @@ class GuestBookAction extends AbstractAction
                         'email' => $this->getParam('email'),
                         'message' => $this->getParam('message'),
                     ]);
-
-                    // add notification
-                    if ($this->parameter('notification_is_enabled', 'yes') === 'yes') {
-                        $notificationService->create([
-                            'title' => __('New guestbook review'),
-                            'params' => [
-                                'guestbook_uuid' => $entry->getUuid(),
-                            ],
-                        ]);
-                    }
 
                     if (
                         (
@@ -82,10 +68,12 @@ class GuestBookAction extends AbstractAction
                 return $model;
             });
 
+        $count = $guestBookService->count(['status' => \App\Domain\Casts\GuestBook\Status::WORK]);
+
         return $this->respond($this->parameter('guestbook_template', 'guestbook.twig'), [
             'messages' => $list,
             'pagination' => [
-                'count' => $guestBookService->count(['status' => \App\Domain\Casts\GuestBook\Status::WORK]),
+                'count' => $count,
                 'page' => $pagination,
                 'offset' => $offset,
             ],

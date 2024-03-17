@@ -29,7 +29,7 @@ class AccessCheckerMiddleware extends AbstractMiddleware
 
         $access = $this->parameter('user_access', false);
         $access = $access === false ? [] : explode(',', $access);
-        if ($user && $user->group()) {
+        if ($user && $user->group) {
             $access = array_unique(array_merge($access, $user->group->access));
         }
 

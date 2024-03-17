@@ -5,17 +5,12 @@ namespace App\Application\Actions\Cup;
 use App\Domain\AbstractAction;
 use App\Domain\Entities\Task;
 use App\Domain\Entities\User;
-use App\Domain\Service\Notification\NotificationService;
 use App\Domain\Service\Task\TaskService;
 
 class RefreshAction extends AbstractAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        /** @var User $user */
-        $user = $this->request->getAttribute('user', false);
-        $notificationService = $this->container->get(NotificationService::class);
-
         $exists = (array) $this->getParam('tasks');
         $taskService = $this->container->get(TaskService::class);
         $tasks = collect()
@@ -48,16 +43,6 @@ class RefreshAction extends AbstractAction
         }
 
         return $this->respondWithJson([
-            'notification' => $notificationService
-                ->read([
-                    'user_uuid' => [\Ramsey\Uuid\Uuid::NIL, $user->getUuid()],
-                    'order' => ['date' => 'asc'],
-                    'limit' => 25,
-                ])
-                ->whereNotIn('uuid', (array) $this->getParam('notifications'))
-                ->map(fn ($item) => array_except($item->toArray(), ['params', 'user_uuid']))
-                ->values(),
-
             'task' => $output,
         ]);
     }
