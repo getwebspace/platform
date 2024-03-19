@@ -143,6 +143,11 @@ class File extends Model
         return '/uploads/' . $this->salt . ($size && $this->isValidSizeAndFileExists($size) ? '/' . $size : '') . '/' . $this->filename();
     }
 
+    public function resource(string $mode = 'rb'): mixed
+    {
+        return fopen($this->internal_path(), $mode);
+    }
+
     public function order(): int
     {
         return $this->pivot->order ?? 1;

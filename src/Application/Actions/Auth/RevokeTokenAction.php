@@ -14,10 +14,10 @@ class RevokeTokenAction extends AuthAction
         $refresh_token = $this->getCookie('refresh_token', null);
 
         if ($refresh_token) {
-            /** @var \App\Domain\Entities\User $user */
+            /** @var \App\Domain\Models\User $user */
             $user = $this->request->getAttribute('user', false);
 
-            foreach ($user->getTokens()->whereNotIn('unique', $refresh_token) as $token) {
+            foreach ($user->tokens()->where('unique', '!=', $refresh_token)->get() as $token) {
                 $this->userTokenService->delete($token);
             }
 

@@ -6,7 +6,7 @@ class FileGetAction extends FileAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        // @var \App\Domain\Entities\File $file
+        /** @var \App\Domain\Models\File $file */
         $file = $this->fileService->read([
             'salt' => $this->resolveArg('salt'),
             'hash' => $this->resolveArg('hash'),
@@ -16,10 +16,10 @@ class FileGetAction extends FileAction
             ->withHeader('Content-Type', 'application/download')
             ->withHeader('Content-Description', 'File Transfer')
             ->withHeader('Content-Transfer-Encoding', 'binary')
-            ->withHeader('Content-Disposition', 'attachment; filename="' . $file->getFileName() . '"')
+            ->withHeader('Content-Disposition', 'attachment; filename="' . $file->filename() . '"')
             ->withHeader('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
             ->withHeader('Pragma', 'private')
             ->withHeader('Expires', '0')
-            ->withBody(new \Slim\Http\Stream($file->getResource()));
+            ->withBody(new \Slim\Psr7\Stream($file->resource()));
     }
 }

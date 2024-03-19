@@ -26,6 +26,7 @@ class GuestBookAction extends AbstractAction
                         'email' => $this->getParam('email'),
                         'message' => $this->getParam('message'),
                     ]);
+                    $entry = $this->processEntityFiles($entry);
 
                     if (
                         (

@@ -29,7 +29,7 @@ class ReferenceCreateAction extends ReferenceAction
                         return $this->respondWithRedirect("/cup/reference/{$entity}");
 
                     default:
-                        return $this->respondWithRedirect("/cup/reference/{$entity}/{$ref->getUuid()}/edit");
+                        return $this->respondWithRedirect("/cup/reference/{$entity}/{$ref->uuid}/edit");
                 }
             } catch (MissingTitleValueException|WrongTitleValueException|TitleAlreadyExistsException $e) {
                 $this->addError('title', $e->getMessage());
