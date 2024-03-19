@@ -189,13 +189,19 @@ class User extends Model
 
     public function avatar(int $size = 64, string $background = '0D8ABC', string $color = '000000'): string
     {
-        if ($this->hasFiles()) {
-            /** @var File $file */
-            $file = $this->files->first();
+        static $path;
 
-            return $file->public_path('small');
+        if (!$path) {
+            if ($this->hasFiles()) {
+                /** @var File $file */
+                $file = $this->files->first();
+
+                $path = $file->public_path('small');
+            } else {
+                $path = "https://ui-avatars.com/api/?name={$this->getName('name')}&size=$size?background=$background&color=$color";
+            }
         }
 
-        return "https://ui-avatars.com/api/?name={$this->getName('name')}&size=$size?background=$background&color=$color";
+        return $path;
     }
 }

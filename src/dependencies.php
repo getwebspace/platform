@@ -24,7 +24,7 @@ return function (ContainerBuilder $containerBuilder): void {
         },
     ]);
 
-    // laravel database
+    // eloquent database
     $containerBuilder->addDefinitions([
         \Illuminate\Database\Connection::class => function (ContainerInterface $c): \Illuminate\Database\Connection {
             $settings = $c->get('database');
