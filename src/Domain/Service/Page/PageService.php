@@ -168,6 +168,7 @@ class PageService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, Page::class)) {
+            $entity->files()->detach();
             $entity->delete();
 
             return true;

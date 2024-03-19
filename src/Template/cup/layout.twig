@@ -301,6 +301,12 @@
                                                                                 <td width="50%" class="text-center">{{ stats.catalog.order }}</td>
                                                                             </tr>
                                                                         {% endif %}
+                                                                        {% if stats.forms %}
+                                                                            <tr>
+                                                                                <th width="50%">{{ 'Number of forms'|locale }}:</th>
+                                                                                <td width="50%" class="text-center">{{ stats.forms }}</td>
+                                                                            </tr>
+                                                                        {% endif %}
                                                                         {% if stats.files %}
                                                                             <tr>
                                                                                 <th width="50%">{{ 'Number of files'|locale }}:</th>

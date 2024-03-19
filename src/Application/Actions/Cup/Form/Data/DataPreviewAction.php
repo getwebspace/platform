@@ -13,26 +13,27 @@ class DataPreviewAction extends FormAction
             && $this->resolveArg('data') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('data'))
         ) {
             $application = $this->formDataService->read([
+                'form_uuid' => $this->resolveArg('uuid'),
                 'uuid' => $this->resolveArg('data'),
             ]);
 
             if ($application) {
-                if (($message = $application->getMessage()) !== '') {
+                if (($message = $application->message) !== '') {
                     // handle field message
                     $this->response->getBody()->write($message);
                 } else {
                     $form = $this->formService->read([
-                        'uuid' => $application->getFormUuid(),
+                        'uuid' => $application->form_uuid,
                     ]);
 
                     // prepare preview
-                    if ($form->getTemplateFile()) {
-                        $body = $this->render($form->getTemplateFile(), $application->getData());
-                    } elseif ($form->getTemplate()) {
-                        $body = $this->renderFromString($form->getTemplate(), $application->getData());
+                    if ($form->templateFile) {
+                        $body = $this->render($form->templateFile, $application->data);
+                    } elseif ($form->template) {
+                        $body = $this->renderFromString($form->template, $application->data);
                     } else {
                         // json
-                        $body = json_encode($application->getData(), JSON_UNESCAPED_UNICODE);
+                        $body = json_encode($application->data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
                     }
 
                     $this->response->getBody()->write($body);

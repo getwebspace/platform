@@ -67,7 +67,7 @@ class SendMailTask extends AbstractTask
                     $params['body'] = $this->renderFromString($args['template'], $args['data']);
                     $params['isHtml'] = true;
                 } elseif (is_array($args['data'])) {
-                    $params['body'] = json_encode(str_escape($args['data']), JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+                    $params['body'] = json_encode(str_escape($args['data']), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
                     $params['isHtml'] = false;
                 } else {
                     $params['body'] = $args['data'];

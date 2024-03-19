@@ -3,9 +3,9 @@
 namespace App\Application\Actions\Common;
 
 use App\Domain\AbstractAction;
-use App\Domain\Entities\FileRelation;
-use App\Domain\Entities\Form;
-use App\Domain\Entities\Form\Data as FromData;
+use App\Domain\Models\File;
+use App\Domain\Models\Form;
+use App\Domain\Models\FormData;
 use App\Domain\Service\Form\DataService as FormDataService;
 use App\Domain\Service\Form\Exception\FormNotFoundException;
 use App\Domain\Service\Form\FormService;
@@ -16,7 +16,6 @@ class FormAction extends AbstractAction
     {
         $formService = $this->container->get(FormService::class);
         $formDataService = $this->container->get(FormDataService::class);
-        $notificationService = $this->container->get(NotificationService::class);
 
         try {
             /** @var Form $form */
@@ -30,12 +29,12 @@ class FormAction extends AbstractAction
                 $this->response = $this->respondWithRedirect($_SERVER['HTTP_REFERER']);
             }
 
-            if (!$form->getRecaptcha() || $this->isRecaptchaChecked()) {
+            if (!$form->recaptcha || $this->isRecaptchaChecked()) {
                 $remote = $_SERVER['HTTP_ORIGIN'] ?? $_SERVER['HTTP_REFERER'] ?? false;
                 $data = $this->getParams();
 
                 // CORS header sets
-                foreach ($form->getOrigin() as $origin) {
+                foreach ($form->origin as $origin) {
                     if ($remote && mb_strpos($origin, $remote) >= 0) {
                         $this->response = $this->response->withHeader('Access-Control-Allow-Origin', $remote);
 
@@ -54,7 +53,7 @@ class FormAction extends AbstractAction
 
                 // prepare mailto
                 $mailto = [];
-                foreach (array_map('trim', $form->getMailto()) as $value) {
+                foreach (array_map('trim', $form->mailto) as $value) {
                     $buf = array_map('trim', explode(':', $value));
 
                     if (count($buf) === 2) {
@@ -66,7 +65,7 @@ class FormAction extends AbstractAction
 
                 // form data
                 $formData = $formDataService->create([
-                    'form_uuid' => $form->getUuid(),
+                    'form_uuid' => $form->uuid,
                     'data' => $data,
                     'message' => $this->getParam('body', ''),
                 ]);
@@ -75,25 +74,26 @@ class FormAction extends AbstractAction
                 $attachments = [];
                 $json = [];
                 if ($this->parameter('file_is_enabled', 'yes') === 'yes') {
-                    /** @var FromData $formData */
+
+                    /** @var FormData $formData */
                     $formData = $this->processEntityFiles($formData);
 
-                    foreach ($formData->getFiles() as $file) {
-                        /** @var FileRelation $file */
-                        $attachments[$file->getFileName()] = $file->getPublicPath();
+                    foreach ($formData->files as $file) {
+                        /** @var File $file */
+                        $attachments[$file->filename()] = $file->public_path();
                         $json[] = [
-                            'uuid' => $file->getUuid()->toString(),
-                            'name' => $file->getFileName(),
-                            'order' => $file->getOrder(),
-                            'comment' => $file->getComment(),
-                            'internal' => $file->getInternalPath(),
-                            'public' => $file->getPublicPath(),
+                            'uuid' => $file->uuid,
+                            'name' => $file->filename(),
+                            'order' => $file->order(),
+                            'comment' => $file->comment(),
+                            'internal' => $file->internal_path(),
+                            'public' => $file->public_path(),
                         ];
                     }
                 }
 
                 // check if duplication is enabled
-                if (($duplicate = $form->getDuplicate()) !== '') {
+                if (($duplicate = $form->duplicate) !== '') {
                     // send json task
                     $task = new \App\Domain\Tasks\SendJSONTask($this->container);
                     $task->execute([
@@ -109,8 +109,8 @@ class FormAction extends AbstractAction
                 // prepare mail params
                 $params = [
                     'to' => $mailto,
-                    'cc' => $form->getAuthorSend() && !empty($data['email']) ? $data['email'] : '',
-                    'subject' => $form->getTitle(),
+                    'cc' => $form->authorSend && !empty($data['email']) ? $data['email'] : '',
+                    'subject' => $form->title,
                     'body' => '',
                     'template' => '',
                     'data' => [],
@@ -120,7 +120,7 @@ class FormAction extends AbstractAction
                 if (($buf = $this->getParam('body', false)) !== false) {
                     $params['body'] = $buf;
                 } else {
-                    $params['template'] = $form->getTemplateFile() ?: $form->getTemplate();
+                    $params['template'] = $form->templateFile ?: $form->template;
                     $params['data'] = $data;
                 }
 

@@ -32,17 +32,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
         static::$container = static::$app->getContainer();
     }
 
-    public function setUp(): void
-    {
-        /*
-         * for each test, we will use an empty database
-         * delete the scheme and create it again
-         */
-//        $schema = new \Doctrine\ORM\Tools\SchemaTool($em);
-//        $schema->dropSchema($em->getMetadataFactory()->getAllMetadata());
-//        $schema->createSchema($em->getMetadataFactory()->getAllMetadata());
-    }
-
     protected function getService($class): mixed
     {
         return static::$container->get($class);

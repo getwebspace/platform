@@ -11,12 +11,12 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * @property string $uuid
  * @property string $user_uuid
- * @property User $user
  * @property string $unique
  * @property string $comment
  * @property string $ip
  * @property string $agent
  * @property DateTime $date
+ * @property User $user
  */
 class UserToken extends Model
 {

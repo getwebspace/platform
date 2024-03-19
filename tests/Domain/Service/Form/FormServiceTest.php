@@ -2,7 +2,7 @@
 
 namespace tests\Domain\Service\Form;
 
-use App\Domain\Entities\Form;
+use App\Domain\Models\Form;
 use App\Domain\Repository\FormRepository;
 use App\Domain\Service\Form\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Form\Exception\FormNotFoundException;
@@ -22,47 +22,34 @@ class FormServiceTest extends TestCase
 
     public function setUp(): void
     {
-        parent::setUp();
-
         $this->service = $this->getService(FormService::class);
     }
 
     public function testCreateSuccess(): void
     {
         $data = [
-            'title' => $this->getFaker()->word,
-            'address' => 'some-custom-address',
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
             'template' => $this->getFaker()->word,
-            'authorSend' => $this->getFaker()->boolean,
+            'templateFile' => $this->getFaker()->word,
             'recaptcha' => $this->getFaker()->boolean,
-            'origin' => [$this->getFaker()->domainName],
-            'mailto' => [$this->getFaker()->email],
+            'authorSend' => $this->getFaker()->boolean,
+            'origin' => $this->getFaker()->domainName,
+            'mailto' => $this->getFaker()->email,
             'duplicate' => $this->getFaker()->url,
         ];
 
         $form = $this->service->create($data);
         $this->assertInstanceOf(Form::class, $form);
-        $this->assertEquals($data['title'], $form->getTitle());
-        $this->assertEquals($data['address'], $form->getAddress());
-        $this->assertEquals($data['template'], $form->getTemplate());
-        $this->assertEquals($data['authorSend'], $form->getAuthorSend());
-        $this->assertEquals($data['recaptcha'], $form->getRecaptcha());
-        $this->assertEquals($data['origin'], $form->getOrigin());
-        $this->assertEquals($data['mailto'], $form->getMailto());
-        $this->assertEquals($data['duplicate'], $form->getDuplicate());
-
-        /** @var FormRepository $formRepo */
-        $formRepo = $this->em->getRepository(Form::class);
-        $f = $formRepo->findOneByTitle($data['title']);
-        $this->assertInstanceOf(Form::class, $f);
-        $this->assertEquals($data['title'], $f->getTitle());
-        $this->assertEquals($data['address'], $f->getAddress());
-        $this->assertEquals($data['template'], $f->getTemplate());
-        $this->assertEquals($data['authorSend'], $f->getAuthorSend());
-        $this->assertEquals($data['recaptcha'], $f->getRecaptcha());
-        $this->assertEquals($data['origin'], $f->getOrigin());
-        $this->assertEquals($data['mailto'], $f->getMailto());
-        $this->assertEquals($data['duplicate'], $f->getDuplicate());
+        $this->assertEquals($data['title'], $form->title);
+        $this->assertEquals($data['address'], $form->address);
+        $this->assertEquals($data['template'], $form->template);
+        $this->assertEquals($data['templateFile'], $form->templateFile);
+        $this->assertEquals($data['recaptcha'], $form->recaptcha);
+        $this->assertEquals($data['authorSend'], $form->authorSend);
+        $this->assertEquals([$data['origin']], $form->origin);
+        $this->assertEquals([$data['mailto']], $form->mailto);
+        $this->assertEquals($data['duplicate'], $form->duplicate);
     }
 
     public function testCreateWithMissingTitleValue(): void
@@ -77,18 +64,12 @@ class FormServiceTest extends TestCase
         $this->expectException(TitleAlreadyExistsException::class);
 
         $data = [
-            'title' => $this->getFaker()->word,
-            'address' => 'some-custom-address',
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
             'template' => $this->getFaker()->word,
         ];
 
-        $form = (new Form())
-            ->setTitle($data['title'])
-            ->setAddress($data['address'])
-            ->setTemplate($data['template']);
-
-        $this->em->persist($form);
-        $this->em->flush();
+        Form::create($data);
 
         $this->service->create($data);
     }
@@ -98,27 +79,23 @@ class FormServiceTest extends TestCase
         $this->expectException(AddressAlreadyExistsException::class);
 
         $data = [
-            'title' => $this->getFaker()->word,
-            'address' => 'some-custom-address',
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
             'template' => $this->getFaker()->word,
         ];
 
-        $form = (new Form())
-            ->setTitle($data['title'] . '-miss')
-            ->setAddress($data['address'])
-            ->setTemplate($data['template']);
+        Form::create($data);
 
-        $this->em->persist($form);
-        $this->em->flush();
-
-        $this->service->create($data);
+        $this->service->create(array_merge($data, [
+            'title' => implode(' ', $this->getFaker()->words(3)),
+        ]));
     }
 
     public function testReadSuccess1(): void
     {
         $data = [
-            'title' => $this->getFaker()->word,
-            'address' => 'some-custom-address',
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
             'template' => $this->getFaker()->word,
         ];
 
@@ -126,14 +103,14 @@ class FormServiceTest extends TestCase
 
         $form = $this->service->read(['title' => $data['title']]);
         $this->assertInstanceOf(Form::class, $form);
-        $this->assertEquals($data['title'], $form->getTitle());
+        $this->assertEquals($data['title'], $form->title);
     }
 
     public function testReadSuccess2(): void
     {
         $data = [
-            'title' => $this->getFaker()->word,
-            'address' => 'some-custom-address',
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
             'template' => $this->getFaker()->word,
         ];
 
@@ -141,7 +118,7 @@ class FormServiceTest extends TestCase
 
         $form = $this->service->read(['address' => $data['address']]);
         $this->assertInstanceOf(Form::class, $form);
-        $this->assertEquals($data['address'], $form->getAddress());
+        $this->assertEquals($data['address'], $form->address);
     }
 
     public function testReadWithFormNotFound(): void
@@ -154,37 +131,40 @@ class FormServiceTest extends TestCase
     public function testUpdate(): void
     {
         $form = $this->service->create([
-            'title' => $this->getFaker()->word,
-            'address' => 'some-custom-address',
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
             'template' => $this->getFaker()->word,
-            'authorSend' => $this->getFaker()->boolean,
+            'templateFile' => $this->getFaker()->word,
             'recaptcha' => $this->getFaker()->boolean,
-            'origin' => [$this->getFaker()->domainName],
-            'mailto' => [$this->getFaker()->email],
+            'authorSend' => $this->getFaker()->boolean,
+            'origin' => $this->getFaker()->domainName,
+            'mailto' => $this->getFaker()->email,
             'duplicate' => $this->getFaker()->url,
         ]);
 
         $data = [
-            'title' => $this->getFaker()->word,
-            'address' => 'some-custom-address',
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
             'template' => $this->getFaker()->word,
-            'authorSend' => $this->getFaker()->boolean,
+            'templateFile' => $this->getFaker()->word,
             'recaptcha' => $this->getFaker()->boolean,
-            'origin' => [$this->getFaker()->domainName],
-            'mailto' => [$this->getFaker()->email],
+            'authorSend' => $this->getFaker()->boolean,
+            'origin' => $this->getFaker()->domainName,
+            'mailto' => $this->getFaker()->email,
             'duplicate' => $this->getFaker()->url,
         ];
 
         $form = $this->service->update($form, $data);
         $this->assertInstanceOf(Form::class, $form);
-        $this->assertEquals($data['title'], $form->getTitle());
-        $this->assertEquals($data['address'], $form->getAddress());
-        $this->assertEquals($data['template'], $form->getTemplate());
-        $this->assertEquals($data['authorSend'], $form->getAuthorSend());
-        $this->assertEquals($data['recaptcha'], $form->getRecaptcha());
-        $this->assertEquals($data['origin'], $form->getOrigin());
-        $this->assertEquals($data['mailto'], $form->getMailto());
-        $this->assertEquals($data['duplicate'], $form->getDuplicate());
+        $this->assertEquals($data['title'], $form->title);
+        $this->assertEquals($data['address'], $form->address);
+        $this->assertEquals($data['template'], $form->template);
+        $this->assertEquals($data['templateFile'], $form->templateFile);
+        $this->assertEquals($data['recaptcha'], $form->recaptcha);
+        $this->assertEquals($data['authorSend'], $form->authorSend);
+        $this->assertEquals([$data['origin']], $form->origin);
+        $this->assertEquals([$data['mailto']], $form->mailto);
+        $this->assertEquals($data['duplicate'], $form->duplicate);
     }
 
     public function testUpdateWithFormNotFound(): void
@@ -197,8 +177,8 @@ class FormServiceTest extends TestCase
     public function testDeleteSuccess(): void
     {
         $form = $this->service->create([
-            'title' => $this->getFaker()->word,
-            'address' => 'some-custom-address',
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
             'template' => $this->getFaker()->word,
         ]);
 

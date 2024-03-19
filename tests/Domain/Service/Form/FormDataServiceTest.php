@@ -2,8 +2,8 @@
 
 namespace tests\Domain\Service\Form;
 
-use App\Domain\Entities\Form\Data as FromData;
-use App\Domain\Repository\Form\DataRepository as FromDataRepository;
+use App\Domain\Models\FormData;
+use App\Domain\Repository\Form\DataRepository as FormDataRepository;
 use App\Domain\Service\Form\DataService;
 use App\Domain\Service\Form\Exception\FormDataNotFoundException;
 use App\Domain\Service\Form\Exception\MissingMessageValueException;
@@ -37,15 +37,9 @@ class FormDataServiceTest extends TestCase
         ];
 
         $formData = $this->service->create($data);
-        $this->assertInstanceOf(FromData::class, $formData);
-        $this->assertEquals($data['data'], $formData->getData());
-        $this->assertEquals($data['message'], $formData->getMessage());
-
-        /** @var FromDataRepository $formDataRepo */
-        $formDataRepo = $this->em->getRepository(FromData::class);
-        $fd = $formDataRepo->findOneBy(['form_uuid' => $data['form_uuid']]);
-        $this->assertInstanceOf(FromData::class, $fd);
-        $this->assertEquals($data['message'], $fd->getMessage());
+        $this->assertInstanceOf(FormData::class, $formData);
+        $this->assertEquals($data['data'], $formData->data);
+        $this->assertEquals($data['message'], $formData->message);
     }
 
     public function testCreateWithMissingMessageValue(): void
@@ -68,10 +62,10 @@ class FormDataServiceTest extends TestCase
 
         $fd = $this->service->create($data);
 
-        $formData = $this->service->read(['uuid' => $fd->getUuid()]);
-        $this->assertInstanceOf(FromData::class, $formData);
-        $this->assertEquals($data['data'], $formData->getData());
-        $this->assertEquals($data['message'], $formData->getMessage());
+        $formData = $this->service->read(['uuid' => $fd->uuid]);
+        $this->assertInstanceOf(FormData::class, $formData);
+        $this->assertEquals($data['data'], $formData->data);
+        $this->assertEquals($data['message'], $formData->message);
     }
 
     public function testReadWithFormDataNotFound(): void
@@ -102,9 +96,9 @@ class FormDataServiceTest extends TestCase
         ];
 
         $formData = $this->service->update($formData, $data);
-        $this->assertInstanceOf(FromData::class, $formData);
-        $this->assertEquals($data['data'], $formData->getData());
-        $this->assertEquals($data['message'], $formData->getMessage());
+        $this->assertInstanceOf(FormData::class, $formData);
+        $this->assertEquals($data['data'], $formData->data);
+        $this->assertEquals($data['message'], $formData->message);
     }
 
     public function testUpdateWithFormDataNotFound(): void

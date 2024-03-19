@@ -22,43 +22,45 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <iframe src="/cup/form/{{ item.form_uuid }}/view/{{ item.uuid }}/preview" frameborder="0" style="width: 100%; min-height: 450px; overflow-y: scroll"></iframe>
+                    <iframe src="/cup/form/{{ item.form_uuid }}/view/{{ item.uuid }}/preview" frameborder="0" style="width: 100%; min-height: 350px; overflow-y: scroll"></iframe>
 
-                    <div class="row">
-                        {% for file in item.getFiles() %}
-                            <div class="col-sm-6 col-md-3">
-                                <a href="{{ file.getPublicPath() }}" class="d-block card card-stats card-round" target="_blank">
-                                    <div class="card-body">
-                                        <div class="row align-items-center">
-                                            <div class="col-icon">
-                                                <div class="icon-big text-center icon-primary bubble-shadow-small">
-                                                    {% if 'image/' in file.getType() %}
-                                                        <i class="far fa-file-image"></i>
-                                                    {% elseif 'text/' in file.getType() %}
-                                                        <i class="far fa-file-image"></i>
-                                                    {% elseif '/pdf' in file.getType() %}
-                                                        <i class="far fa-file-pdf"></i>
-                                                    {% elseif '/msword' in file.getType() or 'wordprocessingml' in file.getType() %}
-                                                        <i class="far fa-file-word"></i>
-                                                    {% elseif '/ms-excel' in file.getType() or 'spreadsheetml' in file.getType() %}
-                                                        <i class="far fa-file-excel"></i>
-                                                    {% else %}
-                                                        <i class="far fa-file"></i>
-                                                    {% endif %}
-                                                </div>
-                                            </div>
-                                            <div class="col col-8 col-stats ml-3 ml-sm-0">
-                                                <div class="numbers">
-                                                    <p class="card-category">{{ file.getFileName()|u.truncate(20) }}</p>
-                                                    <p class="card-category">{{ file.getFileSize() }}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                        {% endfor %}
-                    </div>
+                    {% if item.hasFiles() %}
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col" style="width: 80%;">{{ 'File name'|locale }}</th>
+                                    <th scope="col" class="text-right">{{ 'Size'|locale }}</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for file in item.getFiles() %}
+                                    <tr>
+                                        <td>
+                                            {% if 'image/' in file.type %}
+                                                <i class="far fa-file-image"></i>
+                                            {% elseif 'text/' in file.type %}
+                                                <i class="far fa-file-image"></i>
+                                            {% elseif '/pdf' in file.type %}
+                                                <i class="far fa-file-pdf"></i>
+                                            {% elseif '/msword' in file.type or 'wordprocessingml' in file.type %}
+                                                <i class="far fa-file-word"></i>
+                                            {% elseif '/ms-excel' in file.type or 'spreadsheetml' in file.type %}
+                                                <i class="far fa-file-excel"></i>
+                                            {% else %}
+                                                <i class="far fa-file"></i>
+                                            {% endif %}
+
+                                            <a href="{{ file.public_path() }}" target="_blank">
+                                                {{ file.filename() }}
+                                            </a>
+                                        </td>
+                                        <td class="text-right">{{ file.size() }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    {% endif %}
                 </div>
                 <div class="card-footer">
                     <form action="/cup/form/{{ item.form_uuid }}/view/{{ item.uuid }}/delete" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the entry?'|locale }}');">

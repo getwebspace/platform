@@ -199,7 +199,7 @@ abstract class AbstractEntity implements \JsonSerializable
 
     public function toString(): string
     {
-        $flags = ($_ENV['DEBUG'] ?? false) ? JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE : JSON_UNESCAPED_UNICODE;
+        $flags = ($_ENV['DEBUG'] ?? false) ? JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT: JSON_UNESCAPED_UNICODE;
 
         return json_encode($this->toArray(), $flags);
     }

@@ -24,6 +24,7 @@ class MainPageAction extends AbstractAction
                     'product' => 0, //$this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class)->count(['status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK]),
                     'order' => 0, //$this->entityManager->getRepository(\App\Domain\Entities\Catalog\Order::class)->count([]),
                 ],
+                'forms' => \App\Domain\Models\Form::count(),
                 'files' => \App\Domain\Models\File::count(),
             ],
             'properties' => [

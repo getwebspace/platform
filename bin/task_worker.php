@@ -12,6 +12,8 @@ if (\App\Domain\AbstractTask::workerHasPidFile($action)) {
     exit;
 }
 
+exit; // todo debug
+
 // before work write self PID to file
 \App\Domain\AbstractTask::workerCreatePidFile($action);
 

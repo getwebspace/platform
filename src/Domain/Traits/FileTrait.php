@@ -11,17 +11,20 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 /**
  * @property Collection $files
  */
-trait FileTrait
+trait FileTrait // todo rename to HasFiles
 {
     public function files(): MorphToMany
     {
-        return $this->morphToMany(
-            File::class,
-            'object',
-            'file_related',
-            'entity_uuid',
-            'file_uuid',
-        );
+        return $this
+            ->morphToMany(
+                File::class,
+                'object',
+                'file_related',
+                'entity_uuid',
+                'file_uuid',
+            )
+            ->withPivot('comment', 'order')
+            ->orderBy('file_related.order');
     }
 
     public function hasFiles(): int
@@ -32,26 +35,26 @@ trait FileTrait
     /** @deprecated */
     public function getFiles(): Collection
     {
-        return $this->files()->withPivot('comment', 'order')->orderBy('file_related.order')->getResults();
+        return $this->files()->getResults();
     }
 
     public function getDocuments(): Collection
     {
-        return $this->files()->withPivot('comment', 'order')->orderBy('file_related.order')->where(fn ($query) => $query->where('type', 'LIKE', 'application/%')->orWhere('type', 'LIKE', 'text/%'))->getResults();
+        return $this->files()->where(fn($query) => $query->where('type', 'LIKE', 'application/%')->orWhere('type', 'LIKE', 'text/%'))->getResults();
     }
 
     public function getImages(): Collection
     {
-        return $this->files()->withPivot('comment', 'order')->orderBy('file_related.order')->where(fn ($query) => $query->where('type', 'LIKE', 'image/%'))->getResults();
+        return $this->files()->where(fn($query) => $query->where('type', 'LIKE', 'image/%'))->getResults();
     }
 
     public function getAudios(): Collection
     {
-        return $this->files()->withPivot('comment', 'order')->orderBy('file_related.order')->where(fn ($query) => $query->where('type', 'LIKE', 'audio/%'))->getResults();
+        return $this->files()->where(fn($query) => $query->where('type', 'LIKE', 'audio/%'))->getResults();
     }
 
     public function getVideos(): Collection
     {
-        return $this->files()->withPivot('comment', 'order')->orderBy('file_related.order')->where(fn ($query) => $query->where('type', 'LIKE', 'video/%'))->getResults();
+        return $this->files()->where(fn($query) => $query->where('type', 'LIKE', 'video/%'))->getResults();
     }
 }

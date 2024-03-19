@@ -43,14 +43,14 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property DateTime $change
  * @property string $language
  * @property string $additional
- * @property UserStatus $status
  * @property string $group_uuid
- * @property UserGroup $group
  * @property bool $allow_mail
  * @property string $password
- * @property UserToken[] $tokens
  * @property string $auth_code
  * @property string $external_id
+ * @property UserStatus $status
+ * @property UserGroup $group
+ * @property UserToken[] $tokens
  */
 class User extends Model
 {

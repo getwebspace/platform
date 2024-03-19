@@ -3,25 +3,21 @@
 namespace App\Domain\Service\Form;
 
 use App\Domain\AbstractService;
-use App\Domain\Entities\Form;
-use App\Domain\Repository\FormRepository;
+use App\Domain\Models\Form;
+use App\Domain\Models\Page;
 use App\Domain\Service\Form\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Form\Exception\FormNotFoundException;
 use App\Domain\Service\Form\Exception\MissingTitleValueException;
 use App\Domain\Service\Form\Exception\TitleAlreadyExistsException;
+use App\Domain\Service\Page\Exception\PageNotFoundException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class FormService extends AbstractService
 {
-    /**
-     * @var FormRepository
-     */
-    protected mixed $service;
-
     protected function init(): void
     {
-        $this->service = $this->entityManager->getRepository(Form::class);
     }
 
     /**
@@ -36,39 +32,25 @@ class FormService extends AbstractService
             'address' => '',
             'template' => '',
             'templateFile' => '',
-            'authorSend' => false,
             'recaptcha' => true,
-            'origin' => [],
-            'mailto' => [],
+            'authorSend' => false,
+            'origin' => '',
+            'mailto' => '',
             'duplicate' => '',
         ];
         $data = array_merge($default, $data);
 
-        if ($data['title'] && $this->service->findOneByTitle($data['title']) !== null) {
-            throw new TitleAlreadyExistsException();
-        }
         if (!$data['title']) {
             throw new MissingTitleValueException();
         }
-        if ($data['address'] && $this->service->findOneByAddress($data['address']) !== null) {
+        if ($data['title'] && Form::firstWhere(['title' => $data['title']]) !== null) {
+            throw new TitleAlreadyExistsException();
+        }
+        if ($data['address'] && Form::firstWhere(['address' => $data['address']]) !== null) {
             throw new AddressAlreadyExistsException();
         }
 
-        $form = (new Form())
-            ->setTitle($data['title'])
-            ->setAddress($data['address'])
-            ->setTemplate($data['template'])
-            ->setTemplateFile($data['templateFile'])
-            ->setAuthorSend($data['authorSend'])
-            ->setRecaptcha($data['recaptcha'])
-            ->setOrigin($data['origin'])
-            ->setMailto($data['mailto'])
-            ->setDuplicate($data['duplicate']);
-
-        $this->entityManager->persist($form);
-        $this->entityManager->flush();
-
-        return $form;
+        return Form::create($data);
     }
 
     /**
@@ -105,24 +87,30 @@ class FormService extends AbstractService
             $criteria['mailto'] = $data['mailto'];
         }
 
-        try {
-            switch (true) {
-                case !is_array($data['uuid']) && $data['uuid'] !== null:
-                case !is_array($data['title']) && $data['title'] !== null:
-                case !is_array($data['address']) && $data['address'] !== null:
-                    $form = $this->service->findOneBy($criteria);
+        switch (true) {
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
+            case !is_array($data['title']) && $data['title'] !== null:
+            case !is_array($data['address']) && $data['address'] !== null:
+                /** @var Form $form */
+                $form = Form::firstWhere($criteria);
 
-                    if (empty($form)) {
-                        throw new FormNotFoundException();
-                    }
+                return $form ?: throw new FormNotFoundException();
 
-                    return $form;
+            default:
+                $query = Form::where($criteria);
+                /** @var Builder $query */
 
-                default:
-                    return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
-            }
-        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
-            return null;
+                foreach ($data['order'] as $column => $direction) {
+                    $query = $query->orderBy($column, $direction);
+                }
+                if ($data['limit']) {
+                    $query = $query->limit($data['limit']);
+                }
+                if ($data['offset']) {
+                    $query = $query->offset($data['offset']);
+                }
+
+                return $query->get();
         }
     }
 
@@ -138,7 +126,7 @@ class FormService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
@@ -149,59 +137,16 @@ class FormService extends AbstractService
                 'address' => null,
                 'template' => null,
                 'templateFile' => null,
-                'authorSend' => null,
                 'recaptcha' => null,
+                'authorSend' => null,
                 'origin' => null,
                 'mailto' => null,
                 'duplicate' => null,
             ];
-            $data = array_merge($default, $data);
+            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
 
             if ($data !== $default) {
-                if ($data['title'] !== null) {
-                    $found = $this->service->findOneByTitle($data['title']);
-
-                    if ($found === null || $found === $entity) {
-                        $entity->setTitle($data['title']);
-                    } else {
-                        throw new TitleAlreadyExistsException();
-                    }
-                }
-                if ($data['address'] !== null) {
-                    $found = $this->service->findOneByAddress($data['address']);
-
-                    if ($found === null || $found === $entity) {
-                        $entity->setAddress($data['address']);
-                    } else {
-                        throw new AddressAlreadyExistsException();
-                    }
-                }
-                if ($data['template'] !== null) {
-                    $entity->setTemplate($data['template']);
-                }
-                if ($data['templateFile'] !== null) {
-                    $entity->setTemplateFile($data['templateFile']);
-                }
-                if ($data['authorSend'] !== null) {
-                    $entity->setAuthorSend($data['authorSend']);
-                }
-                if ($data['recaptcha'] !== null) {
-                    $entity->setRecaptcha($data['recaptcha']);
-                }
-                if ($data['template'] !== null) {
-                    $entity->setTemplate($data['template']);
-                }
-                if ($data['origin'] !== null) {
-                    $entity->setOrigin($data['origin']);
-                }
-                if ($data['mailto'] !== null) {
-                    $entity->setMailto($data['mailto']);
-                }
-                if ($data['duplicate'] !== null) {
-                    $entity->setDuplicate($data['duplicate']);
-                }
-
-                $this->entityManager->flush();
+                $entity->update($data);
             }
 
             return $entity;
@@ -220,14 +165,13 @@ class FormService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
 
         if (is_object($entity) && is_a($entity, Form::class)) {
-            $this->entityManager->remove($entity);
-            $this->entityManager->flush();
+            $entity->delete();
 
             return true;
         }

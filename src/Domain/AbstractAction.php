@@ -2,14 +2,12 @@
 
 namespace App\Domain;
 
-use App\Domain\Entities\File;
+use App\Domain\Models\File;
 use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Exceptions\HttpForbiddenException;
 use App\Domain\Exceptions\HttpMethodNotAllowedException;
 use App\Domain\Exceptions\HttpNotFoundException;
 use App\Domain\Exceptions\HttpNotImplementedException;
-use App\Domain\Models\FileRelated;
-use App\Domain\Service\File\FileRelationService;
 use App\Domain\Service\File\FileService;
 use App\Domain\Traits\FileTrait;
 use App\Domain\Traits\ParameterTrait;
@@ -186,7 +184,7 @@ abstract class AbstractAction
                 $error['error']['type'] = self::NOT_IMPLEMENTED;
             }
 
-            $flags = ($_ENV['DEBUG'] ?? false) ? JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE : JSON_UNESCAPED_UNICODE;
+            $flags = ($_ENV['DEBUG'] ?? false) ? JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT : JSON_UNESCAPED_UNICODE;
 
             $result = new Response($error['code']);
             $result->getBody()->write(json_encode($error, $flags));
@@ -240,7 +238,7 @@ abstract class AbstractAction
                     foreach ($files as $file) {
                         $entity->files()->attach($file, [
                             'comment' => $name,
-                            'order' => $entity->hasFiles(),
+                            'order' => $entity->hasFiles() + 1,
                         ]);
                     }
                 }
@@ -251,7 +249,7 @@ abstract class AbstractAction
             if (($files = $this->getParam($field)) !== null && is_array($files)) {
                 foreach ($files as $uuid => $data) {
                     $default = [
-                        'order' => 0,
+                        'order' => 1,
                         'comment' => '',
                         'delete' => null,
                     ];
@@ -267,7 +265,7 @@ abstract class AbstractAction
                         }
 
                         $entity->files()->updateExistingPivot($file, [
-                            'order' => $data['order'],
+                            'order' => max(1, $data['order']),
                             'comment' => $data['comment'],
                         ]);
                     }
@@ -431,7 +429,7 @@ abstract class AbstractAction
 
     protected function respondWithJson(array $array = []): Response
     {
-        $flags = ($_ENV['DEBUG'] ?? false) ? JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE : JSON_UNESCAPED_UNICODE;
+        $flags = ($_ENV['DEBUG'] ?? false) ? JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT : JSON_UNESCAPED_UNICODE;
 
         $this->response->getBody()->write(
             json_encode(array_serialize($array), $flags)

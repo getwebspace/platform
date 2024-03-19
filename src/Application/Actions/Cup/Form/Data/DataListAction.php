@@ -13,7 +13,10 @@ class DataListAction extends FormAction
 
             if ($form) {
                 $list = $this->formDataService->read([
-                    'form_uuid' => $form->getUuid(),
+                    'form_uuid' => $form->uuid,
+                    'order' => [
+                        'date' => 'desc',
+                    ]
                 ]);
 
                 return $this->respondWithTemplate('cup/form/view/list.twig', [

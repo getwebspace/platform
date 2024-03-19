@@ -165,6 +165,7 @@ class GuestBookService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, GuestBook::class)) {
+            $entity->files()->detach();
             $entity->delete();
 
             return true;
