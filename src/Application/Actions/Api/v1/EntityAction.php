@@ -6,7 +6,7 @@ use App\Application\Actions\Api\ActionApi;
 use App\Domain\AbstractException;
 use App\Domain\AbstractNotFoundException;
 use App\Domain\AbstractService;
-use App\Domain\Entities\User;
+use App\Domain\Models\User;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
@@ -213,7 +213,7 @@ class EntityAction extends ActionApi
         /** @var User $user */
         if (($user = $this->request->getAttribute('user', false)) !== false) {
             $params['user'] = $user;
-            $params['user_uuid'] = $user->getUuid();
+            $params['user_uuid'] = $user->uuid;
         } else {
             // try retrieve user from params
             if (($uuid = $this->getParam('user_uuid')) !== null) {
@@ -227,7 +227,7 @@ class EntityAction extends ActionApi
                     ]);
 
                     $params['user'] = $user;
-                    $params['user_uuid'] = $user->getUuid();
+                    $params['user_uuid'] = $user->uuid;
                 } catch (UserNotFoundException $e) {
                     // nothing
                 }

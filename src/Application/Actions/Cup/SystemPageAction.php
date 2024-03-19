@@ -3,7 +3,7 @@
 namespace App\Application\Actions\Cup;
 
 use App\Domain\AbstractAction;
-use App\Domain\Entities\User;
+use App\Domain\Models\User;
 use App\Domain\Service\Parameter\ParameterService;
 use App\Domain\Service\Reference\ReferenceService;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;

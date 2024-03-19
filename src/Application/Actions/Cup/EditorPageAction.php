@@ -19,7 +19,7 @@ class EditorPageAction extends AbstractAction
             $absolute_path = realpath($absolute_path);
 
             if ($absolute_path !== false) {
-                $file = \App\Domain\Entities\File::info($absolute_path);
+                $file = \App\Domain\Models\File::info($absolute_path);
                 $file['path'] = $path;
                 $content = file_get_contents($absolute_path);
             }

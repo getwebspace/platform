@@ -4,24 +4,25 @@ namespace App\Application\Actions\Cup;
 
 use App\Domain\AbstractAction;
 use App\Domain\Entities\Task;
-use App\Domain\Entities\User;
 use App\Domain\Service\Task\TaskService;
 
 class RefreshAction extends AbstractAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        $exists = (array) $this->getParam('tasks');
         $taskService = $this->container->get(TaskService::class);
+        $exists = (array) $this->getParam('tasks');
+
         $tasks = collect()
             ->merge($taskService->read(['uuid' => array_keys($exists)]))
             ->merge($taskService->read(['order' => ['date' => 'desc'], 'limit' => 50]))
             ->keyBy('uuid')
             ->sortBy('date');
+
         $output = ['new' => [], 'update' => [], 'delete' => []];
 
+        /** @var Task $task */
         foreach ($tasks as $task) {
-            /** @var Task $task */
             if (!in_array($task->getUuid()->toString(), array_keys($exists), true)) {
                 $output['new'][] = array_except($task->toArray(), ['params', 'output']);
             } else {

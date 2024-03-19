@@ -11,11 +11,11 @@ class GetAction extends FileAction
         $result = [];
 
         foreach ($this->fileService->read() as $file) {
-            /** @var \App\Domain\Entities\File $file */
-            if (str_starts_with($file->getType(), 'image/')) {
+            /** @var \App\Domain\Models\File $file */
+            if (str_starts_with($file->type, 'image/')) {
                 $result[] = [
-                    'url' => $file->getPublicPath(),
-                    'thumb' => $file->getPublicPath('small'),
+                    'url' => $file->public_path(),
+                    'thumb' => $file->public_path('small'),
                 ];
             }
         }

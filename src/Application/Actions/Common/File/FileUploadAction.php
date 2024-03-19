@@ -49,8 +49,8 @@ class FileUploadAction extends FileAction
             $file = array_shift($models)[0] ?? false;
 
             if ($file) {
-                // @var \App\Domain\Entities\File $file
-                return $this->respondWithJson(['link' => $file->getPublicPath()]);
+                /** @var \App\Domain\Models\File $file */
+                return $this->respondWithJson(['link' => $file->public_path()]);
             }
         }
 

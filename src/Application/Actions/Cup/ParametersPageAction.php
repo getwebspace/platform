@@ -7,7 +7,7 @@ use App\Domain\Service\Catalog\AttributeService as CatalogAttributeService;
 use App\Domain\Service\Parameter\ParameterService;
 use App\Domain\Service\Reference\ReferenceService;
 use App\Domain\Service\User\GroupService as UserGroupService;
-use App\Domain\Types\ReferenceTypeType;
+use App\Domain\Casts\Reference\Type as ReferenceType;
 
 class ParametersPageAction extends AbstractAction
 {
@@ -42,18 +42,21 @@ class ParametersPageAction extends AbstractAction
             return $this->respondWithRedirect($this->getQueryParam('return', '/cup/parameters'));
         }
 
+        $routes = $this->getRoutes();
+        $userGroupService = $this->container->get(UserGroupService::class);
+        $catalogAttributeService = $this->container->get(CatalogAttributeService::class);
         $referenceService = $this->container->get(ReferenceService::class);
 
         return $this->respondWithTemplate('cup/parameters/index.twig', [
             'timezone' => collect(\DateTimeZone::listIdentifiers())->mapWithKeys(fn ($item) => [$item => $item]),
             'routes' => [
-                'all' => $this->getRoutes()->all(),
-                'guest' => $this->getRoutes()->filter(fn ($el) => str_starts_with($el, 'common:'))->all(),
+                'all' => $routes->all(),
+                'guest' => $routes->filter(fn ($el) => str_starts_with($el, 'common:'))->all(),
             ],
-            'groups' => $this->container->get(UserGroupService::class)->read(),
-            'attributes' => $this->container->get(CatalogAttributeService::class)->read()->whereNotIn('type', \App\Domain\Types\Catalog\AttributeTypeType::TYPE_BOOLEAN),
+            'groups' => $userGroupService->read(),
+            'attributes' => $catalogAttributeService->read()->whereNotIn('type', \App\Domain\Types\Catalog\AttributeTypeType::TYPE_BOOLEAN),
             'reference' => $referenceService->read([
-                'type' => ReferenceTypeType::TYPE_ORDER_STATUS, // todo usage with array of types
+                'type' => ReferenceType::TYPE_ORDER_STATUS, // todo usage with array of types
                 'order' => [
                     'order' => 'asc'
                 ]
