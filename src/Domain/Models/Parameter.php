@@ -3,65 +3,38 @@
 namespace App\Domain\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property string $name
+ * @property string $value
+ */
 class Parameter extends Model
 {
-    use HasUuids;
+    use HasFactory;
 
     protected $table = 'params';
-    protected $primaryKey = 'key';
+    protected $primaryKey = 'name';
     protected $keyType = 'string';
+
     public $incrementing = false;
 
+    const CREATED_AT = null;
+    const UPDATED_AT = null;
+
     protected $fillable  = [
-        'key' => '',
-        'value' => '',
+        'name',
+        'value',
     ];
 
     protected $casts = [
-        'key' => 'string',
+        'name' => 'string',
         'value' => 'string',
     ];
 
     protected $attributes = [
-        'key' => '',
+        'name' => '',
         'value' => '',
     ];
-
-    /**
-     * @return $this
-     */
-    public function setKey(string $key): static
-    {
-        if ($this->checkStrLenMax($key, 255)) {
-            $this->attributes['key'] = $key;
-        }
-
-        return $this;
-    }
-
-    public function getKey(): string
-    {
-        return $this->attributes['key'];
-    }
-
-    /**
-     * @return $this
-     */
-    public function setValue(mixed $value): static
-    {
-        $value = (string) $value;
-
-        if ($this->checkStrLenMax($value, 100000)) {
-            $this->attributes['value'] = $value;
-        }
-
-        return $this;
-    }
-
-    public function getValue(): string
-    {
-        return $this->attributes['value'];
-    }
 }

@@ -2,7 +2,7 @@
 
 namespace tests\Domain\Service\Parameter;
 
-use App\Domain\Entities\Parameter;
+use App\Domain\Models\Parameter;
 use App\Domain\Repository\ParameterRepository;
 use App\Domain\Service\Parameter\Exception\ParameterAlreadyExistsException;
 use App\Domain\Service\Parameter\Exception\ParameterNotFoundException;
@@ -28,21 +28,14 @@ class ParameterServiceTest extends TestCase
     public function testCreateSuccess(): void
     {
         $data = [
-            'key' => $this->getFaker()->userName,
-            'value' => $this->getFaker()->text,
+            'name' => implode('-', $this->getFaker()->words(4)),
+            'value' => $this->getFaker()->text(10),
         ];
 
         $parameter = $this->service->create($data);
         $this->assertInstanceOf(Parameter::class, $parameter);
-        $this->assertEquals($data['key'], $parameter->getKey());
-        $this->assertEquals($data['value'], $parameter->getValue());
-
-        /** @var ParameterRepository $parameterRepo */
-        $parameterRepo = $this->em->getRepository(Parameter::class);
-        $p = $parameterRepo->findOneByKey($data['key']);
-        $this->assertInstanceOf(Parameter::class, $p);
-        $this->assertEquals($data['key'], $p->getKey());
-        $this->assertEquals($data['value'], $p->getValue());
+        $this->assertEquals($data['name'], $parameter->name);
+        $this->assertEquals($data['value'], $parameter->value);
     }
 
     public function testCreateWithParameterAlreadyExistent(): void
@@ -50,16 +43,11 @@ class ParameterServiceTest extends TestCase
         $this->expectException(ParameterAlreadyExistsException::class);
 
         $data = [
-            'key' => $this->getFaker()->userName,
-            'value' => $this->getFaker()->text,
+            'name' => implode('-', $this->getFaker()->words(4)),
+            'value' => $this->getFaker()->text(128),
         ];
 
-        $parameter = (new Parameter())
-            ->setKey($data['key'])
-            ->setValue($data['value']);
-
-        $this->em->persist($parameter);
-        $this->em->flush();
+        Parameter::create($data);
 
         $this->service->create($data);
     }
@@ -67,44 +55,44 @@ class ParameterServiceTest extends TestCase
     public function testReadSuccess(): void
     {
         $data = [
-            'key' => $this->getFaker()->userName,
-            'value' => $this->getFaker()->text,
+            'name' => implode('-', $this->getFaker()->words(4)),
+            'value' => $this->getFaker()->text(128),
         ];
 
         $this->service->create($data);
 
-        $parameter = $this->service->read(['key' => $data['key']]);
+        $parameter = $this->service->read(['name' => $data['name']]);
         $this->assertInstanceOf(Parameter::class, $parameter);
-        $this->assertEquals($data['key'], $parameter->getKey());
-        $this->assertEquals($data['value'], $parameter->getValue());
+        $this->assertEquals($data['name'], $parameter->name);
+        $this->assertEquals($data['value'], $parameter->value);
     }
 
     public function testReadWithDefault(): void
     {
         $data = [
-            'key' => $this->getFaker()->userName,
-            'default' => $this->getFaker()->text,
+            'name' => implode('-', $this->getFaker()->words(4)),
+            'default' => $this->getFaker()->text(128),
         ];
 
-        $parameter = $this->service->read(['key' => $data['key']], $data['default']);
+        $parameter = $this->service->read(['name' => $data['name']], $data['default']);
         $this->assertInstanceOf(Parameter::class, $parameter);
-        $this->assertEquals($data['key'], $parameter->getKey());
-        $this->assertEquals($data['default'], $parameter->getValue());
+        $this->assertEquals($data['name'], $parameter->name);
+        $this->assertEquals($data['default'], $parameter->value);
     }
 
     public function testUpdateSuccess(): void
     {
         $parameter = $this->service->create([
-            'key' => $this->getFaker()->userName,
-            'value' => $this->getFaker()->text,
+            'name' => implode('-', $this->getFaker()->words(4)),
+            'value' => $this->getFaker()->text(128),
         ]);
 
         $data = [
-            'value' => $this->getFaker()->text,
+            'value' => $this->getFaker()->text(128),
         ];
 
         $parameter = $this->service->update($parameter, $data);
-        $this->assertEquals($data['value'], $parameter->getValue());
+        $this->assertEquals($data['value'], $parameter->value);
     }
 
     public function testUpdateWithPageNotFound(): void
@@ -117,8 +105,8 @@ class ParameterServiceTest extends TestCase
     public function testDeleteSuccess(): void
     {
         $parameter = $this->service->create([
-            'key' => $this->getFaker()->userName,
-            'value' => $this->getFaker()->text,
+            'name' => implode('-', $this->getFaker()->words(4)),
+            'value' => $this->getFaker()->text(128),
         ]);
 
         $result = $this->service->delete($parameter);

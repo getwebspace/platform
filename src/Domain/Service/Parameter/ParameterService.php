@@ -3,22 +3,18 @@
 namespace App\Domain\Service\Parameter;
 
 use App\Domain\AbstractService;
-use App\Domain\Entities\Parameter;
-use App\Domain\Repository\ParameterRepository;
+use App\Domain\Models\Parameter;
 use App\Domain\Service\Parameter\Exception\ParameterAlreadyExistsException;
 use App\Domain\Service\Parameter\Exception\ParameterNotFoundException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Ramsey\Uuid\UuidInterface as Uuid;
 
 class ParameterService extends AbstractService
 {
-    /**
-     * @var ParameterRepository
-     */
-    protected mixed $service;
-
     protected function init(): void
     {
-        $this->service = $this->entityManager->getRepository(Parameter::class);
     }
 
     /**
@@ -27,59 +23,59 @@ class ParameterService extends AbstractService
     public function create(array $data = []): Parameter
     {
         $default = [
-            'key' => '',
+            'name' => '',
             'value' => '',
         ];
         $data = array_merge($default, $data);
 
-        if ($data['key'] && $this->service->findOneByKey($data['key']) !== null) {
+        if ($data['name'] && Parameter::firstWhere(['name' => $data['name']]) !== null) {
             throw new ParameterAlreadyExistsException();
         }
 
-        $parameter = (new Parameter())
-            ->setKey($data['key'])
-            ->setValue($data['value']);
-
-        $this->entityManager->persist($parameter);
-        $this->entityManager->flush();
-
-        return $parameter;
+        return Parameter::create($data);
     }
 
     public function read(array $data = [], mixed $fallback = null): Collection|Parameter|null
     {
         $default = [
-            'key' => null,
+            'name' => null,
         ];
         $data = array_merge($default, static::$default_read, $data);
 
         $criteria = [];
 
-        if ($data['key'] !== null) {
-            $criteria['key'] = $data['key'];
+        if ($data['name'] !== null) {
+            $criteria['name'] = $data['name'];
         }
 
-        try {
-            switch (true) {
-                case !is_array($data['key']) && $data['key'] !== null:
-                    $parameter = $this->service->findOneByKey((string) $data['key']);
+        switch (true) {
+            case !is_array($data['name']) && $data['name'] !== null:
+                /** @var Parameter $parameter */
+                $parameter = Parameter::firstWhere($criteria);
 
-                    if (empty($parameter)) {
-                        $parameter = (new Parameter())->setKey($data['key'])->setValue($fallback);
-                        $this->entityManager->persist($parameter);
-                    }
+                if (!$parameter) {
+                    $parameter = new Parameter();
+                    $parameter->name = $data['name'];
+                    $parameter->value = $fallback;
+                }
 
-                    return $parameter;
+                return $parameter;
 
-                default:
-                    return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
-            }
-        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
-            if ($fallback) {
-                return (new Parameter())->setKey($data['key'])->setValue($fallback);
-            }
+            default:
+                $query = Parameter::where($criteria);
+                /** @var Builder $query */
 
-            return null;
+                foreach ($data['order'] as $column => $direction) {
+                    $query = $query->orderBy($column, $direction);
+                }
+                if ($data['limit']) {
+                    $query = $query->limit($data['limit']);
+                }
+                if ($data['offset']) {
+                    $query = $query->offset($data['offset']);
+                }
+
+                return $query->get();
         }
     }
 
@@ -90,33 +86,20 @@ class ParameterService extends AbstractService
     {
         switch (true) {
             case is_string($entity):
-                $entity = $this->service->findOneByKey((string) $entity);
+                $entity = $this->read(['name' => $entity]);
 
                 break;
         }
 
         if (is_object($entity) && is_a($entity, Parameter::class)) {
             $default = [
-                'key' => null,
+                'name' => null,
                 'value' => null,
             ];
-            $data = array_merge($default, $data);
+            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
 
             if ($data !== $default) {
-                if ($data['key'] !== null) {
-                    $found = $this->service->findOneByKey($data['key']);
-
-                    if ($found === null || $found === $entity) {
-                        $entity->setKey($data['key']);
-                    } else {
-                        throw new ParameterAlreadyExistsException();
-                    }
-                }
-                if ($data['value'] !== null) {
-                    $entity->setValue($data['value']);
-                }
-
-                $this->entityManager->flush();
+                $entity->update($data);
             }
 
             return $entity;
@@ -134,14 +117,13 @@ class ParameterService extends AbstractService
     {
         switch (true) {
             case is_string($entity):
-                $entity = $this->service->findOneByKey((string) $entity);
+                $entity = $this->read(['name' => $entity]);
 
                 break;
         }
 
         if (is_object($entity) && is_a($entity, Parameter::class)) {
-            $this->entityManager->remove($entity);
-            $this->entityManager->flush();
+            $entity->delete();
 
             return true;
         }

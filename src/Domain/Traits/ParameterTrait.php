@@ -16,29 +16,26 @@ trait ParameterTrait
     /**
      * Returns the value of the parameter by the passed key
      * If an array of keys is passed, returns an array of found keys and their values
-     *
-     * @throws \Psr\Container\NotFoundExceptionInterface
-     * @throws \Psr\Container\ContainerExceptionInterface
      */
-    protected function parameter(mixed $key = null, mixed $default = null): mixed
+    protected function parameter(mixed $name = null, mixed $default = null): mixed
     {
         if (!static::$parameters) {
             static::$parameters = $this->container->get(ParameterService::class)->read();
         }
 
         if (static::$parameters) {
-            if ($key === null) {
+            if ($name === null) {
                 return static::$parameters->mapWithKeys(function ($item) {
-                    [$group, $key] = explode('_', $item->key, 2);
+                    [$group, $key] = explode('_', $item->name, 2);
 
                     return [$group . '[' . $key . ']' => $item];
                 });
             }
-            if (is_string($key)) {
-                return ($buf = static::$parameters->firstWhere('key', $key)) ? $buf->getValue() : $default;
+            if (is_string($name)) {
+                return ($buf = static::$parameters->firstWhere('name', $name)) ? $buf->value : $default;
             }
 
-            return static::$parameters->whereIn('key', $key)->pluck('value', 'key')->all() ?? $default;
+            return static::$parameters->whereIn('name', $name)->pluck('value', 'key')->all() ?? $default;
         }
 
         return $default;
@@ -47,23 +44,17 @@ trait ParameterTrait
     /**
      * For quickly updating parameter values.
      * Use only as a last resort.
-     *
-     * @param mixed $key
-     * @param mixed $value
-     *
-     * @throws \Psr\Container\ContainerExceptionInterface
-     * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    protected function parameter_set($key, $value): array
+    protected function parameter_set(string $name, mixed $value): array
     {
         $parameterService = $this->container->get(ParameterService::class);
 
-        if (($parameter = static::$parameters->firstWhere('key', $key)) !== null) {
-            $parameterService->update($parameter, ['key' => $key, 'value' => $value]);
+        if (($parameter = static::$parameters->firstWhere('name', $name)) !== null) {
+            $parameterService->update($parameter, ['name' => $name, 'value' => $value]);
         } else {
-            $parameterService->create(['key' => $key, 'value' => $value]);
+            $parameterService->create(['name' => $name, 'value' => $value]);
         }
 
-        return [$key => $value];
+        return [$name => $value];
     }
 }

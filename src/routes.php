@@ -446,7 +446,7 @@ return function (App $app, Container $container): void {
                             $proxy
                                 ->group('', function (Group $proxy) use ($container): void {
                                     $paramService = $container->get(\App\Domain\Service\Parameter\ParameterService::class);
-                                    $pathCatalog = $paramService->read(['key' => 'catalog_address'], 'catalog')->getValue();
+                                    $pathCatalog = $paramService->read(['name' => 'catalog_address'], 'catalog')->value;
 
                                     // view categories and products
                                     $proxy

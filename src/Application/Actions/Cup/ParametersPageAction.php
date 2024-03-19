@@ -13,33 +13,35 @@ class ParametersPageAction extends AbstractAction
 {
     protected function action(): \Slim\Psr7\Response
     {
+        $redirect = $this->getQueryParam('return', '/cup/parameters');
         $parameters = $this->parameter();
 
         if ($this->isPost()) {
+            /** @var ParameterService $parameterService */
             $parameterService = $this->container->get(ParameterService::class);
 
             foreach ($this->request->getParsedBody() as $group => $params) {
                 foreach ($params as $key => $value) {
                     $data = [
-                        'key' => trim($group . '_' . $key),
+                        'name' => trim($group . '_' . $key),
                         'value' => is_array($value) ? implode(',', $value) : $value,
                     ];
 
-                    if (!blank($value)) {
-                        if (($parameter = $parameters->firstWhere('key', $data['key'])) !== null) {
+                    if (!blank($data['value'])) {
+                        if (($parameter = $parameters->firstWhere('name', $data['name'])) !== null) {
                             $parameterService->update($parameter, $data);
                         } else {
                             $parameterService->create($data);
                         }
                     } else {
-                        if (($parameter = $parameters->firstWhere('key', $data['key'])) !== null) {
+                        if (($parameter = $parameters->firstWhere('name', $data['name'])) !== null) {
                             $parameterService->delete($parameter);
                         }
                     }
                 }
             }
 
-            return $this->respondWithRedirect($this->getQueryParam('return', '/cup/parameters'));
+            return $this->respondWithRedirect($redirect);
         }
 
         $routes = $this->getRoutes();
