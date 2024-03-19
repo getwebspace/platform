@@ -4,7 +4,7 @@ namespace App\Application\Actions\Cup\Reference;
 
 use App\Domain\AbstractAction;
 use App\Domain\Service\Reference\ReferenceService;
-use App\Domain\Types\ReferenceTypeType;
+use App\Domain\Casts\Reference\Type as ReferenceType;
 use Psr\Container\ContainerInterface;
 
 abstract class ReferenceAction extends AbstractAction
@@ -18,50 +18,50 @@ abstract class ReferenceAction extends AbstractAction
         $this->referenceService = $container->get(ReferenceService::class);
     }
 
-    protected function getReferenceType(string $type): string
+    protected function resolveReferenceType(string $type): string
     {
         switch ($type) {
             case 'currencies':
-                return ReferenceTypeType::TYPE_CURRENCY;
+                return ReferenceType::TYPE_CURRENCY;
 
             case 'deliveries':
-                return ReferenceTypeType::TYPE_DELIVERY;
+                return ReferenceType::TYPE_DELIVERY;
 
             case 'payments':
-                return ReferenceTypeType::TYPE_PAYMENT;
+                return ReferenceType::TYPE_PAYMENT;
 
             case 'countries':
-                return ReferenceTypeType::TYPE_COUNTRY;
+                return ReferenceType::TYPE_COUNTRY;
 
             case 'order-status':
-                return ReferenceTypeType::TYPE_ORDER_STATUS;
+                return ReferenceType::TYPE_ORDER_STATUS;
 
             case 'stock-status':
-                return ReferenceTypeType::TYPE_STOCK_STATUS;
+                return ReferenceType::TYPE_STOCK_STATUS;
 
             case 'tax-rates':
-                return ReferenceTypeType::TYPE_TAX_RATE;
+                return ReferenceType::TYPE_TAX_RATE;
 
             case 'length-classes':
-                return ReferenceTypeType::TYPE_LENGTH_CLASS;
+                return ReferenceType::TYPE_LENGTH_CLASS;
 
             case 'weight-classes':
-                return ReferenceTypeType::TYPE_WEIGHT_CLASS;
+                return ReferenceType::TYPE_WEIGHT_CLASS;
 
             case 'address-format':
-                return ReferenceTypeType::TYPE_ADDRESS_FORMAT;
+                return ReferenceType::TYPE_ADDRESS_FORMAT;
 
             case 'store-locations':
-                return ReferenceTypeType::TYPE_STORE_LOCATION;
+                return ReferenceType::TYPE_STORE_LOCATION;
 
             case 'social-networks':
-                return ReferenceTypeType::TYPE_SOCIAL_NETWORKS;
+                return ReferenceType::TYPE_SOCIAL_NETWORKS;
 
             case 'order-dispatch':
             case 'order-invoice':
 
             default:
-                return ReferenceTypeType::TYPE_TEXT;
+                return ReferenceType::TYPE_TEXT;
         }
     }
 }

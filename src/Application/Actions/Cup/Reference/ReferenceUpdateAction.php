@@ -12,18 +12,19 @@ class ReferenceUpdateAction extends ReferenceAction
     protected function action(): \Slim\Psr7\Response
     {
         $entity = $this->resolveArg('entity');
+        $type = $this->resolveReferenceType($entity);
 
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
             try {
                 $ref = $this->referenceService->read([
                     'uuid' => $this->resolveArg('uuid'),
-                    'type' => $this->getReferenceType($entity),
+                    'type' => $type,
                 ]);
 
                 if ($this->isPost()) {
                     try {
                         $ref = $this->referenceService->update($ref, [
-                            'type' => $this->getReferenceType($entity),
+                            'type' => $type,
                             'title' => $this->getParam('title'),
                             'value' => $this->getParam('value'),
                             'order' => $this->getParam('order'),
@@ -37,7 +38,7 @@ class ReferenceUpdateAction extends ReferenceAction
                                 return $this->respondWithRedirect("/cup/reference/{$entity}");
 
                             default:
-                                return $this->respondWithRedirect("/cup/reference/{$entity}/{$ref->getUuid()}/edit");
+                                return $this->respondWithRedirect("/cup/reference/{$entity}/{$ref->uuid}/edit");
                         }
                     } catch (MissingTitleValueException|WrongTitleValueException|TitleAlreadyExistsException $e) {
                         $this->addError('title', $e->getMessage());
@@ -46,7 +47,9 @@ class ReferenceUpdateAction extends ReferenceAction
 
                 return $this->respondWithTemplate("cup/reference/{$entity}/form.twig", [
                     'item' => $ref,
-                    'type' => $this->getReferenceType($entity),
+                    'list' => $this->referenceService->read([
+                        'type' => $type,
+                    ]),
                 ]);
             } catch (ReferenceNotFoundException $e) {
                 // nothing

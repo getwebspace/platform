@@ -15,7 +15,7 @@ class ReferenceCreateAction extends ReferenceAction
         if ($this->isPost()) {
             try {
                 $ref = $this->referenceService->create([
-                    'type' => $this->getReferenceType($entity),
+                    'type' => $this->resolveReferenceType($entity),
                     'title' => $this->getParam('title'),
                     'value' => $this->getParam('value', []),
                     'order' => $this->getParam('order'),
@@ -38,7 +38,7 @@ class ReferenceCreateAction extends ReferenceAction
 
         return $this->respondWithTemplate("cup/reference/{$entity}/form.twig", [
             'list' => $this->referenceService->read([
-                'type' => $this->getReferenceType($entity),
+                'type' => $this->resolveReferenceType($entity),
             ]),
         ]);
     }

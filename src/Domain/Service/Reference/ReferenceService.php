@@ -3,25 +3,21 @@
 namespace App\Domain\Service\Reference;
 
 use App\Domain\AbstractService;
-use App\Domain\Entities\Reference;
+use App\Domain\Models\Page;
+use App\Domain\Models\Reference;
 use App\Domain\Repository\ReferenceRepository;
 use App\Domain\Service\Reference\Exception\MissingTitleValueException;
 use App\Domain\Service\Reference\Exception\MissingTypeValueException;
 use App\Domain\Service\Reference\Exception\ReferenceNotFoundException;
 use App\Domain\Service\Reference\Exception\TitleAlreadyExistsException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class ReferenceService extends AbstractService
 {
-    /**
-     * @var ReferenceRepository
-     */
-    protected mixed $service;
-
     protected function init(): void
     {
-        $this->service = $this->entityManager->getRepository(Reference::class);
     }
 
     /**
@@ -45,21 +41,11 @@ class ReferenceService extends AbstractService
         if (!$data['title']) {
             throw new MissingTitleValueException();
         }
-        if ($data['title'] && $this->service->findOneByTitle($data['title']) !== null) {
+        if ($data['title'] && Reference::firstWhere(['title' => $data['title']]) !== null) {
             throw new TitleAlreadyExistsException();
         }
 
-        $reference = (new Reference())
-            ->setType($data['type'])
-            ->setTitle($data['title'])
-            ->setValue($data['value'])
-            ->setOrder(+$data['order'])
-            ->setStatus($data['status']);
-
-        $this->entityManager->persist($reference);
-        $this->entityManager->flush();
-
-        return $reference;
+        return Reference::create($data);
     }
 
     /**
@@ -85,30 +71,36 @@ class ReferenceService extends AbstractService
         if ($data['title'] !== null) {
             $criteria['title'] = $data['title'];
         }
-        if ($data['type'] !== null && in_array($data['type'], \App\Domain\Types\ReferenceTypeType::LIST, true)) {
+        if ($data['type'] !== null && in_array($data['type'], \App\Domain\Casts\Reference\Type::LIST, true)) {
             $criteria['type'] = $data['type'];
         }
         if ($data['status'] !== null) {
             $criteria['status'] = (bool) $data['status'];
         }
 
-        try {
-            switch (true) {
-                case !is_array($data['uuid']) && $data['uuid'] !== null:
-                case !is_array($data['title']) && $data['title'] !== null && $data['type'] !== null:
-                    $reference = $this->service->findOneBy($criteria);
+        switch (true) {
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
+            case !is_array($data['title']) && $data['title'] !== null && $data['type'] !== null:
+                /** @var Reference $reference */
+                $reference = Reference::firstWhere($criteria);
 
-                    if (empty($reference)) {
-                        throw new ReferenceNotFoundException();
-                    }
+                return $reference ?: throw new ReferenceNotFoundException();
 
-                    return $reference;
+            default:
+                $query = Reference::where($criteria);
+                /** @var Builder $query */
 
-                default:
-                    return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
-            }
-        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
-            return null;
+                foreach ($data['order'] as $column => $direction) {
+                    $query = $query->orderBy($column, $direction);
+                }
+                if ($data['limit']) {
+                    $query = $query->limit($data['limit']);
+                }
+                if ($data['offset']) {
+                    $query = $query->offset($data['offset']);
+                }
+
+                return $query->get();
         }
     }
 
@@ -123,7 +115,7 @@ class ReferenceService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
@@ -136,32 +128,10 @@ class ReferenceService extends AbstractService
                 'order' => null,
                 'status' => null,
             ];
-            $data = array_merge($default, $data);
+            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
 
             if ($data !== $default) {
-                if ($data['type'] !== null) {
-                    $entity->setType($data['type']);
-                }
-                if ($data['title'] !== null) {
-                    $found = $this->service->findOneByTitle($data['title']);
-
-                    if ($found === null || $found === $entity) {
-                        $entity->setTitle($data['title']);
-                    } else {
-                        throw new TitleAlreadyExistsException();
-                    }
-                }
-                if ($data['value'] !== null) {
-                    $entity->setValue($data['value']);
-                }
-                if ($data['order'] !== null) {
-                    $entity->setOrder(+$data['order']);
-                }
-                if ($data['status'] !== null) {
-                    $entity->setStatus($data['status']);
-                }
-
-                $this->entityManager->flush();
+                $entity->update($data);
             }
 
             return $entity;
@@ -180,14 +150,13 @@ class ReferenceService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
 
         if (is_object($entity) && is_a($entity, Reference::class)) {
-            $this->entityManager->remove($entity);
-            $this->entityManager->flush();
+            $entity->delete();
 
             return true;
         }

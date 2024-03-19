@@ -2,7 +2,7 @@
 
 namespace tests\Domain\Service\Reference;
 
-use App\Domain\Entities\Reference;
+use App\Domain\Models\Reference;
 use App\Domain\Repository\ReferenceRepository;
 use App\Domain\Service\Reference\Exception\MissingTitleValueException;
 use App\Domain\Service\Reference\Exception\MissingTypeValueException;
@@ -30,8 +30,8 @@ class ReferenceServiceTest extends TestCase
     public function testCreateSuccess(): void
     {
         $data = [
-            'type' => $this->getFaker()->randomElement(\App\Domain\Types\ReferenceTypeType::LIST),
-            'title' => $this->getFaker()->word,
+            'type' => $this->getFaker()->randomElement(\App\Domain\Casts\Reference\Type::LIST),
+            'title' => implode(' ', $this->getFaker()->words(3)),
             'value' => [
                 'value-0' => $this->getFaker()->word,
                 'value-1' => $this->getFaker()->word,
@@ -43,17 +43,11 @@ class ReferenceServiceTest extends TestCase
 
         $ref = $this->service->create($data);
         $this->assertInstanceOf(Reference::class, $ref);
-        $this->assertEquals($data['type'], $ref->getType());
-        $this->assertEquals($data['title'], $ref->getTitle());
-        $this->assertEquals($data['value'], $ref->getValue());
-        $this->assertEquals($data['order'], $ref->getOrder());
-        $this->assertEquals($data['status'], $ref->getStatus());
-
-        /** @var ReferenceRepository $taskRepo */
-        $taskRepo = $this->em->getRepository(Reference::class);
-        $ref = $taskRepo->findOneByUuid($ref->getUuid());
-        $this->assertInstanceOf(Reference::class, $ref);
-        $this->assertEquals($data['title'], $ref->getTitle());
+        $this->assertEquals($data['type'], $ref->type);
+        $this->assertEquals($data['title'], $ref->title);
+        $this->assertEquals($data['value'], $ref->value);
+        $this->assertEquals($data['order'], $ref->order);
+        $this->assertEquals($data['status'], $ref->status);
     }
 
     public function testCreateWithMissingTypeValue(): void
@@ -68,7 +62,7 @@ class ReferenceServiceTest extends TestCase
         $this->expectException(MissingTitleValueException::class);
 
         $this->service->create([
-            'type' => $this->getFaker()->randomElement(\App\Domain\Types\ReferenceTypeType::LIST),
+            'type' => $this->getFaker()->randomElement(\App\Domain\Casts\Reference\Type::LIST),
         ]);
     }
 
@@ -77,8 +71,8 @@ class ReferenceServiceTest extends TestCase
         $this->expectException(TitleAlreadyExistsException::class);
 
         $random = [
-            'type' => $this->getFaker()->randomElement(\App\Domain\Types\ReferenceTypeType::LIST),
-            'title' => $this->getFaker()->word,
+            'type' => $this->getFaker()->randomElement(\App\Domain\Casts\Reference\Type::LIST),
+            'title' => implode(' ', $this->getFaker()->words(3)),
         ];
 
         $this->service->create($random);
@@ -88,8 +82,8 @@ class ReferenceServiceTest extends TestCase
     public function testReadSuccess(): void
     {
         $data = [
-            'type' => $this->getFaker()->randomElement(\App\Domain\Types\ReferenceTypeType::LIST),
-            'title' => $this->getFaker()->word,
+            'type' => $this->getFaker()->randomElement(\App\Domain\Casts\Reference\Type::LIST),
+            'title' => implode(' ', $this->getFaker()->words(3)),
             'value' => [
                 'value-0' => $this->getFaker()->word,
                 'value-1' => $this->getFaker()->word,
@@ -99,11 +93,11 @@ class ReferenceServiceTest extends TestCase
 
         $ref = $this->service->create($data);
 
-        $ref = $this->service->read(['uuid' => $ref->getUuid()]);
+        $ref = $this->service->read(['uuid' => $ref->uuid]);
         $this->assertInstanceOf(Reference::class, $ref);
-        $this->assertEquals($data['type'], $ref->getType());
-        $this->assertEquals($data['title'], $ref->getTitle());
-        $this->assertEquals($data['value'], $ref->getValue());
+        $this->assertEquals($data['type'], $ref->type);
+        $this->assertEquals($data['title'], $ref->title);
+        $this->assertEquals($data['value'], $ref->value);
     }
 
     public function testReadWithEntryNotFound(): void
@@ -116,8 +110,8 @@ class ReferenceServiceTest extends TestCase
     public function testUpdateSuccess(): void
     {
         $ref = $this->service->create([
-            'type' => $this->getFaker()->randomElement(\App\Domain\Types\ReferenceTypeType::LIST),
-            'title' => $this->getFaker()->word,
+            'type' => $this->getFaker()->randomElement(\App\Domain\Casts\Reference\Type::LIST),
+            'title' => implode(' ', $this->getFaker()->words(3)),
             'value' => [
                 'value-0' => $this->getFaker()->word,
                 'value-1' => $this->getFaker()->word,
@@ -128,8 +122,8 @@ class ReferenceServiceTest extends TestCase
         ]);
 
         $data = [
-            'type' => $this->getFaker()->randomElement(\App\Domain\Types\ReferenceTypeType::LIST),
-            'title' => $this->getFaker()->word,
+            'type' => $this->getFaker()->randomElement(\App\Domain\Casts\Reference\Type::LIST),
+            'title' => implode(' ', $this->getFaker()->words(3)),
             'value' => [
                 'value-0' => $this->getFaker()->word,
                 'value-1' => $this->getFaker()->word,
@@ -140,11 +134,11 @@ class ReferenceServiceTest extends TestCase
         ];
 
         $ref = $this->service->update($ref, $data);
-        $this->assertEquals($data['type'], $ref->getType());
-        $this->assertEquals($data['title'], $ref->getTitle());
-        $this->assertEquals($data['value'], $ref->getValue());
-        $this->assertEquals($data['order'], $ref->getOrder());
-        $this->assertEquals($data['status'], $ref->getStatus());
+        $this->assertEquals($data['type'], $ref->type);
+        $this->assertEquals($data['title'], $ref->title);
+        $this->assertEquals($data['value'], $ref->value);
+        $this->assertEquals($data['order'], $ref->order);
+        $this->assertEquals($data['status'], $ref->status);
     }
 
     public function testUpdateWithTaskNotFound(): void
@@ -157,8 +151,8 @@ class ReferenceServiceTest extends TestCase
     public function testDeleteSuccess(): void
     {
         $ref = $this->service->create([
-            'type' => $this->getFaker()->randomElement(\App\Domain\Types\ReferenceTypeType::LIST),
-            'title' => $this->getFaker()->word,
+            'type' => $this->getFaker()->randomElement(\App\Domain\Casts\Reference\Type::LIST),
+            'title' => implode(' ', $this->getFaker()->words(3)),
         ]);
 
         $result = $this->service->delete($ref);
