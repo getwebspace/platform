@@ -5,16 +5,8 @@
 
     <div class="quick-sidebar-wrapper">
         <ul class="nav nav-tabs nav-line nav-color-secondary" role="tablist">
-            {% if parameter('notification_is_enabled', 'yes') == 'yes' %}
-                <li class="nav-item">
-                    <a class="nav-link active show" data-toggle="tab" href="#notif">
-                        <i class="fa fa-bell"></i>
-                    </a>
-                </li>
-            {% endif %}
-
             <li class="nav-item">
-                <a class="nav-link {{ parameter('notification_is_enabled', 'yes') == 'no' ? 'active show' : '' }}" data-toggle="tab" href="#task">
+                <a class="nav-link active show" data-toggle="tab" href="#task">
                     <i class="fas fa-tasks"></i>
                 </a>
             </li>
@@ -35,36 +27,6 @@
         </ul>
 
         <div class="tab-content mt-3">
-
-            {# TAB: Notifications #}
-            {% if parameter('notification_is_enabled', 'yes') == 'yes' %}
-                <div class="tab-chat tab-pane fade show active" id="notif">
-                    <div class="quick-wrapper">
-                        <div class="quick-scroll scrollbar-outer">
-                            <div class="quick-content">
-                                <div class="notif-center list-group list-group-flush">
-                                    <div data-notif-empty>
-                                        <div class="text-center my-3">
-                                            {{ 'Notifications yet'|locale }}
-                                        </div>
-                                    </div>
-
-                                    <div class="list-group-item flex-column pl-0" data-notif-item>
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <h5 class="text-truncate my-0"></h5>
-                                            </div>
-                                            <div class="col-12 text-right">
-                                                <small class="date text-small text-muted"></small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            {% endif %}
 
             {# TAB: Tasks #}
             <div class="tab-chat tab-pane fade {{ parameter('notification_is_enabled', 'yes') == 'no' ? 'show active' : '' }}" id="task">
@@ -145,6 +107,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
@@ -153,13 +116,9 @@
     document.addEventListener('DOMContentLoaded', () => {
         let
             data = {
-                notifications: [],
                 tasks: {},
             },
             $quickSidebar = $('.quick-sidebar'),
-            $notifList = $quickSidebar.find('.notif-center'),
-            $elNotifEmpty = $quickSidebar.find('[data-notif-empty]'),
-            $elNotifItem = $quickSidebar.find('[data-notif-item]').detach().removeAttr('data-notif-item'),
             $taskList = $quickSidebar.find('.task-center'),
             $elTaskEmpty = $quickSidebar.find('[data-task-empty]'),
             $elTaskItem = $quickSidebar.find('[data-task-item]').detach().removeAttr('data-task-item');
@@ -167,26 +126,6 @@
         (function refresh() {
             $.post('/cup/refresh', data, (res) => {
                 if (res) {
-                    // notification
-                    if (res.notification && res.notification.length) {
-                        $elNotifEmpty.hide();
-
-                        for (let notification of res.notification) {
-                            let $buf = $elNotifItem.clone();
-
-                            $buf.find('h5').text(notification.title);
-                            $buf.find('small.date').text(
-                                moment
-                                    .tz(notification.date, 'YYYY-MM-DD hh:mm:ss', 'utc')
-                                    .tz('{{ parameter('common_timezone', 'Europe/Kiev') }}')
-                                    .format('{{ parameter('common_date_format', 'j-m-Y, H:i')|dfm }}')
-                            );
-
-                            $notifList.prepend($buf);
-                            data.notifications.push(notification.uuid);
-                        }
-                    }
-
                     // task
                     if (res.task && (res.task.new.length || res.task.update.length || res.task.delete.length)) {
                         $elTaskEmpty.hide();
