@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+docker-compose exec -e PHP_CS_FIXER_IGNORE_ENV=1 platform vendor/bin/phinx "$@"

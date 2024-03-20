@@ -16,6 +16,7 @@ services:
             - ./config:/var/container/config:rw
             - ./plugin:/var/container/plugin:rw
             - ./public:/var/container/public:rw
+            - ./scheme:/var/container/scheme:rw
             - ./src:/var/container/src:rw
             - ./tests:/var/container/tests:rw
             - ./theme:/var/container/theme:rw
@@ -26,6 +27,6 @@ services:
             - ./composer.json:/var/container/composer.json:rw
             - ./composer.lock:/var/container/composer.lock:rw
             - ./phpunit.xml:/var/container/phpunit.xml:rw
-            - ./migrations.json:/var/container/migrations.json:rw
+            - ./phinx.php:/var/container/phinx.php:rw
         ports:
             - 9000:80
