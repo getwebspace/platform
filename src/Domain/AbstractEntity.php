@@ -192,7 +192,7 @@ abstract class AbstractEntity implements \JsonSerializable
         return array_serialize(
             array_except(
                 get_object_vars($this),
-                ['__initializer__', '__cloner__', '__isInitialized__', 'logger', 'entityManager', 'container']
+                ['__initializer__', '__cloner__', '__isInitialized__', 'logger', 'container']
             )
         );
     }

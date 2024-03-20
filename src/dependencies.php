@@ -54,36 +54,6 @@ return function (ContainerBuilder $containerBuilder): void {
         }
     ]);
 
-    // doctrine
-    $containerBuilder->addDefinitions([
-        \Doctrine\ORM\EntityManager::class => function (ContainerInterface $c): EntityManager {
-            $settings = $c->get('doctrine');
-
-            foreach ($settings['types'] as $type => $class) {
-                if (!\Doctrine\DBAL\Types\Type::hasType($type)) {
-                    \Doctrine\DBAL\Types\Type::addType($type, $class);
-                } else {
-                    \Doctrine\DBAL\Types\Type::overrideType($type, $class);
-                }
-            }
-
-            $config = \Doctrine\ORM\Tools\Setup::createAttributeMetadataConfiguration(
-                $settings['meta']['entity_path'],
-                $settings['meta']['auto_generate_proxies'],
-                $settings['meta']['proxy_dir'],
-                $settings['meta']['cache'],
-            );
-            $connection = ($_ENV['TEST'] ?? false)
-                ? ['driver' => 'pdo_sqlite', 'path' => VAR_DIR . '/database-test.sqlite']
-                : $settings['connection'];
-
-            $em = \Doctrine\ORM\EntityManager::create($connection, $config);
-            $em->getConnection()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
-
-            return $em;
-        },
-    ]);
-
     // plugins
     $containerBuilder->addDefinitions([
         'plugin' => function (ContainerInterface $c) {

@@ -2,7 +2,6 @@
 
 namespace tests;
 
-use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
 use Slim\App;
 
@@ -11,8 +10,6 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
     private static App $app;
 
     private static ContainerInterface $container;
-
-    protected EntityManager $em;
 
     /**
      * @return App

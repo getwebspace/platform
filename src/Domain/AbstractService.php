@@ -3,7 +3,6 @@
 namespace App\Domain;
 
 use App\Domain\Traits\ParameterTrait;
-use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
 use Illuminate\Database\Connection as DataBase;
 use Symfony\Component\Cache\Adapter\ArrayAdapter as Cache;
@@ -13,8 +12,6 @@ abstract class AbstractService
     use ParameterTrait;
 
     protected ContainerInterface $container;
-
-    protected EntityManager $entityManager;
 
     protected DataBase $db;
 
@@ -31,10 +28,9 @@ abstract class AbstractService
         'offset' => null,
     ];
 
-    public function __construct(ContainerInterface $container, EntityManager $entityManager, DataBase $db, Cache $cache)
+    public function __construct(ContainerInterface $container, DataBase $db, Cache $cache)
     {
         $this->container = $container;
-        $this->entityManager = $entityManager; // deprecated
         $this->db = $db;
         $this->cache = $cache;
 

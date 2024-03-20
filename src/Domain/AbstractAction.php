@@ -13,7 +13,6 @@ use App\Domain\Traits\FileTrait;
 use App\Domain\Traits\ParameterTrait;
 use App\Domain\Traits\RendererTrait;
 use App\Domain\Traits\StorageTrait;
-use Doctrine\ORM\EntityManager;
 use Illuminate\Database\Connection as DataBase;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -44,8 +43,6 @@ abstract class AbstractAction
 
     protected LoggerInterface $logger;
 
-    protected EntityManager $entityManager;
-
     protected DataBase $db;
 
     protected Cache $cache;
@@ -70,7 +67,6 @@ abstract class AbstractAction
         $this->logger = $container->get(LoggerInterface::class);
         $this->db = $container->get(DataBase::class);
         $this->cache = $container->get(Cache::class);
-        $this->entityManager = $container->get(EntityManager::class);
         $this->routeCollector = $container->get(RouteCollectorInterface::class);
         $this->renderer = $container->get('view');
     }

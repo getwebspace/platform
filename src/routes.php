@@ -465,10 +465,6 @@ return function (App $app, Container $container): void {
                             $proxy->get('/xml/{name}', \App\Application\Actions\Common\XMLFileAction::class)
                                 ->setName('common:xml');
 
-                            // publication rss
-                            $proxy->get('/rss/{channel:.*}', \App\Application\Actions\Common\PublicationRSS::class)
-                                ->setName('common:rss');
-
                             // page
                             $proxy->get('/{args:.*}', \App\Application\Actions\Common\PageAction::class)
                                 ->setName('common:page');

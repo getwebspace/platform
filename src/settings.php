@@ -20,29 +20,6 @@ return function (ContainerBuilder $containerBuilder): void {
         ],
     ]);
 
-    // doctrine
-    $containerBuilder->addDefinitions([
-        'doctrine' => [
-            'meta' => [
-                'entity_path' => [
-                    SRC_DIR . '/Domain/Entities',
-                    # PLUGIN_DIR, // todo ?
-                ],
-                'auto_generate_proxies' => true,
-                'proxy_dir' => CACHE_DIR . '/proxies',
-                'cache' => null,
-            ],
-
-            'types' => require CONFIG_DIR . '/types.php',
-
-            // connection to DB settings
-            'connection' => array_merge(
-                $_DATABASE ? ['url' => $_DATABASE] : ['driver' => 'pdo_sqlite', 'path' => VAR_DIR . '/database.sqlite'],
-                ['charset' => 'utf8mb4', 'collate' => 'utf8mb4_unicode_ci'],
-            ),
-        ],
-    ]);
-
     // twig
     $containerBuilder->addDefinitions([
         'twig' => [
