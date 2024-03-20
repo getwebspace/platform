@@ -14,14 +14,15 @@ use App\Domain\Traits\ParameterTrait;
 use App\Domain\Traits\RendererTrait;
 use App\Domain\Traits\StorageTrait;
 use Doctrine\ORM\EntityManager;
+use Illuminate\Database\Connection as DataBase;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Slim\Interfaces\RouteCollectorInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
+use Symfony\Component\Cache\Adapter\ArrayAdapter as Cache;
 
 abstract class AbstractAction
 {
@@ -45,6 +46,10 @@ abstract class AbstractAction
 
     protected EntityManager $entityManager;
 
+    protected DataBase $db;
+
+    protected Cache $cache;
+
     protected RouteCollectorInterface $routeCollector;
 
     protected Request $request;
@@ -63,6 +68,8 @@ abstract class AbstractAction
     {
         $this->container = $container;
         $this->logger = $container->get(LoggerInterface::class);
+        $this->db = $container->get(DataBase::class);
+        $this->cache = $container->get(Cache::class);
         $this->entityManager = $container->get(EntityManager::class);
         $this->routeCollector = $container->get(RouteCollectorInterface::class);
         $this->renderer = $container->get('view');

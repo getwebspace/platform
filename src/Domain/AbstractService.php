@@ -6,6 +6,7 @@ use App\Domain\Traits\ParameterTrait;
 use Doctrine\ORM\EntityManager;
 use Psr\Container\ContainerInterface;
 use Illuminate\Database\Connection as DataBase;
+use Symfony\Component\Cache\Adapter\ArrayAdapter as Cache;
 
 abstract class AbstractService
 {
@@ -16,6 +17,8 @@ abstract class AbstractService
     protected EntityManager $entityManager;
 
     protected DataBase $db;
+
+    protected Cache $cache;
 
     /**
      * @var AbstractRepository
@@ -28,11 +31,12 @@ abstract class AbstractService
         'offset' => null,
     ];
 
-    public function __construct(ContainerInterface $container, EntityManager $entityManager, DataBase $db)
+    public function __construct(ContainerInterface $container, EntityManager $entityManager, DataBase $db, Cache $cache)
     {
-        $this->container = $container; // deprecated
+        $this->container = $container;
         $this->entityManager = $entityManager; // deprecated
         $this->db = $db;
+        $this->cache = $cache;
 
         $this->init(); // deprecated
     }

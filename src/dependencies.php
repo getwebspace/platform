@@ -47,6 +47,13 @@ return function (ContainerBuilder $containerBuilder): void {
         }
     ]);
 
+    // simfony cache
+    $containerBuilder->addDefinitions([
+        \Symfony\Component\Cache\Adapter\ArrayAdapter::class => function (ContainerInterface $c): \Symfony\Component\Cache\Adapter\ArrayAdapter {
+            return new Symfony\Component\Cache\Adapter\ArrayAdapter();
+        }
+    ]);
+
     // doctrine
     $containerBuilder->addDefinitions([
         \Doctrine\ORM\EntityManager::class => function (ContainerInterface $c): EntityManager {
