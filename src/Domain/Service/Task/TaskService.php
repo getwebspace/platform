@@ -20,7 +20,7 @@ class TaskService extends AbstractService
 
     protected function init(): void
     {
-        $this->service = $this->entityManager->getRepository(Task::class);
+        //$this->service = $this->entityManager->getRepository(Task::class);
     }
 
     /**

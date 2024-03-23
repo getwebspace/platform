@@ -21,7 +21,7 @@ class AddressUrl implements CastsAttributes
         $value = mb_strtolower($value);
         $value = i18n::getTranslatedText($value);
         $value = trim($value);
-        $value = preg_replace(['/\s/', '/\//', '/[^a-z0-9\-]/'], ['-', '-', ''], $value);
+        $value = preg_replace(['/[^\x20-\x7E]/', '/\s+/'], ['', '-'], $value);
 
         return $value;
     }

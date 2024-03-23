@@ -3,30 +3,26 @@
 namespace App\Domain\Service\Publication;
 
 use App\Domain\AbstractService;
-use App\Domain\Entities\Publication\Category as PublicationCategory;
-use App\Domain\Repository\Publication\CategoryRepository as PublicationCategoryRepository;
+use App\Domain\Models\PublicationCategory;
+use App\Domain\Models\UserToken;
 use App\Domain\Service\Publication\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Publication\Exception\CategoryNotFoundException;
 use App\Domain\Service\Publication\Exception\MissingTitleValueException;
 use App\Domain\Service\Publication\Exception\TitleAlreadyExistsException;
+use App\Domain\Service\User\Exception\TokenNotFoundException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class CategoryService extends AbstractService
 {
-    /**
-     * @var PublicationCategoryRepository
-     */
-    protected mixed $service;
-
     protected function init(): void
     {
-        $this->service = $this->entityManager->getRepository(PublicationCategory::class);
     }
 
     /**
-     * @throws TitleAlreadyExistsException
      * @throws MissingTitleValueException
+     * @throws TitleAlreadyExistsException
      * @throws AddressAlreadyExistsException
      */
     public function create(array $data = []): PublicationCategory
@@ -35,7 +31,6 @@ class CategoryService extends AbstractService
             'title' => '',
             'address' => '',
             'description' => '',
-            'parent' => null,
             'parent_uuid' => null,
             'pagination' => 10,
             'children' => false,
@@ -44,63 +39,40 @@ class CategoryService extends AbstractService
                 'by' => '',
                 'direction' => '',
             ],
-            'meta' => [
-                'title' => '',
-                'description' => '',
-                'keywords' => '',
-            ],
             'template' => [
                 'list' => '',
                 'short' => '',
                 'full' => '',
             ],
+            'meta' => [
+                'title' => '',
+                'description' => '',
+                'keywords' => '',
+            ],
         ];
         $data = array_merge($default, $data);
 
-        if ($data['title'] && $this->service->findOneByTitle($data['title']) !== null) {
-            throw new TitleAlreadyExistsException();
-        }
         if (!$data['title']) {
             throw new MissingTitleValueException();
         }
 
-        // retrieve category by uuid
-        if (!is_a($data['parent'], PublicationCategory::class) && $data['parent_uuid']) {
-            $data['parent'] = $this->read(['uuid' => $data['parent_uuid']]);
-        }
-
-        $category = (new PublicationCategory())
-            ->setTitle($data['title'])
-            ->setAddress($data['address'])
-            ->setDescription($data['description'])
-            ->setParent($data['parent'])
-            ->setPagination((int) $data['pagination'])
-            ->setChildren($data['children'])
-            ->setPublic($data['public'])
-            ->setSort($data['sort'])
-            ->setMeta($data['meta'])
-            ->setTemplate($data['template']);
+        $category = new PublicationCategory;
+        $category->fill($data);
 
         // if address generation is enabled
         if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
-            $category->setAddress(
-                implode('/', array_filter(
-                    [
-                        $category->getParent()?->getAddress(),
-                        $category->setAddress('')->getAddress(),
-                    ],
-                    fn ($el) => (bool) $el
-                ))
-            );
+            $category->address = implode('/', array_filter([$category->parent->address ?? '', $category->address ?? $category->title ?? uniqid()], fn ($el) => (bool) $el));
         }
 
-        $found = $this->service->findOneByAddress($category->getAddress());
-        if ($found !== null) {
+        if (PublicationCategory::firstWhere(['title' => $category->title]) !== null) {
+            throw new TitleAlreadyExistsException();
+        }
+
+        if (PublicationCategory::firstWhere(['address' => $category->address]) !== null) {
             throw new AddressAlreadyExistsException();
         }
 
-        $this->entityManager->persist($category);
-        $this->entityManager->flush();
+        $category->save();
 
         return $category;
     }
@@ -143,24 +115,30 @@ class CategoryService extends AbstractService
             $criteria['public'] = (bool) $data['public'];
         }
 
-        try {
-            switch (true) {
-                case !is_array($data['uuid']) && $data['uuid'] !== null:
-                case !is_array($data['title']) && $data['title'] !== null:
-                case !is_array($data['address']) && $data['address'] !== null:
-                    $publicationCategory = $this->service->findOneBy($criteria);
+        switch (true) {
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
+            case !is_array($data['title']) && $data['title'] !== null:
+            case !is_array($data['address']) && $data['address'] !== null:
+                /** @var PublicationCategory $publicationCategory */
+                $publicationCategory = PublicationCategory::firstWhere($criteria);
 
-                    if (empty($publicationCategory)) {
-                        throw new CategoryNotFoundException();
-                    }
+                return $publicationCategory ?: throw new CategoryNotFoundException();
 
-                    return $publicationCategory;
+            default:
+                $query = PublicationCategory::where($criteria);
+                /** @var Builder $query */
 
-                default:
-                    return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
-            }
-        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
-            return null;
+                foreach ($data['order'] as $column => $direction) {
+                    $query = $query->orderBy($column, $direction);
+                }
+                if ($data['limit']) {
+                    $query = $query->limit($data['limit']);
+                }
+                if ($data['offset']) {
+                    $query = $query->offset($data['offset']);
+                }
+
+                return $query->get();
         }
     }
 
@@ -176,7 +154,7 @@ class CategoryService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
@@ -195,68 +173,10 @@ class CategoryService extends AbstractService
                 'meta' => null,
                 'template' => null,
             ];
-            $data = array_merge($default, $data);
+            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
 
             if ($data !== $default) {
-                if ($data['title'] !== null) {
-                    $found = $this->service->findOneByTitle($data['title']);
-
-                    if ($found === null || $found === $entity) {
-                        $entity->setTitle($data['title']);
-                    } else {
-                        throw new TitleAlreadyExistsException();
-                    }
-                }
-                if ($data['description'] !== null) {
-                    $entity->setDescription($data['description']);
-                }
-                if ($data['parent'] !== null || $data['parent_uuid'] !== null) {
-                    // retrieve category by uuid
-                    if (!is_a($data['parent'], PublicationCategory::class) && $data['parent_uuid']) {
-                        $data['parent'] = $this->read(['uuid' => $data['parent_uuid']]);
-                    }
-
-                    $entity->setParent($data['parent']);
-                }
-                if ($data['pagination'] !== null) {
-                    $entity->setPagination((int) $data['pagination']);
-                }
-                if ($data['children'] !== null) {
-                    $entity->setChildren($data['children']);
-                }
-                if ($data['public'] !== null) {
-                    $entity->setPublic($data['public']);
-                }
-                if ($data['sort'] !== null) {
-                    $entity->setSort($data['sort']);
-                }
-                if ($data['meta'] !== null) {
-                    $entity->setMeta($data['meta']);
-                }
-                if ($data['template'] !== null) {
-                    $entity->setTemplate($data['template']);
-                }
-                // if address generation is enabled
-                if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
-                    $data['address'] = implode('/', array_filter(
-                        [
-                            $entity->getParent()?->getAddress(),
-                            $entity->setAddress('')->getAddress(),
-                        ],
-                        fn ($el) => (bool) $el
-                    ));
-                }
-                if ($data['address'] !== null) {
-                    $found = $this->service->findOneByAddress($data['address']);
-
-                    if ($found === null || $found === $entity) {
-                        $entity->setAddress($data['address']);
-                    } else {
-                        throw new AddressAlreadyExistsException();
-                    }
-                }
-
-                $this->entityManager->flush();
+                $entity->update($data);
             }
 
             return $entity;
@@ -275,31 +195,14 @@ class CategoryService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
 
         if (is_object($entity) && is_a($entity, PublicationCategory::class)) {
-            if (($files = $entity->getFiles()) && $files->isNotEmpty()) {
-                $fileService = $this->container->get(\App\Domain\Service\File\FileService::class);
-
-                /**
-                 * @var \App\Domain\Entities\File $file
-                 */
-                foreach ($files as $file) {
-                    try {
-                        $fileService->delete($file);
-                    } catch (\Doctrine\DBAL\Exception\ForeignKeyConstraintViolationException $e) {
-                        // nothing, file not found
-                    } catch (\App\Domain\Service\File\Exception\FileNotFoundException $e) {
-                        // nothing, file not found
-                    }
-                }
-            }
-
-            $this->entityManager->remove($entity);
-            $this->entityManager->flush();
+            $entity->files()->detach();
+            $entity->delete();
 
             return true;
         }

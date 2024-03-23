@@ -34,17 +34,6 @@ class OrderCreateAction extends CatalogAction
                     'products' => $this->getParam('products', []),
                 ]);
 
-                // notify to user-client
-                if ($user_uuid && $this->parameter('notification_is_enabled', 'yes') === 'yes') {
-                    $this->notificationService->create([
-                        'user_uuid' => $user_uuid,
-                        'title' => __('Order added') . ': ' . $order->getSerial(),
-                        'params' => [
-                            'order_uuid' => $order->getUuid(),
-                        ],
-                    ]);
-                }
-
                 $this->container->get(\App\Application\PubSub::class)->publish('cup:catalog:order:create', $order);
 
                 switch (true) {

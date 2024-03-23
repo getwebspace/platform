@@ -2,8 +2,9 @@
 
 namespace tests\Domain\Service\Publication;
 
-use App\Domain\Entities\Publication;
-use App\Domain\Entities\Publication\Category as PublicationCategory;
+use App\Domain\Models\Publication;
+use App\Domain\Models\PublicationCategory;
+use App\Domain\Models\User;
 use App\Domain\Repository\PublicationRepository;
 use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
 use App\Domain\Service\Publication\Exception\AddressAlreadyExistsException;
@@ -33,6 +34,11 @@ class PublicationServiceTest extends TestCase
      */
     protected $userService;
 
+    /**
+     * @var User
+     */
+    protected $user;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -41,23 +47,25 @@ class PublicationServiceTest extends TestCase
         $this->userService = $this->getService(UserService::class);
 
         $this->category = $this->getService(PublicationCategoryService::class)->create([
-            'title' => $this->getFaker()->word,
-            'address' => 'category-custom-address',
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
             'description' => $this->getFaker()->text(255),
+        ]);
+
+        $this->user = $this->userService->create([
+            'username' => $this->getFaker()->userName,
+            'password' => $this->getFaker()->password,
+            'email' => $this->getFaker()->email,
         ]);
     }
 
     public function testCreateSuccess(): void
     {
         $data = [
-            'user' => $this->userService->create([
-                'username' => $this->getFaker()->userName,
-                'password' => $this->getFaker()->password,
-                'email' => $this->getFaker()->email,
-            ]),
-            'title' => $this->getFaker()->word,
-            'address' => 'publication-custom-address',
-            'category' => $this->category,
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'category_uuid' => $this->category->uuid,
+            'user_uuid' => $this->user->uuid,
             'date' => new \DateTime(),
             'content' => [
                 'short' => $this->getFaker()->text(200),
@@ -73,23 +81,13 @@ class PublicationServiceTest extends TestCase
 
         $publication = $this->service->create($data);
         $this->assertInstanceOf(Publication::class, $publication);
-        $this->assertEquals($data['user'], $publication->getUser());
-        $this->assertEquals($data['title'], $publication->getTitle());
-        $this->assertEquals($data['address'], $publication->getAddress());
-        $this->assertEquals($data['content'], $publication->getContent());
-        $this->assertEquals($data['meta'], $publication->getMeta());
-        $this->assertEquals($data['external_id'], $publication->getExternalId());
-
-        /** @var PublicationRepository $publicationRepo */
-        $publicationRepo = $this->em->getRepository(Publication::class);
-        $p = $publicationRepo->findOneByTitle($data['title']);
-        $this->assertInstanceOf(Publication::class, $p);
-        $this->assertEquals($data['user'], $p->getUser());
-        $this->assertEquals($data['title'], $p->getTitle());
-        $this->assertEquals($data['address'], $p->getAddress());
-        $this->assertEquals($data['content'], $p->getContent());
-        $this->assertEquals($data['meta'], $p->getMeta());
-        $this->assertEquals($data['external_id'], $p->getExternalId());
+        $this->assertEquals($data['title'], $publication->title);
+        $this->assertEquals($data['address'], $publication->address);
+        $this->assertEquals($data['content'], $publication->content);
+        $this->assertEquals($data['meta'], $publication->meta);
+        $this->assertEquals($data['external_id'], $publication->external_id);
+        $this->assertEquals($this->user->attributesToArray(), $publication->user->attributesToArray());
+        $this->assertEquals($this->category->attributesToArray(), $publication->category->attributesToArray());
     }
 
     public function testCreateWithMissingTitleValue(): void
@@ -104,8 +102,9 @@ class PublicationServiceTest extends TestCase
         $this->expectException(TitleAlreadyExistsException::class);
 
         $data = [
-            'title' => $this->getFaker()->word,
-            'category' => $this->category,
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'category_uuid' => $this->category->uuid,
             'content' => [
                 'short' => $this->getFaker()->text(200),
                 'full' => $this->getFaker()->realText(500),
@@ -120,56 +119,52 @@ class PublicationServiceTest extends TestCase
     {
         $this->expectException(AddressAlreadyExistsException::class);
 
-        $this->service->create([
-            'title' => $this->getFaker()->word,
-            'address' => 'publication-custom-address-two',
-            'category' => $this->category,
+        $data = [
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'category_uuid' => $this->category->uuid,
             'content' => [
                 'short' => $this->getFaker()->text(200),
                 'full' => $this->getFaker()->realText(500),
             ],
-        ]);
+        ];
 
-        $this->service->create([
-            'title' => $this->getFaker()->word,
-            'address' => 'publication-custom-address-two',
-            'category' => $this->category,
-            'content' => [
-                'short' => $this->getFaker()->text(200),
-                'full' => $this->getFaker()->realText(500),
-            ],
-        ]);
+        Publication::create($data);
+
+        $this->service->create(array_merge($data, ['title' => implode(' ', $this->getFaker()->words(3))]));
     }
 
     public function testReadSuccess1(): void
     {
         $data = [
-            'title' => $this->getFaker()->word,
-            'description' => $this->getFaker()->text(255),
-            'category' => $this->category,
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'category_uuid' => $this->category->uuid,
         ];
 
         $this->service->create($data);
 
         $publication = $this->service->read(['title' => $data['title']]);
         $this->assertInstanceOf(Publication::class, $publication);
-        $this->assertEquals($data['title'], $publication->getTitle());
+        $this->assertEquals($data['title'], $publication->title);
+        $this->assertEquals($data['address'], $publication->address);
     }
 
     public function testReadSuccess2(): void
     {
         $data = [
-            'title' => $this->getFaker()->word,
-            'address' => 'publication-custom-address',
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
             'description' => $this->getFaker()->text(255),
-            'category' => $this->category,
+            'category_uuid' => $this->category->uuid,
         ];
 
         $this->service->create($data);
 
         $publication = $this->service->read(['address' => $data['address']]);
         $this->assertInstanceOf(Publication::class, $publication);
-        $this->assertEquals($data['address'], $publication->getAddress());
+        $this->assertEquals($data['title'], $publication->title);
+        $this->assertEquals($data['address'], $publication->address);
     }
 
     public function testReadWithPublicationNotFound(): void
@@ -182,14 +177,10 @@ class PublicationServiceTest extends TestCase
     public function testUpdate(): void
     {
         $publication = $this->service->create([
-            'user' => $this->userService->create([
-                'username' => $this->getFaker()->userName,
-                'password' => $this->getFaker()->password,
-                'email' => $this->getFaker()->email,
-            ]),
-            'title' => $this->getFaker()->word,
-            'address' => 'publication-custom-address',
-            'category' => $this->category,
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'category_uuid' => $this->category->uuid,
+            'user_uuid' => $this->user->uuid,
             'date' => new \DateTime(),
             'content' => [
                 'short' => $this->getFaker()->text(200),
@@ -203,15 +194,17 @@ class PublicationServiceTest extends TestCase
             'external_id' => $this->getFaker()->word,
         ]);
 
+        $this->user = $this->userService->create([
+            'username' => $this->getFaker()->userName,
+            'password' => $this->getFaker()->password,
+            'email' => $this->getFaker()->email,
+        ]);
+
         $data = [
-            'user' => $this->userService->create([
-                'username' => $this->getFaker()->userName,
-                'password' => $this->getFaker()->password,
-                'email' => $this->getFaker()->email,
-            ]),
-            'title' => $this->getFaker()->word,
-            'address' => 'publication-custom-address',
-            'category' => $this->category,
+            'user_uuid' => $this->user->uuid,
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'category_uuid' => $this->category->uuid,
             'content' => [
                 'short' => $this->getFaker()->text(200),
                 'full' => $this->getFaker()->realText(500),
@@ -226,13 +219,13 @@ class PublicationServiceTest extends TestCase
 
         $publication = $this->service->update($publication, $data);
         $this->assertInstanceOf(Publication::class, $publication);
-        $this->assertEquals($data['user'], $publication->getUser());
-        $this->assertEquals($data['title'], $publication->getTitle());
-        $this->assertEquals($data['address'], $publication->getAddress());
-        $this->assertEquals($data['category'], $publication->getCategory());
-        $this->assertEquals($data['content'], $publication->getContent());
-        $this->assertEquals($data['meta'], $publication->getMeta());
-        $this->assertEquals($data['external_id'], $publication->getExternalId());
+        $this->assertEquals($data['title'], $publication->title);
+        $this->assertEquals($data['address'], $publication->address);
+        $this->assertEquals($data['content'], $publication->content);
+        $this->assertEquals($data['meta'], $publication->meta);
+        $this->assertEquals($data['external_id'], $publication->external_id);
+        $this->assertEquals($this->user->attributesToArray(), $publication->user->attributesToArray());
+        $this->assertEquals($this->category->attributesToArray(), $publication->category->attributesToArray());
     }
 
     public function testUpdateWithPublicationNotFound(): void
@@ -245,9 +238,9 @@ class PublicationServiceTest extends TestCase
     public function testDeleteSuccess(): void
     {
         $page = $this->service->create([
-            'title' => $this->getFaker()->word,
-            'description' => $this->getFaker()->text(255),
-            'category' => $this->category,
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'category_uuid' => $this->category->uuid,
         ]);
 
         $result = $this->service->delete($page);

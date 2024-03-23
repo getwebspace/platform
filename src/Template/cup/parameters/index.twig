@@ -62,7 +62,6 @@
                                             <a class="nav-link active"  data-toggle="pill" href="#other-common">{{ 'Main'|locale }}</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-mail">{{ 'Mail'|locale }}</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-file">{{ 'Files and images'|locale }}</a>
-                                            <a class="nav-link"         data-toggle="pill" href="#other-notification">{{ 'Notifications'|locale }}</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-publication">{{ 'Publications'|locale }}</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-page">{{ 'Pages'|locale }}</a>
                                             <a class="nav-link"         data-toggle="pill" href="#other-form">{{ 'Forms'|locale }}</a>
@@ -359,34 +358,6 @@
                                                             '-quality 70%',
                                                         ]|join('\n'),
                                                         'style': 'min-height: 150px;'
-                                                    }
-                                                } %}
-                                            </div>
-
-                                            {# TAB: Other Notification #}
-                                            <div class="tab-pane fade" id="other-notification">
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Enable Notifications',
-                                                    'description': '',
-                                                    'type': 'select',
-                                                    'name': 'notification[is_enabled]',
-                                                    'args': {
-                                                        'option': _(['yes', 'no']),
-                                                        'selected': 'yes'
-                                                    }
-                                                } %}
-
-                                                <hr>
-
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Notification display period',
-                                                    'description': 'Specify the number of hours for which to display notifications',
-                                                    'postfix': 'hours',
-                                                    'type': 'number',
-                                                    'name': 'common[notification_period]',
-                                                    'args': {
-                                                        'placeholder': '24',
-                                                        'value': '24'
                                                     }
                                                 } %}
                                             </div>

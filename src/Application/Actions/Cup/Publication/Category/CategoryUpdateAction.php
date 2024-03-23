@@ -55,7 +55,7 @@ class CategoryUpdateAction extends PublicationAction
 
                 return $this->respondWithTemplate('cup/publication/category/form.twig', [
                     'categories' => $categories,
-                    'category' => $category,
+                    'item' => $category,
                 ]);
             } catch (CategoryNotFoundException $e) {
                 // nothing

@@ -26,32 +26,23 @@
                                     'name': 'title',
                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Name of the new category'|locale) ~ '"></i>',
                                     'args': {
-                                        'value': category.title,
+                                        'value': item.title,
                                         'required': true,
                                         'placeholder': 'News'|locale,
                                     }
                                 } %}
                             </div>
-                            <div class="col-6 col-md-3">
+
+                            <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Primary category'|locale,
-                                    'type': 'select',
-                                    'name': 'parent',
+                                    'label': 'Address'|locale,
+                                    'type': 'text',
+                                    'name': 'address',
+                                    'prefix': base_url() ~ '/' ~ (item.parent_uuid ? item.parent.address ~ '/' : ''),
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Used to view all articles in a given category. You can leave it blank, then the value will be generated automatically. It is allowed to use only Latin characters and numbers without spaces'|locale) ~ '"></i>',
                                     'args': {
-                                        'option': {'': '---'}|merge(categories.whereNotIn('uuid', category.getNested(categories, true).pluck('uuid')).sortBy('title').pluck('title', 'uuid')),
-                                        'selected': category.parent_uuid
-                                    }
-                                } %}
-                            </div>
-                            <div class="col-6 col-md-3">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Public category'|locale,
-                                    'message': 'Whether to show the category in the general list'|locale,
-                                    'type': 'select',
-                                    'name': 'public',
-                                    'args': {
-                                        'option': _(['yes', 'no']),
-                                        'selected': (category ? category.public : true) ? 'yes' : 'no'
+                                        'value': item.address,
+                                        'placeholder': 'news',
                                     }
                                 } %}
                             </div>
@@ -63,7 +54,7 @@
                                     'label': 'Description'|locale,
                                     'name': 'description',
                                     'args': {
-                                        'value': category.description
+                                        'value': item.description
                                     }
                                 } %}
                             </div>
@@ -76,7 +67,7 @@
                                     'type': 'text',
                                     'name': 'pagination',
                                     'args': {
-                                        'value': category.pagination is not empty ? category.pagination : '10',
+                                        'value': item.pagination is not empty ? item.pagination : '10',
                                     }
                                 } %}
                             </div>
@@ -87,97 +78,109 @@
                                     'name': 'children',
                                     'args': {
                                         'option': _(['yes', 'no']),
-                                        'selected': category.children ? 'yes' : 'no'
+                                        'selected': item.children ? 'yes' : 'no'
                                     }
                                 } %}
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-6 col-md-3">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Address'|locale,
-                                    'type': 'text',
-                                    'name': 'address',
-                                    'prefix': base_url() ~ '/',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Used to view all articles in a given category. You can leave it blank, then the value will be generated automatically. It is allowed to use only Latin characters and numbers without spaces'|locale) ~ '"></i>',
-                                    'args': {
-                                        'value': category.address,
-                                        'placeholder': 'news',
-                                    }
-                                } %}
-                            </div>
-                        </div>
-
-                        {% include 'cup/form-image.twig' with { 'entity': item } %}
-
-                        <hr>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Sorting criteria'|locale,
+                                    'label': 'Primary category'|locale,
                                     'type': 'select',
-                                    'name': 'sort[by]',
+                                    'name': 'parent',
                                     'args': {
-                                        'option': _(constant('/App/Domain/References/Publication::ORDER_BY')),
-                                        'selected': category.sort['by']
+                                        'option': {'': '---'}|merge(categories.whereNotIn('uuid', item.nested(true).pluck('uuid')).sortBy('title').pluck('title', 'uuid')),
+                                        'selected': item.parent_uuid
                                     }
                                 } %}
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-6 col-md-3">
                                 {% include 'cup/form.twig' with {
-                                    'label': 'Sorting order'|locale,
+                                    'label': 'Public category'|locale,
+                                    'message': 'Whether to show the category in the general list'|locale,
                                     'type': 'select',
-                                    'name': 'sort[direction]',
+                                    'name': 'public',
                                     'args': {
-                                        'option': _(constant('/App/Domain/References/Publication::ORDER_DIRECTION')),
-                                        'selected': category.sort['direction']
+                                        'option': _(['yes', 'no']),
+                                        'selected': (category ? item.public : true) ? 'yes' : 'no'
                                     }
                                 } %}
                             </div>
                         </div>
 
-                        <hr>
+                        <div class="accordion mt-3">
+                            <button class="btn btn-outline-white btn-block text-center" type="button" data-toggle="collapse" data-target="#publication-category-more">
+                                {{ 'More'|locale }} <i class="fas fa-arrow-down"></i>
+                            </button>
 
-                        <div class="row">
-                            <div class="col-md-4">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Category template'|locale,
-                                    'type': 'text',
-                                    'name': 'template[list]',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('You can set a separate template for this category or leave <b>publication.list.twig</b>'|locale) ~ '"></i>',
-                                    'args': {
-                                        'value': category.template.list is not empty ? category.template.list : 'publication.list.twig',
-                                    }
-                                } %}
-                            </div>
+                            <div id="publication-category-more" class="collapse" data-parent=".accordion">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Sorting criteria'|locale,
+                                            'type': 'select',
+                                            'name': 'sort[by]',
+                                            'args': {
+                                                'option': _(constant('/App/Domain/References/Publication::ORDER_BY')),
+                                                'selected': item.sort['by']
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Sorting order'|locale,
+                                            'type': 'select',
+                                            'name': 'sort[direction]',
+                                            'args': {
+                                                'option': _(constant('/App/Domain/References/Publication::ORDER_DIRECTION')),
+                                                'selected': item.sort['direction']
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
 
-                            <div class="col-md-4">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Short version template'|locale,
-                                    'type': 'text',
-                                    'name': 'template[short]',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('Specify the name of the template you want to use to display the short version of the publication, or leave <b>publication.short.twig</b>'|locale) ~ '"></i>',
-                                    'args': {
-                                        'value': category.template.short is not empty ? category.template.short : 'publication.short.twig',
-                                    }
-                                } %}
-                            </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Category template'|locale,
+                                            'type': 'text',
+                                            'name': 'template[list]',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('You can set a separate template for this category or leave <b>publication.list.twig</b>'|locale) ~ '"></i>',
+                                            'args': {
+                                                'value': item.template.list is not empty ? item.template.list : 'publication.list.twig',
+                                            }
+                                        } %}
+                                    </div>
 
-                            <div class="col-md-4">
-                                {% include 'cup/form.twig' with {
-                                    'label': 'Full version template'|locale,
-                                    'type': 'text',
-                                    'name': 'template[full]',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('Specify the name of the template you want to use to display the full version of the publication, or leave <b>publication.full.twig</b>'|locale) ~ '"></i>',
-                                    'args': {
-                                        'value': category.template.full is not empty ? category.template.full : 'publication.full.twig',
-                                    }
-                                } %}
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Short version template'|locale,
+                                            'type': 'text',
+                                            'name': 'template[short]',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('Specify the name of the template you want to use to display the short version of the publication, or leave <b>publication.short.twig</b>'|locale) ~ '"></i>',
+                                            'args': {
+                                                'value': item.template.short is not empty ? item.template.short : 'publication.short.twig',
+                                            }
+                                        } %}
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Full version template'|locale,
+                                            'type': 'text',
+                                            'name': 'template[full]',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('Specify the name of the template you want to use to display the full version of the publication, or leave <b>publication.full.twig</b>'|locale) ~ '"></i>',
+                                            'args': {
+                                                'value': item.template.full is not empty ? item.template.full : 'publication.full.twig',
+                                            }
+                                        } %}
+                                    </div>
+                                </div>
+
+                                {% include 'cup/form-image.twig' with { 'entity': item } %}
+
+                                {% include "cup/form-meta.twig" with { 'entity': item } %}
                             </div>
                         </div>
-
-                        <hr>
-
-                        {% include "cup/form-meta.twig" with { 'entity': item } %}
                     </div>
                     <div class="card-action">
                         {% include "cup/form-save.twig" %}

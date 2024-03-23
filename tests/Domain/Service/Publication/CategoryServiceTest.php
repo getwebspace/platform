@@ -2,8 +2,7 @@
 
 namespace tests\Domain\Service\Publication;
 
-use App\Domain\Entities\Publication\Category as PublicationCategory;
-use App\Domain\Repository\Publication\CategoryRepository as PublicationCategoryRepository;
+use App\Domain\Models\PublicationCategory;
 use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
 use App\Domain\Service\Publication\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Publication\Exception\CategoryNotFoundException;
@@ -30,8 +29,8 @@ class CategoryServiceTest extends TestCase
     public function testCreateSuccess(): void
     {
         $data = [
-            'title' => $this->getFaker()->word,
-            'address' => 'some-custom-address',
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
             'description' => $this->getFaker()->text(255),
             'pagination' => $this->getFaker()->numberBetween(10, 1000),
             'children' => $this->getFaker()->boolean,
@@ -54,29 +53,15 @@ class CategoryServiceTest extends TestCase
 
         $publicationCategory = $this->service->create($data);
         $this->assertInstanceOf(PublicationCategory::class, $publicationCategory);
-        $this->assertEquals($data['title'], $publicationCategory->getTitle());
-        $this->assertEquals($data['address'], $publicationCategory->getAddress());
-        $this->assertEquals($data['description'], $publicationCategory->getDescription());
-        $this->assertEquals($data['pagination'], $publicationCategory->getPagination());
-        $this->assertEquals($data['children'], $publicationCategory->getChildren());
-        $this->assertEquals($data['public'], $publicationCategory->getPublic());
-        $this->assertEquals($data['sort'], $publicationCategory->getSort());
-        $this->assertEquals($data['meta'], $publicationCategory->getMeta());
-        $this->assertEquals($data['template'], $publicationCategory->getTemplate());
-
-        /** @var PublicationCategoryRepository $publicationCategoryRepo */
-        $publicationCategoryRepo = $this->em->getRepository(PublicationCategory::class);
-        $pc = $publicationCategoryRepo->findOneByTitle($data['title']);
-        $this->assertInstanceOf(PublicationCategory::class, $pc);
-        $this->assertEquals($data['title'], $pc->getTitle());
-        $this->assertEquals($data['address'], $pc->getAddress());
-        $this->assertEquals($data['description'], $pc->getDescription());
-        $this->assertEquals($data['pagination'], $pc->getPagination());
-        $this->assertEquals($data['children'], $pc->getChildren());
-        $this->assertEquals($data['public'], $pc->getPublic());
-        $this->assertEquals($data['sort'], $pc->getSort());
-        $this->assertEquals($data['meta'], $pc->getMeta());
-        $this->assertEquals($data['template'], $pc->getTemplate());
+        $this->assertEquals($data['title'], $publicationCategory->title);
+        $this->assertEquals($data['address'], $publicationCategory->address);
+        $this->assertEquals($data['description'], $publicationCategory->description);
+        $this->assertEquals($data['pagination'], $publicationCategory->pagination);
+        $this->assertEquals($data['children'], $publicationCategory->children);
+        $this->assertEquals($data['public'], $publicationCategory->public);
+        $this->assertEquals($data['sort'], $publicationCategory->sort);
+        $this->assertEquals($data['meta'], $publicationCategory->meta);
+        $this->assertEquals($data['template'], $publicationCategory->template);
     }
 
     public function testCreateWithMissingTitleValue(): void
@@ -91,16 +76,12 @@ class CategoryServiceTest extends TestCase
         $this->expectException(TitleAlreadyExistsException::class);
 
         $data = [
-            'title' => $this->getFaker()->word,
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
             'description' => $this->getFaker()->text(255),
         ];
 
-        $publicationCategory = (new PublicationCategory())
-            ->setTitle($data['title'])
-            ->setDescription($data['description']);
-
-        $this->em->persist($publicationCategory);
-        $this->em->flush();
+        PublicationCategory::create($data);
 
         $this->service->create($data);
     }
@@ -110,26 +91,39 @@ class CategoryServiceTest extends TestCase
         $this->expectException(AddressAlreadyExistsException::class);
 
         $data = [
-            'title' => $this->getFaker()->word,
-            'address' => 'some-custom-address',
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
             'description' => $this->getFaker()->text(255),
         ];
 
-        $publicationCategory = (new PublicationCategory())
-            ->setTitle($data['title'] . '-miss')
-            ->setAddress($data['address'])
-            ->setDescription($data['description']);
+        PublicationCategory::create($data);
 
-        $this->em->persist($publicationCategory);
-        $this->em->flush();
+        $this->service->create(array_merge($data, ['title' => implode(' ', $this->getFaker()->words(3))]));
+    }
 
-        $this->service->create($data);
+    public function testCreateWithParent(): void
+    {
+        $parent = $this->service->create([
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+        ]);
+        $publicationCategory = $this->service->create([
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'parent_uuid' => $parent->uuid,
+        ]);
+
+        $this->assertInstanceOf(PublicationCategory::class, $publicationCategory);
+        $this->assertEquals($publicationCategory->parent_uuid, $parent->uuid);
+        $this->assertEquals($publicationCategory->parent->attributesToArray(), $parent->attributesToArray());
+        $this->assertEquals($parent->nested(true)->count(), 2);
     }
 
     public function testReadSuccess1(): void
     {
         $data = [
-            'title' => $this->getFaker()->word,
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
             'description' => $this->getFaker()->text(255),
         ];
 
@@ -137,14 +131,14 @@ class CategoryServiceTest extends TestCase
 
         $publicationCategory = $this->service->read(['title' => $data['title']]);
         $this->assertInstanceOf(PublicationCategory::class, $publicationCategory);
-        $this->assertEquals($data['title'], $publicationCategory->getTitle());
+        $this->assertEquals($data['title'], $publicationCategory->title);
     }
 
     public function testReadSuccess2(): void
     {
         $data = [
-            'title' => $this->getFaker()->word,
-            'address' => 'some-custom-address',
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
             'description' => $this->getFaker()->text(255),
         ];
 
@@ -152,7 +146,7 @@ class CategoryServiceTest extends TestCase
 
         $publicationCategory = $this->service->read(['address' => $data['address']]);
         $this->assertInstanceOf(PublicationCategory::class, $publicationCategory);
-        $this->assertEquals($data['address'], $publicationCategory->getAddress());
+        $this->assertEquals($data['address'], $publicationCategory->address);
     }
 
     public function testReadWithCategoryNotFound(): void
@@ -165,8 +159,8 @@ class CategoryServiceTest extends TestCase
     public function testUpdate(): void
     {
         $publicationCategory = $this->service->create([
-            'title' => $this->getFaker()->word,
-            'address' => 'some-custom-address',
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
             'description' => $this->getFaker()->text(255),
             'pagination' => $this->getFaker()->numberBetween(10, 1000),
             'children' => $this->getFaker()->boolean,
@@ -188,8 +182,8 @@ class CategoryServiceTest extends TestCase
         ]);
 
         $data = [
-            'title' => $this->getFaker()->word,
-            'address' => 'some-custom-address',
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
             'description' => $this->getFaker()->text(255),
             'pagination' => $this->getFaker()->numberBetween(10, 1000),
             'children' => $this->getFaker()->boolean,
@@ -212,15 +206,15 @@ class CategoryServiceTest extends TestCase
 
         $publicationCategory = $this->service->update($publicationCategory, $data);
         $this->assertInstanceOf(PublicationCategory::class, $publicationCategory);
-        $this->assertEquals($data['title'], $publicationCategory->getTitle());
-        $this->assertEquals($data['address'], $publicationCategory->getAddress());
-        $this->assertEquals($data['description'], $publicationCategory->getDescription());
-        $this->assertEquals($data['pagination'], $publicationCategory->getPagination());
-        $this->assertEquals($data['children'], $publicationCategory->getChildren());
-        $this->assertEquals($data['public'], $publicationCategory->getPublic());
-        $this->assertEquals($data['sort'], $publicationCategory->getSort());
-        $this->assertEquals($data['meta'], $publicationCategory->getMeta());
-        $this->assertEquals($data['template'], $publicationCategory->getTemplate());
+        $this->assertEquals($data['title'], $publicationCategory->title);
+        $this->assertEquals($data['address'], $publicationCategory->address);
+        $this->assertEquals($data['description'], $publicationCategory->description);
+        $this->assertEquals($data['pagination'], $publicationCategory->pagination);
+        $this->assertEquals($data['children'], $publicationCategory->children);
+        $this->assertEquals($data['public'], $publicationCategory->public);
+        $this->assertEquals($data['sort'], $publicationCategory->sort);
+        $this->assertEquals($data['meta'], $publicationCategory->meta);
+        $this->assertEquals($data['template'], $publicationCategory->template);
     }
 
     public function testUpdateWithCategoryNotFound(): void
@@ -233,7 +227,8 @@ class CategoryServiceTest extends TestCase
     public function testDeleteSuccess(): void
     {
         $page = $this->service->create([
-            'title' => $this->getFaker()->word,
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
             'description' => $this->getFaker()->text(255),
         ]);
 

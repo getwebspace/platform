@@ -48,7 +48,7 @@ class ProductUpdateAction extends CatalogAction
                             'manufacturer' => $this->getParam('manufacturer'),
                             'tags' => $this->getParam('tags'),
                             'order' => $this->getParam('order'),
-                            'date' => $this->getParam('date'),
+                            'date' => $this->getParam('date', 'now'),
                             'meta' => $this->getParam('meta'),
                             'external_id' => $this->getParam('external_id'),
 

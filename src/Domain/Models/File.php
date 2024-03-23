@@ -67,11 +67,7 @@ class File extends Model
 
     public function relations(): HasMany
     {
-        return $this->hasMany(
-            File::class,
-            'file_uuid',
-            'uuid'
-        );
+        return $this->hasMany(File::class, 'file_uuid', 'uuid');
     }
 
     public static function prepareName($name)

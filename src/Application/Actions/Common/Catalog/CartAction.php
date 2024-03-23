@@ -88,26 +88,6 @@ class CartAction extends CatalogAction
 
                     $order = $this->catalogOrderService->create($data);
 
-                    // notify to admin and user
-                    if ($this->parameter('notification_is_enabled', 'yes') === 'yes') {
-                        $this->notificationService->create([
-                            'title' => __('Order added') . ': ' . $order->getSerial(),
-                            'params' => [
-                                'order_uuid' => $order->getUuid(),
-                            ],
-                        ]);
-
-                        if ($user) {
-                            $this->notificationService->create([
-                                'user_uuid' => $user->getUuid(),
-                                'title' => __('Order added') . ': ' . $order->getSerial(),
-                                'params' => [
-                                    'order_uuid' => $order->getUuid(),
-                                ],
-                            ]);
-                        }
-                    }
-
                     $this->container->get(\App\Application\PubSub::class)->publish('common:catalog:order:create', $order);
 
                     // default redirect path

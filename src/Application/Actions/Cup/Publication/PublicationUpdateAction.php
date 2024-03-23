@@ -25,7 +25,7 @@ class PublicationUpdateAction extends PublicationAction
                             'user' => $this->request->getAttribute('user'),
                             'title' => $this->getParam('title'),
                             'address' => $this->getParam('address'),
-                            'date' => $this->getParam('date'),
+                            'date' => $this->getParam('date', 'now'),
                             'category_uuid' => $this->getParam('category'),
                             'content' => $this->getParam('content'),
                             'poll' => $this->getParam('poll'),

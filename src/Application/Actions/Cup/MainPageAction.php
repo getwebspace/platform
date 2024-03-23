@@ -17,7 +17,7 @@ class MainPageAction extends AbstractAction
             'stats' => [
                 'pages' => \App\Domain\Models\Page::count(),
                 'users' => \App\Domain\Models\User::where(['status' => \App\Domain\Casts\User\Status::WORK])->count(),
-                'publications' => $this->entityManager->getRepository(\App\Domain\Entities\Publication::class)->count([]),
+                'publications' => \App\Domain\Models\Publication::count(),
                 'guestbook' => \App\Domain\Models\GuestBook::count(),
                 'catalog' => [
                     'category' => 0, //$this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class)->count(['status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK]),

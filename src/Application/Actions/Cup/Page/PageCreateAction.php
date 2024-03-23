@@ -16,7 +16,7 @@ class PageCreateAction extends PageAction
                 $page = $this->pageService->create([
                     'title' => $this->getParam('title'),
                     'address' => $this->getParam('address'),
-                    'date' => $this->getParam('date'),
+                    'date' => $this->getParam('date', 'now'),
                     'content' => $this->getParam('content'),
                     'type' => $this->getParam('type'),
                     'meta' => $this->getParam('meta'),

@@ -99,7 +99,6 @@ return [
     'EXCEPTION_FORM_NOT_FOUND' => 'Form not found',
     'EXCEPTION_FORM_DATA_NOT_FOUND' => 'Form data not found',
     'EXCEPTION_ENTRY_NOT_FOUND' => 'Entry not found',
-    'EXCEPTION_NOTIFICATION_NOT_FOUND' => 'Notification not found',
     'EXCEPTION_PAGE_NOT_FOUND' => 'Page not found',
     'EXCEPTION_PARAMETER_NOT_FOUND' => 'Parameter not found',
     'EXCEPTION_PUBLICATION_NOT_FOUND' => 'Publication not found',

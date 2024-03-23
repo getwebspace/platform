@@ -26,6 +26,8 @@ class PubSub
         // todo come up with a new place for it
         // ----------------------------------------------------
 
+        return;
+
         // reindex search
         $this->subscribe(
             [
