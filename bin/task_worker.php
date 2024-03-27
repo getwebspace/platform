@@ -12,8 +12,6 @@ if (\App\Domain\AbstractTask::workerHasPidFile($action)) {
     exit;
 }
 
-exit; // todo debug
-
 // before work write self PID to file
 \App\Domain\AbstractTask::workerCreatePidFile($action);
 
@@ -38,8 +36,8 @@ $taskService = $container->get(\App\Domain\Service\Task\TaskService::class);
 $queue = $taskService->read([
     'action' => $action,
     'status' => [
-        \App\Domain\Types\TaskStatusType::STATUS_QUEUE,
-        \App\Domain\Types\TaskStatusType::STATUS_WORK,
+        \App\Domain\Casts\Task\Status::QUEUE,
+        \App\Domain\Casts\Task\Status::WORK,
     ],
     'order' => [
         'date' => 'asc',
@@ -61,20 +59,20 @@ register_shutdown_function(function () use ($queue, $action): void {
 });
 
 if ($queue->count()) {
-    /** @var \App\Domain\Entities\Task $entity */
+    /** @var \App\Domain\Models\Task $entity */
     $entity = $queue->first();
-    $action = $entity->getAction();
+    $action = $entity->action;
 
     try {
         if (class_exists($action)) {
             /** @var \App\Domain\AbstractTask $task */
             $task = new $action($container, $entity);
 
-            if ($entity->getStatus() === \App\Domain\Types\TaskStatusType::STATUS_QUEUE) {
+            if ($entity->status === \App\Domain\Casts\Task\Status::QUEUE) {
                 $task->run();
             } else {
                 // remove task by time
-                if (datetime()->diff($entity->getDate())->i >= 10) {
+                if (datetime()->diff($entity->date)->i >= 10) {
                     $task->setStatusDelete('Removed by time');
                 } else {
                     sleep(5);
@@ -82,7 +80,7 @@ if ($queue->count()) {
             }
         } else {
             $taskService->update($entity, [
-                'status' => \App\Domain\Types\TaskStatusType::STATUS_DELETE,
+                'status' => \App\Domain\Casts\Task\Status::DELETE,
                 'output' => 'Task class not found',
             ]);
         }
