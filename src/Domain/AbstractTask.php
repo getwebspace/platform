@@ -2,7 +2,7 @@
 
 namespace App\Domain;
 
-use App\Domain\Entities\Task;
+use App\Domain\Models\Task;
 use App\Domain\Service\Task\TaskService;
 use App\Domain\Traits\ParameterTrait;
 use App\Domain\Traits\RendererTrait;
@@ -77,17 +77,16 @@ abstract class AbstractTask
     }
 
     /**
-     * @throws \Doctrine\ORM\ORMException
      * @throws \Exception
      */
-    public function execute(array $params = []): \App\Domain\Entities\Task
+    public function execute(array $params = []): \App\Domain\Models\Task
     {
         if (!$this->entity) {
             $this->entity = $this->taskService->create([
                 'title' => __(static::TITLE),
                 'action' => static::class,
                 'params' => $params,
-                'status' => \App\Domain\Types\TaskStatusType::STATUS_QUEUE,
+                'status' => \App\Domain\Casts\Task\Status::QUEUE,
                 'date' => 'now',
             ]);
 
@@ -104,7 +103,7 @@ abstract class AbstractTask
     {
         $this->setStatusWork();
         $this->container->get(\App\Application\PubSub::class)->publish(static::class . ':start', $this->entity);
-        $this->action($this->entity->getParams());
+        $this->action($this->entity->params);
         $this->container->get(\App\Application\PubSub::class)->publish(static::class . ':finish', $this->entity);
         $this->logger->info('Task: done', ['action' => static::class]);
     }
@@ -122,8 +121,8 @@ abstract class AbstractTask
         if ($count > 0) {
             $value = round(min($value, $count) / $count * 100);
         }
-        if ($value !== $this->entity->getProgress()) {
-            $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_WORK, (int) $value);
+        if ($value !== $this->entity->progress) {
+            $this->saveStateWriteLog(\App\Domain\Casts\Task\Status::WORK, (int) $value);
         }
     }
 
@@ -132,7 +131,7 @@ abstract class AbstractTask
      */
     public function setStatusWork(): bool
     {
-        $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_WORK);
+        $this->saveStateWriteLog(\App\Domain\Casts\Task\Status::WORK);
 
         return true;
     }
@@ -144,7 +143,7 @@ abstract class AbstractTask
      */
     public function setStatusDone($output = ''): bool
     {
-        $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_DONE, 0, $output);
+        $this->saveStateWriteLog(\App\Domain\Casts\Task\Status::DONE, 0, $output);
 
         return true;
     }
@@ -156,7 +155,7 @@ abstract class AbstractTask
      */
     public function setStatusFail($output = ''): bool
     {
-        $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_FAIL, 0, $output);
+        $this->saveStateWriteLog(\App\Domain\Casts\Task\Status::FAIL, 0, $output);
 
         return false;
     }
@@ -168,7 +167,7 @@ abstract class AbstractTask
      */
     public function setStatusCancel($output = ''): bool
     {
-        $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_CANCEL, 0, $output);
+        $this->saveStateWriteLog(\App\Domain\Casts\Task\Status::CANCEL, 0, $output);
 
         return false;
     }
@@ -180,14 +179,14 @@ abstract class AbstractTask
      */
     public function setStatusDelete($output = ''): bool
     {
-        $this->saveStateWriteLog(\App\Domain\Types\TaskStatusType::STATUS_DELETE, 0, $output);
+        $this->saveStateWriteLog(\App\Domain\Casts\Task\Status::DELETE, 0, $output);
 
         return false;
     }
 
     public function getStatus(): string
     {
-        return $this->entity->getStatus();
+        return $this->entity->status;
     }
 
     /**
@@ -203,9 +202,9 @@ abstract class AbstractTask
 
         $this->logger->info('Task: change state', [
             'action' => static::class,
-            'status' => $this->entity->getStatus(),
-            'progress' => $this->entity->getProgress(),
-            'output' => $this->entity->getOutput(),
+            'status' => $this->entity->status,
+            'progress' => $this->entity->progress,
+            'output' => $this->entity->output,
         ]);
     }
 }
