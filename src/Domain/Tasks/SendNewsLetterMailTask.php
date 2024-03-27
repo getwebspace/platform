@@ -11,7 +11,7 @@ class SendNewsLetterMailTask extends AbstractTask
 {
     public const TITLE = 'Mailing of letters';
 
-    public function execute(array $params = []): \App\Domain\Entities\Task
+    public function execute(array $params = []): \App\Domain\Models\Task
     {
         $default = [
             'subject' => 'WebSpaceEngine | Default subject',

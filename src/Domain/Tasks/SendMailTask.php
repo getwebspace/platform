@@ -9,7 +9,7 @@ class SendMailTask extends AbstractTask
 {
     public const TITLE = 'Sending mail';
 
-    public function execute(array $params = []): \App\Domain\Entities\Task
+    public function execute(array $params = []): \App\Domain\Models\Task
     {
         $default = [
             'subject' => '',
