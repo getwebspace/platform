@@ -3,7 +3,7 @@
 namespace App\Application\Actions\Cup;
 
 use App\Domain\AbstractAction;
-use App\Domain\Entities\Task;
+use App\Domain\Models\Task;
 use App\Domain\Service\Task\TaskService;
 
 class RefreshAction extends AbstractAction
@@ -23,17 +23,17 @@ class RefreshAction extends AbstractAction
 
         /** @var Task $task */
         foreach ($tasks as $task) {
-            if (!in_array($task->getUuid()->toString(), array_keys($exists), true)) {
+            if (!in_array($task->uuid, array_keys($exists), true)) {
                 $output['new'][] = array_except($task->toArray(), ['params', 'output']);
             } else {
                 if (
-                    in_array($task->getUuid()->toString(), array_keys($exists), true)
+                    in_array($task->uuid, array_keys($exists), true)
                     && (
-                        $task->getStatus() !== $exists[$task->getUuid()->toString()]['status']
-                        || $task->getProgress() !== (float) ($exists[$task->getUuid()->toString()]['progress'] ?? .0)
+                        $task->status !== $exists[$task->uuid]['status']
+                        || $task->progress !== (float) ($exists[$task->uuid]['progress'] ?? .0)
                     )
                 ) {
-                    $output['update'][] = array_except($task->toArray(), ['params', 'output']);
+                    $output['update'][] = array_except($task->attributesToArray(), ['params', 'output']);
                 }
             }
         }
