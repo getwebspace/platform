@@ -3,24 +3,18 @@
 namespace App\Domain\Service\Task;
 
 use App\Domain\AbstractService;
-use App\Domain\Entities\Task;
-use App\Domain\Repository\TaskRepository;
+use App\Domain\Models\Task;
 use App\Domain\Service\Task\Exception\MissingActionValueException;
 use App\Domain\Service\Task\Exception\MissingTitleValueException;
 use App\Domain\Service\Task\Exception\TaskNotFoundException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class TaskService extends AbstractService
 {
-    /**
-     * @var TaskRepository
-     */
-    protected mixed $service;
-
     protected function init(): void
     {
-        //$this->service = $this->entityManager->getRepository(Task::class);
     }
 
     /**
@@ -33,7 +27,7 @@ class TaskService extends AbstractService
             'title' => '',
             'action' => '',
             'progress' => 0,
-            'status' => \App\Domain\Types\TaskStatusType::STATUS_QUEUE,
+            'status' => \App\Domain\Casts\Task\Status::QUEUE,
             'params' => [],
             'output' => '',
             'date' => 'now',
@@ -47,19 +41,7 @@ class TaskService extends AbstractService
             throw new MissingActionValueException();
         }
 
-        $task = (new Task())
-            ->setTitle($data['title'])
-            ->setAction($data['action'])
-            ->setProgress($data['progress'])
-            ->setStatus($data['status'])
-            ->setParams($data['params'])
-            ->setOutput($data['output'])
-            ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
-
-        $this->entityManager->persist($task);
-        $this->entityManager->flush();
-
-        return $task;
+        return Task::create($data);
     }
 
     /**
@@ -88,22 +70,28 @@ class TaskService extends AbstractService
             $criteria['status'] = $data['status'];
         }
 
-        try {
-            switch (true) {
-                case !is_array($data['uuid']) && $data['uuid'] !== null:
-                    $entry = $this->service->findOneBy($criteria);
+        switch (true) {
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
+                /** @var Task $task */
+                $task = Task::firstWhere($criteria);
 
-                    if (empty($entry)) {
-                        throw new TaskNotFoundException();
-                    }
+                return $task ?: throw new TaskNotFoundException();
 
-                    return $entry;
+            default:
+                $query = Task::where($criteria);
+                /** @var Builder $query */
 
-                default:
-                    return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
-            }
-        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
-            return null;
+                foreach ($data['order'] as $column => $direction) {
+                    $query = $query->orderBy($column, $direction);
+                }
+                if ($data['limit']) {
+                    $query = $query->limit($data['limit']);
+                }
+                if ($data['offset']) {
+                    $query = $query->offset($data['offset']);
+                }
+
+                return $query->get();
         }
     }
 
@@ -117,7 +105,7 @@ class TaskService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
@@ -132,32 +120,10 @@ class TaskService extends AbstractService
                 'output' => null,
                 'date' => null,
             ];
-            $data = array_merge($default, $data);
+            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
 
             if ($data !== $default) {
-                if ($data['title'] !== null) {
-                    $entity->setTitle($data['title']);
-                }
-                if ($data['action'] !== null) {
-                    $entity->setAction($data['action']);
-                }
-                if ($data['progress'] !== null) {
-                    $entity->setProgress($data['progress']);
-                }
-                if ($data['status'] !== null) {
-                    $entity->setStatus($data['status']);
-                }
-                if ($data['params'] !== null) {
-                    $entity->setParams($data['params']);
-                }
-                if ($data['output'] !== null) {
-                    $entity->setOutput($data['output']);
-                }
-                if ($data['date'] !== null) {
-                    $entity->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
-                }
-
-                $this->entityManager->flush();
+                $entity->update($data);
             }
 
             return $entity;
@@ -176,14 +142,13 @@ class TaskService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
 
         if (is_object($entity) && is_a($entity, Task::class)) {
-            $this->entityManager->remove($entity);
-            $this->entityManager->flush();
+            $entity->delete();
 
             return true;
         }

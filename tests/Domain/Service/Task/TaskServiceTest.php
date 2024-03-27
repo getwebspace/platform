@@ -2,8 +2,7 @@
 
 namespace tests\Domain\Service\Task;
 
-use App\Domain\Entities\Task;
-use App\Domain\Repository\TaskRepository;
+use App\Domain\Models\Task;
 use App\Domain\Service\Task\Exception\MissingActionValueException;
 use App\Domain\Service\Task\Exception\MissingTitleValueException;
 use App\Domain\Service\Task\Exception\TaskNotFoundException;
@@ -29,10 +28,10 @@ class TaskServiceTest extends TestCase
     public function testCreateSuccess(): void
     {
         $data = [
-            'title' => $this->getFaker()->word,
+            'title' => implode(' ', $this->getFaker()->words(3)),
             'action' => $this->getFaker()->word,
             'progress' => (float) $this->getFaker()->numberBetween(10, 100),
-            'status' => \App\Domain\Types\TaskStatusType::STATUS_QUEUE,
+            'status' => $this->getFaker()->randomElement(\App\Domain\Casts\Task\Status::LIST),
             'params' => [
                 'test' => $this->getFaker()->numberBetween(0, 1000),
             ],
@@ -41,18 +40,12 @@ class TaskServiceTest extends TestCase
 
         $t = $this->service->create($data);
         $this->assertInstanceOf(Task::class, $t);
-        $this->assertEquals($data['title'], $t->getTitle());
-        $this->assertEquals($data['action'], $t->getAction());
-        $this->assertEquals($data['progress'], $t->getProgress());
-        $this->assertEquals($data['status'], $t->getStatus());
-        $this->assertEquals($data['params'], $t->getParams());
-        $this->assertEquals($data['output'], $t->getOutput());
-
-        /** @var TaskRepository $taskRepo */
-        $taskRepo = $this->em->getRepository(Task::class);
-        $t = $taskRepo->findOneByUuid($t->getUuid());
-        $this->assertInstanceOf(Task::class, $t);
-        $this->assertEquals($data['title'], $t->getTitle());
+        $this->assertEquals($data['title'], $t->title);
+        $this->assertEquals($data['action'], $t->action);
+        $this->assertEquals($data['progress'], $t->progress);
+        $this->assertEquals($data['status'], $t->status);
+        $this->assertEquals($data['params'], $t->params);
+        $this->assertEquals($data['output'], $t->output);
     }
 
     public function testCreateWithMissingNameValue(): void
@@ -74,7 +67,7 @@ class TaskServiceTest extends TestCase
     public function testReadSuccess(): void
     {
         $data = [
-            'title' => $this->getFaker()->word,
+            'title' => implode(' ', $this->getFaker()->words(3)),
             'action' => $this->getFaker()->text,
             'params' => [
                 'test' => $this->getFaker()->text,
@@ -83,11 +76,11 @@ class TaskServiceTest extends TestCase
 
         $t = $this->service->create($data);
 
-        $t = $this->service->read(['uuid' => $t->getUuid()]);
+        $t = $this->service->read(['uuid' => $t->uuid]);
         $this->assertInstanceOf(Task::class, $t);
-        $this->assertEquals($data['title'], $t->getTitle());
-        $this->assertEquals($data['action'], $t->getAction());
-        $this->assertEquals($data['params'], $t->getParams());
+        $this->assertEquals($data['title'], $t->title);
+        $this->assertEquals($data['action'], $t->action);
+        $this->assertEquals($data['params'], $t->params);
     }
 
     public function testReadWithEntryNotFound(): void
@@ -100,8 +93,10 @@ class TaskServiceTest extends TestCase
     public function testUpdateSuccess(): void
     {
         $t = $this->service->create([
-            'title' => $this->getFaker()->word,
+            'title' => implode(' ', $this->getFaker()->words(3)),
             'action' => $this->getFaker()->text,
+            'progress' => (float) $this->getFaker()->numberBetween(10, 100),
+            'status' => $this->getFaker()->randomElement(\App\Domain\Casts\Task\Status::LIST),
             'params' => [
                 'test' => $this->getFaker()->numberBetween(0, 1000),
             ],
@@ -109,10 +104,10 @@ class TaskServiceTest extends TestCase
         ]);
 
         $data = [
-            'title' => $this->getFaker()->word,
+            'title' => implode(' ', $this->getFaker()->words(3)),
             'action' => $this->getFaker()->text,
             'progress' => (float) $this->getFaker()->numberBetween(10, 100),
-            'status' => \App\Domain\Types\TaskStatusType::STATUS_WORK,
+            'status' => $this->getFaker()->randomElement(\App\Domain\Casts\Task\Status::LIST),
             'params' => [
                 'test' => $this->getFaker()->numberBetween(0, 1000),
             ],
@@ -120,12 +115,13 @@ class TaskServiceTest extends TestCase
         ];
 
         $t = $this->service->update($t, $data);
-        $this->assertEquals($data['title'], $t->getTitle());
-        $this->assertEquals($data['action'], $t->getAction());
-        $this->assertEquals($data['progress'], $t->getProgress());
-        $this->assertEquals($data['status'], $t->getStatus());
-        $this->assertEquals($data['params'], $t->getParams());
-        $this->assertEquals($data['output'], $t->getOutput());
+        $this->assertInstanceOf(Task::class, $t);
+        $this->assertEquals($data['title'], $t->title);
+        $this->assertEquals($data['action'], $t->action);
+        $this->assertEquals($data['progress'], $t->progress);
+        $this->assertEquals($data['status'], $t->status);
+        $this->assertEquals($data['params'], $t->params);
+        $this->assertEquals($data['output'], $t->output);
     }
 
     public function testUpdateWithTaskNotFound(): void
@@ -138,7 +134,7 @@ class TaskServiceTest extends TestCase
     public function testDeleteSuccess(): void
     {
         $t = $this->service->create([
-            'title' => $this->getFaker()->word,
+            'title' => implode(' ', $this->getFaker()->words(3)),
             'action' => $this->getFaker()->text,
         ]);
 
