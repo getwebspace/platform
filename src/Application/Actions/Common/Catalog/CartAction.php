@@ -6,13 +6,11 @@ use App\Domain\Plugin\AbstractPaymentPlugin;
 use App\Domain\Service\Catalog\Exception\OrderShippingLimitException;
 use App\Domain\Service\Catalog\Exception\WrongEmailValueException;
 use App\Domain\Service\Catalog\Exception\WrongPhoneValueException;
-use App\Domain\Types\ReferenceTypeType;
-use Doctrine\DBAL\ParameterType;
+use App\Domain\Casts\Reference\Type as ReferenceType;
 
 class CartAction extends CatalogAction
 {
     /**
-     * @throws \Doctrine\DBAL\DBALException
      * @throws \App\Domain\Exceptions\HttpBadRequestException
      */
     protected function action(): \Slim\Psr7\Response
@@ -63,7 +61,7 @@ class CartAction extends CatalogAction
             }
 
             // find payment method
-            $data['payment'] = $data['payment'] ? $this->referenceService->read(['uuid' => $data['payment'], 'type' => ReferenceTypeType::TYPE_PAYMENT]) : null;
+            $data['payment'] = $data['payment'] ? $this->referenceService->read(['uuid' => $data['payment'], 'type' => ReferenceType::PAYMENT]) : null;
 
             if ($this->isRecaptchaChecked()) {
                 try {

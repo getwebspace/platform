@@ -10,7 +10,6 @@ use Slim\Psr7\Response;
 class ListAction extends CatalogAction
 {
     /**
-     * @throws \Doctrine\DBAL\DBALException
      * @throws \App\Domain\Exceptions\HttpBadRequestException
      */
     protected function action(): \Slim\Psr7\Response

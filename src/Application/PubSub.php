@@ -6,7 +6,7 @@ use App\Domain\Service\Catalog\OrderService;
 use App\Domain\Service\Reference\ReferenceService;
 use App\Domain\Traits\ParameterTrait;
 use App\Domain\Traits\RendererTrait;
-use App\Domain\Types\ReferenceTypeType;
+use App\Domain\Casts\Reference\Type as ReferenceType;
 use Psr\Container\ContainerInterface;
 
 class PubSub
@@ -25,8 +25,6 @@ class PubSub
 
         // todo come up with a new place for it
         // ----------------------------------------------------
-
-        return;
 
         // reindex search
         $this->subscribe(
@@ -116,7 +114,7 @@ class PubSub
                 $orderService = $container->get(OrderService::class);
 
                 $orderService->update($order, [
-                    'status' => $status_uuid ? $referenceService->read(['uuid' => $status_uuid, 'type' => ReferenceTypeType::TYPE_ORDER_STATUS]) : null,
+                    'status' => $status_uuid ? $referenceService->read(['uuid' => $status_uuid, 'type' => ReferenceType::ORDER_STATUS]) : null,
                 ]);
             }
         });

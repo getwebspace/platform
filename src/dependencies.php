@@ -1,7 +1,6 @@
 <?php declare(strict_types=1);
 
 use DI\ContainerBuilder;
-use Doctrine\ORM\EntityManager;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 

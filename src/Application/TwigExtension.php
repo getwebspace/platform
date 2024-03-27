@@ -16,7 +16,7 @@ use App\Domain\Service\Publication\PublicationService;
 use App\Domain\Service\Reference\ReferenceService;
 use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\UserService;
-use App\Domain\Types\ReferenceTypeType;
+use App\Domain\Casts\Reference\Type as ReferenceType;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 use Ramsey\Uuid\UuidInterface as Uuid;
@@ -483,7 +483,7 @@ class TwigExtension extends AbstractExtension
     // fetch reference by type
     public function reference(string $type = null, bool $pluck = false)
     {
-        if (in_array($type, ReferenceTypeType::LIST, true)) {
+        if (in_array($type, ReferenceType::LIST, true)) {
             $referenceService = $this->container->get(ReferenceService::class);
 
             $output = $referenceService->read([
@@ -499,7 +499,7 @@ class TwigExtension extends AbstractExtension
             return $output;
         }
 
-        return ReferenceTypeType::LIST;
+        return ReferenceType::LIST;
     }
 
     // parameter functions
@@ -646,7 +646,7 @@ class TwigExtension extends AbstractExtension
 
             if ($dimension['length'] && $dimension['width'] && $dimension['height']) {
                 $ratio = $this->parameter('catalog_dimensional_weight', 5000);
-                $length_class = $this->reference(ReferenceTypeType::TYPE_LENGTH_CLASS)->firstWhere('value.unit', $dimension['length_class']);
+                $length_class = $this->reference(ReferenceType::LENGTH_CLASS)->firstWhere('value.unit', $dimension['length_class']);
                 $length_value = $length_class ? $length_class->getValue()['value'] : 1;
 
                 return round(

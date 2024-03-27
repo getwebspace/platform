@@ -396,7 +396,6 @@ if (!function_exists('array_serialize')) {
         foreach ($array as $key => $item) {
             switch (true) {
                 case is_array($item):
-                case is_a($item, AbstractEntity::class):
                     $array[$key] = array_serialize($item);
 
                     break;
@@ -409,11 +408,6 @@ if (!function_exists('array_serialize')) {
                 case is_a($item, \Ramsey\Uuid\Uuid::class):
                 case is_a($item, \Ramsey\Uuid\Lazy\LazyUuidFromString::class):
                     $array[$key] = (string) $item;
-
-                    break;
-
-                case is_a($item, \Doctrine\ORM\PersistentCollection::class):
-                    $array[$key] = array_serialize($item->toArray());
 
                     break;
 

@@ -21,7 +21,6 @@ use App\Domain\Service\Task\TaskService;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\UserService;
-use Doctrine\DBAL\Exception;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerExceptionInterface;
 

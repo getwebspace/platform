@@ -58,7 +58,7 @@ class ParametersPageAction extends AbstractAction
             'groups' => $userGroupService->read(),
             'attributes' => $catalogAttributeService->read()->whereNotIn('type', \App\Domain\Types\Catalog\AttributeTypeType::TYPE_BOOLEAN),
             'reference' => $referenceService->read([
-                'type' => ReferenceType::TYPE_ORDER_STATUS, // todo usage with array of types
+                'type' => ReferenceType::ORDER_STATUS, // todo usage with array of types
                 'order' => [
                     'order' => 'asc'
                 ]

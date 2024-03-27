@@ -6,7 +6,7 @@ use App\Application\Actions\Cup\Catalog\CatalogAction;
 use App\Domain\Service\Catalog\Exception\WrongEmailValueException;
 use App\Domain\Service\Catalog\Exception\WrongPhoneValueException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
-use App\Domain\Types\ReferenceTypeType;
+use App\Domain\Casts\Reference\Type as ReferenceType;
 
 class OrderCreateAction extends CatalogAction
 {
@@ -24,8 +24,8 @@ class OrderCreateAction extends CatalogAction
                     'list' => $this->getParam('list', []),
                     'phone' => $this->getParam('phone'),
                     'email' => $this->getParam('email'),
-                    'status' => $status_uuid ? $this->referenceService->read(['uuid' => $status_uuid, 'type' => ReferenceTypeType::TYPE_ORDER_STATUS]) : null,
-                    'payment' => $payment_uuid ? $this->referenceService->read(['uuid' => $payment_uuid, 'type' => ReferenceTypeType::TYPE_PAYMENT]) : null,
+                    'status' => $status_uuid ? $this->referenceService->read(['uuid' => $status_uuid, 'type' => ReferenceType::ORDER_STATUS]) : null,
+                    'payment' => $payment_uuid ? $this->referenceService->read(['uuid' => $payment_uuid, 'type' => ReferenceType::PAYMENT]) : null,
                     'shipping' => $this->getParam('shipping'),
                     'comment' => $this->getParam('comment'),
                     'external_id' => $this->getParam('external_id'),
@@ -54,8 +54,8 @@ class OrderCreateAction extends CatalogAction
 
         return $this->respondWithTemplate('cup/catalog/order/form.twig', [
             'groups' => $this->userGroupService->read(),
-            'status_list' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_ORDER_STATUS, 'status' => true, 'order' => ['order' => 'asc']]),
-            'payment_list' => $this->referenceService->read(['type' => ReferenceTypeType::TYPE_PAYMENT, 'status' => true, 'order' => ['order' => 'asc']]),
+            'status_list' => $this->referenceService->read(['type' => ReferenceType::ORDER_STATUS, 'status' => true, 'order' => ['order' => 'asc']]),
+            'payment_list' => $this->referenceService->read(['type' => ReferenceType::PAYMENT, 'status' => true, 'order' => ['order' => 'asc']]),
         ]);
     }
 }

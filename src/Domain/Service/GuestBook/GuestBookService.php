@@ -78,32 +78,28 @@ class GuestBookService extends AbstractService
             $criteria['status'] = $data['status'];
         }
 
-        try {
-            switch (true) {
-                case !is_array($data['uuid']) && $data['uuid'] !== null:
-                    /** @var GuestBook $entry */
-                    $entry = GuestBook::firstWhere($criteria);
+        switch (true) {
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
+                /** @var GuestBook $entry */
+                $entry = GuestBook::firstWhere($criteria);
 
-                    return $entry ?: throw new EntryNotFoundException();
+                return $entry ?: throw new EntryNotFoundException();
 
-                default:
-                    $query = GuestBook::where($criteria);
-                    /** @var Builder $query */
+            default:
+                $query = GuestBook::where($criteria);
+                /** @var Builder $query */
 
-                    foreach ($data['order'] as $column => $direction) {
-                        $query = $query->orderBy($column, $direction);
-                    }
-                    if ($data['limit']) {
-                        $query = $query->limit($data['limit']);
-                    }
-                    if ($data['offset']) {
-                        $query = $query->offset($data['offset']);
-                    }
+                foreach ($data['order'] as $column => $direction) {
+                    $query = $query->orderBy($column, $direction);
+                }
+                if ($data['limit']) {
+                    $query = $query->limit($data['limit']);
+                }
+                if ($data['offset']) {
+                    $query = $query->offset($data['offset']);
+                }
 
-                    return $query->get();
-            }
-        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
-            return null;
+                return $query->get();
         }
     }
 

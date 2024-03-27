@@ -22,46 +22,46 @@ abstract class ReferenceAction extends AbstractAction
     {
         switch ($type) {
             case 'currencies':
-                return ReferenceType::TYPE_CURRENCY;
+                return ReferenceType::CURRENCY;
 
             case 'deliveries':
-                return ReferenceType::TYPE_DELIVERY;
+                return ReferenceType::DELIVERY;
 
             case 'payments':
-                return ReferenceType::TYPE_PAYMENT;
+                return ReferenceType::PAYMENT;
 
             case 'countries':
-                return ReferenceType::TYPE_COUNTRY;
+                return ReferenceType::COUNTRY;
 
             case 'order-status':
-                return ReferenceType::TYPE_ORDER_STATUS;
+                return ReferenceType::ORDER_STATUS;
 
             case 'stock-status':
-                return ReferenceType::TYPE_STOCK_STATUS;
+                return ReferenceType::STOCK_STATUS;
 
             case 'tax-rates':
-                return ReferenceType::TYPE_TAX_RATE;
+                return ReferenceType::TAX_RATE;
 
             case 'length-classes':
-                return ReferenceType::TYPE_LENGTH_CLASS;
+                return ReferenceType::LENGTH_CLASS;
 
             case 'weight-classes':
-                return ReferenceType::TYPE_WEIGHT_CLASS;
+                return ReferenceType::WEIGHT_CLASS;
 
             case 'address-format':
-                return ReferenceType::TYPE_ADDRESS_FORMAT;
+                return ReferenceType::ADDRESS_FORMAT;
 
             case 'store-locations':
-                return ReferenceType::TYPE_STORE_LOCATION;
+                return ReferenceType::STORE_LOCATION;
 
             case 'social-networks':
-                return ReferenceType::TYPE_SOCIAL_NETWORKS;
+                return ReferenceType::SOCIAL_NETWORKS;
 
             case 'order-dispatch':
             case 'order-invoice':
 
             default:
-                return ReferenceType::TYPE_TEXT;
+                return ReferenceType::TEXT;
         }
     }
 }

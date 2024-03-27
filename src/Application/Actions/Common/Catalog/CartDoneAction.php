@@ -7,7 +7,6 @@ use App\Domain\Service\Catalog\Exception\OrderNotFoundException;
 class CartDoneAction extends CatalogAction
 {
     /**
-     * @throws \Doctrine\DBAL\DBALException
      * @throws \App\Domain\Exceptions\HttpBadRequestException
      */
     protected function action(): \Slim\Psr7\Response

@@ -47,7 +47,6 @@ class SystemPageAction extends AbstractAction
         if ($access) {
             if ($this->isPost()) {
                 $this->gen_openssl();
-                $this->setup_database();
                 $this->setup_data();
                 $this->setup_user();
 
@@ -86,30 +85,6 @@ class SystemPageAction extends AbstractAction
         }
     }
 
-    protected function setup_database(): void
-    {
-        if ($databaseData = $this->getParam('database', [])) {
-            $schema = new \Doctrine\ORM\Tools\SchemaTool($this->entityManager);
-
-            switch ($databaseData['action']) {
-                case 'create':
-                    $schema->createSchema($this->entityManager->getMetadataFactory()->getAllMetadata());
-
-                    break;
-
-                case 'update':
-                    $schema->updateSchema($this->entityManager->getMetadataFactory()->getAllMetadata());
-
-                    break;
-
-                case 'delete':
-                    $schema->dropSchema($this->entityManager->getMetadataFactory()->getAllMetadata());
-
-                    break;
-            }
-        }
-    }
-
     protected function setup_data(): void
     {
         if ($databaseData = $this->getParam('database', [])) {
@@ -128,7 +103,7 @@ class SystemPageAction extends AbstractAction
                     try {
                         $referenceService->create(array_merge($el, [
                             'order' => $i + 1,
-                            'type' => \App\Domain\Types\ReferenceTypeType::TYPE_ORDER_STATUS,
+                            'type' => \App\Domain\Casts\Reference\Type::ORDER_STATUS,
                         ]));
                     } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
                         // nothing
@@ -144,7 +119,7 @@ class SystemPageAction extends AbstractAction
                     try {
                         $referenceService->create(array_merge($el, [
                             'order' => $i + 1,
-                            'type' => \App\Domain\Types\ReferenceTypeType::TYPE_PAYMENT,
+                            'type' => \App\Domain\Casts\Reference\Type::PAYMENT,
                         ]));
                     } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
                         // nothing
@@ -161,7 +136,7 @@ class SystemPageAction extends AbstractAction
                     try {
                         $referenceService->create(array_merge($el, [
                             'order' => $i + 1,
-                            'type' => \App\Domain\Types\ReferenceTypeType::TYPE_STOCK_STATUS,
+                            'type' => \App\Domain\Casts\Reference\Type::STOCK_STATUS,
                         ]));
                     } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
                         // nothing
@@ -178,7 +153,7 @@ class SystemPageAction extends AbstractAction
                     try {
                         $referenceService->create(array_merge($el, [
                             'order' => $i + 1,
-                            'type' => \App\Domain\Types\ReferenceTypeType::TYPE_WEIGHT_CLASS,
+                            'type' => \App\Domain\Casts\Reference\Type::WEIGHT_CLASS,
                         ]));
                     } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
                         // nothing
@@ -195,7 +170,7 @@ class SystemPageAction extends AbstractAction
                     try {
                         $referenceService->create(array_merge($el, [
                             'order' => $i + 1,
-                            'type' => \App\Domain\Types\ReferenceTypeType::TYPE_LENGTH_CLASS,
+                            'type' => \App\Domain\Casts\Reference\Type::LENGTH_CLASS,
                         ]));
                     } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
                         // nothing
@@ -210,7 +185,7 @@ class SystemPageAction extends AbstractAction
                     try {
                         $referenceService->create(array_merge($el, [
                             'order' => $i + 1,
-                            'type' => \App\Domain\Types\ReferenceTypeType::TYPE_TAX_RATE,
+                            'type' => \App\Domain\Casts\Reference\Type::TAX_RATE,
                         ]));
                     } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
                         // nothing
@@ -227,7 +202,7 @@ class SystemPageAction extends AbstractAction
                     try {
                         $referenceService->create(array_merge($el, [
                             'order' => $i + 1,
-                            'type' => \App\Domain\Types\ReferenceTypeType::TYPE_SOCIAL_NETWORKS,
+                            'type' => \App\Domain\Casts\Reference\Type::SOCIAL_NETWORKS,
                         ]));
                     } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
                         // nothing
@@ -242,7 +217,7 @@ class SystemPageAction extends AbstractAction
                     try {
                         $referenceService->create(array_merge($el, [
                             'order' => $i + 1,
-                            'type' => \App\Domain\Types\ReferenceTypeType::TYPE_ADDRESS_FORMAT,
+                            'type' => \App\Domain\Casts\Reference\Type::ADDRESS_FORMAT,
                         ]));
                     } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
                         // nothing
