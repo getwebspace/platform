@@ -59,31 +59,33 @@ class ConvertImageTask extends AbstractTask
 
                         if (!file_exists($original)) {
                             @copy($file->internal_path(), $original);
+                            @unlink($file->internal_path());
                         }
 
-                        $log = [];
                         $sizes = [
                             'big' => $this->parameter('image_convert_size_big', 960),
                             'middle' => $this->parameter('image_convert_size_middle', 450),
                             'small' => $this->parameter('image_convert_size_small', 200),
                         ];
+                        $filesize = +filesize($original);
 
                         foreach ($sizes as $size => $pixels) {
                             if ($pixels > 0) {
                                 $path = $folder . '/' . $size;
                                 $buf = array_merge($params, ['-resize x' . $pixels . '\>']);
-                                $log[$size] = 'convert';
 
                                 if (!file_exists($path)) {
                                     @mkdir($path, 0o777, true);
                                 }
                                 @exec($command . " '" . $original . "' " . implode(' ', $buf) . " '" . $path . '/' . $file->name . ".webp'");
+                                $filesize += +filesize($path . '/' . $file->name . '.webp');
                             }
                         }
 
                         @exec($command . " '" . $original . "' " . implode(' ', $params) . " '" . $folder . '/' . $file->name . ".webp'");
-                        $log['original'] = 'convert';
-                        $this->logger->info('Task: convert image', array_merge($log, ['params' => $params]));
+                        $filesize += +filesize($folder . '/' . $file->name . '.webp');
+
+                        $this->logger->info('Task: convert image', ['params' => $params]);
 
                         $file->update([
                             // set file ext and type
@@ -91,7 +93,7 @@ class ConvertImageTask extends AbstractTask
                             'type' => 'image/webp',
 
                             // update file size
-                            'size' => +filesize($original),
+                            'size' => $filesize,
                         ]);
                     } else {
                         $this->logger->info('Task: convert skipped, small file size');
