@@ -319,7 +319,7 @@ return function (App $app, Container $container): void {
                         ->setName('cup:logs');
 
                     // task add to queue
-                    $proxy->post('/task/run', \App\Application\Actions\Cup\Task\TaskRunAction::class)
+                    $proxy->post('/task/run', \App\Application\Actions\Cup\TaskRunAction::class)
                         ->setName('cup:task:run');
 
                     // cup entity getter/setter

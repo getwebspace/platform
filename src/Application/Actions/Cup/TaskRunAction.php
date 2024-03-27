@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Application\Actions\Cup\Task;
+namespace App\Application\Actions\Cup;
 
 use App\Domain\AbstractAction;
 
@@ -11,10 +11,7 @@ class TaskRunAction extends AbstractAction
         $redirect = $this->request->getHeaderLine('Referer') ?? '/cup';
 
         if ($this->isPost()) {
-            if (
-                ($name = $this->getParam('task', null)) !== null
-                && class_exists($name)
-            ) {
+            if (($name = $this->getParam('task', null)) !== null && class_exists($name)) {
                 /** @var \App\Domain\AbstractTask $task */
                 $task = new $name($this->container);
                 $task->execute($this->getParam('params', []));
