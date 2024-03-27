@@ -28,11 +28,16 @@ class ParameterService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        if ($data['name'] && Parameter::firstWhere(['name' => $data['name']]) !== null) {
+        $parameter = new Parameter;
+        $parameter->fill($data);
+
+        if (Parameter::firstWhere(['name' => $parameter->name]) !== null) {
             throw new ParameterAlreadyExistsException();
         }
 
-        return Parameter::create($data);
+        $parameter->save();
+
+        return $parameter;
     }
 
     public function read(array $data = [], mixed $fallback = null): Collection|Parameter|null
@@ -99,7 +104,13 @@ class ParameterService extends AbstractService
             $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
 
             if ($data !== $default) {
-                $entity->update($data);
+                $entity->fill($data);
+
+                if (($found = Parameter::firstWhere(['name' => $entity->name])) !== null && $found->uuid !== $entity->uuid) {
+                    throw new ParameterAlreadyExistsException();
+                }
+
+                $entity->save();
             }
 
             return $entity;

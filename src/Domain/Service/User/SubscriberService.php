@@ -19,8 +19,8 @@ class SubscriberService extends AbstractService
     }
 
     /**
+     * @throws MissingUniqueValueException
      * @throws EmailAlreadyExistsException
-     * @throws WrongEmailValueException
      */
     public function create(array $data = []): UserSubscriber
     {
@@ -33,11 +33,17 @@ class SubscriberService extends AbstractService
         if (!$data['email']) {
             throw new MissingUniqueValueException();
         }
-        if ($data['email'] && UserSubscriber::firstWhere(['email' => $data['email']]) !== null) {
+
+        $userSubscriber = new UserSubscriber();
+        $userSubscriber->fill($data);
+
+        if (UserSubscriber::firstWhere(['email' => $userSubscriber->email]) !== null) {
             throw new EmailAlreadyExistsException();
         }
 
-        return UserSubscriber::create($data);
+        $userSubscriber->save();
+
+        return $userSubscriber;
     }
 
     /**
@@ -106,7 +112,7 @@ class SubscriberService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
@@ -119,7 +125,13 @@ class SubscriberService extends AbstractService
             $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
 
             if ($data !== $default) {
-                $entity->update($data);
+                $entity->fill($data);
+
+                if (($found = UserSubscriber::firstWhere(['email' => $entity->email])) !== null && $found->uuid !== $entity->uuid) {
+                    throw new EmailAlreadyExistsException();
+                }
+
+                $entity->save();
             }
 
             return $entity;

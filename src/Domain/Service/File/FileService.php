@@ -120,11 +120,16 @@ class FileService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        if ($data['hash'] && File::firstWhere(['hash' => $data['hash']]) !== null) {
+        $file = new File;
+        $file->fill($data);
+
+        if ($file->hash && File::firstWhere(['hash' => $file->hash]) !== null) {
             throw new FileAlreadyExistsException();
         }
 
-        return File::create($data);
+        $file->save();
+
+        return $file;
     }
 
     /**

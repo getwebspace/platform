@@ -43,14 +43,20 @@ class FormService extends AbstractService
         if (!$data['title']) {
             throw new MissingTitleValueException();
         }
-        if ($data['title'] && Form::firstWhere(['title' => $data['title']]) !== null) {
+
+        $form = new Form;
+        $form->fill($data);
+
+        if (Form::firstWhere(['title' => $form->title]) !== null) {
             throw new TitleAlreadyExistsException();
         }
-        if ($data['address'] && Form::firstWhere(['address' => $data['address']]) !== null) {
+        if (Form::firstWhere(['address' => $form->address]) !== null) {
             throw new AddressAlreadyExistsException();
         }
 
-        return Form::create($data);
+        $form->save();
+
+        return $form;
     }
 
     /**
@@ -146,7 +152,17 @@ class FormService extends AbstractService
             $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
 
             if ($data !== $default) {
-                $entity->update($data);
+                $entity->fill($data);
+
+                if (($found = Form::firstWhere(['title' => $entity->title])) !== null && $found->uuid !== $entity->uuid) {
+                    throw new TitleAlreadyExistsException();
+                }
+
+                if (($found = Form::firstWhere(['address' => $entity->address])) !== null && $found->uuid !== $entity->uuid) {
+                    throw new AddressAlreadyExistsException();
+                }
+
+                $entity->save();
             }
 
             return $entity;

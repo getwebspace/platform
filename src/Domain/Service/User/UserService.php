@@ -71,25 +71,33 @@ class UserService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        if ($data['username'] && User::firstWhere(['username' => $data['username']]) !== null) {
-            throw new UsernameAlreadyExistsException();
-        }
-        if ($data['email']) {
-            if (User::firstWhere(['email' => $data['email']]) !== null) {
-                throw new EmailAlreadyExistsException();
-            }
-            if ($this->check_email($data['email'])) {
-                throw new EmailBannedException();
-            }
-        }
-        if ($data['phone'] && User::firstWhere(['phone' => $data['phone']]) !== null) {
-            throw new PhoneAlreadyExistsException();
-        }
         if (!$data['username'] && !$data['email'] && !$data['phone']) {
             throw new MissingUniqueValueException();
         }
 
-        return User::create($data);
+        $user = new User();
+        $user->fill($data);
+
+        if ($user->username && User::firstWhere(['username' => $user->username]) !== null) {
+            throw new UsernameAlreadyExistsException();
+        }
+
+        if ($user->email) {
+            if (User::firstWhere(['email' => $user->email]) !== null) {
+                throw new EmailAlreadyExistsException();
+            }
+            if ($this->check_email($user->email)) {
+                throw new EmailBannedException();
+            }
+        }
+
+        if ($user->phone && User::firstWhere(['phone' => $user->phone]) !== null) {
+            throw new PhoneAlreadyExistsException();
+        }
+
+        $user->save();
+
+        return $user;
     }
 
     /**
@@ -268,7 +276,36 @@ class UserService extends AbstractService
             $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
 
             if ($data !== $default) {
-                $entity->update($data);
+                $entity->fill($data);
+
+                if ($entity->username) {
+                    $found = User::firstWhere(['username' => $entity->username]);
+
+                    if ($found && $found->uuid !== $entity->uuid) {
+                        throw new UsernameAlreadyExistsException();
+                    }
+                }
+
+                if ($entity->email) {
+                    $found = User::firstWhere(['email' => $entity->email]);
+
+                    if ($found && $found->uuid !== $entity->uuid) {
+                        throw new EmailAlreadyExistsException();
+                    }
+                    if ($this->check_email($entity->email)) {
+                        throw new EmailBannedException();
+                    }
+                }
+
+                if ($entity->phone) {
+                    $found = User::firstWhere(['phone' => $entity->phone]);
+
+                    if ($found && $found->uuid !== $entity->uuid) {
+                        throw new PhoneAlreadyExistsException();
+                    }
+                }
+
+                $entity->save();
             }
 
             return $entity;

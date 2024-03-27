@@ -35,17 +35,23 @@ class ReferenceService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        if (!$data['type']) {
-            throw new MissingTypeValueException();
-        }
         if (!$data['title']) {
             throw new MissingTitleValueException();
         }
-        if ($data['title'] && Reference::firstWhere(['title' => $data['title']]) !== null) {
+        if (!$data['type']) {
+            throw new MissingTypeValueException();
+        }
+
+        $reference = new Reference;
+        $reference->fill($data);
+
+        if (Reference::firstWhere(['title' => $reference->title]) !== null) {
             throw new TitleAlreadyExistsException();
         }
 
-        return Reference::create($data);
+        $reference->save();
+
+        return $reference;
     }
 
     /**
@@ -131,7 +137,13 @@ class ReferenceService extends AbstractService
             $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
 
             if ($data !== $default) {
-                $entity->update($data);
+                $entity->fill($data);
+
+                if (($found = Reference::firstWhere(['title' => $entity->title])) !== null && $found->uuid !== $entity->uuid) {
+                    throw new TitleAlreadyExistsException();
+                }
+
+                $entity->save();
             }
 
             return $entity;

@@ -176,7 +176,22 @@ class CategoryService extends AbstractService
             $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
 
             if ($data !== $default) {
-                $entity->update($data);
+                $entity->fill($data);
+
+                // if address generation is enabled
+                if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
+                    $entity->address = implode('/', array_filter([$entity->parent->address ?? '', $entity->address ?? $entity->title ?? uniqid()], fn ($el) => (bool) $el));
+                }
+
+                if (($found = PublicationCategory::firstWhere(['title' => $entity->title])) !== null && $found->uuid !== $entity->uuid) {
+                    throw new TitleAlreadyExistsException();
+                }
+
+                if (($found = PublicationCategory::firstWhere(['address' => $entity->address])) !== null && $found->uuid !== $entity->uuid) {
+                    throw new AddressAlreadyExistsException();
+                }
+
+                $entity->save();
             }
 
             return $entity;

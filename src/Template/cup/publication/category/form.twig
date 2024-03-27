@@ -38,7 +38,7 @@
                                     'label': 'Address'|locale,
                                     'type': 'text',
                                     'name': 'address',
-                                    'prefix': base_url() ~ '/' ~ (item.parent_uuid ? item.parent.address ~ '/' : ''),
+                                    'prefix': base_url() ~ '/',
                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Used to view all articles in a given category. You can leave it blank, then the value will be generated automatically. It is allowed to use only Latin characters and numbers without spaces'|locale) ~ '"></i>',
                                     'args': {
                                         'value': item.address,

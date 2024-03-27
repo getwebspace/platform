@@ -39,17 +39,24 @@ class PageService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        if ($data['title'] && Page::firstWhere(['title' => $data['title']]) !== null) {
-            throw new TitleAlreadyExistsException();
-        }
         if (!$data['title']) {
             throw new MissingTitleValueException();
         }
-        if ($data['address'] && Page::firstWhere(['address' => $data['address']]) !== null) {
+
+        $page = new Page;
+        $page->fill($data);
+
+        if (Page::firstWhere(['title' => $page->title]) !== null) {
+            throw new TitleAlreadyExistsException();
+        }
+
+        if (Page::firstWhere(['address' => $page->address]) !== null) {
             throw new AddressAlreadyExistsException();
         }
 
-        return Page::create($data);
+        $page->save();
+
+        return $page;
     }
 
     /**
@@ -143,7 +150,17 @@ class PageService extends AbstractService
             $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
 
             if ($data !== $default) {
-                $entity->update($data);
+                $entity->fill($data);
+
+                if (($found = Page::firstWhere(['title' => $entity->title])) !== null && $found->uuid !== $entity->uuid) {
+                    throw new TitleAlreadyExistsException();
+                }
+
+                if (($found = Page::firstWhere(['address' => $entity->address])) !== null && $found->uuid !== $entity->uuid) {
+                    throw new AddressAlreadyExistsException();
+                }
+
+                $entity->save();
             }
 
             return $entity;

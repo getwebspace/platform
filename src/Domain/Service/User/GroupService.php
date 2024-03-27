@@ -35,11 +35,17 @@ class GroupService extends AbstractService
         if (!$data['title']) {
             throw new MissingTitleValueException();
         }
-        if ($data['title'] && UserGroup::firstWhere(['title' => $data['title']]) !== null) {
+
+        $userGroup = new UserGroup;
+        $userGroup->fill($data);
+
+        if (UserGroup::firstWhere(['title' => $userGroup->title]) !== null) {
             throw new TitleAlreadyExistsException();
         }
 
-        return UserGroup::create($data);
+        $userGroup->save();
+
+        return $userGroup;
     }
 
     /**
@@ -101,7 +107,7 @@ class GroupService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
@@ -115,7 +121,13 @@ class GroupService extends AbstractService
             $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
 
             if ($data !== $default) {
-                $entity->update($data);
+                $entity->fill($data);
+
+                if (($found = UserGroup::firstWhere(['title' => $entity->title])) !== null && $found->uuid !== $entity->uuid) {
+                    throw new TitleAlreadyExistsException();
+                }
+
+                $entity->save();
             }
 
             return $entity;
@@ -134,7 +146,7 @@ class GroupService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
