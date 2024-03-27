@@ -176,7 +176,7 @@ class PublicationService extends AbstractService
                 $entity->fill($data);
 
                 // if address generation is enabled
-                if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
+                if ($data['address'] && $this->parameter('common_auto_generate_address', 'no') === 'yes') {
                     $entity->address = implode('/', array_filter([$entity->category->address ?? '', $entity->address ?? $entity->title ?? uniqid()], fn ($el) => (bool) $el));
                 }
 
