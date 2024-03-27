@@ -117,7 +117,7 @@ class File extends Model
     // validate size is correct and check exist file
     protected function isValidSizeAndFileExists(string $size): bool
     {
-        if (in_array($size, ['middle', 'small'], true)) {
+        if (in_array($size, ['big', 'middle', 'small'], true)) {
             return file_exists(UPLOAD_DIR . '/' . $this->salt . '/' . $size . '/' . $this->filename());
         }
 

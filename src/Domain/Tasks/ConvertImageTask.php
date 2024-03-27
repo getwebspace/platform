@@ -3,7 +3,7 @@
 namespace App\Domain\Tasks;
 
 use App\Domain\AbstractTask;
-use App\Domain\Entities\File;
+use App\Domain\Models\File;
 use App\Domain\Service\File\Exception\FileNotFoundException;
 use App\Domain\Service\File\FileService;
 
@@ -11,7 +11,7 @@ class ConvertImageTask extends AbstractTask
 {
     public const TITLE = 'Image processing';
 
-    public function execute(array $params = []): \App\Domain\Entities\Task
+    public function execute(array $params = []): \App\Domain\Models\Task
     {
         $default = [
             'uuid' => [\Ramsey\Uuid\Uuid::NIL],
@@ -28,7 +28,7 @@ class ConvertImageTask extends AbstractTask
      */
     protected function action(array $args = []): void
     {
-        if ($this->parameter('image_enable', 'no') === 'no') {
+        if ($this->parameter('image_enable', 'yes') === 'no') {
             $this->setStatusCancel();
 
             return;
@@ -37,8 +37,7 @@ class ConvertImageTask extends AbstractTask
         $convert_size = $this->parameter('image_convert_min_size', 100000);
         $command = $this->parameter('image_convert_bin', '/usr/bin/convert');
         $params = [
-            '-quality 70%',
-            // '-define webp:lossless=true',
+            '-quality 80%',
         ];
         if (($arg = $this->parameter('image_convert_args', false)) !== false) {
             $params = array_map('trim', explode(PHP_EOL, $arg));
@@ -51,36 +50,25 @@ class ConvertImageTask extends AbstractTask
             try {
                 /** @var File $file */
                 $file = $fileService->read(['uuid' => $uuid]);
-                $this->logger->info('Task: prepare convert', ['file' => $file->getFileName(), 'salt' => $file->getSalt()]);
+                $this->logger->info('Task: prepare convert', ['file' => $file->filename(), 'salt' => $file->salt]);
 
-                if ($file->getSize() >= $convert_size) {
-                    if (str_starts_with($file->getType(), 'image/')) {
-                        $folder = $file->getDir('');
-                        $original = '';
+                if (str_starts_with($file->type, 'image/')) {
+                    if ($file->size >= $convert_size) {
+                        $folder = $file->dir();
+                        $original = $folder . '/' . $file->name . '.orig';
 
-                        // search original image
-                        foreach (['png', 'jpg', 'jpeg', 'webp'] as $ext) {
-                            $buf = $folder . '/' . $file->getName() . '.' . $ext;
-                            if (file_exists($buf)) {
-                                $original = $buf;
-
-                                break;
-                            }
-                        }
-                        if (!$original) {
-                            $this->logger->info('Task: skip convert, original file not found');
-
-                            continue;
+                        if (!file_exists($original)) {
+                            @copy($file->internal_path(), $original);
                         }
 
                         $log = [];
+                        $sizes = [
+                            'big' => $this->parameter('image_convert_size_big', 960),
+                            'middle' => $this->parameter('image_convert_size_middle', 450),
+                            'small' => $this->parameter('image_convert_size_small', 200),
+                        ];
 
-                        foreach (
-                            [
-                                'middle' => $this->parameter('image_convert_size_middle', 450),
-                                'small' => $this->parameter('image_convert_size_small', 200),
-                            ] as $size => $pixels
-                        ) {
+                        foreach ($sizes as $size => $pixels) {
                             if ($pixels > 0) {
                                 $path = $folder . '/' . $size;
                                 $buf = array_merge($params, ['-resize x' . $pixels . '\>']);
@@ -89,23 +77,27 @@ class ConvertImageTask extends AbstractTask
                                 if (!file_exists($path)) {
                                     @mkdir($path, 0o777, true);
                                 }
-                                @exec($command . " '" . $original . "' " . implode(' ', $buf) . " '" . $path . '/' . $file->getName() . ".webp'");
+                                @exec($command . " '" . $original . "' " . implode(' ', $buf) . " '" . $path . '/' . $file->name . ".webp'");
                             }
                         }
 
-                        @exec($command . " '" . $original . "' " . implode(' ', $params) . " '" . $folder . '/' . $file->getName() . ".webp'");
+                        @exec($command . " '" . $original . "' " . implode(' ', $params) . " '" . $folder . '/' . $file->name . ".webp'");
                         $log['original'] = 'convert';
                         $this->logger->info('Task: convert image', array_merge($log, ['params' => $params]));
 
-                        // set file ext and type
-                        $file->setExt('webp');
-                        $file->setType('image/webp');
+                        $file->update([
+                            // set file ext and type
+                            'ext' => 'webp',
+                            'type' => 'image/webp',
 
-                        // update file size
-                        $file->setSize(+filesize($original));
+                            // update file size
+                            'size' => +filesize($original),
+                        ]);
+                    } else {
+                        $this->logger->info('Task: convert skipped, small file size');
                     }
                 } else {
-                    $this->logger->info('Task: convert skipped, small file size');
+                    $this->logger->info('Task: convert skipped, is not image');
                 }
             } catch (FileNotFoundException $e) {
                 $this->logger->alert('Task: file not found', ['message' => $e->getMessage()]);

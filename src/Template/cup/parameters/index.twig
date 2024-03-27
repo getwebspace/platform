@@ -325,7 +325,7 @@
                                                 } %}
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Average copy size of uploaded image',
+                                                    'label': 'Middle copy size of uploaded image',
                                                     'description': 'You can specify 0 if you do not want to create preview copies of uploaded images to the server',
                                                     'postfix': 'px',
                                                     'type': 'number',
@@ -333,6 +333,18 @@
                                                     'args': {
                                                         'placeholder': '450',
                                                         'value': '450'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Big copy size of uploaded image',
+                                                    'description': 'You can specify 0 if you do not want to create preview copies of uploaded images to the server',
+                                                    'postfix': 'px',
+                                                    'type': 'number',
+                                                    'name': 'image[convert_size_big]',
+                                                    'args': {
+                                                        'placeholder': '960',
+                                                        'value': '960'
                                                     }
                                                 } %}
 

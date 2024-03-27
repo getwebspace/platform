@@ -3,14 +3,13 @@
 namespace App\Domain\Tasks;
 
 use App\Domain\AbstractTask;
-use App\Domain\Entities\File;
 use App\Domain\Service\File\FileService;
 
 class ReConvertImageTask extends AbstractTask
 {
     public const TITLE = 'Re process images';
 
-    public function execute(array $params = []): \App\Domain\Entities\Task
+    public function execute(array $params = []): \App\Domain\Models\Task
     {
         $default = [
             'uuid' => [\Ramsey\Uuid\Uuid::NIL],
@@ -27,7 +26,7 @@ class ReConvertImageTask extends AbstractTask
      */
     protected function action(array $args = []): void
     {
-        if ($this->parameter('image_enable', 'no') === 'no') {
+        if ($this->parameter('image_enable', 'yes') === 'no') {
             $this->setStatusCancel();
 
             return;
@@ -35,17 +34,14 @@ class ReConvertImageTask extends AbstractTask
 
         $fileService = $this->container->get(FileService::class);
 
-        $uuids = [];
-        foreach ($fileService->read() as $file) {
-            /** @var File $file */
-            if (str_starts_with($file->getType(), 'image/')) {
-                $uuids[] = $file->getUuid()->toString();
-            }
-        }
-
         // add task convert
         $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
-        $task->execute(['uuid' => $uuids]);
+        $task->execute([
+            'uuid' => $fileService
+                ->read()
+                ->filter(fn (\App\Domain\Models\File $file) => str_starts_with($file->type, 'image/'))
+                ->pluck('uuid'),
+        ]);
 
         // run worker
         \App\Domain\AbstractTask::worker($task);
