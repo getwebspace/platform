@@ -8,7 +8,7 @@ class SendJSONTask extends AbstractTask
 {
     public const TITLE = 'Sending JSON';
 
-    public function execute(array $params = []): \App\Domain\Entities\Task
+    public function execute(array $params = []): \App\Domain\Models\Task
     {
         $default = [
             'url' => '',
@@ -20,9 +20,6 @@ class SendJSONTask extends AbstractTask
         return parent::execute($params);
     }
 
-    /**
-     * @throws \App\Domain\Service\Task\Exception\TaskNotFoundException
-     */
     protected function action(array $args = []): void
     {
         $data = (array) $args['data'];
