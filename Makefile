@@ -16,16 +16,10 @@ run-lint:
 	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php
 
 migrate-up:
-	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/doctrine-migrations --em=sqlite migrate --no-interaction
+	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/phinx migrate
 
 migrate-down:
-	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/doctrine-migrations --em=sqlite migrate prev
+	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/phinx rollback
 
 migrate-status:
-	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/doctrine-migrations --em=sqlite status
-
-migrate-diff:
-	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/doctrine-migrations --em=sqlite diff
-
-migrate-test:
-	@docker-compose -f // php artisan make:migration create_users_table --create=users
+	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/phinx status
