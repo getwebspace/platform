@@ -72,7 +72,7 @@ final class V20240328103540 extends AbstractMigration
             ->addColumn('unique', 'string', ['limit' => 128, 'default' => '', 'null' => false])
             ->addColumn('date', 'datetime', ['default' => 'CURRENT_TIMESTAMP', 'null' => false])
             ->addIndex('user_uuid')
-            ->addIndex(['user_uuid', 'provider', 'unique'], ['unique' => true, 'name' => 'user_provider_unique'])
+            ->addIndex(['user_uuid', 'provider', 'unique'], ['unique' => true])
             ->create();
 
         $table = $this->table('user_subscriber', ['id' => false, 'primary_key' => 'uuid']);
@@ -80,7 +80,7 @@ final class V20240328103540 extends AbstractMigration
             ->addColumn('uuid', 'char', ['limit' => 36])
             ->addColumn('email', 'string', ['limit' => 120, 'default' => '', 'null' => false])
             ->addColumn('date', 'datetime', ['default' => 'CURRENT_TIMESTAMP', 'null' => false])
-            ->addIndex(['email'], ['unique' => true, 'name' => 'UNIQ_A679D85E7927C74'])
+            ->addIndex(['email'], ['unique' => true])
             ->create();
     }
 }
