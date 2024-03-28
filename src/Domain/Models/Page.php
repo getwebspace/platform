@@ -36,11 +36,11 @@ class Page extends Model
     protected $fillable = [
         'title',
         'address',
-        'date',
         'content',
         'type',
-        'meta',
         'template',
+        'meta',
+        'date',
     ];
 
     protected $guarded = [];
@@ -48,11 +48,11 @@ class Page extends Model
     protected $casts = [
         'title' => 'string',
         'address' => AddressUrl::class,
-        'date' => 'datetime',
         'content' => 'string',
         'type' => PageType::class,
-        'meta' => Meta::class,
         'template' => 'string',
+        'meta' => Meta::class,
+        'date' => 'datetime',
     ];
 
     protected $attributes = [
