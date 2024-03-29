@@ -21,6 +21,7 @@ use App\Domain\Service\Task\TaskService;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\UserService;
+use Exception;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerExceptionInterface;
 
@@ -205,7 +206,6 @@ class EntityAction extends ActionApi
     private function getUser(): array
     {
         $params = [
-            'user' => null,
             'user_uuid' => null,
         ];
 
@@ -221,11 +221,8 @@ class EntityAction extends ActionApi
                     $userService = $this->container->get(UserService::class);
 
                     /** @var User $user */
-                    $user = $userService->read([
-                        'uuid' => $uuid,
-                    ]);
+                    $user = $userService->read(['uuid' => $uuid]);
 
-                    $params['user'] = $user;
                     $params['user_uuid'] = $user->uuid;
                 } catch (UserNotFoundException $e) {
                     // nothing

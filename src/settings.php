@@ -9,9 +9,9 @@ return function (ContainerBuilder $containerBuilder): void {
     // database
     $containerBuilder->addDefinitions([
         'database' => [
-            'driver' => 'sqlite',
+            'driver' => $_DATABASE ? null : 'sqlite',
             'url' => $_DATABASE,
-            'database' => VAR_DIR . '/database.sqlite',
+            'database' => $_DATABASE ?: VAR_DIR . '/database.sqlite',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
