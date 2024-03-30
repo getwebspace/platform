@@ -109,6 +109,24 @@ class CategoryServiceTest extends TestCase
         $this->service->create($data);
     }
 
+    public function testCreateWithParent(): void
+    {
+        $parent = $this->service->create([
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+        ]);
+        $catalogCategory = $this->service->create([
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'parent_uuid' => $parent->uuid,
+        ]);
+
+        $this->assertInstanceOf(CatalogCategory::class, $catalogCategory);
+        $this->assertEquals($catalogCategory->parent_uuid, $parent->uuid);
+        $this->assertEquals($catalogCategory->parent->attributesToArray(), $parent->attributesToArray());
+        $this->assertEquals($parent->nested(true)->count(), 2);
+    }
+
     public function testReadSuccess1(): void
     {
         $data = [
