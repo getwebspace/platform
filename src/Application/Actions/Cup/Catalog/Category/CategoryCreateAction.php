@@ -56,12 +56,12 @@ class CategoryCreateAction extends CatalogAction
         $categories = $this->catalogCategoryService->read([
             'status' => \App\Domain\Casts\Catalog\Status::WORK,
         ]);
-        $attributes = $this->catalogAttributeService->read();
+        //$attributes = $this->catalogAttributeService->read();
 
         return $this->respondWithTemplate('cup/catalog/category/form.twig', [
             'parent' => $parent,
             'categories' => $categories,
-            'attributes' => $attributes,
+            'attributes' => collect(), //$attributes,
             'params' => $this->parameter(['catalog_category_template', 'catalog_product_template', 'catalog_category_pagination']),
         ]);
     }

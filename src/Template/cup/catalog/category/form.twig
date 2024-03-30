@@ -17,114 +17,122 @@
         <div class="col-md-12">
             <div class="card">
                 <form method="post" enctype="multipart/form-data">
-                    <div class="card-header">
-                        <div class="d-flex align-items-center">
-                            <a href="/cup/catalog/category{{ category.parent ? '/' ~ category.parent : (parent ? '/' ~ parent : '') }}" class="btn btn-secondary btn-icon mr-1">
-                                <i class="fas fa-long-arrow-alt-left"></i>
-                            </a>
-
-                            <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active show" data-toggle="pill" href="#category" role="tab">
-                                        {{ 'Category'|locale }}
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-toggle="pill" href="#attributes" role="tab">
-                                        {{ 'Attributes'|locale }}
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-toggle="pill" href="#other" role="tab">
-                                        {{ 'Additionally'|locale }}
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
                     <div class="card-body">
-                        <div class="tab-content">
-                            {# Tab: Категория #}
-                            <div class="tab-pane fade show active" id="category" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Title'|locale,
+                                    'type': 'text',
+                                    'name': 'title',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Brief description of the category'|locale) ~ '"></i>',
+                                    'args': {
+                                        'value': category.title,
+                                        'required': true,
+                                        'placeholder': 'Food',
+                                    }
+                                } %}
+                            </div>
+
+                            <div class="col-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Address'|locale,
+                                    'type': 'text',
+                                    'name': 'address',
+                                    'prefix': base_url() ~ '/' ~ parameter('catalog_address', 'catalog') ~ '/',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Name of category. You can leave it blank, then the value will be generated automatically. It is allowed to use only Latin characters and numbers without spaces'|locale) ~ '"></i>',
+                                    'args': {
+                                        'value': category.address,
+                                        'placeholder': 'food',
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include 'cup/editor.twig' with {
+                                    'label': 'Category description'|locale,
+                                    'name': 'description',
+                                    'args': {
+                                        'value': category.description
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Number of products per page'|locale,
+                                    'type': 'text',
+                                    'name': 'pagination',
+                                    'args': {
+                                        'value': category.pagination is not empty ? category.pagination : (params.catalog_category_pagination ?? '10'),
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-3">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Show nested categories'|locale,
+                                    'type': 'select',
+                                    'name': 'children',
+                                    'args': {
+                                        'option': _(['yes', 'no']),
+                                        'selected': category.children ? 'yes' : 'no'
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-3">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Primary category'|locale,
+                                    'type': 'select',
+                                    'name': 'parent',
+                                    'args': {
+                                        'option': {'': '---'}|merge(categories.whereNotIn('uuid', category.getNested(categories, true).pluck('uuid')).sortBy('title').pluck('title', 'uuid').all()),
+                                        'selected': category.parent_uuid ?? parent
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-3">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Hidden category'|locale,
+                                    'type': 'select',
+                                    'name': 'hidden',
+                                    'args': {
+                                        'option': _(['yes', 'no']),
+                                        'selected': category.hidden ? 'yes' : 'no'
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Attributes'|locale,
+                                    'type': 'select',
+                                    'name': 'attributes[]',
+                                    'message': 'Specify individual attributes for the category'|locale ~
+                                    '<a href="/cup/catalog/attribute/add" class="btn btn-xs btn-info mr-1 float-right" onclick="return confirm(\'' ~ ('Are you sure you want to go to another page?'|locale) ~ '\');"><i class="fa fa-plus"></i> ' ~ ('Create attribute'|locale) ~ '</a>',
+                                    'args': {
+                                        'multiple': true,
+                                        'option': attributes.sortBy('title').pluck('title', 'uuid').all(),
+                                        'selected': category.hasAttributes() ? category.getAttributes().pluck('uuid').all() : ''
+                                    }
+                                } %}
+                            </div>
+                        </div>
+
+                        <div class="accordion mt-3">
+                            <button class="btn btn-outline-white btn-block text-center" type="button" data-toggle="collapse" data-target="#catalog-category-more">
+                                {{ 'More'|locale }} <i class="fas fa-arrow-down"></i>
+                            </button>
+
+                            <div id="catalog-category-more" class="collapse" data-parent=".accordion">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Title'|locale,
-                                            'type': 'text',
-                                            'name': 'title',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Brief description of the category'|locale) ~ '"></i>',
-                                            'args': {
-                                                'value': category.title,
-                                                'required': true,
-                                                'placeholder': 'Food',
-                                            }
-                                        } %}
-                                    </div>
-
-                                    <div class="col-6 col-md-3">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Primary category'|locale,
-                                            'type': 'select',
-                                            'name': 'parent',
-                                            'args': {
-                                                'option': {'': '---'}|merge(categories.whereNotIn('uuid', category.getNested(categories, true).pluck('uuid')).sortBy('title').pluck('title', 'uuid').all()),
-                                                'selected': category.parent_uuid ?? parent
-                                            }
-                                        } %}
-                                    </div>
-                                    <div class="col-6 col-md-3">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Hidden category'|locale,
-                                            'type': 'select',
-                                            'name': 'hidden',
-                                            'args': {
-                                                'option': _(['yes', 'no']),
-                                                'selected': category.hidden ? 'yes' : 'no'
-                                            }
-                                        } %}
-                                    </div>
-                                </div>
-
-                                <hr>
-
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        {% include 'cup/editor.twig' with {
-                                            'label': 'Category description'|locale,
-                                            'name': 'description',
-                                            'args': {
-                                                'value': category.description
-                                            }
-                                        } %}
-                                    </div>
-                                </div>
-
-                                <hr>
-
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Show nested categories'|locale,
-                                            'type': 'select',
-                                            'name': 'children',
-                                            'args': {
-                                                'option': _(['yes', 'no']),
-                                                'selected': category.children ? 'yes' : 'no'
-                                            }
-                                        } %}
-                                    </div>
-                                    <div class="col-md-3">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Number of products per page'|locale,
-                                            'type': 'text',
-                                            'name': 'pagination',
-                                            'args': {
-                                                'value': category.pagination is not empty ? category.pagination : (params.catalog_category_pagination ?? '10'),
-                                            }
-                                        } %}
-                                    </div>
-
-                                    <div class="col-md-3">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Sorting criteria'|locale,
                                             'type': 'select',
@@ -135,7 +143,7 @@
                                             }
                                         } %}
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Sorting order'|locale,
                                             'type': 'select',
@@ -148,45 +156,34 @@
                                     </div>
                                 </div>
 
-                                {% include 'cup/form-image.twig' with { 'entity': category } %}
-                            </div>
-
-                            {# Tab: Атрибуты #}
-                            <div class="tab-pane fade" id="attributes" role="tabpanel">
                                 <div class="row">
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
-                                            'label': 'Attributes'|locale,
-                                            'type': 'select',
-                                            'name': 'attributes[]',
-                                            'message': 'Specify individual attributes for the category'|locale ~
-                                                       '<a href="/cup/catalog/attribute/add" class="btn btn-xs btn-info mr-1 float-right" onclick="return confirm(\'' ~ ('Are you sure you want to go to another page?'|locale) ~ '\');"><i class="fa fa-plus"></i> ' ~ ('Create attribute'|locale) ~ '</a>',
+                                            'label': 'Category template'|locale,
+                                            'type': 'text',
+                                            'name': 'template[category]',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('Specify the name of the template you want to use for this category or leave <b>catalog.category.twig</b>'|locale) ~ '"></i>',
                                             'args': {
-                                                'multiple': true,
-                                                'option': attributes.sortBy('title').pluck('title', 'uuid').all(),
-                                                'selected': category.hasAttributes() ? category.getAttributes().pluck('uuid').all() : ''
+                                                'value': category.template.category is not empty ? category.template.category : (params.catalog_category_template ?? 'catalog.category.twig'),
+                                                'required': true,
+                                            }
+                                        } %}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {% include 'cup/form.twig' with {
+                                            'label': 'Category product'|locale,
+                                            'type': 'text',
+                                            'name': 'template[product]',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('Specify the name of the template you want to use for products in this category or leave <b>catalog.product.twig</b>'|locale) ~ '"></i>',
+                                            'args': {
+                                                'value': category.template.product is not empty ? category.template.product : (params.catalog_product_template ?? 'catalog.product.twig'),
+                                                'required': true,
                                             }
                                         } %}
                                     </div>
                                 </div>
-                            </div>
 
-                            {# Tab: Дополнительно #}
-                            <div class="tab-pane fade" id="other" role="tabpanel">
                                 <div class="row">
-                                    <div class="col-12">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Address'|locale,
-                                            'type': 'text',
-                                            'name': 'address',
-                                            'prefix': base_url() ~ '/' ~ parameter('catalog_address', 'catalog') ~ '/',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Name of category. You can leave it blank, then the value will be generated automatically. It is allowed to use only Latin characters and numbers without spaces'|locale) ~ '"></i>',
-                                            'args': {
-                                                'value': category.address,
-                                                'placeholder': 'food',
-                                            }
-                                        } %}
-                                    </div>
                                     <div class="col-md-6">
                                         {% include 'cup/form.twig' with {
                                             'label': 'Sort order'|locale,
@@ -223,36 +220,7 @@
                                     </div>
                                 </div>
 
-                                <hr>
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Category template'|locale,
-                                            'type': 'text',
-                                            'name': 'template[category]',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('Specify the name of the template you want to use for this category or leave <b>catalog.category.twig</b>'|locale) ~ '"></i>',
-                                            'args': {
-                                                'value': category.template.category is not empty ? category.template.category : (params.catalog_category_template ?? 'catalog.category.twig'),
-                                                'required': true,
-                                            }
-                                        } %}
-                                    </div>
-                                    <div class="col-md-6">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Category product'|locale,
-                                            'type': 'text',
-                                            'name': 'template[product]',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('Specify the name of the template you want to use for products in this category or leave <b>catalog.product.twig</b>'|locale) ~ '"></i>',
-                                            'args': {
-                                                'value': category.template.product is not empty ? category.template.product : (params.catalog_product_template ?? 'catalog.product.twig'),
-                                                'required': true,
-                                            }
-                                        } %}
-                                    </div>
-                                </div>
-
-                                <hr>
+                                {% include 'cup/form-image.twig' with { 'entity': category } %}
 
                                 {% include "cup/form-meta.twig" with { 'entity': category } %}
                             </div>

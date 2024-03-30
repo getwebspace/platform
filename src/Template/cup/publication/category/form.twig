@@ -51,7 +51,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 {% include 'cup/editor.twig' with {
-                                    'label': 'Description'|locale,
+                                    'label': 'Category description'|locale,
                                     'name': 'description',
                                     'args': {
                                         'value': item.description
@@ -96,7 +96,6 @@
                             <div class="col-6 col-md-3">
                                 {% include 'cup/form.twig' with {
                                     'label': 'Public category'|locale,
-                                    'message': 'Whether to show the category in the general list'|locale,
                                     'type': 'select',
                                     'name': 'public',
                                     'args': {
