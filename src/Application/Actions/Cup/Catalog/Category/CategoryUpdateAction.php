@@ -21,11 +21,12 @@ class CategoryUpdateAction extends CatalogAction
 
                 if ($this->isPost()) {
                     try {
-                        $attributes = from_service_to_array(
-                            $this->catalogAttributeService->read([
-                                'uuid' => $this->getParam('attributes', []),
-                            ])
-                        );
+//                        $attributes = from_service_to_array(
+//                            $this->catalogAttributeService->read([
+//                                'uuid' => $this->getParam('attributes', []),
+//                            ])
+//                        );
+                        $attributes = [];
                         $category = $this->catalogCategoryService->update($category, [
                             'parent_uuid' => $this->getParam('parent'),
                             'children' => $this->getParam('children'),
@@ -63,11 +64,11 @@ class CategoryUpdateAction extends CatalogAction
                 $categories = $this->catalogCategoryService->read([
                     'status' => \App\Domain\Casts\Catalog\Status::WORK,
                 ]);
-                $attributes = $this->catalogAttributeService->read();
+                //$attributes = $this->catalogAttributeService->read();
 
                 return $this->respondWithTemplate('cup/catalog/category/form.twig', [
                     'categories' => $categories,
-                    'attributes' => $attributes,
+                    'attributes' => collect(), //$attributes,
                     'category' => $category,
                     'params' => $this->parameter(['catalog_category_template', 'catalog_product_template', 'catalog_category_pagination']),
                 ]);

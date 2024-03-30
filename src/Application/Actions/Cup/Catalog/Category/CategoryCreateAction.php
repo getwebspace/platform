@@ -13,11 +13,12 @@ class CategoryCreateAction extends CatalogAction
     {
         if ($this->isPost()) {
             try {
-                $attributes = from_service_to_array(
-                    $this->catalogAttributeService->read([
-                        'uuid' => $this->getParam('attributes', []),
-                    ])
-                );
+//                $attributes = from_service_to_array(
+//                    $this->catalogAttributeService->read([
+//                        'uuid' => $this->getParam('attributes', []),
+//                    ])
+//                );
+                $attributes = [];
                 $category = $this->catalogCategoryService->create([
                     'parent_uuid' => $this->getParam('parent'),
                     'children' => $this->getParam('children'),
