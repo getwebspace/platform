@@ -16,9 +16,7 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class ReferenceService extends AbstractService
 {
-    protected function init(): void
-    {
-    }
+
 
     /**
      * @throws TitleAlreadyExistsException
@@ -86,7 +84,8 @@ class ReferenceService extends AbstractService
 
         switch (true) {
             case !is_array($data['uuid']) && $data['uuid'] !== null:
-            case !is_array($data['title']) && $data['title'] !== null && $data['type'] !== null:
+            case !is_array($data['title']) && $data['title'] !== null:
+            case !is_array($data['type']) && $data['type'] !== null:
                 /** @var Reference $reference */
                 $reference = Reference::firstWhere($criteria);
 

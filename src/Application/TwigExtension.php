@@ -557,7 +557,7 @@ class TwigExtension extends AbstractExtension
             ],
             $criteria,
             [
-                'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+                'status' => \App\Domain\Casts\Catalog\Status::WORK,
                 'order' => $order,
             ]
         ));

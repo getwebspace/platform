@@ -14,9 +14,7 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class DataService extends AbstractService
 {
-    protected function init(): void
-    {
-    }
+
 
     /**
      * @throws MissingMessageValueException

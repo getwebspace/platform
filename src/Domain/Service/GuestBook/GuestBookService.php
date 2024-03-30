@@ -17,9 +17,7 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class GuestBookService extends AbstractService
 {
-    protected function init(): void
-    {
-    }
+
 
     /**
      * @throws MissingNameValueException

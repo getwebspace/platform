@@ -78,7 +78,7 @@ class ProductUpdateAction extends CatalogAction
                 }
 
                 $categories = $this->catalogCategoryService->read([
-                    'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+                    'status' => \App\Domain\Casts\Catalog\Status::WORK,
                 ]);
                 $attributes = $this->catalogAttributeService->read();
 

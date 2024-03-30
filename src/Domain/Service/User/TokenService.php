@@ -14,9 +14,7 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class TokenService extends AbstractService
 {
-    protected function init(): void
-    {
-    }
+
 
     public function create(array $data = []): UserToken
     {

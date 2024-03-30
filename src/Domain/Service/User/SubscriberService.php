@@ -14,9 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class SubscriberService extends AbstractService
 {
-    protected function init(): void
-    {
-    }
+
 
     /**
      * @throws MissingUniqueValueException

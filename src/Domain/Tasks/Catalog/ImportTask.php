@@ -78,7 +78,7 @@ class ImportTask extends AbstractTask
                                         '' . $item['trimmed'],
                                         floatval($item['raw']),
                                     ],
-                                    'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+                                    'status' => \App\Domain\Casts\Catalog\Status::WORK,
                                 ])
                                 ->first();
                         } catch (CategoryNotFoundException $e) {

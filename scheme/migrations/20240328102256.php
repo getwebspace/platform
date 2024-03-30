@@ -11,13 +11,13 @@ final class V20240328102256 extends AbstractMigration
         $table = $this->table('task', ['id' => false, 'primary_key' => 'uuid']);
         $table
             ->addColumn('uuid', 'char', ['limit' => 36])
-            ->addColumn('title', 'string', ['limit' => 255, 'default' => '', 'null' => false])
-            ->addColumn('action', 'string', ['limit' => 255, 'default' => '', 'null' => false])
-            ->addColumn('progress', 'decimal', ['precision' => 10, 'scale' => 2, 'default' => '0', 'null' => false])
-            ->addColumn('status', 'string', ['limit' => 100, 'default' => 'queue', 'null' => false])
-            ->addColumn('params', 'text', ['default' => '{}', 'null' => false])
-            ->addColumn('output', 'string', ['limit' => 1000, 'default' => '', 'null' => false])
-            ->addColumn('date', 'datetime', ['default' => 'CURRENT_TIMESTAMP', 'null' => false])
+            ->addColumn('title', 'string', ['limit' => 255, 'default' => ''])
+            ->addColumn('action', 'string', ['limit' => 255, 'default' => ''])
+            ->addColumn('progress', 'decimal', ['precision' => 10, 'scale' => 2, 'default' => '0'])
+            ->addColumn('status', 'string', ['limit' => 100, 'default' => 'queue'])
+            ->addColumn('params', 'text', ['default' => '{}'])
+            ->addColumn('output', 'string', ['limit' => 1000, 'default' => ''])
+            ->addColumn('date', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
             ->addIndex('title')
             ->addIndex('status')
             ->create();

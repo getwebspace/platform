@@ -202,15 +202,15 @@ class Category extends AbstractEntity
     /**
      * @see \App\Domain\Types\UserStatusType::LIST
      */
-    #[ORM\Column(type: 'CatalogCategoryStatusType', options: ['default' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK])]
-    protected string $status = \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK;
+    #[ORM\Column(type: 'CatalogCategoryStatusType', options: ['default' => \App\Domain\Casts\Catalog\Status::WORK])]
+    protected string $status = \App\Domain\Casts\Catalog\Status::WORK;
 
     /**
      * @return $this
      */
     public function setStatus(string $status)
     {
-        if (in_array($status, \App\Domain\Types\Catalog\CategoryStatusType::LIST, true)) {
+        if (in_array($status, \App\Domain\Casts\Catalog\Status::LIST, true)) {
             $this->status = $status;
         }
 

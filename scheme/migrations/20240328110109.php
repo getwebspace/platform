@@ -10,8 +10,8 @@ final class V20240328110109 extends AbstractMigration
     {
         $table = $this->table('params', ['id' => false, 'primary_key' => 'name']);
         $table
-            ->addColumn('name', 'string', ['limit' => 255, 'default' => '', 'null' => false])
-            ->addColumn('value', 'text', ['default' => '', 'null' => false])
+            ->addColumn('name', 'string', ['limit' => 255, 'default' => ''])
+            ->addColumn('value', 'text', ['default' => ''])
             ->create();
     }
 }

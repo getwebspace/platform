@@ -5,7 +5,7 @@ namespace App\Domain\Models;
 use App\Domain\Casts\AddressUrl;
 use App\Domain\Casts\Boolean;
 use App\Domain\Casts\Email;
-use App\Domain\Casts\GuestBook\Status as GuestBookStatus;
+use App\Domain\Casts\Catalog\Status as CatalogStatus;
 use App\Domain\Casts\Json;
 use App\Domain\Casts\Meta;
 use App\Domain\Casts\Sort;
@@ -23,24 +23,29 @@ use Illuminate\Support\Collection;
 /**
  * @property string $uuid
  * @property string $title
+ * @property string $description
  * @property string $address
  * @property string $parent_uuid
- * @property string $description
  * @property int $pagination
  * @property bool $children
- * @property bool $public
+ * @property bool $hidden
+ * @property int $order
+ * @property string $status
  * @property array $sort
- * @property array $template
  * @property array $meta
- * @property PublicationCategory $parent
+ * @property array $template
+ * @property string $external_id
+ * @property string $export
+ * @property string $system
+ * @property CatalogCategory $parent
  */
-class PublicationCategory extends Model
+class CatalogCategory extends Model
 {
     use HasFactory;
     use HasUuids;
     use FileTrait;
 
-    protected $table = 'publication_category';
+    protected $table = 'catalog_category';
     protected $primaryKey = 'uuid';
 
     const CREATED_AT = null;
@@ -48,37 +53,58 @@ class PublicationCategory extends Model
 
     protected $fillable = [
         'title',
+        'description',
         'address',
         'parent_uuid',
-        'description',
         'pagination',
         'children',
-        'public',
+        'hidden',
+        'order',
+        'status',
         'sort',
-        'template',
         'meta',
+        'template',
+        'external_id',
+        'export',
+        'system',
     ];
 
     protected $guarded = [];
 
     protected $casts = [
         'title' => 'string',
+        'description' => 'string',
         'address' => AddressUrl::class,
         'parent_uuid' => 'string',
-        'description' => 'string',
         'pagination' => 'int',
         'children' => Boolean::class,
-        'public' => Boolean::class,
-        'sort' => Sort::class,
+        'hidden' => Boolean::class,
         'template' => Json::class,
         'meta' => Meta::class,
+        'sort' => Sort::class,
+        'status' => CatalogStatus::class,
+        'order' => 'int',
+        'system' => 'string',
+        'export' => 'string',
+        'external_id' => 'string',
     ];
 
     protected $attributes = [];
 
     public function parent(): HasOne
     {
-        return $this->hasOne(PublicationCategory::class, 'uuid', 'parent_uuid');
+        return $this->hasOne(CatalogCategory::class, 'uuid', 'parent_uuid');
+    }
+
+    public function parents(): Collection
+    {
+        $collect = collect([$this]);
+
+        if ($this->parent) {
+            $collect = $collect->merge($this->parent->parents());
+        }
+
+        return $collect;
     }
 
     public function nested(bool $force = false): Collection
@@ -86,7 +112,7 @@ class PublicationCategory extends Model
         $collect = collect([$this]);
 
         if ($this->children || $force) {
-            /** @var \App\Domain\Models\PublicationCategory $category */
+            /** @var \App\Domain\Models\CatalogCategory $category */
             foreach (self::where(['parent_uuid' => $this->uuid])->get() as $child) {
                 $collect = $collect->merge($child->nested($force));
             }
@@ -95,8 +121,8 @@ class PublicationCategory extends Model
         return $collect;
     }
 
-    public function publications(): HasMany
+    public function products(): HasMany
     {
-        return $this->hasMany(Publication::class, 'uuid', 'category_uuid');
+        //return $this->hasMany(CatalogProduct::class, 'uuid', 'category_uuid');
     }
 }

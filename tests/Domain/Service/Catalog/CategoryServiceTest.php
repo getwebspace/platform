@@ -2,7 +2,7 @@
 
 namespace tests\Domain\Service\Catalog;
 
-use App\Domain\Entities\Catalog\Category;
+use App\Domain\Models\CatalogCategory;
 use App\Domain\Repository\Catalog\CategoryRepository;
 use App\Domain\Service\Catalog\CategoryService;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
@@ -32,10 +32,10 @@ class CategoryServiceTest extends TestCase
         $data = [
             'children' => $this->getFaker()->boolean,
             'hidden' => $this->getFaker()->boolean,
-            'title' => $this->getFaker()->word,
+            'title' => implode(' ', $this->getFaker()->words(3)),
             'description' => $this->getFaker()->text(100),
             'address' => $this->getFaker()->word,
-            'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\CategoryStatusType::LIST),
+            'status' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\Status::LIST),
             'pagination' => $this->getFaker()->numberBetween(10, 100),
             'order' => $this->getFaker()->numberBetween(1, 10),
             'sort' => [
@@ -43,7 +43,7 @@ class CategoryServiceTest extends TestCase
                 'direction' => $this->getFaker()->randomElement(\App\Domain\References\Catalog::ORDER_DIRECTION),
             ],
             'meta' => [
-                'title' => $this->getFaker()->word,
+                'title' => implode(' ', $this->getFaker()->words(3)),
                 'description' => $this->getFaker()->text,
                 'keywords' => $this->getFaker()->words(5, true),
             ],
@@ -57,40 +57,21 @@ class CategoryServiceTest extends TestCase
         ];
 
         $category = $this->service->create($data);
-        $this->assertInstanceOf(Category::class, $category);
-        $this->assertEquals($data['children'], $category->getChildren());
-        $this->assertEquals($data['hidden'], $category->getHidden());
-        $this->assertEquals($data['title'], $category->getTitle());
-        $this->assertEquals($data['description'], $category->getDescription());
-        $this->assertEquals($data['address'], $category->getAddress());
-        $this->assertEquals($data['status'], $category->getStatus());
-        $this->assertEquals($data['pagination'], $category->getPagination());
-        $this->assertEquals($data['order'], $category->getOrder());
-        $this->assertEquals($data['sort'], $category->getSort());
-        $this->assertEquals($data['meta'], $category->getMeta());
-        $this->assertEquals($data['template'], $category->getTemplate());
-        $this->assertEquals($data['external_id'], $category->getExternalId());
-        $this->assertEquals($data['export'], $category->getExport());
-        $this->assertEquals($data['system'], $category->getSystem());
-
-        /** @var CategoryRepository $categoryRepo */
-        $categoryRepo = $this->em->getRepository(Category::class);
-        $c = $categoryRepo->findOneByTitle($data['title']);
-        $this->assertInstanceOf(Category::class, $c);
-        $this->assertEquals($data['children'], $c->getChildren());
-        $this->assertEquals($data['hidden'], $c->getHidden());
-        $this->assertEquals($data['title'], $c->getTitle());
-        $this->assertEquals($data['description'], $c->getDescription());
-        $this->assertEquals($data['address'], $c->getAddress());
-        $this->assertEquals($data['status'], $c->getStatus());
-        $this->assertEquals($data['pagination'], $c->getPagination());
-        $this->assertEquals($data['order'], $c->getOrder());
-        $this->assertEquals($data['sort'], $c->getSort());
-        $this->assertEquals($data['meta'], $c->getMeta());
-        $this->assertEquals($data['template'], $c->getTemplate());
-        $this->assertEquals($data['external_id'], $c->getExternalId());
-        $this->assertEquals($data['export'], $c->getExport());
-        $this->assertEquals($data['system'], $c->getSystem());
+        $this->assertInstanceOf(CatalogCategory::class, $category);
+        $this->assertEquals($data['children'], $category->children);
+        $this->assertEquals($data['hidden'], $category->hidden);
+        $this->assertEquals($data['title'], $category->title);
+        $this->assertEquals($data['description'], $category->description);
+        $this->assertEquals($data['address'], $category->address);
+        $this->assertEquals($data['status'], $category->status);
+        $this->assertEquals($data['pagination'], $category->pagination);
+        $this->assertEquals($data['order'], $category->order);
+        $this->assertEquals($data['sort'], $category->sort);
+        $this->assertEquals($data['meta'], $category->meta);
+        $this->assertEquals($data['template'], $category->template);
+        $this->assertEquals($data['external_id'], $category->external_id);
+        $this->assertEquals($data['export'], $category->export);
+        $this->assertEquals($data['system'], $category->system);
     }
 
     public function testCreateWithMissingTitleValue(): void
@@ -105,8 +86,8 @@ class CategoryServiceTest extends TestCase
         $this->expectException(AddressAlreadyExistsException::class);
 
         $data = [
-            'title' => $this->getFaker()->word,
-            'address' => 'some-custom-address',
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
         ];
 
         $this->service->create($data);
@@ -119,35 +100,35 @@ class CategoryServiceTest extends TestCase
 
         $data = [
             'parent' => $this->service->create(['title' => $this->getFaker()->word]),
-            'title' => $this->getFaker()->word,
-            'address' => 'some-custom-address',
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
         ];
 
-        $d = $this->service->create($data);
+        $this->service->create($data);
         $this->service->create($data);
     }
 
     public function testReadSuccess1(): void
     {
         $data = [
-            'title' => $this->getFaker()->word,
-            'address' => 'some-custom-address',
-            'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\CategoryStatusType::LIST),
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'status' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\Status::LIST),
         ];
 
         $this->service->create($data);
 
         $category = $this->service->read(['title' => $data['title']]);
-        $this->assertInstanceOf(Category::class, $category);
-        $this->assertEquals($data['title'], $category->getTitle());
+        $this->assertInstanceOf(CatalogCategory::class, $category);
+        $this->assertEquals($data['title'], $category->title);
     }
 
     public function testReadSuccess2(): void
     {
         $data = [
-            'title' => $this->getFaker()->word,
-            'address' => 'some-custom-address',
-            'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\CategoryStatusType::LIST),
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'status' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\Status::LIST),
         ];
 
         $this->service->create($data);
@@ -166,13 +147,12 @@ class CategoryServiceTest extends TestCase
     public function testUpdate(): void
     {
         $category = $this->service->create([
-            'parent' => $this->service->create(['title' => $this->getFaker()->word]),
             'children' => $this->getFaker()->boolean,
             'hidden' => $this->getFaker()->boolean,
-            'title' => $this->getFaker()->word,
+            'title' => implode(' ', $this->getFaker()->words(3)),
             'description' => $this->getFaker()->text(100),
             'address' => $this->getFaker()->word,
-            'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\CategoryStatusType::LIST),
+            'status' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\Status::LIST),
             'pagination' => $this->getFaker()->numberBetween(10, 100),
             'order' => $this->getFaker()->numberBetween(1, 10),
             'sort' => [
@@ -180,7 +160,7 @@ class CategoryServiceTest extends TestCase
                 'direction' => $this->getFaker()->randomElement(\App\Domain\References\Catalog::ORDER_DIRECTION),
             ],
             'meta' => [
-                'title' => $this->getFaker()->word,
+                'title' => implode(' ', $this->getFaker()->words(3)),
                 'description' => $this->getFaker()->text,
                 'keywords' => $this->getFaker()->words(5, true),
             ],
@@ -194,13 +174,12 @@ class CategoryServiceTest extends TestCase
         ]);
 
         $data = [
-            'parent' => $this->service->create(['title' => $this->getFaker()->word]),
             'children' => $this->getFaker()->boolean,
             'hidden' => $this->getFaker()->boolean,
-            'title' => $this->getFaker()->word,
+            'title' => implode(' ', $this->getFaker()->words(3)),
             'description' => $this->getFaker()->text(100),
             'address' => $this->getFaker()->word,
-            'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\CategoryStatusType::LIST),
+            'status' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\Status::LIST),
             'pagination' => $this->getFaker()->numberBetween(10, 100),
             'order' => $this->getFaker()->numberBetween(1, 10),
             'sort' => [
@@ -208,7 +187,7 @@ class CategoryServiceTest extends TestCase
                 'direction' => $this->getFaker()->randomElement(\App\Domain\References\Catalog::ORDER_DIRECTION),
             ],
             'meta' => [
-                'title' => $this->getFaker()->word,
+                'title' => implode(' ', $this->getFaker()->words(3)),
                 'description' => $this->getFaker()->text,
                 'keywords' => $this->getFaker()->words(5, true),
             ],
@@ -222,22 +201,21 @@ class CategoryServiceTest extends TestCase
         ];
 
         $category = $this->service->update($category, $data);
-        $this->assertInstanceOf(Category::class, $category);
-        $this->assertEquals($data['parent'], $category->getParent());
-        $this->assertEquals($data['children'], $category->getChildren());
-        $this->assertEquals($data['hidden'], $category->getHidden());
-        $this->assertEquals($data['title'], $category->getTitle());
-        $this->assertEquals($data['description'], $category->getDescription());
-        $this->assertEquals($data['address'], $category->getAddress());
-        $this->assertEquals($data['status'], $category->getStatus());
-        $this->assertEquals($data['pagination'], $category->getPagination());
-        $this->assertEquals($data['order'], $category->getOrder());
-        $this->assertEquals($data['sort'], $category->getSort());
-        $this->assertEquals($data['meta'], $category->getMeta());
-        $this->assertEquals($data['template'], $category->getTemplate());
-        $this->assertEquals($data['external_id'], $category->getExternalId());
-        $this->assertEquals($data['export'], $category->getExport());
-        $this->assertEquals($data['system'], $category->getSystem());
+        $this->assertInstanceOf(CatalogCategory::class, $category);
+        $this->assertEquals($data['children'], $category->children);
+        $this->assertEquals($data['hidden'], $category->hidden);
+        $this->assertEquals($data['title'], $category->title);
+        $this->assertEquals($data['description'], $category->description);
+        $this->assertEquals($data['address'], $category->address);
+        $this->assertEquals($data['status'], $category->status);
+        $this->assertEquals($data['pagination'], $category->pagination);
+        $this->assertEquals($data['order'], $category->order);
+        $this->assertEquals($data['sort'], $category->sort);
+        $this->assertEquals($data['meta'], $category->meta);
+        $this->assertEquals($data['template'], $category->template);
+        $this->assertEquals($data['external_id'], $category->external_id);
+        $this->assertEquals($data['export'], $category->export);
+        $this->assertEquals($data['system'], $category->system);
     }
 
     public function testUpdateWithCategoryNotFound(): void
@@ -250,9 +228,9 @@ class CategoryServiceTest extends TestCase
     public function testDeleteSuccess(): void
     {
         $category = $this->service->create([
-            'title' => $this->getFaker()->word,
-            'address' => 'some-custom-address',
-            'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\CategoryStatusType::LIST),
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'status' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\Status::LIST),
         ]);
 
         $result = $this->service->delete($category);

@@ -11,11 +11,11 @@ final class V20240328102540 extends AbstractMigration
         $table = $this->table('reference', ['id' => false, 'primary_key' => 'uuid']);
         $table
             ->addColumn('uuid', 'char', ['limit' => 36])
-            ->addColumn('type', 'string', ['limit' => 100, 'default' => 'text', 'null' => false])
-            ->addColumn('title', 'string', ['limit' => 255, 'default' => '', 'null' => false])
-            ->addColumn('value', 'text', ['default' => '{}', 'null' => false])
-            ->addColumn('order', 'integer', ['default' => 1, 'null' => false])
-            ->addColumn('status', 'boolean', ['default' => 0, 'null' => false])
+            ->addColumn('type', 'string', ['limit' => 100, 'default' => 'text'])
+            ->addColumn('title', 'string', ['limit' => 255, 'default' => ''])
+            ->addColumn('value', 'text', ['default' => '{}'])
+            ->addColumn('order', 'integer', ['default' => 1])
+            ->addColumn('status', 'boolean', ['default' => 0])
             ->addIndex(['type', 'title'], ['unique' => true])
             ->create();
     }

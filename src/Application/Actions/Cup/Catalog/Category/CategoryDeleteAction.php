@@ -11,7 +11,7 @@ class CategoryDeleteAction extends CatalogAction
         if ($this->resolveArg('category') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('category'))) {
             $category = $this->catalogCategoryService->read([
                 'uuid' => $this->resolveArg('category'),
-                'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+                'status' => \App\Domain\Casts\Catalog\Status::WORK,
             ]);
 
             if ($category) {
@@ -23,7 +23,7 @@ class CategoryDeleteAction extends CatalogAction
                  */
                 foreach ($this->catalogCategoryService->read(['parent_uuid' => $childrenUuids]) as $child) {
                     $this->catalogCategoryService->update($child, [
-                        'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE,
+                        'status' => \App\Domain\Casts\Catalog\Status::DELETE,
                     ]);
                 }
 
@@ -37,7 +37,7 @@ class CategoryDeleteAction extends CatalogAction
                 }
 
                 $this->catalogCategoryService->update($category, [
-                    'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_DELETE,
+                    'status' => \App\Domain\Casts\Catalog\Status::DELETE,
                 ]);
 
                 $this->container->get(\App\Application\PubSub::class)->publish('cup:catalog:category:delete', $category);

@@ -12,9 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class FileService extends AbstractService
 {
-    protected function init(): void
-    {
-    }
+
 
     public function createFromPath(string $path, string $name_with_ext = null): ?File
     {

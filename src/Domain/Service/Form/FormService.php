@@ -16,9 +16,7 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class FormService extends AbstractService
 {
-    protected function init(): void
-    {
-    }
+
 
     /**
      * @throws TitleAlreadyExistsException

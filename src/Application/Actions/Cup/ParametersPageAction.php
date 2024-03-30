@@ -46,7 +46,7 @@ class ParametersPageAction extends AbstractAction
 
         $routes = $this->getRoutes();
         $userGroupService = $this->container->get(UserGroupService::class);
-        $catalogAttributeService = $this->container->get(CatalogAttributeService::class);
+        //$catalogAttributeService = $this->container->get(CatalogAttributeService::class);
         $referenceService = $this->container->get(ReferenceService::class);
 
         return $this->respondWithTemplate('cup/parameters/index.twig', [
@@ -56,9 +56,9 @@ class ParametersPageAction extends AbstractAction
                 'guest' => $routes->filter(fn ($el) => str_starts_with($el, 'common:'))->all(),
             ],
             'groups' => $userGroupService->read(),
-            'attributes' => $catalogAttributeService->read()->whereNotIn('type', \App\Domain\Types\Catalog\AttributeTypeType::TYPE_BOOLEAN),
+            'attributes' => collect(), //$catalogAttributeService->read()->whereNotIn('type', \App\Domain\Types\Catalog\AttributeTypeType::TYPE_BOOLEAN),
             'reference' => $referenceService->read([
-                'type' => ReferenceType::ORDER_STATUS, // todo usage with array of types
+                'type' => [ReferenceType::ORDER_STATUS], // todo usage with array of types
                 'order' => [
                     'order' => 'asc'
                 ]

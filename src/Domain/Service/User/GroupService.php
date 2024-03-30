@@ -15,9 +15,7 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class GroupService extends AbstractService
 {
-    protected function init(): void
-    {
-    }
+
 
     /**
      * @throws MissingTitleValueException

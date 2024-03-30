@@ -18,7 +18,7 @@ class ProductListAction extends CatalogAction
                 /** @var \App\Domain\Entities\Catalog\Category $category */
                 $category = $this->catalogCategoryService->read([
                     'uuid' => $this->resolveArg('category'),
-                    'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+                    'status' => \App\Domain\Casts\Catalog\Status::WORK,
                 ]);
             } else {
                 return $this->respondWithRedirect('/cup/catalog/product');
@@ -26,7 +26,7 @@ class ProductListAction extends CatalogAction
         }
 
         $categories = $this->catalogCategoryService->read([
-            'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+            'status' => \App\Domain\Casts\Catalog\Status::WORK,
         ]);
         $products = $this->catalogProductService->read([
             'category_uuid' => $category ? $category->getNested($categories)->pluck('uuid')->all() : null,

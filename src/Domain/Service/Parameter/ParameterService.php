@@ -13,9 +13,7 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class ParameterService extends AbstractService
 {
-    protected function init(): void
-    {
-    }
+
 
     /**
      * @throws ParameterAlreadyExistsException

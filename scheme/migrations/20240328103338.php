@@ -11,23 +11,23 @@ final class V20240328103338 extends AbstractMigration
         $table = $this->table('file', ['id' => false, 'primary_key' => 'uuid']);
         $table
             ->addColumn('uuid', 'char', ['limit' => 36])
-            ->addColumn('name', 'string', ['limit' => 255, 'default' => '', 'null' => false])
-            ->addColumn('ext', 'string', ['limit' => 255, 'default' => '', 'null' => false])
-            ->addColumn('type', 'string', ['limit' => 255, 'default' => '', 'null' => false])
-            ->addColumn('size', 'integer', ['default' => 0, 'null' => false])
-            ->addColumn('salt', 'string', ['limit' => 255, 'default' => '', 'null' => false])
-            ->addColumn('hash', 'string', ['limit' => 255, 'default' => '', 'null' => false])
-            ->addColumn('private', 'boolean', ['default' => 0, 'null' => false])
-            ->addColumn('date', 'datetime', ['default' => 'CURRENT_TIMESTAMP', 'null' => false])
+            ->addColumn('name', 'string', ['limit' => 255, 'default' => ''])
+            ->addColumn('ext', 'string', ['limit' => 255, 'default' => ''])
+            ->addColumn('type', 'string', ['limit' => 255, 'default' => ''])
+            ->addColumn('size', 'integer', ['default' => 0])
+            ->addColumn('salt', 'string', ['limit' => 255, 'default' => ''])
+            ->addColumn('hash', 'string', ['limit' => 255, 'default' => ''])
+            ->addColumn('private', 'boolean', ['default' => 0])
+            ->addColumn('date', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
             ->create();
 
         $table = $this->table('file_related');
         $table
-            ->addColumn('file_uuid', 'char', ['limit' => 36, 'null' => false])
-            ->addColumn('entity_uuid', 'char', ['limit' => 36, 'null' => false])
-            ->addColumn('order', 'integer', ['default' => 1, 'null' => false])
-            ->addColumn('comment', 'text', ['default' => '', 'null' => false])
-            ->addColumn('object_type', 'string', ['limit' => 255, 'null' => false])
+            ->addColumn('file_uuid', 'char', ['limit' => 36])
+            ->addColumn('entity_uuid', 'char', ['limit' => 36])
+            ->addColumn('order', 'integer', ['default' => 1])
+            ->addColumn('comment', 'text', ['default' => ''])
+            ->addColumn('object_type', 'string', ['limit' => 255])
             ->addIndex('file_uuid')
             ->addIndex('entity_uuid')
             ->create();

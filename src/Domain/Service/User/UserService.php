@@ -25,9 +25,7 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class UserService extends AbstractService
 {
-    protected function init(): void
-    {
-    }
+
 
     /**
      * @throws EmailAlreadyExistsException

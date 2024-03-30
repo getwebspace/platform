@@ -16,7 +16,7 @@ class CategoryUpdateAction extends CatalogAction
             try {
                 $category = $this->catalogCategoryService->read([
                     'uuid' => $this->resolveArg('category'),
-                    'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+                    'status' => \App\Domain\Casts\Catalog\Status::WORK,
                 ]);
 
                 if ($this->isPost()) {
@@ -61,7 +61,7 @@ class CategoryUpdateAction extends CatalogAction
                 }
 
                 $categories = $this->catalogCategoryService->read([
-                    'status' => \App\Domain\Types\Catalog\CategoryStatusType::STATUS_WORK,
+                    'status' => \App\Domain\Casts\Catalog\Status::WORK,
                 ]);
                 $attributes = $this->catalogAttributeService->read();
 
