@@ -111,22 +111,17 @@ class GroupService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, UserGroup::class)) {
-            $default = [
-                'title' => null,
-                'description' => null,
-                'access' => null,
-            ];
-            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
+            $entity->fill($data);
 
-            if ($data !== $default) {
-                $entity->fill($data);
+            if ($entity->isDirty('title')) {
+                $found = UserGroup::firstWhere(['title' => $entity->title]);
 
-                if (($found = UserGroup::firstWhere(['title' => $entity->title])) !== null && $found->uuid !== $entity->uuid) {
+                if ($found && $found->uuid !== $entity->uuid) {
                     throw new TitleAlreadyExistsException();
                 }
-
-                $entity->save();
             }
+
+            $entity->save();
 
             return $entity;
         }

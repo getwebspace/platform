@@ -85,7 +85,6 @@ class ReferenceService extends AbstractService
         switch (true) {
             case !is_array($data['uuid']) && $data['uuid'] !== null:
             case !is_array($data['title']) && $data['title'] !== null:
-            case !is_array($data['type']) && $data['type'] !== null:
                 /** @var Reference $reference */
                 $reference = Reference::firstWhere($criteria);
 
@@ -126,28 +125,17 @@ class ReferenceService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, Reference::class)) {
-            $default = [
-                'type' => null,
-                'title' => null,
-                'value' => null,
-                'order' => null,
-                'status' => null,
-            ];
-            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
+            $entity->fill($data);
 
-            if ($data !== $default) {
-                $entity->fill($data);
+            if ($entity->isDirty('title') || $entity->isDirty('type')) {
+                $found = Reference::firstWhere(['title' => $entity->title, 'type' => $entity->type]);
 
-                if ($entity->isDirty('title') || $entity->isDirty('type')) {
-                    $found = Reference::firstWhere(['title' => $entity->title, 'type' => $entity->type]);
-
-                    if ($found && $found->uuid !== $entity->uuid) {
-                        throw new TitleAlreadyExistsException();
-                    }
+                if ($found && $found->uuid !== $entity->uuid) {
+                    throw new TitleAlreadyExistsException();
                 }
-
-                $entity->save();
             }
+
+            $entity->save();
 
             return $entity;
         }

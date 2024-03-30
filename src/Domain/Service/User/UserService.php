@@ -242,69 +242,36 @@ class UserService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, User::class)) {
-            $default = [
-                'username' => null,
-                'email' => null,
-                'phone' => null,
-                'password' => null,
-                'firstname' => null,
-                'lastname' => null,
-                'patronymic' => null,
-                'gender' => null,
-                'birthdate' => null,
-                'country' => null,
-                'city' => null,
-                'address' => null,
-                'postcode' => null,
-                'additional' => null,
-                'allow_mail' => null,
-                'status' => null,
-                'company' => null,
-                'legal' => null,
-                'messenger' => null,
-                'website' => null,
-                'source' => null,
-                'group' => null,
-                'group_uuid' => null,
-                'auth_code' => null,
-                'language' => null,
-                'external_id' => null,
-                'token' => null,
-            ];
-            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
+            $entity->fill($data);
 
-            if ($data !== $default) {
-                $entity->fill($data);
+            if ($entity->isDirty('username')) {
+                $found = User::firstWhere(['username' => $entity->username]);
 
-                if ($entity->isDirty('username')) {
-                    $found = User::firstWhere(['username' => $entity->username]);
-
-                    if ($found && $found->uuid !== $entity->uuid) {
-                        throw new UsernameAlreadyExistsException();
-                    }
+                if ($found && $found->uuid !== $entity->uuid) {
+                    throw new UsernameAlreadyExistsException();
                 }
-
-                if ($entity->isDirty('email')) {
-                    $found = User::firstWhere(['email' => $entity->email]);
-
-                    if ($found && $found->uuid !== $entity->uuid) {
-                        throw new EmailAlreadyExistsException();
-                    }
-                    if ($this->check_email($entity->email)) {
-                        throw new EmailBannedException();
-                    }
-                }
-
-                if ($entity->isDirty('phone')) {
-                    $found = User::firstWhere(['phone' => $entity->phone]);
-
-                    if ($found && $found->uuid !== $entity->uuid) {
-                        throw new PhoneAlreadyExistsException();
-                    }
-                }
-
-                $entity->save();
             }
+
+            if ($entity->isDirty('email')) {
+                $found = User::firstWhere(['email' => $entity->email]);
+
+                if ($found && $found->uuid !== $entity->uuid) {
+                    throw new EmailAlreadyExistsException();
+                }
+                if ($this->check_email($entity->email)) {
+                    throw new EmailBannedException();
+                }
+            }
+
+            if ($entity->isDirty('phone')) {
+                $found = User::firstWhere(['phone' => $entity->phone]);
+
+                if ($found && $found->uuid !== $entity->uuid) {
+                    throw new PhoneAlreadyExistsException();
+                }
+            }
+
+            $entity->save();
 
             return $entity;
         }

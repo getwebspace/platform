@@ -99,17 +99,7 @@ class DataService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, FormData::class)) {
-            $default = [
-                'form_uuid' => null,
-                'data' => null,
-                'message' => null,
-                'date' => null,
-            ];
-            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
-
-            if ($data !== $default) {
-                $entity->update($data);
-            }
+            $entity->update($data);
 
             return $entity;
         }

@@ -116,25 +116,17 @@ class SubscriberService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, UserSubscriber::class)) {
-            $default = [
-                'email' => null,
-                'date' => null,
-            ];
-            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
+            $entity->fill($data);
 
-            if ($data !== $default) {
-                $entity->fill($data);
+            if ($entity->isDirty('email')) {
+                $found = UserSubscriber::firstWhere(['email' => $entity->email]);
 
-                if ($entity->isDirty('email')) {
-                    $found = UserSubscriber::firstWhere(['email' => $entity->email]);
-
-                    if ($found && $found->uuid !== $entity->uuid) {
-                        throw new EmailAlreadyExistsException();
-                    }
+                if ($found && $found->uuid !== $entity->uuid) {
+                    throw new EmailAlreadyExistsException();
                 }
-
-                $entity->save();
             }
+
+            $entity->save();
 
             return $entity;
         }

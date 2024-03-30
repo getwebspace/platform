@@ -136,40 +136,25 @@ class FormService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, Form::class)) {
-            $default = [
-                'title' => null,
-                'address' => null,
-                'template' => null,
-                'templateFile' => null,
-                'recaptcha' => null,
-                'authorSend' => null,
-                'origin' => null,
-                'mailto' => null,
-                'duplicate' => null,
-            ];
-            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
+            $entity->fill($data);
 
-            if ($data !== $default) {
-                $entity->fill($data);
+            if ($entity->isDirty('title')) {
+                $found = Form::firstWhere(['title' => $entity->title]);
 
-                if ($entity->isDirty('title')) {
-                    $found = Form::firstWhere(['title' => $entity->title]);
-
-                    if ($found && $found->uuid !== $entity->uuid) {
-                        throw new TitleAlreadyExistsException();
-                    }
+                if ($found && $found->uuid !== $entity->uuid) {
+                    throw new TitleAlreadyExistsException();
                 }
-
-                if ($entity->isDirty('address')) {
-                    $found = Form::firstWhere(['address' => $entity->title]);
-
-                    if ($found && $found->uuid !== $entity->uuid) {
-                        throw new AddressAlreadyExistsException();
-                    }
-                }
-
-                $entity->save();
             }
+
+            if ($entity->isDirty('address')) {
+                $found = Form::firstWhere(['address' => $entity->title]);
+
+                if ($found && $found->uuid !== $entity->uuid) {
+                    throw new AddressAlreadyExistsException();
+                }
+            }
+
+            $entity->save();
 
             return $entity;
         }

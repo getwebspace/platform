@@ -134,30 +134,25 @@ class PageService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, Page::class)) {
-            $default = [
-                'title' => null,
-                'address' => null,
-                'content' => null,
-                'date' => null,
-                'meta' => null,
-                'template' => null,
-                'type' => null,
-            ];
-            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
+            $entity->fill($data);
 
-            if ($data !== $default) {
-                $entity->fill($data);
+            if ($entity->isDirty('title')) {
+                $found = Page::firstWhere(['title' => $entity->title]);
 
-                if (($found = Page::firstWhere(['title' => $entity->title])) !== null && $found->uuid !== $entity->uuid) {
+                if ($found && $found->uuid !== $entity->uuid) {
                     throw new TitleAlreadyExistsException();
                 }
+            }
 
-                if (($found = Page::firstWhere(['address' => $entity->address])) !== null && $found->uuid !== $entity->uuid) {
+            if ($entity->isDirty('address')) {
+                $found = Page::firstWhere(['address' => $entity->address]);
+
+                if ($found && $found->uuid !== $entity->uuid) {
                     throw new AddressAlreadyExistsException();
                 }
-
-                $entity->save();
             }
+
+            $entity->save();
 
             return $entity;
         }

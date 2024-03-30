@@ -147,41 +147,24 @@ class CategoryService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, PublicationCategory::class)) {
-            $default = [
-                'title' => null,
-                'address' => null,
-                'description' => null,
-                'parent' => null,
-                'parent_uuid' => null,
-                'pagination' => null,
-                'children' => null,
-                'public' => null,
-                'sort' => null,
-                'meta' => null,
-                'template' => null,
-            ];
-            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
+            $entity->fill($data);
 
-            if ($data !== $default) {
-                $entity->fill($data);
-
-                // if address generation is enabled
-                if ($data['address'] && $this->parameter('common_auto_generate_address', 'no') === 'yes') {
-                    $entity->address = implode('/', array_filter([$entity->parent->address ?? '', $entity->address ?? $entity->title ?? uniqid()], fn ($el) => (bool) $el));
-                }
-
-                if ($entity->isDirty('title') || $entity->isDirty('address')) {
-                    if (($found = PublicationCategory::firstWhere(['title' => $entity->title])) !== null && $found->uuid !== $entity->uuid) {
-                        throw new TitleAlreadyExistsException();
-                    }
-
-                    if (($found = PublicationCategory::firstWhere(['address' => $entity->address])) !== null && $found->uuid !== $entity->uuid) {
-                        throw new AddressAlreadyExistsException();
-                    }
-                }
-
-                $entity->save();
+            // if address generation is enabled
+            if ($data['address'] && $this->parameter('common_auto_generate_address', 'no') === 'yes') {
+                $entity->address = implode('/', array_filter([$entity->parent->address ?? '', $entity->address ?? $entity->title ?? uniqid()], fn ($el) => (bool) $el));
             }
+
+            if ($entity->isDirty('title') || $entity->isDirty('address')) {
+                if (($found = PublicationCategory::firstWhere(['title' => $entity->title])) !== null && $found->uuid !== $entity->uuid) {
+                    throw new TitleAlreadyExistsException();
+                }
+
+                if (($found = PublicationCategory::firstWhere(['address' => $entity->address])) !== null && $found->uuid !== $entity->uuid) {
+                    throw new AddressAlreadyExistsException();
+                }
+            }
+
+            $entity->save();
 
             return $entity;
         }

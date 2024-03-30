@@ -179,49 +179,26 @@ class CategoryService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, CatalogCategory::class)) {
-            $default = [
-                'parent' => null,
-                'parent_uuid' => null,
-                'children' => null,
-                'hidden' => null,
-                'title' => null,
-                'description' => null,
-                'address' => null,
-                'attributes' => null,
-                'status' => null,
-                'pagination' => null,
-                'order' => null,
-                'sort' => null,
-                'meta' => null,
-                'template' => null,
-                'external_id' => null,
-                'export' => null,
-                'system' => null,
-            ];
-            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
+            $entity->fill($data);
 
-            if ($data !== $default) {
-                $entity->fill($data);
-
-                // if address generation is enabled
-                if ($entity->isDirty('address') && $this->parameter('common_auto_generate_address', 'no') === 'yes') {
-                    $entity->address = implode('/', array_filter([$entity->parent->address ?? '', $entity->address ?? $entity->title ?? uniqid()], fn ($el) => (bool) $el));
-                }
-
-                if ($entity->isDirty('parent_uuid') || $entity->isDirty('address') || $entity->isDirty('external_id')) {
-                    // check unique
-                    $found = CatalogCategory::firstWhere([
-                        'parent_uuid' => $entity->parent_uuid,
-                        'address' => $entity->address,
-                        'external_id' => $entity->external_id
-                    ]);
-                    if ($found && $found->uuid !== $entity->uuid) {
-                        throw new AddressAlreadyExistsException();
-                    }
-                }
-
-                $entity->save();
+            // if address generation is enabled
+            if ($entity->isDirty('address') && $this->parameter('common_auto_generate_address', 'no') === 'yes') {
+                $entity->address = implode('/', array_filter([$entity->parent->address ?? '', $entity->address ?? $entity->title ?? uniqid()], fn ($el) => (bool) $el));
             }
+
+            if ($entity->isDirty('parent_uuid') || $entity->isDirty('address') || $entity->isDirty('external_id')) {
+                // check unique
+                $found = CatalogCategory::firstWhere([
+                    'parent_uuid' => $entity->parent_uuid,
+                    'address' => $entity->address,
+                    'external_id' => $entity->external_id
+                ]);
+                if ($found && $found->uuid !== $entity->uuid) {
+                    throw new AddressAlreadyExistsException();
+                }
+            }
+
+            $entity->save();
 
             return $entity;
         }

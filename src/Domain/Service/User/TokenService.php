@@ -101,19 +101,7 @@ class TokenService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, UserToken::class)) {
-            $default = [
-                'user' => null,
-                'unique' => null,
-                'comment' => null,
-                'ip' => null,
-                'agent' => null,
-                'date' => null,
-            ];
-            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
-
-            if ($data !== $default) {
-                $entity->update($data);
-            }
+            $entity->update($data);
 
             return $entity;
         }

@@ -109,20 +109,7 @@ class TaskService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, Task::class)) {
-            $default = [
-                'title' => null,
-                'action' => null,
-                'progress' => null,
-                'status' => null,
-                'params' => null,
-                'output' => null,
-                'date' => null,
-            ];
-            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
-
-            if ($data !== $default) {
-                $entity->update($data);
-            }
+            $entity->update($data);
 
             return $entity;
         }
