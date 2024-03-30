@@ -125,8 +125,12 @@ class SubscriberService extends AbstractService
             if ($data !== $default) {
                 $entity->fill($data);
 
-                if (($found = UserSubscriber::firstWhere(['email' => $entity->email])) !== null && $found->uuid !== $entity->uuid) {
-                    throw new EmailAlreadyExistsException();
+                if ($entity->isDirty('email')) {
+                    $found = UserSubscriber::firstWhere(['email' => $entity->email]);
+
+                    if ($found && $found->uuid !== $entity->uuid) {
+                        throw new EmailAlreadyExistsException();
+                    }
                 }
 
                 $entity->save();

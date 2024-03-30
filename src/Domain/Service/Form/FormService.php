@@ -152,12 +152,20 @@ class FormService extends AbstractService
             if ($data !== $default) {
                 $entity->fill($data);
 
-                if (($found = Form::firstWhere(['title' => $entity->title])) !== null && $found->uuid !== $entity->uuid) {
-                    throw new TitleAlreadyExistsException();
+                if ($entity->isDirty('title')) {
+                    $found = Form::firstWhere(['title' => $entity->title]);
+
+                    if ($found && $found->uuid !== $entity->uuid) {
+                        throw new TitleAlreadyExistsException();
+                    }
                 }
 
-                if (($found = Form::firstWhere(['address' => $entity->address])) !== null && $found->uuid !== $entity->uuid) {
-                    throw new AddressAlreadyExistsException();
+                if ($entity->isDirty('address')) {
+                    $found = Form::firstWhere(['address' => $entity->title]);
+
+                    if ($found && $found->uuid !== $entity->uuid) {
+                        throw new AddressAlreadyExistsException();
+                    }
                 }
 
                 $entity->save();

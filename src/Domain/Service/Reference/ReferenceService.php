@@ -138,8 +138,12 @@ class ReferenceService extends AbstractService
             if ($data !== $default) {
                 $entity->fill($data);
 
-                if (($found = Reference::firstWhere(['title' => $entity->title, 'type' => $entity->type])) !== null && $found->uuid !== $entity->uuid) {
-                    throw new TitleAlreadyExistsException();
+                if ($entity->isDirty('title') || $entity->isDirty('type')) {
+                    $found = Reference::firstWhere(['title' => $entity->title, 'type' => $entity->type]);
+
+                    if ($found && $found->uuid !== $entity->uuid) {
+                        throw new TitleAlreadyExistsException();
+                    }
                 }
 
                 $entity->save();

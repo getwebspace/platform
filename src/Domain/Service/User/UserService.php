@@ -276,7 +276,7 @@ class UserService extends AbstractService
             if ($data !== $default) {
                 $entity->fill($data);
 
-                if ($entity->username) {
+                if ($entity->isDirty('username')) {
                     $found = User::firstWhere(['username' => $entity->username]);
 
                     if ($found && $found->uuid !== $entity->uuid) {
@@ -284,7 +284,7 @@ class UserService extends AbstractService
                     }
                 }
 
-                if ($entity->email) {
+                if ($entity->isDirty('email')) {
                     $found = User::firstWhere(['email' => $entity->email]);
 
                     if ($found && $found->uuid !== $entity->uuid) {
@@ -295,7 +295,7 @@ class UserService extends AbstractService
                     }
                 }
 
-                if ($entity->phone) {
+                if ($entity->isDirty('phone')) {
                     $found = User::firstWhere(['phone' => $entity->phone]);
 
                     if ($found && $found->uuid !== $entity->uuid) {

@@ -84,7 +84,7 @@ class CategoryService extends AbstractService
             'address' => $category->address,
             'external_id' => $category->external_id
         ]);
-        if ($found !== null) {
+        if ($found) {
             throw new AddressAlreadyExistsException();
         }
 
@@ -224,7 +224,7 @@ class CategoryService extends AbstractService
                         'address' => $entity->address,
                         'external_id' => $entity->external_id
                     ]);
-                    if ($found !== null && $found->uuid !== $entity->uuid) {
+                    if ($found && $found->uuid !== $entity->uuid) {
                         throw new AddressAlreadyExistsException();
                     }
                 }

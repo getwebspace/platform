@@ -102,13 +102,7 @@ class ParameterService extends AbstractService
             $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
 
             if ($data !== $default) {
-                $entity->fill($data);
-
-                if (($found = Parameter::firstWhere(['name' => $entity->name])) !== null && $found->uuid !== $entity->uuid) {
-                    throw new ParameterAlreadyExistsException();
-                }
-
-                $entity->save();
+                $entity->update($data);
             }
 
             return $entity;
