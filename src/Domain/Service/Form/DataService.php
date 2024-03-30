@@ -21,19 +21,16 @@ class DataService extends AbstractService
      */
     public function create(array $data = []): FormData
     {
-        $default = [
-            'form_uuid' => '',
-            'data' => [],
-            'message' => '',
-            'date' => 'now',
-        ];
-        $data = array_merge($default, $data);
+        $formData = new FormData;
+        $formData->fill($data);
 
-        if (!$data['message'] && !$data['data']) {
+        if (!$formData->message && !$formData->data) {
             throw new MissingMessageValueException();
         }
 
-        return FormData::create($data);
+        $formData->save();
+
+        return $formData;
     }
 
     /**

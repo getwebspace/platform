@@ -130,8 +130,34 @@ class User extends Model
     ];
 
     protected $attributes = [
+        'email' => '',
+        'phone' => '',
+        'username' => '',
+        'firstname' => '',
+        'lastname' => '',
+        'patronymic' => '',
+        'birthdate' => '',
+        'gender' => '',
+        'country' => '',
+        'city' => '',
+        'address' => '',
+        'postcode' => '',
+        'company' => '{}',
+        'legal' => '{}',
+        'messenger' => '{}',
+        'website' => '',
+        'source' => '',
+        'register' => 'now',
+        'change' => 'now',
+        'language' => '',
+        'additional' => '',
+        'status' => \App\Domain\Casts\User\Status::WORK,
         'group_uuid' => null,
-        'status' => UserStatus::WORK,
+        'allow_mail' => true,
+        'password' => '',
+        'token' => [],
+        'auth_code' => '',
+        'external_id' => '',
     ];
 
     public function group(): HasOne

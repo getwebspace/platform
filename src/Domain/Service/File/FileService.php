@@ -107,17 +107,6 @@ class FileService extends AbstractService
      */
     public function create(array $data = []): File
     {
-        $default = [
-            'name' => '',
-            'ext' => '',
-            'type' => '',
-            'size' => '',
-            'hash' => '',
-            'salt' => uniqid(),
-            'date' => 'now',
-        ];
-        $data = array_merge($default, $data);
-
         $file = new File;
         $file->fill($data);
 

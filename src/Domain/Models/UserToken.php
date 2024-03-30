@@ -50,7 +50,12 @@ class UserToken extends Model
     ];
 
     protected $attributes = [
+        'user_uuid' => '',
+        'unique' => '',
         'comment' => '',
+        'ip' => '',
+        'agent' => '',
+        'date' => 'now',
     ];
 
     public function user(): HasOne

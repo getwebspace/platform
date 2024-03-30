@@ -66,9 +66,14 @@ class Form extends Model
     ];
 
     protected $attributes = [
+        'title' => '',
+        'address' => '',
+        'template' => '',
         'templateFile' => '',
         'recaptcha' => true,
         'authorSend' => false,
+        'origin' => '',
+        'mailto' => '',
         'duplicate' => '',
     ];
 

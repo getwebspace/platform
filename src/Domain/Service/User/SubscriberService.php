@@ -22,18 +22,12 @@ class SubscriberService extends AbstractService
      */
     public function create(array $data = []): UserSubscriber
     {
-        $default = [
-            'email' => '',
-            'date' => 'now',
-        ];
-        $data = array_merge($default, $data);
+        $userSubscriber = new UserSubscriber;
+        $userSubscriber->fill($data);
 
-        if (!$data['email']) {
+        if (!$userSubscriber->email) {
             throw new MissingUniqueValueException();
         }
-
-        $userSubscriber = new UserSubscriber();
-        $userSubscriber->fill($data);
 
         if (UserSubscriber::firstWhere(['email' => $userSubscriber->email]) !== null) {
             throw new EmailAlreadyExistsException();

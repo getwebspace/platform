@@ -27,27 +27,22 @@ class GuestBookService extends AbstractService
      */
     public function create(array $data = []): GuestBook
     {
-        $default = [
-            'name' => '',
-            'email' => '',
-            'message' => '',
-            'response' => '',
-            'status' => \App\Domain\Casts\GuestBook\Status::MODERATE,
-            'date' => 'now',
-        ];
-        $data = array_merge($default, $data);
+        $entry = new GuestBook;
+        $entry->fill($data);
 
-        if (!$data['name']) {
+        if (!$entry->name) {
             throw new MissingNameValueException();
         }
-        if (!$data['email']) {
+        if (!$entry->email) {
             throw new MissingEmailValueException();
         }
-        if (!$data['message']) {
+        if (!$entry->message) {
             throw new MissingMessageValueException();
         }
 
-        return GuestBook::create($data);
+        $entry->save();
+
+        return $entry;
     }
 
     /**

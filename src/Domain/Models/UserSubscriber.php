@@ -35,5 +35,8 @@ class UserSubscriber extends Model
         'date' => 'datetime',
     ];
 
-    protected $attributes = [];
+    protected $attributes = [
+        'email' => '',
+        'date' => 'now',
+    ];
 }

@@ -21,25 +21,20 @@ class TaskService extends AbstractService
      */
     public function create(array $data = []): Task
     {
-        $default = [
-            'title' => '',
-            'action' => '',
-            'progress' => 0,
-            'status' => \App\Domain\Casts\Task\Status::QUEUE,
-            'params' => [],
-            'output' => '',
-            'date' => 'now',
-        ];
-        $data = array_merge($default, $data);
+        $task = new Task;
+        $task->fill($data);
 
-        if (!$data['title']) {
+        if (!$task->title) {
             throw new MissingTitleValueException();
         }
-        if (!$data['action']) {
+
+        if (!$task->action) {
             throw new MissingActionValueException();
         }
 
-        return Task::create($data);
+        $task->save();
+
+        return $task;
     }
 
     /**

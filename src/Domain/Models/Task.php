@@ -59,6 +59,12 @@ class Task extends Model
     ];
 
     protected $attributes = [
+        'title' => '',
+        'action' => '',
         'progress' => .00,
+        'status' => \App\Domain\Casts\Task\Status::QUEUE,
+        'params' => '{}',
+        'output' => '',
+        'date' => 'now',
     ];
 }

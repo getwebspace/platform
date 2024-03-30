@@ -50,7 +50,12 @@ class FormData extends Model
         'date' => 'datetime',
     ];
 
-    protected $attributes = [];
+    protected $attributes = [
+        'form_uuid' => '',
+        'data' => '{}',
+        'message' => '',
+        'date' => 'now',
+    ];
 
     public function form(): HasOne
     {

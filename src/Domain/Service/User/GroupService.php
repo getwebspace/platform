@@ -23,19 +23,12 @@ class GroupService extends AbstractService
      */
     public function create(array $data = []): UserGroup
     {
-        $default = [
-            'title' => '',
-            'description' => '',
-            'access' => [],
-        ];
-        $data = array_merge($default, $data);
-
-        if (!$data['title']) {
-            throw new MissingTitleValueException();
-        }
-
         $userGroup = new UserGroup;
         $userGroup->fill($data);
+
+        if (!$userGroup->title) {
+            throw new MissingTitleValueException();
+        }
 
         if (UserGroup::firstWhere(['title' => $userGroup->title]) !== null) {
             throw new TitleAlreadyExistsException();

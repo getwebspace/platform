@@ -62,7 +62,14 @@ class File extends Model
     ];
 
     protected $attributes = [
+        'name' => '',
+        'ext' => '',
+        'type' => '',
+        'size' => '',
+        'salt' => '',
+        'hash' => '',
         'private' => false,
+        'date' => 'now',
     ];
 
     public function relations(): HasMany

@@ -66,10 +66,14 @@ class Publication extends Model
     ];
 
     protected $attributes = [
-        'content' => [
-            'short' => '',
-            'full' => '',
-        ],
+        'title' => '',
+        'address' => '',
+        'category_uuid' => null,
+        'user_uuid' => '',
+        'content' => '{}',
+        'meta' => '{}',
+        'date' => 'now',
+        'external_id' => '',
     ];
 
     public function category(): HasOne

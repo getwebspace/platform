@@ -59,7 +59,7 @@ class CatalogProduct extends Model
     protected $primaryKey = 'uuid';
 
     const CREATED_AT = 'date';
-    const UPDATED_AT = null;
+    const UPDATED_AT = 'date';
 
     protected $fillable = [
         'title',
@@ -125,7 +125,36 @@ class CatalogProduct extends Model
         'export' => 'string',
     ];
 
-    protected $attributes = [];
+    protected $attributes = [
+        'title' => '',
+        'description' => '',
+        'extra' => '',
+        'address' => '',
+        'type' => \App\Domain\Casts\Catalog\Product\Type::PRODUCT,
+        'category_uuid' => null,
+        'vendorcode' => '',
+        'barcode' => '',
+        'tax' => 0.0,
+        'priceFirst' => 0.0,
+        'price' => 0.0,
+        'priceWholesale' => 0.0,
+        'priceWholesaleFrom' => 0,
+        'discount' => 0.0,
+        'special' => false,
+        'dimension' => '{}',
+        'quantity' => 1.0,
+        'quantityMin' => 1.0,
+        'stock' => 0.0,
+        'country' => '',
+        'manufacturer' => '',
+        'tags' => '{}',
+        'order' => 1,
+        'status' => \App\Domain\Casts\Catalog\Status::WORK,
+        'date' => 'now',
+        'meta' => '{}',
+        'external_id' => '',
+        'export' => 'manual',
+    ];
 
     public function category(): HasOne
     {

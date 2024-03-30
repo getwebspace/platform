@@ -25,29 +25,17 @@ class FormService extends AbstractService
      */
     public function create(array $data = []): Form
     {
-        $default = [
-            'title' => '',
-            'address' => '',
-            'template' => '',
-            'templateFile' => '',
-            'recaptcha' => true,
-            'authorSend' => false,
-            'origin' => '',
-            'mailto' => '',
-            'duplicate' => '',
-        ];
-        $data = array_merge($default, $data);
-
-        if (!$data['title']) {
-            throw new MissingTitleValueException();
-        }
-
         $form = new Form;
         $form->fill($data);
+
+        if (!$form->title) {
+            throw new MissingTitleValueException();
+        }
 
         if (Form::firstWhere(['title' => $form->title]) !== null) {
             throw new TitleAlreadyExistsException();
         }
+
         if (Form::firstWhere(['address' => $form->address]) !== null) {
             throw new AddressAlreadyExistsException();
         }

@@ -56,6 +56,12 @@ class Page extends Model
     ];
 
     protected $attributes = [
-        'type' => PageType::HTML,
+        'title' => '',
+        'address' => '',
+        'content' => '',
+        'type' => \App\Domain\Casts\Page\Type::HTML,
+        'template' => '',
+        'meta' => '{}',
+        'date' => 'now',
     ];
 }

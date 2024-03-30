@@ -89,7 +89,23 @@ class CatalogCategory extends Model
         'external_id' => 'string',
     ];
 
-    protected $attributes = [];
+    protected $attributes = [
+        'title' => '',
+        'description' => '',
+        'address' => '',
+        'parent_uuid' => null,
+        'pagination' => 10,
+        'children' => false,
+        'hidden' => false,
+        'template' => '{}',
+        'meta' => '{}',
+        'sort' => '{}',
+        'status' => \App\Domain\Casts\Catalog\Status::WORK,
+        'order' => 1,
+        'system' => '',
+        'export' => 'manual',
+        'external_id' => '',
+    ];
 
     public function parent(): HasOne
     {

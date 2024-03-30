@@ -14,25 +14,18 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class TokenService extends AbstractService
 {
-
-
     public function create(array $data = []): UserToken
     {
-        $default = [
-            'user_uuid' => '',
-            'unique' => '',
-            'comment' => '',
-            'ip' => '',
-            'agent' => '',
-            'date' => 'now',
-        ];
-        $data = array_merge($default, $data);
+        $userToken = new UserToken;
+        $userToken->fill($data);
 
-        if (!$data['user_uuid']) {
+        if (!$userToken->user_uuid) {
             throw new \RuntimeException();
         }
 
-        return UserToken::create($data);
+        $userToken->save();
+
+        return $userToken;
     }
 
     /**

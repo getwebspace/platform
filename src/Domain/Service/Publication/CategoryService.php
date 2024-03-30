@@ -25,26 +25,12 @@ class CategoryService extends AbstractService
      */
     public function create(array $data = []): PublicationCategory
     {
-        $default = [
-            'title' => '',
-            'address' => '',
-            'description' => '',
-            'parent_uuid' => null,
-            'pagination' => 10,
-            'children' => false,
-            'public' => true,
-            'sort' => [],
-            'template' => [],
-            'meta' => [],
-        ];
-        $data = array_merge($default, $data);
-
-        if (!$data['title']) {
-            throw new MissingTitleValueException();
-        }
-
         $category = new PublicationCategory;
         $category->fill($data);
+
+        if (!$category->title) {
+            throw new MissingTitleValueException();
+        }
 
         // if address generation is enabled
         if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {

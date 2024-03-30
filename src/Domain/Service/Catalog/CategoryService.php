@@ -23,32 +23,16 @@ class CategoryService extends AbstractService
     public function create(array $data = []): CatalogCategory
     {
         $default = [
-            'parent_uuid' => null,
-            'children' => false,
-            'hidden' => false,
-            'title' => '',
-            'description' => '',
-            'address' => '',
-            'status' => \App\Domain\Casts\Catalog\Status::WORK,
-            'pagination' => 10,
-            'order' => 1,
-            'sort' => [],
-            'meta' => [],
-            'template' => [],
-            'external_id' => '',
-            'export' => 'manual',
-            'system' => '',
-
             'attributes' => [],
         ];
         $data = array_merge($default, $data);
 
-        if (!$data['title']) {
-            throw new MissingTitleValueException();
-        }
-
         $category = new CatalogCategory;
         $category->fill($data);
+
+        if (!$category->title) {
+            throw new MissingTitleValueException();
+        }
 
         // if address generation is enabled
         if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {

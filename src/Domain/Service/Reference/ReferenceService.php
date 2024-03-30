@@ -24,24 +24,16 @@ class ReferenceService extends AbstractService
      */
     public function create(array $data = []): Reference
     {
-        $default = [
-            'type' => '',
-            'title' => '',
-            'value' => [],
-            'order' => 1,
-            'status' => true,
-        ];
-        $data = array_merge($default, $data);
-
-        if (!$data['title']) {
-            throw new MissingTitleValueException();
-        }
-        if (!$data['type']) {
-            throw new MissingTypeValueException();
-        }
-
         $reference = new Reference;
         $reference->fill($data);
+
+        if (!$reference->title) {
+            throw new MissingTitleValueException();
+        }
+        
+        if (!$reference->type) {
+            throw new MissingTypeValueException();
+        }
 
         if (Reference::firstWhere(['title' => $reference->title, 'type' => $reference->type]) !== null) {
             throw new TitleAlreadyExistsException();

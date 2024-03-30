@@ -20,12 +20,6 @@ class ParameterService extends AbstractService
      */
     public function create(array $data = []): Parameter
     {
-        $default = [
-            'name' => '',
-            'value' => '',
-        ];
-        $data = array_merge($default, $data);
-
         $parameter = new Parameter;
         $parameter->fill($data);
 
@@ -57,7 +51,7 @@ class ParameterService extends AbstractService
                 $parameter = Parameter::firstWhere($criteria);
 
                 if (!$parameter) {
-                    $parameter = new Parameter();
+                    $parameter = new Parameter;
                     $parameter->name = $data['name'];
                     $parameter->value = $fallback;
                 }

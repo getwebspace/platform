@@ -52,6 +52,11 @@ class GuestBook extends Model
     ];
 
     protected $attributes = [
-        'status' => GuestBookStatus::MODERATE,
+        'name' => '',
+        'email' => '',
+        'message' => '',
+        'response' => '',
+        'status' => \App\Domain\Casts\GuestBook\Status::MODERATE,
+        'date' => 'now',
     ];
 }

@@ -47,7 +47,9 @@ class UserGroup extends Model
     ];
 
     protected $attributes = [
-        'access' => [],
+        'title' => '',
+        'description' => '',
+        'access' => '{}',
     ];
 
     public function users(): HasMany

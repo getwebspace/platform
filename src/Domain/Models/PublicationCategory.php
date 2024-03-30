@@ -74,7 +74,18 @@ class PublicationCategory extends Model
         'meta' => Meta::class,
     ];
 
-    protected $attributes = [];
+    protected $attributes = [
+        'title' => '',
+        'address' => '',
+        'parent_uuid' => null,
+        'description' => '',
+        'pagination' => 10,
+        'children' => false,
+        'public' => true,
+        'sort' => '{}',
+        'template' => '{}',
+        'meta' => '{}',
+    ];
 
     public function parent(): HasOne
     {

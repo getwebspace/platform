@@ -38,43 +38,12 @@ class UserService extends AbstractService
      */
     public function create(array $data = []): User
     {
-        $default = [
-            'username' => '',
-            'email' => '',
-            'phone' => '',
-            'password' => '',
-            'firstname' => '',
-            'lastname' => '',
-            'patronymic' => '',
-            'gender' => '',
-            'birthdate' => '',
-            'country' => '',
-            'city' => '',
-            'address' => '',
-            'postcode' => '',
-            'additional' => '',
-            'allow_mail' => true,
-            'status' => \App\Domain\Casts\User\Status::WORK,
-            'company' => [],
-            'legal' => [],
-            'messenger' => [],
-            'website' => '',
-            'source' => '',
-            'group' => null,
-            'group_uuid' => null,
-            'auth_code' => '',
-            'language' => '',
-            'external_id' => '',
-            'token' => [],
-        ];
-        $data = array_merge($default, $data);
+        $user = new User;
+        $user->fill($data);
 
-        if (!$data['username'] && !$data['email'] && !$data['phone']) {
+        if (!$user->username && !$user->email && !$user->phone) {
             throw new MissingUniqueValueException();
         }
-
-        $user = new User();
-        $user->fill($data);
 
         if ($user->username && User::firstWhere(['username' => $user->username]) !== null) {
             throw new UsernameAlreadyExistsException();

@@ -24,23 +24,12 @@ class PageService extends AbstractService
      */
     public function create(array $data = []): Page
     {
-        $default = [
-            'title' => '',
-            'address' => '',
-            'content' => '',
-            'date' => 'now',
-            'meta' => [],
-            'template' => '',
-            'type' => \App\Domain\Casts\Page\Type::HTML,
-        ];
-        $data = array_merge($default, $data);
-
-        if (!$data['title']) {
-            throw new MissingTitleValueException();
-        }
-
         $page = new Page;
         $page->fill($data);
+
+        if (!$page->title) {
+            throw new MissingTitleValueException();
+        }
 
         if (Page::firstWhere(['title' => $page->title]) !== null) {
             throw new TitleAlreadyExistsException();

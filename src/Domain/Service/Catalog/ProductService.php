@@ -21,49 +21,20 @@ class ProductService extends AbstractService
     public function create(array $data = []): CatalogProduct
     {
         $default = [
-            'title' => '',
-            'description' => '',
-            'extra' => '',
-            'address' => '',
-            'type' => \App\Domain\Casts\Catalog\Product\Type::PRODUCT,
-            'category_uuid' => null,
-            'vendorcode' => '',
-            'barcode' => '',
-            'tax' => 0.0,
-            'priceFirst' => 0.0,
-            'price' => 0.0,
-            'priceWholesale' => 0.0,
-            'priceWholesaleFrom' => 0,
-            'discount' => 0.0,
-            'special' => false,
-            'dimension' => [],
-            'quantity' => 1.0,
-            'quantityMin' => 1.0,
-            'stock' => 0.0,
-            'status' => \App\Domain\Casts\Catalog\Status::WORK,
-            'country' => '',
-            'manufacturer' => '',
-            'tags' => [],
-            'order' => 1,
-            'date' => 'now',
-            'meta' => [],
-            'external_id' => '',
-            'export' => 'manual',
-
             'attributes' => [],
             'relation' => [],
         ];
         $data = array_merge($default, $data);
 
-        if (!$data['title']) {
-            throw new MissingTitleValueException();
-        }
-        if (!$data['category_uuid']) {
-            throw new MissingCategoryValueException();
-        }
-
         $product = new CatalogProduct;
         $product->fill($data);
+
+        if (!$product->title) {
+            throw new MissingTitleValueException();
+        }
+        if (!$product->category_uuid) {
+            throw new MissingCategoryValueException();
+        }
 
         // if address generation is enabled
         if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {

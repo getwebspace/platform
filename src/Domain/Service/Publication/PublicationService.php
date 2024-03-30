@@ -25,28 +25,16 @@ class PublicationService extends AbstractService
      */
     public function create(array $data = []): Publication
     {
-        $default = [
-            'title' => '',
-            'address' => '',
-            'category_uuid' => null,
-            'user_uuid' => '',
-            'date' => 'now',
-            'content' => [],
-            'meta' => [],
-            'external_id' => '',
-        ];
-        $data = array_merge($default, $data);
+        $publication = new Publication;
+        $publication->fill($data);
 
-        if (!$data['title']) {
+        if (!$publication->title) {
             throw new MissingTitleValueException();
         }
 
-        if (!$data['category_uuid']) {
+        if (!$publication->category_uuid) {
             throw new MissingCategoryValueException();
         }
-
-        $publication = new Publication;
-        $publication->fill($data);
 
         // if address generation is enabled
         if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
