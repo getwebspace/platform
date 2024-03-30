@@ -155,7 +155,7 @@ class User extends Model
         'group_uuid' => null,
         'allow_mail' => true,
         'password' => '',
-        'token' => [],
+        'token' => '[]',
         'auth_code' => '',
         'external_id' => '',
     ];

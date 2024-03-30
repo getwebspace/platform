@@ -54,7 +54,9 @@ class ReferenceServiceTest extends TestCase
     {
         $this->expectException(MissingTypeValueException::class);
 
-        $this->service->create([]);
+        $this->service->create([
+            'title' => implode(' ', $this->getFaker()->words(3)),
+        ]);
     }
 
     public function testCreateWithMissingTitleValue(): void
