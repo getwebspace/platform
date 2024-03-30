@@ -69,7 +69,7 @@ class CategoryUpdateAction extends CatalogAction
                 return $this->respondWithTemplate('cup/catalog/category/form.twig', [
                     'categories' => $categories,
                     'attributes' => collect(), //$attributes,
-                    'category' => $category,
+                    'item' => $category,
                     'params' => $this->parameter(['catalog_category_template', 'catalog_product_template', 'catalog_category_pagination']),
                 ]);
             } catch (CategoryNotFoundException $e) {

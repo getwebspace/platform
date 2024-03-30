@@ -26,7 +26,7 @@
                                     'name': 'title',
                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Brief description of the category'|locale) ~ '"></i>',
                                     'args': {
-                                        'value': category.title,
+                                        'value': item.title,
                                         'required': true,
                                         'placeholder': 'Food',
                                     }
@@ -39,9 +39,9 @@
                                     'type': 'text',
                                     'name': 'address',
                                     'prefix': base_url() ~ '/' ~ parameter('catalog_address', 'catalog') ~ '/',
-                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Name of category. You can leave it blank, then the value will be generated automatically. It is allowed to use only Latin characters and numbers without spaces'|locale) ~ '"></i>',
+                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Name of item. You can leave it blank, then the value will be generated automatically. It is allowed to use only Latin characters and numbers without spaces'|locale) ~ '"></i>',
                                     'args': {
-                                        'value': category.address,
+                                        'value': item.address,
                                         'placeholder': 'food',
                                     }
                                 } %}
@@ -54,7 +54,7 @@
                                     'label': 'Category description'|locale,
                                     'name': 'description',
                                     'args': {
-                                        'value': category.description
+                                        'value': item.description
                                     }
                                 } %}
                             </div>
@@ -69,7 +69,7 @@
                                     'type': 'text',
                                     'name': 'pagination',
                                     'args': {
-                                        'value': category.pagination is not empty ? category.pagination : (params.catalog_category_pagination ?? '10'),
+                                        'value': item.pagination is not empty ? item.pagination : (params.catalog_category_pagination ?? '10'),
                                     }
                                 } %}
                             </div>
@@ -80,7 +80,7 @@
                                     'name': 'children',
                                     'args': {
                                         'option': _(['yes', 'no']),
-                                        'selected': category.children ? 'yes' : 'no'
+                                        'selected': item.children ? 'yes' : 'no'
                                     }
                                 } %}
                             </div>
@@ -90,8 +90,8 @@
                                     'type': 'select',
                                     'name': 'parent',
                                     'args': {
-                                        'option': {'': '---'}|merge(categories.whereNotIn('uuid', category.getNested(categories, true).pluck('uuid')).sortBy('title').pluck('title', 'uuid').all()),
-                                        'selected': category.parent_uuid ?? parent
+                                        'option': {'': '---'}|merge(categories.whereNotIn('uuid', item.nested(true).pluck('uuid')).sortBy('title').pluck('title', 'uuid')),
+                                        'selected': item.parent_uuid
                                     }
                                 } %}
                             </div>
@@ -102,7 +102,7 @@
                                     'name': 'hidden',
                                     'args': {
                                         'option': _(['yes', 'no']),
-                                        'selected': category.hidden ? 'yes' : 'no'
+                                        'selected': item.hidden ? 'yes' : 'no'
                                     }
                                 } %}
                             </div>
@@ -119,7 +119,7 @@
                                     'args': {
                                         'multiple': true,
                                         'option': attributes.sortBy('title').pluck('title', 'uuid').all(),
-                                        'selected': category.hasAttributes() ? category.getAttributes().pluck('uuid').all() : ''
+                                        'selected': item.hasAttributes() ? item.getAttributes().pluck('uuid').all() : ''
                                     }
                                 } %}
                             </div>
@@ -139,7 +139,7 @@
                                             'name': 'sort[by]',
                                             'args': {
                                                 'option': _(constant('/App/Domain/References/Catalog::ORDER_BY')),
-                                                'selected': category.sort['by'] ?? parameter('catalog_sort_by', 'title')
+                                                'selected': item.sort['by'] ?? parameter('catalog_sort_by', 'title')
                                             }
                                         } %}
                                     </div>
@@ -150,7 +150,7 @@
                                             'name': 'sort[direction]',
                                             'args': {
                                                 'option': _(constant('/App/Domain/References/Catalog::ORDER_DIRECTION')),
-                                                'selected': category.sort['direction'] ?? parameter('catalog_sort_direction', 'ASC')
+                                                'selected': item.sort['direction'] ?? parameter('catalog_sort_direction', 'ASC')
                                             }
                                         } %}
                                     </div>
@@ -162,9 +162,9 @@
                                             'label': 'Category template'|locale,
                                             'type': 'text',
                                             'name': 'template[category]',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('Specify the name of the template you want to use for this category or leave <b>catalog.category.twig</b>'|locale) ~ '"></i>',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('Specify the name of the template you want to use for this category or leave <b>catalog.item.twig</b>'|locale) ~ '"></i>',
                                             'args': {
-                                                'value': category.template.category is not empty ? category.template.category : (params.catalog_category_template ?? 'catalog.category.twig'),
+                                                'value': item.template.category is not empty ? item.template.category : (params.catalog_category_template ?? 'catalog.item.twig'),
                                                 'required': true,
                                             }
                                         } %}
@@ -176,7 +176,7 @@
                                             'name': 'template[product]',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('Specify the name of the template you want to use for products in this category or leave <b>catalog.product.twig</b>'|locale) ~ '"></i>',
                                             'args': {
-                                                'value': category.template.product is not empty ? category.template.product : (params.catalog_product_template ?? 'catalog.product.twig'),
+                                                'value': item.template.product is not empty ? item.template.product : (params.catalog_product_template ?? 'catalog.product.twig'),
                                                 'required': true,
                                             }
                                         } %}
@@ -190,7 +190,7 @@
                                             'type': 'number',
                                             'name': 'order',
                                             'args': {
-                                                'value': category.order ? category.order : '1',
+                                                'value': item.order ? item.order : '1',
                                                 'placeholder': '1',
                                                 'min': '0'
                                             }
@@ -202,7 +202,7 @@
                                             'name': 'external_id',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('System field. If you don\'t know what this field is for, it\'s best not to touch it.'|locale) ~ '"></i>',
                                             'args': {
-                                                'value': category.external_id,
+                                                'value': item.external_id,
                                             }
                                         } %}
                                     </div>
@@ -213,16 +213,16 @@
                                             'name': 'system',
                                             'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('System field. If you don\'t know what this field is for, it\'s best not to touch it.'|locale) ~ '"></i>',
                                             'args': {
-                                                'value': category.system,
+                                                'value': item.system,
                                                 'style': 'min-height: 133px;'
                                             }
                                         } %}
                                     </div>
                                 </div>
 
-                                {% include 'cup/form-image.twig' with { 'entity': category } %}
+                                {% include 'cup/form-image.twig' with { 'entity': item } %}
 
-                                {% include "cup/form-meta.twig" with { 'entity': category } %}
+                                {% include "cup/form-meta.twig" with { 'entity': item } %}
                             </div>
                         </div>
                     </div>
