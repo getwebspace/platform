@@ -216,7 +216,8 @@ class FileService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, File::class)) {
-            $entity->update($data);
+            $entity->fill($data);
+            $entity->save();
 
             return $entity;
         }

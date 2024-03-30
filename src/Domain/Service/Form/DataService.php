@@ -96,7 +96,8 @@ class DataService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, FormData::class)) {
-            $entity->update($data);
+            $entity->fill($data);
+            $entity->save();
 
             return $entity;
         }

@@ -89,7 +89,8 @@ class ParameterService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, Parameter::class)) {
-            $entity->update($data);
+            $entity->fill($data);
+            $entity->save();
 
             return $entity;
         }

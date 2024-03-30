@@ -104,7 +104,8 @@ class TaskService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, Task::class)) {
-            $entity->update($data);
+            $entity->fill($data);
+            $entity->save();
 
             return $entity;
         }
