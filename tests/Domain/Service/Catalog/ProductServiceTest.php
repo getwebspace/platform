@@ -2,7 +2,8 @@
 
 namespace tests\Domain\Service\Catalog;
 
-use App\Domain\Entities\Catalog\Product;
+use App\Domain\Models\CatalogCategory;
+use App\Domain\Models\CatalogProduct;
 use App\Domain\Repository\Catalog\ProductRepository;
 use App\Domain\Service\Catalog\CategoryService;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
@@ -21,25 +22,33 @@ class ProductServiceTest extends TestCase
 {
     protected ProductService $service;
 
-    protected CategoryService $categoryService;
+    /**
+     * @var CatalogCategory
+     */
+    protected $category;
 
     public function setUp(): void
     {
         parent::setUp();
 
         $this->service = $this->getService(ProductService::class);
-        $this->categoryService = $this->getService(CategoryService::class);
+
+        $this->category = $this->getService(CategoryService::class)->create([
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'description' => $this->getFaker()->text(255),
+        ]);
     }
 
     public function testCreateSuccess(): void
     {
         $data = [
-            'category' => $this->categoryService->create(['title' => $this->getFaker()->word]),
-            'title' => $this->getFaker()->word,
-            'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductTypeType::LIST),
+            'title' => implode(' ', $this->getFaker()->words(3)),
             'description' => $this->getFaker()->text(100),
             'extra' => $this->getFaker()->text(100),
-            'address' => $this->getFaker()->word,
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'type' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\ProductType::LIST),
+            'category_uuid' => $this->category->uuid,
             'vendorcode' => $this->getFaker()->word,
             'barcode' => $this->getFaker()->word,
             'tax' => $this->getFaker()->randomFloat(),
@@ -58,14 +67,14 @@ class ProductServiceTest extends TestCase
                 'weight_class' => $this->getFaker()->word,
             ],
             'stock' => $this->getFaker()->randomFloat(),
-            'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductStatusType::LIST),
+            'status' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\Status::LIST),
             'country' => $this->getFaker()->word,
             'manufacturer' => $this->getFaker()->word,
             'tags' => $this->getFaker()->words(5, false),
             'order' => $this->getFaker()->numberBetween(1, 10),
             'date' => $this->getFaker()->dateTime,
             'meta' => [
-                'title' => $this->getFaker()->word,
+                'title' => implode(' ', $this->getFaker()->words(3)),
                 'description' => $this->getFaker()->text,
                 'keywords' => $this->getFaker()->words(5, true),
             ],
@@ -74,62 +83,33 @@ class ProductServiceTest extends TestCase
         ];
 
         $product = $this->service->create($data);
-        $this->assertInstanceOf(Product::class, $product);
-        $this->assertEquals($data['category'], $product->getCategory());
-        $this->assertEquals($data['title'], $product->getTitle());
-        $this->assertEquals($data['type'], $product->getType());
-        $this->assertEquals($data['description'], $product->getDescription());
-        $this->assertEquals($data['extra'], $product->getExtra());
-        $this->assertEquals($data['address'], $product->getAddress());
-        $this->assertEquals($data['vendorcode'], $product->getVendorCode());
-        $this->assertEquals($data['barcode'], $product->getBarCode());
-        $this->assertEquals($data['tax'], $product->getTax());
-        $this->assertEquals($data['priceFirst'], $product->getPriceFirst());
-        $this->assertEquals($data['price'], $product->getPrice());
-        $this->assertEquals($data['priceWholesale'], $product->getPriceWholesale());
-        $this->assertEquals($data['priceWholesaleFrom'], $product->getPriceWholesaleFrom());
-        $this->assertEquals($data['discount'], $product->getDiscount());
-        $this->assertEquals($data['special'], $product->getSpecial());
-        $this->assertEquals($data['dimension'], $product->getDimension());
-        $this->assertEquals($data['stock'], $product->getStock());
-        $this->assertEquals($data['status'], $product->getStatus());
-        $this->assertEquals($data['country'], $product->getCountry());
-        $this->assertEquals($data['manufacturer'], $product->getManufacturer());
-        $this->assertEquals($data['tags'], $product->getTags());
-        $this->assertEquals($data['order'], $product->getOrder());
-        $this->assertEquals($data['date'], $product->getDate());
-        $this->assertEquals($data['meta'], $product->getMeta());
-        $this->assertEquals($data['external_id'], $product->getExternalId());
-        $this->assertEquals($data['export'], $product->getExport());
-
-        /** @var ProductRepository $productRepo */
-        $productRepo = $this->em->getRepository(Product::class);
-        $p = $productRepo->findOneByTitle($data['title']);
-        $this->assertInstanceOf(Product::class, $p);
-        $this->assertEquals($data['category'], $p->getCategory());
-        $this->assertEquals($data['title'], $p->getTitle());
-        $this->assertEquals($data['type'], $p->getType());
-        $this->assertEquals($data['description'], $p->getDescription());
-        $this->assertEquals($data['extra'], $p->getExtra());
-        $this->assertEquals($data['address'], $p->getAddress());
-        $this->assertEquals($data['vendorcode'], $p->getVendorCode());
-        $this->assertEquals($data['barcode'], $p->getBarCode());
-        $this->assertEquals($data['priceFirst'], $p->getPriceFirst());
-        $this->assertEquals($data['price'], $p->getPrice());
-        $this->assertEquals($data['priceWholesale'], $p->getPriceWholesale());
-        $this->assertEquals($data['priceWholesaleFrom'], $p->getPriceWholesaleFrom());
-        $this->assertEquals($data['discount'], $p->getDiscount());
-        $this->assertEquals($data['special'], $p->getSpecial());
-        $this->assertEquals($data['stock'], $p->getStock());
-        $this->assertEquals($data['status'], $p->getStatus());
-        $this->assertEquals($data['country'], $p->getCountry());
-        $this->assertEquals($data['manufacturer'], $p->getManufacturer());
-        $this->assertEquals($data['tags'], $p->getTags());
-        $this->assertEquals($data['order'], $p->getOrder());
-        $this->assertEquals($data['date'], $p->getDate());
-        $this->assertEquals($data['meta'], $p->getMeta());
-        $this->assertEquals($data['external_id'], $p->getExternalId());
-        $this->assertEquals($data['export'], $p->getExport());
+        $this->assertInstanceOf(CatalogProduct::class, $product);
+        $this->assertEquals($data['title'], $product->title);
+        $this->assertEquals($data['description'], $product->description);
+        $this->assertEquals($data['extra'], $product->extra);
+        $this->assertEquals($data['address'], $product->address);
+        $this->assertEquals($data['category_uuid'], $product->category_uuid);
+        $this->assertEquals($data['type'], $product->type);
+        $this->assertEquals($data['vendorcode'], $product->vendorcode);
+        $this->assertEquals($data['barcode'], $product->barcode);
+        $this->assertEquals($data['tax'], $product->tax);
+        $this->assertEquals($data['priceFirst'], $product->priceFirst);
+        $this->assertEquals($data['price'], $product->price);
+        $this->assertEquals($data['priceWholesale'], $product->priceWholesale);
+        $this->assertEquals($data['priceWholesaleFrom'], $product->priceWholesaleFrom);
+        $this->assertEquals($data['discount'], $product->discount);
+        $this->assertEquals($data['special'], $product->special);
+        $this->assertEquals($data['dimension'], $product->dimension);
+        $this->assertEquals($data['stock'], $product->stock);
+        $this->assertEquals($data['status'], $product->status);
+        $this->assertEquals($data['country'], $product->country);
+        $this->assertEquals($data['manufacturer'], $product->manufacturer);
+        $this->assertEquals($data['tags'], $product->tags);
+        $this->assertEquals($data['order'], $product->order);
+        $this->assertEquals($data['date'], $product->date);
+        $this->assertEquals($data['meta'], $product->meta);
+        $this->assertEquals($data['external_id'], $product->external_id);
+        $this->assertEquals($data['export'], $product->export);
     }
 
     public function testCreateWithMissingTitleValue(): void
@@ -144,86 +124,74 @@ class ProductServiceTest extends TestCase
         $this->expectException(AddressAlreadyExistsException::class);
 
         $data = [
-            'title' => $this->getFaker()->word,
-            'category' => $this->categoryService->create(['title' => $this->getFaker()->word]),
-            'address' => 'some-custom-address',
-            'date' => 'now',
-            'external_id' => $this->getFaker()->word,
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'category_uuid' => $this->category->uuid,
+            'dimension' => [
+                'length' => $this->getFaker()->randomFloat(),
+                'width' => $this->getFaker()->randomFloat(),
+                'height' => $this->getFaker()->randomFloat(),
+                'weight' => $this->getFaker()->randomFloat(),
+                'length_class' => $this->getFaker()->word,
+                'weight_class' => $this->getFaker()->word,
+            ],
         ];
 
-        $this->service->create($data);
+        CatalogProduct::create($data);
+
         $this->service->create($data);
     }
 
     public function testReadSuccess1(): void
     {
         $data = [
-            'title' => $this->getFaker()->word,
-            'category' => $this->categoryService->create(['title' => $this->getFaker()->word]),
-            'address' => 'some-custom-address',
-            'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductStatusType::LIST),
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'category_uuid' => $this->category->uuid,
         ];
 
         $this->service->create($data);
 
         $product = $this->service->read(['address' => $data['address']]);
-        $this->assertInstanceOf(Product::class, $product);
-        $this->assertEquals($data['title'], $product->getTitle());
-        $this->assertEquals($data['address'], $product->getAddress());
-        $this->assertEquals($data['status'], $product->getStatus());
+        $this->assertInstanceOf(CatalogProduct::class, $product);
+        $this->assertEquals($data['title'], $product->title);
+        $this->assertEquals($data['address'], $product->address);
     }
 
     public function testReadSuccess2(): void
     {
         $data = [
-            'title' => $this->getFaker()->word,
-            'category' => $this->categoryService->create(['title' => $this->getFaker()->word]),
-            'address' => 'some-custom-address',
-            'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductStatusType::LIST),
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'category_uuid' => $this->category->uuid,
             'external_id' => $this->getFaker()->postcode,
         ];
 
         $this->service->create($data);
 
         $product = $this->service->read(['external_id' => $data['external_id']]);
-        $this->assertInstanceOf(Product::class, $product);
-        $this->assertEquals($data['title'], $product->getTitle());
-        $this->assertEquals($data['address'], $product->getAddress());
-        $this->assertEquals($data['status'], $product->getStatus());
-        $this->assertEquals($data['external_id'], $product->getExternalId());
-    }
-
-    public function testReadSuccess3(): void
-    {
-        $data = [
-            'title' => $this->getFaker()->word,
-            'category' => $this->categoryService->create(['title' => $this->getFaker()->word]),
-            'address' => 'some-custom-address',
-            'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductStatusType::LIST),
-        ];
-
-        $this->service->create($data);
-
-        $product = $this->service->read(['status' => $data['status']]);
-        $this->assertInstanceOf(Collection::class, $product);
+        $this->assertInstanceOf(CatalogProduct::class, $product);
+        $this->assertEquals($data['title'], $product->title);
+        $this->assertEquals($data['address'], $product->address);
+        $this->assertEquals($data['external_id'], $product->external_id);
     }
 
     public function testReadWithProductNotFound(): void
     {
         $this->expectException(ProductNotFoundException::class);
 
-        $this->service->read(['address' => 'some-custom-address']);
+        $this->service->read(['address' => implode('-', $this->getFaker()->words(4))]);
     }
 
     public function testUpdate(): void
     {
         $product = $this->service->create([
-            'category' => $this->categoryService->create(['title' => $this->getFaker()->word]),
-            'title' => $this->getFaker()->word,
-            'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductTypeType::LIST),
+            'title' => implode(' ', $this->getFaker()->words(3)),
             'description' => $this->getFaker()->text(100),
             'extra' => $this->getFaker()->text(100),
-            'address' => $this->getFaker()->word,
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'type' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\ProductType::LIST),
+            'category_uuid' => $this->category->uuid,
             'vendorcode' => $this->getFaker()->word,
             'barcode' => $this->getFaker()->word,
             'priceFirst' => $this->getFaker()->randomFloat(),
@@ -242,14 +210,14 @@ class ProductServiceTest extends TestCase
                 'weight_class' => $this->getFaker()->word,
             ],
             'stock' => $this->getFaker()->randomFloat(),
-            'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductStatusType::LIST),
+            'status' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\Status::LIST),
             'country' => $this->getFaker()->word,
             'manufacturer' => $this->getFaker()->word,
             'tags' => $this->getFaker()->words(5, false),
             'order' => $this->getFaker()->numberBetween(1, 10),
             'date' => $this->getFaker()->dateTime,
             'meta' => [
-                'title' => $this->getFaker()->word,
+                'title' => implode(' ', $this->getFaker()->words(3)),
                 'description' => $this->getFaker()->text,
                 'keywords' => $this->getFaker()->words(5, true),
             ],
@@ -258,12 +226,12 @@ class ProductServiceTest extends TestCase
         ]);
 
         $data = [
-            'category' => $this->categoryService->create(['title' => $this->getFaker()->word]),
-            'title' => $this->getFaker()->word,
-            'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductTypeType::LIST),
+            'title' => implode(' ', $this->getFaker()->words(3)),
             'description' => $this->getFaker()->text(100),
             'extra' => $this->getFaker()->text(100),
-            'address' => $this->getFaker()->word,
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'type' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\ProductType::LIST),
+            'category_uuid' => $this->category->uuid,
             'vendorcode' => $this->getFaker()->word,
             'barcode' => $this->getFaker()->word,
             'priceFirst' => $this->getFaker()->randomFloat(),
@@ -282,14 +250,14 @@ class ProductServiceTest extends TestCase
                 'weight_class' => $this->getFaker()->word,
             ],
             'stock' => $this->getFaker()->randomFloat(),
-            'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductStatusType::LIST),
+            'status' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\Status::LIST),
             'country' => $this->getFaker()->word,
             'manufacturer' => $this->getFaker()->word,
             'tags' => $this->getFaker()->words(5, false),
             'order' => $this->getFaker()->numberBetween(1, 10),
             'date' => $this->getFaker()->dateTime,
             'meta' => [
-                'title' => $this->getFaker()->word,
+                'title' => implode(' ', $this->getFaker()->words(3)),
                 'description' => $this->getFaker()->text,
                 'keywords' => $this->getFaker()->words(5, true),
             ],
@@ -298,33 +266,33 @@ class ProductServiceTest extends TestCase
         ];
 
         $product = $this->service->update($product, $data);
-        $this->assertInstanceOf(Product::class, $product);
-        $this->assertEquals($data['category'], $product->getCategory());
-        $this->assertEquals($data['title'], $product->getTitle());
-        $this->assertEquals($data['type'], $product->getType());
-        $this->assertEquals($data['description'], $product->getDescription());
-        $this->assertEquals($data['extra'], $product->getExtra());
-        $this->assertEquals($data['address'], $product->getAddress());
-        $this->assertEquals($data['vendorcode'], $product->getVendorCode());
-        $this->assertEquals($data['barcode'], $product->getBarCode());
-        $this->assertEquals($data['priceFirst'], $product->getPriceFirst());
-        $this->assertEquals($data['price'], $product->getPrice());
-        $this->assertEquals($data['priceWholesale'], $product->getPriceWholesale());
-        $this->assertEquals($data['priceWholesaleFrom'], $product->getPriceWholesaleFrom());
-        $this->assertEquals($data['tax'], $product->getTax());
-        $this->assertEquals($data['discount'], $product->getDiscount());
-        $this->assertEquals($data['special'], $product->getSpecial());
-        $this->assertEquals($data['dimension'], $product->getDimension());
-        $this->assertEquals($data['stock'], $product->getStock());
-        $this->assertEquals($data['status'], $product->getStatus());
-        $this->assertEquals($data['country'], $product->getCountry());
-        $this->assertEquals($data['manufacturer'], $product->getManufacturer());
-        $this->assertEquals($data['tags'], $product->getTags());
-        $this->assertEquals($data['order'], $product->getOrder());
-        $this->assertNotEquals($data['date'], $product->getDate());
-        $this->assertEquals($data['meta'], $product->getMeta());
-        $this->assertEquals($data['external_id'], $product->getExternalId());
-        $this->assertEquals($data['export'], $product->getExport());
+        $this->assertInstanceOf(CatalogProduct::class, $product);
+        $this->assertEquals($data['title'], $product->title);
+        $this->assertEquals($data['description'], $product->description);
+        $this->assertEquals($data['extra'], $product->extra);
+        $this->assertEquals($data['address'], $product->address);
+        $this->assertEquals($data['category_uuid'], $product->category_uuid);
+        $this->assertEquals($data['type'], $product->type);
+        $this->assertEquals($data['vendorcode'], $product->vendorcode);
+        $this->assertEquals($data['barcode'], $product->barcode);
+        $this->assertEquals($data['tax'], $product->tax);
+        $this->assertEquals($data['priceFirst'], $product->priceFirst);
+        $this->assertEquals($data['price'], $product->price);
+        $this->assertEquals($data['priceWholesale'], $product->priceWholesale);
+        $this->assertEquals($data['priceWholesaleFrom'], $product->priceWholesaleFrom);
+        $this->assertEquals($data['discount'], $product->discount);
+        $this->assertEquals($data['special'], $product->special);
+        $this->assertEquals($data['dimension'], $product->dimension);
+        $this->assertEquals($data['stock'], $product->stock);
+        $this->assertEquals($data['status'], $product->status);
+        $this->assertEquals($data['country'], $product->country);
+        $this->assertEquals($data['manufacturer'], $product->manufacturer);
+        $this->assertEquals($data['tags'], $product->tags);
+        $this->assertEquals($data['order'], $product->order);
+//      $this->assertEquals($data['date'], $product->date);
+        $this->assertEquals($data['meta'], $product->meta);
+        $this->assertEquals($data['external_id'], $product->external_id);
+        $this->assertEquals($data['export'], $product->export);
     }
 
     public function testUpdateWithProductNotFound(): void
@@ -337,10 +305,9 @@ class ProductServiceTest extends TestCase
     public function testDeleteSuccess(): void
     {
         $product = $this->service->create([
-            'title' => $this->getFaker()->word,
-            'category' => $this->categoryService->create(['title' => $this->getFaker()->word]),
-            'address' => 'some-custom-address',
-            'status' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\ProductStatusType::LIST),
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'category_uuid' => $this->category->uuid,
         ]);
 
         $result = $this->service->delete($product);

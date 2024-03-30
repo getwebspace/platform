@@ -31,15 +31,8 @@ class PublicationService extends AbstractService
             'category_uuid' => null,
             'user_uuid' => '',
             'date' => 'now',
-            'content' => [
-                'short' => '',
-                'full' => '',
-            ],
-            'meta' => [
-                'title' => '',
-                'description' => '',
-                'keywords' => '',
-            ],
+            'content' => [],
+            'meta' => [],
             'external_id' => '',
         ];
         $data = array_merge($default, $data);

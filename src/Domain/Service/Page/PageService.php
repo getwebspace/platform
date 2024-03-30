@@ -29,11 +29,7 @@ class PageService extends AbstractService
             'address' => '',
             'content' => '',
             'date' => 'now',
-            'meta' => [
-                'title' => '',
-                'description' => '',
-                'keywords' => '',
-            ],
+            'meta' => [],
             'template' => '',
             'type' => \App\Domain\Casts\Page\Type::HTML,
         ];

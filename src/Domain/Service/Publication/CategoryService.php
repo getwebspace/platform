@@ -33,20 +33,9 @@ class CategoryService extends AbstractService
             'pagination' => 10,
             'children' => false,
             'public' => true,
-            'sort' => [
-                'by' => '',
-                'direction' => '',
-            ],
-            'template' => [
-                'list' => '',
-                'short' => '',
-                'full' => '',
-            ],
-            'meta' => [
-                'title' => '',
-                'description' => '',
-                'keywords' => '',
-            ],
+            'sort' => [],
+            'template' => [],
+            'meta' => [],
         ];
         $data = array_merge($default, $data);
 

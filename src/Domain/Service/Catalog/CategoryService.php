@@ -29,26 +29,17 @@ class CategoryService extends AbstractService
             'title' => '',
             'description' => '',
             'address' => '',
-            'attributes' => [],
             'status' => \App\Domain\Casts\Catalog\Status::WORK,
             'pagination' => 10,
             'order' => 1,
-            'sort' => [
-                'by' => '',
-                'direction' => '',
-            ],
-            'meta' => [
-                'title' => '',
-                'description' => '',
-                'keywords' => '',
-            ],
-            'template' => [
-                'category' => '',
-                'product' => '',
-            ],
+            'sort' => [],
+            'meta' => [],
+            'template' => [],
             'external_id' => '',
             'export' => 'manual',
             'system' => '',
+
+            'attributes' => [],
         ];
         $data = array_merge($default, $data);
 

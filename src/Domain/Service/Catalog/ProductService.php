@@ -3,54 +3,36 @@
 namespace App\Domain\Service\Catalog;
 
 use App\Domain\AbstractService;
-use App\Domain\Entities\Catalog\Category as CatalogCategory;
-use App\Domain\Entities\Catalog\Product;
+use App\Domain\Models\CatalogCategory;
+use App\Domain\Models\CatalogProduct;
 use App\Domain\Repository\Catalog\ProductRepository;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
+use App\Domain\Service\Catalog\Exception\CategoryNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingCategoryValueException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\ProductNotFoundException;
 use App\Domain\Service\Catalog\ProductAttributeService as CatalogProductAttributeService;
 use App\Domain\Service\Catalog\ProductRelationService as CatalogProductRelationService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class ProductService extends AbstractService
 {
     /**
-     * @var ProductRepository
-     */
-    protected mixed $service;
-
-    protected CatalogCategoryService $catalogCategoryService;
-
-    protected CatalogProductAttributeService $catalogProductAttributeService;
-
-    protected CatalogProductRelationService $catalogProductRelationService;
-
-    protected function init(): void
-    {
-        $this->service = $this->entityManager->getRepository(Product::class);
-        $this->catalogCategoryService = $this->container->get(CatalogCategoryService::class);
-        $this->catalogProductAttributeService = $this->container->get(CatalogProductAttributeService::class);
-        $this->catalogProductRelationService = $this->container->get(CatalogProductRelationService::class);
-    }
-
-    /**
      * @throws MissingTitleValueException
      * @throws AddressAlreadyExistsException
      */
-    public function create(array $data = []): Product
+    public function create(array $data = []): CatalogProduct
     {
         $default = [
-            'category' => null,
-            'category_uuid' => null,
             'title' => '',
-            'type' => \App\Domain\Types\Catalog\ProductTypeType::TYPE_PRODUCT,
             'description' => '',
             'extra' => '',
             'address' => '',
+            'type' => \App\Domain\Casts\Catalog\ProductType::PRODUCT,
+            'category_uuid' => null,
             'vendorcode' => '',
             'barcode' => '',
             'tax' => 0.0,
@@ -64,17 +46,13 @@ class ProductService extends AbstractService
             'quantity' => 1.0,
             'quantityMin' => 1.0,
             'stock' => 0.0,
-            'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+            'status' => \App\Domain\Casts\Catalog\Status::WORK,
             'country' => '',
             'manufacturer' => '',
             'tags' => [],
             'order' => 1,
             'date' => 'now',
-            'meta' => [
-                'title' => '',
-                'description' => '',
-                'keywords' => '',
-            ],
+            'meta' => [],
             'external_id' => '',
             'export' => 'manual',
 
@@ -86,77 +64,36 @@ class ProductService extends AbstractService
         if (!$data['title']) {
             throw new MissingTitleValueException();
         }
-        if (!$data['category'] && !$data['category_uuid']) {
+        if (!$data['category_uuid']) {
             throw new MissingCategoryValueException();
         }
 
-        // retrieve category by uuid
-        if (!is_a($data['category'], CatalogCategory::class) && $data['category_uuid']) {
-            $data['category'] = $this->catalogCategoryService->read(['uuid' => $data['category_uuid']]);
-        }
-
-        $product = (new Product())
-            ->setCategory($data['category'])
-            ->setTitle($data['title'])
-            ->setType($data['type'])
-            ->setDescription($data['description'])
-            ->setExtra($data['extra'])
-            ->setAddress($data['address'])
-            ->setVendorCode($data['vendorcode'])
-            ->setBarCode($data['barcode'])
-            ->setTax((float) $data['tax'])
-            ->setPriceFirst((float) $data['priceFirst'])
-            ->setPrice((float) $data['price'])
-            ->setPriceWholesale((float) $data['priceWholesale'])
-            ->setPriceWholesaleFrom((float) $data['priceWholesaleFrom'])
-            ->setDiscount((float) $data['discount'])
-            ->setSpecial($data['special'])
-            ->setDimension($data['dimension'])
-            ->setQuantity((float) $data['quantity'])
-            ->setQuantityMin((float) $data['quantityMin'])
-            ->setStock((float) $data['stock'])
-            ->setStatus($data['status'])
-            ->setCountry($data['country'])
-            ->setManufacturer($data['manufacturer'])
-            ->setTags($data['tags'])
-            ->setOrder((int) $data['order'])
-            ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'))
-            ->setMeta($data['meta'])
-            ->setExternalId($data['external_id'])
-            ->setExport($data['export']);
+        $product = new CatalogProduct;
+        $product->fill($data);
 
         // if address generation is enabled
         if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
-            $product->setAddress(
-                implode('/', array_filter(
-                    [
-                        $product->getCategory()->getAddress(),
-                        $product->setAddress('')->getAddress(),
-                    ],
-                    fn ($el) => (bool) $el
-                ))
-            );
+            $product->address = implode('/', array_filter([$product->category->address ?? '', $product->address ?? $product->title ?? uniqid()], fn ($el) => (bool) $el));
         }
 
-        $found = $this->service->findOneUnique(
-            $product->getCategory()->getUuid()->toString(),
-            $product->getAddress(),
-            $product->getDimension(),
-            $product->getExternalId()
-        );
-        if ($found !== null) {
+        // check unique
+        $found = CatalogProduct::firstWhere([
+            'category_uuid' => $product->getAttributes()['category_uuid'],
+            'address' => $product->getAttributes()['address'],
+            'dimension' => $product->getAttributes()['dimension'],
+            'external_id' => $product->getAttributes()['external_id'],
+        ]);
+        if ($found) {
             throw new AddressAlreadyExistsException();
         }
 
-        $this->entityManager->persist($product);
+        $product->save();
 
         // add attributes
-        $this->catalogProductAttributeService->process($product, $data['attributes']);
+        //$this->catalogProductAttributeService->process($product, $data['attributes']);
 
         // add relation products
-        $this->catalogProductRelationService->process($product, $data['relation']);
-
-        $this->entityManager->flush();
+        //$this->catalogProductRelationService->process($product, $data['relation']);
 
         return $product;
     }
@@ -164,7 +101,7 @@ class ProductService extends AbstractService
     /**
      * @throws ProductNotFoundException
      *
-     * @return Collection|Product
+     * @return Collection|CatalogProduct
      */
     public function read(array $data = [])
     {
@@ -219,49 +156,53 @@ class ProductService extends AbstractService
             $criteria['export'] = $data['export'];
         }
 
-        try {
-            switch (true) {
-                case !is_array($data['uuid']) && $data['uuid'] !== null:
-                case !is_array($data['address']) && $data['address'] !== null:
-                case !is_array($data['vendorcode']) && $data['vendorcode'] !== null:
-                case !is_array($data['barcode']) && $data['barcode'] !== null:
-                case !is_array($data['external_id']) && $data['external_id'] !== null:
-                    $product = $this->service->findOneBy($criteria);
+        switch (true) {
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
+            case !is_array($data['title']) && $data['title'] !== null:
+            case !is_array($data['address']) && $data['address'] !== null:
+            case !is_array($data['vendorcode']) && $data['vendorcode'] !== null:
+            case !is_array($data['barcode']) && $data['barcode'] !== null:
+            case !is_array($data['external_id']) && $data['external_id'] !== null:
+                /** @var CatalogProduct $catalogProduct */
+                $catalogProduct = CatalogProduct::firstWhere($criteria);
 
-                    if (empty($product)) {
-                        throw new ProductNotFoundException();
-                    }
+                return $catalogProduct ?: throw new ProductNotFoundException();
 
-                    return $product;
+            default:
+                $query = CatalogProduct::where($criteria);
+                /** @var Builder $query */
 
-                case !is_array($data['title']) && $data['title'] !== null:
-                    return collect($this->service->findByTitle($data['title'], $data['limit'], $data['offset']));
+                foreach ($data['order'] as $column => $direction) {
+                    $query = $query->orderBy($column, $direction);
+                }
+                if ($data['limit']) {
+                    $query = $query->limit($data['limit']);
+                }
+                if ($data['offset']) {
+                    $query = $query->offset($data['offset']);
+                }
 
-                default:
-                    return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
-            }
-        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
-            return null;
+                return $query->get();
         }
     }
 
     /**
-     * @param Product|string|Uuid $entity
+     * @param CatalogProduct|string|Uuid $entity
      *
      * @throws AddressAlreadyExistsException
      * @throws ProductNotFoundException
      */
-    public function update($entity, array $data = []): Product
+    public function update($entity, array $data = []): CatalogProduct
     {
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
 
-        if (is_object($entity) && is_a($entity, Product::class)) {
+        if (is_object($entity) && is_a($entity, CatalogProduct::class)) {
             $default = [
                 'category' => null,
                 'category_uuid' => null,
@@ -295,128 +236,39 @@ class ProductService extends AbstractService
                 'attributes' => null,
                 'relation' => null,
             ];
-            $data = array_merge($default, $data);
+            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
 
             if ($data !== $default) {
-                if ($data['category'] !== null || $data['category_uuid'] !== null) {
-                    // retrieve category by uuid
-                    if (!is_a($data['category'], CatalogCategory::class) && $data['category_uuid']) {
-                        $data['category'] = $this->catalogCategoryService->read(['uuid' => $data['category_uuid']]);
-                    }
+                $entity->fill($data);
 
-                    $entity->setCategory($data['category']);
-                }
-                if ($data['title'] !== null) {
-                    $entity->setTitle($data['title']);
-                }
-                if ($data['type'] !== null) {
-                    $entity->setType($data['type']);
-                }
-                if ($data['description'] !== null) {
-                    $entity->setDescription($data['description']);
-                }
-                if ($data['extra'] !== null) {
-                    $entity->setExtra($data['extra']);
-                }
-                if ($data['vendorcode'] !== null) {
-                    $entity->setVendorCode($data['vendorcode']);
-                }
-                if ($data['barcode'] !== null) {
-                    $entity->setBarCode($data['barcode']);
-                }
-                if ($data['tax'] !== null) {
-                    $entity->setTax((float) $data['tax']);
-                }
-                if ($data['priceFirst'] !== null) {
-                    $entity->setPriceFirst((float) $data['priceFirst']);
-                }
-                if ($data['price'] !== null) {
-                    $entity->setPrice((float) $data['price']);
-                }
-                if ($data['priceWholesale'] !== null) {
-                    $entity->setPriceWholesale((float) $data['priceWholesale']);
-                }
-                if ($data['priceWholesaleFrom'] !== null) {
-                    $entity->setPriceWholesaleFrom((float) $data['priceWholesaleFrom']);
-                }
-                if ($data['discount'] !== null) {
-                    $entity->setDiscount((float) $data['discount']);
-                }
-                if ($data['special'] !== null) {
-                    $entity->setSpecial($data['special']);
-                }
-                if ($data['dimension'] !== null) {
-                    $entity->setDimension($data['dimension']);
-                }
-                if ($data['quantity'] !== null) {
-                    $entity->setQuantity((float) $data['quantity']);
-                }
-                if ($data['quantityMin'] !== null) {
-                    $entity->setQuantityMin((float) $data['quantityMin']);
-                }
-                if ($data['stock'] !== null) {
-                    $entity->setStock((float) $data['stock']);
-                }
-                if ($data['status'] !== null) {
-                    $entity->setStatus($data['status']);
-                }
-                if ($data['country'] !== null) {
-                    $entity->setCountry($data['country']);
-                }
-                if ($data['manufacturer'] !== null) {
-                    $entity->setManufacturer($data['manufacturer']);
-                }
-                if ($data['tags'] !== null) {
-                    $entity->setTags($data['tags']);
-                }
-                if ($data['order'] !== null) {
-                    $entity->setOrder((int) $data['order']);
-                }
-                if ($data['meta'] !== null) {
-                    $entity->setMeta($data['meta']);
-                }
-                if ($data['external_id'] !== null) {
-                    $entity->setExternalId($data['external_id']);
-                }
-                if ($data['export'] !== null) {
-                    $entity->setExport($data['export']);
-                }
-                if ($data['attributes'] !== null) {
-                    // update attributes
-                    $this->catalogProductAttributeService->process($entity, $data['attributes']);
-                }
-                if ($data['relation'] !== null) {
-                    // update relation products
-                    $this->catalogProductRelationService->process($entity, $data['relation']);
-                }
                 // if address generation is enabled
-                if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
-                    $data['address'] = implode('/', array_filter(
-                        [
-                            $entity->getCategory()->getAddress(),
-                            $entity->setAddress('')->getAddress(),
-                        ],
-                        fn ($el) => (bool) $el
-                    ));
+                if ($entity->isDirty('address') && $this->parameter('common_auto_generate_address', 'no') === 'yes') {
+                    $entity->address = implode('/', array_filter([$entity->category->address ?? '', $entity->address ?? $entity->title ?? uniqid()], fn ($el) => (bool) $el));
                 }
-                if ($data['address'] !== null) {
-                    $found = $this->service->findOneUnique(
-                        $entity->getCategory()->getUuid()->toString(),
-                        $entity->getAddress(),
-                        $entity->getDimension(),
-                        $entity->getExternalId()
-                    );
 
-                    if ($found === null || $found === $entity) {
-                        $entity->setAddress($data['address']);
-                    } else {
+                if ($entity->isDirty('category_uuid') || $entity->isDirty('address') || $entity->isDirty('dimension') || $entity->isDirty('external_id')) {
+                    // check unique
+                    $found = CatalogProduct::firstWhere([
+                        'category_uuid' => $entity->getAttributes()['category_uuid'],
+                        'address' => $entity->getAttributes()['address'],
+                        'dimension' => $entity->getAttributes()['dimension'],
+                        'external_id' => $entity->getAttributes()['external_id'],
+                    ]);
+                    if ($found && $found->uuid !== $entity->uuid) {
                         throw new AddressAlreadyExistsException();
                     }
                 }
 
-                $entity->setDate('now', $this->parameter('common_timezone', 'UTC'));
+//                if ($data['attributes'] !== null) {
+//                    // update attributes
+//                    $this->catalogProductAttributeService->process($entity, $data['attributes']);
+//                }
+//                if ($data['relation'] !== null) {
+//                    // update relation products
+//                    $this->catalogProductRelationService->process($entity, $data['relation']);
+//                }
 
-                $this->entityManager->flush();
+                $entity->save();
             }
 
             return $entity;
@@ -426,7 +278,7 @@ class ProductService extends AbstractService
     }
 
     /**
-     * @param Product|string|Uuid $entity
+     * @param CatalogProduct|string|Uuid $entity
      *
      * @throws ProductNotFoundException
      */
@@ -435,14 +287,14 @@ class ProductService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
 
-        if (is_object($entity) && is_a($entity, Product::class)) {
-            $this->entityManager->remove($entity);
-            $this->entityManager->flush();
+        if (is_object($entity) && is_a($entity, CatalogProduct::class)) {
+            $entity->files()->detach();
+            $entity->delete();
 
             return true;
         }

@@ -104,7 +104,8 @@ class CategoryServiceTest extends TestCase
             'address' => implode('-', $this->getFaker()->words(4)),
         ];
 
-        $this->service->create($data);
+        CatalogCategory::create($data);
+
         $this->service->create($data);
     }
 
