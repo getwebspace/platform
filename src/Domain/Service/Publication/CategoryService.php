@@ -154,12 +154,18 @@ class CategoryService extends AbstractService
                 $entity->address = implode('/', array_filter([$entity->parent->address ?? '', $entity->address ?? $entity->title ?? uniqid()], fn ($el) => (bool) $el));
             }
 
-            if ($entity->isDirty('title') || $entity->isDirty('address')) {
-                if (($found = PublicationCategory::firstWhere(['title' => $entity->title])) !== null && $found->uuid !== $entity->uuid) {
+            if ($entity->isDirty('title')) {
+                $found = PublicationCategory::firstWhere(['title' => $entity->title]);
+
+                if ($found && $found->uuid !== $entity->uuid) {
                     throw new TitleAlreadyExistsException();
                 }
+            }
 
-                if (($found = PublicationCategory::firstWhere(['address' => $entity->address])) !== null && $found->uuid !== $entity->uuid) {
+            if ($entity->isDirty('address')) {
+                $found = PublicationCategory::firstWhere(['address' => $entity->address]);
+
+                if ($found && $found->uuid !== $entity->uuid) {
                     throw new AddressAlreadyExistsException();
                 }
             }
