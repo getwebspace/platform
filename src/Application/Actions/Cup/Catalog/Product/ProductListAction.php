@@ -11,11 +11,8 @@ class ProductListAction extends CatalogAction
         $category = null;
 
         if (!empty($this->args['category'])) {
-            if (
-                $this->resolveArg('category') !== \Ramsey\Uuid\Uuid::NIL
-                && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('category'))
-            ) {
-                /** @var \App\Domain\Entities\Catalog\Category $category */
+            if (\Ramsey\Uuid\Uuid::isValid($this->resolveArg('category'))) {
+                /** @var \App\Domain\Models\CatalogCategory $category */
                 $category = $this->catalogCategoryService->read([
                     'uuid' => $this->resolveArg('category'),
                     'status' => \App\Domain\Casts\Catalog\Status::WORK,
@@ -29,8 +26,8 @@ class ProductListAction extends CatalogAction
             'status' => \App\Domain\Casts\Catalog\Status::WORK,
         ]);
         $products = $this->catalogProductService->read([
-            'category_uuid' => $category ? $category->getNested($categories)->pluck('uuid')->all() : null,
-            'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+            'category_uuid' => $category?->uuid,
+            'status' => \App\Domain\Casts\Catalog\Status::WORK,
             'order' => [
                 'category' => 'ASC',
                 'order' => 'ASC',
@@ -40,7 +37,6 @@ class ProductListAction extends CatalogAction
 
         return $this->respondWithTemplate('cup/catalog/product/index.twig', [
             'categories' => $categories,
-            'category' => $category,
             'products' => $products,
         ]);
     }

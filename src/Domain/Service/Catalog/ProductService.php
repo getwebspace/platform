@@ -3,17 +3,11 @@
 namespace App\Domain\Service\Catalog;
 
 use App\Domain\AbstractService;
-use App\Domain\Models\CatalogCategory;
 use App\Domain\Models\CatalogProduct;
-use App\Domain\Repository\Catalog\ProductRepository;
-use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
-use App\Domain\Service\Catalog\Exception\CategoryNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingCategoryValueException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\ProductNotFoundException;
-use App\Domain\Service\Catalog\ProductAttributeService as CatalogProductAttributeService;
-use App\Domain\Service\Catalog\ProductRelationService as CatalogProductRelationService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
@@ -31,7 +25,7 @@ class ProductService extends AbstractService
             'description' => '',
             'extra' => '',
             'address' => '',
-            'type' => \App\Domain\Casts\Catalog\ProductType::PRODUCT,
+            'type' => \App\Domain\Casts\Catalog\Product\Type::PRODUCT,
             'category_uuid' => null,
             'vendorcode' => '',
             'barcode' => '',
@@ -146,7 +140,7 @@ class ProductService extends AbstractService
         if ($data['special'] !== null) {
             $criteria['special'] = (bool) $data['special'];
         }
-        if ($data['status'] !== null && in_array($data['status'], \App\Domain\Types\Catalog\ProductStatusType::LIST, true)) {
+        if ($data['status'] !== null && in_array($data['status'], \App\Domain\Casts\Catalog\Status::LIST, true)) {
             $criteria['status'] = $data['status'];
         }
         if ($data['external_id'] !== null) {
@@ -203,61 +197,25 @@ class ProductService extends AbstractService
         }
 
         if (is_object($entity) && is_a($entity, CatalogProduct::class)) {
-            $default = [
-                'category' => null,
-                'category_uuid' => null,
-                'title' => null,
-                'type' => null,
-                'description' => null,
-                'extra' => null,
-                'address' => null,
-                'vendorcode' => null,
-                'barcode' => null,
-                'tax' => null,
-                'priceFirst' => null,
-                'price' => null,
-                'priceWholesale' => null,
-                'priceWholesaleFrom' => null,
-                'discount' => null,
-                'special' => null,
-                'dimension' => null,
-                'quantity' => null,
-                'quantityMin' => null,
-                'stock' => null,
-                'status' => null,
-                'country' => null,
-                'manufacturer' => null,
-                'tags' => null,
-                'order' => null,
-                'meta' => null,
-                'external_id' => null,
-                'export' => null,
+            $entity->fill($data);
 
-                'attributes' => null,
-                'relation' => null,
-            ];
-            $data = array_filter(array_merge($default, $data), fn ($v) => $v !== null);
+            // if address generation is enabled
+            if ($entity->isDirty('address') && $this->parameter('common_auto_generate_address', 'no') === 'yes') {
+                $entity->address = implode('/', array_filter([$entity->category->address ?? '', $entity->address ?? $entity->title ?? uniqid()], fn ($el) => (bool) $el));
+            }
 
-            if ($data !== $default) {
-                $entity->fill($data);
-
-                // if address generation is enabled
-                if ($entity->isDirty('address') && $this->parameter('common_auto_generate_address', 'no') === 'yes') {
-                    $entity->address = implode('/', array_filter([$entity->category->address ?? '', $entity->address ?? $entity->title ?? uniqid()], fn ($el) => (bool) $el));
+            if ($entity->isDirty('category_uuid') || $entity->isDirty('address') || $entity->isDirty('dimension') || $entity->isDirty('external_id')) {
+                // check unique
+                $found = CatalogProduct::firstWhere([
+                    'category_uuid' => $entity->getAttributes()['category_uuid'],
+                    'address' => $entity->getAttributes()['address'],
+                    'dimension' => $entity->getAttributes()['dimension'],
+                    'external_id' => $entity->getAttributes()['external_id'],
+                ]);
+                if ($found && $found->uuid !== $entity->uuid) {
+                    throw new AddressAlreadyExistsException();
                 }
-
-                if ($entity->isDirty('category_uuid') || $entity->isDirty('address') || $entity->isDirty('dimension') || $entity->isDirty('external_id')) {
-                    // check unique
-                    $found = CatalogProduct::firstWhere([
-                        'category_uuid' => $entity->getAttributes()['category_uuid'],
-                        'address' => $entity->getAttributes()['address'],
-                        'dimension' => $entity->getAttributes()['dimension'],
-                        'external_id' => $entity->getAttributes()['external_id'],
-                    ]);
-                    if ($found && $found->uuid !== $entity->uuid) {
-                        throw new AddressAlreadyExistsException();
-                    }
-                }
+            }
 
 //                if ($data['attributes'] !== null) {
 //                    // update attributes
@@ -268,8 +226,7 @@ class ProductService extends AbstractService
 //                    $this->catalogProductRelationService->process($entity, $data['relation']);
 //                }
 
-                $entity->save();
-            }
+            $entity->save();
 
             return $entity;
         }

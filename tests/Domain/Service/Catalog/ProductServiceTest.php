@@ -10,7 +10,6 @@ use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\ProductNotFoundException;
 use App\Domain\Service\Catalog\ProductService;
-use Illuminate\Support\Collection;
 use tests\TestCase;
 
 /**
@@ -47,7 +46,7 @@ class ProductServiceTest extends TestCase
             'description' => $this->getFaker()->text(100),
             'extra' => $this->getFaker()->text(100),
             'address' => implode('-', $this->getFaker()->words(4)),
-            'type' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\ProductType::LIST),
+            'type' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\Product\Type::LIST),
             'category_uuid' => $this->category->uuid,
             'vendorcode' => $this->getFaker()->word,
             'barcode' => $this->getFaker()->word,
@@ -190,7 +189,7 @@ class ProductServiceTest extends TestCase
             'description' => $this->getFaker()->text(100),
             'extra' => $this->getFaker()->text(100),
             'address' => implode('-', $this->getFaker()->words(4)),
-            'type' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\ProductType::LIST),
+            'type' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\Product\Type::LIST),
             'category_uuid' => $this->category->uuid,
             'vendorcode' => $this->getFaker()->word,
             'barcode' => $this->getFaker()->word,
@@ -230,7 +229,7 @@ class ProductServiceTest extends TestCase
             'description' => $this->getFaker()->text(100),
             'extra' => $this->getFaker()->text(100),
             'address' => implode('-', $this->getFaker()->words(4)),
-            'type' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\ProductType::LIST),
+            'type' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\Product\Type::LIST),
             'category_uuid' => $this->category->uuid,
             'vendorcode' => $this->getFaker()->word,
             'barcode' => $this->getFaker()->word,

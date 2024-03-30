@@ -1,10 +1,10 @@
 <?php declare(strict_types=1);
 
-namespace App\Domain\Casts\Catalog;
+namespace App\Domain\Casts\Catalog\Product;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
-class ProductDimension implements CastsAttributes
+class Dimension implements CastsAttributes
 {
     protected array $default = [
         'length' => 0.0,

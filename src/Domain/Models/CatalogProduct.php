@@ -4,24 +4,18 @@ namespace App\Domain\Models;
 
 use App\Domain\Casts\AddressUrl;
 use App\Domain\Casts\Boolean;
-use App\Domain\Casts\Catalog\ProductDimension;
-use App\Domain\Casts\Catalog\ProductType;
+use App\Domain\Casts\Catalog\Product\Dimension as ProductDimension;
+use App\Domain\Casts\Catalog\Product\Type as ProductType;
+use App\Domain\Casts\Catalog\Product\Tags as ProductTags;
 use App\Domain\Casts\Catalog\Status;
-use App\Domain\Casts\Email;
-use App\Domain\Casts\Catalog\Status as CatalogStatus;
 use App\Domain\Casts\Json;
 use App\Domain\Casts\Meta;
-use App\Domain\Casts\Sort;
-use App\Domain\References\Date;
 use App\Domain\Traits\FileTrait;
 use DateTime;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Collection;
 
 /**
  * @property string $uuid
@@ -122,7 +116,7 @@ class CatalogProduct extends Model
         'stock' => 'float',
         'country' => 'string',
         'manufacturer' => 'string',
-        'tags' => Json::class,
+        'tags' => ProductTags::class,
         'order' => 'int',
         'status' => Status::class,
         'date' => 'datetime',
@@ -135,7 +129,7 @@ class CatalogProduct extends Model
 
     public function category(): HasOne
     {
-        return $this->hasOne(CatalogProduct::class, 'uuid', 'category_uuid');
+        return $this->hasOne(CatalogCategory::class, 'uuid', 'category_uuid');
     }
 
     public function priceCalculated($type = 'price'): float

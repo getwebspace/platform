@@ -19,7 +19,7 @@ class ProductUpdateAction extends CatalogAction
             try {
                 $product = $this->catalogProductService->read([
                     'uuid' => $this->resolveArg('product'),
-                    'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+                    'status' => \App\Domain\Casts\Catalog\Status::WORK,
                 ]);
 
                 if ($this->isPost()) {
@@ -80,12 +80,12 @@ class ProductUpdateAction extends CatalogAction
                 $categories = $this->catalogCategoryService->read([
                     'status' => \App\Domain\Casts\Catalog\Status::WORK,
                 ]);
-                $attributes = $this->catalogAttributeService->read();
+                // $attributes = $this->catalogAttributeService->read();
 
                 return $this->respondWithTemplate('cup/catalog/product/form.twig', [
-                    'category' => $product->getCategory(),
                     'categories' => $categories,
-                    'attributes' => $attributes,
+                    'category' => $product->category,
+                    'attributes' => collect(), //$attributes,
                     'tax_rates' => $this->referenceService->read(['type' => ReferenceType::TAX_RATE, 'status' => true, 'order' => ['order' => 'asc']]),
                     'stock_status' => $this->referenceService->read(['type' => ReferenceType::STOCK_STATUS, 'status' => true, 'order' => ['order' => 'asc']]),
                     'length_class' => $this->referenceService->read(['type' => ReferenceType::LENGTH_CLASS, 'status' => true, 'order' => ['order' => 'asc']]),

@@ -78,12 +78,12 @@ class ProductCreateAction extends CatalogAction
         $categories = $this->catalogCategoryService->read([
             'status' => \App\Domain\Casts\Catalog\Status::WORK,
         ]);
-        $attributes = $this->catalogAttributeService->read();
+        //$attributes = $this->catalogAttributeService->read();
 
         return $this->respondWithTemplate('cup/catalog/product/form.twig', [
-            'category' => $categories->firstWhere('uuid', $category),
             'categories' => $categories,
-            'attributes' => $attributes,
+            'category' => $categories->firstWhere('uuid', $category),
+            'attributes' => collect(), //$attributes,
             'tax_rates' => $this->referenceService->read(['type' => ReferenceType::TAX_RATE, 'status' => true, 'order' => ['order' => 'asc']]),
             'stock_status' => $this->referenceService->read(['type' => ReferenceType::STOCK_STATUS, 'status' => true, 'order' => ['order' => 'asc']]),
             'length_class' => $this->referenceService->read(['type' => ReferenceType::LENGTH_CLASS, 'status' => true, 'order' => ['order' => 'asc']]),
