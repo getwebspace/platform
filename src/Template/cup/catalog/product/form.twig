@@ -128,8 +128,16 @@
                                             'name': 'manufacturer',
                                             'args': {
                                                 'value': item.manufacturer,
+                                                'list': 'manufacturers',
+                                                'autocomplete': 'off',
                                             }
                                         } %}
+
+                                        <datalist id="manufacturers">
+                                            {% for title in manufacturers.pluck('title')  %}
+                                                <option value="{{ title }}">{{ title }}</option>
+                                            {% endfor %}
+                                        </datalist>
                                     </div>
 
                                     <div class="col-12 col-md-6">

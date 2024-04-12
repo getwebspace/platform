@@ -202,7 +202,7 @@ class SystemPageAction extends AbstractAction
                     try {
                         $referenceService->create(array_merge($el, [
                             'order' => $i + 1,
-                            'type' => \App\Domain\Casts\Reference\Type::SOCIAL_NETWORKS,
+                            'type' => \App\Domain\Casts\Reference\Type::SOCIAL_NETWORK,
                         ]));
                     } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
                         // nothing

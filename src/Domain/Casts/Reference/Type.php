@@ -18,7 +18,8 @@ class Type extends Enum
     public const LENGTH_CLASS = 'length_class';
     public const WEIGHT_CLASS = 'weight_class';
     public const ADDRESS_FORMAT = 'address_format';
-    public const SOCIAL_NETWORKS = 'social_network';
+    public const SOCIAL_NETWORK = 'social_network';
+    public const MANUFACTURER = 'manufacturer';
 
     public const LIST = [
         self::TEXT,
@@ -33,6 +34,7 @@ class Type extends Enum
         self::LENGTH_CLASS,
         self::WEIGHT_CLASS,
         self::ADDRESS_FORMAT,
-        self::SOCIAL_NETWORKS,
+        self::SOCIAL_NETWORK,
+        self::MANUFACTURER,
     ];
 }
