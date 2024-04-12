@@ -80,12 +80,11 @@ class ProductUpdateAction extends CatalogAction
                 $categories = $this->catalogCategoryService->read([
                     'status' => \App\Domain\Casts\Catalog\Status::WORK,
                 ]);
-                // $attributes = $this->catalogAttributeService->read();
 
                 return $this->respondWithTemplate('cup/catalog/product/form.twig', [
                     'categories' => $categories,
                     'category' => $product->category,
-                    'attributes' => collect(), //$attributes,
+                    'attributes' => $this->catalogAttributeService->read(),
                     'manufacturers' => $this->referenceService->read(['type' => ReferenceType::MANUFACTURER, 'status' => true, 'order' => ['order' => 'asc']]),
                     'tax_rates' => $this->referenceService->read(['type' => ReferenceType::TAX_RATE, 'status' => true, 'order' => ['order' => 'asc']]),
                     'stock_status' => $this->referenceService->read(['type' => ReferenceType::STOCK_STATUS, 'status' => true, 'order' => ['order' => 'asc']]),

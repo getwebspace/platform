@@ -36,6 +36,7 @@ class ProductListAction extends CatalogAction
         ]);
 
         return $this->respondWithTemplate('cup/catalog/product/index.twig', [
+            'category' => $category,
             'categories' => $categories,
             'products' => $products,
         ]);

@@ -32,7 +32,6 @@ trait FileTrait // todo rename to HasFiles
         return $this->files()->count();
     }
 
-    /** @deprecated */
     public function getFiles(): Collection
     {
         return $this->files()->getResults();

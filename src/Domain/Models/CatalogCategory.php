@@ -16,7 +16,9 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 
@@ -38,7 +40,8 @@ use Illuminate\Support\Collection;
  * @property string $export
  * @property string $system
  * @property CatalogCategory $parent
- * @property CatalogProduct $products
+ * @property CatalogAttribute[] $attributes
+ * @property CatalogProduct[] $products
  */
 class CatalogCategory extends Model
 {
@@ -136,6 +139,18 @@ class CatalogCategory extends Model
         }
 
         return $collect;
+    }
+
+    public function attributes(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            CatalogAttribute::class,
+            'catalog_attribute_category',
+            'category_uuid',
+            'attribute_uuid',
+            'uuid',
+            'uuid'
+        );
     }
 
     public function products(): HasMany

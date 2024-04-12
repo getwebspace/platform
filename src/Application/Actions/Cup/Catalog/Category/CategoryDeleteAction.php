@@ -15,11 +15,10 @@ class CategoryDeleteAction extends CatalogAction
             ]);
 
             if ($category) {
-                $categories = $this->catalogCategoryService->read();
-                $childrenUuids = $category->getNested($categories, true)->reverse()->pluck('uuid')->all();
+                $childrenUuids = $category->nested(true)->reverse()->pluck('uuid')->all();
 
                 /**
-                 * @var \App\Domain\Entities\Catalog\Category $child
+                 * @var \App\Domain\Models\CatalogCategory $child
                  */
                 foreach ($this->catalogCategoryService->read(['parent_uuid' => $childrenUuids]) as $child) {
                     $this->catalogCategoryService->update($child, [
@@ -28,11 +27,11 @@ class CategoryDeleteAction extends CatalogAction
                 }
 
                 /**
-                 * @var \App\Domain\Entities\Catalog\Product $product
+                 * @var \App\Domain\Models\CatalogProduct $product
                  */
                 foreach ($this->catalogProductService->read(['category_uuid' => $childrenUuids]) as $product) {
                     $this->catalogProductService->update($product, [
-                        'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_DELETE,
+                        'status' => \App\Domain\Casts\Catalog\Status::DELETE,
                     ]);
                 }
 

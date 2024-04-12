@@ -2,7 +2,7 @@
 
 namespace tests\Domain\Service\Catalog;
 
-use App\Domain\Entities\Catalog\Attribute;
+use App\Domain\Models\CatalogAttribute;
 use App\Domain\Service\Catalog\AttributeService;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;
@@ -29,23 +29,20 @@ class AttributeServiceTest extends TestCase
     public function testCreateSuccess(): void
     {
         $data = [
-            'title' => $this->getFaker()->word,
-            'address' => $this->getFaker()->word,
-            'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\AttributeTypeType::LIST),
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'type' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\Attribute\Type::LIST),
+            'group' => $this->getFaker()->word,
+            'is_filter' => $this->getFaker()->boolean,
         ];
 
         $attribute = $this->service->create($data);
-        $this->assertInstanceOf(Attribute::class, $attribute);
-        $this->assertEquals($data['title'], $attribute->getTitle());
-        $this->assertEquals($data['address'], $attribute->getAddress());
-        $this->assertEquals($data['type'], $attribute->getType());
-
-        $attributeRepo = $this->em->getRepository(Attribute::class);
-        $a = $attributeRepo->findOneByTitle($data['title']);
-        $this->assertInstanceOf(Attribute::class, $a);
-        $this->assertEquals($data['title'], $a->getTitle());
-        $this->assertEquals($data['address'], $a->getAddress());
-        $this->assertEquals($data['type'], $a->getType());
+        $this->assertInstanceOf(CatalogAttribute::class, $attribute);
+        $this->assertEquals($data['title'], $attribute->title);
+        $this->assertEquals($data['address'], $attribute->address);
+        $this->assertEquals($data['type'], $attribute->type);
+        $this->assertEquals($data['group'], $attribute->group);
+        $this->assertEquals($data['is_filter'], $attribute->is_filter);
     }
 
     public function testCreateWithMissingTitleValue(): void
@@ -60,17 +57,11 @@ class AttributeServiceTest extends TestCase
         $this->expectException(TitleAlreadyExistsException::class);
 
         $data = [
-            'title' => $this->getFaker()->word,
-            'address' => 'some-custom-address',
+            'title' => implode(' ', $this->getFaker()->words(5)),
+            'address' => implode('-', $this->getFaker()->words(4)),
         ];
 
-        $attribute = (new Attribute())
-            ->setTitle($data['title'])
-            ->setAddress($data['address']);
-
-        $this->em->persist($attribute);
-        $this->em->flush();
-
+        $this->service->create($data);
         $this->service->create($data);
     }
 
@@ -78,53 +69,50 @@ class AttributeServiceTest extends TestCase
     {
         $this->expectException(AddressAlreadyExistsException::class);
 
-        $data = [
-            'title' => $this->getFaker()->word,
-            'address' => 'some-custom-address',
-        ];
+        $address = implode('-', $this->getFaker()->words(4));
 
-        $attribute = (new Attribute())
-            ->setTitle($data['title'] . '-miss')
-            ->setAddress($data['address']);
-
-        $this->em->persist($attribute);
-        $this->em->flush();
-
-        $this->service->create($data);
+        $this->service->create([
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => $address,
+        ]);
+        $this->service->create([
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => $address,
+        ]);
     }
 
     public function testReadSuccess1(): void
     {
         $data = [
-            'title' => $this->getFaker()->word,
-            'address' => $this->getFaker()->word,
-            'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\AttributeTypeType::LIST),
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'type' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\Attribute\Type::LIST),
         ];
 
         $this->service->create($data);
 
         $attribute = $this->service->read(['title' => $data['title']]);
-        $this->assertInstanceOf(Attribute::class, $attribute);
-        $this->assertEquals($data['title'], $attribute->getTitle());
-        $this->assertEquals($data['address'], $attribute->getAddress());
-        $this->assertEquals($data['type'], $attribute->getType());
+        $this->assertInstanceOf(CatalogAttribute::class, $attribute);
+        $this->assertEquals($data['title'], $attribute->title);
+        $this->assertEquals($data['address'], $attribute->address);
+        $this->assertEquals($data['type'], $attribute->type);
     }
 
     public function testReadSuccess2(): void
     {
         $data = [
-            'title' => $this->getFaker()->word,
-            'address' => 'some-custom-address',
-            'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\AttributeTypeType::LIST),
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'type' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\Attribute\Type::LIST),
         ];
 
         $this->service->create($data);
 
         $attribute = $this->service->read(['address' => $data['address']]);
-        $this->assertInstanceOf(Attribute::class, $attribute);
-        $this->assertEquals($data['title'], $attribute->getTitle());
-        $this->assertEquals($data['address'], $attribute->getAddress());
-        $this->assertEquals($data['type'], $attribute->getType());
+        $this->assertInstanceOf(CatalogAttribute::class, $attribute);
+        $this->assertEquals($data['title'], $attribute->title);
+        $this->assertEquals($data['address'], $attribute->address);
+        $this->assertEquals($data['type'], $attribute->type);
     }
 
     public function testReadWithCategoryNotFound(): void
@@ -137,22 +125,28 @@ class AttributeServiceTest extends TestCase
     public function testUpdate(): void
     {
         $attribute = $this->service->create([
-            'title' => $this->getFaker()->word,
-            'address' => $this->getFaker()->word,
-            'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\AttributeTypeType::LIST),
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'type' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\Attribute\Type::LIST),
+            'group' => $this->getFaker()->word,
+            'is_filter' => $this->getFaker()->boolean,
         ]);
 
         $data = [
-            'title' => $this->getFaker()->word,
-            'address' => $this->getFaker()->word,
-            'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\AttributeTypeType::LIST),
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'type' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\Attribute\Type::LIST),
+            'group' => $this->getFaker()->word,
+            'is_filter' => $this->getFaker()->boolean,
         ];
 
         $attribute = $this->service->update($attribute, $data);
-        $this->assertInstanceOf(Attribute::class, $attribute);
-        $this->assertEquals($data['title'], $attribute->getTitle());
-        $this->assertEquals($data['address'], $attribute->getAddress());
-        $this->assertEquals($data['type'], $attribute->getType());
+        $this->assertInstanceOf(CatalogAttribute::class, $attribute);
+        $this->assertEquals($data['title'], $attribute->title);
+        $this->assertEquals($data['address'], $attribute->address);
+        $this->assertEquals($data['type'], $attribute->type);
+        $this->assertEquals($data['group'], $attribute->group);
+        $this->assertEquals($data['is_filter'], $attribute->is_filter);
     }
 
     public function testUpdateWithCategoryNotFound(): void
@@ -165,9 +159,9 @@ class AttributeServiceTest extends TestCase
     public function testDeleteSuccess(): void
     {
         $attribute = $this->service->create([
-            'title' => $this->getFaker()->word,
-            'address' => $this->getFaker()->word,
-            'type' => $this->getFaker()->randomElement(\App\Domain\Types\Catalog\AttributeTypeType::LIST),
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'type' => $this->getFaker()->randomElement(\App\Domain\Casts\Catalog\Attribute\Type::LIST),
         ]);
 
         $result = $this->service->delete($attribute);

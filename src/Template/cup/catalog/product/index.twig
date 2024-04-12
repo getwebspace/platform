@@ -4,7 +4,10 @@
     <div class="page-inner py-5">
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
-                <h2 class="text-white pb-2 fw-bold">{{ 'Nomenclature'|locale }} {{ category ? 'in category'|locale ~ ' ' ~ category.title : '' }} ({{ products.count() }})</h2>
+                <h2 class="text-white fw-bold">{{ 'Nomenclature'|locale }} ({{ products.count() }})</h2>
+                {% if category %}
+                    <h5 class="text-white op-7">{{ category.title }}</h5>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -22,16 +25,18 @@
                             </a>
                         {% endif %}
 
+                        <b></b>
+
                         <a href="#btn-modal-import" rel="modal:open" class="btn btn-secondary btn-icon ml-auto text-white" data-toggle="tooltip" data-placement="top" title="{{ 'Import products'|locale }}">
                             <i class="fas fa-file-import"></i>
                         </a>
                         {% include "cup/catalog/product/index-modal-import.twig" %}
 
-                        <a href="{{ path_for('cup:catalog:product:export', [], {'category': category.uuid.toString()}) }}" class="btn btn-secondary btn-icon ml-1 text-white" data-toggle="tooltip" data-placement="top" title="{{ 'Export current product list'|locale }}">
+                        <a href="{{ path_for('cup:catalog:product:export', [], {'category': category.uuid}) }}" class="btn btn-secondary btn-icon ml-1 text-white" data-toggle="tooltip" data-placement="top" title="{{ 'Export current product list'|locale }}">
                             <i class="fas fa-file-export"></i>
                         </a>
 
-                        <a href="{{ path_for('cup:catalog:product:add', [], {'category': category.uuid.toString()}) }}" class="btn btn-primary btn-round ml-1">
+                        <a href="{{ path_for('cup:catalog:product:add', [], {'category': category.uuid}) }}" class="btn btn-primary btn-round ml-1">
                             <i class="fa fa-plus"></i>
                             {{ 'Create product'|locale }}
                         </a>

@@ -14,7 +14,7 @@ class AddressUrl implements CastsAttributes
 
     public function set($model, string $key, mixed $value, array $attributes): string
     {
-        if (!$value) {
+        if (blank($value)) {
             $value = $model->title ?? '';
         }
 

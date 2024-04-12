@@ -24,6 +24,8 @@ class AttributeUpdateAction extends CatalogAction
                             'title' => $this->getParam('title'),
                             'address' => $this->getParam('address'),
                             'type' => $this->getParam('type'),
+                            'group' => $this->getParam('group'),
+                            'is_filter' => $this->getParam('is_filter'),
                         ]);
 
                         $this->container->get(\App\Application\PubSub::class)->publish('cup:catalog:attribute:edit', $attribute);
@@ -42,6 +44,7 @@ class AttributeUpdateAction extends CatalogAction
 
                 return $this->respondWithTemplate('cup/catalog/attribute/form.twig', [
                     'attribute' => $attribute,
+                    'groups' => $this->db->table('catalog_attribute')->select('group')->distinct()->get()->pluck('group'),
                 ]);
             } catch (AttributeNotFoundException $e) {
                 // nothing

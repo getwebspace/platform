@@ -3,6 +3,7 @@
 namespace App\Domain\Service\Catalog;
 
 use App\Domain\AbstractService;
+use App\Domain\Models\CatalogAttribute;
 use App\Domain\Models\CatalogProduct;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\MissingCategoryValueException;
@@ -54,8 +55,18 @@ class ProductService extends AbstractService
 
         $product->save();
 
-        // add attributes
-        //$this->catalogProductAttributeService->process($product, $data['attributes']);
+        // get attributes from parent
+        if (($attributes = $product->category?->attributes)) {
+            $data['attributes'] = $attributes->pluck('uuid')->merge($data['attributes'] ?? [])->unique();
+        }
+
+        // sync attributes
+        if (isset($data['attributes'])) {
+
+            foreach ($data['attributes'] as $uuid => $value) {
+                $product->attributes()->attach($uuid, ['value' => $value]);
+            }
+        }
 
         // add relation products
         //$this->catalogProductRelationService->process($product, $data['relation']);
@@ -188,10 +199,15 @@ class ProductService extends AbstractService
                 }
             }
 
-//                if ($data['attributes'] !== null) {
-//                    // update attributes
-//                    $this->catalogProductAttributeService->process($entity, $data['attributes']);
-//                }
+            // sync attributes
+            if (isset($data['attributes'])) {
+                $entity->attributes()->detach();
+
+                foreach ($data['attributes'] as $uuid => $value) {
+                    $entity->attributes()->attach($uuid, ['value' => $value]);
+                }
+            }
+
 //                if ($data['relation'] !== null) {
 //                    // update relation products
 //                    $this->catalogProductRelationService->process($entity, $data['relation']);

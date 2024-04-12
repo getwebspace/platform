@@ -17,6 +17,8 @@ class AttributeCreateAction extends CatalogAction
                     'title' => $this->getParam('title'),
                     'address' => $this->getParam('address'),
                     'type' => $this->getParam('type'),
+                    'group' => $this->getParam('group'),
+                    'is_filter' => $this->getParam('is_filter'),
                 ]);
 
                 $this->container->get(\App\Application\PubSub::class)->publish('cup:catalog:attribute:create', $attribute);
@@ -33,6 +35,8 @@ class AttributeCreateAction extends CatalogAction
             }
         }
 
-        return $this->respondWithTemplate('cup/catalog/attribute/form.twig');
+        return $this->respondWithTemplate('cup/catalog/attribute/form.twig', [
+            'groups' => $this->db->table('catalog_attribute')->select('group')->distinct()->get()->pluck('group'),
+        ]);
     }
 }

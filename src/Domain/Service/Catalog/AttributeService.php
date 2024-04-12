@@ -3,58 +3,41 @@
 namespace App\Domain\Service\Catalog;
 
 use App\Domain\AbstractService;
-use App\Domain\Entities\Catalog\Attribute;
+use App\Domain\Models\CatalogAttribute;
 use App\Domain\Repository\Catalog\AttributeRepository;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\TitleAlreadyExistsException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class AttributeService extends AbstractService
 {
     /**
-     * @var AttributeRepository
-     */
-    protected mixed $service;
-
-    protected function init(): void
-    {
-        $this->service = $this->entityManager->getRepository(Attribute::class);
-    }
-
-    /**
      * @throws TitleAlreadyExistsException
      * @throws MissingTitleValueException
      * @throws AddressAlreadyExistsException
      */
-    public function create(array $data = []): Attribute
+    public function create(array $data = []): CatalogAttribute
     {
-        $default = [
-            'title' => '',
-            'address' => '',
-            'type' => '',
-        ];
-        $data = array_merge($default, $data);
+        $attribute = new CatalogAttribute;
+        $attribute->fill($data);
 
-        if ($data['title'] && $this->service->findOneByTitle($data['title']) !== null) {
-            throw new TitleAlreadyExistsException();
-        }
-        if (!$data['title']) {
+        if (!$attribute->title) {
             throw new MissingTitleValueException();
         }
-        if ($data['address'] && $this->service->findOneByAddress($data['address']) !== null) {
+
+        if (CatalogAttribute::firstWhere(['title' => $attribute->title]) !== null) {
+            throw new TitleAlreadyExistsException();
+        }
+
+        if (CatalogAttribute::firstWhere(['address' => $attribute->address]) !== null) {
             throw new AddressAlreadyExistsException();
         }
 
-        $attribute = (new Attribute())
-            ->setTitle($data['title'])
-            ->setAddress($data['address'])
-            ->setType($data['type']);
-
-        $this->entityManager->persist($attribute);
-        $this->entityManager->flush();
+        $attribute->save();
 
         return $attribute;
     }
@@ -62,15 +45,17 @@ class AttributeService extends AbstractService
     /**
      * @throws AttributeNotFoundException
      *
-     * @return Attribute|Collection
+     * @return CatalogAttribute|Collection
      */
-    public function read(array $data = [])
+    public function read(array $data = []): Collection|CatalogAttribute
     {
         $default = [
             'uuid' => null,
             'title' => null,
             'address' => null,
             'type' => null,
+            'group' => null,
+            'is_filter' => null,
         ];
         $data = array_merge($default, static::$default_read, $data);
 
@@ -88,77 +73,64 @@ class AttributeService extends AbstractService
         if ($data['type'] !== null) {
             $criteria['type'] = $data['type'];
         }
+        if ($data['group'] !== null) {
+            $criteria['group'] = $data['group'];
+        }
+        if ($data['is_filter'] !== null) {
+            $criteria['is_filter'] = $data['is_filter'];
+        }
 
-        try {
-            switch (true) {
-                case !is_array($data['uuid']) && $data['uuid'] !== null:
-                case !is_array($data['title']) && $data['title'] !== null:
-                case !is_array($data['address']) && $data['address'] !== null:
-                    $attribute = $this->service->findOneBy($criteria);
+        switch (true) {
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
+            case !is_array($data['title']) && $data['title'] !== null:
+            case !is_array($data['address']) && $data['address'] !== null:
+                /** @var CatalogAttribute $page */
+                $page = CatalogAttribute::firstWhere($criteria);
 
-                    if (empty($attribute)) {
-                        throw new AttributeNotFoundException();
-                    }
+                return $page ?: throw new AttributeNotFoundException();
 
-                    return $attribute;
-
-                default:
-                    return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
-            }
-        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
-            return null;
+            default:
+                return $this->query(new CatalogAttribute, $criteria, $data);
         }
     }
 
     /**
-     * @param Attribute|string|Uuid $entity
+     * @param CatalogAttribute|string|Uuid $entity
      *
      * @throws TitleAlreadyExistsException
      * @throws AttributeNotFoundException
      * @throws AddressAlreadyExistsException
      */
-    public function update($entity, array $data = []): Attribute
+    public function update($entity, array $data = []): CatalogAttribute
     {
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
 
-        if (is_object($entity) && is_a($entity, Attribute::class)) {
-            $default = [
-                'title' => null,
-                'type' => null,
-            ];
-            $data = array_merge($default, $data);
+        if (is_object($entity) && is_a($entity, CatalogAttribute::class)) {
+            $entity->fill($data);
 
-            if ($data !== $default) {
-                if ($data['title'] !== null) {
-                    $found = $this->service->findOneByTitle($data['title']);
+            if ($entity->isDirty('title')) {
+                $found = CatalogAttribute::firstWhere(['title' => $entity->title]);
 
-                    if ($found === null || $found === $entity) {
-                        $entity->setTitle($data['title']);
-                    } else {
-                        throw new TitleAlreadyExistsException();
-                    }
+                if ($found && $found->uuid !== $entity->uuid) {
+                    throw new TitleAlreadyExistsException();
                 }
-                if ($data['address'] !== null) {
-                    $found = $this->service->findOneByAddress($data['address']);
-
-                    if ($found === null || $found === $entity) {
-                        $entity->setAddress($data['address']);
-                    } else {
-                        throw new AddressAlreadyExistsException();
-                    }
-                }
-                if ($data['type'] !== null) {
-                    $entity->setType($data['type']);
-                }
-
-                $this->entityManager->flush();
             }
+
+            if ($entity->isDirty('address')) {
+                $found = CatalogAttribute::firstWhere(['address' => $entity->address]);
+
+                if ($found && $found->uuid !== $entity->uuid) {
+                    throw new AddressAlreadyExistsException();
+                }
+            }
+
+            $entity->save();
 
             return $entity;
         }
@@ -167,7 +139,7 @@ class AttributeService extends AbstractService
     }
 
     /**
-     * @param Attribute|string|Uuid $entity
+     * @param CatalogAttribute|string|Uuid $entity
      *
      * @throws AttributeNotFoundException
      */
@@ -176,14 +148,13 @@ class AttributeService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
 
-        if (is_object($entity) && is_a($entity, Attribute::class)) {
-            $this->entityManager->remove($entity);
-            $this->entityManager->flush();
+        if (is_object($entity) && is_a($entity, CatalogAttribute::class)) {
+            $entity->delete();
 
             return true;
         }

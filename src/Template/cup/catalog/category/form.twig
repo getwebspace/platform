@@ -119,7 +119,7 @@
                                     'args': {
                                         'multiple': true,
                                         'option': attributes.sortBy('title').pluck('title', 'uuid').all(),
-                                        'selected': item.hasAttributes() ? item.getAttributes().pluck('uuid').all() : ''
+                                        'selected': item.attributes.pluck('uuid').all()
                                     }
                                 } %}
                             </div>

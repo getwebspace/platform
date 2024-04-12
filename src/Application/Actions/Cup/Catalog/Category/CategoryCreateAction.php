@@ -13,12 +13,6 @@ class CategoryCreateAction extends CatalogAction
     {
         if ($this->isPost()) {
             try {
-//                $attributes = from_service_to_array(
-//                    $this->catalogAttributeService->read([
-//                        'uuid' => $this->getParam('attributes', []),
-//                    ])
-//                );
-                $attributes = [];
                 $category = $this->catalogCategoryService->create([
                     'parent_uuid' => $this->getParam('parent'),
                     'children' => $this->getParam('children'),
@@ -26,7 +20,6 @@ class CategoryCreateAction extends CatalogAction
                     'title' => $this->getParam('title'),
                     'description' => $this->getParam('description'),
                     'address' => $this->getParam('address'),
-                    'attributes' => $attributes,
                     'pagination' => $this->getParam('pagination'),
                     'order' => $this->getParam('order'),
                     'sort' => $this->getParam('sort'),
@@ -34,6 +27,8 @@ class CategoryCreateAction extends CatalogAction
                     'template' => $this->getParam('template'),
                     'external_id' => $this->getParam('external_id'),
                     'system' => $this->getParam('system'),
+
+                    'attributes' => $this->getParam('attributes', []),
                 ]);
                 $category = $this->processEntityFiles($category);
 
@@ -54,15 +49,11 @@ class CategoryCreateAction extends CatalogAction
         }
 
         $parent = $this->getParam('parent', false);
-        $categories = $this->catalogCategoryService->read([
-            'status' => \App\Domain\Casts\Catalog\Status::WORK,
-        ]);
-        //$attributes = $this->catalogAttributeService->read();
 
         return $this->respondWithTemplate('cup/catalog/category/form.twig', [
             'parent' => $parent,
-            'categories' => $categories,
-            'attributes' => collect(), //$attributes,
+            'categories' => $this->catalogCategoryService->read(['status' => \App\Domain\Casts\Catalog\Status::WORK]),
+            'attributes' => $this->catalogAttributeService->read(),
             'params' => $this->parameter(['catalog_category_template', 'catalog_product_template', 'catalog_category_pagination']),
         ]);
     }

@@ -43,14 +43,45 @@
                             </div>
                             <div class="col-md-6">
                                 {% include 'cup/form.twig' with {
+                                    'label': 'Group'|locale,
+                                    'type': 'text',
+                                    'name': 'group',
+                                    'args': {
+                                        'value': attribute.group,
+                                        'list': 'groups',
+                                        'autocomplete': 'off',
+                                    }
+                                } %}
+
+                                <datalist id="groups">
+                                    {% for title in groups %}
+                                        <option value="{{ title }}">{{ title }}</option>
+                                    {% endfor %}
+                                </datalist>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
                                     'label': 'Type'|locale,
                                     'type': 'select',
                                     'name': 'type',
-                                    'message': '<b>Warning</b>: The Boolean type can only be added to a category.'|locale,
                                     'args': {
-                                        'option': _(constant('/App/Domain/Casts/Catalog/AttributeType::LIST')),
+                                        'option': _(constant('/App/Domain/Casts/Catalog/Attribute/Type::LIST')),
                                         'selected': attribute.type,
                                         'required': true
+                                    }
+                                } %}
+                            </div>
+                            <div class="col-md-6">
+                                {% include 'cup/form.twig' with {
+                                    'label': 'Is filter'|locale,
+                                    'type': 'select',
+                                    'name': 'is_filter',
+                                    'args': {
+                                        'option': _(['yes', 'no']),
+                                        'selected': attribute ? (attribute.is_filter ? 'yes' : 'no') : 'yes',
                                     }
                                 } %}
                             </div>

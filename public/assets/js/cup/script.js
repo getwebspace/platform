@@ -275,23 +275,38 @@ $(() => {
     {
         let $that = $('[id="attributes"]'),
             $row = $that.find('[data-place="attribute"]'),
-            $template = $that.find('[data-place="attribute"] [data-input]:first-child').show().detach(),
-            $select = $that.find('select');
+            templates = {
+                $string: $that.find('[data-place="attribute"] [data-template="string"]').parents('[data-input]').detach(),
+                $integer: $that.find('[data-place="attribute"] [data-template="integer"]').parents('[data-input]').detach(),
+                $float: $that.find('[data-place="attribute"] [data-template="float"]').parents('[data-input]').detach(),
+                $boolean: $that.find('[data-place="attribute"] [data-template="boolean"]').parents('[data-input]').detach(),
+            },
+            $select = $that.find('select[data-select="attributes"]');
 
-        $that.find('button').on('click', () => {
+        $that.find('button[data-click="add"]').on('click', () => {
             let $find = $that.find('[name="attributes[' + $select.val() + ']"]');
 
             if ($find.length === 0) {
-                let $buf = $template.clone().removeAttr('data-template');
+                let type = attribute_types[$select.val()];
+                let $buf = templates[`$${type}`].clone().removeAttr('data-template');
 
                 $buf.find('label').text($select.find(':selected').text());
-                $buf.find('input').attr('name', 'attributes[' + $select.val() + ']');
+                $buf.find('input, select').attr('name', 'attributes[' + $select.val() + ']');
+
+                if (type === 'boolean') {
+                    $buf.find('.select2').remove();
+                    init_select2($buf.find('select'));
+                }
 
                 $buf.appendTo($row);
             } else {
                 $find.focus().addClass('border-danger');
                 setTimeout(() => $find.removeClass('border-danger'), 2000);
             }
+        });
+
+        $that.find('button[data-click="delete"]').on('click', (e) => {
+            $(e.currentTarget).parents('[data-input]').remove();
         });
     }
 

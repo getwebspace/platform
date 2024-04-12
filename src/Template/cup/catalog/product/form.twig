@@ -464,42 +464,7 @@
 
                             {# Tab: Атрибуты #}
                             <div class="tab-pane fade" id="attributes" role="tabpanel">
-                                {% if category.hasAttributes() %}
-                                    <div class="row">
-                                        {% for attribute in category.getAttributes().where('type', '!=', 'boolean').sortBy('title') %}
-                                            <div class="col-12 col-sm-6 col-xl-3">
-                                                {% include 'cup/form.twig' with {
-                                                    'label': attribute.title,
-                                                    'type': attribute.type == 'string' ? 'text' : 'number',
-                                                    'name': 'attributes[' ~ attribute.uuid ~ ']',
-                                                    'args': {
-                                                        'value': item.hasAttributes() ? item.getAttributes().firstWhere('attribute_uuid', attribute.uuid).value : '',
-                                                    }
-                                                } %}
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-
-                                    <div class="row">
-                                        {% for attribute in category.getAttributes().where('type', '==', 'boolean') %}
-                                            <div class="col-12 col-sm-6 col-xl-3">
-                                                <div data-input="" class="form-group ">
-                                                    <label class="placeholder">
-                                                        <b>{{ attribute.title }}</b>
-                                                    </label>
-                                                    <div class="input-group">
-                                                        <label class="selectgroup-item">
-                                                            <input type="checkbox" name="attributes[{{ attribute.uuid }}]" value="1" class="selectgroup-input" {{ item.getAttributes().firstWhere('attribute_uuid', attribute.uuid).value ? 'checked' }} >
-                                                            <span class="selectgroup-button" style="height: 42px;">{{ 'Да'|locale }}</span>
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-
-                                    <hr>
-                                {% endif %}
+                                <script>const attribute_types = {{ json_encode(attributes.sortBy('title').pluck('type', 'uuid')) }};</script>
 
                                 <div class="row">
                                     <div class="col-12 col-md-6">
@@ -507,31 +472,33 @@
                                             'label': 'Attributes'|locale,
                                             'type': 'select',
                                             'message': '<p class="float-left">' ~ ('Specify individual attributes of the product'|locale) ~ '</p>'~
-                                                       '<button class="btn btn-xs btn-secondary float-right" type="button">' ~ ('Add attribute'|locale) ~ '</button>' ~
+                                                       '<button class="btn btn-xs btn-secondary float-right" type="button" data-click="add">' ~ ('Add attribute'|locale) ~ '</button>' ~
                                                        '<a href="/cup/catalog/attribute/add" class="btn btn-xs btn-info float-right" onclick="return confirm(\'Are you sure you want to go to another page?\');"><i class="fa fa-plus"></i> ' ~ ('Create attribute'|locale) ~ '</a>' ,
                                             'args': {
-                                                'option': attributes.where('type', '!=', 'boolean').sortBy('title').pluck('title', 'uuid').all(),
+                                                'option': attributes.sortBy('title').pluck('title', 'uuid').all(),
                                                 'data': {'select': 'attributes'}
                                             }
                                         } %}
                                     </div>
 
                                     <div class="col-12 col-md-6" data-place="attribute">
-                                        {% include 'cup/form.twig' with { 'label': 'attribute-template' } %}
+                                        {% include 'cup/form.twig' with {'label': 'template', 'message': '<button class="btn btn-xs btn-danger float-right" type="button" data-click="delete"><i class="fas fa-fw fa-trash-alt"></i> '~ ('Delete'|locale) ~'</button>', 'type': 'text',   'args': {data: {'template': 'string'}}} %}
+                                        {% include 'cup/form.twig' with {'label': 'template', 'message': '<button class="btn btn-xs btn-danger float-right" type="button" data-click="delete"><i class="fas fa-fw fa-trash-alt"></i> '~ ('Delete'|locale) ~'</button>', 'type': 'number', 'args': {data: {'template': 'integer'}}} %}
+                                        {% include 'cup/form.twig' with {'label': 'template', 'message': '<button class="btn btn-xs btn-danger float-right" type="button" data-click="delete"><i class="fas fa-fw fa-trash-alt"></i> '~ ('Delete'|locale) ~'</button>', 'type': 'number', 'args': {data: {'template': 'float'}}} %}
+                                        {% include 'cup/form.twig' with {'label': 'template', 'message': '<button class="btn btn-xs btn-danger float-right" type="button" data-click="delete"><i class="fas fa-fw fa-trash-alt"></i> '~ ('Delete'|locale) ~'</button>', 'type': 'select', 'args': {data: {'template': 'boolean'}, 'option': _(['yes', 'no'])}} %}
 
-                                        {% for attribute in item.getAttributes().whereNotIn('attribute_uuid', category.getAttributes().pluck('uuid')) %}
-                                            {% if attribute.value %}
-                                                {% if attribute.type != 'boolean' %}
-                                                    {% include 'cup/form.twig' with {
-                                                        'label': attribute.title,
-                                                        'type': attribute.type == 'string' ? 'text' : 'number',
-                                                        'name': 'attributes[' ~ attribute.attribute_uuid ~ ']',
-                                                        'args': {
-                                                            'value': attribute.value,
-                                                        }
-                                                    } %}
-                                                {% endif %}
-                                            {% endif %}
+                                        {% for attribute in collect(item.attributes ?? []).merge(category.attributes ?? []).unique('uuid').sortBy('title') %}
+                                            {% include 'cup/form.twig' with {
+                                                'label': attribute.title,
+                                                'type': (attribute.type == 'string' ? 'text' : (attribute.type == 'boolean' ? 'select' : 'number')),
+                                                'name': 'attributes[' ~ attribute.uuid ~ ']',
+                                                'message': '<button class="btn btn-xs btn-danger float-right" type="button" data-click="delete"><i class="fas fa-fw fa-trash-alt"></i> '~ ('Delete'|locale) ~'</button>',
+                                                'args': {
+                                                    'option': _(['yes', 'no']),
+                                                    'selected': attribute.value() ? 'yes' : 'no',
+                                                    'value': attribute.value(),
+                                                }
+                                            } %}
                                         {% endfor %}
                                     </div>
                                 </div>

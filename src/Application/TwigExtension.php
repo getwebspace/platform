@@ -324,7 +324,7 @@ class TwigExtension extends AbstractExtension
         return convertPhpToJsMomentFormat($format ?: $this->parameter('common_date_format', 'j-m-Y, H:i'));
     }
 
-    public function collect(array $array = []): Collection
+    public function collect(array|Collection $array = []): Collection
     {
         return collect($array);
     }

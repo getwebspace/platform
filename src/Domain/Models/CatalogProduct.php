@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
@@ -162,10 +164,22 @@ class CatalogProduct extends Model
         return $this->hasOne(CatalogCategory::class, 'uuid', 'category_uuid');
     }
 
+    public function attributes(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            CatalogAttribute::class,
+            'catalog_attribute_product',
+            'product_uuid',
+            'attribute_uuid',
+            'uuid',
+            'uuid'
+        )->withPivot('value');
+    }
+
     protected function discount(): Attribute
     {
         return Attribute::make(
-            set: fn (float $value) => $value > 0 ? -$value : $value,
+            set: fn ($value) => $value > 0 ? -$value : $value,
         );
     }
 

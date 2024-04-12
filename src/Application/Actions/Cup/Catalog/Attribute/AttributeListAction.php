@@ -10,6 +10,7 @@ class AttributeListAction extends CatalogAction
     {
         $list = $this->catalogAttributeService->read([
             'order' => [
+                'group' => 'asc',
                 'title' => 'asc',
             ],
         ]);

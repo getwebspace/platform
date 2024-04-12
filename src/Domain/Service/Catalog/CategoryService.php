@@ -39,20 +39,6 @@ class CategoryService extends AbstractService
             $category->address = implode('/', array_filter([$category->parent->address ?? '', $category->address ?? $category->title ?? uniqid()], fn ($el) => (bool) $el));
         }
 
-        // todo attributes
-//        // retrieve category by uuid
-//        if (!is_a($data['parent'], CatalogCategory::class) && $data['parent_uuid']) {
-//            $data['parent'] = $this->read(['uuid' => $data['parent_uuid']]);
-//
-//            // copy attributes from parent
-//            if ($data['parent']->hasAttributes()) {
-//                $data['attributes'] = array_merge(
-//                    from_service_to_array($data['parent']->getAttributes()),
-//                    $data['attributes']
-//                );
-//            }
-//        }
-
         // check unique
         $found = CatalogCategory::firstWhere([
             'parent_uuid' => $category->parent_uuid,
@@ -64,6 +50,16 @@ class CategoryService extends AbstractService
         }
 
         $category->save();
+
+        // get attributes from parent
+        if (($attributes = $category->parent?->attributes)) {
+            $data['attributes'] = $attributes->pluck('uuid')->merge($data['attributes'] ?? [])->unique();
+        }
+
+        // sync attributes
+        if (isset($data['attributes'])) {
+            $category->attributes()->sync($data['attributes']);
+        }
 
         return $category;
     }
@@ -180,6 +176,11 @@ class CategoryService extends AbstractService
                 if ($found && $found->uuid !== $entity->uuid) {
                     throw new AddressAlreadyExistsException();
                 }
+            }
+
+            // sync attributes
+            if (isset($data['attributes'])) {
+                $entity->attributes()->sync($data['attributes']);
             }
 
             $entity->save();
