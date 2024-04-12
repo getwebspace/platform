@@ -12,6 +12,7 @@ use App\Domain\Casts\Json;
 use App\Domain\Casts\Meta;
 use App\Domain\Traits\FileTrait;
 use DateTime;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -159,6 +160,13 @@ class CatalogProduct extends Model
     public function category(): HasOne
     {
         return $this->hasOne(CatalogCategory::class, 'uuid', 'category_uuid');
+    }
+
+    protected function discount(): Attribute
+    {
+        return Attribute::make(
+            set: fn (float $value) => $value > 0 ? -$value : $value,
+        );
     }
 
     public function priceCalculated($type = 'price'): float

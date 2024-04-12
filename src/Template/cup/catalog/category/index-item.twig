@@ -1,22 +1,25 @@
 {% for item in categories.where('parent_uuid', parent_uuid) %}
     <div class="row">
         <div class="col-6 col-sm">
-            {{ item.title|u.truncate(50, '...') }}
+            {{ item.title|u.truncate(35, '...') }}
 
-            <div class="text-black-50 float-right d-none d-lg-inline">
+            <div class="d-none d-md-inline">
                 {% if item.hidden %}
                     <i class="fas fa-eye-slash" data-toggle="tooltip" data-placement="right" title="{{ 'Hidden category'|locale }}"></i>
                 {% endif %}
             </div>
+
+            <div class="text-black-50 float-right d-none d-lg-inline">
+                {% set count = item.products().count() %}
+                {% if count %}
+                    <a href="/cup/catalog/product/{{ item.uuid }}" class="badge badge-secondary">{{ count }}</a>
+                {% endif %}
+            </div>
         </div>
-        <div class="col-6 col-sm-3">{{ parent.title ?? '<code>&mdash;</code>'|raw }}</div>
-        <div class="col-12 col-sm-5 text-right">
+        <div class="col-6 col-sm-3">{{ parent ? parent.title|u.truncate(25, '...') : '<code>&mdash;</code>'|raw }}</div>
+        <div class="col-12 col-sm-3 text-right">
             <form action="/cup/catalog/category/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete a category?'|locale }}');">
                 <div class="btn-group">
-                    <a href="/cup/catalog/product/{{ item.uuid }}" class="btn btn-sm btn-outline-info">
-                        <i class="fas fa-fw fa-eye"></i>
-                        <span class="d-none d-md-inline-block">{{ 'Nomenclature'|locale }}</span>
-                    </a>
                     <a href="/cup/catalog/category/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
                         <i class="fas fa-fw fa-edit"></i>
                         <span class="d-none d-md-inline-block">{{ 'Change'|locale }}</span>

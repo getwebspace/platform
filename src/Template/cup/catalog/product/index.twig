@@ -41,8 +41,8 @@
                     {% embed 'mixin/datatable.twig' %}
                         {% block thead %}
                             <div class="col-12 col-sm">{{ 'Title'|locale }}</div>
-                            <div class="col-4 col-sm-2 text-md-right">{{ 'Price'|locale }}</div>
                             <div class="col-4 col-sm-2">{{ 'Vendor code'|locale }}</div>
+                            <div class="col-4 col-sm-2 text-md-right">{{ 'Price'|locale }}</div>
                             <div class="col-4 col-sm-3 text-right"></div>
                         {% endblock %}
 
@@ -50,9 +50,9 @@
                             {% for item in products %}
                                 <div class="row">
                                     <div class="col-12 col-sm">
-                                        {{ item.title|u.truncate(42, '...') }}
+                                        {{ item.title|u.truncate(30, '...') }}
 
-                                        <div class="float-right d-none d-md-block">
+                                        <div class="d-none d-md-inline">
                                             {% if item.special %}
                                                 <i class="fas fa-fw fa-tag pl-1" title="{{ 'Special'|locale }}"></i>
                                             {% endif %}
@@ -63,13 +63,17 @@
                                                 <i class="fas fa-fw fa-percentage pl-1" title="{{ 'Tax'|locale }}"></i>
                                             {% endif %}
                                         </div>
-                                    </div>
-                                    <div class="col-4 col-sm-2 text-md-right">
-                                        {{ item.getPriceCalculated()|number_format(2, '.', ' ') }}
+
+                                        <div class="float-right d-none d-md-block">
+                                            <a href="/cup/catalog/product/{{ item.category.uuid }}" class="badge badge-secondary">{{ item.category.title|u.truncate(20, '...') }}</a>
+                                        </div>
                                     </div>
                                     <div class="col-4 col-sm-2">
                                         {% if item.vendorcode %}
-                                            <div>{{ item.vendorcode }}</div>
+                                            <div class="flex-nowrap">
+                                                <i class="fas fa-cube d-inline pr-1" data-toggle="tooltip" data-placement="right" title="{{ 'Vendor code'|locale }}"></i>
+                                                {{ item.vendorcode }}
+                                            </div>
                                         {% endif %}
                                         {% if item.barcode %}
                                             <div class="text-nowrap">
@@ -77,6 +81,9 @@
                                                 {{ item.barcode }}
                                             </div>
                                         {% endif %}
+                                    </div>
+                                    <div class="col-4 col-sm-2 text-md-right">
+                                        {{ item.priceCalculated()|number_format(2, '.', ' ') }}
                                     </div>
                                     <div class="col-4 col-sm-3 text-right">
                                         <form action="/cup/catalog/product/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to uninstall the product?'|locale }}');">

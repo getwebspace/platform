@@ -38,6 +38,7 @@ use Illuminate\Support\Collection;
  * @property string $export
  * @property string $system
  * @property CatalogCategory $parent
+ * @property CatalogProduct $products
  */
 class CatalogCategory extends Model
 {
@@ -139,6 +140,6 @@ class CatalogCategory extends Model
 
     public function products(): HasMany
     {
-        //return $this->hasMany(CatalogProduct::class, 'uuid', 'category_uuid');
+        return $this->hasMany(CatalogProduct::class, 'category_uuid', 'uuid');
     }
 }
