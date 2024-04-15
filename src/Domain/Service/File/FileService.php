@@ -183,9 +183,16 @@ class FileService extends AbstractService
                 return $file;
 
             default:
-                $query = File::where($criteria);
+                $query = File::query();
                 /** @var Builder $query */
 
+                foreach ($criteria as $key => $value) {
+                    if (is_array($value)) {
+                        $query->orWhereIn($key, $value);
+                    } else {
+                        $query->orWhere($key, $value);
+                    }
+                }
                 foreach ($data['order'] as $column => $direction) {
                     $query = $query->orderBy($column, $direction);
                 }

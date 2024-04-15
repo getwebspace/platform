@@ -172,9 +172,16 @@ class UserService extends AbstractService
                 return User::where($criteria)->get();
 
             default:
-                $query = User::where($criteria);
+                $query = User::query();
                 /** @var Builder $query */
 
+                foreach ($criteria as $key => $value) {
+                    if (is_array($value)) {
+                        $query->orWhereIn($key, $value);
+                    } else {
+                        $query->orWhere($key, $value);
+                    }
+                }
                 foreach ($data['order'] as $column => $direction) {
                     $query = $query->orderBy($column, $direction);
                 }

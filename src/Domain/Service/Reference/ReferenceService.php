@@ -30,7 +30,7 @@ class ReferenceService extends AbstractService
         if (!$reference->title) {
             throw new MissingTitleValueException();
         }
-        
+
         if (!$reference->type) {
             throw new MissingTypeValueException();
         }
@@ -83,9 +83,16 @@ class ReferenceService extends AbstractService
                 return $reference ?: throw new ReferenceNotFoundException();
 
             default:
-                $query = Reference::where($criteria);
+                $query = Reference::query();
                 /** @var Builder $query */
 
+                foreach ($criteria as $key => $value) {
+                    if (is_array($value)) {
+                        $query->orWhereIn($key, $value);
+                    } else {
+                        $query->orWhere($key, $value);
+                    }
+                }
                 foreach ($data['order'] as $column => $direction) {
                     $query = $query->orderBy($column, $direction);
                 }

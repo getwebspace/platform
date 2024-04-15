@@ -84,13 +84,40 @@ class AttributeService extends AbstractService
             case !is_array($data['uuid']) && $data['uuid'] !== null:
             case !is_array($data['title']) && $data['title'] !== null:
             case !is_array($data['address']) && $data['address'] !== null:
-                /** @var CatalogAttribute $page */
-                $page = CatalogAttribute::firstWhere($criteria);
+                /** @var CatalogAttribute $attribute */
+                $attribute = CatalogAttribute::firstWhere($criteria);
 
-                return $page ?: throw new AttributeNotFoundException();
+                return $attribute ?: throw new AttributeNotFoundException();
 
             default:
-                return $this->query(new CatalogAttribute, $criteria, $data);
+                $query = CatalogAttribute::query();
+                /** @var Builder $query */
+
+                foreach ($criteria as $key => $value) {
+                    if (is_array($value)) {
+                        $query->orWhereIn($key, $value);
+                    } else {
+                        $query->orWhere($key, $value);
+                    }
+                }
+                foreach ($criteria as $key => $value) {
+                    if (is_array($value)) {
+                        $query->orWhereIn($key, $value);
+                    } else {
+                        $query->orWhere($key, $value);
+                    }
+                }
+                foreach ($data['order'] as $column => $direction) {
+                    $query = $query->orderBy($column, $direction);
+                }
+                if ($data['limit']) {
+                    $query = $query->limit($data['limit']);
+                }
+                if ($data['offset']) {
+                    $query = $query->offset($data['offset']);
+                }
+
+                return $query->get();
         }
     }
 

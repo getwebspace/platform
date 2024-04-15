@@ -73,9 +73,16 @@ class SubscriberService extends AbstractService
                 return $subscriber ?: throw new UserNotFoundException();
 
             default:
-                $query = UserSubscriber::where($criteria);
+                $query = UserSubscriber::query();
                 /** @var Builder $query */
 
+                foreach ($criteria as $key => $value) {
+                    if (is_array($value)) {
+                        $query->orWhereIn($key, $value);
+                    } else {
+                        $query->orWhere($key, $value);
+                    }
+                }
                 foreach ($data['order'] as $column => $direction) {
                     $query = $query->orderBy($column, $direction);
                 }

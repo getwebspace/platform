@@ -103,9 +103,16 @@ class PublicationService extends AbstractService
                 return $publication ?: throw new PublicationNotFoundException();
 
             default:
-                $query = Publication::where($criteria);
+                $query = Publication::query();
                 /** @var Builder $query */
 
+                foreach ($criteria as $key => $value) {
+                    if (is_array($value)) {
+                        $query->orWhereIn($key, $value);
+                    } else {
+                        $query->orWhere($key, $value);
+                    }
+                }
                 foreach ($data['order'] as $column => $direction) {
                     $query = $query->orderBy($column, $direction);
                 }

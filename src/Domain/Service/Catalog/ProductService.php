@@ -145,9 +145,16 @@ class ProductService extends AbstractService
                 return $catalogProduct ?: throw new ProductNotFoundException();
 
             default:
-                $query = CatalogProduct::where($criteria);
+                $query = CatalogProduct::query();
                 /** @var Builder $query */
 
+                foreach ($criteria as $key => $value) {
+                    if (is_array($value)) {
+                        $query->orWhereIn($key, $value);
+                    } else {
+                        $query->orWhere($key, $value);
+                    }
+                }
                 foreach ($data['order'] as $column => $direction) {
                     $query = $query->orderBy($column, $direction);
                 }

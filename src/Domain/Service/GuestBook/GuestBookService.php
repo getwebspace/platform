@@ -79,9 +79,16 @@ class GuestBookService extends AbstractService
                 return $entry ?: throw new EntryNotFoundException();
 
             default:
-                $query = GuestBook::where($criteria);
+                $query = GuestBook::query();
                 /** @var Builder $query */
 
+                foreach ($criteria as $key => $value) {
+                    if (is_array($value)) {
+                        $query->orWhereIn($key, $value);
+                    } else {
+                        $query->orWhere($key, $value);
+                    }
+                }
                 foreach ($data['order'] as $column => $direction) {
                     $query = $query->orderBy($column, $direction);
                 }

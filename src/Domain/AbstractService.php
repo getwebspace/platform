@@ -32,35 +32,6 @@ abstract class AbstractService
         $this->cache = $cache;
     }
 
-    protected function query(Model $model, array $criteria = [], array $data = [])
-    {
-        $query = $model->newQuery();
-
-        foreach ($criteria as $key => $value) {
-            if (is_array($value)) {
-                $query->orWhereIn($key, $value);
-            } else {
-                $query->orWhere($key, $value);
-            }
-        }
-
-        if (isset($data['order'])) {
-            foreach ($data['order'] as $column => $direction) {
-                $query = $query->orderBy($column, $direction);
-            }
-        }
-
-        if (isset($data['limit'])) {
-            $query = $query->limit($data['limit']);
-        }
-
-        if (isset($data['offset'])) {
-            $query = $query->offset($data['offset']);
-        }
-
-        return $query->get();
-    }
-
     abstract public function create(array $data = []);
 
     abstract public function read(array $data = []);

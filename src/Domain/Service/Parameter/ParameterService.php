@@ -59,9 +59,16 @@ class ParameterService extends AbstractService
                 return $parameter;
 
             default:
-                $query = Parameter::where($criteria);
+                $query = Parameter::query();
                 /** @var Builder $query */
 
+                foreach ($criteria as $key => $value) {
+                    if (is_array($value)) {
+                        $query->orWhereIn($key, $value);
+                    } else {
+                        $query->orWhere($key, $value);
+                    }
+                }
                 foreach ($data['order'] as $column => $direction) {
                     $query = $query->orderBy($column, $direction);
                 }

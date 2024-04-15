@@ -71,9 +71,16 @@ class TaskService extends AbstractService
                 return $task ?: throw new TaskNotFoundException();
 
             default:
-                $query = Task::where($criteria);
+                $query = Task::query();
                 /** @var Builder $query */
 
+                foreach ($criteria as $key => $value) {
+                    if (is_array($value)) {
+                        $query->orWhereIn($key, $value);
+                    } else {
+                        $query->orWhere($key, $value);
+                    }
+                }
                 foreach ($data['order'] as $column => $direction) {
                     $query = $query->orderBy($column, $direction);
                 }
