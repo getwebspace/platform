@@ -29,6 +29,11 @@ class AttributeService extends AbstractService
             throw new MissingTitleValueException();
         }
 
+        // if address generation is enabled
+        if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
+            $attribute->address = implode('-', array_filter([$attribute->group ?? '', $attribute->title ?? uniqid()], fn ($el) => (bool) $el));
+        }
+
         if (CatalogAttribute::firstWhere(['title' => $attribute->title]) !== null) {
             throw new TitleAlreadyExistsException();
         }
@@ -95,9 +100,9 @@ class AttributeService extends AbstractService
 
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
-                        $query->orWhereIn($key, $value);
+                        $query->whereIn($key, $value);
                     } else {
-                        $query->orWhere($key, $value);
+                        $query->where($key, $value);
                     }
                 }
                 foreach ($criteria as $key => $value) {
@@ -140,6 +145,11 @@ class AttributeService extends AbstractService
 
         if (is_object($entity) && is_a($entity, CatalogAttribute::class)) {
             $entity->fill($data);
+
+            // if address generation is enabled
+            if ($entity->isDirty('address') && $this->parameter('common_auto_generate_address', 'no') === 'yes') {
+                $entity->address = implode('-', array_filter([$entity->group ?? '', $entity->title ?? uniqid()], fn ($el) => (bool) $el));
+            }
 
             if ($entity->isDirty('title')) {
                 $found = CatalogAttribute::firstWhere(['title' => $entity->title]);

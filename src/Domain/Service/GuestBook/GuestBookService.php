@@ -68,7 +68,15 @@ class GuestBookService extends AbstractService
             $criteria['email'] = $data['email'];
         }
         if ($data['status'] !== null) {
-            $criteria['status'] = $data['status'];
+            if (is_array($data['status'])) {
+                $statuses = array_intersect($data['status'], \App\Domain\Casts\GuestBook\Status::LIST);
+            } else {
+                $statuses = in_array($data['status'], \App\Domain\Casts\GuestBook\Status::LIST) ? [$data['status']] : [];
+            }
+
+            if ($statuses) {
+                $criteria['status'] = $statuses;
+            }
         }
 
         switch (true) {
@@ -84,9 +92,9 @@ class GuestBookService extends AbstractService
 
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
-                        $query->orWhereIn($key, $value);
+                        $query->whereIn($key, $value);
                     } else {
-                        $query->orWhere($key, $value);
+                        $query->where($key, $value);
                     }
                 }
                 foreach ($data['order'] as $column => $direction) {

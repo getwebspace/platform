@@ -39,7 +39,7 @@ class OrderService extends AbstractService
                 'client' => '',
                 'address' => '',
             ],
-            'user' => null,
+            'user_uuid' => null,
             'phone' => '',
             'email' => '',
             'status' => null,
@@ -89,7 +89,6 @@ class OrderService extends AbstractService
     {
         $default = [
             'uuid' => null,
-            'user' => null,
             'user_uuid' => null,
             'serial' => null,
             'phone' => null,
@@ -105,9 +104,6 @@ class OrderService extends AbstractService
 
         if ($data['uuid'] !== null) {
             $criteria['uuid'] = $data['uuid'];
-        }
-        if ($data['user'] !== null && is_a($data['user'], User::class)) {
-            $criteria['user_uuid'] = $data['user']->getUuid();
         }
         if ($data['user_uuid'] !== null) {
             $criteria['user_uuid'] = $data['user_uuid'];

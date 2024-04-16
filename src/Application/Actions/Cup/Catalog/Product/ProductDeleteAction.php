@@ -13,12 +13,12 @@ class ProductDeleteAction extends CatalogAction
         if ($this->resolveArg('product') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('product'))) {
             $product = $this->catalogProductService->read([
                 'uuid' => $this->resolveArg('product'),
-                'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+                'status' => \App\Domain\Casts\Catalog\Status::WORK,
             ]);
 
             if ($product) {
                 $this->catalogProductService->update($product, [
-                    'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_DELETE,
+                    'status' => \App\Domain\Casts\Catalog\Status::DELETE,
                 ]);
 
                 $this->container->get(\App\Application\PubSub::class)->publish('cup:catalog:product:delete', $product);

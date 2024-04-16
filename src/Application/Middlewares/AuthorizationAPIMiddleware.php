@@ -3,7 +3,7 @@
 namespace App\Application\Middlewares;
 
 use App\Domain\AbstractMiddleware;
-use App\Domain\Entities\User;
+use App\Domain\Models\User;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\UserService;
 use App\Domain\Traits\SecurityTrait;

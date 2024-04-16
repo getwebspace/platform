@@ -18,7 +18,7 @@ class ImportTask extends AbstractTask
 {
     public const TITLE = 'Import directory from Excel file';
 
-    public function execute(array $params = []): \App\Domain\Entities\Task
+    public function execute(array $params = []): \App\Domain\Models\Task
     {
         $default = [
             'file' => null,
@@ -59,7 +59,7 @@ class ImportTask extends AbstractTask
                 'category' => $this->parameter('catalog_category_template', 'catalog.category.twig'),
                 'product' => $this->parameter('catalog_product_template', 'catalog.product.twig'),
             ];
-            $attributes = $catalogAttributeService->read()->whereNotIn('type', \App\Domain\Types\Catalog\AttributeTypeType::TYPE_BOOLEAN);
+            $attributes = $catalogAttributeService->read()->whereNotIn('type', \App\Domain\Casts\Catalog\Attribute\Type::BOOLEAN);
 
             $now = new \DateTime();
             $category = null;
@@ -120,7 +120,7 @@ class ImportTask extends AbstractTask
                                             '' . $data[$key_field]['trimmed'],
                                             floatval($data[$key_field]['raw']),
                                         ],
-                                        'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+                                        'status' => \App\Domain\Casts\Catalog\Status::WORK,
                                     ])
                                     ->first();
                             } else {

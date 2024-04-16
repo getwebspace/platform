@@ -230,4 +230,15 @@ class User extends Model
 
         return $path;
     }
+
+    public function toArray(): array
+    {
+        return array_merge(
+            parent::toArray(),
+            [
+                'avatar' => $this->avatar(),
+                'files' => $this->files()->getResults()->all(),
+            ],
+        );
+    }
 }

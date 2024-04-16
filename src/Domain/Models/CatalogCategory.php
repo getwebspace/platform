@@ -157,4 +157,15 @@ class CatalogCategory extends Model
     {
         return $this->hasMany(CatalogProduct::class, 'category_uuid', 'uuid');
     }
+
+    public function toArray(): array
+    {
+        return array_merge(
+            parent::toArray(),
+            [
+                'attributes' => $this->attributes()->getResults()->keyBy('address'),
+                'files' => $this->files,
+            ],
+        );
+    }
 }

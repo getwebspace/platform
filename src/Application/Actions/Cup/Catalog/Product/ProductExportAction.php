@@ -54,7 +54,7 @@ class ProductExportAction extends CatalogAction
                     $category = $categories->firstWhere('uuid', $category);
                     $products = $this->catalogProductService->read([
                         'category_uuid' => $category->getNested($categories)->pluck('uuid')->all(),
-                        'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+                        'status' => \App\Domain\Casts\Catalog\Status::WORK,
                         'order' => [
                             'order' => 'ASC',
                         ],
@@ -65,7 +65,7 @@ class ProductExportAction extends CatalogAction
                 case false:
                     false:
                     $products = $this->catalogProductService->read([
-                        'status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK,
+                        'status' => \App\Domain\Casts\Catalog\Status::WORK,
                         'order' => [
                             'order' => 'ASC',
                         ],
@@ -211,12 +211,12 @@ class ProductExportAction extends CatalogAction
 
                                     if ($attribute) {
                                         switch ($attribute->getType()) {
-                                            case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_STRING:
+                                            case \App\Domain\Casts\Catalog\Attribute\Type::STRING:
                                                 $cell->setValue($attribute->getValue());
 
                                                 break;
 
-                                            case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_INTEGER:
+                                            case \App\Domain\Casts\Catalog\Attribute\Type::INTEGER:
                                                 $cell
                                                     ->setValue($attribute->getValue())
                                                     ->getStyle()
@@ -225,7 +225,7 @@ class ProductExportAction extends CatalogAction
 
                                                 break;
 
-                                            case \App\Domain\Types\Catalog\AttributeTypeType::TYPE_FLOAT:
+                                            case \App\Domain\Casts\Catalog\Attribute\Type::FLOAT:
                                                 $cell
                                                     ->setValue($attribute->getValue())
                                                     ->getStyle()

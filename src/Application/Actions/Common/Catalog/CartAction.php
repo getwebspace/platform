@@ -31,7 +31,7 @@ class CartAction extends CatalogAction
             /**
              * Current user will be added to new order
              *
-             * @var \App\Domain\Entities\User $user
+             * @var \App\Domain\Models\User $user
              */
             $user = $this->request->getAttribute('user', false);
 

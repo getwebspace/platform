@@ -224,4 +224,15 @@ class CatalogProduct extends Model
     {
         return $this->weight() . ($this->dimension['weight_class'] ? ' ' . $this->dimension['weight_class'] : '');
     }
+
+    public function toArray(): array
+    {
+        return array_merge(
+            parent::toArray(),
+            [
+                'attributes' => $this->attributes()->getResults()->keyBy('address'),
+                'files' => $this->files,
+            ],
+        );
+    }
 }

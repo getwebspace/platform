@@ -62,6 +62,17 @@ class TaskService extends AbstractService
         if ($data['status'] !== null) {
             $criteria['status'] = $data['status'];
         }
+        if ($data['status'] !== null) {
+            if (is_array($data['status'])) {
+                $statuses = array_intersect($data['status'], \App\Domain\Casts\Task\Status::LIST);
+            } else {
+                $statuses = in_array($data['status'], \App\Domain\Casts\Task\Status::LIST) ? [$data['status']] : [];
+            }
+
+            if ($statuses) {
+                $criteria['status'] = $statuses;
+            }
+        }
 
         switch (true) {
             case !is_array($data['uuid']) && $data['uuid'] !== null:
@@ -76,9 +87,9 @@ class TaskService extends AbstractService
 
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
-                        $query->orWhereIn($key, $value);
+                        $query->whereIn($key, $value);
                     } else {
-                        $query->orWhere($key, $value);
+                        $query->where($key, $value);
                     }
                 }
                 foreach ($data['order'] as $column => $direction) {

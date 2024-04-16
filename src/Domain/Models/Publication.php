@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property DateTime $date
  * @property string $external_id
  * @property User $user
+ * @property PublicationCategory $category
  */
 class Publication extends Model
 {
@@ -84,5 +85,26 @@ class Publication extends Model
     public function user(): HasOne
     {
         return $this->hasOne(User::class, 'uuid', 'user_uuid');
+    }
+
+    public function toArray(): array
+    {
+        return array_merge(
+            parent::toArray(),
+            [
+                'category' => [
+                    'uuid' => $this->category->uuid,
+                    'title' => $this->category->title,
+                    'address' => $this->category->address,
+                ],
+                'user' => [
+                    'uuid' => $this->user->uuid,
+                    'name' => $this->user->getName(),
+                    'avatar' => $this->user->avatar(),
+                    'external_id' => $this->user->external_id,
+                ],
+                'files' => $this->files,
+            ],
+        );
     }
 }

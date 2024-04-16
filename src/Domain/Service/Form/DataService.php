@@ -68,9 +68,9 @@ class DataService extends AbstractService
 
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
-                        $query->orWhereIn($key, $value);
+                        $query->whereIn($key, $value);
                     } else {
-                        $query->orWhere($key, $value);
+                        $query->where($key, $value);
                     }
                 }
                 foreach ($data['order'] as $column => $direction) {

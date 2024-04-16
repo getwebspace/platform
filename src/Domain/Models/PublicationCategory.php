@@ -33,6 +33,7 @@ use Illuminate\Support\Collection;
  * @property array $template
  * @property array $meta
  * @property PublicationCategory $parent
+ * @property Publication[] $publications
  */
 class PublicationCategory extends Model
 {
@@ -109,5 +110,15 @@ class PublicationCategory extends Model
     public function publications(): HasMany
     {
         return $this->hasMany(Publication::class, 'uuid', 'category_uuid');
+    }
+
+    public function toArray(): array
+    {
+        return array_merge(
+            parent::toArray(),
+            [
+                'files' => $this->files,
+            ],
+        );
     }
 }

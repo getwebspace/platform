@@ -56,7 +56,7 @@ class ParametersPageAction extends AbstractAction
                 'guest' => $routes->filter(fn ($el) => str_starts_with($el, 'common:'))->all(),
             ],
             'groups' => $userGroupService->read(),
-            'attributes' => collect(), //$catalogAttributeService->read()->whereNotIn('type', \App\Domain\Types\Catalog\AttributeTypeType::TYPE_BOOLEAN),
+            'attributes' => collect(), //$catalogAttributeService->read()->whereNotIn('type', \App\Domain\Casts\Catalog\Attribute\Type::BOOLEAN),
             'reference' => $referenceService->read([
                 'type' => [ReferenceType::ORDER_STATUS], // todo usage with array of types
                 'order' => [

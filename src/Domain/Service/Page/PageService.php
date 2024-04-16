@@ -74,8 +74,16 @@ class PageService extends AbstractService
         if ($data['template'] !== null) {
             $criteria['template'] = $data['template'];
         }
-        if ($data['type'] !== null && in_array($data['type'], \App\Domain\Casts\Page\Type::LIST, true)) {
-            $criteria['type'] = $data['type'];
+        if ($data['type'] !== null) {
+            if (is_array($data['type'])) {
+                $types = array_intersect($data['type'], \App\Domain\Casts\Page\Type::LIST);
+            } else {
+                $types = in_array($data['type'], \App\Domain\Casts\Page\Type::LIST) ? [$data['type']] : [];
+            }
+
+            if ($types) {
+                $criteria['type'] = $types;
+            }
         }
 
         switch (true) {
@@ -93,9 +101,9 @@ class PageService extends AbstractService
 
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
-                        $query->orWhereIn($key, $value);
+                        $query->whereIn($key, $value);
                     } else {
-                        $query->orWhere($key, $value);
+                        $query->where($key, $value);
                     }
                 }
                 foreach ($data['order'] as $column => $direction) {

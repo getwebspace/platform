@@ -48,7 +48,7 @@ class SearchIndexTask extends AbstractTask
         }
 
 //        $productService = $this->container->get(\App\Domain\Service\Catalog\ProductService::class);
-//        foreach ($productService->read(['status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK]) as $item) {
+//        foreach ($productService->read(['status' => \App\Domain\Casts\Catalog\Status::WORK]) as $item) {
 //            /** @var CatalogProduct $item */
 //            $index[] = $this->implode('catalog_product', $item->getUuid(), Search::getIndexedText([
 //                $item->getTitle(),

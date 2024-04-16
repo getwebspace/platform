@@ -64,4 +64,14 @@ class Page extends Model
         'meta' => '{}',
         'date' => 'now',
     ];
+
+    public function toArray(): array
+    {
+        return array_merge(
+            parent::toArray(),
+            [
+                'files' => $this->files,
+            ],
+        );
+    }
 }

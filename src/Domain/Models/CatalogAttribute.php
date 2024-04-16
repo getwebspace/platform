@@ -16,9 +16,11 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 /**
  * @property string $uuid
@@ -27,6 +29,8 @@ use Illuminate\Support\Collection;
  * @property string $type
  * @property string $group
  * @property boolean $is_filter
+ * @property CatalogCategory[] $categories
+ * @property CatalogProduct[] $products
  */
 class CatalogAttribute extends Model
 {
@@ -65,9 +69,44 @@ class CatalogAttribute extends Model
         'is_filter' => true,
     ];
 
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            CatalogCategory::class,
+            'catalog_attribute_category',
+            'attribute_uuid',
+            'category_uuid',
+            'uuid',
+            'uuid'
+        );
+    }
+
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            CatalogProduct::class,
+            'catalog_attribute_product',
+            'attribute_uuid',
+            'product_uuid',
+            'uuid',
+            'uuid'
+        );
+    }
+
+    public function values(): Collection
+    {
+        return $this
+            ->newQuery()
+            ->from('catalog_attribute_product')
+            ->selectRaw('value, COUNT(*) as count')
+            ->where('attribute_uuid', $this->uuid)
+            ->groupBy('value')
+            ->pluck('count', 'value');
+    }
+
     public function value(): mixed
     {
-        if ($this->pivot->value) {
+        if ($this->pivot && $this->pivot->value) {
             switch ($this->type) {
                 case \App\Domain\Casts\Catalog\Attribute\Type::BOOLEAN:
                     return $this->pivot->value === 'yes';
@@ -84,5 +123,25 @@ class CatalogAttribute extends Model
         }
 
         return null;
+    }
+
+    public function toArray(): array
+    {
+        $array = [
+            'uuid' => $this->uuid,
+            'title' => $this->title,
+            'address' => $this->address,
+            'type' => $this->type,
+            'group' => $this->group,
+            'is_filter' => $this->is_filter,
+        ];
+
+        if (($value = $this->value()) !== null) {
+            $array['value'] = $value;
+        } else {
+            $array['values'] = $this->values();
+        }
+
+        return $array;
     }
 }

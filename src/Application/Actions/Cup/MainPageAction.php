@@ -21,7 +21,7 @@ class MainPageAction extends AbstractAction
                 'guestbook' => \App\Domain\Models\GuestBook::count(),
                 'catalog' => [
                     'category' => 0, //$this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class)->count(['status' => \App\Domain\Casts\Catalog\Status::WORK]),
-                    'product' => 0, //$this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class)->count(['status' => \App\Domain\Types\Catalog\ProductStatusType::STATUS_WORK]),
+                    'product' => 0, //$this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class)->count(['status' => \App\Domain\Casts\Catalog\Status::WORK]),
                     'order' => 0, //$this->entityManager->getRepository(\App\Domain\Entities\Catalog\Order::class)->count([]),
                 ],
                 'forms' => \App\Domain\Models\Form::count(),

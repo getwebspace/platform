@@ -123,8 +123,16 @@ class UserService extends AbstractService
         if ($data['allow_mail'] !== null) {
             $criteria['allow_mail'] = (bool)$data['allow_mail'];
         }
-        if ($data['status'] !== null && in_array($data['status'], \App\Domain\Casts\User\Status::LIST, true)) {
-            $criteria['status'] = $data['status'];
+        if ($data['status'] !== null) {
+            if (is_array($data['status'])) {
+                $statuses = array_intersect($data['status'], \App\Domain\Casts\User\Status::LIST);
+            } else {
+                $statuses = in_array($data['status'], \App\Domain\Casts\User\Status::LIST) ? [$data['status']] : [];
+            }
+
+            if ($statuses) {
+                $criteria['status'] = $statuses;
+            }
         }
         if ($data['external_id'] !== null) {
             $criteria['external_id'] = $data['external_id'];
@@ -177,9 +185,9 @@ class UserService extends AbstractService
 
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
-                        $query->orWhereIn($key, $value);
+                        $query->whereIn($key, $value);
                     } else {
-                        $query->orWhere($key, $value);
+                        $query->where($key, $value);
                     }
                 }
                 foreach ($data['order'] as $column => $direction) {

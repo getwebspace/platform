@@ -15,7 +15,7 @@ class PublicationCreateAction extends PublicationAction
         if ($this->isPost()) {
             try {
                 $publication = $this->publicationService->create([
-                    'user' => $this->request->getAttribute('user'),
+                    'user_uuid' => $this->request->getAttribute('user')->uuid,
                     'title' => $this->getParam('title'),
                     'address' => $this->getParam('address'),
                     'date' => $this->getParam('date', 'now'),

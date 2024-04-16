@@ -160,4 +160,21 @@ class File extends Model
     {
         return $this->pivot->comment ?? '';
     }
+
+    public function toArray(): array
+    {
+        return [
+            "uuid" => $this->uuid,
+            "name" => $this->name,
+            "ext" => $this->ext,
+            "type" => $this->type,
+            "size" => $this->size,
+            "salt" => $this->salt,
+            "hash" => $this->hash,
+            "date" => $this->date,
+            "private" => $this->private,
+            'comment' => $this->comment(),
+            'order' => $this->order(),
+        ];
+    }
 }

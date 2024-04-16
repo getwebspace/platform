@@ -83,6 +83,7 @@ class ProductCreateAction extends CatalogAction
             'categories' => $categories,
             'category' => $categories->firstWhere('uuid', $category),
             'attributes' => $this->catalogAttributeService->read(),
+            'countries' => $this->referenceService->read(['type' => ReferenceType::COUNTRY, 'status' => true, 'order' => ['order' => 'asc']]),
             'manufacturers' => $this->referenceService->read(['type' => ReferenceType::MANUFACTURER, 'status' => true, 'order' => ['order' => 'asc']]),
             'tax_rates' => $this->referenceService->read(['type' => ReferenceType::TAX_RATE, 'status' => true, 'order' => ['order' => 'asc']]),
             'stock_status' => $this->referenceService->read(['type' => ReferenceType::STOCK_STATUS, 'status' => true, 'order' => ['order' => 'asc']]),

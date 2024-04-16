@@ -23,7 +23,6 @@ class GuestBook extends Model
 {
     use HasFactory;
     use HasUuids;
-    use FileTrait;
 
     protected $table = 'guestbook';
     protected $primaryKey = 'uuid';
