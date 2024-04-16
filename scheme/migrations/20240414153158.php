@@ -264,8 +264,7 @@ final class V20240414153158 extends AbstractMigration
             ->addColumn('type', 'string', ['limit' => 100, 'default' => 'string', 'null' => false])
             ->addColumn('group', 'string', ['limit' => 255, 'default' => 'string', 'null' => false])
             ->addColumn('is_filter', 'boolean', ['default' => true])
-            ->addIndex(['address'], ['unique' => true])
-            ->addIndex(['group'])
+            ->addIndex(['group', 'address'], ['unique' => true])
             ->create();
 
         // create table catalog attribute category
