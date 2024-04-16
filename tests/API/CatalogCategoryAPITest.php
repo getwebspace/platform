@@ -19,14 +19,15 @@ class CatalogCategoryAPITest extends TestCase
         parent::setUp();
 
         $parameters = $this->getService(ParameterService::class);
-        $parameters->create(['key' => 'entity_access', 'value' => 'key']);
-        $parameters->create(['key' => 'entity_keys', 'value' => $this->apikey = $this->getFaker()->word]);
+        $parameters->create(['name' => 'entity_access', 'value' => 'key']);
+        $parameters->create(['name' => 'entity_keys', 'value' => $this->apikey = $this->getFaker()->word]);
     }
 
     public function testAPICreateSuccess(): void
     {
         $data = [
-            'title' => $this->getFaker()->word,
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
             'description' => $this->getFaker()->text,
             'export' => 'api',
         ];
@@ -42,7 +43,8 @@ class CatalogCategoryAPITest extends TestCase
     {
         // create
         $data = [
-            'title' => $this->getFaker()->word,
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
             'description' => $this->getFaker()->text,
             'export' => 'api',
         ];
@@ -52,7 +54,7 @@ class CatalogCategoryAPITest extends TestCase
             'form_params' => $data,
         ]);
         $this->assertEquals(201, $response->getStatusCode());
-        $json = json_decode((string) $response->getBody(), true);
+        $json = json_decode((string)$response->getBody(), true);
 
         // read
         $response = $this->createRequest()->get('/api/v1/catalog/category', [
@@ -62,7 +64,7 @@ class CatalogCategoryAPITest extends TestCase
             ],
         ]);
         $this->assertEquals(200, $response->getStatusCode());
-        $json = json_decode((string) $response->getBody(), true);
+        $json = json_decode((string)$response->getBody(), true);
 
         // check
         $this->assertEquals($data['title'], $json['data']['title']);
@@ -74,7 +76,8 @@ class CatalogCategoryAPITest extends TestCase
     {
         // create
         $data = [
-            'title' => $this->getFaker()->word,
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
             'description' => $this->getFaker()->text,
             'export' => 'api',
         ];
@@ -84,11 +87,12 @@ class CatalogCategoryAPITest extends TestCase
             'form_params' => $data,
         ]);
         $this->assertEquals(201, $response->getStatusCode());
-        $json = json_decode((string) $response->getBody(), true);
+        $json = json_decode((string)$response->getBody(), true);
 
         // update
         $data = [
-            'title' => $this->getFaker()->word,
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
             'description' => $this->getFaker()->text,
             'export' => 'api',
         ];
@@ -110,7 +114,7 @@ class CatalogCategoryAPITest extends TestCase
             ],
         ]);
         $this->assertEquals(200, $response->getStatusCode());
-        $json = json_decode((string) $response->getBody(), true);
+        $json = json_decode((string)$response->getBody(), true);
 
         // check
         $this->assertEquals($data['title'], $json['data']['title']);
@@ -122,7 +126,8 @@ class CatalogCategoryAPITest extends TestCase
     {
         // create
         $data = [
-            'title' => $this->getFaker()->word,
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
             'description' => $this->getFaker()->text,
             'export' => 'api',
         ];
@@ -132,7 +137,7 @@ class CatalogCategoryAPITest extends TestCase
             'form_params' => $data,
         ]);
         $this->assertEquals(201, $response->getStatusCode());
-        $json = json_decode((string) $response->getBody(), true);
+        $json = json_decode((string)$response->getBody(), true);
 
         // delete
         $response = $this->createRequest()->delete('/api/v1/catalog/category', [

@@ -19,8 +19,8 @@ class CatalogProductAPITest extends TestCase
         parent::setUp();
 
         $parameters = $this->getService(ParameterService::class);
-        $parameters->create(['key' => 'entity_access', 'value' => 'key']);
-        $parameters->create(['key' => 'entity_keys', 'value' => $this->apikey = $this->getFaker()->word]);
+        $parameters->create(['name' => 'entity_access', 'value' => 'key']);
+        $parameters->create(['name' => 'entity_keys', 'value' => $this->apikey = $this->getFaker()->word]);
     }
 
     protected function getCategory(): ?string

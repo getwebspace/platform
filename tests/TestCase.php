@@ -2,8 +2,11 @@
 
 namespace tests;
 
+use Phinx\Console\PhinxApplication;
 use Psr\Container\ContainerInterface;
 use Slim\App;
+use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\Console\Output\NullOutput;
 
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {
@@ -27,6 +30,22 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
          */
         static::$app = $app;
         static::$container = static::$app->getContainer();
+    }
+
+    public function setUp(): void
+    {
+        /*
+         * for each test, we will use an empty database
+         * delete the scheme and create it again
+         */
+
+        $phinxApp = new PhinxApplication();
+        $phinxApp->setAutoExit(false);
+
+        $output = new NullOutput();
+
+        $phinxApp->run(new StringInput('rollback -t 0 -f'), $output);
+        $phinxApp->run(new StringInput('migrate'), $output);
     }
 
     protected function getService($class): mixed

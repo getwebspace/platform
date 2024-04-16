@@ -2,6 +2,7 @@
 
 namespace tests\API;
 
+use App\Domain\Models\Parameter;
 use App\Domain\Service\Parameter\ParameterService;
 use tests\TestCase;
 
@@ -15,7 +16,7 @@ class CommonAPITest extends TestCase
     public function testAPIModeAll(): void
     {
         $parameters = $this->getService(ParameterService::class);
-        $parameters->create(['key' => 'entity_access', 'value' => 'all']);
+        $parameters->create(['name' => 'entity_access', 'value' => 'all']);
 
         $response = $this->createRequest()->get('/api/v1/user');
         $this->assertEquals(200, $response->getStatusCode());
@@ -24,7 +25,7 @@ class CommonAPITest extends TestCase
     public function testAPIModeUser(): void
     {
         $parameters = $this->getService(ParameterService::class);
-        $parameters->create(['key' => 'entity_access', 'value' => 'user']);
+        $parameters->create(['name' => 'entity_access', 'value' => 'user']);
 
         $response = $this->createRequest()->get('/api/v1/user');
         $this->assertEquals(401, $response->getStatusCode());
@@ -33,7 +34,7 @@ class CommonAPITest extends TestCase
     public function testAPIModeKeyFailed(): void
     {
         $parameters = $this->getService(ParameterService::class);
-        $parameters->create(['key' => 'entity_access', 'value' => 'key']);
+        $parameters->create(['name' => 'entity_access', 'value' => 'key']);
 
         $response = $this->createRequest()->get('/api/v1/user');
         $this->assertEquals(401, $response->getStatusCode());
@@ -44,8 +45,8 @@ class CommonAPITest extends TestCase
         $apikey = $this->getFaker()->word;
 
         $parameters = $this->getService(ParameterService::class);
-        $parameters->create(['key' => 'entity_access', 'value' => 'key']);
-        $parameters->create(['key' => 'entity_keys', 'value' => $apikey]);
+        $parameters->create(['name' => 'entity_access', 'value' => 'key']);
+        $parameters->create(['name' => 'entity_keys', 'value' => $apikey]);
 
         $response = $this->createRequest()->get('/api/v1/user', ['headers' => ['key' => $apikey]]);
         $this->assertEquals(200, $response->getStatusCode());
