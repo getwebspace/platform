@@ -326,7 +326,7 @@ $(() => {
         });
 
         // select product
-        $modal.find('input[type="text"]').on('keyup', throttle((e) => {
+        $modal.find('input[type="text"]').on('keyup', debounce((e) => {
             let $list = $modal.find('#products');
 
             if (e.target.value.trim().length) {
@@ -353,15 +353,14 @@ $(() => {
             let $option = $modal.find(`#products option[value="${value}"]`)
 
             if ($option) {
-                let json = $option.data('json'),
-                    data = JSON.parse(json),
-                    $isExist = $tab.find('[name="relation[' + value + ']"]');
+                let data = JSON.parse($option.data('json')),
+                    $isExist = $tab.find('[name="relations[' + data.uuid + ']"]');
 
                 if ($isExist.length === 0) {
                     let $el = $template.clone();
 
                     $el.find('a').attr('href', `/cup/catalog/product/${data.uuid}/edit`).text(data.title);
-                    $el.find('[name="relation[]"]').attr('name', 'relation[' + data.uuid + ']');
+                    $el.find('[name="relations[]"]').attr('name', 'relations[' + data.uuid + ']');
 
                     $el.appendTo($tab.find('ul.list-group'));
                 } else {

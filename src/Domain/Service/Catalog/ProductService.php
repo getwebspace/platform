@@ -23,7 +23,7 @@ class ProductService extends AbstractService
     {
         $default = [
             'attributes' => [],
-            'relation' => [],
+            'relations' => [],
         ];
         $data = array_merge($default, $data);
 
@@ -61,15 +61,18 @@ class ProductService extends AbstractService
         }
 
         // sync attributes
-        if (isset($data['attributes'])) {
-
-            foreach ($data['attributes'] as $uuid => $value) {
-                $product->attributes()->attach($uuid, ['value' => $value]);
-            }
+        if ($data['attributes']) {
+            $product->attributes()->sync(
+                collect($data['attributes'])->map(fn ($value) => ['value' => $value])
+            );
         }
 
-        // add relation products
-        //$this->catalogProductRelationService->process($product, $data['relation']);
+        // sync relations
+        if ($data['relations']) {
+            $product->relations()->sync(
+                collect($data['relations'])->map(fn ($count) => ['count' => $count])
+            );
+        }
 
         return $product;
     }
@@ -142,7 +145,6 @@ class ProductService extends AbstractService
 
         switch (true) {
             case !is_array($data['uuid']) && $data['uuid'] !== null:
-            case !is_array($data['title']) && $data['title'] !== null:
             case !is_array($data['address']) && $data['address'] !== null:
             case !is_array($data['vendorcode']) && $data['vendorcode'] !== null:
             case !is_array($data['barcode']) && $data['barcode'] !== null:
@@ -151,6 +153,21 @@ class ProductService extends AbstractService
                 $catalogProduct = CatalogProduct::firstWhere($criteria);
 
                 return $catalogProduct ?: throw new ProductNotFoundException();
+
+            case !is_array($data['title']) && $data['title'] !== null:
+                $query = CatalogProduct::query();
+                /** @var Builder $query */
+
+                $query->where('title', 'like', $data['title'] . '%');
+
+                if ($data['limit']) {
+                    $query = $query->limit($data['limit']);
+                }
+                if ($data['offset']) {
+                    $query = $query->offset($data['offset']);
+                }
+
+                return $query->get();
 
             default:
                 $query = CatalogProduct::query();
@@ -216,17 +233,17 @@ class ProductService extends AbstractService
 
             // sync attributes
             if (isset($data['attributes'])) {
-                $entity->attributes()->detach();
-
-                foreach ($data['attributes'] as $uuid => $value) {
-                    $entity->attributes()->attach($uuid, ['value' => $value]);
-                }
+                $entity->attributes()->sync(
+                    collect($data['attributes'])->map(fn ($value) => ['value' => $value])
+                );
             }
 
-//                if ($data['relation'] !== null) {
-//                    // update relation products
-//                    $this->catalogProductRelationService->process($entity, $data['relation']);
-//                }
+            // sync relations
+            if (isset($data['relations'])) {
+                $entity->relations()->sync(
+                    collect($data['relations'])->map(fn ($count) => ['count' => $count])
+                );
+            }
 
             $entity->save();
 

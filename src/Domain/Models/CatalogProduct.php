@@ -51,6 +51,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $external_id
  * @property string $export
  * @property CatalogCategory $category
+ * @property CatalogAttribute[] $attributes
+ * @property CatalogProduct[] $relations
  */
 class CatalogProduct extends Model
 {
@@ -174,6 +176,18 @@ class CatalogProduct extends Model
             'uuid',
             'uuid'
         )->withPivot('value');
+    }
+
+    public function relations(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            CatalogProduct::class,
+            'catalog_product_related',
+            'product_uuid',
+            'related_uuid',
+            'uuid',
+            'uuid'
+        )->withPivot('count');
     }
 
     protected function discount(): Attribute

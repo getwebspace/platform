@@ -53,7 +53,7 @@ class ProductUpdateAction extends CatalogAction
                             'external_id' => $this->getParam('external_id'),
 
                             'attributes' => $this->getParam('attributes', []),
-                            'relation' => $this->getParam('relation', []),
+                            'relations' => $this->getParam('relations', []),
                         ]);
                         $product = $this->processEntityFiles($product);
 
