@@ -53,7 +53,7 @@ class Reference extends Model
     ];
 
     protected $attributes = [
-        'type' => \App\Domain\Casts\Reference\Type::TEXT,
+        'type' => '',
         'title' => '',
         'value' => '{}',
         'order' => 1,
