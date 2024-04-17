@@ -109,7 +109,7 @@ class PublicationCategory extends Model
 
     public function publications(): HasMany
     {
-        return $this->hasMany(Publication::class, 'uuid', 'category_uuid');
+        return $this->hasMany(Publication::class, 'category_uuid', 'uuid');
     }
 
     public function toArray(): array

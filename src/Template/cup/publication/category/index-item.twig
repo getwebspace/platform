@@ -3,14 +3,21 @@
         <div class="col-12 col-sm">
             {{ item.title|u.truncate(50, '...') }}
 
-            <div class="text-black-50 float-right d-none d-lg-inline">
+            <div class="d-none d-md-inline">
                 {% if item.public == false %}
                     <i class="fas fa-eye-slash" data-toggle="tooltip" data-placement="right" title="{{ 'Hidden category'|locale }}"></i>
                 {% endif %}
             </div>
+
+            <div class="text-black-50 float-right d-none d-lg-inline">
+                {% set count = item.publications().count() %}
+                {% if count %}
+                    <span class="badge badge-secondary">{{ count }}</span>
+                {% endif %}
+            </div>
         </div>
         <div class="col-6 col-sm-3">{{ parent.title ?? '<code>&mdash;</code>'|raw }}</div>
-        <div class="col-12 col-sm-5 text-right">
+        <div class="col-12 col-sm-3 text-right">
             <form action="/cup/publication/category/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete a post category?'|locale }}');">
                 <div class="btn-group">
                     <a href="/cup/publication/category/{{ item.uuid }}/edit" class="btn btn-sm btn-info">

@@ -27,8 +27,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property array $meta
  * @property DateTime $date
  * @property string $external_id
- * @property User $user
  * @property PublicationCategory $category
+ * @property User $user
  */
 class Publication extends Model
 {
