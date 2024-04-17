@@ -39,6 +39,7 @@ use Illuminate\Support\Collection;
  * @property string $external_id
  * @property string $export
  * @property string $system
+ * @property array $specifics
  * @property CatalogCategory $parent
  * @property CatalogAttribute[] $attributes
  * @property CatalogProduct[] $products
@@ -88,6 +89,7 @@ class CatalogCategory extends Model
         'sort' => Sort::class,
         'status' => CatalogStatus::class,
         'order' => 'int',
+        'specifics' => Json::class,
         'system' => 'string',
         'export' => 'string',
         'external_id' => 'string',
@@ -106,6 +108,7 @@ class CatalogCategory extends Model
         'sort' => '{}',
         'status' => \App\Domain\Casts\Catalog\Status::WORK,
         'order' => 1,
+        'specifics' => '{}',
         'system' => '',
         'export' => 'manual',
         'external_id' => '',

@@ -188,6 +188,7 @@ final class V20240414153158 extends AbstractMigration
             ->addColumn('children', 'boolean', ['default' => false])
             ->addColumn('hidden', 'boolean', ['default' => false])
             ->addColumn('order', 'integer', ['default' => 1])
+            ->addColumn('specifics', 'text', ['default' => '{}'])
             ->addColumn('status', 'string', ['limit' => 100, 'default' => 'work'])
             ->addColumn('sort', 'text', ['default' => '{}'])
             ->addColumn('meta', 'text', ['default' => '{}'])
