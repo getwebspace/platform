@@ -17,116 +17,101 @@
         <div class="col-md-12">
             <div class="card">
                 <form method="post" enctype="multipart/form-data">
-                    <div class="card-header">
-                        <div class="d-flex align-items-center">
-                            <ul class="nav nav-pills nav-secondary nav-pills-no-bd ml-auto" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active show" data-toggle="pill" href="#page" role="tab">
-                                        {{ 'Page'|locale }}
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-toggle="pill" href="#other" role="tab">
-                                        {{ 'Other'|locale }}
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
                     <div class="card-body">
                         <div class="tab-content">
-                            {# Tab: Page #}
-                            <div class="tab-pane fade show active" id="page" role="tabpanel">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Title'|locale,
-                                            'type': 'text',
-                                            'name': 'title',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Short page description'|locale) ~ '"></i>',
-                                            'args': {
-                                                'value': item.title,
-                                                'required': true,
-                                                'placeholder': 'About Us'|locale,
-                                            }
-                                        } %}
-                                    </div>
-                                    <div class="col-md-6">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Address'|locale,
-                                            'type': 'text',
-                                            'name': 'address',
-                                            'prefix': base_url() ~ '/',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Page title. You can leave it blank, then the value will be generated automatically. It is allowed to use only Latin characters and numbers without spaces')|locale ~ '"></i>',
-                                            'args': {
-                                                'value': item.address,
-                                                'placeholder': 'about',
-                                            }
-                                        } %}
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {% include 'cup/form.twig' with {
+                                        'label': 'Title'|locale,
+                                        'type': 'text',
+                                        'name': 'title',
+                                        'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Short page description'|locale) ~ '"></i>',
+                                        'args': {
+                                            'value': item.title,
+                                            'required': true,
+                                            'placeholder': 'About Us'|locale,
+                                        }
+                                    } %}
                                 </div>
-
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        {% include 'cup/editor.twig' with {
-                                            'label': 'Body of the page'|locale,
-                                            'name': 'content',
-                                            'args': {
-                                                'value': item.content
-                                            }
-                                        } %}
-                                    </div>
+                                <div class="col-md-6">
+                                    {% include 'cup/form.twig' with {
+                                        'label': 'Address'|locale,
+                                        'type': 'text',
+                                        'name': 'address',
+                                        'prefix': base_url() ~ '/',
+                                        'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Page title. You can leave it blank, then the value will be generated automatically. It is allowed to use only Latin characters and numbers without spaces')|locale ~ '"></i>',
+                                        'args': {
+                                            'value': item.address,
+                                            'placeholder': 'about',
+                                        }
+                                    } %}
                                 </div>
                             </div>
 
-                            {# Tab: Other #}
-                            <div class="tab-pane fade" id="other" role="tabpanel">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Date'|locale,
-                                            'type': 'datetime',
-                                            'name': 'date',
-                                            'args': {
-                                                'value': item.date|df('Y-m-d\\TH:i'),
-                                                'placeholder': '20.01.2019 12:34',
-                                            }
-                                        } %}
-                                    </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    {% include 'cup/editor.twig' with {
+                                        'label': 'Body of the page'|locale,
+                                        'name': 'content',
+                                        'args': {
+                                            'value': item.content
+                                        }
+                                    } %}
                                 </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Type of content'|locale,
-                                            'type': 'select',
-                                            'name': 'type',
-                                            'message': 'If there is no understanding of what this field affects, leave the default value.'|locale,
-                                            'args': {
-                                                'option': _(constant('/App/Domain/Casts/Page/Type::LIST')),
-                                                'selected': item.type
-                                            }
-                                        } %}
+                            </div>
+
+                            <div class="accordion mt-3">
+                                <button class="btn btn-outline-white btn-block text-center" type="button" data-toggle="collapse" data-target="#page-more">
+                                    {{ 'More'|locale }} <i class="fas fa-arrow-down"></i>
+                                </button>
+
+                                <div id="page-more" class="collapse" data-parent=".accordion">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            {% include 'cup/form.twig' with {
+                                                'label': 'Date'|locale,
+                                                'type': 'datetime',
+                                                'name': 'date',
+                                                'args': {
+                                                    'value': item.date|df('Y-m-d\\TH:i'),
+                                                    'placeholder': '20.01.2019 12:34',
+                                                }
+                                            } %}
+                                        </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        {% include 'cup/form.twig' with {
-                                            'label': 'Template'|locale,
-                                            'type': 'text',
-                                            'name': 'template',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('Specify the name of the template you want to use for this page or leave <b>page.twig</b>')|locale ~ '"></i>',
-                                            'args': {
-                                                'value': item.template is not empty ? item.template : 'page.twig',
-                                                'required': true,
-                                            }
-                                        } %}
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            {% include 'cup/form.twig' with {
+                                                'label': 'Type of content'|locale,
+                                                'type': 'select',
+                                                'name': 'type',
+                                                'message': 'If there is no understanding of what this field affects, leave the default value.'|locale,
+                                                'args': {
+                                                    'option': _(constant('/App/Domain/Casts/Page/Type::LIST')),
+                                                    'selected': item.type
+                                                }
+                                            } %}
+                                        </div>
+                                        <div class="col-md-6">
+                                            {% include 'cup/form.twig' with {
+                                                'label': 'Template'|locale,
+                                                'type': 'text',
+                                                'name': 'template',
+                                                'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('Specify the name of the template you want to use for this page or leave <b>page.twig</b>')|locale ~ '"></i>',
+                                                'args': {
+                                                    'value': item.template is not empty ? item.template : 'page.twig',
+                                                    'required': true,
+                                                }
+                                            } %}
+                                        </div>
                                     </div>
+
+                                    {% include 'cup/form-image.twig' with { 'entity': item } %}
+                                    
+                                    {% include 'cup/form-file.twig' with { 'entity': item } %}
+
+                                    {% include "cup/form-meta.twig" with { 'entity': item } %}
                                 </div>
-
-                                {% include 'cup/form-image.twig' with { 'entity': item } %}
-                                {% include 'cup/form-file.twig' with { 'entity': item } %}
-
-                                <hr>
-
-                                {% include "cup/form-meta.twig" with { 'entity': item } %}
                             </div>
                         </div>
                     </div>
