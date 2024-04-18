@@ -39,7 +39,7 @@ class ProductService extends AbstractService
 
         // if address generation is enabled
         if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
-            $product->address = implode('/', array_filter([$product->category->address ?? '', $product->address ?? $product->title ?? uniqid()], fn ($el) => (bool) $el));
+            $product->address = implode('/', array_filter([$product->category->address ?? '', $product->title ?? uniqid()], fn ($el) => (bool) $el));
         }
 
         // check unique
@@ -214,8 +214,8 @@ class ProductService extends AbstractService
             $entity->fill($data);
 
             // if address generation is enabled
-            if ($entity->isDirty('address') && $this->parameter('common_auto_generate_address', 'no') === 'yes') {
-                $entity->address = implode('/', array_filter([$entity->category->address ?? '', $entity->address ?? $entity->title ?? uniqid()], fn ($el) => (bool) $el));
+            if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
+                $entity->address = implode('/', array_filter([$entity->category->address ?? '', $entity->title ?? uniqid()], fn ($el) => (bool) $el));
             }
 
             if ($entity->isDirty('category_uuid') || $entity->isDirty('address') || $entity->isDirty('dimension') || $entity->isDirty('external_id')) {

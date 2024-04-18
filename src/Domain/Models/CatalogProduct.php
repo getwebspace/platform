@@ -244,6 +244,11 @@ class CatalogProduct extends Model
         return array_merge(
             parent::toArray(),
             [
+                'category' => [
+                    'uuid' => $this->category->uuid,
+                    'title' => $this->category->title,
+                    'address' => $this->category->address,
+                ],
                 'attributes' => $this->attributes()->getResults()->keyBy('address'),
                 'files' => $this->files,
             ],

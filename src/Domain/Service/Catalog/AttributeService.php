@@ -147,7 +147,7 @@ class AttributeService extends AbstractService
             $entity->fill($data);
 
             // if address generation is enabled
-            if ($entity->isDirty('address') && $this->parameter('common_auto_generate_address', 'no') === 'yes') {
+            if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
                 $entity->address = implode('-', array_filter([$entity->group ?? '', $entity->title ?? uniqid()], fn ($el) => (bool) $el));
             }
 

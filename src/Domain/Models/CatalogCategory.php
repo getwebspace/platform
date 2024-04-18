@@ -163,9 +163,20 @@ class CatalogCategory extends Model
 
     public function toArray(): array
     {
+        $parent = null;
+
+        if ($this->parent) {
+            $parent = [
+                'uuid' => $this->parent->uuid,
+                'title' => $this->parent->title,
+                'address' => $this->parent->address,
+            ];
+        }
+
         return array_merge(
             parent::toArray(),
             [
+                'parent' => $parent,
                 'attributes' => $this->attributes()->getResults()->keyBy('address'),
                 'files' => $this->files,
             ],

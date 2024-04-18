@@ -34,7 +34,7 @@ class CategoryService extends AbstractService
 
         // if address generation is enabled
         if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
-            $category->address = implode('/', array_filter([$category->parent->address ?? '', $category->address ?? $category->title ?? uniqid()], fn ($el) => (bool) $el));
+            $category->address = implode('/', array_filter([$category->parent->address ?? '', $category->title ?? uniqid()], fn ($el) => (bool) $el));
         }
 
         if (PublicationCategory::firstWhere(['title' => $category->title]) !== null) {
@@ -144,7 +144,7 @@ class CategoryService extends AbstractService
 
             // if address generation is enabled
             if ($data['address'] && $this->parameter('common_auto_generate_address', 'no') === 'yes') {
-                $entity->address = implode('/', array_filter([$entity->parent->address ?? '', $entity->address ?? $entity->title ?? uniqid()], fn ($el) => (bool) $el));
+                $entity->address = implode('/', array_filter([$entity->parent->address ?? '', $entity->title ?? uniqid()], fn ($el) => (bool) $el));
             }
 
             if ($entity->isDirty('title')) {

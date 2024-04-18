@@ -38,7 +38,7 @@ class PublicationService extends AbstractService
 
         // if address generation is enabled
         if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
-            $publication->address = implode('/', array_filter([$publication->category->address ?? '', $publication->address ?? $publication->title ?? uniqid()], fn ($el) => (bool) $el));
+            $publication->address = implode('/', array_filter([$publication->category->address ?? '', $publication->title ?? uniqid()], fn ($el) => (bool) $el));
         }
 
         if (Publication::firstWhere(['title' => $publication->title]) !== null) {
@@ -148,8 +148,8 @@ class PublicationService extends AbstractService
             $entity->fill($data);
 
             // if address generation is enabled
-            if ($entity->isDirty('address') && $this->parameter('common_auto_generate_address', 'no') === 'yes') {
-                $entity->address = implode('/', array_filter([$entity->category->address ?? '', $entity->address ?? $entity->title ?? uniqid()], fn ($el) => (bool) $el));
+            if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
+                $entity->address = implode('/', array_filter([$entity->category->address ?? '', $entity->title ?? uniqid()], fn ($el) => (bool) $el));
             }
 
             if ($entity->isDirty('title')) {
