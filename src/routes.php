@@ -445,12 +445,9 @@ return function (App $app, Container $container): void {
                             // catalog
                             $proxy
                                 ->group('', function (Group $proxy) use ($container): void {
-                                    $paramService = $container->get(\App\Domain\Service\Parameter\ParameterService::class);
-                                    $pathCatalog = $paramService->read(['name' => 'catalog_address'], 'catalog')->value;
-
                                     // view categories and products
                                     $proxy
-                                        ->get("/{$pathCatalog}[/{args:.*}]", \App\Application\Actions\Common\Catalog\ListAction::class)
+                                        ->get("/catalog[/{args:.*}]", \App\Application\Actions\Common\Catalog\ListAction::class)
                                         ->setName('common:catalog:list')
                                         ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
                                 });

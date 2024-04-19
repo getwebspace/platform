@@ -24,7 +24,7 @@
                 <div class="card-body">
                     <iframe src="/cup/form/{{ item.form_uuid }}/view/{{ item.uuid }}/preview" frameborder="0" style="width: 100%; min-height: 350px; overflow-y: scroll"></iframe>
 
-                    {% if item.hasFiles() %}
+                    {% if item.files %}
                         <table class="table table-striped">
                             <thead>
                                 <tr>
@@ -34,7 +34,7 @@
                             </thead>
 
                             <tbody>
-                                {% for file in item.getFiles() %}
+                                {% for file in item.files %}
                                     <tr>
                                         <td>
                                             {% if 'image/' in file.type %}

@@ -10,8 +10,12 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**
  * @property Collection $files
+ * @property Collection $documents
+ * @property Collection $images
+ * @property Collection $audios
+ * @property Collection $videos
  */
-trait FileTrait // todo rename to HasFiles
+trait FileTrait
 {
     public function files(): MorphToMany
     {
@@ -27,33 +31,32 @@ trait FileTrait // todo rename to HasFiles
             ->orderBy('file_related.order');
     }
 
-    public function hasFiles(): int
+    public function documents(): MorphToMany
     {
-        return $this->files()->count();
+        return $this
+            ->files()
+            ->where('type', 'like', 'application/%')
+            ->orWhere('type', 'like', 'text/%');
     }
 
-    public function getFiles(): Collection
+    public function images(): MorphToMany
     {
-        return $this->files()->getResults();
+        return $this
+            ->files()
+            ->where('type', 'like', 'image/%');
     }
 
-    public function getDocuments(): Collection
+    public function audios(): MorphToMany
     {
-        return $this->files()->where(fn($query) => $query->where('type', 'LIKE', 'application/%')->orWhere('type', 'LIKE', 'text/%'))->getResults();
+        return $this
+            ->files()
+            ->where('type', 'like', 'audio/%');
     }
 
-    public function getImages(): Collection
+    public function videos(): MorphToMany
     {
-        return $this->files()->where(fn($query) => $query->where('type', 'LIKE', 'image/%'))->getResults();
-    }
-
-    public function getAudios(): Collection
-    {
-        return $this->files()->where(fn($query) => $query->where('type', 'LIKE', 'audio/%'))->getResults();
-    }
-
-    public function getVideos(): Collection
-    {
-        return $this->files()->where(fn($query) => $query->where('type', 'LIKE', 'video/%'))->getResults();
+        return $this
+            ->files()
+            ->where('type', 'like', 'video/%');
     }
 }

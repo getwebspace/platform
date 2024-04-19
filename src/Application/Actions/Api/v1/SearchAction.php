@@ -48,7 +48,7 @@ class SearchAction extends ActionApi
                                 $entity['entity'] = $type;
 
                                 if (str_starts_with($type, 'catalog_')) {
-                                    $entity['address'] = $this->parameter('catalog_address', 'catalog') . '/' . $entity['address'];
+                                    $entity['address'] = 'catalog/' . $entity['address'];
                                 }
 
                                 $result[] = $entity;

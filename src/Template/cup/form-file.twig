@@ -21,14 +21,14 @@
                     }
                 } %}
 
-                {% if entity.hasFiles() %}
+                {% if entity.documents %}
                     <div class="row font-weight-bold">
                         <div class="col-6">{{ 'File name'|locale }}</div>
                         <div class="col-4 text-right">{{ 'Size'|locale }}</div>
                         <div class="col-2 text-right"></div>
                     </div>
 
-                    {% for file in entity.getDocuments() %}
+                    {% for file in entity.documents %}
                         <div class="row py-2">
                             <div class="col-6"><a href="{{ file.public_path() }}">{{ file.filename() }}</a></div>
                             <div class="col-4 text-right">{{ file.size() }}</div>

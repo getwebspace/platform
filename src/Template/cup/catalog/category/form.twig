@@ -38,7 +38,7 @@
                                     'label': 'Address'|locale,
                                     'type': 'text',
                                     'name': 'address',
-                                    'prefix': base_url() ~ '/' ~ parameter('catalog_address', 'catalog') ~ '/',
+                                    'prefix': base_url() ~ '/catalog/',
                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Name of item. You can leave it blank, then the value will be generated automatically. It is allowed to use only Latin characters and numbers without spaces'|locale) ~ '"></i>',
                                     'args': {
                                         'value': item.address,
@@ -162,9 +162,9 @@
                                             'label': 'Category template'|locale,
                                             'type': 'text',
                                             'name': 'template[category]',
-                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('Specify the name of the template you want to use for this category or leave <b>catalog.item.twig</b>'|locale) ~ '"></i>',
+                                            'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" data-html="true" title="' ~ ('Specify the name of the template you want to use for this category or leave <b>catalog.category.twig</b>'|locale) ~ '"></i>',
                                             'args': {
-                                                'value': item.template.category is not empty ? item.template.category : (params.catalog_category_template ?? 'catalog.item.twig'),
+                                                'value': item.template.category is not empty ? item.template.category : (params.catalog_category_template ?? 'catalog.category.twig'),
                                                 'required': true,
                                             }
                                         } %}

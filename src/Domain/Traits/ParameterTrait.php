@@ -19,23 +19,23 @@ trait ParameterTrait
      */
     protected function parameter(mixed $name = null, mixed $default = null): mixed
     {
-        if (!static::$parameters) {
-            static::$parameters = $this->container->get(ParameterService::class)->read();
-        }
+        $parameters = $this->cache->get('params', function () {
+            return $this->container->get(ParameterService::class)->read();
+        });
 
-        if (static::$parameters) {
+        if ($parameters) {
             if ($name === null) {
-                return static::$parameters->mapWithKeys(function ($item) {
+                return $parameters->mapWithKeys(function ($item) {
                     [$group, $key] = explode('_', $item->name, 2);
 
                     return [$group . '[' . $key . ']' => $item];
                 });
             }
             if (is_string($name)) {
-                return ($buf = static::$parameters->firstWhere('name', $name)) ? $buf->value : $default;
+                return ($buf = $parameters->firstWhere('name', $name)) ? $buf->value : $default;
             }
 
-            return static::$parameters->whereIn('name', $name)->pluck('value', 'key')->all() ?? $default;
+            return $parameters->whereIn('name', $name)->pluck('value', 'key')->all() ?? $default;
         }
 
         return $default;
@@ -48,8 +48,11 @@ trait ParameterTrait
     protected function parameter_set(string $name, mixed $value): array
     {
         $parameterService = $this->container->get(ParameterService::class);
+        $parameters = $this->cache->get('params', function () use ($parameterService) {
+            return $parameterService->read();
+        });
 
-        if (($parameter = static::$parameters->firstWhere('name', $name)) !== null) {
+        if (($parameter = $parameters->firstWhere('name', $name)) !== null) {
             $parameterService->update($parameter, ['name' => $name, 'value' => $value]);
         } else {
             $parameterService->create(['name' => $name, 'value' => $value]);

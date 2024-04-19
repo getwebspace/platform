@@ -43,8 +43,7 @@ class ListAction extends CatalogAction
 
     private function parsePath(): array
     {
-        $pathCatalog = $this->parameter('catalog_address', 'catalog');
-        $parts = explode('/', ltrim(str_replace("/{$pathCatalog}", '', $this->request->getUri()->getPath()), '/'));
+        $parts = explode('/', ltrim(str_replace('/catalog', '', $this->request->getUri()->getPath()), '/'));
         $offset = 0;
 
         if (($buf = $parts[count($parts) - 1]) && ctype_digit($buf)) {
@@ -130,14 +129,16 @@ class ListAction extends CatalogAction
                 $products->orderBy('cp.' . $sortBy['by'], $sortBy['direction']);
             }
 
-            $count = $products->count();
             $pagination = $this->parameter('catalog_category_pagination', 10);
+            $count = $products->count();
+            $all = $products->get();
+            $filtered = $all->forPage($args['offset'], $pagination);
 
             return $this->respond($this->parameter('catalog_category_template', 'catalog.category.twig'), [
                 'categories' => $categories,
                 'products' => [
-                    'all' => $products->get(),
-                    'filtered' => $products->limit($pagination)->offset($args['offset'] * $pagination)->get(),
+                    'all' => $all,
+                    'filtered' => $filtered,
                     'params' => $args,
                     'count' => $count,
                 ],
@@ -230,15 +231,17 @@ class ListAction extends CatalogAction
                 $products->orderBy('cp.' . $sortBy['by'], $sortBy['direction']);
             }
 
-            $count = $products->count();
             $pagination = $category->pagination;
+            $count = $products->count();
+            $all = $products->get();
+            $filtered = $all->forPage($args['offset'], $pagination);
 
             return $this->respond($category->template['category'], [
                 'categories' => $categories,
                 'category' => $category,
                 'products' => [
-                    'all' => $products->get(),
-                    'filtered' => $products->limit($pagination)->offset($args['offset'] * $pagination)->get(),
+                    'all' => $all,
+                    'filtered' => $filtered,
                     'params' => $args,
                     'count' => $count,
                 ],

@@ -218,9 +218,9 @@ class User extends Model
         static $path;
 
         if (!$path) {
-            if ($this->hasFiles()) {
+            if ($this->images->count()) {
                 /** @var File $file */
-                $file = $this->files->first();
+                $file = $this->images->first();
 
                 $path = $file->public_path('small');
             } else {

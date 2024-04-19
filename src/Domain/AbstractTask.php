@@ -6,8 +6,10 @@ use App\Domain\Models\Task;
 use App\Domain\Service\Task\TaskService;
 use App\Domain\Traits\ParameterTrait;
 use App\Domain\Traits\RendererTrait;
+use Illuminate\Database\Connection as DataBase;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Cache\Adapter\ArrayAdapter as Cache;
 
 abstract class AbstractTask
 {
@@ -19,6 +21,10 @@ abstract class AbstractTask
     protected ContainerInterface $container;
 
     protected LoggerInterface $logger;
+
+    protected DataBase $db;
+
+    protected Cache $cache;
 
     private ?Task $entity;
 
@@ -68,6 +74,8 @@ abstract class AbstractTask
     {
         $this->container = $container;
         $this->logger = $container->get(LoggerInterface::class);
+        $this->db = $container->get(DataBase::class);
+        $this->cache = $container->get(Cache::class);
         $this->entity = $entity;
         $this->taskService = $container->get(TaskService::class);
         $this->renderer = $container->get('view');

@@ -228,6 +228,7 @@ abstract class AbstractAction
     }
 
     // work with files
+    // TODO REWRITE
     protected function processEntityFiles(Model $entity, string $field = 'files'): Model
     {
         if (in_array(FileTrait::class, class_uses($entity), true)) {
@@ -241,7 +242,7 @@ abstract class AbstractAction
                     foreach ($files as $file) {
                         $entity->files()->attach($file, [
                             'comment' => $name,
-                            'order' => $entity->hasFiles() + 1,
+                            'order' => $entity->files->count() + 1,
                         ]);
                     }
                 }
