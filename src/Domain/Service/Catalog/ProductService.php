@@ -231,6 +231,8 @@ class ProductService extends AbstractService
                 }
             }
 
+            $entity->save();
+
             // sync attributes
             if (isset($data['attributes'])) {
                 $entity->attributes()->sync(
@@ -241,11 +243,9 @@ class ProductService extends AbstractService
             // sync relations
             if (isset($data['relations'])) {
                 $entity->relations()->sync(
-                    collect($data['relations'])->map(fn ($count) => ['count' => $count])
+                    collect($data['relations'])->map(fn($count) => ['count' => $count])
                 );
             }
-
-            $entity->save();
 
             return $entity;
         }

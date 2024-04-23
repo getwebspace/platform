@@ -52,6 +52,10 @@ class UserGroup extends Model
         'access' => '{}',
     ];
 
+    protected $hidden = [
+        'access',
+    ];
+
     public function users(): HasMany
     {
         return $this->hasMany(User::class, 'group_uuid', 'uuid');

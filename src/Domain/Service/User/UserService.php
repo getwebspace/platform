@@ -171,13 +171,23 @@ class UserService extends AbstractService
 
             case !is_array($data['firstname']) && $data['firstname'] !== null:
             case !is_array($data['lastname']) && $data['lastname'] !== null:
-                $criteria = [
-                    'firstname' => $data['firstname'],
-                    'lastname' => $data['lastname'],
-                ];
-                $criteria = array_filter($criteria, fn ($v) => $v !== null);
+                $query = User::query();
+                /** @var Builder $query */
 
-                return User::where($criteria)->get();
+                if (!empty($data['firstname'])) {
+                    $query->orWhere('firstname', 'like', $data['firstname'] . '%');
+                }
+                if (!empty($data['lastname'])) {
+                    $query->orWhere('firstname', 'like', $data['lastname'] . '%');
+                }
+                if ($data['limit']) {
+                    $query = $query->limit($data['limit']);
+                }
+                if ($data['offset']) {
+                    $query = $query->offset($data['offset']);
+                }
+
+                return $query->get();
 
             default:
                 $query = User::query();

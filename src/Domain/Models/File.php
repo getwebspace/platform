@@ -173,8 +173,8 @@ class File extends Model
             "hash" => $this->hash,
             "date" => $this->date,
             "private" => $this->private,
-            'comment' => $this->comment(),
-            'order' => $this->order(),
+            "comment" => $this->pivot->order ?? 1,
+            "order" => $this->pivot->comment ?? '',
         ];
     }
 }

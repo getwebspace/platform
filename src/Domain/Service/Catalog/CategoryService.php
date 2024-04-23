@@ -57,7 +57,7 @@ class CategoryService extends AbstractService
         }
 
         // sync attributes
-        if (isset($data['attributes'])) {
+        if ($data['attributes']) {
             $category->attributes()->sync($data['attributes']);
         }
 
@@ -193,12 +193,12 @@ class CategoryService extends AbstractService
                 }
             }
 
+            $entity->save();
+
             // sync attributes
             if (isset($data['attributes'])) {
                 $entity->attributes()->sync($data['attributes']);
             }
-
-            $entity->save();
 
             return $entity;
         }

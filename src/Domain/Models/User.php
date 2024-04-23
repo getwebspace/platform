@@ -236,6 +236,11 @@ class User extends Model
         return array_merge(
             parent::toArray(),
             [
+                'name' => [
+                    'full' => $this->getName('full'),
+                    'short' => $this->getName('short'),
+                ],
+                'group' => $this->group,
                 'avatar' => $this->avatar(),
                 'files' => $this->files()->getResults()->all(),
             ],
