@@ -161,6 +161,10 @@ class CatalogProduct extends Model
         'export' => 'manual',
     ];
 
+    protected $hidden = [
+        'priceFirst',
+    ];
+
     public function category(): HasOne
     {
         return $this->hasOne(CatalogCategory::class, 'uuid', 'category_uuid');
@@ -250,6 +254,15 @@ class CatalogProduct extends Model
                     'address' => $this->category->address,
                 ],
                 'attributes' => $this->attributes()->getResults()->keyBy('address'),
+                'relations' => $this->relations()->getResults()->keyBy('uuid')->map(function (CatalogProduct $item) {
+                    return [
+                        'title' => $item->title,
+                        'address' => $item->address,
+                        'price' => $item->price,
+                        'priceWholesale' => $item->priceWholesale,
+                        'count' => $item->pivot->count ?? 1,
+                    ];
+                }),
                 'files' => $this->files,
             ],
         );
