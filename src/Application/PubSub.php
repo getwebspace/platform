@@ -8,6 +8,7 @@ use App\Domain\Traits\ParameterTrait;
 use App\Domain\Traits\RendererTrait;
 use App\Domain\Casts\Reference\Type as ReferenceType;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\Cache\Adapter\ArrayAdapter as Cache;
 
 class PubSub
 {
@@ -16,12 +17,15 @@ class PubSub
 
     protected ContainerInterface $container;
 
+    protected Cache $cache;
+
     protected array $subscribers = [];
 
     final public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
         $this->renderer = $container->get('view');
+        $this->cache = $container->get(Cache::class);
 
         // todo come up with a new place for it
         // ----------------------------------------------------
