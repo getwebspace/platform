@@ -43,7 +43,7 @@ final class V20240414153158 extends AbstractMigration
             ->addColumn('address', 'string', ['limit' => 512, 'default' => ''])
             ->addColumn('postcode', 'string', ['limit' => 32, 'default' => ''])
             ->addColumn('additional', 'string', ['limit' => 1000, 'default' => ''])
-            ->addColumn('allow_mail', 'boolean', ['default' => true])
+            ->addColumn('allow_mail', 'boolean', ['default' => true]) // todo rename to is_allowed_mail
             ->addColumn('company', 'text', ['default' => '{}'])
             ->addColumn('legal', 'text', ['default' => '{}'])
             ->addColumn('messenger', 'text', ['default' => '{}'])
@@ -52,23 +52,23 @@ final class V20240414153158 extends AbstractMigration
             ->addColumn('change', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('website', 'string', ['limit' => 128, 'default' => ''])
             ->addColumn('source', 'string', ['limit' => 512, 'default' => ''])
-            ->addColumn('auth_code', 'string', ['limit' => 12, 'default' => '', 'null' => false])
-            ->addColumn('language', 'string', ['limit' => 5, 'default' => '', 'null' => false])
-            ->addColumn('external_id', 'string', ['limit' => 255, 'default' => '', 'null' => false])
-            ->addColumn('token', 'text', ['default' => '[]', 'null' => false])
+            ->addColumn('auth_code', 'string', ['limit' => 12, 'default' => ''])
+            ->addColumn('language', 'string', ['limit' => 5, 'default' => ''])
+            ->addColumn('external_id', 'string', ['limit' => 255, 'default' => ''])
+            ->addColumn('token', 'text', ['default' => '[]'])
             ->create();
 
         // create table user token
         $table = $this->table('user_token', ['id' => false, 'primary_key' => 'uuid']);
         $table
             ->addColumn('uuid', 'char', ['limit' => 36])
-            ->addColumn('user_uuid', 'char', ['limit' => 36, 'null' => false])
+            ->addColumn('user_uuid', 'char', ['limit' => 36])
             ->addForeignKey('user_uuid', 'user', 'uuid', ['delete' => 'CASCADE'])
-            ->addColumn('unique', 'text', ['default' => '', 'null' => false])
-            ->addColumn('comment', 'text', ['default' => '', 'null' => false])
-            ->addColumn('ip', 'string', ['limit' => 16, 'default' => '', 'null' => false])
-            ->addColumn('agent', 'string', ['limit' => 255, 'default' => '', 'null' => false])
-            ->addColumn('date', 'datetime', ['default' => 'CURRENT_TIMESTAMP', 'null' => false])
+            ->addColumn('unique', 'text', ['default' => ''])
+            ->addColumn('comment', 'text', ['default' => ''])
+            ->addColumn('ip', 'string', ['limit' => 16, 'default' => ''])
+            ->addColumn('agent', 'string', ['limit' => 255, 'default' => ''])
+            ->addColumn('date', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
             ->addIndex('user_uuid')
             ->create();
 
@@ -76,11 +76,11 @@ final class V20240414153158 extends AbstractMigration
         $table = $this->table('user_integration', ['id' => false, 'primary_key' => 'uuid']);
         $table
             ->addColumn('uuid', 'char', ['limit' => 36])
-            ->addColumn('user_uuid', 'char', ['limit' => 36, 'null' => false])
+            ->addColumn('user_uuid', 'char', ['limit' => 36])
             ->addForeignKey('user_uuid', 'user', 'uuid', ['delete' => 'CASCADE'])
-            ->addColumn('provider', 'text', ['default' => '', 'null' => false])
-            ->addColumn('unique', 'string', ['limit' => 128, 'default' => '', 'null' => false])
-            ->addColumn('date', 'datetime', ['default' => 'CURRENT_TIMESTAMP', 'null' => false])
+            ->addColumn('provider', 'text', ['default' => ''])
+            ->addColumn('unique', 'string', ['limit' => 128, 'default' => ''])
+            ->addColumn('date', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
             ->addIndex('user_uuid')
             ->addIndex(['user_uuid', 'provider', 'unique'], ['unique' => true])
             ->create();
@@ -89,8 +89,8 @@ final class V20240414153158 extends AbstractMigration
         $table = $this->table('user_subscriber', ['id' => false, 'primary_key' => 'uuid']);
         $table
             ->addColumn('uuid', 'char', ['limit' => 36])
-            ->addColumn('email', 'string', ['limit' => 120, 'default' => '', 'null' => false])
-            ->addColumn('date', 'datetime', ['default' => 'CURRENT_TIMESTAMP', 'null' => false])
+            ->addColumn('email', 'string', ['limit' => 120, 'default' => ''])
+            ->addColumn('date', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
             ->addIndex(['email'], ['unique' => true])
             ->create();
 
@@ -259,11 +259,11 @@ final class V20240414153158 extends AbstractMigration
         // create table catalog attribute
         $table = $this->table('catalog_attribute', ['id' => false, 'primary_key' => 'uuid']);
         $table
-            ->addColumn('uuid', 'char', ['limit' => 36, 'null' => false])
-            ->addColumn('title', 'string', ['limit' => 255, 'default' => '', 'null' => false])
-            ->addColumn('address', 'string', ['limit' => 255, 'default' => '', 'null' => false])
-            ->addColumn('type', 'string', ['limit' => 100, 'default' => 'string', 'null' => false])
-            ->addColumn('group', 'string', ['limit' => 255, 'default' => 'string', 'null' => false])
+            ->addColumn('uuid', 'char', ['limit' => 36])
+            ->addColumn('title', 'string', ['limit' => 255, 'default' => ''])
+            ->addColumn('address', 'string', ['limit' => 255, 'default' => ''])
+            ->addColumn('type', 'string', ['limit' => 100, 'default' => 'string'])
+            ->addColumn('group', 'string', ['limit' => 255, 'default' => ''])
             ->addColumn('is_filter', 'boolean', ['default' => true])
             ->addIndex(['group', 'address'], ['unique' => true])
             ->create();
@@ -271,8 +271,8 @@ final class V20240414153158 extends AbstractMigration
         // create table catalog attribute category
         $table = $this->table('catalog_attribute_category', ['id' => false, 'primary_key' => ['category_uuid', 'attribute_uuid']]);
         $table
-            ->addColumn('category_uuid', 'char', ['limit' => 36, 'null' => false])
-            ->addColumn('attribute_uuid', 'char', ['limit' => 36, 'null' => false])
+            ->addColumn('category_uuid', 'char', ['limit' => 36])
+            ->addColumn('attribute_uuid', 'char', ['limit' => 36])
             ->addIndex('category_uuid')
             ->addIndex('attribute_uuid')
             ->addForeignKey('category_uuid', 'catalog_category', 'uuid', ['delete' => 'CASCADE', 'update' => 'CASCADE'])
@@ -282,15 +282,53 @@ final class V20240414153158 extends AbstractMigration
         // create table catalog attribute product
         $table = $this->table('catalog_attribute_product', ['id' => false, 'primary_key' => ['product_uuid', 'attribute_uuid']]);
         $table
-            ->addColumn('product_uuid', 'char', ['limit' => 36, 'null' => false])
-            ->addColumn('attribute_uuid', 'char', ['limit' => 36, 'null' => false])
-            ->addColumn('value', 'string', ['limit' => 1000, 'default' => '', 'null' => false])
+            ->addColumn('product_uuid', 'char', ['limit' => 36])
+            ->addColumn('attribute_uuid', 'char', ['limit' => 36])
+            ->addColumn('value', 'string', ['limit' => 1000, 'default' => ''])
             ->addIndex('product_uuid')
             ->addIndex('attribute_uuid')
             ->addForeignKey('product_uuid', 'catalog_product', 'uuid', ['delete' => 'CASCADE', 'update' => 'CASCADE'])
             ->addForeignKey('attribute_uuid', 'catalog_attribute', 'uuid', ['delete' => 'CASCADE', 'update' => 'CASCADE'])
             ->create();
 
+        // create table catalog order
+        $table = $this->table('catalog_order', ['id' => false, 'primary_key' => 'uuid']);
+        $table
+            ->addColumn('uuid', 'char', ['limit' => 36])
+            ->addColumn('user_uuid', 'char', ['limit' => 36, 'default' => null])
+            ->addColumn('status_uuid', 'char', ['limit' => 36, 'default' => null])
+            ->addColumn('payment_uuid', 'char', ['limit' => 36, 'default' => null])
+            ->addColumn('serial', 'string', ['limit' => 12, 'default' => ''])
+            ->addColumn('delivery', 'text', ['default' => '{}',])
+            ->addColumn('shipping', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
+            ->addColumn('comment', 'string', ['limit' => 1000, 'default' => ''])
+            ->addColumn('phone', 'string', ['limit' => 25, 'default' => ''])
+            ->addColumn('email', 'string', ['limit' => 120, 'default' => ''])
+            ->addColumn('date', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
+            ->addColumn('external_id', 'string', ['limit' => 255, 'default' => ''])
+            ->addColumn('export', 'string', ['limit' => 64, 'default' => 'manual'])
+            ->addColumn('system', 'string', ['limit' => 512, 'default' => ''])
+            ->addIndex('user_uuid')
+            ->addIndex('serial', ['unique' => true])
+            ->addIndex('status_uuid')
+            ->addForeignKey('user_uuid', 'user', 'uuid', ['delete' => 'NO ACTION', 'update' => 'NO ACTION'])
+            ->create();
+
+        // create table catalog order product
+        $table = $this->table('catalog_order_product', ['id' => false, 'primary_key' => ['order_uuid', 'product_uuid']]);
+        $table
+            ->addColumn('order_uuid', 'char', ['limit' => 36])
+            ->addColumn('product_uuid', 'char', ['limit' => 36])
+            ->addColumn('price', 'float', ['default' => 0])
+            ->addColumn('price_type', 'string', ['limit' => 16, 'default' => 'price'])
+            ->addColumn('count', 'float', ['default' => 1])
+            ->addColumn('discount', 'float', ['default' => 0])
+            ->addColumn('tax', 'float', ['default' => 0])
+            ->addForeignKey('product_uuid', 'catalog_product', 'uuid', ['delete' => 'NO ACTION', 'update' => 'NO ACTION'])
+            ->addForeignKey('order_uuid', 'catalog_order', 'uuid', ['delete' => 'NO ACTION', 'update' => 'NO ACTION'])
+            ->addIndex('product_uuid')
+            ->addIndex('order_uuid')
+            ->create();
 
         // create table guestbook
         $table = $this->table('guestbook', ['id' => false, 'primary_key' => 'uuid']);

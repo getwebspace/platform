@@ -102,11 +102,10 @@
                             {% for item in list.sortByDesc('Date') %}
                                 <div class="row">
                                     <div class="col-4 col-sm-1">
-                                        {{ item.serial|slice(-5) }}
+                                        <b>{{ item.serial }}</b>
                                         {% if item.external_id %}
                                             <br/>{{ item.external_id }}
                                         {% endif %}
-                                        <span class="d-none">{{ item.serial }}</span>
                                     </div>
                                     <div class="col-5 col-sm">
                                         {% if item.user %}

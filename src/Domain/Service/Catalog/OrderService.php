@@ -3,87 +3,110 @@
 namespace App\Domain\Service\Catalog;
 
 use App\Domain\AbstractService;
-use App\Domain\Entities\Catalog\Order;
-use App\Domain\Entities\User;
+use App\Domain\Models\CatalogOrder;
+use App\Domain\Models\CatalogProduct;
+use App\Domain\Models\User;
+use App\Domain\Models\CatalogCategory;
 use App\Domain\Repository\Catalog\OrderRepository;
 use App\Domain\Service\Catalog\Exception\OrderNotFoundException;
 use App\Domain\Service\Catalog\Exception\WrongEmailValueException;
 use App\Domain\Service\Catalog\Exception\WrongPhoneValueException;
+use DateTime;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class OrderService extends AbstractService
 {
     /**
-     * @var OrderRepository
-     */
-    protected mixed $service;
-
-    protected OrderProductService $orderProductService;
-
-    protected function init(): void
-    {
-        $this->service = $this->entityManager->getRepository(Order::class);
-        $this->orderProductService = $this->container->get(OrderProductService::class);
-    }
-
-    /**
      * @throws Exception\WrongEmailValueException
      * @throws Exception\WrongPhoneValueException
      */
-    public function create(array $data = []): Order
+    public function create(array $data = []): CatalogOrder
     {
         $default = [
-            'serial' => intval(microtime(true)),
-            'delivery' => [
-                'client' => '',
-                'address' => '',
-            ],
-            'user_uuid' => null,
-            'phone' => '',
-            'email' => '',
-            'status' => null,
-            'payment' => null,
-            'shipping' => '',
-            'comment' => '',
-            'date' => 'now',
-            'external_id' => '',
-            'export' => 'manual',
-            'system' => '',
-
+            'serial' => $this->generateSerial(),
             'products' => [],
         ];
         $data = array_merge($default, $data);
 
-        $order = (new Order())
-            ->setSerial($data['serial'])
-            ->setDelivery($data['delivery'])
-            ->setUser($data['user'])
-            ->setPhone($data['phone'])
-            ->setEmail($data['email'])
-            ->setStatus($data['status'])
-            ->setPayment($data['payment'])
-            ->setShipping($data['shipping'], $this->parameter('common_timezone', 'UTC'))
-            ->setComment($data['comment'])
-            ->setDate($data['date'], $this->parameter('common_timezone', 'UTC'))
-            ->setExternalId($data['external_id'])
-            ->setExport($data['export'])
-            ->setSystem($data['system']);
+        $order = $this->db->transaction(function () use ($data) {
+            $order = new CatalogOrder();
+            $order->fill(array_merge(
+                $data,
+                [
+                    'serial' => $this->generateSerial(),
+                ]
+            ));
+            $order->save();
 
-        $this->entityManager->persist($order);
+            return $order;
+        });
 
-        // add products
-        $this->orderProductService->process($order, $data['products']);
-
-        $this->entityManager->flush();
+        // sync products
+        if ($data['products']) {
+            $order->products()->sync($this->products($data['products']));
+        }
 
         return $order;
+    }
+
+    public function getOrdersCount(): int
+    {
+        $date = (new DateTime)->format('Y-m-d');
+        $count = CatalogOrder::query()->whereDate('date', $date)->count();
+
+        return $count + 1;
+    }
+
+    private function generateSerial(): string
+    {
+        $currentDate = new DateTime();
+        $dayOfYear = str_pad(strval((+$currentDate->format('z')) + 1), 3, '0', STR_PAD_RIGHT);
+        $year = $currentDate->format('y');
+
+        $ordersCount = $this->getOrdersCount();
+        $dailyOrderNumberFormatted = str_pad(strval($ordersCount), 3, '0', STR_PAD_LEFT);
+
+        return sprintf('%03d%s%s', $dayOfYear, $year, $dailyOrderNumberFormatted);
+    }
+
+    private function products(array $products = []): array
+    {
+        $productsForSync = [];
+
+        foreach ($products as $uuid => $opts) {
+            /** @var CatalogProduct $product */
+            $product = CatalogProduct::find($uuid);
+
+            if ($product) {
+                $type = in_array($opts['price_type'], \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE, true) ? $opts['price_type'] : 'price';
+                $count = floatval($opts['count'] ?? 0);
+                $price = floatval($opts['price'] ?? 0);
+
+                $price = match ($type) {
+                    \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE => $product->price,
+                    \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE_WHOLESALE => $product->priceWholesale,
+                    \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE_SELF => $price,
+                };
+
+                $productsForSync[$uuid] = [
+                    'price_type' => $type,
+                    'price' => $price,
+                    'count' => $count,
+                    'discount' => $product->discount,
+                    'tax' => $product->tax,
+                ];
+            }
+        }
+
+        return $productsForSync;
     }
 
     /**
      * @throws OrderNotFoundException
      *
-     * @return Collection|Order
+     * @return Collection|CatalogOrder
      */
     public function read(array $data = [])
     {
@@ -93,8 +116,8 @@ class OrderService extends AbstractService
             'serial' => null,
             'phone' => null,
             'email' => null,
-            'status' => null,
-            'payment' => null,
+            'status_uuid' => null,
+            'payment_uuid' => null,
             'external_id' => null,
             'export' => null,
         ];
@@ -117,21 +140,11 @@ class OrderService extends AbstractService
         if ($data['email'] !== null) {
             $criteria['email'] = $data['email'];
         }
-        if ($data['status'] !== null) {
-            if (
-                is_string($data['status']) && \Ramsey\Uuid\Uuid::isValid($data['status'])
-                || is_object($data['status']) && is_a($data['status'], Uuid::class)
-            ) {
-                $criteria['status'] = $data['status'];
-            }
+        if ($data['status_uuid'] !== null) {
+            $criteria['status_uuid'] = $data['status_uuid'];
         }
-        if ($data['payment'] !== null) {
-            if (
-                is_string($data['payment']) && \Ramsey\Uuid\Uuid::isValid($data['payment'])
-                || is_object($data['payment']) && is_a($data['payment'], Uuid::class)
-            ) {
-                $criteria['payment'] = $data['payment'];
-            }
+        if ($data['payment_uuid'] !== null) {
+            $criteria['payment_uuid'] = $data['payment_uuid'];
         }
         if ($data['external_id'] !== null) {
             $criteria['external_id'] = $data['external_id'];
@@ -140,114 +153,63 @@ class OrderService extends AbstractService
             $criteria['export'] = $data['export'];
         }
 
-        try {
-            switch (true) {
-                case !is_array($data['uuid']) && $data['uuid'] !== null:
-                case !is_array($data['serial']) && $data['serial'] !== null:
-                case !is_array($data['external_id']) && $data['external_id'] !== null:
-                    $order = $this->service->findOneBy($criteria);
+        switch (true) {
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
+            case !is_array($data['serial']) && $data['serial'] !== null:
+            case !is_array($data['external_id']) && $data['external_id'] !== null:
+                /** @var CatalogOrder $catalogOrder */
+                $catalogOrder = CatalogOrder::firstWhere($criteria);
 
-                    if (empty($order)) {
-                        throw new OrderNotFoundException();
+                return $catalogOrder ?: throw new OrderNotFoundException();
+
+            default:
+                $query = CatalogOrder::query();
+                /** @var Builder $query */
+
+                foreach ($criteria as $key => $value) {
+                    if (is_array($value)) {
+                        $query->whereIn($key, $value);
+                    } else {
+                        $query->where($key, $value);
                     }
+                }
+                foreach ($data['order'] as $column => $direction) {
+                    $query = $query->orderBy($column, $direction);
+                }
+                if ($data['limit']) {
+                    $query = $query->limit($data['limit']);
+                }
+                if ($data['offset']) {
+                    $query = $query->offset($data['offset']);
+                }
 
-                    return $order;
-
-                default:
-                    return collect($this->service->findBy($criteria, $data['order'], $data['limit'], $data['offset']));
-            }
-        } catch (\Doctrine\DBAL\Exception\TableNotFoundException $e) {
-            return null;
+                return $query->get();
         }
     }
 
     /**
-     * @param Order|string|Uuid $entity
+     * @param CatalogOrder|string|Uuid $entity
      *
-     * @throws WrongEmailValueException
-     * @throws WrongPhoneValueException
      * @throws OrderNotFoundException
      */
-    public function update($entity, array $data = []): Order
+    public function update($entity, array $data = []): CatalogOrder
     {
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
 
-        if (is_object($entity) && is_a($entity, Order::class)) {
-            $default = [
-                'serial' => null,
-                'delivery' => null,
-                'user' => null,
-                'phone' => null,
-                'email' => null,
-                'status' => null,
-                'payment' => null,
-                'shipping' => null,
-                'comment' => null,
-                'date' => null,
-                'external_id' => null,
-                'export' => null,
-                'system' => null,
+        if (is_object($entity) && is_a($entity, CatalogOrder::class)) {
+            $entity->fill($data);
 
-                'products' => null,
-            ];
-            $data = array_merge($default, $data);
+            $entity->save();
 
-            if ($data !== $default) {
-                if ($data['serial'] !== null) {
-                    $entity->setSerial($data['serial']);
-                }
-                if ($data['delivery'] !== null) {
-                    $entity->setDelivery($data['delivery']);
-                }
-                if ($data['user'] !== null) {
-                    $entity->setUser($data['user']);
-                }
-                if ($data['phone'] !== null) {
-                    if (blank($data['phone'])) {
-                        $entity->setPhone();
-                    } else {
-                        $entity->setPhone($data['phone']);
-                    }
-                }
-                if ($data['email'] !== null) {
-                    $entity->setEmail($data['email']);
-                }
-                if ($data['status'] !== null) {
-                    $entity->setStatus($data['status']);
-                }
-                if ($data['payment'] !== null) {
-                    $entity->setPayment($data['payment']);
-                }
-                if ($data['shipping'] !== null) {
-                    $entity->setShipping($data['shipping'], $this->parameter('common_timezone', 'UTC'));
-                }
-                if ($data['comment'] !== null) {
-                    $entity->setComment($data['comment']);
-                }
-                if ($data['date'] !== null) {
-                    $entity->setDate($data['date'], $this->parameter('common_timezone', 'UTC'));
-                }
-                if ($data['external_id'] !== null) {
-                    $entity->setExternalId($data['external_id']);
-                }
-                if ($data['export'] !== null) {
-                    $entity->setExport($data['export']);
-                }
-                if ($data['system'] !== null) {
-                    $entity->setSystem($data['system']);
-                }
-                if ($data['products'] !== null) {
-                    // update products
-                    $this->orderProductService->process($entity, $data['products']);
-                }
-
-                $this->entityManager->flush();
+            // sync products
+            if (isset($data['products'])) {
+                $entity->products()->sync($this->products($data['products']));
             }
 
             return $entity;
@@ -257,7 +219,7 @@ class OrderService extends AbstractService
     }
 
     /**
-     * @param Order|string|Uuid $entity
+     * @param CatalogOrder|string|Uuid $entity
      *
      * @throws OrderNotFoundException
      */
@@ -266,14 +228,13 @@ class OrderService extends AbstractService
         switch (true) {
             case is_string($entity) && \Ramsey\Uuid\Uuid::isValid($entity):
             case is_object($entity) && is_a($entity, Uuid::class):
-                $entity = $this->service->findOneByUuid((string) $entity);
+                $entity = $this->read(['uuid' => $entity]);
 
                 break;
         }
 
-        if (is_object($entity) && is_a($entity, Order::class)) {
-            $this->entityManager->remove($entity);
-            $this->entityManager->flush();
+        if (is_object($entity) && is_a($entity, CatalogOrder::class)) {
+            $entity->delete();
 
             return true;
         }

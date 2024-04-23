@@ -227,19 +227,19 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for item in order.getProducts() %}
-                                        <tr data-product="{{ item.product.uuid }}">
+                                    {% for product in order.products %}
+                                        <tr data-product="{{ product.uuid }}">
                                             <td>
-                                                <a href="/cup/catalog/product/{{ item.product.uuid }}/edit" target="_blank">{{ item.title }}</a>
+                                                <a href="/cup/catalog/product/{{ product.uuid }}/edit" target="_blank">{{ product.title }}</a>
                                             </td>
-                                            <td data-price>{{ item.price|number_format(2, '.', ' ') }}</td>
-                                            <td data-subtotal>{{ (item.price * item.count)|number_format(2, '.', ' ') }}</td>
+                                            <td data-price>{{ product.pivot.price|number_format(2, '.', ' ') }}</td>
+                                            <td data-subtotal>{{ (product.pivot.price * product.pivot.count)|number_format(2, '.', ' ') }}</td>
                                             <td>
                                                 {% include 'cup/form.twig' with {
                                                     'type': 'number',
-                                                    'name': 'products['~ item.product.uuid ~'][count]',
+                                                    'name': 'products['~ product.uuid ~'][count]',
                                                     'args': {
-                                                        'value': item.count,
+                                                        'value': product.pivot.count,
                                                         'placeholder': '1',
                                                         'step': 'any',
                                                         'min': '0',
@@ -249,9 +249,9 @@
                                                 <div style="display: none">
                                                     {% include 'cup/form.twig' with {
                                                         'type': 'hidden',
-                                                        'name': 'products['~ item.product.uuid ~'][price_type]',
+                                                        'name': 'products['~ product.uuid ~'][price_type]',
                                                         'args': {
-                                                            'value': item.price_type,
+                                                            'value': product.pivot.price_type,
                                                         }
                                                     } %}
                                                 </div>

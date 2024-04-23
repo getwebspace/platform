@@ -28,8 +28,9 @@ class OrderCreateAction extends CatalogAction
                     'payment' => $payment_uuid ? $this->referenceService->read(['uuid' => $payment_uuid, 'type' => ReferenceType::PAYMENT]) : null,
                     'shipping' => $this->getParam('shipping'),
                     'comment' => $this->getParam('comment'),
-                    'external_id' => $this->getParam('external_id'),
+                    'date' => $this->getParam('date', 'now'),
                     'system' => $this->getParam('system', ''),
+                    'external_id' => $this->getParam('external_id'),
 
                     'products' => $this->getParam('products', []),
                 ]);

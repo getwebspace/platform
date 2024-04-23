@@ -4,6 +4,8 @@ namespace App\Application\Actions\Cup\Catalog\Order;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
 use App\Domain\Casts\Reference\Type as ReferenceType;
+use App\Domain\Models\CatalogOrder;
+use Illuminate\Database\Eloquent\Builder;
 
 class OrderListAction extends CatalogAction
 {
@@ -17,33 +19,29 @@ class OrderListAction extends CatalogAction
         ];
         $data = array_merge($data, $this->getParam('date', []));
 
-        $qb = $this->entityManager->createQueryBuilder();
-        $query = $qb
-            ->select('o')
-            ->from(\App\Domain\Entities\Catalog\Order::class, 'o')
-            ->where('o.date >= :dateFrom')
-            ->andWhere('o.date <= :dateTo')
-            ->setParameter('dateFrom', $data['from'] . ' 00:00:00', ParameterType::STRING)
-            ->setParameter('dateTo', $data['to'] . ' 23:59:59', ParameterType::STRING)
-            ->orderBy('o.date', 'DESC');
+        $query = CatalogOrder::query();
+
+        // filter by date
+        $query->where(function (Builder $query) use ($data) {
+            $query->whereDate('date', '>=', $data['from']);
+            $query->whereDate('date', '<=', $data['to']);
+        });
 
         // filter by status
         if ($data['status']) {
-            $query
-                ->andWhere('o.status_uuid = :status')
-                ->setParameter('status', $data['status'], ParameterType::STRING);
+            $query->andWhere('status_uuid', $data['status']);
         }
 
         // filter by payment
         if ($data['payment']) {
-            $query
-                ->andWhere('o.payment_uuid = :payment')
-                ->setParameter('payment', $data['payment'], ParameterType::STRING);
+            $query->andWhere('payment_uuid', $data['payment']);
         }
+
+        $query->orderBy('date', 'desc');
 
         return $this->respondWithTemplate('cup/catalog/order/index.twig', [
             'date' => ['from' => $data['from'], 'to' => $data['to']],
-            'list' => collect($query->getQuery()->getResult()),
+            'list' => $query->get(),
             'status' => $data['status'],
             'status_list' => $this->referenceService->read(['type' => ReferenceType::ORDER_STATUS, 'status' => true, 'order' => ['order' => 'asc']]),
             'payment' => $data['payment'],
