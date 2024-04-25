@@ -19,30 +19,25 @@ class ListAction extends AbstractAction
         $publicationService = $this->container->get(PublicationService::class);
 
         try {
-            $params = $this->parsePath();
+            $args = $this->parsePath();
             $categories = $publicationCategoryService->read();
 
-            switch ($params['address']) {
+            switch ($args['address']) {
                 // publication category
                 case '':
-                    $category = $categories->firstWhere('address', $params['category']);
-                    $childrenCategories = $category->getNested($categories)->pluck('uuid');
+                    $category = $categories->firstWhere('address', $args['category']);
                     $order = $category->sort['by'] ?? \App\Domain\References\Publication::ORDER_BY_DATE;
                     $direction = $category->sort['direction'] ?? \App\Domain\References\Publication::ORDER_DIRECTION_ASC;
 
-                    $qb = $this->entityManager->createQueryBuilder();
-                    $query = $qb
-                        ->from(\App\Domain\Entities\Publication::class, 'p')
-                        ->where('p.category_uuid IN (:uuids)')
-                        ->andWhere('p.date <= :now')
-                        ->setParameter('uuids', $childrenCategories)
-                        ->setParameter('now', datetime('now', 'UTC'))
-                        ->orderBy('p.' . $order, $direction)
-                        ->setFirstResult($params['offset'] * $category->pagination)
-                        ->setMaxResults($category->pagination);
+                    $query = \App\Domain\Models\Publication::query();
+                    $query->whereIn('category_uuid', $category->nested()->pluck('uuid'));
+                    $query->where('date', '<=', datetime()->toDateTimeString());
+                    $query->orderBy($order, $direction);
+                    $query->limit($category->pagination);
+                    $query->offset($args['offset']);
 
-                    $publications = collect($query->select('p')->getQuery()->getResult());
-                    $count = $query->select('COUNT(p)')->getQuery()->getSingleScalarResult();
+                    $count = $query->count();
+                    $publications = $query->get()->forPage($args['offset'], $category->pagination);
 
                     return $this->respond($category->template['list'] ?? 'publication.list.twig', [
                         'categories' => $categories->where('public', true),
@@ -51,19 +46,18 @@ class ListAction extends AbstractAction
                         'pagination' => [
                             'count' => $count,
                             'page' => $category->pagination,
-                            'offset' => $params['offset'],
+                            'offset' => $args['offset'],
                         ],
                     ]);
 
                     // publication
                 default:
                     try {
-                        $publication = $publicationService->read(['address' => $params['address']]);
-                        $category = $categories->firstWhere('uuid', $publication->getCategory()->getUuid());
+                        $publication = $publicationService->read(['address' => $args['address']]);
 
                         return $this->respond($category->template['full'] ?? 'publication.full.twig', [
                             'categories' => $categories->where('public', true),
-                            'category' => $category,
+                            'category' => $publication->category,
                             'publication' => $publication,
                         ]);
                     } catch (PublicationNotFoundException $e) {
