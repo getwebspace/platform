@@ -304,19 +304,9 @@ class TwigExtension extends AbstractExtension
      *
      * @throws \Exception
      */
-    public function df(mixed $obj = 'now', string $format = null, string $timezone = ''): string
+    public function df(mixed $obj = 'now', string $format = null): string
     {
-        if (is_string($obj) || is_numeric($obj)) {
-            $obj = new \DateTime($obj);
-        } elseif (is_null($obj)) {
-            $obj = new \DateTime();
-        } else {
-            $obj = clone $obj;
-        }
-
-        return $obj
-            //->setTimezone(new \DateTimeZone($timezone ?: $this->parameter('common_timezone', 'UTC'))) // todo check it
-            ->format($format ?: $this->parameter('common_date_format', 'j-m-Y, H:i'));
+        return datetime($obj)->format($format ?: $this->parameter('common_date_format', 'j-m-Y, H:i'));
     }
 
     public function dfm(string $format = null): string
@@ -504,10 +494,10 @@ class TwigExtension extends AbstractExtension
 
     // parameter functions
 
-    // return parameter value by key or default
-    public function parameter(mixed $key = null, mixed $default = null): mixed
+    // return parameter value by name or default
+    public function parameter(mixed $name = null, mixed $default = null): mixed
     {
-        return parent::parameter($key, $default);
+        return parent::parameter($name, $default);
     }
 
     // guestbook functions
@@ -524,13 +514,12 @@ class TwigExtension extends AbstractExtension
                 'limit' => $limit,
                 'offset' => $offset,
             ])
-            ->map(function ($model) {
-                /** @var \App\Domain\Models\GuestBook $model */
-                $email = explode('@', $model->getEmail());
+            ->map(function (\App\Domain\Models\GuestBook $model) {
+                $email = explode('@', $model->email);
                 $name = implode('@', array_slice($email, 0, count($email) - 1));
                 $len = (int) floor(mb_strlen($name) / 2);
 
-                $model->setEmail(mb_substr($name, 0, $len) . str_repeat('*', $len) . '@' . end($email));
+                $model->email = mb_substr($name, 0, $len) . str_repeat('*', $len) . '@' . end($email);
 
                 return $model;
             });
@@ -584,34 +573,17 @@ class TwigExtension extends AbstractExtension
 
     public function catalog_product_popular($limit = 10)
     {
-        /** @var CatalogOrderService $catalogOrderService */
-        $catalogOrderService = $this->container->get(CatalogOrderService::class);
-
-        $query = $catalogOrderService->createQueryBuilder('o')
-            ->andWhere('o.date > :now')
-            ->setParameter('now', datetime()->modify('-30 days'))
-            ->orderBy('o.date', 'desc')
-            ->setMaxResults(100)
-            ->getQuery()
-            ->getResult();
-
-        $list = [];
-
-        foreach ($query as $order) {
-            foreach ($order->getProducts() as $orderProduct) {
-                $product = $orderProduct->product;
-                $uuid = $product->getUuid()->toString();
-                $count = +$orderProduct->count;
-
-                if (!isset($list[$uuid])) {
-                    $list[$uuid] = ['product' => $product, 'count' => $count];
-                } else {
-                    $list[$uuid]['count'] += $count;
-                }
-            }
-        }
-
-        return collect($list)->slice(0, $limit)->sortByDesc('count')->pluck('product');
+        return \App\Domain\Models\CatalogProduct::query()
+            ->whereIn('uuid',
+                $this->db
+                    ->table('catalog_order_product')
+                    ->select('product_uuid', $this->db->raw('COUNT(*) AS count'))
+                    ->groupBy('product_uuid')
+                    ->orderByDesc('count')
+                    ->limit($limit)
+                    ->pluck('product_uuid')
+            )
+            ->get();
     }
 
     // save uuid of product in session or return saved list
@@ -635,35 +607,34 @@ class TwigExtension extends AbstractExtension
     }
 
     // calculate dimension weight
-    public function catalog_product_dimensional_weight($context, $product = null)
+    public function catalog_product_dimensional_weight($context, $product = null): float
     {
         if ($product === null && !empty($context['product'])) {
             $product = $context['product'];
         }
 
         if ($product) {
-            $dimension = $product->getDimension();
-
-            if ($dimension['length'] && $dimension['width'] && $dimension['height']) {
+            if (!blank($product->dimension['length']) && !blank($product->dimension['width']) && !blank($product->dimension['height'])) {
                 $ratio = $this->parameter('catalog_dimensional_weight', 5000);
-                $length_class = $this->reference(ReferenceType::LENGTH_CLASS)->firstWhere('value.unit', $dimension['length_class']);
+                $length_class = $this->reference(ReferenceType::LENGTH_CLASS)->firstWhere('value.unit', $product->dimension['length_class']);
                 $length_value = $length_class ? $length_class->getValue()['value'] : 1;
 
                 return round(
-                    ($dimension['length'] * $length_value) *
-                    ($dimension['width'] * $length_value) *
-                    ($dimension['height'] * $length_value) / $ratio,
+                    ($product->dimension['length'] * $length_value) *
+                    ($product->dimension['width'] * $length_value) *
+                    ($product->dimension['height'] * $length_value) / $ratio,
                     4
                 );
             }
         }
 
-        return '';
+        return 0;
     }
 
     // fetch order
     public function catalog_order(array $criteria = [], $order = ['date' => 'desc'], $limit = 10, $offset = null)
     {
+        /** @var CatalogOrderService $catalogOrderService */
         $catalogOrderService = $this->container->get(CatalogOrderService::class);
 
         return $catalogOrderService->read(array_merge(
@@ -681,6 +652,7 @@ class TwigExtension extends AbstractExtension
     // fetch user list
     public function user(array $criteria = [], $order = ['email' => 'asc'])
     {
+        /** @var UserService $userService */
         $userService = $this->container->get(UserService::class);
 
         return $userService->read(array_merge(
@@ -695,8 +667,9 @@ class TwigExtension extends AbstractExtension
     // fetch user group list
     public function user_group(array $criteria = [], $order = ['title' => 'asc'])
     {
-        $userService = $this->container->get(UserGroupService::class);
+        /** @var UserGroupService $userGroupService */
+        $userGroupService = $this->container->get(UserGroupService::class);
 
-        return $userService->read(array_merge($criteria, ['order' => $order]));
+        return $userGroupService->read(array_merge($criteria, ['order' => $order]));
     }
 }

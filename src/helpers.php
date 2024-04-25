@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 use App\Application\i18n;
-use App\Domain\AbstractEntity;
+use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
@@ -423,14 +423,13 @@ if (!function_exists('array_serialize')) {
 }
 
 if (!function_exists(('datetime'))) {
-    function datetime($value = 'now', $timezone = 'UTC'): DateTime
+    function datetime(int|string|DateTime|Carbon $value = null): Carbon
     {
-        date_default_timezone_set($timezone);
-
         return match (true) {
-            is_string($value), is_numeric($value) => new DateTime($value),
-            is_a($value, DateTime::class) => clone $value,
-            default => new DateTime('now'),
+            is_string($value), is_numeric($value) => new Carbon($value),
+            is_a($value, DateTime::class) => Carbon::instance($value),
+            is_a($value, Carbon::class) => clone $value,
+            default => new Carbon('now'),
         };
     }
 }
@@ -498,10 +497,10 @@ if (!function_exists('ErrorHandler')) {
 
         return function ($code, $str, $file, $line) use ($logger): void {
             $level = match ($code) {
-                E_PARSE, E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR => \Monolog\Logger::ERROR,
-                E_WARNING, E_USER_WARNING, E_COMPILE_WARNING, E_RECOVERABLE_ERROR => \Monolog\Logger::WARNING,
-                E_NOTICE, E_USER_NOTICE, E_STRICT, E_DEPRECATED, E_USER_DEPRECATED => \Monolog\Logger::NOTICE,
-                default => \Monolog\Logger::INFO,
+                E_PARSE, E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR => \Monolog\Level::Error,
+                E_WARNING, E_USER_WARNING, E_COMPILE_WARNING, E_RECOVERABLE_ERROR => \Monolog\Level::Warning,
+                E_NOTICE, E_USER_NOTICE, E_STRICT, E_DEPRECATED, E_USER_DEPRECATED => \Monolog\Level::Notice,
+                default => \Monolog\Level::Info,
             };
 
             $logger->log($level, "{$str} ({$file}:{$line})");

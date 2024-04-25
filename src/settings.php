@@ -6,6 +6,9 @@ return function (ContainerBuilder $containerBuilder): void {
     $_DEBUG = (bool) ($_ENV['DEBUG'] ?? false);
     $_DATABASE = ($_ENV['DATABASE'] ?? false);
 
+    // set default timezone
+    date_default_timezone_set('UTC');
+
     // database
     $containerBuilder->addDefinitions([
         'database' => [

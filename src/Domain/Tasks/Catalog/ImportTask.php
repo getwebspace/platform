@@ -61,7 +61,7 @@ class ImportTask extends AbstractTask
             ];
             $attributes = $catalogAttributeService->read()->whereNotIn('type', \App\Domain\Casts\Catalog\Attribute\Type::BOOLEAN);
 
-            $now = new \DateTime();
+            $now = datetime();
             $category = null;
             $nested = false;
 

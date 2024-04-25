@@ -46,17 +46,16 @@ class ParametersPageAction extends AbstractAction
 
         $routes = $this->getRoutes();
         $userGroupService = $this->container->get(UserGroupService::class);
-        //$catalogAttributeService = $this->container->get(CatalogAttributeService::class);
+        $catalogAttributeService = $this->container->get(CatalogAttributeService::class);
         $referenceService = $this->container->get(ReferenceService::class);
 
         return $this->respondWithTemplate('cup/parameters/index.twig', [
-            'timezone' => collect(\DateTimeZone::listIdentifiers())->mapWithKeys(fn ($item) => [$item => $item]),
             'routes' => [
                 'all' => $routes->all(),
                 'guest' => $routes->filter(fn ($el) => str_starts_with($el, 'common:'))->all(),
             ],
             'groups' => $userGroupService->read(),
-            'attributes' => collect(), //$catalogAttributeService->read()->whereNotIn('type', \App\Domain\Casts\Catalog\Attribute\Type::BOOLEAN),
+            'attributes' => $catalogAttributeService->read(),
             'reference' => $referenceService->read([
                 'type' => [ReferenceType::ORDER_STATUS], // todo usage with array of types
                 'order' => [

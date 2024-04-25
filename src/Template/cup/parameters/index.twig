@@ -152,17 +152,6 @@
                                                 <hr>
 
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Timezone',
-                                                    'type': 'select',
-                                                    'name': 'common[timezone]',
-                                                    'args': {
-                                                        'option': timezone,
-                                                        'selected': 'Europe/Kiev',
-                                                        'data': {'search': 'true'},
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/parameters/field.twig' with {
                                                     'label': 'Time format',
                                                     'description': '',
                                                     'type': 'text',
