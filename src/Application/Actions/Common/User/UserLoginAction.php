@@ -88,7 +88,7 @@ class UserLoginAction extends UserAction
 
                             if (isset($this->getParams()['sendcode'])) {
                                 if ($user->getEmail()) {
-                                    if (!$user->getAuthCode() || (new \DateTime('now'))->diff($user->getChange())->i >= 10) {
+                                    if (!$user->getAuthCode() || datetime()->diff($user->getChange())->i >= 10) {
                                         // new code
                                         $code = implode('-', [random_int(100, 999), random_int(100, 999), random_int(100, 999)]);
 

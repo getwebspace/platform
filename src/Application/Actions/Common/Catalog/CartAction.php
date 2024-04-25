@@ -65,21 +65,11 @@ class CartAction extends CatalogAction
 
             if ($this->isRecaptchaChecked()) {
                 try {
+                    // check order limit for shipping day
                     if (($limit = $this->parameter('catalog_order_limit', 0)) > 0) {
-                        $date = datetime($data['shipping'], $this->parameter('common_timezone', 'UTC'))->format(\App\Domain\References\Date::DATE);
+                        $date = datetime($data['shipping'])->format(\App\Domain\References\Date::DATE);
 
-                        $qb = $this->entityManager->createQueryBuilder();
-                        $count = $qb
-                            ->select('count(o.serial)')
-                            ->from(\App\Domain\Entities\Catalog\Order::class, 'o')
-                            ->where('o.date >= :dateFrom')
-                            ->andWhere('o.date <= :dateTo')
-                            ->setParameter('dateFrom', $date . ' 00:00:00', ParameterType::STRING)
-                            ->setParameter('dateTo', $date . ' 23:59:59', ParameterType::STRING)
-                            ->getQuery()
-                            ->getSingleScalarResult();
-
-                        if ($count >= $limit) {
+                        if ($this->catalogOrderService->getDayCount($date) >= $limit) {
                             throw new OrderShippingLimitException();
                         }
                     }

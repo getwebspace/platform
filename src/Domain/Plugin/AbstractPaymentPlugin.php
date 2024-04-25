@@ -3,8 +3,8 @@
 namespace App\Domain\Plugin;
 
 use App\Domain\AbstractPlugin;
-use App\Domain\Entities\Catalog\Order;
+use App\Domain\Models\CatalogOrder;
 
 abstract class AbstractPaymentPlugin extends AbstractPlugin {
-    abstract public function getRedirectURL(Order $order): ?string;
+    abstract public function getRedirectURL(CatalogOrder $order): ?string;
 }

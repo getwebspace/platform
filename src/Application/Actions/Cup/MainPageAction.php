@@ -20,9 +20,9 @@ class MainPageAction extends AbstractAction
                 'publications' => \App\Domain\Models\Publication::count(),
                 'guestbook' => \App\Domain\Models\GuestBook::count(),
                 'catalog' => [
-                    'category' => 0, //$this->entityManager->getRepository(\App\Domain\Entities\Catalog\Category::class)->count(['status' => \App\Domain\Casts\Catalog\Status::WORK]),
-                    'product' => 0, //$this->entityManager->getRepository(\App\Domain\Entities\Catalog\Product::class)->count(['status' => \App\Domain\Casts\Catalog\Status::WORK]),
-                    'order' => 0, //$this->entityManager->getRepository(\App\Domain\Entities\Catalog\Order::class)->count([]),
+                    'category' => \App\Domain\Models\CatalogCategory::count(),
+                    'product' => \App\Domain\Models\CatalogProduct::count(),
+                    'order' => \App\Domain\Models\CatalogOrder::count(),
                 ],
                 'forms' => \App\Domain\Models\Form::count(),
                 'files' => \App\Domain\Models\File::count(),

@@ -167,7 +167,6 @@ class CatalogCategory extends Model
 
         if ($this->parent) {
             $parent = [
-                'uuid' => $this->parent->uuid,
                 'title' => $this->parent->title,
                 'address' => $this->parent->address,
             ];

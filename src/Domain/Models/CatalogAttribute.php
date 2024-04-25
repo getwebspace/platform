@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\DB;
  * @property string $address
  * @property string $type
  * @property string $group
- * @property boolean $is_filter
+ * @property bool $is_filter
  * @property CatalogCategory[] $categories
  * @property CatalogProduct[] $products
  */

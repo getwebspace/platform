@@ -114,9 +114,19 @@ class PublicationCategory extends Model
 
     public function toArray(): array
     {
+        $parent = null;
+
+        if ($this->parent) {
+            $parent = [
+                'title' => $this->parent->title,
+                'address' => $this->parent->address,
+            ];
+        }
+
         return array_merge(
             parent::toArray(),
             [
+                'parent' => $parent,
                 'files' => $this->files,
             ],
         );
