@@ -332,35 +332,6 @@ abstract class AbstractAction
     }
 
     /**
-     * For upload file from POST body
-     */
-    protected function getFileFromBody(string $filename = ''): ?File
-    {
-        $uploaded = null;
-        $tmp_path = UPLOAD_DIR . '/' . uniqid();
-
-        if ($filename && file_put_contents($tmp_path, $this->request->getBody()->getContents()) !== false) {
-            $fileService = $this->container->get(FileService::class);
-
-            if (($model = $fileService->createFromPath($tmp_path, $filename)) !== null) {
-                $uploaded = $model;
-
-                // is image
-                if (str_starts_with($model->getType(), 'image/')) {
-                    // add task convert
-                    $task = new \App\Domain\Tasks\ConvertImageTask($this->container);
-                    $task->execute(['uuid' => [$model->getUuid()]]);
-
-                    // run worker
-                    \App\Domain\AbstractTask::worker($task);
-                }
-            }
-        }
-
-        return $uploaded;
-    }
-
-    /**
      * Return recaptcha status if is enabled
      */
     protected function isRecaptchaChecked(): bool

@@ -47,22 +47,22 @@ class SearchIndexTask extends AbstractTask
             ], true));
         }
 
-//        $productService = $this->container->get(\App\Domain\Service\Catalog\ProductService::class);
-//        foreach ($productService->read(['status' => \App\Domain\Casts\Catalog\Status::WORK]) as $item) {
-//            /** @var CatalogProduct $item */
-//            $index[] = $this->implode('catalog_product', $item->getUuid(), Search::getIndexedText([
-//                $item->getTitle(),
-//                $item->getDescription(),
-//                $item->getExtra(),
-//                $item->getCountry(),
-//                $item->getManufacturer(),
-//                $item->getVendorCode(),
-//                $item->getBarCode(),
-//                $item->meta['title'] ?? '',
-//                $item->meta['description'] ?? '',
-//                $item->meta['keywords'] ?? '',
-//            ], true));
-//        }
+        $productService = $this->container->get(\App\Domain\Service\Catalog\ProductService::class);
+        foreach ($productService->read(['status' => \App\Domain\Casts\Catalog\Status::WORK]) as $item) {
+            /** @var CatalogProduct $item */
+            $index[] = $this->implode('catalog_product', $item->uuid, Search::getIndexedText([
+                $item->title,
+                $item->description,
+                $item->export,
+                $item->country,
+                $item->manufacturer,
+                $item->vendorcode,
+                $item->barcode,
+                $item->meta['title'] ?? '',
+                $item->meta['description'] ?? '',
+                $item->meta['keywords'] ?? '',
+            ], true));
+        }
 
         file_put_contents(Search::CACHE_FILE, implode(PHP_EOL, $index));
 

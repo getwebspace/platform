@@ -40,6 +40,7 @@ use Illuminate\Support\Collection;
  * @property string $external_id
  * @property string $export
  * @property Collection $products
+ * @property Reference $payment
  */
 class CatalogOrder extends Model
 {
@@ -112,6 +113,11 @@ class CatalogOrder extends Model
             'uuid',
             'uuid'
         )->withPivot(['price', 'price_type', 'count', 'discount', 'tax', 'tax_included']);
+    }
+
+    public function payment(): HasOne
+    {
+        return $this->hasOne(Reference::class, 'uuid', 'payment_uuid');
     }
 
     public function totalSum(): float

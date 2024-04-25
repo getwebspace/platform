@@ -59,4 +59,13 @@ class Reference extends Model
         'order' => 1,
         'status' => true,
     ];
+
+    public function value(string $key = null, mixed $default = null): mixed
+    {
+        if ($key) {
+            return $this->value[$key] ?? $default;
+        }
+
+        return $this->value;
+    }
 }

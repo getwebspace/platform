@@ -98,25 +98,6 @@ trait SecurityTrait
     }
 
     /*
-     * From User/UUID/UUID-String return UUID string.
-     */
-    protected function getUuidString(mixed $uuid): string
-    {
-        switch (true) {
-            case is_string($uuid) && \Ramsey\Uuid\Uuid::isValid($uuid):
-            case is_object($uuid) && is_a($uuid, Uuid::class):
-                $uuid = (string) $uuid;
-
-                break;
-
-            case is_object($uuid) && is_a($uuid, User::class):
-                $uuid = (string) $uuid->getUuid();
-        }
-
-        return $uuid;
-    }
-
-    /*
      * Generate JWT
      */
     protected function getAccessToken(User $user): string

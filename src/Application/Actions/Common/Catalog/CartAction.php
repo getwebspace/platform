@@ -79,12 +79,12 @@ class CartAction extends CatalogAction
                     $this->container->get(\App\Application\PubSub::class)->publish('common:catalog:order:create', $order);
 
                     // default redirect path
-                    $url = '/cart/done/' . $order->getUuid();
+                    $url = '/cart/done/' . $order->uuid;
 
                     // if order has payment with plugin
                     if (
-                        ($payment = $order->getPayment()) &&
-                        ($plugin = $payment->getValue('plugin', false)) !== false
+                        ($payment = $order->payment) &&
+                        ($plugin = $payment->value('plugin', false)) !== false
                     ) {
                         $plugin = $this->container
                             ->get('plugin')->get()

@@ -232,14 +232,14 @@
                                             <td>
                                                 <a href="/cup/catalog/product/{{ product.uuid }}/edit" target="_blank">{{ product.title }}</a>
                                             </td>
-                                            <td data-price>{{ product.pivot.price|number_format(2, '.', ' ') }}</td>
-                                            <td data-subtotal>{{ (product.pivot.price * product.pivot.count)|number_format(2, '.', ' ') }}</td>
+                                            <td data-price>{{ product.totalPrice()|number_format(2, '.', ' ') }}</td>
+                                            <td data-subtotal>{{ (product.totalSum())|number_format(2, '.', ' ') }}</td>
                                             <td>
                                                 {% include 'cup/form.twig' with {
                                                     'type': 'number',
                                                     'name': 'products['~ product.uuid ~'][count]',
                                                     'args': {
-                                                        'value': product.pivot.count,
+                                                        'value': product.totalCount(),
                                                         'placeholder': '1',
                                                         'step': 'any',
                                                         'min': '0',
