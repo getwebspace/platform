@@ -28,6 +28,7 @@ class ProductCreateAction extends CatalogAction
                     'vendorcode' => $this->getParam('vendorcode'),
                     'barcode' => $this->getParam('barcode'),
                     'tax' => $this->getParam('tax'),
+                    'tax_included' => $this->getParam('tax_included'),
                     'priceFirst' => $this->getParam('priceFirst'),
                     'price' => $this->getParam('price'),
                     'priceWholesale' => $this->getParam('priceWholesale'),

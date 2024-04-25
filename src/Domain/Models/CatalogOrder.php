@@ -76,7 +76,7 @@ class CatalogOrder extends Model
         'status_uuid' => 'string',
         'payment_uuid' => 'string',
         'delivery' => Delivery::class,
-        'shipping' => 'string',
+        'shipping' => 'datetime',
         'comment' => 'string',
         'phone' => Phone::class,
         'email' => Email::class,
@@ -111,7 +111,22 @@ class CatalogOrder extends Model
             'product_uuid',
             'uuid',
             'uuid'
-        )->withPivot(['price', 'price_type', 'count', 'discount', 'tax']);
+        )->withPivot(['price', 'price_type', 'count', 'discount', 'tax', 'tax_included']);
+    }
+
+    public function totalSum(): float
+    {
+        return $this->products->sum(fn (CatalogProduct $el) => $el->totalSum());
+    }
+
+    public function totalDiscount(): float
+    {
+        return $this->products->sum(fn (CatalogProduct $el) => $el->totalDiscount());
+    }
+
+    public function totalTax($precision = 0): float
+    {
+        return $this->products->sum(fn (CatalogProduct $el) => $el->totalTax($precision));
     }
 
     public function toArray(): array

@@ -194,7 +194,7 @@
                                                     }
                                                 } %}
                                             </div>
-                                            <div class="col-12">
+                                            <div class="col-6">
                                                 {% include 'cup/form.twig' with {
                                                     'label': 'Tax'|locale,
                                                     'type': 'select',
@@ -202,6 +202,17 @@
                                                     'args': {
                                                         'option': collect({0: '---'}).union(tax_rates.pluck('title', 'value.rate')),
                                                         'selected': item.tax,
+                                                    }
+                                                } %}
+                                            </div>
+                                            <div class="col-6">
+                                                {% include 'cup/form.twig' with {
+                                                    'label': 'Tax included'|locale,
+                                                    'type': 'select',
+                                                    'name': 'tax_included',
+                                                    'args': {
+                                                        'option': _(['yes', 'no']),
+                                                        'selected': item ? (item.tax_included ? 'yes' : 'no') : 'yes',
                                                     }
                                                 } %}
                                             </div>

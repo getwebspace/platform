@@ -12,6 +12,7 @@ use App\Domain\Casts\Json;
 use App\Domain\Casts\Meta;
 use App\Domain\Traits\FileTrait;
 use DateTime;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -31,6 +32,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $vendorcode
  * @property string $barcode
  * @property float $tax
+ * @property bool $tax_included
  * @property float $priceFirst
  * @property float $price
  * @property float $priceWholesale
@@ -76,6 +78,7 @@ class CatalogProduct extends Model
         'vendorcode',
         'barcode',
         'tax',
+        'tax_included',
         'priceFirst',
         'price',
         'priceWholesale',
@@ -109,6 +112,7 @@ class CatalogProduct extends Model
         'vendorcode' => 'string',
         'barcode' => 'string',
         'tax' => 'float',
+        'tax_included' => Boolean::class,
         'priceFirst' => 'float',
         'price' => 'float',
         'priceWholesale' => 'float',
@@ -140,6 +144,7 @@ class CatalogProduct extends Model
         'vendorcode' => '',
         'barcode' => '',
         'tax' => 0.0,
+        'tax_included' => false,
         'priceFirst' => 0.0,
         'price' => 0.0,
         'priceWholesale' => 0.0,
@@ -201,7 +206,7 @@ class CatalogProduct extends Model
         );
     }
 
-    public function priceCalculated($type = 'price'): float
+    public function price($type = 'price'): float
     {
         $price = match ($type) {
             'price_first' => $this->priceFirst,
@@ -212,11 +217,34 @@ class CatalogProduct extends Model
         if ($this->discount < 0) {
             $price = max(0, $price + $this->discount);
         }
-        if ($this->tax > 0) {
+        if (!$this->tax_included && $this->tax > 0) {
             $price += $price * ($this->tax / 100);
         }
 
         return $price;
+    }
+
+    public function tax($precision = 0): float
+    {
+        $price = $this->price;
+
+        if ($this->discount < 0) {
+            $price = max(0, $price + $this->discount);
+        }
+
+        $tax = 0;
+
+        if ($this->tax) {
+            $taxRate = $this->tax / 100;
+
+            if ($this->tax_included) {
+                $tax = $price - ($price / (1 + $taxRate));
+            } else {
+                $tax = $price * $taxRate;
+            }
+        }
+
+        return round($tax, $precision);
     }
 
     public function specification(): string
@@ -235,12 +263,66 @@ class CatalogProduct extends Model
 
     public function weight(): float
     {
-        return $this->dimension['weight'] ?? 0;
+        return floatval($this->dimension['weight'] ?? 0);
     }
 
     public function weightWithClass(): string
     {
         return $this->weight() . ($this->dimension['weight_class'] ? ' ' . $this->dimension['weight_class'] : '');
+    }
+
+    // order product functions ...
+
+    public function totalPrice(): float
+    {
+        $price = $this->pivot->price;
+
+        if ($this->pivot->discount < 0) {
+            $price = max(0, $price + $this->pivot->discount);
+        }
+        if (!$this->pivot->tax_included && $this->pivot->tax > 0) {
+            $price += $price * ($this->pivot->tax / 100);
+        }
+
+        return $price;
+    }
+
+    public function totalCount(): float
+    {
+        return $this->pivot->count;
+    }
+
+    public function totalSum(): float
+    {
+        return $this->totalPrice() * $this->pivot->count;
+    }
+
+    public function totalDiscount(): float
+    {
+        return $this->pivot->discount * $this->pivot->count;
+    }
+
+    public function totalTax($precision = 0): float
+    {
+        $price = $this->pivot->price;
+
+        if ($this->pivot->discount < 0) {
+            $price = max(0, $price + $this->pivot->discount);
+        }
+
+        $tax = 0;
+
+        if ($this->pivot->tax) {
+            $taxRate = $this->pivot->tax / 100;
+
+            if ($this->pivot->tax_included) {
+                $tax = $price - ($price / (1 + $taxRate));
+            } else {
+                $tax = $price * $taxRate;
+            }
+        }
+
+        return round($tax * $this->pivot->count, $precision);
     }
 
     public function toArray(): array

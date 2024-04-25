@@ -35,32 +35,24 @@ class OrderExportAction extends CatalogAction
         ];
 
         if ($data['from'] && $data['to']) {
-            $qb = $this->entityManager->createQueryBuilder();
-            $query = $qb
-                ->select('o')
-                ->from(\App\Domain\Entities\Catalog\Order::class, 'o')
-                ->where('o.date >= :dateFrom')
-                ->andWhere('o.date <= :dateTo')
-                ->setParameter('dateFrom', $data['from'] . ' 00:00:00', ParameterType::STRING)
-                ->setParameter('dateTo', $data['to'] . ' 23:59:59', ParameterType::STRING)
-                ->orderBy('o.date', 'DESC');
+            $query = \App\Domain\Models\CatalogOrder::query();
+            $query->whereBetween('date', [datetime($data['from']), datetime($data['to'])]);
+            $query->orderBy('date', 'DESC');
 
             // filter by status
             if ($data['status']) {
-                $query
-                    ->andWhere('o.status = :status')
-                    ->setParameter('status', $data['status'], ParameterType::STRING);
+                $query->where('status', $data['status']);
             }
 
-            $orders = collect($query->getQuery()->getResult());
+            $orders = $query->get();
 
             if ($orders->count()) {
-                $fields = ['serial', 'external_id', 'date', 'delivery.client', 'phone', 'email', 'total', 'shipping', 'delivery.address', 'system'];
+                $fields = ['serial', 'date', 'delivery.client', 'phone', 'email', 'total', 'discount', 'tax', 'shipping', 'delivery.address', 'external_id'];
 
                 $spreadsheet = $this->createSpreadSheet();
                 $sheet = $spreadsheet->getActiveSheet();
 
-                // Write header row
+                // write header row
                 foreach ($fields as $index => $field) {
                     $sheet
                         ->getCell($this->getCellCoordinate($index, 0))
@@ -70,8 +62,8 @@ class OrderExportAction extends CatalogAction
                         ->setBold(true);
                 }
 
+                /** @var \App\Domain\Models\CatalogOrder $model */
                 foreach ($orders->sortBy('date', SORT_REGULAR, true) as $row => $model) {
-                    /** @var \App\Domain\Entities\Catalog\Order $model */
                     foreach ($fields as $index => $field) {
                         $cell = $sheet->getCell($this->getCellCoordinate($index, $row + 1));
 
@@ -79,7 +71,7 @@ class OrderExportAction extends CatalogAction
                             case 'date':
                             case 'shipping':
                                 $cell
-                                    ->setValue(\PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($model->getDate()))
+                                    ->setValue(\PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($model[$field]))
                                     ->getStyle()
                                     ->getNumberFormat()
                                     ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_DATETIME);
@@ -88,7 +80,25 @@ class OrderExportAction extends CatalogAction
 
                             case 'total':
                                 $cell
-                                    ->setValue($model->getTotalPrice())
+                                    ->setValue($model->totalSum())
+                                    ->getStyle()
+                                    ->getNumberFormat()
+                                    ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED2);
+
+                                break;
+
+                            case 'discount':
+                                $cell
+                                    ->setValue($model->totalDiscount())
+                                    ->getStyle()
+                                    ->getNumberFormat()
+                                    ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED2);
+
+                                break;
+
+                            case 'tax':
+                                $cell
+                                    ->setValue($model->totalTax())
                                     ->getStyle()
                                     ->getNumberFormat()
                                     ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED2);
@@ -96,7 +106,7 @@ class OrderExportAction extends CatalogAction
                                 break;
 
                             default:
-                                $cell->setValue(array_get($model->toArray(), $field));
+                                $cell->setValue(array_get($model, $field));
 
                                 break;
                         }
@@ -104,7 +114,7 @@ class OrderExportAction extends CatalogAction
                 }
 
                 header('Content-Type: application/vnd.ms-excel');
-                header('Content-Disposition: attachment; filename="export ' . date(\App\Domain\References\Date::DATETIME) . '.xls"');
+                header('Content-Disposition: attachment; filename="order ' . date(\App\Domain\References\Date::DATETIME) . '.xls"');
 
                 \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($spreadsheet, 'Xlsx')->save('php://output');
 
