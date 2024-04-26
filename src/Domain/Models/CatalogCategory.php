@@ -29,8 +29,8 @@ use Illuminate\Support\Collection;
  * @property string $address
  * @property string $parent_uuid
  * @property int $pagination
- * @property bool $children
- * @property bool $hidden
+ * @property bool $is_allow_nested
+ * @property bool $is_hidden
  * @property int $order
  * @property string $status
  * @property array $sort
@@ -62,8 +62,8 @@ class CatalogCategory extends Model
         'address',
         'parent_uuid',
         'pagination',
-        'children',
-        'hidden',
+        'is_allow_nested',
+        'is_hidden',
         'order',
         'status',
         'sort',
@@ -82,8 +82,8 @@ class CatalogCategory extends Model
         'address' => AddressUrl::class,
         'parent_uuid' => 'string',
         'pagination' => 'int',
-        'children' => Boolean::class,
-        'hidden' => Boolean::class,
+        'is_allow_nested' => Boolean::class,
+        'is_hidden' => Boolean::class,
         'template' => Json::class,
         'meta' => Meta::class,
         'sort' => Sort::class,
@@ -101,8 +101,8 @@ class CatalogCategory extends Model
         'address' => '',
         'parent_uuid' => null,
         'pagination' => 10,
-        'children' => false,
-        'hidden' => false,
+        'is_allow_nested' => false,
+        'is_hidden' => false,
         'template' => '{}',
         'meta' => '{}',
         'sort' => '{}',
@@ -134,7 +134,7 @@ class CatalogCategory extends Model
     {
         $collect = collect([$this]);
 
-        if ($this->children || $force) {
+        if ($this->is_allow_nested || $force) {
             /** @var \App\Domain\Models\CatalogCategory $category */
             foreach (self::where(['parent_uuid' => $this->uuid])->get() as $child) {
                 $collect = $collect->merge($child->nested($force));

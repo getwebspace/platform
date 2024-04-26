@@ -77,10 +77,10 @@
                                 {% include 'cup/form.twig' with {
                                     'label': 'Show nested categories'|locale,
                                     'type': 'select',
-                                    'name': 'children',
+                                    'name': 'is_allow_nested',
                                     'args': {
                                         'option': _(['yes', 'no']),
-                                        'selected': item.children ? 'yes' : 'no'
+                                        'selected': item.is_allow_nested ? 'yes' : 'no'
                                     }
                                 } %}
                             </div>
@@ -99,10 +99,10 @@
                                 {% include 'cup/form.twig' with {
                                     'label': 'Hidden category'|locale,
                                     'type': 'select',
-                                    'name': 'hidden',
+                                    'name': 'is_hidden',
                                     'args': {
                                         'option': _(['yes', 'no']),
-                                        'selected': item.hidden ? 'yes' : 'no'
+                                        'selected': item.is_hidden ? 'yes' : 'no'
                                     }
                                 } %}
                             </div>

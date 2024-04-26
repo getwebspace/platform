@@ -74,8 +74,8 @@ class CategoryService extends AbstractService
         $default = [
             'parent_uuid' => '',
             'uuid' => null,
-            'children' => null,
-            'hidden' => null,
+            'is_allow_nested' => null,
+            'is_hidden' => null,
             'title' => null,
             'address' => null,
             'status' => null,
@@ -92,11 +92,11 @@ class CategoryService extends AbstractService
         if ($data['uuid'] !== null) {
             $criteria['uuid'] = $data['uuid'];
         }
-        if ($data['children'] !== null) {
-            $criteria['children'] = $data['children'];
+        if ($data['is_allow_nested'] !== null) {
+            $criteria['is_allow_nested'] = $data['is_allow_nested'];
         }
-        if ($data['hidden'] !== null) {
-            $criteria['hidden'] = $data['hidden'];
+        if ($data['is_hidden'] !== null) {
+            $criteria['is_hidden'] = $data['is_hidden'];
         }
         if ($data['title'] !== null) {
             $criteria['title'] = $data['title'];

@@ -42,7 +42,7 @@ class UserProfileAction extends UserAction
                         'website' => $this->getParam('website'),
                         'additional' => $this->getParam('additional'),
 
-                        'allow_mail' => $this->getParam('allow_mail'),
+                        'is_allow_mail' => $this->getParam('is_allow_mail'),
                         'language' => $this->getParam('language'),
                     ]
                 );

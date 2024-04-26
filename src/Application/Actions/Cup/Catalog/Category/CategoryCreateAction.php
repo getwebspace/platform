@@ -15,8 +15,8 @@ class CategoryCreateAction extends CatalogAction
             try {
                 $category = $this->catalogCategoryService->create([
                     'parent_uuid' => $this->getParam('parent'),
-                    'children' => $this->getParam('children'),
-                    'hidden' => $this->getParam('hidden'),
+                    'is_allow_nested' => $this->getParam('is_allow_nested'),
+                    'is_hidden' => $this->getParam('is_hidden'),
                     'title' => $this->getParam('title'),
                     'description' => $this->getParam('description'),
                     'address' => $this->getParam('address'),

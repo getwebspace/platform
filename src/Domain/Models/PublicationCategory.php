@@ -27,8 +27,8 @@ use Illuminate\Support\Collection;
  * @property string $parent_uuid
  * @property string $description
  * @property int $pagination
- * @property bool $children
- * @property bool $public
+ * @property bool $is_allow_nested
+ * @property bool $is_public
  * @property array $sort
  * @property array $template
  * @property array $meta
@@ -53,8 +53,8 @@ class PublicationCategory extends Model
         'parent_uuid',
         'description',
         'pagination',
-        'children',
-        'public',
+        'is_allow_nested',
+        'is_public',
         'sort',
         'template',
         'meta',
@@ -68,8 +68,8 @@ class PublicationCategory extends Model
         'parent_uuid' => 'string',
         'description' => 'string',
         'pagination' => 'int',
-        'children' => Boolean::class,
-        'public' => Boolean::class,
+        'is_allow_nested' => Boolean::class,
+        'is_public' => Boolean::class,
         'sort' => Sort::class,
         'template' => Json::class,
         'meta' => Meta::class,
@@ -81,8 +81,8 @@ class PublicationCategory extends Model
         'parent_uuid' => null,
         'description' => '',
         'pagination' => 10,
-        'children' => false,
-        'public' => true,
+        'is_allow_nested' => false,
+        'is_public' => true,
         'sort' => '{}',
         'template' => '{}',
         'meta' => '{}',
@@ -97,7 +97,7 @@ class PublicationCategory extends Model
     {
         $collect = collect([$this]);
 
-        if ($this->children || $force) {
+        if ($this->is_allow_nested || $force) {
             /** @var \App\Domain\Models\PublicationCategory $category */
             foreach (self::where(['parent_uuid' => $this->uuid])->get() as $child) {
                 $collect = $collect->merge($child->nested($force));

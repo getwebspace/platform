@@ -87,7 +87,7 @@ class UserService extends AbstractService
             'city' => null,
             'postcode' => null,
             'additional' => null,
-            'allow_mail' => null,
+            'is_allow_mail' => null,
             'status' => null,
             'external_id' => null,
             'password' => null, // optional: for check
@@ -120,8 +120,8 @@ class UserService extends AbstractService
         if ($data['additional'] !== null) {
             $criteria['additional'] = $data['additional'];
         }
-        if ($data['allow_mail'] !== null) {
-            $criteria['allow_mail'] = (bool)$data['allow_mail'];
+        if ($data['is_allow_mail'] !== null) {
+            $criteria['is_allow_mail'] = (bool)$data['is_allow_mail'];
         }
         if ($data['status'] !== null) {
             if (is_array($data['status'])) {

@@ -40,7 +40,7 @@ class ListAction extends AbstractAction
                     $publications = $query->get()->forPage($args['offset'], $category->pagination);
 
                     return $this->respond($category->template['list'] ?? 'publication.list.twig', [
-                        'categories' => $categories->where('public', true),
+                        'categories' => $categories->where('is_public', true),
                         'category' => $category,
                         'publications' => $publications,
                         'pagination' => [
@@ -56,7 +56,7 @@ class ListAction extends AbstractAction
                         $publication = $publicationService->read(['address' => $args['address']]);
 
                         return $this->respond($category->template['full'] ?? 'publication.full.twig', [
-                            'categories' => $categories->where('public', true),
+                            'categories' => $categories->where('is_public', true),
                             'category' => $publication->category,
                             'publication' => $publication,
                         ]);

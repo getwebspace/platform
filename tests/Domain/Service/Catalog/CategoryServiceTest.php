@@ -30,8 +30,8 @@ class CategoryServiceTest extends TestCase
     public function testCreateSuccess(): void
     {
         $data = [
-            'children' => $this->getFaker()->boolean,
-            'hidden' => $this->getFaker()->boolean,
+            'is_allow_nested' => $this->getFaker()->boolean,
+            'is_hidden' => $this->getFaker()->boolean,
             'title' => implode(' ', $this->getFaker()->words(3)),
             'description' => $this->getFaker()->text(100),
             'address' => implode('-', $this->getFaker()->words(4)),
@@ -58,8 +58,8 @@ class CategoryServiceTest extends TestCase
 
         $category = $this->service->create($data);
         $this->assertInstanceOf(CatalogCategory::class, $category);
-        $this->assertEquals($data['children'], $category->children);
-        $this->assertEquals($data['hidden'], $category->hidden);
+        $this->assertEquals($data['is_allow_nested'], $category->is_allow_nested);
+        $this->assertEquals($data['is_hidden'], $category->is_hidden);
         $this->assertEquals($data['title'], $category->title);
         $this->assertEquals($data['description'], $category->description);
         $this->assertEquals($data['address'], $category->address);
@@ -166,8 +166,8 @@ class CategoryServiceTest extends TestCase
     public function testUpdate(): void
     {
         $category = $this->service->create([
-            'children' => $this->getFaker()->boolean,
-            'hidden' => $this->getFaker()->boolean,
+            'is_allow_nested' => $this->getFaker()->boolean,
+            'is_hidden' => $this->getFaker()->boolean,
             'title' => implode(' ', $this->getFaker()->words(3)),
             'description' => $this->getFaker()->text(100),
             'address' => implode('-', $this->getFaker()->words(4)),
@@ -193,8 +193,8 @@ class CategoryServiceTest extends TestCase
         ]);
 
         $data = [
-            'children' => $this->getFaker()->boolean,
-            'hidden' => $this->getFaker()->boolean,
+            'is_allow_nested' => $this->getFaker()->boolean,
+            'is_hidden' => $this->getFaker()->boolean,
             'title' => implode(' ', $this->getFaker()->words(3)),
             'description' => $this->getFaker()->text(100),
             'address' => implode('-', $this->getFaker()->words(4)),
@@ -221,8 +221,8 @@ class CategoryServiceTest extends TestCase
 
         $category = $this->service->update($category, $data);
         $this->assertInstanceOf(CatalogCategory::class, $category);
-        $this->assertEquals($data['children'], $category->children);
-        $this->assertEquals($data['hidden'], $category->hidden);
+        $this->assertEquals($data['is_allow_nested'], $category->is_allow_nested);
+        $this->assertEquals($data['is_hidden'], $category->is_hidden);
         $this->assertEquals($data['title'], $category->title);
         $this->assertEquals($data['description'], $category->description);
         $this->assertEquals($data['address'], $category->address);

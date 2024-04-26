@@ -226,10 +226,10 @@
                                         {% include 'cup/form.twig' with {
                                             'label': 'Subscribed to newsletter'|locale,
                                             'type': 'select',
-                                            'name': 'allow_mail',
+                                            'name': 'is_allow_mail',
                                             'args': {
                                                 'option': _(['yes', 'no']),
-                                                'selected': item.allow_mail ? 'yes' : 'no'
+                                                'selected': item.is_allow_mail ? 'yes' : 'no'
                                             }
                                         } %}
                                     </div>

@@ -63,7 +63,7 @@ class CategoryService extends AbstractService
             'title' => null,
             'address' => null,
             'parent' => null,
-            'public' => null,
+            'is_public' => null,
         ];
         $data = array_merge($default, static::$default_read, $data);
 
@@ -84,8 +84,8 @@ class CategoryService extends AbstractService
         if ($data['parent'] !== null) {
             $criteria['parent'] = $data['parent'];
         }
-        if ($data['public'] !== null) {
-            $criteria['public'] = (bool) $data['public'];
+        if ($data['is_public'] !== null) {
+            $criteria['is_public'] = (bool) $data['is_public'];
         }
 
         switch (true) {

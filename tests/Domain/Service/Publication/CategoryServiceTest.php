@@ -33,8 +33,8 @@ class CategoryServiceTest extends TestCase
             'address' => implode('-', $this->getFaker()->words(4)),
             'description' => $this->getFaker()->text(255),
             'pagination' => $this->getFaker()->numberBetween(10, 1000),
-            'children' => $this->getFaker()->boolean,
-            'public' => $this->getFaker()->boolean,
+            'is_allow_nested' => $this->getFaker()->boolean,
+            'is_public' => $this->getFaker()->boolean,
             'sort' => [
                 'by' => $this->getFaker()->randomElement(\App\Domain\References\Publication::ORDER_BY),
                 'direction' => $this->getFaker()->randomElement(\App\Domain\References\Publication::ORDER_DIRECTION),
@@ -57,8 +57,8 @@ class CategoryServiceTest extends TestCase
         $this->assertEquals($data['address'], $publicationCategory->address);
         $this->assertEquals($data['description'], $publicationCategory->description);
         $this->assertEquals($data['pagination'], $publicationCategory->pagination);
-        $this->assertEquals($data['children'], $publicationCategory->children);
-        $this->assertEquals($data['public'], $publicationCategory->public);
+        $this->assertEquals($data['is_allow_nested'], $publicationCategory->is_allow_nested);
+        $this->assertEquals($data['is_public'], $publicationCategory->is_public);
         $this->assertEquals($data['sort'], $publicationCategory->sort);
         $this->assertEquals($data['meta'], $publicationCategory->meta);
         $this->assertEquals($data['template'], $publicationCategory->template);
@@ -163,8 +163,8 @@ class CategoryServiceTest extends TestCase
             'address' => implode('-', $this->getFaker()->words(4)),
             'description' => $this->getFaker()->text(255),
             'pagination' => $this->getFaker()->numberBetween(10, 1000),
-            'children' => $this->getFaker()->boolean,
-            'public' => $this->getFaker()->boolean,
+            'is_allow_nested' => $this->getFaker()->boolean,
+            'is_public' => $this->getFaker()->boolean,
             'sort' => [
                 'by' => $this->getFaker()->randomElement(\App\Domain\References\Publication::ORDER_BY),
                 'direction' => $this->getFaker()->randomElement(\App\Domain\References\Publication::ORDER_DIRECTION),
@@ -186,8 +186,8 @@ class CategoryServiceTest extends TestCase
             'address' => implode('-', $this->getFaker()->words(4)),
             'description' => $this->getFaker()->text(255),
             'pagination' => $this->getFaker()->numberBetween(10, 1000),
-            'children' => $this->getFaker()->boolean,
-            'public' => $this->getFaker()->boolean,
+            'is_allow_nested' => $this->getFaker()->boolean,
+            'is_public' => $this->getFaker()->boolean,
             'sort' => [
                 'by' => $this->getFaker()->randomElement(\App\Domain\References\Publication::ORDER_BY),
                 'direction' => $this->getFaker()->randomElement(\App\Domain\References\Publication::ORDER_DIRECTION),
@@ -210,8 +210,8 @@ class CategoryServiceTest extends TestCase
         $this->assertEquals($data['address'], $publicationCategory->address);
         $this->assertEquals($data['description'], $publicationCategory->description);
         $this->assertEquals($data['pagination'], $publicationCategory->pagination);
-        $this->assertEquals($data['children'], $publicationCategory->children);
-        $this->assertEquals($data['public'], $publicationCategory->public);
+        $this->assertEquals($data['is_allow_nested'], $publicationCategory->is_allow_nested);
+        $this->assertEquals($data['is_public'], $publicationCategory->is_public);
         $this->assertEquals($data['sort'], $publicationCategory->sort);
         $this->assertEquals($data['meta'], $publicationCategory->meta);
         $this->assertEquals($data['template'], $publicationCategory->template);

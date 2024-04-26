@@ -57,7 +57,7 @@ class ParametersPageAction extends AbstractAction
             'groups' => $userGroupService->read(),
             'attributes' => $catalogAttributeService->read(),
             'reference' => $referenceService->read([
-                'type' => [ReferenceType::ORDER_STATUS], // todo usage with array of types
+                'type' => [ReferenceType::ORDER_STATUS],
                 'order' => [
                     'order' => 'asc'
                 ]

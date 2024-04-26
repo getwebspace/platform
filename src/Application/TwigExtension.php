@@ -452,7 +452,7 @@ class TwigExtension extends AbstractExtension
         $publicationCategoryService = $this->container->get(PublicationCategoryService::class);
 
         return $publicationCategoryService->read([
-            'public' => $public ?: null,
+            'is_public' => $public ?: null,
         ]);
     }
 
@@ -542,7 +542,7 @@ class TwigExtension extends AbstractExtension
 
         return $catalogCategoryService->read(array_merge(
             [
-                'hidden' => false,
+                'is_hidden' => false,
             ],
             $criteria,
             [

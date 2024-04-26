@@ -44,7 +44,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $language
  * @property string $additional
  * @property string $group_uuid
- * @property bool $allow_mail
+ * @property bool $is_allow_mail
  * @property string $password
  * @property string $auth_code
  * @property string $external_id
@@ -89,7 +89,7 @@ class User extends Model
         'additional',
         'status',
         'group_uuid',
-        'allow_mail',
+        'is_allow_mail',
         'password',
         'token',
         'auth_code',
@@ -122,7 +122,7 @@ class User extends Model
         'additional' => 'string',
         'status' => UserStatus::class,
         'group_uuid' => 'string',
-        'allow_mail' => Boolean::class,
+        'is_allow_mail' => Boolean::class,
         'password' => Password::class,
         'token' => 'array',
         'auth_code' => 'string',
@@ -153,7 +153,7 @@ class User extends Model
         'additional' => '',
         'status' => \App\Domain\Casts\User\Status::WORK,
         'group_uuid' => null,
-        'allow_mail' => true,
+        'is_allow_mail' => true,
         'password' => '',
         'token' => '[]',
         'auth_code' => '',

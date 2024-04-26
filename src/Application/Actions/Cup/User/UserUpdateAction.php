@@ -35,7 +35,7 @@ class UserUpdateAction extends UserAction
                             'postcode' => $this->getParam('postcode'),
                             'additional' => $this->getParam('additional'),
                             'email' => $this->getParam('email'),
-                            'allow_mail' => $this->getParam('allow_mail'),
+                            'is_allow_mail' => $this->getParam('is_allow_mail'),
                             'phone' => $this->getParam('phone'),
                             'password' => $this->getParam('password'),
                             'company' => $this->getParam('company'),
