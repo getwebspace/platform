@@ -106,7 +106,7 @@
                                             'name': 'category',
                                             'message': '<a href="/cup/catalog/category/add" class="btn btn-xs btn-info float-right" onclick="return confirm(\'' ~ ('Are you sure you want to go to another page?'|locale) ~ '\');"><i class="fa fa-plus"></i> ' ~ ('Create category'|locale) ~ '</a>',
                                             'args': {
-                                                'option': categories.sortBy('title').pluck('title', 'uuid').all(),
+                                                'option': categories.sortBy('parent_uuid').pluck('title', 'uuid').all(),
                                                 'selected': item.category_uuid ?? category.uuid
                                             }
                                         } %}

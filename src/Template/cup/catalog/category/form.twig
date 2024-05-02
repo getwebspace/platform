@@ -90,7 +90,7 @@
                                     'type': 'select',
                                     'name': 'parent',
                                     'args': {
-                                        'option': {'': '---'}|merge(categories.whereNotIn('uuid', item.nested(true).pluck('uuid')).sortBy('title').pluck('title', 'uuid')),
+                                        'option': {'': '---'}|merge(categories.whereNotIn('uuid', item.nested(true).pluck('uuid')).sortBy('parent_uuid').pluck('title', 'uuid')),
                                         'selected': item.parent_uuid
                                     }
                                 } %}
