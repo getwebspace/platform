@@ -2,18 +2,16 @@
 
 namespace tests\Domain\Service\Catalog;
 
-use App\Domain\Entities\Catalog\Category;
-use App\Domain\Entities\Catalog\Order;
-use App\Domain\Entities\Catalog\OrderProduct;
-use App\Domain\Entities\Catalog\Product;
-use App\Domain\Entities\Reference;
-use App\Domain\Repository\Catalog\OrderRepository;
+use App\Domain\Models\CatalogCategory;
+use App\Domain\Models\CatalogOrder;
+use App\Domain\Models\CatalogProduct;
+use App\Domain\Models\Reference;
 use App\Domain\Service\Catalog\CategoryService;
 use App\Domain\Service\Catalog\Exception\OrderNotFoundException;
 use App\Domain\Service\Catalog\OrderService;
 use App\Domain\Service\Catalog\ProductService;
 use App\Domain\Service\Reference\ReferenceService;
-use App\Domain\Types\ReferenceTypeType;
+use App\Domain\Casts\Reference\Type as ReferenceType;
 use Illuminate\Support\Collection;
 use tests\TestCase;
 
@@ -33,11 +31,32 @@ class OrderServiceTest extends TestCase
         $this->service = $this->getService(OrderService::class);
     }
 
+    protected function getRandomCategory(): CatalogCategory
+    {
+        return $this->getService(CategoryService::class)->create([
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+        ]);
+    }
+
+    protected function getRandomProduct(): CatalogProduct
+    {
+        return $this->getService(ProductService::class)->create([
+            'category_uuid' => $this->getRandomCategory()->uuid,
+            'title' => implode(' ', $this->getFaker()->words(3)),
+            'address' => implode('-', $this->getFaker()->words(4)),
+            'description' => $this->getFaker()->text(255),
+            'price' => $this->getFaker()->randomFloat(2, 10, 10000),
+            'priceWholesale' => $this->getFaker()->randomFloat(2, 10, 10000),
+            'priceWholesaleFrom' => $this->getFaker()->randomFloat(1, 10),
+        ]);
+    }
+
     protected function getRandomStatus(): Reference
     {
         return $this->getService(ReferenceService::class)->create([
-            'type' => ReferenceTypeType::TYPE_ORDER_STATUS,
-            'title' => $this->getFaker()->word,
+            'type' => ReferenceType::ORDER_STATUS,
+            'title' => implode(' ', $this->getFaker()->words(3)),
             'order' => $this->getFaker()->randomDigit(),
         ]);
     }
@@ -45,28 +64,9 @@ class OrderServiceTest extends TestCase
     protected function getRandomPayment(): Reference
     {
         return $this->getService(ReferenceService::class)->create([
-            'type' => ReferenceTypeType::TYPE_PAYMENT,
-            'title' => $this->getFaker()->word,
+            'type' => ReferenceType::PAYMENT,
+            'title' => implode(' ', $this->getFaker()->words(3)),
             'order' => $this->getFaker()->randomDigit(),
-        ]);
-    }
-
-    protected function getRandomCategory(): Category
-    {
-        return $this->getService(CategoryService::class)->create([
-            'title' => implode(' ', $this->getFaker()->words(5)),
-        ]);
-    }
-
-    protected function getRandomProduct(): Product
-    {
-        return $this->getService(ProductService::class)->create([
-            'category' => $this->getRandomCategory(),
-            'title' => $this->getFaker()->word,
-            'address' => $this->getFaker()->word,
-            'price' => $this->getFaker()->randomFloat(2, 10, 10000),
-            'priceWholesale' => $this->getFaker()->randomFloat(2, 10, 10000),
-            'priceWholesaleFrom' => $this->getFaker()->randomFloat(1, 10),
         ]);
     }
 
@@ -87,16 +87,16 @@ class OrderServiceTest extends TestCase
 
         $data = [
             'delivery' => [
-                'client' => $this->getFaker()->word,
-                'address' => $this->getFaker()->text,
+                'client' => $this->getFaker()->name,
+                'address' => $this->getFaker()->words(5),
             ],
             'phone' => $this->getFaker()->e164PhoneNumber,
             'email' => $this->getFaker()->email,
-            'status' => $this->getRandomStatus(),
-            'payment' => $this->getRandomPayment(),
+            'status_uuid' => $this->getRandomStatus()->uuid,
+            'payment_uuid' => $this->getRandomPayment()->uuid,
             'comment' => $this->getFaker()->text,
-            'shipping' => $this->getFaker()->dateTime,
-            'date' => $this->getFaker()->dateTime,
+            'date' => datetime('now')->format('Y-m-d H:i:s'),
+            'shipping' => datetime('now')->format('Y-m-d H:i:s'),
             'external_id' => $this->getFaker()->word,
             'export' => $this->getFaker()->word,
             'system' => $this->getFaker()->text,
@@ -105,75 +105,75 @@ class OrderServiceTest extends TestCase
         ];
 
         foreach ($products as $i => $product) {
-            $data['products'][$product->getUuid()->toString()] = [
+            $data['products'][$product->uuid] = [
                 'count' => $this->getFaker()->randomFloat(2, 2, 10),
-                'price' => ($i % 2 === 0 ? $product->getPrice() : $product->getPriceWholesale()),
-                'price_type' => ($i % 2 === 0 ? 'price' : 'price_wholesale'),
+                'price' => (
+                    $i % 2 === 0 ?
+                        $product->price :
+                        $product->priceWholesale
+                ),
+                'price_type' => (
+                    $i % 2 === 0 ?
+                        \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE :
+                        \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE_WHOLESALE
+                ),
             ];
         }
         $extra = $this->getRandomProduct();
-        $data['products'][$extra->getUuid()->toString()] = [
+        $data['products'][$extra->uuid] = [
             'count' => $this->getFaker()->randomFloat(2, 2, 10),
             'price' => $this->getFaker()->randomFloat(2, 2, 10000),
-            'price_type' => 'price_self',
+            'price_type' => \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE_SELF,
+            'discount' => $this->getFaker()->randomFloat(2, 1, $product->price),
+            'tax' => $this->getFaker()->randomFloat(2, 1, 100),
+            'tax_included' => $this->getFaker()->boolean,
         ];
 
         $order = $this->service->create($data);
-        $this->assertInstanceOf(Order::class, $order);
-        $this->assertEquals($data['delivery'], $order->getDelivery());
-        $this->assertEquals($data['phone'], $order->getPhone());
-        $this->assertEquals($data['email'], $order->getEmail());
-        $this->assertEquals($data['status'], $order->getStatus());
-        $this->assertEquals($data['payment'], $order->getPayment());
-        $this->assertEquals($data['comment'], $order->getComment());
-        $this->assertEquals($data['shipping'], $order->getShipping());
-        $this->assertEquals($data['date'], $order->getDate());
-        $this->assertEquals($data['external_id'], $order->getExternalId());
-        $this->assertEquals($data['export'], $order->getExport());
-        $this->assertEquals($data['system'], $order->getSystem());
+        $this->assertInstanceOf(CatalogOrder::class, $order);
+        $this->assertEquals($data['delivery'], $order->delivery);
+        $this->assertEquals($data['phone'], $order->phone);
+        $this->assertEquals($data['email'], $order->email);
+        $this->assertEquals($data['status_uuid'], $order->status->uuid);
+        $this->assertEquals($data['payment_uuid'], $order->payment->uuid);
+        $this->assertEquals($data['comment'], $order->comment);
+        $this->assertEquals($data['shipping'], $order->shipping);
+        $this->assertEquals($data['external_id'], $order->external_id);
+        $this->assertEquals($data['export'], $order->export);
+        $this->assertEquals($data['system'], $order->system);
 
         foreach ($data['products'] as $uuid => $opts) {
-            $op = $order->getProducts()->firstWhere('product.uuid', $uuid);
+            $op = $order->products->firstWhere('uuid', $uuid);
 
-            $this->assertInstanceOf(OrderProduct::class, $op);
-            $this->assertInstanceOf(Product::class, $op->getProduct());
+            $this->assertInstanceOf(CatalogProduct::class, $op);
 
-            $this->assertEquals($uuid, $op->getProduct()->getUuid()->toString());
-            $this->assertEquals($opts['price'], $op->getPrice());
-            $this->assertEquals($opts['price_type'], $op->getPriceType());
+            $this->assertEquals($uuid, $op->uuid);
+            $this->assertEquals($opts['count'], $op->pivot->count);
+            $this->assertEquals($opts['price'], $op->pivot->price);
+            $this->assertEquals($opts['price_type'], $op->pivot->price_type);
+
+            if ($op->pivot->price_type === \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE_SELF) {
+                $this->assertEquals($opts['discount'], $op->pivot->discount);
+                $this->assertEquals($opts['tax'], $op->pivot->tax);
+                $this->assertEquals($opts['tax_included'], $op->pivot->tax_included);
+            }
         }
-
-        /** @var OrderRepository $orderRepo */
-        $orderRepo = $this->em->getRepository(Order::class);
-        $o = $orderRepo->findOneByUuid($order->getUuid());
-        $this->assertInstanceOf(Order::class, $o);
-        $this->assertEquals($data['delivery'], $o->getDelivery());
-        $this->assertEquals($data['phone'], $o->getPhone());
-        $this->assertEquals($data['email'], $o->getEmail());
-        $this->assertEquals($data['status'], $o->getStatus());
-        $this->assertEquals($data['payment'], $order->getPayment());
-        $this->assertEquals($data['comment'], $o->getComment());
-        $this->assertEquals($data['shipping'], $o->getShipping());
-        $this->assertEquals($data['date'], $o->getDate());
-        $this->assertEquals($data['external_id'], $o->getExternalId());
-        $this->assertEquals($data['export'], $o->getExport());
-        $this->assertEquals($data['system'], $o->getSystem());
     }
 
     public function testReadSuccess1(): void
     {
         $data = [
             'delivery' => [
-                'client' => $this->getFaker()->word,
-                'address' => $this->getFaker()->text,
+                'client' => $this->getFaker()->name,
+                'address' => $this->getFaker()->words(5),
             ],
             'phone' => $this->getFaker()->e164PhoneNumber,
             'email' => $this->getFaker()->email,
-            'status' => $this->getRandomStatus(),
-            'payment' => $this->getRandomPayment(),
+            'status_uuid' => $this->getRandomStatus()->uuid,
+            'payment_uuid' => $this->getRandomPayment()->uuid,
             'comment' => $this->getFaker()->text,
-            'shipping' => $this->getFaker()->dateTime,
-            'date' => $this->getFaker()->dateTime,
+            'date' => datetime('now')->format('Y-m-d H:i:s'),
+            'shipping' => datetime('now')->format('Y-m-d H:i:s'),
             'external_id' => $this->getFaker()->word,
             'export' => $this->getFaker()->word,
         ];
@@ -181,45 +181,69 @@ class OrderServiceTest extends TestCase
         $this->service->create($data);
 
         $order = $this->service->read(['external_id' => $data['external_id']]);
-        $this->assertInstanceOf(Order::class, $order);
-        $this->assertEquals($data['external_id'], $order->getExternalId());
+        $this->assertInstanceOf(CatalogOrder::class, $order);
+        $this->assertEquals($data['external_id'], $order->external_id);
     }
 
     public function testReadSuccess2(): void
     {
         $data = [
             'delivery' => [
-                'client' => $this->getFaker()->word,
-                'address' => $this->getFaker()->text,
+                'client' => $this->getFaker()->name,
+                'address' => $this->getFaker()->words(5),
             ],
             'phone' => $this->getFaker()->e164PhoneNumber,
             'email' => $this->getFaker()->email,
-            'status' => $this->getRandomStatus(),
-            'payment' => $this->getRandomPayment(),
+            'status_uuid' => $this->getRandomStatus()->uuid,
+            'payment_uuid' => $this->getRandomPayment()->uuid,
             'comment' => $this->getFaker()->text,
-            'shipping' => $this->getFaker()->dateTime,
-            'date' => $this->getFaker()->dateTime,
+            'date' => datetime('now')->format('Y-m-d H:i:s'),
+            'shipping' => datetime('now')->format('Y-m-d H:i:s'),
             'external_id' => $this->getFaker()->word,
             'export' => $this->getFaker()->word,
         ];
 
-        $this->service->create($data);
+        $order = $this->service->create($data);
 
-        $order = $this->service->read(['status' => $data['status']]);
-        $this->assertInstanceOf(Collection::class, $order);
+        $order = $this->service->read(['serial' => $order->serial]);
+        $this->assertInstanceOf(CatalogOrder::class, $order);
     }
 
     public function testReadSuccess3(): void
     {
         $data = [
             'delivery' => [
-                'client' => $this->getFaker()->word,
-                'address' => $this->getFaker()->text,
+                'client' => $this->getFaker()->name,
+                'address' => $this->getFaker()->words(5),
             ],
             'phone' => $this->getFaker()->e164PhoneNumber,
             'email' => $this->getFaker()->email,
-            'status' => $this->getRandomStatus(),
-            'payment' => $this->getRandomPayment(),
+            'status_uuid' => $this->getRandomStatus()->uuid,
+            'payment_uuid' => $this->getRandomPayment()->uuid,
+            'comment' => $this->getFaker()->text,
+            'date' => datetime('now')->format('Y-m-d H:i:s'),
+            'shipping' => datetime('now')->format('Y-m-d H:i:s'),
+            'external_id' => $this->getFaker()->word,
+            'export' => $this->getFaker()->word,
+        ];
+
+        $this->service->create($data);
+
+        $orders = $this->service->read(['status_uuid' => $data['status_uuid']]);
+        $this->assertInstanceOf(Collection::class, $orders);
+    }
+
+    public function testReadSuccess4(): void
+    {
+        $data = [
+            'delivery' => [
+                'client' => $this->getFaker()->name,
+                'address' => $this->getFaker()->words(5),
+            ],
+            'phone' => $this->getFaker()->e164PhoneNumber,
+            'email' => $this->getFaker()->email,
+            'status_uuid' => $this->getRandomStatus()->uuid,
+            'payment_uuid' => $this->getRandomPayment()->uuid,
             'comment' => $this->getFaker()->text,
             'shipping' => $this->getFaker()->dateTime,
             'date' => $this->getFaker()->dateTime,
@@ -229,8 +253,8 @@ class OrderServiceTest extends TestCase
 
         $this->service->create($data);
 
-        $order = $this->service->read(['payment' => $data['payment']]);
-        $this->assertInstanceOf(Collection::class, $order);
+        $orders = $this->service->read(['payment_uuid' => $data['payment_uuid']]);
+        $this->assertInstanceOf(Collection::class, $orders);
     }
 
     public function testReadWithOrderNotFound(): void
@@ -244,16 +268,16 @@ class OrderServiceTest extends TestCase
     {
         $order = $this->service->create([
             'delivery' => [
-                'client' => $this->getFaker()->word,
-                'address' => $this->getFaker()->text,
+                'client' => $this->getFaker()->name,
+                'address' => $this->getFaker()->words(5),
             ],
             'phone' => $this->getFaker()->e164PhoneNumber,
             'email' => $this->getFaker()->email,
-            'status' => $this->getRandomStatus(),
-            'payment' => $this->getRandomPayment(),
+            'status_uuid' => $this->getRandomStatus()->uuid,
+            'payment_uuid' => $this->getRandomPayment()->uuid,
             'comment' => $this->getFaker()->text,
-            'shipping' => $this->getFaker()->dateTime,
-            'date' => $this->getFaker()->dateTime,
+            'date' => datetime('now')->format('Y-m-d H:i:s'),
+            'shipping' => datetime('now')->format('Y-m-d H:i:s'),
             'external_id' => $this->getFaker()->word,
             'export' => $this->getFaker()->word,
             'system' => $this->getFaker()->text,
@@ -261,34 +285,33 @@ class OrderServiceTest extends TestCase
 
         $data = [
             'delivery' => [
-                'client' => $this->getFaker()->word,
-                'address' => $this->getFaker()->text,
+                'client' => $this->getFaker()->name,
+                'address' => $this->getFaker()->words(5),
             ],
             'phone' => $this->getFaker()->e164PhoneNumber,
             'email' => $this->getFaker()->email,
-            'status' => $this->getRandomStatus(),
-            'payment' => $this->getRandomPayment(),
+            'status_uuid' => $this->getRandomStatus()->uuid,
+            'payment_uuid' => $this->getRandomPayment()->uuid,
             'comment' => $this->getFaker()->text,
-            'shipping' => $this->getFaker()->dateTime,
-            'date' => $this->getFaker()->dateTime,
+            'date' => datetime('now')->format('Y-m-d H:i:s'),
+            'shipping' => datetime('now')->format('Y-m-d H:i:s'),
             'external_id' => $this->getFaker()->word,
             'export' => $this->getFaker()->word,
             'system' => $this->getFaker()->text,
         ];
 
         $order = $this->service->update($order, $data);
-        $this->assertInstanceOf(Order::class, $order);
-        $this->assertEquals($data['delivery'], $order->getDelivery());
-        $this->assertEquals($data['phone'], $order->getPhone());
-        $this->assertEquals($data['email'], $order->getEmail());
-        $this->assertEquals($data['status'], $order->getStatus());
-        $this->assertEquals($data['payment'], $order->getPayment());
-        $this->assertEquals($data['comment'], $order->getComment());
-        $this->assertEquals($data['shipping'], $order->getShipping());
-        $this->assertEquals($data['date'], $order->getDate());
-        $this->assertEquals($data['external_id'], $order->getExternalId());
-        $this->assertEquals($data['export'], $order->getExport());
-        $this->assertEquals($data['system'], $order->getSystem());
+        $this->assertInstanceOf(CatalogOrder::class, $order);
+        $this->assertEquals($data['delivery'], $order->delivery);
+        $this->assertEquals($data['phone'], $order->phone);
+        $this->assertEquals($data['email'], $order->email);
+        $this->assertEquals($data['status_uuid'], $order->status->uuid);
+        $this->assertEquals($data['payment_uuid'], $order->payment->uuid);
+        $this->assertEquals($data['comment'], $order->comment);
+        $this->assertEquals($data['shipping'], $order->shipping);
+        $this->assertEquals($data['external_id'], $order->external_id);
+        $this->assertEquals($data['export'], $order->export);
+        $this->assertEquals($data['system'], $order->system);
     }
 
     public function testUpdateWithOrderNotFound(): void
@@ -301,10 +324,16 @@ class OrderServiceTest extends TestCase
     public function testDeleteSuccess(): void
     {
         $order = $this->service->create([
-            'title' => $this->getFaker()->word,
-            'address' => 'some-custom-address',
-            'status' => $this->getRandomStatus(),
-            'payment' => $this->getRandomPayment(),
+            'delivery' => [
+                'client' => $this->getFaker()->name,
+                'address' => $this->getFaker()->words(5),
+            ],
+            'phone' => $this->getFaker()->e164PhoneNumber,
+            'email' => $this->getFaker()->email,
+            'status_uuid' => $this->getRandomStatus()->uuid,
+            'payment_uuid' => $this->getRandomPayment()->uuid,
+            'date' => datetime('now')->format('Y-m-d H:i:s'),
+            'shipping' => datetime('now')->format('Y-m-d H:i:s'),
         ]);
 
         $result = $this->service->delete($order);

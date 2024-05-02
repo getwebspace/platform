@@ -25,19 +25,14 @@ class OrderService extends AbstractService
     public function create(array $data = []): CatalogOrder
     {
         $default = [
-            'serial' => $this->generateSerial(),
+            'serial' => '',
             'products' => [],
         ];
         $data = array_merge($default, $data);
 
         $order = $this->db->transaction(function () use ($data) {
             $order = new CatalogOrder();
-            $order->fill(array_merge(
-                $data,
-                [
-                    'serial' => $this->generateSerial(),
-                ]
-            ));
+            $order->fill(array_merge($data, ['serial' => $this->generateSerial()]));
             $order->save();
 
             return $order;
@@ -68,7 +63,7 @@ class OrderService extends AbstractService
         $ordersCount = $this->getDayCount();
         $dailyOrderNumberFormatted = str_pad(strval($ordersCount), 3, '0', STR_PAD_LEFT);
 
-        return sprintf('%s%03d%s', $year, $dayOfYear, $dailyOrderNumberFormatted);
+        return "{$year}{$dayOfYear}{$dailyOrderNumberFormatted}";
     }
 
     private function products(array $products = []): array
