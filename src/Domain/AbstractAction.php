@@ -228,52 +228,49 @@ abstract class AbstractAction
     }
 
     // work with files
-    // TODO REWRITE
     protected function processEntityFiles(Model $entity, string $field = 'files'): Model
     {
         if (in_array(HasFiles::class, class_uses($entity), true)) {
-            // new
-            if (($uploaded = $this->getUploadedFiles($field)) !== []) {
-                foreach ($uploaded as $name => $files) {
-                    if (is_numeric($name)) {
-                        $name = '';
-                    }
+            $sync = [];
 
-                    foreach ($files as $file) {
-                        $entity->files()->attach($file, [
-                            'comment' => $name,
-                            'order' => $entity->files->count() + 1,
-                        ]);
-                    }
-                }
-
-            }
-
-            // update
+            // updated/deleted files
             if (($files = $this->getParam($field)) !== null && is_array($files)) {
                 foreach ($files as $uuid => $data) {
                     $default = [
-                        'order' => 1,
+                        'order' => count($sync) + 1,
                         'comment' => '',
                         'delete' => null,
                     ];
                     $data = array_merge($default, $data);
 
-                    $file = $entity->files()->firstWhere(['uuid' => $uuid]);
-
-                    if ($file) {
-                        if ($data['delete'] !== null) {
-                            $entity->files()->detach($file);
-
-                            continue;
-                        }
-
-                        $entity->files()->updateExistingPivot($file, [
-                            'order' => max(1, $data['order']),
+                    if ($data['delete'] === null) {
+                        $sync[$uuid] = [
                             'comment' => $data['comment'],
-                        ]);
+                            'order' => $data['order'],
+                        ];
                     }
                 }
+            }
+
+            // new files
+            if (($uploaded = $this->getUploadedFiles($field)) !== []) {
+                foreach ($uploaded as $comment => $files) {
+                    if (is_numeric($comment)) {
+                        $comment = '';
+                    }
+
+                    foreach ($files as $file) {
+                        $sync[$file->uuid] = [
+                            'comment' => $comment,
+                            'order' => count($sync) + 1,
+                        ];
+                    }
+                }
+
+            }
+
+            if ($sync) {
+                $entity->files()->sync($sync);
             }
         }
 
