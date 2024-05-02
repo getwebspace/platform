@@ -119,12 +119,12 @@ abstract class AbstractTask
     abstract protected function action(array $args = []);
 
     /**
-     * @param mixed $value
-     * @param mixed $count
+     * @param int|float $value
+     * @param int|float $count
      *
      * @throws Service\Task\Exception\TaskNotFoundException
      */
-    public function setProgress($value, $count = 0): void
+    public function setProgress(int|float $value, int|float $count = 0): void
     {
         if ($count > 0) {
             $value = round(min($value, $count) / $count * 100);
@@ -149,7 +149,7 @@ abstract class AbstractTask
      *
      * @throws Service\Task\Exception\TaskNotFoundException
      */
-    public function setStatusDone($output = ''): bool
+    public function setStatusDone(string $output = ''): bool
     {
         $this->saveStateWriteLog(\App\Domain\Casts\Task\Status::DONE, 0, $output);
 
@@ -161,7 +161,7 @@ abstract class AbstractTask
      *
      * @throws Service\Task\Exception\TaskNotFoundException
      */
-    public function setStatusFail($output = ''): bool
+    public function setStatusFail(string $output = ''): bool
     {
         $this->saveStateWriteLog(\App\Domain\Casts\Task\Status::FAIL, 0, $output);
 
@@ -173,7 +173,7 @@ abstract class AbstractTask
      *
      * @throws Service\Task\Exception\TaskNotFoundException
      */
-    public function setStatusCancel($output = ''): bool
+    public function setStatusCancel(string $output = ''): bool
     {
         $this->saveStateWriteLog(\App\Domain\Casts\Task\Status::CANCEL, 0, $output);
 
@@ -185,7 +185,7 @@ abstract class AbstractTask
      *
      * @throws Service\Task\Exception\TaskNotFoundException
      */
-    public function setStatusDelete($output = ''): bool
+    public function setStatusDelete(string $output = ''): bool
     {
         $this->saveStateWriteLog(\App\Domain\Casts\Task\Status::DELETE, 0, $output);
 
