@@ -515,11 +515,7 @@ class TwigExtension extends AbstractExtension
                 'offset' => $offset,
             ])
             ->map(function (\App\Domain\Models\GuestBook $model) {
-                $email = explode('@', $model->email);
-                $name = implode('@', array_slice($email, 0, count($email) - 1));
-                $len = (int) floor(mb_strlen($name) / 2);
-
-                $model->email = mb_substr($name, 0, $len) . str_repeat('*', $len) . '@' . end($email);
+                $model->email = str_mask_email($model->email);
 
                 return $model;
             });

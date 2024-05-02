@@ -4,14 +4,13 @@ use App\Application\i18n;
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 
 if (!function_exists('array_add')) {
     /**
      * Add an element to an array using "dot" notation if it doesn't exist.
-     *
-     * @param mixed $value
      */
-    function array_add(array $array, string $key, $value): array
+    function array_add(array $array, string|int|float $key, mixed $value): array
     {
         return Arr::add($array, $key, $value);
     }
@@ -40,10 +39,8 @@ if (!function_exists('array_divide')) {
 if (!function_exists('array_dot')) {
     /**
      * Flatten a multi-dimensional associative array with dots.
-     *
-     * @param string $prepend
      */
-    function array_dot(array $array, $prepend = ''): array
+    function array_dot(array $array, string $prepend = ''): array
     {
         return Arr::dot($array, $prepend);
     }
@@ -52,10 +49,8 @@ if (!function_exists('array_dot')) {
 if (!function_exists('array_except')) {
     /**
      * Get all of the given array except for a specified array of keys.
-     *
-     * @param array|string $keys
      */
-    function array_except(array $array, $keys): array
+    function array_except(array $array, array|string|int|float $keys): array
     {
         return Arr::except($array, $keys);
     }
@@ -64,12 +59,8 @@ if (!function_exists('array_except')) {
 if (!function_exists('array_first')) {
     /**
      * Return the first element in an array passing a given truth test.
-     *
-     * @param mixed $default
-     *
-     * @return mixed
      */
-    function array_first(array $array, callable $callback = null, $default = null)
+    function array_first(array $array, callable $callback = null, mixed $default = null): mixed
     {
         return Arr::first($array, $callback, $default);
     }
@@ -78,10 +69,8 @@ if (!function_exists('array_first')) {
 if (!function_exists('array_flatten')) {
     /**
      * Flatten a multi-dimensional array into a single level.
-     *
-     * @param int $depth
      */
-    function array_flatten(array $array, $depth = INF): array
+    function array_flatten(array $array, int $depth = INF): array
     {
         return Arr::flatten($array, $depth);
     }
@@ -90,10 +79,8 @@ if (!function_exists('array_flatten')) {
 if (!function_exists('array_forget')) {
     /**
      * Remove one or many array items from a given array using "dot" notation.
-     *
-     * @param array|string $keys
      */
-    function array_forget(array &$array, $keys): void
+    function array_forget(array &$array, array|string|int|float $keys): void
     {
         Arr::forget($array, $keys);
     }
@@ -102,13 +89,8 @@ if (!function_exists('array_forget')) {
 if (!function_exists('array_get')) {
     /**
      * Get an item from an array using "dot" notation.
-     *
-     * @param array|ArrayAccess $array
-     * @param mixed             $default
-     *
-     * @return mixed
      */
-    function array_get($array, string $key, $default = null)
+    function array_get($array, string|int|null $key, mixed $default = null): mixed
     {
         return Arr::get($array, $key, $default);
     }
@@ -117,11 +99,8 @@ if (!function_exists('array_get')) {
 if (!function_exists('array_has')) {
     /**
      * Check if an item or items exist in an array using "dot" notation.
-     *
-     * @param array|ArrayAccess $array
-     * @param array|string      $keys
      */
-    function array_has($array, $keys): bool
+    function array_has(\ArrayAccess|array $array, string|array $keys): bool
     {
         return Arr::has($array, $keys);
     }
@@ -130,12 +109,8 @@ if (!function_exists('array_has')) {
 if (!function_exists('array_last')) {
     /**
      * Return the last element in an array passing a given truth test.
-     *
-     * @param mixed $default
-     *
-     * @return mixed
      */
-    function array_last(array $array, callable $callback = null, $default = null)
+    function array_last(array $array, callable $callback = null, mixed $default = null): mixed
     {
         return Arr::last($array, $callback, $default);
     }
@@ -144,10 +119,8 @@ if (!function_exists('array_last')) {
 if (!function_exists('array_only')) {
     /**
      * Get a subset of the items from the given array.
-     *
-     * @param array|string $keys
      */
-    function array_only(array $array, $keys): array
+    function array_only(array $array, array|string $keys): array
     {
         return Arr::only($array, $keys);
     }
@@ -156,11 +129,8 @@ if (!function_exists('array_only')) {
 if (!function_exists('array_pluck')) {
     /**
      * Pluck an array of values from an array.
-     *
-     * @param array|string      $value
-     * @param null|array|string $key
      */
-    function array_pluck(array $array, $value, $key = null): array
+    function array_pluck(array $array, string|array|int|null $value, string|array|null $key = null): array
     {
         return Arr::pluck($array, $value, $key);
     }
@@ -169,11 +139,8 @@ if (!function_exists('array_pluck')) {
 if (!function_exists('array_prepend')) {
     /**
      * Push an item onto the beginning of an array.
-     *
-     * @param mixed $value
-     * @param mixed $key
      */
-    function array_prepend(array $array, $value, $key = null): array
+    function array_prepend(array $array, mixed $value, mixed $key = null): array
     {
         return Arr::prepend($array, $value, $key);
     }
@@ -182,12 +149,8 @@ if (!function_exists('array_prepend')) {
 if (!function_exists('array_pull')) {
     /**
      * Get a value from the array, and remove it.
-     *
-     * @param mixed $default
-     *
-     * @return mixed
      */
-    function array_pull(array &$array, string $key, $default = null)
+    function array_pull(array &$array, int|string $key, mixed $default = null): mixed
     {
         return Arr::pull($array, $key, $default);
     }
@@ -196,12 +159,8 @@ if (!function_exists('array_pull')) {
 if (!function_exists('array_random')) {
     /**
      * Get a random value from an array.
-     *
-     * @param null|int $num
-     *
-     * @return mixed
      */
-    function array_random(array $array, $num = null)
+    function array_random(array $array, ?int $num = null): mixed
     {
         return Arr::random($array, $num);
     }
@@ -210,12 +169,9 @@ if (!function_exists('array_random')) {
 if (!function_exists('array_set')) {
     /**
      * Set an array item to a given value using "dot" notation.
-     *
      * If no key is given to the method, the entire array will be replaced.
-     *
-     * @param mixed $value
      */
-    function array_set(array &$array, string $key, $value): array
+    function array_set(array &$array, string|int|null $key, mixed $value): array
     {
         return Arr::set($array, $key, $value);
     }
@@ -224,10 +180,8 @@ if (!function_exists('array_set')) {
 if (!function_exists('array_sort')) {
     /**
      * Sort the array by the given callback or attribute name.
-     *
-     * @param null|callable|string $callback
      */
-    function array_sort(array $array, $callback = null): array
+    function array_sort(array $array, callable|array|string|null $callback = null): array
     {
         return Arr::sort($array, $callback);
     }
@@ -236,10 +190,8 @@ if (!function_exists('array_sort')) {
 if (!function_exists('array_sort_desc')) {
     /**
      * Sort the array by the given callback or attribute name.
-     *
-     * @param null|callable|string $callback
      */
-    function array_sort_desc(array $array, $callback = null): array
+    function array_sort_desc(array $array, callable|array|string|null $callback = null): array
     {
         return Arr::sortDesc($array, $callback);
     }
@@ -319,10 +271,8 @@ if (!function_exists('str_rem_tags')) {
 if (!function_exists('blank')) {
     /**
      * Determine if the given value is "blank".
-     *
-     * @param mixed $value
      */
-    function blank($value): bool
+    function blank(mixed $value): bool
     {
         if (is_null($value)) {
             return true;
@@ -351,33 +301,8 @@ if (!function_exists('__')) {
     }
 }
 
-if (!function_exists('from_service_to_array')) {
-    /**
-     * Helper for read from Service class and return always array
-     *
-     * @param AbstractEntity|Collection $object
-     */
-    function from_service_to_array($object): array
-    {
-        switch (true) {
-            case is_a($object, Collection::class):
-                return $object->toArray();
-
-            case is_a($object, AbstractEntity::class):
-                return [$object];
-        }
-
-        return [];
-    }
-}
-
 if (!function_exists('array_serialize')) {
-    /**
-     * @param array|Collection $array
-     *
-     * @return array
-     */
-    function array_serialize($array)
+    function array_serialize(array|Collection|EloquentModel $array): array
     {
         // switch type
         switch (true) {
@@ -386,7 +311,7 @@ if (!function_exists('array_serialize')) {
 
                 break;
 
-            case is_a($array, AbstractEntity::class):
+            case is_a($array, EloquentModel::class):
                 $array = $array->toArray();
 
                 break;
@@ -488,7 +413,7 @@ if (!function_exists('convertPhpToJsMomentFormat')) {
 }
 
 if (!function_exists('ErrorHandler')) {
-    function ErrorHandler(\Psr\Container\ContainerInterface $container)
+    function ErrorHandler(\Psr\Container\ContainerInterface $container): callable
     {
         /**
          * @var \Psr\Log\LoggerInterface $logger
@@ -509,7 +434,7 @@ if (!function_exists('ErrorHandler')) {
 }
 
 if (!function_exists('ExceptionHandler')) {
-    function ExceptionHandler(\Psr\Container\ContainerInterface $container)
+    function ExceptionHandler(\Psr\Container\ContainerInterface $container): callable
     {
         /**
          * @var \Psr\Log\LoggerInterface $logger
