@@ -13,8 +13,8 @@ return function (ContainerBuilder $containerBuilder): void {
     $containerBuilder->addDefinitions([
         'database' => [
             'driver' => $_DATABASE ? null : 'sqlite',
-            'url' => $_DATABASE,
-            'database' => $_DATABASE ?: VAR_DIR . '/database.sqlite',
+            'database' => $_DATABASE ? null : VAR_DIR . '/database.sqlite',
+            'url' => $_DATABASE ?: null,
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',

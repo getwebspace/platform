@@ -36,10 +36,10 @@ return function (ContainerBuilder $containerBuilder): void {
             $capsule = new Illuminate\Database\Capsule\Manager();
             $capsule->addConnection($settings);
 
-            // Make this Capsule instance available globally via static methods
+            // make this Capsule instance available globally via static methods
             $capsule->setAsGlobal();
 
-            // Setup the Eloquent ORM
+            // setup the Eloquent ORM
             $capsule->bootEloquent();
 
             return $capsule->getConnection();
@@ -49,7 +49,10 @@ return function (ContainerBuilder $containerBuilder): void {
     // simfony cache
     $containerBuilder->addDefinitions([
         \Symfony\Component\Cache\Adapter\ArrayAdapter::class => function (ContainerInterface $c): \Symfony\Component\Cache\Adapter\ArrayAdapter {
-            return new Symfony\Component\Cache\Adapter\ArrayAdapter();
+            $cache = new Symfony\Component\Cache\Adapter\ArrayAdapter(0, false);
+            $cache->setLogger($c->get(\Psr\Log\LoggerInterface::class));
+
+            return $cache;
         }
     ]);
 

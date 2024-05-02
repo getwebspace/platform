@@ -70,6 +70,9 @@ You can define the next environment variables
 | Runtime | DATABASE           |                | PDO Database params (default: sqlite)                             |   
 | Runtime | SIMPLE_PHONE_CHECK | 0              | Checking the user's phone number for compliance with the standard |   
 
+**Database Example**:
+`mysql://my_user:my_pass@127.0.0.0:3306/example`
+
 #### Install dependencies
 ```shell script
 ./composer install
