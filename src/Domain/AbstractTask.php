@@ -4,8 +4,8 @@ namespace App\Domain;
 
 use App\Domain\Models\Task;
 use App\Domain\Service\Task\TaskService;
-use App\Domain\Traits\ParameterTrait;
-use App\Domain\Traits\RendererTrait;
+use App\Domain\Traits\HasParameters;
+use App\Domain\Traits\HasRenderer;
 use Illuminate\Database\Connection as DataBase;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
@@ -13,8 +13,8 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter as Cache;
 
 abstract class AbstractTask
 {
-    use ParameterTrait;
-    use RendererTrait;
+    use HasParameters;
+    use HasRenderer;
 
     public const TITLE = '';
 

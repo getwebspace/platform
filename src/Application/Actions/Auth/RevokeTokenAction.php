@@ -2,11 +2,11 @@
 
 namespace App\Application\Actions\Auth;
 
-use App\Domain\Traits\SecurityTrait;
+use App\Domain\Traits\UseSecurity;
 
 class RevokeTokenAction extends AuthAction
 {
-    use SecurityTrait;
+    use UseSecurity;
 
     protected function action(): \Slim\Psr7\Response
     {

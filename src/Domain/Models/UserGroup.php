@@ -7,7 +7,7 @@ use App\Domain\Casts\Json;
 use App\Domain\Casts\User\Company;
 use App\Domain\Casts\User\Legal;
 use App\Domain\Casts\User\Messenger;
-use App\Domain\Traits\FileTrait;
+use App\Domain\Traits\HasFiles;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,7 +24,7 @@ class UserGroup extends Model
 {
     use HasFactory;
     use HasUuids;
-    use FileTrait;
+    use HasFiles;
 
     protected $table = 'user_group';
     protected $primaryKey = 'uuid';

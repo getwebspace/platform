@@ -2,9 +2,9 @@
 
 namespace App\Domain;
 
-use App\Domain\Traits\ParameterTrait;
-use App\Domain\Traits\RendererTrait;
-use App\Domain\Traits\StorageTrait;
+use App\Domain\Traits\HasParameters;
+use App\Domain\Traits\HasRenderer;
+use App\Domain\Traits\HasStorage;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Slim\App;
@@ -15,9 +15,9 @@ use Slim\Psr7\Response;
 
 abstract class AbstractPlugin
 {
-    use ParameterTrait;
-    use RendererTrait;
-    use StorageTrait;
+    use HasParameters;
+    use HasRenderer;
+    use HasStorage;
 
     public const NAME = 'UntitledPlugin';
     public const TITLE = 'Untitled plugin';

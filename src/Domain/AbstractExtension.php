@@ -2,7 +2,7 @@
 
 namespace App\Domain;
 
-use App\Domain\Traits\ParameterTrait;
+use App\Domain\Traits\HasParameters;
 use Illuminate\Database\Connection as DataBase;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter as Cache;
@@ -10,7 +10,7 @@ use Twig\Extension\ExtensionInterface;
 
 abstract class AbstractExtension implements ExtensionInterface
 {
-    use ParameterTrait;
+    use HasParameters;
 
     protected ContainerInterface $container;
 

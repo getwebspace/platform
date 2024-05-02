@@ -9,7 +9,7 @@ use App\Domain\Casts\GuestBook\Status as GuestBookStatus;
 use App\Domain\Casts\Json;
 use App\Domain\Casts\Meta;
 use App\Domain\References\Date;
-use App\Domain\Traits\FileTrait;
+use App\Domain\Traits\HasFiles;
 use DateTime;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -34,7 +34,7 @@ class Publication extends Model
 {
     use HasFactory;
     use HasUuids;
-    use FileTrait;
+    use HasFiles;
 
     protected $table = 'publication';
     protected $primaryKey = 'uuid';

@@ -4,11 +4,11 @@ namespace App\Application\Actions\Auth;
 
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
-use App\Domain\Traits\SecurityTrait;
+use App\Domain\Traits\UseSecurity;
 
 class LoginAction extends AuthAction
 {
-    use SecurityTrait;
+    use UseSecurity;
 
     protected function action(): \Slim\Psr7\Response
     {

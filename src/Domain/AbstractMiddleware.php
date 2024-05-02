@@ -2,7 +2,7 @@
 
 namespace App\Domain;
 
-use App\Domain\Traits\ParameterTrait;
+use App\Domain\Traits\HasParameters;
 use Illuminate\Database\Connection as DataBase;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -11,7 +11,7 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter as Cache;
 
 abstract class AbstractMiddleware
 {
-    use ParameterTrait;
+    use HasParameters;
 
     protected ContainerInterface $container;
 

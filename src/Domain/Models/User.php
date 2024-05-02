@@ -10,8 +10,8 @@ use App\Domain\Casts\User\Company as UserCompany;
 use App\Domain\Casts\User\Legal as UserLegal;
 use App\Domain\Casts\User\Messenger as UserMessenger;
 use App\Domain\Casts\User\Status as UserStatus;
-use App\Domain\Traits\FileTrait;
-use App\Domain\Traits\SecurityTrait;
+use App\Domain\Traits\HasFiles;
+use App\Domain\Traits\UseSecurity;
 use DateTime;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -56,8 +56,8 @@ class User extends Model
 {
     use HasFactory;
     use HasUuids;
-    use FileTrait;
-    use SecurityTrait;
+    use HasFiles;
+    use UseSecurity;
 
     protected $table = 'user';
     protected $primaryKey = 'uuid';

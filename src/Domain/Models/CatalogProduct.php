@@ -10,7 +10,7 @@ use App\Domain\Casts\Catalog\Product\Tags as ProductTags;
 use App\Domain\Casts\Catalog\Status;
 use App\Domain\Casts\Json;
 use App\Domain\Casts\Meta;
-use App\Domain\Traits\FileTrait;
+use App\Domain\Traits\HasFiles;
 use DateTime;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -60,7 +60,7 @@ class CatalogProduct extends Model
 {
     use HasFactory;
     use HasUuids;
-    use FileTrait;
+    use HasFiles;
 
     protected $table = 'catalog_product';
     protected $primaryKey = 'uuid';

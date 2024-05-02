@@ -3,11 +3,11 @@
 namespace App\Application\Actions\Auth;
 
 use App\Domain\Service\User\Exception\TokenNotFoundException;
-use App\Domain\Traits\SecurityTrait;
+use App\Domain\Traits\UseSecurity;
 
 class LogoutAction extends AuthAction
 {
-    use SecurityTrait;
+    use UseSecurity;
 
     protected function action(): \Slim\Psr7\Response
     {

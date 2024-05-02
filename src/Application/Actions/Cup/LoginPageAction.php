@@ -5,11 +5,11 @@ namespace App\Application\Actions\Cup;
 use App\Application\Actions\Cup\User\UserAction;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
-use App\Domain\Traits\SecurityTrait;
+use App\Domain\Traits\UseSecurity;
 
 class LoginPageAction extends UserAction
 {
-    use SecurityTrait;
+    use UseSecurity;
 
     protected function action(): \Slim\Psr7\Response
     {

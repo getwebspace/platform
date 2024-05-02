@@ -9,7 +9,7 @@ use Psr\Container\ContainerInterface;
 /**
  * @property ContainerInterface[] $container
  */
-trait ParameterTrait
+trait HasParameters
 {
     private static ?Collection $parameters = null;
 

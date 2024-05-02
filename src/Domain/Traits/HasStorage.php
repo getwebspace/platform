@@ -2,7 +2,7 @@
 
 namespace App\Domain\Traits;
 
-trait StorageTrait
+trait HasStorage
 {
     /**
      * storage array

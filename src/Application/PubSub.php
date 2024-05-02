@@ -4,16 +4,16 @@ namespace App\Application;
 
 use App\Domain\Service\Catalog\OrderService;
 use App\Domain\Service\Reference\ReferenceService;
-use App\Domain\Traits\ParameterTrait;
-use App\Domain\Traits\RendererTrait;
+use App\Domain\Traits\HasParameters;
+use App\Domain\Traits\HasRenderer;
 use App\Domain\Casts\Reference\Type as ReferenceType;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter as Cache;
 
 class PubSub
 {
-    use ParameterTrait;
-    use RendererTrait;
+    use HasParameters;
+    use HasRenderer;
 
     protected ContainerInterface $container;
 

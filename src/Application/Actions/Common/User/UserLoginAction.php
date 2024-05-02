@@ -5,11 +5,11 @@ namespace App\Application\Actions\Common\User;
 use App\Domain\Models\User;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
-use App\Domain\Traits\SecurityTrait;
+use App\Domain\Traits\UseSecurity;
 
 class UserLoginAction extends UserAction
 {
-    use SecurityTrait;
+    use UseSecurity;
 
     protected function action(): \Slim\Psr7\Response
     {

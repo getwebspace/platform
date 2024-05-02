@@ -11,7 +11,7 @@ use Firebase\JWT\Key;
 use Firebase\JWT\SignatureInvalidException;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
-trait SecurityTrait
+trait UseSecurity
 {
     private const PRIVATE_SECRET_FILE = VAR_DIR . '/private.secret.key';
 

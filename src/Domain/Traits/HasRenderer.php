@@ -11,7 +11,7 @@ use Slim\Views\Twig;
  * @property \Slim\Psr7\Request $request
  * @property array $error
  */
-trait RendererTrait
+trait HasRenderer
 {
     protected Twig $renderer;
 

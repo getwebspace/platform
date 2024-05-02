@@ -9,10 +9,10 @@ use App\Domain\Exceptions\HttpMethodNotAllowedException;
 use App\Domain\Exceptions\HttpNotFoundException;
 use App\Domain\Exceptions\HttpNotImplementedException;
 use App\Domain\Service\File\FileService;
-use App\Domain\Traits\FileTrait;
-use App\Domain\Traits\ParameterTrait;
-use App\Domain\Traits\RendererTrait;
-use App\Domain\Traits\StorageTrait;
+use App\Domain\Traits\HasFiles;
+use App\Domain\Traits\HasParameters;
+use App\Domain\Traits\HasRenderer;
+use App\Domain\Traits\HasStorage;
 use Illuminate\Database\Connection as DataBase;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -25,9 +25,9 @@ use Symfony\Component\Cache\Adapter\ArrayAdapter as Cache;
 
 abstract class AbstractAction
 {
-    use ParameterTrait;
-    use RendererTrait;
-    use StorageTrait;
+    use HasParameters;
+    use HasRenderer;
+    use HasStorage;
 
     // 40X
     private const BAD_REQUEST = 'BAD_REQUEST';
@@ -231,7 +231,7 @@ abstract class AbstractAction
     // TODO REWRITE
     protected function processEntityFiles(Model $entity, string $field = 'files'): Model
     {
-        if (in_array(FileTrait::class, class_uses($entity), true)) {
+        if (in_array(HasFiles::class, class_uses($entity), true)) {
             // new
             if (($uploaded = $this->getUploadedFiles($field)) !== []) {
                 foreach ($uploaded as $name => $files) {

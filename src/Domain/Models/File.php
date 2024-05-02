@@ -6,7 +6,7 @@ use App\Application\i18n;
 use App\Domain\Casts\AddressUrl;
 use App\Domain\Casts\Boolean;
 use App\Domain\Casts\Meta;
-use App\Domain\Traits\FileTrait;
+use App\Domain\Traits\HasFiles;
 use DateTime;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;

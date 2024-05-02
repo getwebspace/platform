@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
  * @property Collection $audios
  * @property Collection $videos
  */
-trait FileTrait
+trait HasFiles
 {
     public function files(): MorphToMany
     {

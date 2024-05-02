@@ -6,7 +6,7 @@ use App\Domain\AbstractMiddleware;
 use App\Domain\Models\User;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\UserService;
-use App\Domain\Traits\SecurityTrait;
+use App\Domain\Traits\UseSecurity;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\SignatureInvalidException;
 use Psr\Http\Server\RequestHandlerInterface;
@@ -15,7 +15,7 @@ use Slim\Psr7\Response;
 
 class AuthorizationMiddleware extends AbstractMiddleware
 {
-    use SecurityTrait;
+    use UseSecurity;
 
     /**
      * @throws \Exception
