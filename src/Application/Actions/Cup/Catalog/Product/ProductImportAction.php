@@ -18,7 +18,7 @@ class ProductImportAction extends CatalogAction
 
                 if ($file) {
                     // add import task
-                    $task = new \App\Domain\Tasks\Catalog\ImportTask($this->container);
+                    $task = new \App\Domain\Tasks\Catalog\ProductImportTask($this->container);
                     $task->execute([
                         'fields' => $fields, // todo check is later
                         'file' => $file->uuid,

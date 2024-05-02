@@ -19,7 +19,7 @@ class Catalog
         'address', 'type',
         'barcode', 'vendorcode',
         'priceFirst', 'price', 'priceWholesale', 'priceWholesaleFrom',
-        'tax', 'discount', 'special',
+        'tax', 'tax_included', 'discount', 'special',
         'quantity', 'quantityMin', 'stock',
         'country', 'manufacturer',
         'order',

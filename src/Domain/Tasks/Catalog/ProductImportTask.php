@@ -13,8 +13,10 @@ use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\File\Exception\FileNotFoundException;
 use App\Domain\Service\File\FileService;
 use Illuminate\Support\Collection;
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ImportTask extends AbstractTask
+class ProductImportTask extends AbstractTask
 {
     public const TITLE = 'Import directory from Excel file';
 
@@ -51,7 +53,7 @@ class ImportTask extends AbstractTask
 
         // parse excel file
         /** @var Collection $data */
-        if (($data = $this->getParsedExcelData($file->getInternalPath())) !== []) {
+        if (($data = $this->getParsedExcelData($file->internal_path())) !== []) {
             $action = $this->parameter('catalog_import_action', 'update');
             $key_field = $this->parameter('catalog_import_key', 'vendorcode');
             $pagination = $this->parameter('catalog_category_pagination', 10);
@@ -301,11 +303,8 @@ class ImportTask extends AbstractTask
 
     /**
      * Check cell is merged or not
-     *
-     * @param mixed $sheet
-     * @param mixed $cell
      */
-    protected function isMergedCell($sheet, $cell): bool
+    protected function isMergedCell(Worksheet $sheet, Cell $cell): bool
     {
         foreach ($sheet->getMergeCells() as $cells) {
             if ($cell->isInRange($cells)) {

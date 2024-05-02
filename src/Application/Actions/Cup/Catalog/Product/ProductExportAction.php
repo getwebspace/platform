@@ -53,7 +53,7 @@ class ProductExportAction extends CatalogAction
 
                     $category = $categories->firstWhere('uuid', $category);
                     $products = $this->catalogProductService->read([
-                        'category_uuid' => $category->getNested($categories)->pluck('uuid')->all(),
+                        'category_uuid' => $category->nested()->pluck('uuid')->all(),
                         'status' => \App\Domain\Casts\Catalog\Status::WORK,
                         'order' => [
                             'order' => 'ASC',
@@ -92,12 +92,12 @@ class ProductExportAction extends CatalogAction
 
             // Write table data row by row
             foreach ($products->sortBy('category') as $model) {
-                /** @var \App\Domain\Entities\Catalog\Product $model */
-                if ($lastCategory !== $model->getCategory()->getUuid()) {
+                /** @var \App\Domain\Models\CatalogProduct $model */
+                if ($lastCategory !== $model->category_uuid) {
                     // get header cell
                     $sheet
                         ->getCell($this->getCellCoordinate(0 + $offset['cols'], $row + 1 + $offset['rows']))
-                        ->setValue($model->getCategory()->getTitle())
+                        ->setValue($model->category->title)
                         ->getStyle()
                         ->getAlignment()
                         ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
@@ -108,12 +108,12 @@ class ProductExportAction extends CatalogAction
                         $this->getCellCoordinate(count($fields) - 1 + $offset['cols'], $row + 1 + $offset['rows'])
                     );
 
-                    $lastCategory = $model->getCategory()->getUuid();
+                    $lastCategory = $model->category_uuid;
                     ++$row;
                 }
 
                 // product attributes
-                $attributes = $model->getAttributes();
+                $attributes = $model->attributes;
 
                 foreach ($fields as $index => $field) {
                     if (trim($field)) {
@@ -127,12 +127,12 @@ class ProductExportAction extends CatalogAction
 
                         switch ($field) {
                             case 'uuid':
-                                $cell->setValue($model->getUuid()->toString());
+                                $cell->setValue($model->uuid);
 
                                 break;
 
                             case 'category':
-                                $cell->setValue($model->getCategory()->getTitle());
+                                $cell->setValue($model->category->title);
 
                                 break;
 
@@ -153,8 +153,9 @@ class ProductExportAction extends CatalogAction
                                 break;
 
                             case 'special':
+                            case 'tax_included':
                                 $cell
-                                    ->setValueExplicit((bool) $model->{$field}, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_BOOL);
+                                    ->setValueExplicit((bool) array_get($model, $field), \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_BOOL);
 
                                 break;
 
@@ -205,8 +206,8 @@ class ProductExportAction extends CatalogAction
                                 }
 
                                 // find attribute value
-                                if (!$attributes->isEmpty()) {
-                                    /** @var \App\Domain\Entities\Catalog\ProductAttribute $attribute */
+                                if ($attributes->count()) {
+                                    /** @var \App\Domain\Models\CatalogAttribute $attribute */
                                     $attribute = $attributes->firstWhere('address', $field);
 
                                     if ($attribute) {
