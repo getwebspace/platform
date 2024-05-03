@@ -14,23 +14,21 @@ class CategoryDeleteAction extends PublicationAction
             ]);
 
             if ($category) {
-                $childrenUuids = $category->nested(true)->reverse()->pluck('uuid')->all();
+                $uuids = $category->nested(true)->pluck('uuid')->all();
 
                 /**
                  * @var \App\Domain\Models\Publication $publication
                  */
-                foreach ($this->publicationService->read(['category_uuid' => $childrenUuids]) as $publication) {
+                foreach ($this->publicationService->read(['category_uuid' => $uuids]) as $publication) {
                     $this->publicationService->delete($publication);
                 }
 
                 /**
                  * @var \App\Domain\Models\PublicationCategory $child
                  */
-                foreach ($this->publicationCategoryService->read(['parent_uuid' => $childrenUuids]) as $child) {
+                foreach ($this->publicationCategoryService->read(['uuid' => $uuids]) as $child) {
                     $this->publicationCategoryService->delete($child);
                 }
-
-                $this->publicationCategoryService->delete($category);
 
                 $this->container->get(\App\Application\PubSub::class)->publish('cup:publication:category:delete', $category);
             }
