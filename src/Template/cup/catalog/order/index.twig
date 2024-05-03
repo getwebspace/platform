@@ -111,11 +111,11 @@
                                         {% if item.user %}
                                             <a href="/cup/user/{{ item.user_uuid }}/view">
                                                 <span class="d-none d-md-inline">{{ item.delivery.client }}</span>
-                                                <span class="d-inline d-md-none">{{ item.delivery.client|u.truncate(10, '..') }}</span>
+                                                <span class="d-inline d-md-none">{{ item.delivery.client|u.truncate(25, '..') }}</span>
                                             </a>
                                         {% else %}
                                             <span class="d-none d-md-inline">{{ item.delivery.client }}</span>
-                                            <span class="d-inline d-md-none">{{ item.delivery.client|u.truncate(10, '..') }}</span>
+                                            <span class="d-inline d-md-none">{{ item.delivery.client|u.truncate(25, '..') }}</span>
                                         {% endif %}
                                         <span class="d-none">{{ item.delivery.client }}</span>
                                     </div>
@@ -133,15 +133,15 @@
                                     <div class="col-6 col-sm-4 text-right">
                                         <form action="/cup/catalog/order/{{ item.uuid }}/delete" style="display: inline-block" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the order?'|locale }}');">
                                             <div class="btn-group">
-                                                <a href="/cup/catalog/order/{{ item.uuid }}/invoice" class="btn btn-sm btn-outline-info">
-                                                    <i class="fas fa-file-invoice"></i>
-                                                </a>
-                                                <a href="/cup/catalog/order/{{ item.uuid }}/dispatch" class="btn btn-sm btn-outline-info">
-                                                    <i class="fas fa-dolly"></i>
-                                                </a>
                                                 <a href="/cup/catalog/order/{{ item.uuid }}/edit" class="btn btn-sm btn-info">
                                                     <i class="fas fa-fw fa-edit"></i>
                                                     <span class="d-none d-md-inline-block">{{ 'Change'|locale }}</span>
+                                                </a>
+                                                <a href="/cup/catalog/order/{{ item.uuid }}/invoice" class="btn btn-sm btn-outline-info d-none d-md-inline">
+                                                    <i class="fas fa-file-invoice"></i>
+                                                </a>
+                                                <a href="/cup/catalog/order/{{ item.uuid }}/dispatch" class="btn btn-sm btn-outline-info d-none d-md-inline">
+                                                    <i class="fas fa-dolly"></i>
                                                 </a>
                                                 <button type="submit" class="btn btn-sm btn-danger">
                                                     <i class="fas fa-fw fa-trash-alt"></i>
