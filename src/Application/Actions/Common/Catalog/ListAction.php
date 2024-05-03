@@ -63,7 +63,7 @@ class ListAction extends CatalogAction
             $products->from('catalog_product as cp');
             $products->leftJoin('catalog_category as cc', 'cp.category_uuid', '=', 'cc.uuid');
             $products->where('cc.status', \App\Domain\Casts\Catalog\Status::WORK);
-            $products->where('cc.hidden', false);
+            $products->where('cc.is_hidden', false);
             $products->where('cp.status', \App\Domain\Casts\Catalog\Status::WORK);
 
             // attribute filter
@@ -167,7 +167,7 @@ class ListAction extends CatalogAction
             $products->from('catalog_product as cp');
             $products->leftJoin('catalog_category as cc', 'cp.category_uuid', '=', 'cc.uuid');
             $products->where('cc.status', \App\Domain\Casts\Catalog\Status::WORK);
-            $products->where('cc.hidden', false);
+            $products->where('cc.is_hidden', false);
             $products->where('cp.status', \App\Domain\Casts\Catalog\Status::WORK);
             $products->whereIn('cp.category_uuid', $category->nested()->pluck('uuid'));
 
