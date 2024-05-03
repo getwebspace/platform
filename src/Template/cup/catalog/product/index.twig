@@ -21,7 +21,7 @@
                     <div class="d-flex align-items-center">
                         {% if category %}
                             <a href="/cup/catalog/product/{{ category.parent_uuid }}" class="btn btn-secondary btn-icon mr-1">
-                                <i class="fas fa-arrow-left"></i>
+                                <i class="fas fa-reply"></i>
                             </a>
                         {% endif %}
 
@@ -69,14 +69,16 @@
                                             {% endif %}
                                         </div>
 
-                                        <div class="float-right d-none d-md-block">
-                                            <a href="/cup/catalog/product/{{ item.category.uuid }}" class="badge badge-secondary">{{ item.category.title|u.truncate(20, '...') }}</a>
-                                        </div>
+                                        {% if category is null %}
+                                            <div class="float-right d-none d-md-block">
+                                                <a href="/cup/catalog/product/{{ item.category.uuid }}" class="badge badge-secondary">{{ item.category.title|u.truncate(20, '...') }}</a>
+                                            </div>
+                                        {% endif %}
                                     </div>
                                     <div class="col-4 col-sm-2">
                                         {% if item.vendorcode %}
                                             <div class="flex-nowrap">
-                                                <i class="fas fa-cube d-inline pr-1" data-toggle="tooltip" data-placement="right" title="{{ 'Vendor code'|locale }}"></i>
+                                                <i class="fas fa-qrcode d-inline pr-1" data-toggle="tooltip" data-placement="right" title="{{ 'Vendor code'|locale }}"></i>
                                                 {{ item.vendorcode }}
                                             </div>
                                         {% endif %}
