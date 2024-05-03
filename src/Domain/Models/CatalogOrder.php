@@ -51,7 +51,7 @@ class CatalogOrder extends Model
     protected $table = 'catalog_order';
     protected $primaryKey = 'uuid';
 
-    const CREATED_AT = null;
+    const CREATED_AT = 'date';
     const UPDATED_AT = null;
 
     protected $fillable = [
