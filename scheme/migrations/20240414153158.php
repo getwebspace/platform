@@ -396,11 +396,5 @@ final class V20240414153158 extends AbstractMigration
             ->addIndex('title')
             ->addIndex('status')
             ->create();
-
-        // if is SQLite database
-        if ($this->getAdapter()->getConnection()->getAttribute(PDO::ATTR_DRIVER_NAME) === 'sqlite') {
-            // enable journal mode
-            $this->execute("PRAGMA journal_mode = WAL");
-        }
     }
 }
