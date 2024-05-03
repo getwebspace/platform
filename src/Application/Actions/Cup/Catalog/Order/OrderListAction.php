@@ -37,7 +37,7 @@ class OrderListAction extends CatalogAction
             $query->andWhere('payment_uuid', $data['payment']);
         }
 
-        $query->orderBy('date', 'desc');
+        $query->orderBy('serial', 'desc');
 
         return $this->respondWithTemplate('cup/catalog/order/index.twig', [
             'date' => ['from' => $data['from'], 'to' => $data['to']],

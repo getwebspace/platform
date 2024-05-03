@@ -172,7 +172,9 @@ class User extends Model
 
     public function orders($limit = 10): HasMany
     {
-        return $this->hasMany(CatalogOrder::class, 'user_uuid', 'uuid')->limit($limit);
+        return $this->hasMany(CatalogOrder::class, 'user_uuid', 'uuid')
+            ->orderBy('serial', 'desc')
+            ->limit($limit);
     }
 
     public function name(string $type = 'full'): string
