@@ -146,8 +146,8 @@ class CatalogOrder extends Model
         return array_merge(
             parent::toArray(),
             [
-                'status' => $this->status->toArray(),
-                'payment' => $this->payment->toArray(),
+                'status' => $this->status?->toArray(),
+                'payment' => $this->payment?->toArray(),
                 'products' => $this->products()->getResults()->keyBy('uuid')->map(function (CatalogProduct $item) {
                     return [
                         'title' => $item->title,
