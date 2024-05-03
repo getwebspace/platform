@@ -28,15 +28,13 @@ class CartAction extends CatalogAction
                 'products' => $this->getParam('products', []),
             ];
 
-            /**
-             * Current user will be added to new order
-             *
-             * @var \App\Domain\Models\User $user
-             */
-            $user = $this->request->getAttribute('user', false);
-
-            if ($user) {
-                $data['user'] = $user;
+            if (($user = $this->request->getAttribute('user', false)) !== false) {
+                /**
+                 * Current user will be added to new order
+                 *
+                 * @var \App\Domain\Models\User $user
+                 */
+                $data['user_uuid'] = $user->uuid;
             }
 
             // add to comment other posted fields
