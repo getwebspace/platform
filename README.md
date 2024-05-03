@@ -62,13 +62,14 @@ You can define the next environment variables
 | Type    | Variable Name      | Default        | description                                                       |
 |---------|--------------------|----------------|-------------------------------------------------------------------|
 | Build   | BUILD_DEPENDENSIES |                | Dependencies used in the build                                    |   
-| Build   | DEPENDENSIES       | ''             | Core Libraries                                                    |   
+| Build   | DEPENDENSIES       |                | Core Libraries                                                    |   
 | Build   | EXTRA_EXTENSIONS   | pdo_mysql      | Additional Libraries                                              |   
 | Build   | PLATFORM_HOME      | /var/container | Home directory                                                    |   
 | Runtime | DEBUG              | 0              | Debug mode                                                        |   
 | Runtime | TEST               | 0              | Test mode                                                         |   
 | Runtime | DATABASE           |                | PDO Database params (default: sqlite)                             |   
 | Runtime | SIMPLE_PHONE_CHECK | 0              | Checking the user's phone number for compliance with the standard |   
+| Runtime | TZ                 |                | TimeZone (default: UTC)                                           |   
 
 **Database Example**:
 `mysql://my_user:my_pass@127.0.0.0:3306/example`

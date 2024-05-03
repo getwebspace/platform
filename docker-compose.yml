@@ -8,6 +8,7 @@ services:
         image: ghcr.io/getwebspace/platform:latest
         environment:
             - DEBUG=1
+            - TZ=Europe/Kiev
           # - DATABASE=mysql://user:password@hostname/database
           # - SIMPLE_PHONE_CHECK=1
         volumes:

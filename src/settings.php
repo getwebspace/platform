@@ -7,7 +7,7 @@ return function (ContainerBuilder $containerBuilder): void {
     $_DATABASE = ($_ENV['DATABASE'] ?? false);
 
     // set default timezone
-    date_default_timezone_set('UTC');
+    date_default_timezone_set($_ENV['TZ'] ?? 'UTC');
 
     // database
     $containerBuilder->addDefinitions([
@@ -18,8 +18,8 @@ return function (ContainerBuilder $containerBuilder): void {
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
-            'strict'    => true,
-            'timezone'  => '+00:00',
+            'strict' => true,
+            'timezone' => datetime()->format('P'),
         ],
     ]);
 

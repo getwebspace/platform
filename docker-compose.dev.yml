@@ -9,6 +9,7 @@ services:
         environment:
             - TEST=1
             - DEBUG=1
+            - TZ=Europe/Kiev
             # - DATABASE=mysql://user:password@hostname/database
             # - SIMPLE_PHONE_CHECK=1
         volumes:
