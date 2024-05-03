@@ -9,18 +9,18 @@
     postfix_btn - bootstrap postfix btn
 #}
 {% block input %}
-    {% if name is empty %}
+    {% if name is null %}
         {% set name = '' %}
     {% endif %}
-    {% if type is empty %}
+    {% if type is null %}
         {% set type = 'text' %}
     {% endif %}
-    {% if args is empty %}
+    {% if args is null %}
         {% set args = {} %}
     {% endif %}
 
     {% if args.method == 'null' %}
-        {% if args.data is empty %}
+        {% if args.data is null %}
             {% set args = args|merge({'data': {}}) %}
         {% endif %}
         {% set args = args|merge({

@@ -1,7 +1,7 @@
 {% block editor %}
     {% set editorId = random() %}
 
-    {% if args is empty %}
+    {% if args is null %}
         {% set args = {} %}
     {% endif %}
 
