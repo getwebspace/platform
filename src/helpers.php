@@ -302,7 +302,7 @@ if (!function_exists('__')) {
 }
 
 if (!function_exists('array_serialize')) {
-    function array_serialize(array|Collection|EloquentModel $array): array
+    function array_serialize(mixed $array): mixed
     {
         // switch type
         switch (true) {
