@@ -24,7 +24,7 @@
                         <div class="avatar avatar-xl mb-3">
                             <img src="{{ item.avatar(80) }}" alt="{{ item.name('full') }}" class="avatar-img rounded-circle">
                         </div>
-                        <div class="font-weight-bold">{{ item.getName('full') }}</div>
+                        <div class="font-weight-bold">{{ item.name('full') }}</div>
                         {% if item.company.title %}
                             <div class="text-muted">{{ item.company.title ?: '&mdash;' }}</div>
                             <div class="text-muted">{{ item.company.position ?: '&mdash;' }}</div>

@@ -41,7 +41,7 @@
                                             <span class="badge badge-secondary">{{ item.category.title|u.truncate(20, '...') }}</span>
                                         </div>
                                     </div>
-                                    <div class="col-4 col-sm-2">{{ item.user.getName('short') }}</div>
+                                    <div class="col-4 col-sm-2">{{ item.user.name('short') }}</div>
                                     <div class="col-4 col-sm-2">
                                         <span class="d-none d-md-inline">{{ item.date|df('d.m.Y H:i') }}</span>
                                         <span class="d-inline d-md-none">{{ item.date|df('d.m.y') }}</span>

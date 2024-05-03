@@ -50,6 +50,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property UserStatus $status
  * @property UserGroup $group
  * @property UserToken[] $tokens
+ * @property CatalogOrder[] $orders
  */
 class User extends Model
 {
@@ -169,7 +170,12 @@ class User extends Model
         return $this->hasMany(UserToken::class, 'user_uuid', 'uuid');
     }
 
-    public function getName(string $type = 'full'): string
+    public function orders($limit = 10): HasMany
+    {
+        return $this->hasMany(CatalogOrder::class, 'user_uuid', 'uuid')->limit($limit);
+    }
+
+    public function name(string $type = 'full'): string
     {
         if ($this->lastname || $this->patronymic || $this->firstname) {
             switch ($type) {
@@ -223,7 +229,7 @@ class User extends Model
 
                 $path = $file->public_path('small');
             } else {
-                $path = "https://ui-avatars.com/api/?name={$this->getName('name')}&size=$size?background=$background&color=$color";
+                $path = "https://ui-avatars.com/api/?name={$this->name('name')}&size=$size?background=$background&color=$color";
             }
         }
 
@@ -236,8 +242,8 @@ class User extends Model
             parent::toArray(),
             [
                 'name' => [
-                    'full' => $this->getName('full'),
-                    'short' => $this->getName('short'),
+                    'full' => $this->name('full'),
+                    'short' => $this->name('short'),
                 ],
                 'group' => $this->group,
                 'avatar' => $this->avatar(),

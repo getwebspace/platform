@@ -126,8 +126,8 @@
                                 ">
                                     <div class="col-sm-2 d-none d-sm-block">{{ user.username ?: '<code>&mdash;</code>'|raw }}</div>
                                     <div class="col-12 col-sm">
-                                        <span class="d-none d-xl-inline">{{ user.getName('full')|u.truncate(25, '...') ?: '<code>&mdash;</code>'|raw }}</span>
-                                        <span class="d-xl-none">{{ user.getName('name') ?: '<code>&mdash;</code>'|raw }}</span>
+                                        <span class="d-none d-xl-inline">{{ user.name('full')|u.truncate(25, '...') ?: '<code>&mdash;</code>'|raw }}</span>
+                                        <span class="d-xl-none">{{ user.name('name') ?: '<code>&mdash;</code>'|raw }}</span>
                                     </div>
                                     <div class="col-6 col-sm">
                                         <div class="float-left">

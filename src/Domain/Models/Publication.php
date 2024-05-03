@@ -99,7 +99,7 @@ class Publication extends Model
                 ],
                 'user' => [
                     'uuid' => $this->user->uuid,
-                    'name' => $this->user->getName(),
+                    'name' => $this->user->name(),
                     'avatar' => $this->user->avatar(),
                     'external_id' => $this->user->external_id,
                 ],
