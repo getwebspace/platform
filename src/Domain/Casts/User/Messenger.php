@@ -25,6 +25,10 @@ class Messenger implements CastsAttributes
 
     public function set($model, string $key, mixed $value, array $attributes): string
     {
-        return json_encode(array_merge($this->default, $value), JSON_UNESCAPED_UNICODE);
+        if ($value) {
+            return json_encode(array_merge($this->default, $value), JSON_UNESCAPED_UNICODE);
+        }
+
+        return '{}';
     }
 }

@@ -4,11 +4,11 @@ namespace App\Domain\Models;
 
 use App\Domain\Casts\Boolean;
 use App\Domain\Casts\Email;
-use App\Domain\Casts\Password;
 use App\Domain\Casts\Phone;
 use App\Domain\Casts\User\Company as UserCompany;
 use App\Domain\Casts\User\Legal as UserLegal;
 use App\Domain\Casts\User\Messenger as UserMessenger;
+use App\Domain\Casts\User\Password;
 use App\Domain\Casts\User\Status as UserStatus;
 use App\Domain\Traits\HasFiles;
 use App\Domain\Traits\UseSecurity;
@@ -16,7 +16,6 @@ use DateTime;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
