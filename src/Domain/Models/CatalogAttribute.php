@@ -134,12 +134,11 @@ class CatalogAttribute extends Model
             'type' => $this->type,
             'group' => $this->group,
             'is_filter' => $this->is_filter,
+            'value' => null,
         ];
 
         if (($value = $this->value()) !== null) {
             $array['value'] = $value;
-        } else {
-            $array['values'] = $this->values();
         }
 
         return $array;
