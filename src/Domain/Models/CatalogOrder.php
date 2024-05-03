@@ -39,7 +39,7 @@ use Illuminate\Support\Collection;
  * @property string $system
  * @property string $external_id
  * @property string $export
- * @property Collection $products
+ * @property CatalogProduct[] $products
  * @property Reference $status
  * @property Reference $payment
  */

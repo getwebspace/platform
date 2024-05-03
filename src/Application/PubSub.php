@@ -114,12 +114,7 @@ class PubSub
         // automatic update order status after payment via plugin
         $this->subscribe('plugin:order:payment', function ($order, $container): void {
             if (($status_uuid = $this->parameter('catalog_order_status_payed', '')) !== '') {
-                $referenceService = $container->get(ReferenceService::class);
-                $orderService = $container->get(OrderService::class);
-
-                $orderService->update($order, [
-                    'status' => $status_uuid ? $referenceService->read(['uuid' => $status_uuid, 'type' => ReferenceType::ORDER_STATUS]) : null,
-                ]);
+                $container->get(OrderService::class)->update($order, ['status' => $status_uuid]);
             }
         });
 

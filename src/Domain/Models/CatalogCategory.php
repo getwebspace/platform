@@ -64,11 +64,12 @@ class CatalogCategory extends Model
         'pagination',
         'is_allow_nested',
         'is_hidden',
-        'order',
-        'status',
-        'sort',
-        'meta',
         'template',
+        'meta',
+        'sort',
+        'status',
+        'order',
+        'specifics',
         'external_id',
         'export',
         'system',
@@ -90,9 +91,9 @@ class CatalogCategory extends Model
         'status' => CatalogStatus::class,
         'order' => 'int',
         'specifics' => Json::class,
+        'external_id' => 'string',
         'system' => 'string',
         'export' => 'string',
-        'external_id' => 'string',
     ];
 
     protected $attributes = [
@@ -109,9 +110,9 @@ class CatalogCategory extends Model
         'status' => \App\Domain\Casts\Catalog\Status::WORK,
         'order' => 1,
         'specifics' => '{}',
+        'external_id' => '',
         'system' => '',
         'export' => 'manual',
-        'external_id' => '',
     ];
 
     public function parent(): HasOne
