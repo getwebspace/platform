@@ -93,15 +93,21 @@ class CatalogAttribute extends Model
         );
     }
 
-    public function values(): Collection
+    public function values(Collection $products = null): Collection
     {
-        return $this
+        $query = $this
             ->newQuery()
             ->from('catalog_attribute_product')
             ->selectRaw('value, COUNT(*) as count')
             ->where('attribute_uuid', $this->uuid)
-            ->groupBy('value')
-            ->pluck('count', 'value');
+            ->whereRaw('value')
+            ->groupBy('value');
+
+        if ($products) {
+            $query->whereIn('product_uuid', $products->pluck('uuid'));
+        }
+
+        return $query->pluck('count', 'value');
     }
 
     public function value(): mixed
