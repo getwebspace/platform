@@ -66,6 +66,10 @@ class ListAction extends CatalogAction
             $products->where('cc.is_hidden', false);
             $products->where('cp.status', \App\Domain\Casts\Catalog\Status::WORK);
 
+            // base select
+            $count = $products->count();
+            $all = $products->get();
+
             // attribute filter
             if (($params = $this->getParams())) {
                 $attributes = $this->db->query();
@@ -84,6 +88,7 @@ class ListAction extends CatalogAction
                         });
                     }
                 });
+                $products->groupBy('cp.uuid');
             }
 
             // price filter
@@ -130,9 +135,11 @@ class ListAction extends CatalogAction
             }
 
             $pagination = $this->parameter('catalog_category_pagination', 10);
-            $count = $products->count();
-            $all = $products->get();
-            $filtered = $all->forPage($args['offset'], $pagination);
+
+            // select for page
+            $products->limit($pagination);
+            $products->offset($args['offset']);
+            $filtered = $products->get();
 
             return $this->respond($this->parameter('catalog_category_template', 'catalog.category.twig'), [
                 'categories' => $categories,
@@ -171,6 +178,10 @@ class ListAction extends CatalogAction
             $products->where('cp.status', \App\Domain\Casts\Catalog\Status::WORK);
             $products->whereIn('cp.category_uuid', $category->nested()->pluck('uuid'));
 
+            // base select
+            $count = $products->count();
+            $all = $products->get();
+
             // attribute filter
             if (($params = $this->getParams())) {
                 $attributes = $this->db->query();
@@ -189,6 +200,7 @@ class ListAction extends CatalogAction
                         });
                     }
                 });
+                $products->groupBy('cp.uuid');
             }
 
             // price filter
@@ -232,9 +244,11 @@ class ListAction extends CatalogAction
             }
 
             $pagination = $category->pagination;
-            $count = $products->count();
-            $all = $products->get();
-            $filtered = $all->forPage($args['offset'], $pagination);
+
+            // select for page
+            $products->limit($pagination);
+            $products->offset($args['offset']);
+            $filtered = $products->get();
 
             return $this->respond($category->template['category'], [
                 'categories' => $categories,
