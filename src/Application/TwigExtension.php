@@ -563,18 +563,17 @@ class TwigExtension extends AbstractExtension
         return \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE;
     }
 
-    public function catalog_product_popular($limit = 10)
+    public function catalog_product_popular(int $limit = 10, string $type = \App\Domain\Casts\Catalog\Product\Type::PRODUCT): Collection
     {
         return \App\Domain\Models\CatalogProduct::query()
-            ->whereIn('uuid',
-                $this->db
-                    ->table('catalog_order_product')
-                    ->select('product_uuid', $this->db->raw('COUNT(*) AS count'))
-                    ->groupBy('product_uuid')
-                    ->orderByDesc('count')
-                    ->limit($limit)
-                    ->pluck('product_uuid')
-            )
+            ->select('cp.*')
+            ->addSelect($this->db->raw('COUNT(cop.product_uuid) as order_count'))
+            ->from('catalog_product as cp')
+            ->leftJoin('catalog_order_product as cop', 'cp.uuid', '=', 'cop.product_uuid')
+            ->where('cp.type', '=', $type)
+            ->groupBy('cp.uuid', ...array_map(fn($col) => "cp.{$col}", array_keys((new \App\Domain\Models\CatalogProduct())->getAttributes())))
+            ->orderByDesc('order_count')
+            ->limit($limit)
             ->get();
     }
 
