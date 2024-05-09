@@ -35,7 +35,7 @@
                                         {{ item.date|df }}
 
                                         <div class="text-black-50 ml-2 d-none d-lg-inline">
-                                            {% if item.files %}
+                                            {% if item.files.count %}
                                                 <i class="fas fa-file" data-toggle="tooltip" data-placement="right" title="{{ 'Has files'|locale }}"></i>
                                             {% endif %}
                                         </div>
