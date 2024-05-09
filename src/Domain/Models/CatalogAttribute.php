@@ -93,18 +93,20 @@ class CatalogAttribute extends Model
         );
     }
 
-    public function values(Collection $products = null): Collection
+    public function values(CatalogCategory $category = null): Collection
     {
         $query = $this
             ->newQuery()
-            ->from('catalog_attribute_product')
-            ->selectRaw('value, COUNT(*) as count')
-            ->where('attribute_uuid', $this->uuid)
-            ->whereRaw('value')
-            ->groupBy('value');
+            ->from('catalog_attribute_product as cap')
+            ->selectRaw('cap.value, COUNT(*) as count')
+            ->where('cap.attribute_uuid', $this->uuid)
+            ->where('cap.value', '!=', '')
+            ->groupBy('cap.value');
 
-        if ($products) {
-            $query->whereIn('product_uuid', $products->pluck('uuid'));
+        if ($category) {
+            $query
+                ->leftJoin('catalog_product as cp', 'cap.product_uuid', '=', 'cp.uuid')
+                ->whereIn('cp.category_uuid', $category->nested()->pluck('uuid')->all());
         }
 
         return $query->pluck('count', 'value');
