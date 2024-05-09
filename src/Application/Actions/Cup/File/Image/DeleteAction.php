@@ -3,6 +3,7 @@
 namespace App\Application\Actions\Cup\File\Image;
 
 use App\Application\Actions\Cup\File\FileAction;
+use App\Domain\Service\File\Exception\FileNotFoundException;
 
 class DeleteAction extends FileAction
 {
@@ -13,18 +14,24 @@ class DeleteAction extends FileAction
         if ($src !== false) {
             $info = pathinfo($src);
 
-            $file = $this->fileService->read([
-                'name' => str_escape($info['filename']),
-                'ext' => str_escape($info['extension']),
-            ]);
+            try {
+                $file = $this->fileService->read([
+                    'name' => str_escape($info['filename']),
+                    'ext' => str_escape($info['extension']),
+                ]);
 
-            if ($file) {
-                $this->fileService->delete($file);
+                if ($file) {
+                    $this->fileService->delete($file);
 
-                $this->container->get(\App\Application\PubSub::class)->publish('cup:file:delete', $file);
+                    $this->container->get(\App\Application\PubSub::class)->publish('cup:file:delete', $file);
+                }
+
+                return $this->respondWithJson(['status' => 'ok']);
+            } catch (FileNotFoundException $e) {
+                // nothing
             }
         }
 
-        return $this->respondWithJson(['status' => 'ok']);
+        return $this->respondWithJson(['status' => 'not found']);
     }
 }

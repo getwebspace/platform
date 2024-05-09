@@ -3,6 +3,7 @@
 namespace App\Application\Actions\Cup\Form\Data;
 
 use App\Application\Actions\Cup\Form\FormAction;
+use App\Domain\Service\Form\Exception\FormDataNotFoundException;
 
 class DataDeleteAction extends FormAction
 {
@@ -12,14 +13,18 @@ class DataDeleteAction extends FormAction
             $this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))
             && $this->resolveArg('data') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('data'))
         ) {
-            $data = $this->formDataService->read([
-                'uuid' => $this->resolveArg('data'),
-            ]);
+            try {
+                $data = $this->formDataService->read([
+                    'uuid' => $this->resolveArg('data'),
+                ]);
 
-            if ($data) {
-                $this->formDataService->delete($data);
+                if ($data) {
+                    $this->formDataService->delete($data);
 
-                $this->container->get(\App\Application\PubSub::class)->publish('cup:form:data:delete', $data);
+                    $this->container->get(\App\Application\PubSub::class)->publish('cup:form:data:delete', $data);
+                }
+            } catch (FormDataNotFoundException $e) {
+                // nothing
             }
         }
 

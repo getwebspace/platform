@@ -10,14 +10,14 @@ class DeleteAction extends UserAction
     protected function action(): \Slim\Psr7\Response
     {
         if ($this->resolveArg('uuid') && \Ramsey\Uuid\Uuid::isValid($this->resolveArg('uuid'))) {
-            $userSubscriber = $this->userSubscriberService->read(['uuid' => $this->resolveArg('uuid')]);
+            try {
+                $userSubscriber = $this->userSubscriberService->read(['uuid' => $this->resolveArg('uuid')]);
 
-            if ($userSubscriber) {
-                try {
+                if ($userSubscriber) {
                     $this->userSubscriberService->delete($userSubscriber);
-                } catch (UserNotFoundException $e) {
-                    // ignore
                 }
+            } catch (UserNotFoundException $e) {
+                // nothing
             }
         }
 
