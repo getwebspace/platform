@@ -29,7 +29,7 @@ class ProductListAction extends CatalogAction
             'category_uuid' => $category?->uuid,
             'status' => \App\Domain\Casts\Catalog\Status::WORK,
             'order' => [
-                'category' => 'ASC',
+                'category_uuid' => 'ASC',
                 'order' => 'ASC',
                 'title' => 'ASC',
             ],
