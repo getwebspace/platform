@@ -70,7 +70,7 @@ abstract class AbstractTask
      * @throws \Psr\Container\NotFoundExceptionInterface
      * @throws \Psr\Container\ContainerExceptionInterface
      */
-    public function __construct(ContainerInterface $container, Task $entity = null)
+    public function __construct(ContainerInterface $container, ?Task $entity = null)
     {
         $this->container = $container;
         $this->logger = $container->get(LoggerInterface::class);
@@ -119,12 +119,9 @@ abstract class AbstractTask
     abstract protected function action(array $args = []);
 
     /**
-     * @param int|float $value
-     * @param int|float $count
-     *
      * @throws Service\Task\Exception\TaskNotFoundException
      */
-    public function setProgress(int|float $value, int|float $count = 0): void
+    public function setProgress(float|int $value, float|int $count = 0): void
     {
         if ($count > 0) {
             $value = round(min($value, $count) / $count * 100);

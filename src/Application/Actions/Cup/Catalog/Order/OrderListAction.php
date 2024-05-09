@@ -22,7 +22,7 @@ class OrderListAction extends CatalogAction
         $query = CatalogOrder::query();
 
         // filter by date
-        $query->where(function (Builder $query) use ($data) {
+        $query->where(function (Builder $query) use ($data): void {
             $query->whereDate('date', '>=', $data['from']);
             $query->whereDate('date', '<=', $data['to']);
         });

@@ -3,11 +3,11 @@
 namespace App\Application\Actions\Cup;
 
 use App\Domain\AbstractAction;
+use App\Domain\Casts\Reference\Type as ReferenceType;
 use App\Domain\Service\Catalog\AttributeService as CatalogAttributeService;
 use App\Domain\Service\Parameter\ParameterService;
 use App\Domain\Service\Reference\ReferenceService;
 use App\Domain\Service\User\GroupService as UserGroupService;
-use App\Domain\Casts\Reference\Type as ReferenceType;
 
 class ParametersPageAction extends AbstractAction
 {
@@ -59,8 +59,8 @@ class ParametersPageAction extends AbstractAction
             'reference' => $referenceService->read([
                 'type' => [ReferenceType::ORDER_STATUS],
                 'order' => [
-                    'order' => 'asc'
-                ]
+                    'order' => 'asc',
+                ],
             ]),
             'parameter' => $parameters,
         ]);

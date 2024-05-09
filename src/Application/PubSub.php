@@ -3,10 +3,8 @@
 namespace App\Application;
 
 use App\Domain\Service\Catalog\OrderService;
-use App\Domain\Service\Reference\ReferenceService;
 use App\Domain\Traits\HasParameters;
 use App\Domain\Traits\HasRenderer;
-use App\Domain\Casts\Reference\Type as ReferenceType;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter as Cache;
 
@@ -134,7 +132,7 @@ class PubSub
     /**
      * Subscribe a handler to a channel
      */
-    public function subscribe(string|array $channels, callable|array $handler): self
+    public function subscribe(array|string $channels, array|callable $handler): self
     {
         foreach ((array) $channels as $channel) {
             if (!isset($this->subscribers[$channel])) {

@@ -3,13 +3,7 @@
 namespace App\Domain\Models;
 
 use App\Application\i18n;
-use App\Domain\Casts\AddressUrl;
 use App\Domain\Casts\Boolean;
-use App\Domain\Casts\Meta;
-use App\Domain\Traits\HasFiles;
-use DateTime;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,7 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $salt
  * @property string $hash
  * @property bool $private
- * @property DateTime $date
+ * @property \DateTime $date
  */
 class File extends Model
 {
@@ -32,10 +26,11 @@ class File extends Model
     use HasUuids;
 
     protected $table = 'file';
+
     protected $primaryKey = 'uuid';
 
-    const CREATED_AT = 'date';
-    const UPDATED_AT = 'date';
+    public const CREATED_AT = 'date';
+    public const UPDATED_AT = 'date';
 
     protected $fillable = [
         'name',
@@ -74,7 +69,7 @@ class File extends Model
 
     public function relations(): HasMany
     {
-        return $this->hasMany(File::class, 'file_uuid', 'uuid');
+        return $this->hasMany(self::class, 'file_uuid', 'uuid');
     }
 
     public static function prepareName($name)
@@ -164,17 +159,17 @@ class File extends Model
     public function toArray(): array
     {
         return [
-            "uuid" => $this->uuid,
-            "name" => $this->name,
-            "ext" => $this->ext,
-            "type" => $this->type,
-            "size" => $this->size,
-            "salt" => $this->salt,
-            "hash" => $this->hash,
-            "date" => $this->date,
-            "private" => $this->private,
-            "comment" => $this->pivot->order ?? 1,
-            "order" => $this->pivot->comment ?? '',
+            'uuid' => $this->uuid,
+            'name' => $this->name,
+            'ext' => $this->ext,
+            'type' => $this->type,
+            'size' => $this->size,
+            'salt' => $this->salt,
+            'hash' => $this->hash,
+            'date' => $this->date,
+            'private' => $this->private,
+            'comment' => $this->pivot->order ?? 1,
+            'order' => $this->pivot->comment ?? '',
         ];
     }
 }

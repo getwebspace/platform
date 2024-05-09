@@ -2,7 +2,6 @@
 
 namespace App\Domain\Casts;
 
-use App\Application\i18n;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
 class Email implements CastsAttributes

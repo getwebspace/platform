@@ -54,11 +54,11 @@ class UserRegisterAction extends UserAction
                         $this->addError('email', $e->getMessage());
                         $this->addError('username', $e->getMessage());
                         $this->addError('phone', $e->getMessage());
-                    } catch (WrongUsernameValueException|UsernameAlreadyExistsException $e) {
+                    } catch (UsernameAlreadyExistsException|WrongUsernameValueException $e) {
                         $this->addError('username', $e->getMessage());
-                    } catch (WrongEmailValueException|EmailAlreadyExistsException|EmailBannedException $e) {
+                    } catch (EmailAlreadyExistsException|EmailBannedException|WrongEmailValueException $e) {
                         $this->addError('email', $e->getMessage());
-                    } catch (WrongPhoneValueException|PhoneAlreadyExistsException $exception) {
+                    } catch (PhoneAlreadyExistsException|WrongPhoneValueException $exception) {
                         $this->addError('phone', $exception->getMessage());
                     }
                 }

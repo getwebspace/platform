@@ -3,9 +3,7 @@
 namespace App\Domain\Service\Reference;
 
 use App\Domain\AbstractService;
-use App\Domain\Models\Page;
 use App\Domain\Models\Reference;
-use App\Domain\Repository\ReferenceRepository;
 use App\Domain\Service\Reference\Exception\MissingTitleValueException;
 use App\Domain\Service\Reference\Exception\MissingTypeValueException;
 use App\Domain\Service\Reference\Exception\ReferenceNotFoundException;
@@ -16,15 +14,13 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class ReferenceService extends AbstractService
 {
-
-
     /**
      * @throws TitleAlreadyExistsException
      * @throws MissingTitleValueException
      */
     public function create(array $data = []): Reference
     {
-        $reference = new Reference;
+        $reference = new Reference();
         $reference->fill($data);
 
         if (!$reference->title) {
@@ -71,7 +67,7 @@ class ReferenceService extends AbstractService
             if (is_array($data['type'])) {
                 $types = array_intersect($data['type'], \App\Domain\Casts\Reference\Type::LIST);
             } else {
-                $types = in_array($data['type'], \App\Domain\Casts\Reference\Type::LIST) ? [$data['type']] : [];
+                $types = in_array($data['type'], \App\Domain\Casts\Reference\Type::LIST, true) ? [$data['type']] : [];
             }
 
             if ($types) {
@@ -93,7 +89,6 @@ class ReferenceService extends AbstractService
             default:
                 $query = Reference::query();
                 /** @var Builder $query */
-
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
                         $query->whereIn($key, $value);

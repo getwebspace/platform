@@ -3,7 +3,6 @@
 namespace tests\Domain\Service\User;
 
 use App\Domain\Models\UserSubscriber;
-use App\Domain\Repository\User\SubscriberRepository as UserSubscriberRepository;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
 use App\Domain\Service\User\Exception\UserNotFoundException;

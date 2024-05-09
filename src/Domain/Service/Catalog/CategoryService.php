@@ -13,8 +13,6 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class CategoryService extends AbstractService
 {
-
-
     /**
      * @throws MissingTitleValueException
      * @throws AddressAlreadyExistsException
@@ -26,7 +24,7 @@ class CategoryService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        $category = new CatalogCategory;
+        $category = new CatalogCategory();
         $category->fill($data);
 
         if (!$category->title) {
@@ -42,7 +40,7 @@ class CategoryService extends AbstractService
         $found = CatalogCategory::firstWhere([
             'parent_uuid' => $category->parent_uuid,
             'address' => $category->address,
-            'external_id' => $category->external_id
+            'external_id' => $category->external_id,
         ]);
         if ($found) {
             throw new AddressAlreadyExistsException();
@@ -107,7 +105,7 @@ class CategoryService extends AbstractService
             if (is_array($data['status'])) {
                 $statuses = array_intersect($data['status'], \App\Domain\Casts\Catalog\Status::LIST);
             } else {
-                $statuses = in_array($data['status'], \App\Domain\Casts\Catalog\Status::LIST) ? [$data['status']] : [];
+                $statuses = in_array($data['status'], \App\Domain\Casts\Catalog\Status::LIST, true) ? [$data['status']] : [];
             }
 
             if ($statuses) {
@@ -134,7 +132,6 @@ class CategoryService extends AbstractService
             default:
                 $query = CatalogCategory::query();
                 /** @var Builder $query */
-
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
                         $query->whereIn($key, $value);
@@ -185,7 +182,7 @@ class CategoryService extends AbstractService
                 $found = CatalogCategory::firstWhere([
                     'parent_uuid' => $entity->parent_uuid,
                     'address' => $entity->address,
-                    'external_id' => $entity->external_id
+                    'external_id' => $entity->external_id,
                 ]);
                 if ($found && $found->uuid !== $entity->uuid) {
                     throw new AddressAlreadyExistsException();

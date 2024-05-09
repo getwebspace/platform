@@ -4,7 +4,6 @@ namespace App\Domain\Service\Catalog;
 
 use App\Domain\AbstractService;
 use App\Domain\Models\CatalogAttribute;
-use App\Domain\Repository\Catalog\AttributeRepository;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
@@ -22,7 +21,7 @@ class AttributeService extends AbstractService
      */
     public function create(array $data = []): CatalogAttribute
     {
-        $attribute = new CatalogAttribute;
+        $attribute = new CatalogAttribute();
         $attribute->fill($data);
 
         if (!$attribute->title) {
@@ -49,10 +48,8 @@ class AttributeService extends AbstractService
 
     /**
      * @throws AttributeNotFoundException
-     *
-     * @return CatalogAttribute|Collection
      */
-    public function read(array $data = []): Collection|CatalogAttribute
+    public function read(array $data = []): CatalogAttribute|Collection
     {
         $default = [
             'uuid' => null,
@@ -97,7 +94,6 @@ class AttributeService extends AbstractService
             default:
                 $query = CatalogAttribute::query();
                 /** @var Builder $query */
-
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
                         $query->whereIn($key, $value);

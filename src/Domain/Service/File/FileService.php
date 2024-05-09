@@ -6,15 +6,13 @@ use App\Domain\AbstractService;
 use App\Domain\Models\File;
 use App\Domain\Service\File\Exception\FileAlreadyExistsException;
 use App\Domain\Service\File\Exception\FileNotFoundException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
-use Illuminate\Database\Eloquent\Builder;
 
 class FileService extends AbstractService
 {
-
-
-    public function createFromPath(string $path, string $name_with_ext = null): ?File
+    public function createFromPath(string $path, ?string $name_with_ext = null): ?File
     {
         $saved = false;
 
@@ -107,7 +105,7 @@ class FileService extends AbstractService
      */
     public function create(array $data = []): File
     {
-        $file = new File;
+        $file = new File();
         $file->fill($data);
 
         if ($file->hash && File::firstWhere(['hash' => $file->hash]) !== null) {
@@ -185,7 +183,6 @@ class FileService extends AbstractService
             default:
                 $query = File::query();
                 /** @var Builder $query */
-
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
                         $query->whereIn($key, $value);

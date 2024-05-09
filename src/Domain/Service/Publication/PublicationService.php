@@ -4,7 +4,6 @@ namespace App\Domain\Service\Publication;
 
 use App\Domain\AbstractService;
 use App\Domain\Models\Publication;
-use App\Domain\Models\PublicationCategory;
 use App\Domain\Service\Publication\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Publication\Exception\MissingCategoryValueException;
 use App\Domain\Service\Publication\Exception\MissingTitleValueException;
@@ -16,8 +15,6 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class PublicationService extends AbstractService
 {
-
-
     /**
      * @throws TitleAlreadyExistsException
      * @throws MissingTitleValueException
@@ -25,7 +22,7 @@ class PublicationService extends AbstractService
      */
     public function create(array $data = []): Publication
     {
-        $publication = new Publication;
+        $publication = new Publication();
         $publication->fill($data);
 
         if (!$publication->title) {
@@ -105,7 +102,6 @@ class PublicationService extends AbstractService
             default:
                 $query = Publication::query();
                 /** @var Builder $query */
-
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
                         $query->whereIn($key, $value);

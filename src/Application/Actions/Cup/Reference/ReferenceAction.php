@@ -3,8 +3,8 @@
 namespace App\Application\Actions\Cup\Reference;
 
 use App\Domain\AbstractAction;
-use App\Domain\Service\Reference\ReferenceService;
 use App\Domain\Casts\Reference\Type as ReferenceType;
+use App\Domain\Service\Reference\ReferenceService;
 use Psr\Container\ContainerInterface;
 
 abstract class ReferenceAction extends AbstractAction

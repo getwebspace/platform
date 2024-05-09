@@ -7,7 +7,6 @@ use App\Domain\AbstractTask;
 use App\Domain\Models\CatalogProduct;
 use App\Domain\Models\Page;
 use App\Domain\Models\Publication;
-use Ramsey\Uuid\UuidInterface;
 
 class SearchIndexTask extends AbstractTask
 {

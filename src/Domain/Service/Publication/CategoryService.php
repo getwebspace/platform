@@ -4,20 +4,16 @@ namespace App\Domain\Service\Publication;
 
 use App\Domain\AbstractService;
 use App\Domain\Models\PublicationCategory;
-use App\Domain\Models\UserToken;
 use App\Domain\Service\Publication\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Publication\Exception\CategoryNotFoundException;
 use App\Domain\Service\Publication\Exception\MissingTitleValueException;
 use App\Domain\Service\Publication\Exception\TitleAlreadyExistsException;
-use App\Domain\Service\User\Exception\TokenNotFoundException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class CategoryService extends AbstractService
 {
-
-
     /**
      * @throws MissingTitleValueException
      * @throws TitleAlreadyExistsException
@@ -25,7 +21,7 @@ class CategoryService extends AbstractService
      */
     public function create(array $data = []): PublicationCategory
     {
-        $category = new PublicationCategory;
+        $category = new PublicationCategory();
         $category->fill($data);
 
         if (!$category->title) {
@@ -100,7 +96,6 @@ class CategoryService extends AbstractService
             default:
                 $query = PublicationCategory::query();
                 /** @var Builder $query */
-
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
                         $query->whereIn($key, $value);

@@ -3,9 +3,7 @@
 namespace App\Domain\Traits;
 
 use App\Domain\Models\File;
-use App\Domain\Models\FileRelated;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**

@@ -2,6 +2,7 @@
 
 namespace tests\Domain\Service\Catalog;
 
+use App\Domain\Casts\Reference\Type as ReferenceType;
 use App\Domain\Models\CatalogCategory;
 use App\Domain\Models\CatalogOrder;
 use App\Domain\Models\CatalogProduct;
@@ -11,7 +12,6 @@ use App\Domain\Service\Catalog\Exception\OrderNotFoundException;
 use App\Domain\Service\Catalog\OrderService;
 use App\Domain\Service\Catalog\ProductService;
 use App\Domain\Service\Reference\ReferenceService;
-use App\Domain\Casts\Reference\Type as ReferenceType;
 use Illuminate\Support\Collection;
 use tests\TestCase;
 

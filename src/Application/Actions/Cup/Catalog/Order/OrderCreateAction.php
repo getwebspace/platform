@@ -3,10 +3,10 @@
 namespace App\Application\Actions\Cup\Catalog\Order;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
+use App\Domain\Casts\Reference\Type as ReferenceType;
 use App\Domain\Service\Catalog\Exception\WrongEmailValueException;
 use App\Domain\Service\Catalog\Exception\WrongPhoneValueException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
-use App\Domain\Casts\Reference\Type as ReferenceType;
 
 class OrderCreateAction extends CatalogAction
 {

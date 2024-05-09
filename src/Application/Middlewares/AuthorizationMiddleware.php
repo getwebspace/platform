@@ -40,7 +40,7 @@ class AuthorizationMiddleware extends AbstractMiddleware
 
                     $request = $request->withAttribute('user', $user);
                 }
-            } catch (SignatureInvalidException|ExpiredException $e) {
+            } catch (ExpiredException|SignatureInvalidException $e) {
                 return (new Response())
                     ->withHeader('Location', '/auth/refresh-token?redirect=' . $request->getUri()->getPath())
                     ->withStatus(308);

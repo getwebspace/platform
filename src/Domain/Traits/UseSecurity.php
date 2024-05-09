@@ -9,7 +9,6 @@ use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Firebase\JWT\SignatureInvalidException;
-use Ramsey\Uuid\UuidInterface as Uuid;
 
 trait UseSecurity
 {
@@ -19,7 +18,7 @@ trait UseSecurity
 
     private const MAX_COUNT_ACTIVE_SESSIONS = 5;
 
-    private function getPrivateKey(): string|false
+    private function getPrivateKey(): false|string
     {
         static $key;
 
@@ -33,7 +32,7 @@ trait UseSecurity
         return $key;
     }
 
-    private function getPublicKey(): string|false
+    private function getPublicKey(): false|string
     {
         static $key;
 

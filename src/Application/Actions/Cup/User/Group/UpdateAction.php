@@ -35,7 +35,7 @@ class UpdateAction extends UserAction
                             default:
                                 return $this->respondWithRedirect('/cup/user/group/' . $userGroup->uuid . '/edit');
                         }
-                    } catch (MissingTitleValueException|WrongTitleValueException|TitleAlreadyExistsException $e) {
+                    } catch (MissingTitleValueException|TitleAlreadyExistsException|WrongTitleValueException $e) {
                         $this->addError('title', $e->getMessage());
                     }
                 }

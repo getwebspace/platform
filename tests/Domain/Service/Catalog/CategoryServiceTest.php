@@ -3,7 +3,6 @@
 namespace tests\Domain\Service\Catalog;
 
 use App\Domain\Models\CatalogCategory;
-use App\Domain\Repository\Catalog\CategoryRepository;
 use App\Domain\Service\Catalog\CategoryService;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\CategoryNotFoundException;

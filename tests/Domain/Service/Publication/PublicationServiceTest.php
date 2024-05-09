@@ -5,7 +5,6 @@ namespace tests\Domain\Service\Publication;
 use App\Domain\Models\Publication;
 use App\Domain\Models\PublicationCategory;
 use App\Domain\Models\User;
-use App\Domain\Repository\PublicationRepository;
 use App\Domain\Service\Publication\CategoryService as PublicationCategoryService;
 use App\Domain\Service\Publication\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Publication\Exception\MissingTitleValueException;

@@ -3,7 +3,6 @@
 namespace App\Application\Actions\Cup\Catalog\Order;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
-use Doctrine\DBAL\ParameterType;
 
 class OrderExportAction extends CatalogAction
 {

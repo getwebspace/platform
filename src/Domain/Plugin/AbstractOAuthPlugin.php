@@ -5,7 +5,8 @@ namespace App\Domain\Plugin;
 use App\Domain\AbstractPlugin;
 use App\Domain\Models\User;
 
-abstract class AbstractOAuthPlugin extends AbstractPlugin {
+abstract class AbstractOAuthPlugin extends AbstractPlugin
+{
     abstract public function getAuthUrl(): string;
 
     abstract public function getToken(array $data = []): array;

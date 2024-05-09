@@ -4,7 +4,6 @@ namespace tests\Domain\Service\Page;
 
 use App\Domain\Casts\Page\Type as PageType;
 use App\Domain\Models\Page;
-use App\Domain\Repository\PageRepository;
 use App\Domain\Service\Page\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Page\Exception\MissingTitleValueException;
 use App\Domain\Service\Page\Exception\PageNotFoundException;

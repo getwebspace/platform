@@ -6,7 +6,6 @@ use App\Application\Actions\Api\ActionApi;
 use App\Domain\AbstractException;
 use App\Domain\AbstractNotFoundException;
 use App\Domain\AbstractService;
-use App\Domain\Models\User;
 use App\Domain\Service\Catalog\AttributeService as CatalogAttributeService;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
@@ -19,10 +18,8 @@ use App\Domain\Service\Publication\CategoryService as PublicationCategoryService
 use App\Domain\Service\Publication\PublicationService;
 use App\Domain\Service\Reference\ReferenceService;
 use App\Domain\Service\Task\TaskService;
-use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\UserService;
-use Exception;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerExceptionInterface;
 
@@ -49,7 +46,7 @@ class EntityAction extends ActionApi
                     case 'GET':
                         try {
                             $result = $service->read($params);
-                        } catch (AbstractNotFoundException|Exception $e) {
+                        } catch (AbstractNotFoundException|\Exception $e) {
                             $status = 404;
                         }
 
@@ -93,7 +90,7 @@ class EntityAction extends ActionApi
                                 } else {
                                     $status = 409;
                                 }
-                            } catch (AbstractNotFoundException|Exception $e) {
+                            } catch (AbstractNotFoundException|\Exception $e) {
                                 $status = 404;
                             }
                         } else {
@@ -123,7 +120,7 @@ class EntityAction extends ActionApi
                                 } else {
                                     $status = 409;
                                 }
-                            } catch (AbstractNotFoundException|Exception $e) {
+                            } catch (AbstractNotFoundException|\Exception $e) {
                                 $status = 404;
                             }
                         } else {
@@ -135,7 +132,7 @@ class EntityAction extends ActionApi
             } else {
                 $status = 404;
             }
-        } catch (ContainerExceptionInterface|AbstractException $exception) {
+        } catch (AbstractException|ContainerExceptionInterface $exception) {
             $status = 503;
             $result = $exception->getTitle();
         }
@@ -189,7 +186,7 @@ class EntityAction extends ActionApi
             }
         }
 
-        return array_merge($default, $params,);
+        return array_merge($default, $params);
     }
 
     private function getParamsBody(): array

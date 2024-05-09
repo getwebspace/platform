@@ -3,7 +3,6 @@
 namespace tests\Domain\Service\Reference;
 
 use App\Domain\Models\Reference;
-use App\Domain\Repository\ReferenceRepository;
 use App\Domain\Service\Reference\Exception\MissingTitleValueException;
 use App\Domain\Service\Reference\Exception\MissingTypeValueException;
 use App\Domain\Service\Reference\Exception\ReferenceNotFoundException;

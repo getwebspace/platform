@@ -58,7 +58,7 @@ class Search
         $query_words = explode(' ', $query);
 
         if ($query_words && !$strong) {
-            $query_words = array_map(fn($word) => (mb_strlen($word) > 3 ? $word . '*' : $word), $query_words);
+            $query_words = array_map(fn ($word) => (mb_strlen($word) > 3 ? $word . '*' : $word), $query_words);
         }
 
         $query_words = static::getIndexedText($query_words);
@@ -67,7 +67,7 @@ class Search
         $results = [];
 
         // sort words
-        usort($query_words, fn($word) => (str_starts_with($word, '-') || str_starts_with($word, '+')) ? 1 : -1);
+        usort($query_words, fn ($word) => (str_starts_with($word, '-') || str_starts_with($word, '+')) ? 1 : -1);
 
         foreach ($index as $line) {
             $wordCount = 0;
@@ -101,7 +101,7 @@ class Search
                     }
                 }
 
-                if (preg_match("/\b$search\b/iu", $line)) {
+                if (preg_match("/\\b{$search}\\b/iu", $line)) {
                     ++$wordCount;
                     $wordCount = $wordCount * $mustNotFound;
                 }
@@ -109,7 +109,7 @@ class Search
 
             if ($wordCount >= $mustFound) {
                 foreach (static::permutations($query_words) as $permutation) {
-                    if (preg_match("/\b$permutation\b/iu", $line)) {
+                    if (preg_match("/\\b{$permutation}\\b/iu", $line)) {
                         ++$comboCount;
                     }
                 }
@@ -140,10 +140,10 @@ class Search
 
         return array_filter(
             array_map(
-                fn($words) => str_replace('*', '', implode(' ', $words)),
+                fn ($words) => str_replace('*', '', implode(' ', $words)),
                 array_values($results)
             ),
-            fn($word) => !!$word
+            fn ($word) => (bool) $word
         );
     }
 }

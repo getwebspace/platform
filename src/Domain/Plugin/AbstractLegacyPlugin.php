@@ -31,5 +31,5 @@ abstract class AbstractLegacyPlugin extends AbstractPlugin
     /**
      * The function will be executed AFTER processing the selected route
      */
-    abstract function after(Request $request, Response $response, string $routeName): Response;
+    abstract public function after(Request $request, Response $response, string $routeName): Response;
 }

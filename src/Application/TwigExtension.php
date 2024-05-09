@@ -4,6 +4,7 @@ namespace App\Application;
 
 use App\Application\Twig\LocaleParser;
 use App\Domain\AbstractExtension;
+use App\Domain\Casts\Reference\Type as ReferenceType;
 use App\Domain\Service\Catalog\AttributeService as CatalogAttributeService;
 use App\Domain\Service\Catalog\CategoryService as CatalogCategoryService;
 use App\Domain\Service\Catalog\OrderService as CatalogOrderService;
@@ -16,7 +17,6 @@ use App\Domain\Service\Publication\PublicationService;
 use App\Domain\Service\Reference\ReferenceService;
 use App\Domain\Service\User\GroupService as UserGroupService;
 use App\Domain\Service\User\UserService;
-use App\Domain\Casts\Reference\Type as ReferenceType;
 use Illuminate\Support\Collection;
 use Psr\Container\ContainerInterface;
 use Ramsey\Uuid\UuidInterface as Uuid;
@@ -29,7 +29,7 @@ class TwigExtension extends AbstractExtension
 {
     protected RouteCollectorInterface $routeCollector;
 
-    public function __construct(ContainerInterface $container = null)
+    public function __construct(?ContainerInterface $container = null)
     {
         parent::__construct($container);
 
@@ -151,7 +151,7 @@ class TwigExtension extends AbstractExtension
     protected function currentHost()
     {
         // from nginx
-        if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
+        if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'], $_SERVER['HTTP_X_FORWARDED_HOST'])) {
             return $_SERVER['HTTP_X_FORWARDED_PROTO'] . '://' . $_SERVER['HTTP_X_FORWARDED_HOST'];
         }
         // from params
@@ -159,7 +159,7 @@ class TwigExtension extends AbstractExtension
             return $host;
         }
         // from request
-        if (isset($_SERVER['REQUEST_SCHEME']) && isset($_SERVER['HTTP_HOST'])) {
+        if (isset($_SERVER['REQUEST_SCHEME'], $_SERVER['HTTP_HOST'])) {
             return $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['HTTP_HOST'];
         }
 
@@ -276,11 +276,7 @@ class TwigExtension extends AbstractExtension
     }
 
     /**
-     * @param $subject
-     * @param $pattern
-     * @param $replacement
-     *
-     * @return array|string|string[]|null
+     * @return null|array|string|string[]
      */
     public function preg_replace($subject, $pattern, $replacement)
     {
@@ -304,12 +300,12 @@ class TwigExtension extends AbstractExtension
      *
      * @throws \Exception
      */
-    public function df(mixed $obj = 'now', string $format = null): string
+    public function df(mixed $obj = 'now', ?string $format = null): string
     {
         return datetime($obj)->format($format ?: $this->parameter('common_date_format', 'j-m-Y, H:i'));
     }
 
-    public function dfm(string $format = null): string
+    public function dfm(?string $format = null): string
     {
         return convertPhpToJsMomentFormat($format ?: $this->parameter('common_date_format', 'j-m-Y, H:i'));
     }
@@ -344,7 +340,7 @@ class TwigExtension extends AbstractExtension
         return $page;
     }
 
-    public function current_query(string $key = null, mixed $value = null): string
+    public function current_query(?string $key = null, mixed $value = null): string
     {
         $url = $this->parseUrl();
         $query = [];
@@ -471,7 +467,7 @@ class TwigExtension extends AbstractExtension
     // reference functions
 
     // fetch reference by type
-    public function reference(string $type = null, bool $pluck = false)
+    public function reference(?string $type = null, bool $pluck = false)
     {
         if (in_array($type, ReferenceType::LIST, true)) {
             $referenceService = $this->container->get(ReferenceService::class);

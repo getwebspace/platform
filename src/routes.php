@@ -444,10 +444,10 @@ return function (App $app, Container $container): void {
 
                             // catalog
                             $proxy
-                                ->group('', function (Group $proxy) use ($container): void {
+                                ->group('', function (Group $proxy): void {
                                     // view categories and products
                                     $proxy
-                                        ->get("/catalog[/{args:.*}]", \App\Application\Actions\Common\Catalog\ListAction::class)
+                                        ->get('/catalog[/{args:.*}]', \App\Application\Actions\Common\Catalog\ListAction::class)
                                         ->setName('common:catalog:list')
                                         ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class);
                                 });

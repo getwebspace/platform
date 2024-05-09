@@ -2,7 +2,6 @@
 
 namespace App\Domain\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,15 +14,17 @@ class Parameter extends Model
     use HasFactory;
 
     protected $table = 'params';
+
     protected $primaryKey = 'name';
+
     protected $keyType = 'string';
 
     public $incrementing = false;
 
-    const CREATED_AT = null;
-    const UPDATED_AT = null;
+    public const CREATED_AT = null;
+    public const UPDATED_AT = null;
 
-    protected $fillable  = [
+    protected $fillable = [
         'name',
         'value',
     ];

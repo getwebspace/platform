@@ -2,18 +2,12 @@
 
 namespace App\Domain\Models;
 
-use App\Domain\Casts\AddressUrl;
 use App\Domain\Casts\Boolean;
-use App\Domain\Casts\Email;
-use App\Domain\Casts\Reference\Type as ReferenceType;
 use App\Domain\Casts\Json;
-use App\Domain\Traits\HasFiles;
-use DateTime;
+use App\Domain\Casts\Reference\Type as ReferenceType;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property string $uuid
@@ -29,10 +23,11 @@ class Reference extends Model
     use HasUuids;
 
     protected $table = 'reference';
+
     protected $primaryKey = 'uuid';
 
-    const CREATED_AT = null;
-    const UPDATED_AT = null;
+    public const CREATED_AT = null;
+    public const UPDATED_AT = null;
 
     protected $fillable = [
         'type',
@@ -60,7 +55,7 @@ class Reference extends Model
         'status' => true,
     ];
 
-    public function value(string $key = null, mixed $default = null): mixed
+    public function value(?string $key = null, mixed $default = null): mixed
     {
         if ($key) {
             return $this->value[$key] ?? $default;

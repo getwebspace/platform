@@ -4,8 +4,6 @@ namespace App\Domain\Models;
 
 use App\Domain\Casts\Email;
 use App\Domain\Casts\GuestBook\Status as GuestBookStatus;
-use App\Domain\Traits\HasFiles;
-use DateTime;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -17,7 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $message
  * @property string $response
  * @property string $status
- * @property DateTime $date
+ * @property \DateTime $date
  */
 class GuestBook extends Model
 {
@@ -25,10 +23,11 @@ class GuestBook extends Model
     use HasUuids;
 
     protected $table = 'guestbook';
+
     protected $primaryKey = 'uuid';
 
-    const CREATED_AT = 'date';
-    const UPDATED_AT = null;
+    public const CREATED_AT = 'date';
+    public const UPDATED_AT = null;
 
     protected $fillable = [
         'name',

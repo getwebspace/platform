@@ -71,7 +71,7 @@ abstract class AbstractPlugin
         $this->renderer = $container->get('view');
     }
 
-    public function getCredentials(string $field = null): array|string|null
+    public function getCredentials(?string $field = null): null|array|string
     {
         $credentials = [
             'title' => static::TITLE,
@@ -104,7 +104,7 @@ abstract class AbstractPlugin
     /**
      * Subscribe a handler to a channel
      */
-    public function subscribe(string|array $channels, callable|array $handler): self
+    public function subscribe(array|string $channels, array|callable $handler): self
     {
         $this->container->get(\App\Application\PubSub::class)->subscribe($channels, $handler);
 

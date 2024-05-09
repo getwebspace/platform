@@ -3,9 +3,7 @@
 namespace App\Domain\Service\User;
 
 use App\Domain\AbstractService;
-use App\Domain\Models\Page;
 use App\Domain\Models\UserGroup;
-use App\Domain\Repository\User\GroupRepository as UserGroupRepository;
 use App\Domain\Service\User\Exception\MissingTitleValueException;
 use App\Domain\Service\User\Exception\TitleAlreadyExistsException;
 use App\Domain\Service\User\Exception\UserGroupNotFoundException;
@@ -15,15 +13,13 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class GroupService extends AbstractService
 {
-
-
     /**
      * @throws MissingTitleValueException
      * @throws TitleAlreadyExistsException
      */
     public function create(array $data = []): UserGroup
     {
-        $userGroup = new UserGroup;
+        $userGroup = new UserGroup();
         $userGroup->fill($data);
 
         if (!$userGroup->title) {
@@ -72,7 +68,6 @@ class GroupService extends AbstractService
             default:
                 $query = UserGroup::query();
                 /** @var Builder $query */
-
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
                         $query->whereIn($key, $value);

@@ -4,7 +4,6 @@ namespace Domain\Service\User;
 
 use App\Domain\Models\User;
 use App\Domain\Models\UserToken;
-use App\Domain\Repository\User\TokenRepository as UserTokenRepository;
 use App\Domain\Service\User\Exception\TokenNotFoundException;
 use App\Domain\Service\User\TokenService as UserTokenService;
 use App\Domain\Service\User\UserService;

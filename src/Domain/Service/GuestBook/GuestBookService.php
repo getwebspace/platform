@@ -4,8 +4,6 @@ namespace App\Domain\Service\GuestBook;
 
 use App\Domain\AbstractService;
 use App\Domain\Models\GuestBook;
-use App\Domain\Models\Page;
-use App\Domain\Repository\GuestBookRepository;
 use App\Domain\Service\GuestBook\Exception\EntryNotFoundException;
 use App\Domain\Service\GuestBook\Exception\MissingEmailValueException;
 use App\Domain\Service\GuestBook\Exception\MissingMessageValueException;
@@ -17,8 +15,6 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class GuestBookService extends AbstractService
 {
-
-
     /**
      * @throws MissingNameValueException
      * @throws MissingEmailValueException
@@ -27,7 +23,7 @@ class GuestBookService extends AbstractService
      */
     public function create(array $data = []): GuestBook
     {
-        $entry = new GuestBook;
+        $entry = new GuestBook();
         $entry->fill($data);
 
         if (!$entry->name) {
@@ -71,7 +67,7 @@ class GuestBookService extends AbstractService
             if (is_array($data['status'])) {
                 $statuses = array_intersect($data['status'], \App\Domain\Casts\GuestBook\Status::LIST);
             } else {
-                $statuses = in_array($data['status'], \App\Domain\Casts\GuestBook\Status::LIST) ? [$data['status']] : [];
+                $statuses = in_array($data['status'], \App\Domain\Casts\GuestBook\Status::LIST, true) ? [$data['status']] : [];
             }
 
             if ($statuses) {
@@ -89,7 +85,6 @@ class GuestBookService extends AbstractService
             default:
                 $query = GuestBook::query();
                 /** @var Builder $query */
-
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
                         $query->whereIn($key, $value);

@@ -3,12 +3,12 @@
 namespace App\Application\Actions\Cup\Catalog\Product;
 
 use App\Application\Actions\Cup\Catalog\CatalogAction;
+use App\Domain\Casts\Reference\Type as ReferenceType;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\AttributeNotFoundException;
 use App\Domain\Service\Catalog\Exception\MissingCategoryValueException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
 use App\Domain\Service\Catalog\Exception\WrongTitleValueException;
-use App\Domain\Casts\Reference\Type as ReferenceType;
 
 class ProductCreateAction extends CatalogAction
 {

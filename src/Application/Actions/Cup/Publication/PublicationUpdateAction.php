@@ -43,7 +43,7 @@ class PublicationUpdateAction extends PublicationAction
                             default:
                                 return $this->response->withAddedHeader('Location', '/cup/publication/' . $publication->uuid . '/edit')->withStatus(301);
                         }
-                    } catch (MissingTitleValueException|WrongTitleValueException|TitleAlreadyExistsException $e) {
+                    } catch (MissingTitleValueException|TitleAlreadyExistsException|WrongTitleValueException $e) {
                         $this->addError('title', $e->getMessage());
                     } catch (MissingCategoryValueException $e) {
                         $this->addError('category', $e->getMessage());

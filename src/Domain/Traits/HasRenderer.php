@@ -53,7 +53,7 @@ trait HasRenderer
     {
         try {
             return $this->renderer->fetchFromString($template, $data);
-        } catch (\Twig\Error\SyntaxError|\Twig\Error\LoaderError $exception) {
+        } catch (\Twig\Error\LoaderError|\Twig\Error\SyntaxError $exception) {
             throw new \RuntimeException($exception->getMessage());
         }
     }

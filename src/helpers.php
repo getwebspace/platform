@@ -2,15 +2,15 @@
 
 use App\Application\i18n;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Database\Eloquent\Model as EloquentModel;
 
 if (!function_exists('array_add')) {
     /**
      * Add an element to an array using "dot" notation if it doesn't exist.
      */
-    function array_add(array $array, string|int|float $key, mixed $value): array
+    function array_add(array $array, float|int|string $key, mixed $value): array
     {
         return Arr::add($array, $key, $value);
     }
@@ -50,7 +50,7 @@ if (!function_exists('array_except')) {
     /**
      * Get all of the given array except for a specified array of keys.
      */
-    function array_except(array $array, array|string|int|float $keys): array
+    function array_except(array $array, array|float|int|string $keys): array
     {
         return Arr::except($array, $keys);
     }
@@ -60,7 +60,7 @@ if (!function_exists('array_first')) {
     /**
      * Return the first element in an array passing a given truth test.
      */
-    function array_first(array $array, callable $callback = null, mixed $default = null): mixed
+    function array_first(array $array, ?callable $callback = null, mixed $default = null): mixed
     {
         return Arr::first($array, $callback, $default);
     }
@@ -80,7 +80,7 @@ if (!function_exists('array_forget')) {
     /**
      * Remove one or many array items from a given array using "dot" notation.
      */
-    function array_forget(array &$array, array|string|int|float $keys): void
+    function array_forget(array &$array, array|float|int|string $keys): void
     {
         Arr::forget($array, $keys);
     }
@@ -89,8 +89,10 @@ if (!function_exists('array_forget')) {
 if (!function_exists('array_get')) {
     /**
      * Get an item from an array using "dot" notation.
+     *
+     * @param mixed $array
      */
-    function array_get($array, string|int|null $key, mixed $default = null): mixed
+    function array_get($array, null|int|string $key, mixed $default = null): mixed
     {
         return Arr::get($array, $key, $default);
     }
@@ -100,7 +102,7 @@ if (!function_exists('array_has')) {
     /**
      * Check if an item or items exist in an array using "dot" notation.
      */
-    function array_has(\ArrayAccess|array $array, string|array $keys): bool
+    function array_has(array|\ArrayAccess $array, array|string $keys): bool
     {
         return Arr::has($array, $keys);
     }
@@ -110,7 +112,7 @@ if (!function_exists('array_last')) {
     /**
      * Return the last element in an array passing a given truth test.
      */
-    function array_last(array $array, callable $callback = null, mixed $default = null): mixed
+    function array_last(array $array, ?callable $callback = null, mixed $default = null): mixed
     {
         return Arr::last($array, $callback, $default);
     }
@@ -130,7 +132,7 @@ if (!function_exists('array_pluck')) {
     /**
      * Pluck an array of values from an array.
      */
-    function array_pluck(array $array, string|array|int|null $value, string|array|null $key = null): array
+    function array_pluck(array $array, null|array|int|string $value, null|array|string $key = null): array
     {
         return Arr::pluck($array, $value, $key);
     }
@@ -171,7 +173,7 @@ if (!function_exists('array_set')) {
      * Set an array item to a given value using "dot" notation.
      * If no key is given to the method, the entire array will be replaced.
      */
-    function array_set(array &$array, string|int|null $key, mixed $value): array
+    function array_set(array &$array, null|int|string $key, mixed $value): array
     {
         return Arr::set($array, $key, $value);
     }
@@ -181,7 +183,7 @@ if (!function_exists('array_sort')) {
     /**
      * Sort the array by the given callback or attribute name.
      */
-    function array_sort(array $array, callable|array|string|null $callback = null): array
+    function array_sort(array $array, null|array|callable|string $callback = null): array
     {
         return Arr::sort($array, $callback);
     }
@@ -191,7 +193,7 @@ if (!function_exists('array_sort_desc')) {
     /**
      * Sort the array by the given callback or attribute name.
      */
-    function array_sort_desc(array $array, callable|array|string|null $callback = null): array
+    function array_sort_desc(array $array, null|array|callable|string $callback = null): array
     {
         return Arr::sortDesc($array, $callback);
     }
@@ -295,7 +297,7 @@ if (!function_exists('__')) {
     /**
      * Locale helper
      */
-    function __(array|string|null|Collection $singular, ?string $plural = null, ?int $count = null): array|string|Collection
+    function __(null|array|Collection|string $singular, ?string $plural = null, ?int $count = null): array|Collection|string
     {
         return $singular ? i18n::getLocale($singular, $plural, $count) : '';
     }
@@ -348,7 +350,7 @@ if (!function_exists('array_serialize')) {
 }
 
 if (!function_exists(('datetime'))) {
-    function datetime(int|string|DateTime|Carbon $value = null): Carbon
+    function datetime(null|Carbon|DateTime|int|string $value = null): Carbon
     {
         return match (true) {
             is_string($value), is_numeric($value) => new Carbon($value),

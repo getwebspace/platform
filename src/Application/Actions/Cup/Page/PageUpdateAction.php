@@ -40,7 +40,7 @@ class PageUpdateAction extends PageAction
                             default:
                                 return $this->respondWithRedirect('/cup/page/' . $page->uuid . '/edit');
                         }
-                    } catch (MissingTitleValueException|WrongTitleValueException|TitleAlreadyExistsException $e) {
+                    } catch (MissingTitleValueException|TitleAlreadyExistsException|WrongTitleValueException $e) {
                         $this->addError('title', $e->getMessage());
                     } catch (AddressAlreadyExistsException $e) {
                         $this->addError('address', $e->getMessage());

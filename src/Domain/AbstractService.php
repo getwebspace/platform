@@ -3,10 +3,8 @@
 namespace App\Domain;
 
 use App\Domain\Traits\HasParameters;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Psr\Container\ContainerInterface;
 use Illuminate\Database\Connection as DataBase;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter as Cache;
 
 abstract class AbstractService

@@ -3,9 +3,7 @@
 namespace App\Domain\Service\Form;
 
 use App\Domain\AbstractService;
-use App\Domain\Models\Form;
 use App\Domain\Models\FormData;
-use App\Domain\Repository\Form\DataRepository as FormDataRepository;
 use App\Domain\Service\Form\Exception\FormDataNotFoundException;
 use App\Domain\Service\Form\Exception\MissingMessageValueException;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,14 +12,12 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class DataService extends AbstractService
 {
-
-
     /**
      * @throws MissingMessageValueException
      */
     public function create(array $data = []): FormData
     {
-        $formData = new FormData;
+        $formData = new FormData();
         $formData->fill($data);
 
         if (!$formData->message && !$formData->data) {
@@ -65,7 +61,6 @@ class DataService extends AbstractService
             default:
                 $query = FormData::query();
                 /** @var Builder $query */
-
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
                         $query->whereIn($key, $value);

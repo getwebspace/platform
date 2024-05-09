@@ -164,7 +164,7 @@ class i18n
         return $data ? key($data) : $default;
     }
 
-    public static function getLocale(array|string|Collection $singular, ?string $plural = null, ?int $count = null)
+    public static function getLocale(array|Collection|string $singular, ?string $plural = null, ?int $count = null)
     {
         $string = $plural && $count > 1 ? $plural : $singular;
 

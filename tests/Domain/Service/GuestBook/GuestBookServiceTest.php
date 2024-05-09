@@ -3,7 +3,6 @@
 namespace tests\Domain\Service\GuestBook;
 
 use App\Domain\Models\GuestBook;
-use App\Domain\Repository\GuestBookRepository;
 use App\Domain\Service\GuestBook\Exception\EntryNotFoundException;
 use App\Domain\Service\GuestBook\Exception\MissingEmailValueException;
 use App\Domain\Service\GuestBook\Exception\MissingMessageValueException;

@@ -58,11 +58,11 @@ class UserUpdateAction extends UserAction
                             default:
                                 return $this->respondWithRedirect('/cup/user/' . $user->uuid . '/edit');
                         }
-                    } catch (WrongUsernameValueException|UsernameAlreadyExistsException $e) {
+                    } catch (UsernameAlreadyExistsException|WrongUsernameValueException $e) {
                         $this->addError('username', $e->getMessage());
-                    } catch (WrongEmailValueException|EmailAlreadyExistsException $e) {
+                    } catch (EmailAlreadyExistsException|WrongEmailValueException $e) {
                         $this->addError('email', $e->getMessage());
-                    } catch (WrongPhoneValueException|PhoneAlreadyExistsException $e) {
+                    } catch (PhoneAlreadyExistsException|WrongPhoneValueException $e) {
                         $this->addError('phone', $e->getMessage());
                     }
                 }

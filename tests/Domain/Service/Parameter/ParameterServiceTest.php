@@ -3,7 +3,6 @@
 namespace tests\Domain\Service\Parameter;
 
 use App\Domain\Models\Parameter;
-use App\Domain\Repository\ParameterRepository;
 use App\Domain\Service\Parameter\Exception\ParameterAlreadyExistsException;
 use App\Domain\Service\Parameter\Exception\ParameterNotFoundException;
 use App\Domain\Service\Parameter\ParameterService;

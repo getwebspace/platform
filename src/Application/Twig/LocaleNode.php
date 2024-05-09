@@ -14,7 +14,7 @@ use Twig\Node\SetNode;
 
 class LocaleNode extends Node
 {
-    public function __construct(Node $body, Node $plural = null, AbstractExpression $count = null, Node $notes = null, $lineno = 0, $tag = null)
+    public function __construct(Node $body, ?Node $plural = null, ?AbstractExpression $count = null, ?Node $notes = null, $lineno = 0, $tag = null)
     {
         $nodes = ['body' => $body];
 

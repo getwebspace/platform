@@ -2,14 +2,9 @@
 
 namespace App\Domain\Models;
 
-use App\Domain\Casts\AddressUrl;
-use App\Domain\Casts\Boolean;
-use App\Domain\Casts\Email;
-use App\Domain\Casts\GuestBook\Status as GuestBookStatus;
 use App\Domain\Casts\Json;
 use App\Domain\Casts\Uuid;
 use App\Domain\Traits\HasFiles;
-use DateTime;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $form_uuid
  * @property array $data
  * @property string $message
- * @property DateTime $date
+ * @property \DateTime $date
  * @property Form $form
  */
 class FormData extends Model
@@ -30,10 +25,11 @@ class FormData extends Model
     use HasFiles;
 
     protected $table = 'form_data';
+
     protected $primaryKey = 'uuid';
 
-    const CREATED_AT = 'date';
-    const UPDATED_AT = 'date';
+    public const CREATED_AT = 'date';
+    public const UPDATED_AT = 'date';
 
     protected $fillable = [
         'form_uuid',

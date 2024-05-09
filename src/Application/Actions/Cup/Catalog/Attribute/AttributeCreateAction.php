@@ -30,7 +30,7 @@ class AttributeCreateAction extends CatalogAction
                     default:
                         return $this->respondWithRedirect('/cup/catalog/attribute/' . $attribute->uuid . '/edit');
                 }
-            } catch (MissingTitleValueException|WrongTitleValueException|TitleAlreadyExistsException $e) {
+            } catch (MissingTitleValueException|TitleAlreadyExistsException|WrongTitleValueException $e) {
                 $this->addError('title', $e->getMessage());
             }
         }

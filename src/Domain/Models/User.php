@@ -13,8 +13,6 @@ use App\Domain\Casts\User\Status as UserStatus;
 use App\Domain\Casts\Uuid;
 use App\Domain\Traits\HasFiles;
 use App\Domain\Traits\UseSecurity;
-use DateTime;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -29,7 +27,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $firstname
  * @property string $lastname
  * @property string $patronymic
- * @property DateTime $birthdate
+ * @property \DateTime $birthdate
  * @property string $gender
  * @property string $country
  * @property string $city
@@ -40,8 +38,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property array $messenger
  * @property string $website
  * @property string $source
- * @property DateTime $register
- * @property DateTime $change
+ * @property \DateTime $register
+ * @property \DateTime $change
  * @property string $language
  * @property string $additional
  * @property string $group_uuid
@@ -62,10 +60,11 @@ class User extends Model
     use UseSecurity;
 
     protected $table = 'user';
+
     protected $primaryKey = 'uuid';
 
-    const CREATED_AT = 'register';
-    const UPDATED_AT = 'change';
+    public const CREATED_AT = 'register';
+    public const UPDATED_AT = 'change';
 
     protected $fillable = [
         'email',
@@ -233,7 +232,7 @@ class User extends Model
 
                 $path = $file->public_path('small');
             } else {
-                $path = "https://ui-avatars.com/api/?name={$this->name('name')}&size=$size?background=$background&color=$color";
+                $path = "https://ui-avatars.com/api/?name={$this->name('name')}&size={$size}?background={$background}&color={$color}";
             }
         }
 

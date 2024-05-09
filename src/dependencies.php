@@ -43,7 +43,7 @@ return function (ContainerBuilder $containerBuilder): void {
             $capsule->bootEloquent();
 
             return $capsule->getConnection();
-        }
+        },
     ]);
 
     // simfony cache
@@ -53,7 +53,7 @@ return function (ContainerBuilder $containerBuilder): void {
             $cache->setLogger($c->get(\Psr\Log\LoggerInterface::class));
 
             return $cache;
-        }
+        },
     ]);
 
     // plugins
@@ -73,7 +73,7 @@ return function (ContainerBuilder $containerBuilder): void {
                 /**
                  * Register plugin
                  */
-                final public function register(string|\App\Domain\AbstractPlugin $plugin): bool
+                final public function register(\App\Domain\AbstractPlugin|string $plugin): bool
                 {
                     if (is_object($plugin)) {
                         $class_name = get_class($plugin);

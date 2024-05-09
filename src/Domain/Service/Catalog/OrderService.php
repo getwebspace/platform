@@ -5,13 +5,7 @@ namespace App\Domain\Service\Catalog;
 use App\Domain\AbstractService;
 use App\Domain\Models\CatalogOrder;
 use App\Domain\Models\CatalogProduct;
-use App\Domain\Models\User;
-use App\Domain\Models\CatalogCategory;
-use App\Domain\Repository\Catalog\OrderRepository;
 use App\Domain\Service\Catalog\Exception\OrderNotFoundException;
-use App\Domain\Service\Catalog\Exception\WrongEmailValueException;
-use App\Domain\Service\Catalog\Exception\WrongPhoneValueException;
-use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
@@ -112,7 +106,7 @@ class OrderService extends AbstractService
     /**
      * @throws OrderNotFoundException
      *
-     * @return Collection|CatalogOrder
+     * @return CatalogOrder|Collection
      */
     public function read(array $data = [])
     {
@@ -171,7 +165,6 @@ class OrderService extends AbstractService
             default:
                 $query = CatalogOrder::query();
                 /** @var Builder $query */
-
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
                         $query->whereIn($key, $value);

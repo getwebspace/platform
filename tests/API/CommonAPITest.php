@@ -2,7 +2,6 @@
 
 namespace tests\API;
 
-use App\Domain\Models\Parameter;
 use App\Domain\Service\Parameter\ParameterService;
 use tests\TestCase;
 

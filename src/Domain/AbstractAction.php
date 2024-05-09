@@ -2,12 +2,12 @@
 
 namespace App\Domain;
 
-use App\Domain\Models\File;
 use App\Domain\Exceptions\HttpBadRequestException;
 use App\Domain\Exceptions\HttpForbiddenException;
 use App\Domain\Exceptions\HttpMethodNotAllowedException;
 use App\Domain\Exceptions\HttpNotFoundException;
 use App\Domain\Exceptions\HttpNotImplementedException;
+use App\Domain\Models\File;
 use App\Domain\Service\File\FileService;
 use App\Domain\Traits\HasFiles;
 use App\Domain\Traits\HasParameters;
@@ -266,7 +266,6 @@ abstract class AbstractAction
                         ];
                     }
                 }
-
             }
 
             if ($sync) {

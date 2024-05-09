@@ -2,11 +2,7 @@
 
 namespace App\Domain\Models;
 
-use App\Domain\Casts\Boolean;
 use App\Domain\Casts\Json;
-use App\Domain\Casts\User\Company;
-use App\Domain\Casts\User\Legal;
-use App\Domain\Casts\User\Messenger;
 use App\Domain\Traits\HasFiles;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -27,10 +23,11 @@ class UserGroup extends Model
     use HasFiles;
 
     protected $table = 'user_group';
+
     protected $primaryKey = 'uuid';
 
-    const CREATED_AT = null;
-    const UPDATED_AT = null;
+    public const CREATED_AT = null;
+    public const UPDATED_AT = null;
 
     protected $fillable = [
         'title',
@@ -43,7 +40,7 @@ class UserGroup extends Model
     protected $casts = [
         'title' => 'string',
         'description' => 'string',
-        'access' => Json::class
+        'access' => Json::class,
     ];
 
     protected $attributes = [

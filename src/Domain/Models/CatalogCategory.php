@@ -4,22 +4,17 @@ namespace App\Domain\Models;
 
 use App\Domain\Casts\AddressUrl;
 use App\Domain\Casts\Boolean;
-use App\Domain\Casts\Email;
 use App\Domain\Casts\Catalog\Status as CatalogStatus;
 use App\Domain\Casts\Json;
 use App\Domain\Casts\Meta;
 use App\Domain\Casts\Sort;
 use App\Domain\Casts\Uuid;
-use App\Domain\References\Date;
 use App\Domain\Traits\HasFiles;
-use DateTime;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 
@@ -53,10 +48,11 @@ class CatalogCategory extends Model
     use HasFiles;
 
     protected $table = 'catalog_category';
+
     protected $primaryKey = 'uuid';
 
-    const CREATED_AT = null;
-    const UPDATED_AT = null;
+    public const CREATED_AT = null;
+    public const UPDATED_AT = null;
 
     protected $fillable = [
         'title',
@@ -119,7 +115,7 @@ class CatalogCategory extends Model
 
     public function parent(): HasOne
     {
-        return $this->hasOne(CatalogCategory::class, 'uuid', 'parent_uuid');
+        return $this->hasOne(self::class, 'uuid', 'parent_uuid');
     }
 
     public function parents(): Collection

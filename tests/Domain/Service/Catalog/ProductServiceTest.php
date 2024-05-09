@@ -4,7 +4,6 @@ namespace tests\Domain\Service\Catalog;
 
 use App\Domain\Models\CatalogCategory;
 use App\Domain\Models\CatalogProduct;
-use App\Domain\Repository\Catalog\ProductRepository;
 use App\Domain\Service\Catalog\CategoryService;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\MissingTitleValueException;
@@ -288,7 +287,7 @@ class ProductServiceTest extends TestCase
         $this->assertEquals($data['manufacturer'], $product->manufacturer);
         $this->assertEquals($data['tags'], $product->tags);
         $this->assertEquals($data['order'], $product->order);
-//      $this->assertEquals($data['date'], $product->date);
+        //      $this->assertEquals($data['date'], $product->date);
         $this->assertEquals($data['meta'], $product->meta);
         $this->assertEquals($data['external_id'], $product->external_id);
         $this->assertEquals($data['export'], $product->export);

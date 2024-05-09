@@ -16,7 +16,7 @@ class DataListAction extends FormAction
                     'form_uuid' => $form->uuid,
                     'order' => [
                         'date' => 'desc',
-                    ]
+                    ],
                 ]);
 
                 return $this->respondWithTemplate('cup/form/view/list.twig', [

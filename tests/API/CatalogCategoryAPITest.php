@@ -54,7 +54,7 @@ class CatalogCategoryAPITest extends TestCase
             'form_params' => $data,
         ]);
         $this->assertEquals(201, $response->getStatusCode());
-        $json = json_decode((string)$response->getBody(), true);
+        $json = json_decode((string) $response->getBody(), true);
 
         // read
         $response = $this->createRequest()->get('/api/v1/catalog/category', [
@@ -64,7 +64,7 @@ class CatalogCategoryAPITest extends TestCase
             ],
         ]);
         $this->assertEquals(200, $response->getStatusCode());
-        $json = json_decode((string)$response->getBody(), true);
+        $json = json_decode((string) $response->getBody(), true);
 
         // check
         $this->assertEquals($data['title'], $json['data']['title']);
@@ -87,7 +87,7 @@ class CatalogCategoryAPITest extends TestCase
             'form_params' => $data,
         ]);
         $this->assertEquals(201, $response->getStatusCode());
-        $json = json_decode((string)$response->getBody(), true);
+        $json = json_decode((string) $response->getBody(), true);
 
         // update
         $data = [
@@ -114,7 +114,7 @@ class CatalogCategoryAPITest extends TestCase
             ],
         ]);
         $this->assertEquals(200, $response->getStatusCode());
-        $json = json_decode((string)$response->getBody(), true);
+        $json = json_decode((string) $response->getBody(), true);
 
         // check
         $this->assertEquals($data['title'], $json['data']['title']);
@@ -137,7 +137,7 @@ class CatalogCategoryAPITest extends TestCase
             'form_params' => $data,
         ]);
         $this->assertEquals(201, $response->getStatusCode());
-        $json = json_decode((string)$response->getBody(), true);
+        $json = json_decode((string) $response->getBody(), true);
 
         // delete
         $response = $this->createRequest()->delete('/api/v1/catalog/category', [

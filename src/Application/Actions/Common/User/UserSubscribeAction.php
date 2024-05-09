@@ -39,7 +39,7 @@ class UserSubscribeAction extends UserAction
 
                     break;
             }
-        } catch (WrongEmailValueException|EmailAlreadyExistsException|UserNotFoundException $e) {
+        } catch (EmailAlreadyExistsException|UserNotFoundException|WrongEmailValueException $e) {
             $output['status'] = 304;
             $output['description'] = $e->getDescription();
         }

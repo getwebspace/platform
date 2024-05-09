@@ -4,20 +4,16 @@ namespace App\Domain\Service\Form;
 
 use App\Domain\AbstractService;
 use App\Domain\Models\Form;
-use App\Domain\Models\Page;
 use App\Domain\Service\Form\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Form\Exception\FormNotFoundException;
 use App\Domain\Service\Form\Exception\MissingTitleValueException;
 use App\Domain\Service\Form\Exception\TitleAlreadyExistsException;
-use App\Domain\Service\Page\Exception\PageNotFoundException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class FormService extends AbstractService
 {
-
-
     /**
      * @throws TitleAlreadyExistsException
      * @throws MissingTitleValueException
@@ -25,7 +21,7 @@ class FormService extends AbstractService
      */
     public function create(array $data = []): Form
     {
-        $form = new Form;
+        $form = new Form();
         $form->fill($data);
 
         if (!$form->title) {
@@ -91,7 +87,6 @@ class FormService extends AbstractService
             default:
                 $query = Form::query();
                 /** @var Builder $query */
-
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
                         $query->whereIn($key, $value);

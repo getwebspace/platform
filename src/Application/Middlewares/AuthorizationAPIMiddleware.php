@@ -104,7 +104,7 @@ class AuthorizationAPIMiddleware extends AbstractMiddleware
                         // nothing
                     }
                 }
-            } catch (SignatureInvalidException|ExpiredException $e) {
+            } catch (ExpiredException|SignatureInvalidException $e) {
                 // nothing
             }
         }

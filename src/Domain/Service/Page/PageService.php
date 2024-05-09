@@ -8,14 +8,13 @@ use App\Domain\Service\Page\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Page\Exception\MissingTitleValueException;
 use App\Domain\Service\Page\Exception\PageNotFoundException;
 use App\Domain\Service\Page\Exception\TitleAlreadyExistsException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
-use Illuminate\Database\Eloquent\Builder;
 
 class PageService extends AbstractService
 {
-    protected function init(): void
-    {}
+    protected function init(): void {}
 
     /**
      * @throws TitleAlreadyExistsException
@@ -24,7 +23,7 @@ class PageService extends AbstractService
      */
     public function create(array $data = []): Page
     {
-        $page = new Page;
+        $page = new Page();
         $page->fill($data);
 
         if (!$page->title) {
@@ -45,9 +44,7 @@ class PageService extends AbstractService
     }
 
     /**
-     * @return Collection|Page
      * @throws PageNotFoundException
-     *
      */
     public function read(array $data = []): Collection|Page
     {
@@ -78,7 +75,7 @@ class PageService extends AbstractService
             if (is_array($data['type'])) {
                 $types = array_intersect($data['type'], \App\Domain\Casts\Page\Type::LIST);
             } else {
-                $types = in_array($data['type'], \App\Domain\Casts\Page\Type::LIST) ? [$data['type']] : [];
+                $types = in_array($data['type'], \App\Domain\Casts\Page\Type::LIST, true) ? [$data['type']] : [];
             }
 
             if ($types) {
@@ -98,7 +95,6 @@ class PageService extends AbstractService
             default:
                 $query = Page::query();
                 /** @var Builder $query */
-
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
                         $query->whereIn($key, $value);

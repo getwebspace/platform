@@ -83,12 +83,12 @@ class ListAction extends CatalogAction
                 if ($attributes->count()) {
                     $products->leftJoin('catalog_attribute_product as cap', 'cp.uuid', '=', 'cap.product_uuid');
                     $products->leftJoin('catalog_attribute as ca', 'ca.uuid', '=', 'cap.attribute_uuid');
-                    $products->where(function (Builder $query) use ($attributes, $params) {
+                    $products->where(function (Builder $query) use ($attributes, $params): void {
                         foreach ($attributes as $attribute) {
                             $address = $attribute->address;
                             $value = $params[$attribute->address];
 
-                            $query->orWhere(function (Builder $q) use ($address, $value) {
+                            $query->orWhere(function (Builder $q) use ($address, $value): void {
                                 $q->where('ca.address', $address)->where('cap.value', $value);
                             });
                         }
@@ -96,7 +96,7 @@ class ListAction extends CatalogAction
 
                     // group by all columns
                     $products->groupBy('cp.uuid', ...array_map(fn ($col) => "cp.{$col}", array_keys((new \App\Domain\Models\CatalogProduct())->getAttributes())));
-                    $products->havingRaw("COUNT(DISTINCT ca.address) = " . $attributes->count());
+                    $products->havingRaw('COUNT(DISTINCT ca.address) = ' . $attributes->count());
                 }
             }
 
@@ -198,12 +198,12 @@ class ListAction extends CatalogAction
                 if ($attributes->count()) {
                     $products->leftJoin('catalog_attribute_product as cap', 'cp.uuid', '=', 'cap.product_uuid');
                     $products->leftJoin('catalog_attribute as ca', 'ca.uuid', '=', 'cap.attribute_uuid');
-                    $products->where(function (Builder $query) use ($attributes, $params) {
+                    $products->where(function (Builder $query) use ($attributes, $params): void {
                         foreach ($attributes as $attribute) {
                             $address = $attribute->address;
                             $value = $params[$attribute->address];
 
-                            $query->orWhere(function (Builder $q) use ($address, $value) {
+                            $query->orWhere(function (Builder $q) use ($address, $value): void {
                                 $q->where('ca.address', $address)->where('cap.value', $value);
                             });
                         }
@@ -211,7 +211,7 @@ class ListAction extends CatalogAction
 
                     // group by all columns
                     $products->groupBy('cp.uuid', ...array_map(fn ($col) => "cp.{$col}", array_keys((new \App\Domain\Models\CatalogProduct())->getAttributes())));
-                    $products->havingRaw("COUNT(DISTINCT ca.address) = " . $attributes->count());
+                    $products->havingRaw('COUNT(DISTINCT ca.address) = ' . $attributes->count());
                 }
             }
 

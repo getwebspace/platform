@@ -2,28 +2,15 @@
 
 namespace App\Domain\Models;
 
-use App\Domain\Casts\AddressUrl;
-use App\Domain\Casts\Boolean;
 use App\Domain\Casts\Catalog\Order\Delivery;
 use App\Domain\Casts\Email;
-use App\Domain\Casts\Catalog\Status as CatalogStatus;
-use App\Domain\Casts\Json;
-use App\Domain\Casts\Meta;
 use App\Domain\Casts\Phone;
-use App\Domain\Casts\Sort;
 use App\Domain\Casts\Uuid;
-use App\Domain\References\Date;
-use App\Domain\Traits\HasFiles;
-use DateTime;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
 
 /**
  * @property string $uuid
@@ -36,7 +23,7 @@ use Illuminate\Support\Collection;
  * @property string $comment
  * @property string $phone
  * @property string $email
- * @property DateTime $date
+ * @property \DateTime $date
  * @property string $system
  * @property string $external_id
  * @property string $export
@@ -50,10 +37,11 @@ class CatalogOrder extends Model
     use HasUuids;
 
     protected $table = 'catalog_order';
+
     protected $primaryKey = 'uuid';
 
-    const CREATED_AT = 'date';
-    const UPDATED_AT = null;
+    public const CREATED_AT = 'date';
+    public const UPDATED_AT = null;
 
     protected $fillable = [
         'serial',

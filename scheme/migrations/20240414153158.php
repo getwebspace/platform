@@ -300,7 +300,7 @@ final class V20240414153158 extends AbstractMigration
             ->addColumn('status_uuid', 'char', ['limit' => 36, 'default' => null])
             ->addColumn('payment_uuid', 'char', ['limit' => 36, 'default' => null])
             ->addColumn('serial', 'string', ['limit' => 12, 'default' => ''])
-            ->addColumn('delivery', 'text', ['default' => '{}',])
+            ->addColumn('delivery', 'text', ['default' => '{}'])
             ->addColumn('shipping', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('comment', 'string', ['limit' => 1000, 'default' => ''])
             ->addColumn('phone', 'string', ['limit' => 25, 'default' => ''])

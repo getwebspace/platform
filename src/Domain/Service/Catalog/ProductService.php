@@ -3,7 +3,6 @@
 namespace App\Domain\Service\Catalog;
 
 use App\Domain\AbstractService;
-use App\Domain\Models\CatalogAttribute;
 use App\Domain\Models\CatalogProduct;
 use App\Domain\Service\Catalog\Exception\AddressAlreadyExistsException;
 use App\Domain\Service\Catalog\Exception\MissingCategoryValueException;
@@ -27,7 +26,7 @@ class ProductService extends AbstractService
         ];
         $data = array_merge($default, $data);
 
-        $product = new CatalogProduct;
+        $product = new CatalogProduct();
         $product->fill($data);
 
         if (!$product->title) {
@@ -80,7 +79,7 @@ class ProductService extends AbstractService
     /**
      * @throws ProductNotFoundException
      *
-     * @return Collection|CatalogProduct
+     * @return CatalogProduct|Collection
      */
     public function read(array $data = [])
     {
@@ -129,7 +128,7 @@ class ProductService extends AbstractService
             if (is_array($data['status'])) {
                 $statuses = array_intersect($data['status'], \App\Domain\Casts\Catalog\Status::LIST);
             } else {
-                $statuses = in_array($data['status'], \App\Domain\Casts\Catalog\Status::LIST) ? [$data['status']] : [];
+                $statuses = in_array($data['status'], \App\Domain\Casts\Catalog\Status::LIST, true) ? [$data['status']] : [];
             }
 
             if ($statuses) {
@@ -157,7 +156,6 @@ class ProductService extends AbstractService
             case !is_array($data['title']) && $data['title'] !== null:
                 $query = CatalogProduct::query();
                 /** @var Builder $query */
-
                 $query->where('title', 'like', $data['title'] . '%');
 
                 if ($data['limit']) {
@@ -172,7 +170,6 @@ class ProductService extends AbstractService
             default:
                 $query = CatalogProduct::query();
                 /** @var Builder $query */
-
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
                         $query->whereIn($key, $value);
@@ -243,7 +240,7 @@ class ProductService extends AbstractService
             // sync relations
             if (isset($data['relations'])) {
                 $entity->relations()->sync(
-                    collect($data['relations'])->map(fn($count) => ['count' => $count])
+                    collect($data['relations'])->map(fn ($count) => ['count' => $count])
                 );
             }
 

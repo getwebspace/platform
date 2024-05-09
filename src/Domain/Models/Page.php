@@ -6,7 +6,6 @@ use App\Domain\Casts\AddressUrl;
 use App\Domain\Casts\Meta;
 use App\Domain\Casts\Page\Type as PageType;
 use App\Domain\Traits\HasFiles;
-use DateTime;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $uuid
  * @property string $title
  * @property string $address
- * @property DateTime $date
+ * @property \DateTime $date
  * @property string $content
  * @property string $type
  * @property array $meta
@@ -28,10 +27,11 @@ class Page extends Model
     use HasFiles;
 
     protected $table = 'page';
+
     protected $primaryKey = 'uuid';
 
-    const CREATED_AT = 'date';
-    const UPDATED_AT = 'date';
+    public const CREATED_AT = 'date';
+    public const UPDATED_AT = 'date';
 
     protected $fillable = [
         'title',

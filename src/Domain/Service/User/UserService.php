@@ -5,10 +5,6 @@ namespace App\Domain\Service\User;
 use App\Domain\AbstractService;
 use App\Domain\Casts\User\Status as UserStatus;
 use App\Domain\Models\User;
-use App\Domain\Models\UserGroup;
-use App\Domain\Models\UserToken;
-use App\Domain\Repository\UserRepository;
-use App\Domain\Service\Page\Exception\PageNotFoundException;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\EmailBannedException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
@@ -18,15 +14,12 @@ use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongEmailValueException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
 use App\Domain\Service\User\Exception\WrongPhoneValueException;
-use App\Domain\Service\User\GroupService as UserGroupService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
 
 class UserService extends AbstractService
 {
-
-
     /**
      * @throws EmailAlreadyExistsException
      * @throws EmailBannedException
@@ -38,7 +31,7 @@ class UserService extends AbstractService
      */
     public function create(array $data = []): User
     {
-        $user = new User;
+        $user = new User();
         $user->fill($data);
 
         if (!$user->username && !$user->email && !$user->phone) {
@@ -68,10 +61,10 @@ class UserService extends AbstractService
     }
 
     /**
-     * @return Collection|User
      * @throws WrongPasswordException
-     *
      * @throws UserNotFoundException
+     *
+     * @return Collection|User
      */
     public function read(array $data = [])
     {
@@ -121,13 +114,13 @@ class UserService extends AbstractService
             $criteria['additional'] = $data['additional'];
         }
         if ($data['is_allow_mail'] !== null) {
-            $criteria['is_allow_mail'] = (bool)$data['is_allow_mail'];
+            $criteria['is_allow_mail'] = (bool) $data['is_allow_mail'];
         }
         if ($data['status'] !== null) {
             if (is_array($data['status'])) {
                 $statuses = array_intersect($data['status'], \App\Domain\Casts\User\Status::LIST);
             } else {
-                $statuses = in_array($data['status'], \App\Domain\Casts\User\Status::LIST) ? [$data['status']] : [];
+                $statuses = in_array($data['status'], \App\Domain\Casts\User\Status::LIST, true) ? [$data['status']] : [];
             }
 
             if ($statuses) {
@@ -173,7 +166,6 @@ class UserService extends AbstractService
             case !is_array($data['lastname']) && $data['lastname'] !== null:
                 $query = User::query();
                 /** @var Builder $query */
-
                 if (!empty($data['firstname'])) {
                     $query->orWhere('firstname', 'like', $data['firstname'] . '%');
                 }
@@ -192,7 +184,6 @@ class UserService extends AbstractService
             default:
                 $query = User::query();
                 /** @var Builder $query */
-
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
                         $query->whereIn($key, $value);

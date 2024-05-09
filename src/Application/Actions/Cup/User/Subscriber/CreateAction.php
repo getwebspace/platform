@@ -15,7 +15,7 @@ class CreateAction extends UserAction
                 $this->userSubscriberService->create([
                     'email' => $this->getParam('email'),
                 ]);
-            } catch (WrongEmailValueException|EmailAlreadyExistsException $e) {
+            } catch (EmailAlreadyExistsException|WrongEmailValueException $e) {
                 $this->addError('email', $e->getMessage());
             }
         }

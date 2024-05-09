@@ -61,11 +61,11 @@ class UserCreateAction extends UserAction
                 $this->addError('phone', $e->getMessage());
             } catch (WrongPasswordException $e) {
                 $this->addError('password', $e->getMessage());
-            } catch (WrongUsernameValueException|UsernameAlreadyExistsException $e) {
+            } catch (UsernameAlreadyExistsException|WrongUsernameValueException $e) {
                 $this->addError('username', $e->getMessage());
-            } catch (WrongEmailValueException|EmailAlreadyExistsException|EmailBannedException $e) {
+            } catch (EmailAlreadyExistsException|EmailBannedException|WrongEmailValueException $e) {
                 $this->addError('email', $e->getMessage());
-            } catch (WrongPhoneValueException|PhoneAlreadyExistsException $e) {
+            } catch (PhoneAlreadyExistsException|WrongPhoneValueException $e) {
                 $this->addError('phone', $e->getMessage());
             }
         }

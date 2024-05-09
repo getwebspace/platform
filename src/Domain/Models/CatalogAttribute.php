@@ -4,23 +4,11 @@ namespace App\Domain\Models;
 
 use App\Domain\Casts\AddressUrl;
 use App\Domain\Casts\Boolean;
-use App\Domain\Casts\Email;
-use App\Domain\Casts\Catalog\Status as CatalogStatus;
-use App\Domain\Casts\Json;
-use App\Domain\Casts\Meta;
-use App\Domain\Casts\Sort;
-use App\Domain\References\Date;
-use App\Domain\Traits\HasFiles;
-use DateTime;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 /**
  * @property string $uuid
@@ -38,10 +26,11 @@ class CatalogAttribute extends Model
     use HasUuids;
 
     protected $table = 'catalog_attribute';
+
     protected $primaryKey = 'uuid';
 
-    const CREATED_AT = null;
-    const UPDATED_AT = null;
+    public const CREATED_AT = null;
+    public const UPDATED_AT = null;
 
     protected $fillable = [
         'title',
@@ -93,7 +82,7 @@ class CatalogAttribute extends Model
         );
     }
 
-    public function values(CatalogCategory $category = null): Collection
+    public function values(?CatalogCategory $category = null): Collection
     {
         $query = $this
             ->newQuery()
@@ -126,7 +115,7 @@ class CatalogAttribute extends Model
                     return floatval($this->pivot->value);
 
                 case \App\Domain\Casts\Catalog\Attribute\Type::STRING:
-                    return (string)$this->pivot->value;
+                    return (string) $this->pivot->value;
             }
         }
 

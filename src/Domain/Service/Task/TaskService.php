@@ -13,15 +13,13 @@ use Ramsey\Uuid\UuidInterface as Uuid;
 
 class TaskService extends AbstractService
 {
-
-
     /**
      * @throws MissingTitleValueException
      * @throws MissingActionValueException
      */
     public function create(array $data = []): Task
     {
-        $task = new Task;
+        $task = new Task();
         $task->fill($data);
 
         if (!$task->title) {
@@ -66,7 +64,7 @@ class TaskService extends AbstractService
             if (is_array($data['status'])) {
                 $statuses = array_intersect($data['status'], \App\Domain\Casts\Task\Status::LIST);
             } else {
-                $statuses = in_array($data['status'], \App\Domain\Casts\Task\Status::LIST) ? [$data['status']] : [];
+                $statuses = in_array($data['status'], \App\Domain\Casts\Task\Status::LIST, true) ? [$data['status']] : [];
             }
 
             if ($statuses) {
@@ -84,7 +82,6 @@ class TaskService extends AbstractService
             default:
                 $query = Task::query();
                 /** @var Builder $query */
-
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
                         $query->whereIn($key, $value);

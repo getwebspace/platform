@@ -3,7 +3,6 @@
 namespace tests\Domain\Service\Form;
 
 use App\Domain\Models\FormData;
-use App\Domain\Repository\Form\DataRepository as FormDataRepository;
 use App\Domain\Service\Form\DataService;
 use App\Domain\Service\Form\Exception\FormDataNotFoundException;
 use App\Domain\Service\Form\Exception\MissingMessageValueException;

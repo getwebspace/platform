@@ -8,19 +8,15 @@ use App\Domain\Service\Parameter\Exception\ParameterAlreadyExistsException;
 use App\Domain\Service\Parameter\Exception\ParameterNotFoundException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
-use Ramsey\Uuid\UuidInterface as Uuid;
 
 class ParameterService extends AbstractService
 {
-
-
     /**
      * @throws ParameterAlreadyExistsException
      */
     public function create(array $data = []): Parameter
     {
-        $parameter = new Parameter;
+        $parameter = new Parameter();
         $parameter->fill($data);
 
         if (Parameter::firstWhere(['name' => $parameter->name]) !== null) {
@@ -32,7 +28,7 @@ class ParameterService extends AbstractService
         return $parameter;
     }
 
-    public function read(array $data = [], mixed $fallback = null): Collection|Parameter|null
+    public function read(array $data = [], mixed $fallback = null): null|Collection|Parameter
     {
         $default = [
             'name' => null,
@@ -51,7 +47,7 @@ class ParameterService extends AbstractService
                 $parameter = Parameter::firstWhere($criteria);
 
                 if (!$parameter) {
-                    $parameter = new Parameter;
+                    $parameter = new Parameter();
                     $parameter->name = $data['name'];
                     $parameter->value = $fallback;
                 }
@@ -61,7 +57,6 @@ class ParameterService extends AbstractService
             default:
                 $query = Parameter::query();
                 /** @var Builder $query */
-
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
                         $query->whereIn($key, $value);

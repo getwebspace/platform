@@ -3,10 +3,7 @@
 namespace App\Domain\Service\User;
 
 use App\Domain\AbstractService;
-use App\Domain\Models\User;
-use App\Domain\Models\UserGroup;
 use App\Domain\Models\UserToken;
-use App\Domain\Repository\User\TokenRepository as UserTokenRepository;
 use App\Domain\Service\User\Exception\TokenNotFoundException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -16,7 +13,7 @@ class TokenService extends AbstractService
 {
     public function create(array $data = []): UserToken
     {
-        $userToken = new UserToken;
+        $userToken = new UserToken();
         $userToken->fill($data);
 
         if (!$userToken->user_uuid) {
@@ -68,7 +65,6 @@ class TokenService extends AbstractService
             default:
                 $query = UserToken::query();
                 /** @var Builder $query */
-
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
                         $query->whereIn($key, $value);

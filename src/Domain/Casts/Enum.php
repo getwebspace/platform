@@ -15,6 +15,6 @@ abstract class Enum implements CastsAttributes
 
     public function set($model, string $key, mixed $value, array $attributes): string
     {
-        return in_array($value, static::LIST) ? $value : '';
+        return in_array($value, static::LIST, true) ? $value : '';
     }
 }

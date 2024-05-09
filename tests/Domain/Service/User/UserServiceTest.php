@@ -2,8 +2,8 @@
 
 namespace tests\Domain\Service\User;
 
+use App\Domain\Casts\User\Status as UserStatus;
 use App\Domain\Models\User;
-use App\Domain\Repository\UserRepository;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
 use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
@@ -11,7 +11,6 @@ use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
 use App\Domain\Service\User\UserService;
-use App\Domain\Casts\User\Status as UserStatus;
 use tests\TestCase;
 
 /**

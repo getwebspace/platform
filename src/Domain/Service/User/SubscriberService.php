@@ -8,21 +8,19 @@ use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongEmailValueException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Ramsey\Uuid\UuidInterface as Uuid;
-use Illuminate\Database\Eloquent\Builder;
 
 class SubscriberService extends AbstractService
 {
-
-
     /**
      * @throws MissingUniqueValueException
      * @throws EmailAlreadyExistsException
      */
     public function create(array $data = []): UserSubscriber
     {
-        $userSubscriber = new UserSubscriber;
+        $userSubscriber = new UserSubscriber();
         $userSubscriber->fill($data);
 
         if (!$userSubscriber->email) {
@@ -75,7 +73,6 @@ class SubscriberService extends AbstractService
             default:
                 $query = UserSubscriber::query();
                 /** @var Builder $query */
-
                 foreach ($criteria as $key => $value) {
                     if (is_array($value)) {
                         $query->whereIn($key, $value);

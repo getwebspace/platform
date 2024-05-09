@@ -5,21 +5,17 @@ namespace App\Domain\Models;
 use App\Domain\Casts\AddressUrl;
 use App\Domain\Casts\Boolean;
 use App\Domain\Casts\Catalog\Product\Dimension as ProductDimension;
-use App\Domain\Casts\Catalog\Product\Type as ProductType;
 use App\Domain\Casts\Catalog\Product\Tags as ProductTags;
+use App\Domain\Casts\Catalog\Product\Type as ProductType;
 use App\Domain\Casts\Catalog\Status;
-use App\Domain\Casts\Json;
 use App\Domain\Casts\Meta;
 use App\Domain\Casts\Uuid;
 use App\Domain\Traits\HasFiles;
-use DateTime;
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
@@ -49,7 +45,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property array $tags
  * @property int $order
  * @property string $status
- * @property DateTime $date
+ * @property \DateTime $date
  * @property array $meta
  * @property string $external_id
  * @property string $export
@@ -64,10 +60,11 @@ class CatalogProduct extends Model
     use HasFiles;
 
     protected $table = 'catalog_product';
+
     protected $primaryKey = 'uuid';
 
-    const CREATED_AT = 'date';
-    const UPDATED_AT = 'date';
+    public const CREATED_AT = 'date';
+    public const UPDATED_AT = 'date';
 
     protected $fillable = [
         'title',
@@ -191,7 +188,7 @@ class CatalogProduct extends Model
     public function relations(): BelongsToMany
     {
         return $this->belongsToMany(
-            CatalogProduct::class,
+            self::class,
             'catalog_product_related',
             'product_uuid',
             'related_uuid',

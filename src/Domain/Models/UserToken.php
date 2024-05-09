@@ -3,7 +3,6 @@
 namespace App\Domain\Models;
 
 use App\Domain\Casts\Uuid;
-use DateTime;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $comment
  * @property string $ip
  * @property string $agent
- * @property DateTime $date
+ * @property \DateTime $date
  * @property User $user
  */
 class UserToken extends Model
@@ -25,10 +24,11 @@ class UserToken extends Model
     use HasUuids;
 
     protected $table = 'user_token';
+
     protected $primaryKey = 'uuid';
 
-    const CREATED_AT = 'date';
-    const UPDATED_AT = 'date';
+    public const CREATED_AT = 'date';
+    public const UPDATED_AT = 'date';
 
     protected $fillable = [
         'user_uuid',

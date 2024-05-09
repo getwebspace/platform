@@ -2,11 +2,11 @@
 
 namespace App\Application\Actions\Common\Catalog;
 
+use App\Domain\Casts\Reference\Type as ReferenceType;
 use App\Domain\Plugin\AbstractPaymentPlugin;
 use App\Domain\Service\Catalog\Exception\OrderShippingLimitException;
 use App\Domain\Service\Catalog\Exception\WrongEmailValueException;
 use App\Domain\Service\Catalog\Exception\WrongPhoneValueException;
-use App\Domain\Casts\Reference\Type as ReferenceType;
 
 class CartAction extends CatalogAction
 {
@@ -81,12 +81,12 @@ class CartAction extends CatalogAction
 
                     // if order has payment with plugin
                     if (
-                        ($payment = $order->payment) &&
-                        ($plugin = $payment->value('plugin', false)) !== false
+                        ($payment = $order->payment)
+                        && ($plugin = $payment->value('plugin', false)) !== false
                     ) {
                         $plugin = $this->container
                             ->get('plugin')->get()
-                            ->firstWhere(fn($_, $name) => str_ends_with($name, $plugin));
+                            ->firstWhere(fn ($_, $name) => str_ends_with($name, $plugin));
 
                         if ($plugin instanceof AbstractPaymentPlugin) {
                             if (($buf = $plugin->getRedirectURL($order))) {

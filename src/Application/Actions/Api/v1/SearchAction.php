@@ -74,7 +74,7 @@ class SearchAction extends ActionApi
             return $this
                 ->respondWithJson(['status' => 400, 'data' => 'Wrong query string'])
                 ->withStatus(400);
-        } catch (ContainerExceptionInterface|AbstractException $exception) {
+        } catch (AbstractException|ContainerExceptionInterface $exception) {
             return $this
                 ->respondWithJson(['status' => 503, 'data' => $exception->getTitle()])
                 ->withStatus(503);
