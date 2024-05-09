@@ -157,6 +157,11 @@ class CatalogCategory extends Model
         );
     }
 
+    public function filtres(): BelongsToMany
+    {
+        return $this->attributes()->where('is_filter', true);
+    }
+
     public function products(): HasMany
     {
         return $this->hasMany(CatalogProduct::class, 'category_uuid', 'uuid');
