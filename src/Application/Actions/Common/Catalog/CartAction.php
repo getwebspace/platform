@@ -21,10 +21,10 @@ class CartAction extends CatalogAction
                 'phone' => $this->getParam('phone'),
                 'email' => $this->getParam('email'),
                 'comment' => $this->getParam('comment', ''),
-                'payment' => $this->getParam('payment'),
                 'shipping' => $this->getParam('shipping'),
                 'system' => $this->getParam('system', ''),
 
+                'payment_uuid' => $this->getParam('payment_uuid', $this->getParam('payment')),
                 'products' => $this->getParam('products', []),
             ];
 
@@ -57,9 +57,6 @@ class CartAction extends CatalogAction
                 }
                 $data['delivery']['address'] = implode(', ', $data['delivery']['address']);
             }
-
-            // find payment method
-            $data['payment'] = $data['payment'] ? $this->referenceService->read(['uuid' => $data['payment'], 'type' => ReferenceType::PAYMENT]) : null;
 
             if ($this->isRecaptchaChecked()) {
                 try {

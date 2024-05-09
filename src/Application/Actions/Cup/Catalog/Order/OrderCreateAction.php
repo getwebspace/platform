@@ -13,24 +13,21 @@ class OrderCreateAction extends CatalogAction
     protected function action(): \Slim\Psr7\Response
     {
         if ($this->isPost()) {
-            $user_uuid = $this->getParam('user_uuid');
-            $status_uuid = $this->getParam('status_uuid');
-            $payment_uuid = $this->getParam('payment_uuid');
-
             try {
                 $order = $this->catalogOrderService->create([
-                    'user' => $user_uuid ? $this->userService->read(['uuid' => $user_uuid]) : null,
                     'delivery' => $this->getParam('delivery'),
                     'list' => $this->getParam('list', []),
                     'phone' => $this->getParam('phone'),
                     'email' => $this->getParam('email'),
-                    'status' => $status_uuid ? $this->referenceService->read(['uuid' => $status_uuid, 'type' => ReferenceType::ORDER_STATUS]) : null,
-                    'payment' => $payment_uuid ? $this->referenceService->read(['uuid' => $payment_uuid, 'type' => ReferenceType::PAYMENT]) : null,
                     'shipping' => $this->getParam('shipping'),
                     'comment' => $this->getParam('comment'),
                     'date' => $this->getParam('date', 'now'),
                     'system' => $this->getParam('system', ''),
                     'external_id' => $this->getParam('external_id'),
+
+                    'status_uuid' => $this->getParam('status_uuid'),
+                    'user_uuid' => $this->getParam('user_uuid'),
+                    'payment_uuid' => $this->getParam('payment_uuid'),
 
                     'products' => $this->getParam('products', []),
                 ]);
