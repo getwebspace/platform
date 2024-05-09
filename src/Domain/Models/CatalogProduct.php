@@ -204,7 +204,7 @@ class CatalogProduct extends Model
         );
     }
 
-    public function price($type = 'price'): float
+    public function price(string $type = 'price', int $precision = 0): float
     {
         $price = match ($type) {
             'price_first' => $this->priceFirst,
@@ -219,12 +219,16 @@ class CatalogProduct extends Model
             $price += $price * ($this->tax / 100);
         }
 
-        return $price;
+        return round($price, $precision);
     }
 
-    public function tax($precision = 0): float
+    public function tax(string $type = 'price', int $precision = 0): float
     {
-        $price = $this->price;
+        $price = match ($type) {
+            'price_first' => $this->priceFirst,
+            'price' => $this->price,
+            'price_wholesale' => $this->priceWholesale,
+        };
 
         if ($this->discount < 0) {
             $price = max(0, $price + $this->discount);
@@ -267,6 +271,31 @@ class CatalogProduct extends Model
     public function weightWithClass(): string
     {
         return $this->weight() . ($this->dimension['weight_class'] ? ' ' . $this->dimension['weight_class'] : '');
+    }
+
+    public function toArray(): array
+    {
+        return array_merge(
+            parent::toArray(),
+            [
+                'category' => [
+                    'uuid' => $this->category->uuid,
+                    'title' => $this->category->title,
+                    'address' => $this->category->address,
+                ],
+                'attributes' => $this->attributes()->getResults()->keyBy('address'),
+                'relations' => $this->relations()->getResults()->keyBy('uuid')->map(function (CatalogProduct $item) {
+                    return [
+                        'title' => $item->title,
+                        'address' => $item->address,
+                        'price' => $item->price,
+                        'priceWholesale' => $item->priceWholesale,
+                        'count' => $item->pivot->count ?? 1,
+                    ];
+                }),
+                'files' => $this->files,
+            ],
+        );
     }
 
     // order product functions ...
@@ -321,30 +350,5 @@ class CatalogProduct extends Model
         }
 
         return round($tax * $this->pivot->count, $precision);
-    }
-
-    public function toArray(): array
-    {
-        return array_merge(
-            parent::toArray(),
-            [
-                'category' => [
-                    'uuid' => $this->category->uuid,
-                    'title' => $this->category->title,
-                    'address' => $this->category->address,
-                ],
-                'attributes' => $this->attributes()->getResults()->keyBy('address'),
-                'relations' => $this->relations()->getResults()->keyBy('uuid')->map(function (CatalogProduct $item) {
-                    return [
-                        'title' => $item->title,
-                        'address' => $item->address,
-                        'price' => $item->price,
-                        'priceWholesale' => $item->priceWholesale,
-                        'count' => $item->pivot->count ?? 1,
-                    ];
-                }),
-                'files' => $this->files,
-            ],
-        );
     }
 }
