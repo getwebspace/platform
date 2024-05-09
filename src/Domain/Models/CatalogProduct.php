@@ -10,6 +10,7 @@ use App\Domain\Casts\Catalog\Product\Tags as ProductTags;
 use App\Domain\Casts\Catalog\Status;
 use App\Domain\Casts\Json;
 use App\Domain\Casts\Meta;
+use App\Domain\Casts\Uuid;
 use App\Domain\Traits\HasFiles;
 use DateTime;
 use Illuminate\Contracts\Support\Arrayable;
@@ -108,7 +109,7 @@ class CatalogProduct extends Model
         'extra' => 'string',
         'address' => AddressUrl::class,
         'type' => ProductType::class,
-        'category_uuid' => 'string',
+        'category_uuid' => Uuid::class,
         'vendorcode' => 'string',
         'barcode' => 'string',
         'tax' => 'float',

@@ -7,6 +7,7 @@ use App\Domain\Casts\Boolean;
 use App\Domain\Casts\Email;
 use App\Domain\Casts\GuestBook\Status as GuestBookStatus;
 use App\Domain\Casts\Json;
+use App\Domain\Casts\Uuid;
 use App\Domain\Traits\HasFiles;
 use DateTime;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -44,7 +45,7 @@ class FormData extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'form_uuid' => 'string',
+        'form_uuid' => Uuid::class,
         'data' => Json::class,
         'message' => 'string',
         'date' => 'datetime',

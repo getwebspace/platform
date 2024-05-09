@@ -8,6 +8,7 @@ use App\Domain\Casts\Email;
 use App\Domain\Casts\GuestBook\Status as GuestBookStatus;
 use App\Domain\Casts\Json;
 use App\Domain\Casts\Meta;
+use App\Domain\Casts\Uuid;
 use App\Domain\References\Date;
 use App\Domain\Traits\HasFiles;
 use DateTime;
@@ -58,8 +59,8 @@ class Publication extends Model
     protected $casts = [
         'title' => 'string',
         'address' => AddressUrl::class,
-        'category_uuid' => 'string',
-        'user_uuid' => 'string',
+        'category_uuid' => Uuid::class,
+        'user_uuid' => Uuid::class,
         'content' => Json::class,
         'meta' => Meta::class,
         'date' => 'datetime',

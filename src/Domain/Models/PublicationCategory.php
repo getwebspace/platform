@@ -9,6 +9,7 @@ use App\Domain\Casts\GuestBook\Status as GuestBookStatus;
 use App\Domain\Casts\Json;
 use App\Domain\Casts\Meta;
 use App\Domain\Casts\Sort;
+use App\Domain\Casts\Uuid;
 use App\Domain\References\Date;
 use App\Domain\Traits\HasFiles;
 use DateTime;
@@ -65,7 +66,7 @@ class PublicationCategory extends Model
     protected $casts = [
         'title' => 'string',
         'address' => AddressUrl::class,
-        'parent_uuid' => 'string',
+        'parent_uuid' => Uuid::class,
         'description' => 'string',
         'pagination' => 'int',
         'is_allow_nested' => Boolean::class,

@@ -11,6 +11,7 @@ use App\Domain\Casts\Json;
 use App\Domain\Casts\Meta;
 use App\Domain\Casts\Phone;
 use App\Domain\Casts\Sort;
+use App\Domain\Casts\Uuid;
 use App\Domain\References\Date;
 use App\Domain\Traits\HasFiles;
 use DateTime;
@@ -74,9 +75,9 @@ class CatalogOrder extends Model
 
     protected $casts = [
         'serial' => 'string',
-        'user_uuid' => 'string',
-        'status_uuid' => 'string',
-        'payment_uuid' => 'string',
+        'user_uuid' => Uuid::class,
+        'status_uuid' => Uuid::class,
+        'payment_uuid' => Uuid::class,
         'delivery' => Delivery::class,
         'shipping' => 'datetime',
         'comment' => 'string',

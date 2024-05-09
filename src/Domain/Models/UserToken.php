@@ -2,6 +2,7 @@
 
 namespace App\Domain\Models;
 
+use App\Domain\Casts\Uuid;
 use DateTime;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -41,7 +42,7 @@ class UserToken extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'user_uuid' => 'string',
+        'user_uuid' => Uuid::class,
         'unique' => 'string',
         'comment' => 'string',
         'ip' => 'string',
