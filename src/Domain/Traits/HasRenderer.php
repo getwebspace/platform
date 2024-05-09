@@ -26,7 +26,6 @@ trait HasRenderer
             $data = array_merge(
                 [
                     'SHA' => !empty($_ENV['COMMIT_SHA']) ? mb_substr($_ENV['COMMIT_SHA'], 0, 7) : 'specific',
-                    'NIL' => \Ramsey\Uuid\Uuid::NIL,
                     '_request' => &$_REQUEST,
                     '_error' => \Alksily\Support\Form::$globalError = $this->error ?? [],
                     '_language' => \App\Application\i18n::$localeCode ?? 'en-US',

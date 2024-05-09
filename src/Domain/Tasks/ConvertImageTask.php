@@ -14,7 +14,7 @@ class ConvertImageTask extends AbstractTask
     public function execute(array $params = []): \App\Domain\Models\Task
     {
         $default = [
-            'uuid' => [\Ramsey\Uuid\Uuid::NIL],
+            'uuid' => [],
         ];
         $params = array_merge($default, $params);
 

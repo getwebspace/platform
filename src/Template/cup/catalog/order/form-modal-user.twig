@@ -135,8 +135,8 @@
                 'type': 'select',
                 'name': 'group_uuid',
                 'args': {
-                    'option': _({(NIL): 'WITHOUT_GROUP'}|merge(groups.pluck('title', 'uuid').all())),
-                    'selected': order.user.group_uuid ?? parameter('user_group')
+                    'option': _({(null): 'WITHOUT_GROUP'}|merge(groups.pluck('title', 'uuid').all())),
+                    'selected': order.user.group_uuid ?? parameter('user_group', null)
                 }
             } %}
         </div>
