@@ -10,6 +10,8 @@ use Slim\Psr7\Response;
 
 class ListAction extends CatalogAction
 {
+    private array $attributes_filter = ['price', 'country', 'manufacturer', 'order', 'direction'];
+
     protected function action(): \Slim\Psr7\Response
     {
         $args = $this->parsePath();
@@ -66,41 +68,48 @@ class ListAction extends CatalogAction
             $products->where('cc.is_hidden', false);
             $products->where('cp.status', \App\Domain\Casts\Catalog\Status::WORK);
 
-            // base select
             $count = $products->count();
             $all = $products->get();
 
             // attribute filter
-            if (($params = $this->getParams())) {
+            if (($params = array_diff_key($this->getParams(), array_flip($this->attributes_filter)))) {
                 $attributes = $this->db->query();
-                $attributes->select('uuid', 'address');
+                $attributes->select('address');
                 $attributes->from('catalog_attribute as ca');
-                $attributes->leftJoin('catalog_attribute_product as cap', 'ca.uuid', '=', 'cap.attribute_uuid');
                 $attributes->where('ca.is_filter', true);
                 $attributes->whereIn('ca.address', array_keys($this->getParams()));
                 $attributes = $attributes->get();
 
-                $products->leftJoin('catalog_attribute_product as cap', 'cp.uuid', '=', 'cap.product_uuid');
-                $products->where(function (Builder $query) use ($attributes, $params) {
-                    foreach ($attributes as $attr) {
-                        $query->orWhere(function (Builder $q) use ($attr, $params) {
-                            $q->where('cap.attribute_uuid', $attr->uuid)->where('cap.value', $params[$attr->address]);
-                        });
-                    }
-                });
-                $products->groupBy('cp.uuid');
+                if ($attributes->count()) {
+                    $products->leftJoin('catalog_attribute_product as cap', 'cp.uuid', '=', 'cap.product_uuid');
+                    $products->leftJoin('catalog_attribute as ca', 'ca.uuid', '=', 'cap.attribute_uuid');
+                    $products->where(function (Builder $query) use ($attributes, $params) {
+                        foreach ($attributes as $attribute) {
+                            $address = $attribute->address;
+                            $value = $params[$attribute->address];
+
+                            $query->orWhere(function (Builder $q) use ($address, $value) {
+                                $q->where('ca.address', $address)->where('cap.value', $value);
+                            });
+                        }
+                    });
+
+                    // group by all columns
+                    $products->groupBy('cp.uuid', ...array_map(fn ($col) => "cp.{$col}", array_keys((new \App\Domain\Models\CatalogProduct())->getAttributes())));
+                    $products->havingRaw("COUNT(DISTINCT ca.address) = " . $attributes->count());
+                }
             }
 
             // price filter
             if (($price = $this->getParam('price', false)) !== false) {
-                $price = array_merge(['min' => 0, 'max' => 0], (array) $price);
+                $price = array_merge(['min' => 0, 'max' => 0], $price);
 
                 if ($price['min']) {
-                    $params['price']['min'] = (float) $price['min'];
+                    $params['price']['min'] = floatval($price['min']);
                     $products->where('cp.price', '>=', $params['price']['min']);
                 }
                 if ($price['max']) {
-                    $params['price']['max'] = (float) $price['max'];
+                    $params['price']['max'] = floatval($price['max']);
                     $products->where('cp.price', '<=', $params['price']['max']);
                 }
             }
@@ -135,11 +144,7 @@ class ListAction extends CatalogAction
             }
 
             $pagination = $this->parameter('catalog_category_pagination', 10);
-
-            // select for page
-            $products->limit($pagination);
-            $products->offset($args['offset']);
-            $filtered = $products->get();
+            $filtered = $products->get()->forPage($args['offset'], $pagination);
 
             return $this->respond($this->parameter('catalog_category_template', 'catalog.category.twig'), [
                 'categories' => $categories,
@@ -178,41 +183,48 @@ class ListAction extends CatalogAction
             $products->where('cp.status', \App\Domain\Casts\Catalog\Status::WORK);
             $products->whereIn('cp.category_uuid', $category->nested()->pluck('uuid'));
 
-            // base select
             $count = $products->count();
             $all = $products->get();
 
             // attribute filter
-            if (($params = $this->getParams())) {
+            if (($params = array_diff_key($this->getParams(), array_flip($this->attributes_filter)))) {
                 $attributes = $this->db->query();
-                $attributes->select('uuid', 'address');
+                $attributes->select('address');
                 $attributes->from('catalog_attribute as ca');
-                $attributes->leftJoin('catalog_attribute_product as cap', 'ca.uuid', '=', 'cap.attribute_uuid');
                 $attributes->where('ca.is_filter', true);
                 $attributes->whereIn('ca.address', array_keys($this->getParams()));
                 $attributes = $attributes->get();
 
-                $products->leftJoin('catalog_attribute_product as cap', 'cp.uuid', '=', 'cap.product_uuid');
-                $products->where(function (Builder $query) use ($attributes, $params) {
-                    foreach ($attributes as $attr) {
-                        $query->orWhere(function (Builder $q) use ($attr, $params) {
-                            $q->where('cap.attribute_uuid', $attr->uuid)->where('cap.value', $params[$attr->address]);
-                        });
-                    }
-                });
-                $products->groupBy('cp.uuid');
+                if ($attributes->count()) {
+                    $products->leftJoin('catalog_attribute_product as cap', 'cp.uuid', '=', 'cap.product_uuid');
+                    $products->leftJoin('catalog_attribute as ca', 'ca.uuid', '=', 'cap.attribute_uuid');
+                    $products->where(function (Builder $query) use ($attributes, $params) {
+                        foreach ($attributes as $attribute) {
+                            $address = $attribute->address;
+                            $value = $params[$attribute->address];
+
+                            $query->orWhere(function (Builder $q) use ($address, $value) {
+                                $q->where('ca.address', $address)->where('cap.value', $value);
+                            });
+                        }
+                    });
+
+                    // group by all columns
+                    $products->groupBy('cp.uuid', ...array_map(fn ($col) => "cp.{$col}", array_keys((new \App\Domain\Models\CatalogProduct())->getAttributes())));
+                    $products->havingRaw("COUNT(DISTINCT ca.address) = " . $attributes->count());
+                }
             }
 
             // price filter
             if (($price = $this->getParam('price', false)) !== false) {
-                $price = array_merge(['min' => 0, 'max' => 0], (array) $price);
+                $price = array_merge(['min' => 0, 'max' => 0], $price);
 
                 if ($price['min']) {
-                    $params['price']['min'] = (float) $price['min'];
+                    $params['price']['min'] = floatval($price['min']);
                     $products->where('cp.price', '>=', $params['price']['min']);
                 }
                 if ($price['max']) {
-                    $params['price']['max'] = (float) $price['max'];
+                    $params['price']['max'] = floatval($price['max']);
                     $products->where('cp.price', '<=', $params['price']['max']);
                 }
             }
@@ -243,12 +255,7 @@ class ListAction extends CatalogAction
                 $products->orderBy('cp.' . $sortBy['by'], $sortBy['direction']);
             }
 
-            $pagination = $category->pagination;
-
-            // select for page
-            $products->limit($pagination);
-            $products->offset($args['offset']);
-            $filtered = $products->get();
+            $filtered = $products->get()->forPage($args['offset'], $category->pagination);
 
             return $this->respond($category->template['category'], [
                 'categories' => $categories,
