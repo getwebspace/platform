@@ -156,7 +156,7 @@ class ProductService extends AbstractService
             case !is_array($data['title']) && $data['title'] !== null:
                 $query = CatalogProduct::query();
                 /** @var Builder $query */
-                $query->where('title', 'like', $data['title'] . '%');
+                $query->where('title', 'like', '%' . $data['title'] . '%');
 
                 if ($data['limit']) {
                     $query = $query->limit($data['limit']);

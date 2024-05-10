@@ -26,7 +26,6 @@ class OrderUpdateAction extends CatalogAction
                             'email' => $this->getParam('email'),
                             'shipping' => $this->getParam('shipping'),
                             'comment' => $this->getParam('comment'),
-                            'date' => $this->getParam('date', 'now'),
                             'system' => $this->getParam('system', ''),
                             'external_id' => $this->getParam('external_id'),
 

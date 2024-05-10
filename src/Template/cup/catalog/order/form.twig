@@ -48,7 +48,7 @@
                                         'type': 'hidden',
                                         'name': 'user_uuid',
                                         'args': {
-                                            'value': order.user ? order.user.uuid : ''
+                                            'value': order.user_uuid
                                         }
                                     } %}
                                 </div>
@@ -269,5 +269,4 @@
 
     {% include 'cup/catalog/order/form-modal-user.twig' %}
     {% include 'cup/catalog/order/form-modal-product.twig' %}
-
 {% endblock %}
