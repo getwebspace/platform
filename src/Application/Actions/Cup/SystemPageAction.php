@@ -387,7 +387,7 @@ const INVOICE_TEMPLATE = <<<'EOD'
     			<div class="col-6 text-right text-nowrap font-weight-bold border-top">{{ order.totalTax()|number_format(2, '.', ' ') }}</div>
 
                 <div class="col-6 text-nowrap font-weight-bold border-top">{{ 'Total'|locale }}:</div>
-                <div class="col-6 text-right text-nowrap font-weight-bold border-top">{{ order.totalPriceCalculated()|number_format(2, '.', ' ') }}</div>
+                <div class="col-6 text-right text-nowrap font-weight-bold border-top">{{ order.totalSum()|number_format(2, '.', ' ') }}</div>
             </div>
         </div>
     EOD;
@@ -422,13 +422,12 @@ const DISPATCH_TEMPLATE = <<<'EOD'
                 <div class="col-2 text-right text-nowrap font-weight-bold">{{ 'Quantity'|locale }}</div>
             </div>
         
-            {% set total = 0 %}
-            {% for item in order.products().where('type', 'product').get()) %}
+            {% for item in order.products().where('type', 'product').get() %}
                 <div class="row py-1 {{ loop.last ?: 'border-bottom' }} {{ loop.index0 % 2 ? 'bg-grey1' }}">
                     <div class="col-6 text-nowrap font-weight-bold">{{ item.title }}</div>
                     <div class="col-2 text-right text-nowrap font-weight-bold">{{ catalog_product_dimensional_weight(item) }}</div>
                     <div class="col-2 text-right text-nowrap font-weight-bold">{{ item.weightWithClass() }}</div>
-                    <div class="col-2 text-right text-nowrap font-weight-bold">{{ item.count }}</div>
+                    <div class="col-2 text-right text-nowrap font-weight-bold">{{ item.totalCount() }}</div>
                 </div>
             {% endfor %}
         </div>
