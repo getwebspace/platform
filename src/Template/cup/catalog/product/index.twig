@@ -25,8 +25,6 @@
                             </a>
                         {% endif %}
 
-                        <b></b>
-
                         <a href="#btn-modal-import" rel="modal:open" class="btn btn-secondary btn-icon ml-auto text-white" data-toggle="tooltip" data-placement="top" title="{{ 'Import products'|locale }}">
                             <i class="fas fa-file-import"></i>
                         </a>
@@ -47,7 +45,7 @@
                         {% block thead %}
                             <div class="col-12 col-sm">{{ 'Title'|locale }}</div>
                             <div class="col-4 col-sm-2">{{ 'Vendor code'|locale }}</div>
-                            <div class="col-4 col-sm-2 text-md-right">{{ 'Price'|locale }}</div>
+                            <div class="col-4 col-sm-1 text-md-right">{{ 'Price'|locale }}</div>
                             <div class="col-4 col-sm-3 text-right"></div>
                         {% endblock %}
 
@@ -55,9 +53,10 @@
                             {% for item in products %}
                                 <div class="row">
                                     <div class="col-12 col-sm">
-                                        {{ item.title|u.truncate(30, '...') }}
+                                        <span class="d-none d-sm-inline">{{ item.title|u.truncate(35, '...') }}</span>
+                                        <span class="d-inline d-sm-none">{{ item.title }}</span>
 
-                                        <div class="d-none d-md-inline">
+                                        <div class="d-inline">
                                             {% if item.special %}
                                                 <i class="fas fa-fw fa-tag pl-1" title="{{ 'Special'|locale }}"></i>
                                             {% endif %}
@@ -89,7 +88,7 @@
                                             </div>
                                         {% endif %}
                                     </div>
-                                    <div class="col-4 col-sm-2 text-md-right">
+                                    <div class="col-4 col-sm-1 text-md-right">
                                         {{ item.price()|number_format(2, '.', ' ') }}
                                     </div>
                                     <div class="col-4 col-sm-3 text-right">
