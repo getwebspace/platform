@@ -608,7 +608,7 @@ class TwigExtension extends AbstractExtension
             if (!blank($product->dimension['length']) && !blank($product->dimension['width']) && !blank($product->dimension['height'])) {
                 $ratio = $this->parameter('catalog_dimensional_weight', 5000);
                 $length_class = $this->reference(ReferenceType::LENGTH_CLASS)->firstWhere('value.unit', $product->dimension['length_class']);
-                $length_value = $length_class ? $length_class->getValue()['value'] : 1;
+                $length_value = $length_class ? $length_class->value()['value'] : 1;
 
                 return round(
                     ($product->dimension['length'] * $length_value) *
