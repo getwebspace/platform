@@ -2,12 +2,13 @@
 {% set is_price_self = product.pivot.price_type == price_self %}
 
 <div class="card mb-2" data-product="{{ product.uuid }}" data-price="{{ product.price('price') }}" data-price_wholesale="{{ product.price('price_wholesale') }}" data-discount="{{ product.discount }}">
-    <div class="card-body">
+    <div class="card-header">
+        <a href="/cup/catalog/product/{{ product.uuid }}/edit" target="_blank">{{ product.title }}</a>
+    </div>
+
+    <div class="card-body my-0 py-0">
         <div class="row">
-            <div class="col-12">
-                <a href="/cup/catalog/product/{{ product.uuid }}/edit" target="_blank">{{ product.title }}</a>
-            </div>
-            <div class="col-6 col-sm-6">
+            <div class="col-6">
                 <div class="form-group">
                     <label><b>{{ 'Price'|locale }}</b></label>
                     <div class="input-group" data-input>
@@ -20,7 +21,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="col-3">
                 {% include 'cup/form.twig' with {
                     'label': 'Discount'|locale,
