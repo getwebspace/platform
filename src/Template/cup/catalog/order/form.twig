@@ -224,8 +224,8 @@
                             {% include 'cup/catalog/order/form-product-item.twig' with {'product': product} %}
                         {% endfor %}
                     </div>
-                    <div class="card-footer text-center">
-                        <b>{{ 'Total'|locale }}</b>: <span data-order-total>{{ order.totalSum() }}</span>
+                    <div class="card-footer bg-light text-right">
+                        <b data-order-total>{{ order.totalSum()|number_format(2, '.', '') }}</b>
                     </div>
                 </div>
             </div>

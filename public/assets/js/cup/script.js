@@ -611,7 +611,7 @@ $(() => {
                     discount = Math.abs($row.find('input[name$="[discount]"]').val()),
                     count = $row.find('input[name$="[count]"]').val();
 
-                if (count > 0) {
+                if (parseFloat(count) > 0) {
                     let sum = price * count;
 
                     if (price_type === 'price_self') {
@@ -623,7 +623,9 @@ $(() => {
                     $row.remove();
                 }
 
-                $('[data-order-total]').text($('[data-subtotal]').toArray().reduce((sum, el) => sum + parseFloat(el.innerText), 0))
+                $('[data-order-total]').text(
+                    $('[data-subtotal]').toArray().reduce((sum, el) => sum + parseFloat(el.innerText), 0)
+                )
             })
         }
     }
