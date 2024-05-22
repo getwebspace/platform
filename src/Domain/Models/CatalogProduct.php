@@ -197,13 +197,6 @@ class CatalogProduct extends Model
         )->withPivot('count');
     }
 
-    protected function discount(): Attribute
-    {
-        return Attribute::make(
-            set: fn ($value) => $value > 0 ? -$value : $value,
-        );
-    }
-
     public function price(string $type = 'price', int $precision = 0): float
     {
         $price = match ($type) {
@@ -212,8 +205,8 @@ class CatalogProduct extends Model
             'price_wholesale' => $this->priceWholesale,
         };
 
-        if ($this->discount < 0) {
-            $price = max(0, $price + $this->discount);
+        if ($this->discount) {
+            $price = max(0, $price + (-abs($this->discount)));
         }
         if (!$this->tax_included && $this->tax > 0) {
             $price += $price * ($this->tax / 100);
@@ -230,8 +223,8 @@ class CatalogProduct extends Model
             'price_wholesale' => $this->priceWholesale,
         };
 
-        if ($this->discount < 0) {
-            $price = max(0, $price + $this->discount);
+        if ($this->discount) {
+            $price = max(0, $price + (-abs($this->discount)));
         }
 
         $tax = 0;
@@ -278,6 +271,11 @@ class CatalogProduct extends Model
         return array_merge(
             parent::toArray(),
             [
+                'calculated' => [
+                    'price_first' => $this->price('price_first'),
+                    'price' => $this->price('price'),
+                    'price_wholesale' => $this->price('price_wholesale'),
+                ],
                 'category' => [
                     'uuid' => $this->category->uuid,
                     'title' => $this->category->title,
@@ -304,8 +302,8 @@ class CatalogProduct extends Model
     {
         $price = $this->pivot->price;
 
-        if ($this->pivot->discount < 0) {
-            $price = max(0, $price + $this->pivot->discount);
+        if ($this->pivot->discount) {
+            $price = max(0, $price + (-abs($this->pivot->discount)));
         }
         if (!$this->pivot->tax_included && $this->pivot->tax > 0) {
             $price += $price * ($this->pivot->tax / 100);
@@ -326,15 +324,15 @@ class CatalogProduct extends Model
 
     public function totalDiscount(): float
     {
-        return $this->pivot->discount * $this->pivot->count;
+        return (-abs($this->pivot->discount)) * $this->pivot->count;
     }
 
     public function totalTax($precision = 0): float
     {
         $price = $this->pivot->price;
 
-        if ($this->pivot->discount < 0) {
-            $price = max(0, $price + $this->pivot->discount);
+        if ($this->pivot->discount) {
+            $price = max(0, $price + (-abs($this->pivot->discount)));
         }
 
         $tax = 0;

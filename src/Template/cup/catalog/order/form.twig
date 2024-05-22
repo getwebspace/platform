@@ -215,52 +215,17 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div class="tab-content">
-                            <table data-table="order" class="table table-striped table-hover" style="width: 100%;">
-                                <thead>
-                                    <tr>
-                                        <th class="no-sorting">{{ 'Item'|locale }}</th>
-                                        <th width="15%" class="no-sorting">{{ 'Price'|locale }}</th>
-                                        <th width="15%" class="no-sorting">{{ 'Subtotal'|locale }}</th>
-                                        <th width="15%" class="no-sorting">{{ 'Count items'|locale }}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for product in order.products %}
-                                        <tr data-product="{{ product.uuid }}">
-                                            <td>
-                                                <a href="/cup/catalog/product/{{ product.uuid }}/edit" target="_blank">{{ product.title }}</a>
-                                            </td>
-                                            <td data-price>{{ product.totalPrice()|number_format(2, '.', ' ') }}</td>
-                                            <td data-subtotal>{{ (product.totalSum())|number_format(2, '.', ' ') }}</td>
-                                            <td>
-                                                {% include 'cup/form.twig' with {
-                                                    'type': 'number',
-                                                    'name': 'products['~ product.uuid ~'][count]',
-                                                    'args': {
-                                                        'value': product.totalCount(),
-                                                        'placeholder': '1',
-                                                        'step': 'any',
-                                                        'min': '0',
-                                                    }
-                                                } %}
-
-                                                <div style="display: none">
-                                                    {% include 'cup/form.twig' with {
-                                                        'type': 'hidden',
-                                                        'name': 'products['~ product.uuid ~'][price_type]',
-                                                        'args': {
-                                                            'value': product.pivot.price_type,
-                                                        }
-                                                    } %}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                    <div class="card-body" data-table="order">
+                        <div data-template>
+                            {% include 'cup/catalog/order/form-product-item.twig' with {'product': null} %}
                         </div>
+
+                        {% for product in order.products.sortBy('type') %}
+                            {% include 'cup/catalog/order/form-product-item.twig' with {'product': product} %}
+                        {% endfor %}
+                    </div>
+                    <div class="card-footer text-center">
+                        <b>{{ 'Total'|locale }}</b>: <span data-order-total>{{ order.totalSum() }}</span>
                     </div>
                 </div>
             </div>

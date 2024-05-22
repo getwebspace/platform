@@ -40,69 +40,6 @@ class OrderService extends AbstractService
         return $order;
     }
 
-    public function getDayCount($date = 'now'): int
-    {
-        $date = datetime($date)->format('Y-m-d');
-        $count = CatalogOrder::query()->whereDate('date', $date)->count();
-
-        return $count + 1;
-    }
-
-    private function generateSerial(): string
-    {
-        $currentDate = datetime();
-        $dayOfYear = str_pad(strval((+$currentDate->format('z')) + 1), 3, '0', STR_PAD_RIGHT);
-        $year = $currentDate->format('y');
-
-        $ordersCount = $this->getDayCount();
-        $dailyOrderNumberFormatted = str_pad(strval($ordersCount), 3, '0', STR_PAD_LEFT);
-
-        return "{$year}{$dayOfYear}{$dailyOrderNumberFormatted}";
-    }
-
-    private function products(array $products = []): array
-    {
-        $productsForSync = [];
-
-        foreach ($products as $uuid => $opts) {
-            /** @var CatalogProduct $product */
-            $product = CatalogProduct::find($uuid);
-
-            if ($product) {
-                $price = floatval($opts['price'] ?? 0);
-                $priceType = in_array($opts['price_type'], \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE, true) ? $opts['price_type'] : 'price';
-                $count = floatval($opts['count'] ?? 0);
-                $discount = $product->discount;
-                $tax = $product->tax;
-                $tax_included = $product->tax_included;
-
-                $price = match ($priceType) {
-                    \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE => $product->price,
-                    \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE_WHOLESALE => $product->priceWholesale,
-                    \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE_SELF => $price,
-                };
-
-                // in case self price
-                if ($priceType === \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE_SELF) {
-                    $discount = floatval($opts['discount'] ?? $product->discount);
-                    $tax = floatval($opts['tax'] ?? $product->tax);
-                    $tax_included = floatval($opts['tax_included'] ?? $product->tax_included);
-                }
-
-                $productsForSync[$uuid] = [
-                    'price' => $price,
-                    'price_type' => $priceType,
-                    'count' => $count,
-                    'discount' => $discount,
-                    'tax' => $tax,
-                    'tax_included' => $tax_included,
-                ];
-            }
-        }
-
-        return $productsForSync;
-    }
-
     /**
      * @throws OrderNotFoundException
      *
@@ -239,5 +176,66 @@ class OrderService extends AbstractService
         }
 
         throw new OrderNotFoundException();
+    }
+
+    public function getDayCount($date = 'now'): int
+    {
+        $date = datetime($date)->format('Y-m-d');
+        $count = CatalogOrder::query()->whereDate('date', $date)->count();
+
+        return $count + 1;
+    }
+
+    private function generateSerial(): string
+    {
+        $currentDate = datetime();
+        $dayOfYear = str_pad(strval((+$currentDate->format('z')) + 1), 3, '0', STR_PAD_RIGHT);
+        $year = $currentDate->format('y');
+
+        $ordersCount = $this->getDayCount();
+        $dailyOrderNumberFormatted = str_pad(strval($ordersCount), 3, '0', STR_PAD_LEFT);
+
+        return "{$year}{$dayOfYear}{$dailyOrderNumberFormatted}";
+    }
+
+    private function products(array $products = []): array
+    {
+        $productsForSync = [];
+
+        foreach ($products as $uuid => $opts) {
+            /** @var CatalogProduct $product */
+            $product = CatalogProduct::find($uuid);
+
+            if ($product) {
+                $priceType = in_array($opts['price_type'], \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE, true) ? $opts['price_type'] : 'price';
+                $price = match ($priceType) {
+                    \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE => $product->price,
+                    \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE_WHOLESALE => $product->priceWholesale,
+                    \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE_SELF => floatval($opts['price'] ?? 0),
+                };
+                $discount = $product->discount;
+                $count = floatval($opts['count'] ?? 0);
+                $tax = $product->tax;
+                $tax_included = $product->tax_included;
+
+                // in case self price
+                if ($priceType === \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE_SELF) {
+                    $discount = floatval($opts['discount'] ?? $product->discount);
+                    $tax = floatval($opts['tax'] ?? $product->tax);
+                    $tax_included = floatval($opts['tax_included'] ?? $product->tax_included);
+                }
+
+                $productsForSync[$uuid] = [
+                    'price' => $price,
+                    'price_type' => $priceType,
+                    'count' => $count,
+                    'discount' => -abs($discount),
+                    'tax' => $tax,
+                    'tax_included' => $tax_included,
+                ];
+            }
+        }
+
+        return $productsForSync;
     }
 }

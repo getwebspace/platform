@@ -108,7 +108,7 @@ $(() => {
 
         $el.select2({
             theme: 'bootstrap',
-            width: '100%',
+            width: $el.data('width') ? $el.data('width') : '100%',
             data: $el.data('data') ? $el.data('data') : null,
             ajax: $el.data('ajax') ? {url: $el.data('ajax'), dataType: 'json'} : null,
             placeholder: $el.data('placeholder') ? $el.data('placeholder') : null,
@@ -494,13 +494,12 @@ $(() => {
         {
             let $modal = $('[data-order-modal-product]');
             let $table = $('[data-table="order"]');
+            let $template = $table.find('[data-template] [data-product]').detach();
 
             // open modal
             $('[data-btn-order-modal-product]').on('click', () => {
                 $modal.find('#products').html('');
                 $modal.find('input[type="text"]').val('');
-                $modal.find('input[type="number"]').val(1);
-
                 $modal.modal();
             });
 
@@ -518,7 +517,7 @@ $(() => {
                                     $('<option>')
                                         .data('json', JSON.stringify(item))
                                         .attr('value', item.title)
-                                        .text(item.price)
+                                        .text([item.vendorcode, item.barcode].filter((i) => !!i).join('; '))
                                 )
                             }
                         }
@@ -529,72 +528,102 @@ $(() => {
             // confirm select
             $modal.find('button').on('click', () => {
                 let value = $modal.find('input[type="text"]').val();
-                let price_type = $modal.find('select').val();
-                let count = $modal.find('input[type="number"]').val();
                 let $option = $modal.find(`#products option[value="${value}"]`)
 
                 if ($option) {
                     let json = $option.data('json'),
                         data = JSON.parse(json),
-                        $isExist = $table.find(`tr[data-product="${data.uuid}"]`);
+                        $find = $table.find(`[data-product="${data.uuid}"]`);
 
-                    if ($isExist.length === 0) {
-                        let $tr = $('<tr>').attr('data-product', data.uuid);
+                    if ($find.length === 0) {
+                        let $buf = $template.clone()
+                            .attr('data-product', data.uuid)
+                            .attr('data-price', data.calculated.price)
+                            .attr('data-price-wholesale', data.calculated.price_wholesale)
+                            .attr('data-discount', data.discount)
+                        ;
+                        $buf.find('span.select2')
+                            .remove()
+                        ;
+                        $buf.find('a')
+                            .attr('href', `/cup/catalog/product/${data.uuid}/edit`)
+                            .text(data.title)
+                        ;
+                        $buf.find('[name="products[][price_type]"]')
+                            .attr('name', 'products[' + data.uuid + '][price_type]')
+                            .val('price')
+                        ;
+                        $buf.find('[name="products[][price]"]')
+                            .attr('name', 'products[' + data.uuid + '][price]')
+                            .val(data.calculated.price)
+                        ;
+                        $buf.find('[name="products[][discount]"]')
+                            .attr('name', 'products[' + data.uuid + '][discount]')
+                            .val(Math.abs(data.discount))
+                        ;
+                        $buf.find('[name="products[][count]"]')
+                            .attr('name', 'products[' + data.uuid + '][count]')
+                            .val(1)
+                        ;
+                        $buf.find('[data-subtotal]')
+                            .text(data.calculated.price.toFixed(2))
+                        ;
 
-                        let price = price_type === 'price' ? data['price'] : data['priceWholesale'];
+                        $buf.appendTo($table);
 
-                        $tr.append(
-                            $('<td>').html(
-                                $('<a>')
-                                    .attr('href', `/cup/catalog/product/${data.uuid}/edit`)
-                                    .attr('target', '_blank')
-                                    .text(data.title)
-                            ),
-                            $('<td data-price>').text((price).toFixed(2)),
-                            $('<td data-subtotal>').text((price * count).toFixed(2)),
-                            $('<td>')
-                                .append(
-                                    $('<input class="form-control" type="number" placeholder="1" min="0" step="any">')
-                                        .attr('name', 'products[' + data.uuid + '][count]')
-                                        .val(count)
-                                )
-                                .append(
-                                    $('<div>')
-                                        .attr('style', 'display: none')
-                                        .html(
-                                            $('<input class="form-control" type="hidden">')
-                                                .attr('name', 'products[' + data.uuid + '][price_type]')
-                                                .val(price_type)
-                                        )
-                                ),
-                        )
-
-                        $tr.appendTo($table);
+                        init_select2($buf.find('select'));
                     } else {
-                        let price = $isExist.find('[data-price]').text();
-                        let count_old = $isExist.find('input').val();
-                        let count_new = parseFloat(count_old) + parseFloat(count);
-
-                        $isExist.find('input[type="number"]').val(count_new);
-                        $isExist.find('[data-subtotal]').text((parseFloat(price) * count_new).toFixed(2));
+                        $find.addClass('border border-danger');
+                        setTimeout(() => $find.removeClass('border border-danger'), 2000);
                     }
 
                     $.modal.close();
                 }
             })
 
-            // update price when change count
+            // change price type
+            $table.on('change', 'select', (e) => {
+                let $input = $(e.currentTarget),
+                    $row = $input.parents('[data-product]'),
+                    $price = $row.find('input[name$="[price]"]'),
+                    $discount = $row.find('input[name$="[discount]"]'),
+                    isSelfPrice = $input.val() === 'price_self';
+
+                if (!isSelfPrice) {
+                    $price.val($row.data($input.val()) ?? '0');
+                    $discount.val(Math.abs($row.data('discount')));
+                } else {
+                    $discount.val(0);
+                }
+
+                $price.prop('readonly', !isSelfPrice);
+                $discount.prop('readonly', !isSelfPrice);
+
+                $price.trigger('change');
+            });
+
+            // update sum when change price, discount or quantity
             $table.on('change keyup', 'input[type="number"]', (e) => {
                 let $input = $(e.currentTarget),
-                    $row = $input.parents('tr'),
-                    price = $row.find('[data-price]').text().replace(' ', ''),
-                    count = $input.val();
+                    $row = $input.parents('[data-product]'),
+                    price_type = $row.find('select[name$="[price_type]"]').val(),
+                    price = $row.find('input[name$="[price]"]').val(),
+                    discount = Math.abs($row.find('input[name$="[discount]"]').val()),
+                    count = $row.find('input[name$="[count]"]').val();
 
                 if (count > 0) {
-                    $row.find('[data-subtotal]').text((parseFloat(price) * parseFloat(count)).toFixed(2));
+                    let sum = price * count;
+
+                    if (price_type === 'price_self') {
+                         sum = (price - discount) * count;
+                    }
+
+                    $row.find('[data-subtotal]').text((sum).toFixed(2));
                 } else {
-                    $row.detach();
+                    $row.remove();
                 }
+
+                $('[data-order-total]').text($('[data-subtotal]').toArray().reduce((sum, el) => sum + parseFloat(el.innerText), 0))
             })
         }
     }
