@@ -2,8 +2,8 @@
 
 namespace App\Application\Actions\Common;
 
-use App\Application\Search;
 use App\Domain\AbstractAction;
+use App\Domain\Models\CatalogProduct;
 use App\Domain\Service\Catalog\ProductService as CatalogProductService;
 use App\Domain\Service\Page\PageService;
 use App\Domain\Service\Publication\PublicationService;
@@ -48,6 +48,15 @@ class SearchAction extends AbstractAction
                     }
                 }
             }
+
+            // fix product address ..
+            $result = $result->each(function ($model) {
+                if ($model instanceof CatalogProduct) {
+                    $model->address = 'catalog/' . $model->address;
+                }
+
+                return $model;
+            });
         }
 
         return $this
