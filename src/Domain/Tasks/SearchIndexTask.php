@@ -19,59 +19,30 @@ class SearchIndexTask extends AbstractTask
 
     protected function action(array $args = []): void
     {
-        $index = [];
+        /** @var \TeamTNT\TNTSearch\TNTSearch $tnt */
+        $tnt = $this->container->get(\TeamTNT\TNTSearch\TNTSearch::class);
 
-        $pageService = $this->container->get(\App\Domain\Service\Page\PageService::class);
-        foreach ($pageService->read() as $item) {
-            /** @var Page $item */
-            $index[] = $this->implode('page', $item->uuid, Search::getIndexedText([
-                $item->title,
-                $item->content,
-                $item->meta['title'] ?? '',
-                $item->meta['description'] ?? '',
-                $item->meta['keywords'] ?? '',
-            ], true));
+        $queries = [
+            'page' => 'SELECT uuid, title, content, meta FROM page',
+            'publication' => 'SELECT uuid, title, content, meta FROM publication',
+            'catalog_product' => 'SELECT uuid, title, description, extra, vendorcode, barcode, country, manufacturer, tags, meta FROM catalog_product',
+        ];
+        $i = 0;
+
+        // index tables
+        foreach ($queries as $name => $query) {
+            $indexer = $tnt->createIndex("{$name}.index");
+            $indexer->setPrimaryKey('uuid');
+            $indexer->query($query);
+            $indexer->run();
+
+            // todo add limit offset in queries
+
+            $this->setProgress(++$i, count($queries));
         }
-
-        $publicationService = $this->container->get(\App\Domain\Service\Publication\PublicationService::class);
-        foreach ($publicationService->read() as $item) {
-            /** @var Publication $item */
-            $index[] = $this->implode('publication', $item->uuid, Search::getIndexedText([
-                $item->title,
-                $item->content['short'] ?? '',
-                $item->content['full'] ?? '',
-                $item->meta['title'] ?? '',
-                $item->meta['description'] ?? '',
-                $item->meta['keywords'] ?? '',
-            ], true));
-        }
-
-        $productService = $this->container->get(\App\Domain\Service\Catalog\ProductService::class);
-        foreach ($productService->read(['status' => \App\Domain\Casts\Catalog\Status::WORK]) as $item) {
-            /** @var CatalogProduct $item */
-            $index[] = $this->implode('catalog_product', $item->uuid, Search::getIndexedText([
-                $item->title,
-                $item->description,
-                $item->export,
-                $item->country,
-                $item->manufacturer,
-                $item->vendorcode,
-                $item->barcode,
-                $item->meta['title'] ?? '',
-                $item->meta['description'] ?? '',
-                $item->meta['keywords'] ?? '',
-            ], true));
-        }
-
-        file_put_contents(Search::CACHE_FILE, implode(PHP_EOL, $index));
 
         $this->container->get(\App\Application\PubSub::class)->publish('task:search:indexed');
 
-        $this->setStatusDone((string) count($index));
-    }
-
-    protected function implode(string $type, string $uuid, array $data): string
-    {
-        return $type . ':' . $uuid . ': ' . implode(' ', $data);
+        $this->setStatusDone();
     }
 }

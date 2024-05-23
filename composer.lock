@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "56f76ff21cadeb08532480560b4c82a8",
+    "content-hash": "378998a1916f610a34938285fe3e26e0",
     "packages": [
         {
             "name": "alksily/support",
@@ -2310,6 +2310,67 @@
                 "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/1.29.0"
             },
             "time": "2023-06-14T22:48:31+00:00"
+        },
+        {
+            "name": "predis/predis",
+            "version": "v2.2.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/predis/predis.git",
+                "reference": "b1d3255ed9ad4d7254f9f9bba386c99f4bb983d1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/predis/predis/zipball/b1d3255ed9ad4d7254f9f9bba386c99f4bb983d1",
+                "reference": "b1d3255ed9ad4d7254f9f9bba386c99f4bb983d1",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2 || ^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.3",
+                "phpstan/phpstan": "^1.9",
+                "phpunit/phpunit": "^8.0 || ~9.4.4"
+            },
+            "suggest": {
+                "ext-relay": "Faster connection with in-memory caching (>=0.6.2)"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Predis\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Till Krüss",
+                    "homepage": "https://till.im",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "A flexible and feature-complete Redis client for PHP.",
+            "homepage": "http://github.com/predis/predis",
+            "keywords": [
+                "nosql",
+                "predis",
+                "redis"
+            ],
+            "support": {
+                "issues": "https://github.com/predis/predis/issues",
+                "source": "https://github.com/predis/predis/tree/v2.2.2"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/sponsors/tillkruss",
+                    "type": "github"
+                }
+            ],
+            "time": "2023-09-13T16:42:03+00:00"
         },
         {
             "name": "psr/cache",
@@ -5165,6 +5226,85 @@
                 }
             ],
             "time": "2024-02-26T10:35:24+00:00"
+        },
+        {
+            "name": "teamtnt/tntsearch",
+            "version": "v4.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/teamtnt/tntsearch.git",
+                "reference": "d3fc3e7ccc1760dc4b8604807be01140fa7f69c5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/teamtnt/tntsearch/zipball/d3fc3e7ccc1760dc4b8604807be01140fa7f69c5",
+                "reference": "d3fc3e7ccc1760dc4b8604807be01140fa7f69c5",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "ext-pdo_sqlite": "*",
+                "ext-sqlite3": "*",
+                "php": "~7.1|^8",
+                "predis/predis": "^2.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "7.*|8.*|9.*",
+                "symfony/var-dumper": "^4|^5.2"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "helper/helpers.php"
+                ],
+                "psr-4": {
+                    "TeamTNT\\TNTSearch\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nenad Tičarić",
+                    "email": "nticaric@gmail.com",
+                    "homepage": "http://www.tntstudio.us",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A fully featured full text search engine written in PHP",
+            "homepage": "https://github.com/teamtnt/tntsearch",
+            "keywords": [
+                "Fuzzy search",
+                "bm25",
+                "fulltext",
+                "geosearch",
+                "search",
+                "stemming",
+                "teamtnt",
+                "text classification",
+                "tntsearch"
+            ],
+            "support": {
+                "issues": "https://github.com/teamtnt/tntsearch/issues",
+                "source": "https://github.com/teamtnt/tntsearch/tree/v4.2.1"
+            },
+            "funding": [
+                {
+                    "url": "https://ko-fi.com/nticaric",
+                    "type": "ko_fi"
+                },
+                {
+                    "url": "https://opencollective.com/tntsearch",
+                    "type": "open_collective"
+                },
+                {
+                    "url": "https://www.patreon.com/nticaric",
+                    "type": "patreon"
+                }
+            ],
+            "time": "2023-07-19T10:35:23+00:00"
         },
         {
             "name": "twig/intl-extra",

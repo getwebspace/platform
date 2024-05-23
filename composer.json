@@ -39,7 +39,8 @@
         "symfony/var-dumper": "^v7.0.0",
         "voku/html-compress-twig": "^4.0.2",
         "rybakit/twig-deferred-extension": "^v3.0.4",
-        "robmorgan/phinx": "^0.16.0"
+        "robmorgan/phinx": "^0.16.0",
+        "teamtnt/tntsearch": "^4.2"
     },
     "require-dev": {
         "fakerphp/faker": "^2.0.x-dev",

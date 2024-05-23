@@ -56,6 +56,28 @@ return function (ContainerBuilder $containerBuilder): void {
         },
     ]);
 
+    // tnt search
+    $containerBuilder->addDefinitions([
+        \TeamTNT\TNTSearch\TNTSearch::class => function (ContainerInterface $c) {
+            $pdo = $c->get(\Illuminate\Database\Connection::class)->getPdo();
+
+            $tnt = new \TeamTNT\TNTSearch\TNTSearch();
+            $tnt->setDatabaseHandle($pdo);
+            $tnt->loadConfig([
+                'storage' => VAR_DIR . '/cache',
+                'engine' => \TeamTNT\TNTSearch\Engines\SqliteEngine::class,
+                'stemmer' => \TeamTNT\TNTSearch\Stemmer\PorterStemmer::class,
+            ]);
+            $tnt->engine->setDatabaseHandle($pdo);
+            $tnt->fuzziness(true);
+            $tnt->engine->fuzzy_prefix_length = 2;
+            $tnt->engine->fuzzy_max_expansions = 50;
+            $tnt->engine->fuzzy_distance = 2;
+
+            return $tnt;
+        },
+    ]);
+
     // plugins
     $containerBuilder->addDefinitions([
         'plugin' => function (ContainerInterface $c) {

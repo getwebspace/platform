@@ -27,9 +27,7 @@ return function (ContainerBuilder $containerBuilder): void {
         // catalog
         CatalogAttributeService::class => \DI\autowire(CatalogAttributeService::class),
         CatalogCategoryService::class => \DI\autowire(CatalogCategoryService::class),
-        CatalogOrderProductService::class => \DI\autowire(CatalogOrderProductService::class),
         CatalogOrderService::class => \DI\autowire(CatalogOrderService::class),
-        CatalogProductAttributeService::class => \DI\autowire(CatalogProductAttributeService::class),
         CatalogProductService::class => \DI\autowire(CatalogProductService::class),
 
         // file
