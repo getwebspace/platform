@@ -2,11 +2,7 @@
 
 namespace App\Domain\Tasks;
 
-use App\Application\Search;
 use App\Domain\AbstractTask;
-use App\Domain\Models\CatalogProduct;
-use App\Domain\Models\Page;
-use App\Domain\Models\Publication;
 
 class SearchIndexTask extends AbstractTask
 {
@@ -31,12 +27,10 @@ class SearchIndexTask extends AbstractTask
 
         // index tables
         foreach ($queries as $name => $query) {
-            $indexer = $tnt->createIndex("{$name}.index");
+            $indexer = $tnt->createIndex("{$name}.index", true);
             $indexer->setPrimaryKey('uuid');
             $indexer->query($query);
             $indexer->run();
-
-            // todo add limit offset in queries
 
             $this->setProgress(++$i, count($queries));
         }
