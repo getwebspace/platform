@@ -75,7 +75,7 @@ class MainPageAction extends AbstractAction
                         ELSE (cop.price - cop.discount) * cop.count
                     END
                 ) as sum'),
-                $this->db->raw('AVG(order_sums.sum) as average_check')
+                $this->db->raw('ROUND(AVG(order_sums.sum)) as average_check')
             )
             ->leftJoin('catalog_order_product as cop', 'co.uuid', '=', 'cop.order_uuid')
             ->leftJoin('catalog_product as cp', 'cop.product_uuid', '=', 'cp.uuid')
