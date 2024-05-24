@@ -236,6 +236,23 @@
                                         </div>
                                     </div>
 
+                                    {% if chart.count() > 25 %}
+                                        <script>window.catalog_stats = {{ json_encode(chart) }};</script>
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="card full-height">
+                                                    <div class="card-header">
+                                                        <div class="card-title">{{ 'Shop stats'|locale }}</div>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <canvas id="catalog-stats" height="200" style="display: block; width: 100%; height: 200px;"></canvas>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="card full-height">
@@ -453,6 +470,7 @@
     <script src="/assets/js/core/moment.min.js?v={{ SHA }}"></script>
     <script src="/assets/js/core/moment-with-locales.min.js?v={{ SHA }}"></script>
     <script src="/assets/js/core/moment-timezone-with-data.js?v={{ SHA }}"></script>
+    <script src="/assets/js/core/chart.min.js?v={{ SHA }}"></script>
 
     <script>moment.locale('{{ _language }}')</script>
 

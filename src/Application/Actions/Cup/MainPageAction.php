@@ -4,6 +4,7 @@ namespace App\Application\Actions\Cup;
 
 use App\Domain\AbstractAction;
 use App\Domain\Models\User;
+use Carbon\Carbon;
 
 class MainPageAction extends AbstractAction
 {
@@ -11,6 +12,32 @@ class MainPageAction extends AbstractAction
     {
         /** @var User $user */
         $user = $this->request->getAttribute('user', false);
+
+        // stats
+        $chart = $this->db
+            ->table('catalog_order as co')
+            ->select(
+                $this->db->raw('DATE(co.date) as date'),
+                $this->db->raw('COUNT(DISTINCT co.uuid) as order_count'),
+                $this->db->raw('SUM(
+                    CASE
+                        WHEN cop.tax_included = false THEN (cop.price + cop.tax - cop.discount) * cop.count
+                        ELSE (cop.price - cop.discount) * cop.count
+                    END
+                ) as sum'),
+                $this->db->raw('AVG(
+                    CASE
+                        WHEN cop.tax_included = false THEN (cop.price + cop.tax - cop.discount) * cop.count
+                        ELSE (cop.price - cop.discount) * cop.count
+                    END
+                ) as average_check')
+            )
+            ->leftJoin('catalog_order_product as cop', 'co.uuid', '=', 'cop.order_uuid')
+            ->leftJoin('catalog_product as cp', 'cop.product_uuid', '=', 'cp.uuid')
+            ->where('co.date', '>=', Carbon::now()->subDays(30))
+            ->groupBy($this->db->raw('DATE(co.date)'))
+            ->orderBy($this->db->raw('DATE(co.date)'))
+            ->get();
 
         return $this->respondWithTemplate('cup/layout.twig', [
             'notepad' => $this->parameter('notepad_' . $user->username, ''),
@@ -27,6 +54,7 @@ class MainPageAction extends AbstractAction
                 'forms' => \App\Domain\Models\Form::count(),
                 'files' => \App\Domain\Models\File::count(),
             ],
+            'chart' => $chart,
             'properties' => [
                 'version' => [
                     'branch' => ($_ENV['COMMIT_BRANCH'] ?? 'other'),

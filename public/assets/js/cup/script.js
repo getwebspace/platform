@@ -118,6 +118,63 @@ $(() => {
     }
     $('[data-input] select').each((i, el) => init_select2($(el)));
 
+    // main catalog stats
+    {
+        let canvas = document.querySelector('#catalog-stats');
+
+        if (canvas) {
+            let data = window.catalog_stats ?? [];
+
+            let labels = data.map(item => item.date);
+            let orderCounts = data.map(item => item.order_count);
+            let sums = data.map(item => item.sum);
+            let averageChecks = data.map(item => item.average_check);
+
+            let statisticsChart = new Chart(canvas, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'COUNT',
+                            data: orderCounts,
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            yAxisID: 'y-axis-1',
+                        },
+                        {
+                            label: 'SUM',
+                            data: sums,
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                            yAxisID: 'y-axis-2',
+                        },
+                        {
+                            label: 'AVG',
+                            data: averageChecks,
+                            borderColor: 'rgba(255, 159, 64, 1)',
+                            backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                            yAxisID: 'y-axis-2',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'right',
+                            align: 'left'
+                        }
+                    }
+                }
+            });
+
+            // on resize
+            window.addEventListener('resize', () => statisticsChart.resize());
+        }
+    }
+
     // publication preview
     $('form [data-click="preview"]').on('click', (e) => {
         e.preventDefault();
