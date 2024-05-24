@@ -136,35 +136,70 @@ $(() => {
                     labels: labels,
                     datasets: [
                         {
-                            label: 'COUNT',
-                            data: orderCounts,
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            yAxisID: 'y-axis-1',
-                        },
-                        {
                             label: 'SUM',
                             data: sums,
-                            borderColor: 'rgba(153, 102, 255, 1)',
-                            backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                            yAxisID: 'y-axis-2',
+                            type: 'line',
+                            borderColor: '#177dff',
+                            pointStyle: 'star',
+                            pointBackgroundColor: 'rgba(23, 125, 255, 0.6)',
+                            pointRadius: 4,
+                            backgroundColor: 'rgba(23, 125, 255, 0.1)',
+                            legendColor: 'rgba(23, 125, 255, 1)',
+                            fill: true,
+                            borderWidth: 2,
+                            yAxisID: 'y-axis-1',
+                            tension: 0.5,
                         },
                         {
                             label: 'AVG',
                             data: averageChecks,
-                            borderColor: 'rgba(255, 159, 64, 1)',
-                            backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                            type: 'line',
+                            borderColor: '#fdaf4b',
+                            pointStyle: 'rectRot',
+                            pointBackgroundColor: 'rgba(253, 175, 75, 0.6)',
+                            pointRadius: 3,
+                            backgroundColor: 'rgba(253, 175, 75, 0.3)',
+                            legendColor: 'rgba(253, 175, 75, 1)',
+                            fill: true,
+                            borderWidth: 2,
+                            tension: 0.3,
+                            yAxisID: 'y-axis-1',
+                        },
+                        {
+                            label: 'COUNT',
+                            data: orderCounts,
+                            type: 'bar',
+                            borderColor: 'rgba(104, 97, 206, 0.3)',
+                            backgroundColor: 'rgba(104, 97, 206, 0.2)',
+                            legendColor: 'rgba(104, 97, 206, 1)',
+                            fill: true,
+                            borderWidth: 2,
+                            borderRadius: Number.MAX_VALUE,
                             yAxisID: 'y-axis-2',
-                        }
+                        },
                     ]
                 },
                 options: {
                     responsive: true,
+                    hover: {
+                        mode: 'index',
+                        intersec: false
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index',
+                    },
                     plugins: {
                         legend: {
                             display: true,
                             position: 'right',
-                            align: 'left'
+                            align: 'left',
+                            labels: {
+                                usePointStyle: true,
+                            },
+                        },
+                        tooltip: {
+                            usePointStyle: true,
                         }
                     }
                 }
