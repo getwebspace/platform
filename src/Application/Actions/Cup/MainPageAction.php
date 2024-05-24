@@ -87,7 +87,7 @@ class MainPageAction extends AbstractAction
             ->orderBy($this->db->raw('DATE(co.date)'))
             ->get();
 
-        if ($orders->isNotEmpty() && false) {
+        if ($orders->isNotEmpty()) {
             $startDate = Carbon::now()->subDays(30);
             $endDate = Carbon::now();
             $period = new DatePeriod($startDate, new DateInterval('P1D'), $endDate->addDay());
