@@ -211,15 +211,15 @@ class ProductExportAction extends CatalogAction
                                     $attribute = $attributes->firstWhere('address', $field);
 
                                     if ($attribute) {
-                                        switch ($attribute->getType()) {
+                                        switch ($attribute->type) {
                                             case \App\Domain\Casts\Catalog\Attribute\Type::STRING:
-                                                $cell->setValue($attribute->getValue());
+                                                $cell->setValue($attribute->value());
 
                                                 break;
 
                                             case \App\Domain\Casts\Catalog\Attribute\Type::INTEGER:
                                                 $cell
-                                                    ->setValue($attribute->getValue())
+                                                    ->setValue($attribute->value())
                                                     ->getStyle()
                                                     ->getNumberFormat()
                                                     ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_00);
@@ -228,7 +228,7 @@ class ProductExportAction extends CatalogAction
 
                                             case \App\Domain\Casts\Catalog\Attribute\Type::FLOAT:
                                                 $cell
-                                                    ->setValue($attribute->getValue())
+                                                    ->setValue($attribute->value())
                                                     ->getStyle()
                                                     ->getNumberFormat()
                                                     ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED2);
