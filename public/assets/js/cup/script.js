@@ -120,11 +120,10 @@ $(() => {
 
     // main catalog stats
     {
-        let canvas = document.querySelector('#catalog-stats');
+        let canvas = document.querySelector('#orders_revenue');
+        let data = window.orders_revenue ?? [];
 
-        if (canvas) {
-            let data = window.catalog_stats ?? [];
-
+        if (canvas && data.length) {
             let labels = data.map(item => item.date);
             let orderCounts = data.map(item => item.order_count);
             let sums = data.map(item => item.sum);

@@ -206,6 +206,10 @@ return function (App $app, Container $container): void {
 
                     // catalog
                     $proxy->group('/catalog', function (Group $proxy): void {
+                        // statistic
+                        $proxy->get('/statistic', \App\Application\Actions\Cup\Catalog\CategoryStatisticAction::class)
+                            ->setName('cup:catalog:statistic');
+
                         // categories
                         $proxy->group('/category', function (Group $proxy): void {
                             $proxy->map(['GET', 'POST'], '/add', \App\Application\Actions\Cup\Catalog\Category\CategoryCreateAction::class)

@@ -1,0 +1,52 @@
+{% extends 'cup/layout.twig' %}
+
+{% block breadcrumb %}
+    <div class="page-inner py-5">
+        <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
+            <div>
+                <h2 class="text-white pb-2 fw-bold">{{ 'Statistic'|locale }}</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <script>window.orders_revenue = {{ json_encode(orders_revenue) }};</script>
+
+        <div class="card-header">
+            <div class="card-title">{{ 'Last 30 Days Orders and Revenue Statistics'|locale }}</div>
+        </div>
+        <div class="card-body">
+            <canvas id="orders_revenue" height="250" style="display: block; width: 100%; height: 250px; max-height: 250px;"></canvas>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">{{ 'Last 30 Days Top 10 Sold Producs Statistics'|locale }}</div>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">{{ 'Title'|locale }}</th>
+                        <th scope="col" class="text-right">{{ 'Total sold'|locale }}</th>
+                        <th scope="col" class="text-right">{{ 'Total revenue'|locale }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in top_products %}
+                        <tr>
+                            <th>{{ loop.index }}</th>
+                            <td><a href="/cup/catalog/product/{{ product.uuid }}/edit" target="_blank">{{ product.title }}</a></td>
+                            <td class="text-right">{{ product.total_sold|number_format(2, '.', ' ') }}</td>
+                            <td class="text-right">{{ product.total_revenue|number_format(2, '.', ' ') }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

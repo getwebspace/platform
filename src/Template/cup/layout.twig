@@ -236,23 +236,6 @@
                                         </div>
                                     </div>
 
-                                    {% if chart.count() %}
-                                        <script>window.catalog_stats = {{ json_encode(chart) }};</script>
-
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="card full-height">
-                                                    <div class="card-header">
-                                                        <div class="card-title">{{ 'Last 30 Days Orders and Revenue Statistics'|locale }}</div>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <canvas id="catalog-stats" height="250" style="display: block; width: 100%; height: 250px; max-height: 250px;"></canvas>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    {% endif %}
-
                                     <div class="row">
                                         <div class="col-md-12">
                                             <div class="card full-height">
