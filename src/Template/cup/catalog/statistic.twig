@@ -30,8 +30,7 @@
             <table class="table table-striped mb-0">
                 <thead>
                     <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">{{ 'Title'|locale }}</th>
+                        <th scope="col" class="w-75">{{ 'Title'|locale }}</th>
                         <th scope="col" class="text-right">{{ 'Total sold'|locale }}</th>
                         <th scope="col" class="text-right">{{ 'Total revenue'|locale }}</th>
                     </tr>
@@ -39,10 +38,9 @@
                 <tbody>
                     {% for product in top_products %}
                         <tr>
-                            <th>{{ loop.index }}</th>
                             <td><a href="/cup/catalog/product/{{ product.uuid }}/edit" target="_blank">{{ product.title }}</a></td>
-                            <td class="text-right">{{ product.total_sold|number_format(2, '.', ' ') }}</td>
-                            <td class="text-right">{{ product.total_revenue|number_format(2, '.', ' ') }}</td>
+                            <td class="text-right text-nowrap">{{ product.total_sold|number_format(2, '.', ' ') }}</td>
+                            <td class="text-right text-nowrap">{{ product.total_revenue|number_format(2, '.', ' ') }}</td>
                         </tr>
                     {% endfor %}
                 </tbody>

@@ -96,6 +96,7 @@ class CategoryStatisticAction extends CatalogAction
             ->where('cp.type', '=', 'product')
             ->groupBy('cp.uuid', 'cp.title')
             ->orderBy('total_sold', 'desc')
+            ->orderBy('total_revenue', 'desc')
             ->limit(10)
             ->get();
     }
