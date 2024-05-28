@@ -191,8 +191,7 @@ $(() => {
                     plugins: {
                         legend: {
                             display: true,
-                            position: 'right',
-                            align: 'left',
+                            position: 'bottom',
                             labels: {
                                 usePointStyle: true,
                             },
