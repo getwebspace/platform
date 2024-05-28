@@ -2,6 +2,7 @@
 
 namespace App\Domain\Models;
 
+use App\Domain\Casts\Decimal;
 use App\Domain\Casts\Json;
 use App\Domain\Casts\Task\Status as TaskStatus;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -45,7 +46,7 @@ class Task extends Model
     protected $casts = [
         'title' => 'string',
         'action' => 'string',
-        'progress' => 'float',
+        'progress' => Decimal::class,
         'status' => TaskStatus::class,
         'params' => Json::class,
         'output' => 'string',

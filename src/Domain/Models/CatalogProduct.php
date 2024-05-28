@@ -8,6 +8,7 @@ use App\Domain\Casts\Catalog\Product\Dimension as ProductDimension;
 use App\Domain\Casts\Catalog\Product\Tags as ProductTags;
 use App\Domain\Casts\Catalog\Product\Type as ProductType;
 use App\Domain\Casts\Catalog\Status;
+use App\Domain\Casts\Decimal;
 use App\Domain\Casts\Meta;
 use App\Domain\Casts\Uuid;
 use App\Domain\Traits\HasFiles;
@@ -109,18 +110,18 @@ class CatalogProduct extends Model
         'category_uuid' => Uuid::class,
         'vendorcode' => 'string',
         'barcode' => 'string',
-        'tax' => 'float',
+        'tax' => Decimal::class,
         'tax_included' => Boolean::class,
-        'priceFirst' => 'float',
-        'price' => 'float',
-        'priceWholesale' => 'float',
-        'priceWholesaleFrom' => 'float',
-        'discount' => 'float',
+        'priceFirst' => Decimal::class,
+        'price' => Decimal::class,
+        'priceWholesale' => Decimal::class,
+        'priceWholesaleFrom' => Decimal::class,
+        'discount' => Decimal::class,
         'special' => Boolean::class,
         'dimension' => ProductDimension::class,
-        'quantity' => 'float',
-        'quantityMin' => 'float',
-        'stock' => 'float',
+        'quantity' => Decimal::class,
+        'quantityMin' => Decimal::class,
+        'stock' => Decimal::class,
         'country' => 'string',
         'manufacturer' => 'string',
         'tags' => ProductTags::class,
