@@ -20,7 +20,7 @@ class AccessCheckerMiddleware extends AbstractMiddleware
         $route = $routeContext->getRoute();
 
         // skip check if is API
-        if (str_starts_with($route->getName(), 'api')) {
+        if (str_starts_with($route->getName(), 'api') || str_starts_with($route->getName(), 'auth:oauth')) {
             return $handler->handle($request);
         }
 

@@ -7,11 +7,11 @@ use App\Domain\Models\User;
 
 abstract class AbstractOAuthPlugin extends AbstractPlugin
 {
-    abstract public function getAuthUrl(): string;
+    abstract public function getAuthUrl(): ?string;
 
-    abstract public function getToken(array $data = []): array;
+    abstract public function getToken(array $data = []): mixed;
 
-    abstract public function getInfo(array $data = []): array;
+    abstract public function getInfo(array $data = []): ?array;
 
-    abstract public function callback(array $token, ?User $user = null);
+    abstract public function getButton(): ?string;
 }

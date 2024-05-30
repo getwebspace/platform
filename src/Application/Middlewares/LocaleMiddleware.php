@@ -26,7 +26,7 @@ class LocaleMiddleware extends AbstractMiddleware
         }
 
         // change lang by user settings
-        if (!$user_locale && ($user = $request->getAttribute('user')) !== null) {
+        if (!$user_locale && ($user = $request->getAttribute('user', false)) !== false) {
             /** @var User $user */
             if ($code = $user->language) {
                 $user_locale = $code;

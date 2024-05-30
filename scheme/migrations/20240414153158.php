@@ -52,10 +52,8 @@ final class V20240414153158 extends AbstractMigration
             ->addColumn('change', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
             ->addColumn('website', 'string', ['limit' => 128, 'default' => ''])
             ->addColumn('source', 'string', ['limit' => 512, 'default' => ''])
-            ->addColumn('auth_code', 'string', ['limit' => 12, 'default' => ''])
             ->addColumn('language', 'string', ['limit' => 5, 'default' => ''])
             ->addColumn('external_id', 'string', ['limit' => 255, 'default' => ''])
-            ->addColumn('token', 'text', ['default' => '[]'])
             ->create();
 
         // create table user token
@@ -78,11 +76,11 @@ final class V20240414153158 extends AbstractMigration
             ->addColumn('uuid', 'char', ['limit' => 36])
             ->addColumn('user_uuid', 'char', ['limit' => 36])
             ->addForeignKey('user_uuid', 'user', 'uuid', ['delete' => 'CASCADE'])
-            ->addColumn('provider', 'text', ['default' => ''])
-            ->addColumn('unique', 'string', ['limit' => 128, 'default' => ''])
+            ->addColumn('provider', 'string', ['limit' => 128, 'default' => ''])
+            ->addColumn('unique', 'string', ['limit' => 512, 'default' => ''])
             ->addColumn('date', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
             ->addIndex('user_uuid')
-            ->addIndex(['user_uuid', 'provider', 'unique'], ['unique' => true])
+            ->addIndex(['user_uuid', 'provider'], ['unique' => true])
             ->create();
 
         // create table user subscriber

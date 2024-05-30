@@ -18,12 +18,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \DateTime $date
  * @property User $user
  */
-class UserToken extends Model
+class UserIntegration extends Model
 {
     use HasFactory;
     use HasUuids;
 
-    protected $table = 'user_token';
+    protected $table = 'user_integration';
 
     protected $primaryKey = 'uuid';
 
@@ -32,10 +32,8 @@ class UserToken extends Model
 
     protected $fillable = [
         'user_uuid',
+        'provider',
         'unique',
-        'comment',
-        'ip',
-        'agent',
         'date',
     ];
 
@@ -43,20 +41,9 @@ class UserToken extends Model
 
     protected $casts = [
         'user_uuid' => Uuid::class,
+        'provider' => 'string',
         'unique' => 'string',
-        'comment' => 'string',
-        'ip' => 'string',
-        'agent' => 'string',
         'date' => 'datetime',
-    ];
-
-    protected $attributes = [
-        'user_uuid' => '',
-        'unique' => '',
-        'comment' => '',
-        'ip' => '',
-        'agent' => '',
-        'date' => 'now',
     ];
 
     public function user(): BelongsTo

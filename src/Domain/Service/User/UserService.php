@@ -83,6 +83,8 @@ class UserService extends AbstractService
             'is_allow_mail' => null,
             'status' => null,
             'external_id' => null,
+            'provider' => null,
+            'unique' => null,
             'password' => null, // optional: for check
         ];
         $data = array_merge($default, static::$default_read, $data);
@@ -180,6 +182,17 @@ class UserService extends AbstractService
                 }
 
                 return $query->get();
+
+            case !is_array($data['provider']) && $data['provider'] !== null && !is_array($data['unique']) && $data['unique'] !== null:
+                /** @var User $user */
+                $user = User::query()
+                    ->select('user.*')
+                    ->join('user_integration as ui', 'user.uuid', '=', 'ui.user_uuid')
+                    ->where('ui.provider', $data['provider'])
+                    ->where('ui.unique', $data['unique'])
+                    ->first();
+
+                return $user ?: throw new UserNotFoundException();
 
             default:
                 $query = User::query();

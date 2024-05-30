@@ -140,8 +140,6 @@
                         <dd class="col-8">{{ item.orders|count ?: '&mdash;' }}</dd>
                         <dt class="col-4">{{ 'Social networks'|locale }}</dt>
                         <dd class="col-8">{{ item.getIntegrations()|count ? item.getIntegrations().pluck('provider').implode(', ') : '&mdash;' }}</dd>
-                        <dt class="col-4">{{ 'Auth code'|locale }}</dt>
-                        <dd class="col-8">{{ item.auth_code ?: '&mdash;' }}</dd>
                     </dl>
                 </div>
             </div>

@@ -45,11 +45,11 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $group_uuid
  * @property bool $is_allow_mail
  * @property string $password
- * @property string $auth_code
  * @property string $external_id
  * @property UserStatus $status
  * @property UserGroup $group
  * @property UserToken[] $tokens
+ * @property UserIntegration[] $integrations
  * @property CatalogOrder[] $orders
  */
 class User extends Model
@@ -92,8 +92,6 @@ class User extends Model
         'group_uuid',
         'is_allow_mail',
         'password',
-        'token',
-        'auth_code',
         'external_id',
     ];
 
@@ -125,8 +123,6 @@ class User extends Model
         'group_uuid' => Uuid::class,
         'is_allow_mail' => Boolean::class,
         'password' => Password::class,
-        'token' => 'array',
-        'auth_code' => 'string',
         'external_id' => 'string',
     ];
 
@@ -137,7 +133,6 @@ class User extends Model
         'firstname' => '',
         'lastname' => '',
         'patronymic' => '',
-        'birthdate' => '',
         'gender' => '',
         'country' => '',
         'city' => '',
@@ -156,8 +151,6 @@ class User extends Model
         'group_uuid' => null,
         'is_allow_mail' => true,
         'password' => '',
-        'token' => '[]',
-        'auth_code' => '',
         'external_id' => '',
     ];
 
@@ -169,6 +162,11 @@ class User extends Model
     public function tokens(): HasMany
     {
         return $this->hasMany(UserToken::class, 'user_uuid', 'uuid');
+    }
+
+    public function integrations(): HasMany
+    {
+        return $this->hasMany(UserIntegration::class, 'user_uuid', 'uuid');
     }
 
     public function orders($limit = 10): HasMany

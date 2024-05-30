@@ -54,7 +54,6 @@ class UserServiceTest extends TestCase
             'address' => $this->getFaker()->address,
             'postcode' => $this->getFaker()->postcode,
             'additional' => $this->getFaker()->text,
-            'auth_code' => (string) $this->getFaker()->numberBetween(0, 10000),
             'language' => $this->getFaker()->languageCode,
             'external_id' => $this->getFaker()->uuid,
         ];
@@ -76,7 +75,6 @@ class UserServiceTest extends TestCase
         $this->assertEquals($data['address'], $user->address);
         $this->assertEquals($data['postcode'], $user->postcode);
         $this->assertEquals($data['additional'], $user->additional);
-        $this->assertEquals($data['auth_code'], $user->auth_code);
         $this->assertEquals($data['language'], $user->language);
         $this->assertEquals($data['external_id'], $user->external_id);
     }
@@ -245,7 +243,6 @@ class UserServiceTest extends TestCase
             'address' => $this->getFaker()->address,
             'postcode' => $this->getFaker()->postcode,
             'additional' => $this->getFaker()->text,
-            'auth_code' => (string) $this->getFaker()->numberBetween(0, 10000),
             'language' => $this->getFaker()->languageCode,
             'external_id' => $this->getFaker()->uuid,
         ]);
@@ -274,7 +271,6 @@ class UserServiceTest extends TestCase
             'postcode' => $this->getFaker()->postcode,
             'additional' => $this->getFaker()->text,
             'email' => $this->getFaker()->email,
-            'auth_code' => (string) $this->getFaker()->numberBetween(0, 10000),
             'language' => $this->getFaker()->languageCode,
             'external_id' => $this->getFaker()->uuid,
         ];
@@ -295,7 +291,6 @@ class UserServiceTest extends TestCase
         $this->assertEquals($data['postcode'], $user->postcode);
         $this->assertEquals($data['additional'], $user->additional);
         $this->assertEquals($data['email'], $user->email);
-        $this->assertEquals($data['auth_code'], $user->auth_code);
         $this->assertEquals($data['language'], $user->language);
         $this->assertEquals($data['external_id'], $user->external_id);
     }

@@ -799,28 +799,6 @@
                                                         'placeholder': '@yahoo.com'
                                                     }
                                                 } %}
-
-                                                <hr>
-
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Enable code sign-in',
-                                                    'description': 'When authorizing the user, it will be possible to confirm the identity through the code sent to the mail',
-                                                    'type': 'select',
-                                                    'name': 'user[auth_code_is_enabled]',
-                                                    'args': {
-                                                        'option': _(['yes', 'no']),
-                                                        'selected': 'no'
-                                                    }
-                                                } %}
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Authorization letter template with code',
-                                                    'type': 'text',
-                                                    'name': 'user[auth_code_mail_template]',
-                                                    'args': {
-                                                        'placeholder': 'user.mail.code.twig',
-                                                        'value': 'user.mail.code.twig'
-                                                    }
-                                                } %}
                                             </div>
 
                                         </div>
@@ -1158,6 +1136,8 @@
                                                             <i class="fas fa-truck"></i>
                                                         {% elseif plugin is instanceof('\\App\\Domain\\Plugin\\AbstractPaymentPlugin') %}
                                                             <i class="fas fa-cash-register"></i>
+                                                        {% elseif plugin is instanceof('\\App\\Domain\\Plugin\\AbstractOAuthPlugin') %}
+                                                            <i class="fas fa-right-to-bracket"></i>
                                                         {% else %}
                                                             &nbsp;
                                                         {% endif %}
