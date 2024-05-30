@@ -30,7 +30,7 @@ trait HasRenderer
                     '_error' => \Alksily\Support\Form::$globalError = $this->error ?? [],
                     '_language' => \App\Application\i18n::$localeCode ?? 'en-US',
                     '_locales' => \App\Application\i18n::$accept,
-                    'plugins' => collect($this->container->get('plugin')->get()),
+                    'plugins' => $this->container->get('plugin')->get(),
                     'user' => isset($this->request) ? $this->request->getAttribute('user', false) : false,
                 ],
                 $data
