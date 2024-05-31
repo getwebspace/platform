@@ -35,7 +35,7 @@ trait HasParameters
                 return ($buf = $parameters->firstWhere('name', $name)) ? $buf->value : $default;
             }
 
-            return $parameters->whereIn('name', $name)->pluck('value', 'key')->all() ?? $default;
+            return $parameters->whereIn('name', $name)->pluck('value', 'name')->all() ?? $default;
         }
 
         return $default;
