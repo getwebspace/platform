@@ -34,7 +34,7 @@
                                 {% include 'cup/form.twig' with {
                                     'label': 'E-Mail',
                                     'type': 'email',
-                                    'type': 'email',
+                                    'name': 'email',
                                     'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('Field value cannot be changed'|locale) ~ '"></i>',
                                     'args': {
                                         'value': item.email,
@@ -46,22 +46,24 @@
 
                         <div class="row">
                             <div class="col-md-6">
-                                {% include 'cup/editor.twig' with {
+                                {% include 'cup/form.twig' with {
                                     'label': 'Message'|locale,
+                                    'type': 'textarea',
                                     'name': 'message',
                                     'args': {
                                         'value': item.message,
-                                        'text_mode': true
+                                        'style': 'min-height: 133px;'
                                     }
                                 } %}
                             </div>
                             <div class="col-md-6">
-                                {% include 'cup/editor.twig' with {
+                                {% include 'cup/form.twig' with {
                                     'label': 'Answer'|locale,
+                                    'type': 'textarea',
                                     'name': 'response',
                                     'args': {
                                         'value': item.response,
-                                        'text_mode': true
+                                        'style': 'min-height: 133px;'
                                     }
                                 } %}
                             </div>
