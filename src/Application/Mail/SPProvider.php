@@ -61,6 +61,6 @@ class SPProvider implements MailProviderInterface
         $SPApiClient = new ApiClient($data['sendpulse_id'], $data['sendpulse_secret'], new FileStorage(CACHE_DIR . '/'));
         $response = $SPApiClient->smtpSendMail($email);
 
-        return $response->result;
+        return $response['result'];
     }
 }

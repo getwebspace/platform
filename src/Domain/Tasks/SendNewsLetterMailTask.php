@@ -37,7 +37,7 @@ class SendNewsLetterMailTask extends AbstractTask
             $this->parameter(
                 [
                     'mail_from', 'mail_from_name',
-                    'sendpulse_id', 'sendpulse_secret',
+                    'sendpulse_is_enabled', 'sendpulse_id', 'sendpulse_secret',
                     'smtp_login', 'smtp_pass',
                     'smtp_host', 'smtp_port',
                     'smtp_secure',
