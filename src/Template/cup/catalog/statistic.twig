@@ -5,46 +5,77 @@
         <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row">
             <div>
                 <h2 class="text-white pb-2 fw-bold">{{ 'Statistic'|locale }}</h2>
+                <h5 class="text-white op-7">{{ 'Last 30 Days'|locale }}</h5>
             </div>
         </div>
     </div>
 {% endblock %}
 
 {% block content %}
-    <div class="card">
-        <script>window.orders_revenue = {{ json_encode(orders_revenue) }};</script>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <script>window.orders_revenue = {{ json_encode(orders_revenue) }};</script>
 
-        <div class="card-header">
-            <div class="card-title">{{ 'Last 30 Days Orders and Revenue Statistics'|locale }}</div>
+                <div class="card-header">
+                    <div class="card-title">{{ 'Orders and Revenue Statistics'|locale }}</div>
+                </div>
+                <div class="card-body">
+                    <canvas id="orders_revenue" height="250" style="display: block; width: 100%; height: 250px; max-height: 250px;"></canvas>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            <canvas id="orders_revenue" height="250" style="display: block; width: 100%; height: 250px; max-height: 250px;"></canvas>
-        </div>
-    </div>
 
-    <div class="card">
-        <div class="card-header">
-            <div class="card-title">{{ 'Last 30 Days Top 10 Sold Producs Statistics'|locale }}</div>
-        </div>
-        <div class="card-body p-0">
-            <table class="table table-striped mb-0">
-                <thead>
-                    <tr>
-                        <th scope="col" class="w-75">{{ 'Title'|locale }}</th>
-                        <th scope="col" class="text-right">{{ 'Total sold'|locale }}</th>
-                        <th scope="col" class="text-right">{{ 'Total revenue'|locale }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for product in top_products %}
+        <div class="col-12 col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">{{ 'Top 10 Sold Producs Statistics'|locale }}</div>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-striped mb-0">
                         <tr>
-                            <td><a href="/cup/catalog/product/{{ product.uuid }}/edit" target="_blank">{{ product.title }}</a></td>
-                            <td class="text-right text-nowrap">{{ product.total_sold|number_format(2, '.', ' ') }}</td>
-                            <td class="text-right text-nowrap">{{ product.total_revenue|number_format(2, '.', ' ') }}</td>
+                            <th scope="col" class="w-75">{{ 'Title'|locale }}</th>
+                            <th scope="col" class="text-right">{{ 'Total sold'|locale }}</th>
+                            <th scope="col" class="text-right">{{ 'Total revenue'|locale }}</th>
                         </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                        {% for product in top_products %}
+                            <tr>
+                                <td><a href="/cup/catalog/product/{{ product.uuid }}/edit" target="_blank">{{ product.title }}</a></td>
+                                <td class="text-right text-nowrap">{{ product.total_sold|number_format(2, '.', ' ') }}</td>
+                                <td class="text-right text-nowrap">{{ product.total_revenue|number_format(2, '.', ' ') }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">{{ 'Top 10 Buyers Statistics'|locale }}</div>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-striped mb-0">
+                        <tr>
+                            <th scope="col" class="w-75">{{ 'Title'|locale }}</th>
+                            <th scope="col" class="text-right">{{ 'Total orders'|locale }}</th>
+                        </tr>
+                        {% for user in top_buyers %}
+                            <tr>
+                                <td>
+                                    {% if user.identifier %}
+                                        <a href="/cup/user/{{ user.identifier }}/view" target="_blank">{{ user.delivery.client }}</a>
+                                    {% else %}
+                                        {{ user.delivery.client }}
+                                    {% endif %}
+                                </td>
+                                <td class="text-right text-nowrap">{{ user.order_count|number_format(0, '.', ' ') }}</td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}

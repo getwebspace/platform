@@ -3,6 +3,7 @@
 namespace App\Application\Actions\Cup\Catalog;
 
 use Carbon\Carbon;
+use Ramsey\Uuid\Uuid;
 
 class CategoryStatisticAction extends CatalogAction
 {
@@ -11,6 +12,7 @@ class CategoryStatisticAction extends CatalogAction
         return $this->respondWithTemplate('cup/catalog/statistic.twig', [
             'orders_revenue' => $this->getOrdersRevenueStats(),
             'top_products' => $this->getTopSoldProducts(),
+            'top_buyers' => $this->getTopBuyers(),
         ]);
     }
 
@@ -99,5 +101,38 @@ class CategoryStatisticAction extends CatalogAction
             ->orderBy('total_revenue', 'desc')
             ->limit(10)
             ->get();
+    }
+
+    private function getTopBuyers(): \Illuminate\Support\Collection
+    {
+        $connection = $this->db->getPDO()->getAttribute(\PDO::ATTR_DRIVER_NAME);
+
+        if ($connection === 'sqlite') {
+            $concat = 'email || "_" || phone';
+        } else {
+            $concat = 'CONCAT(email, "_", phone)';
+        }
+
+        $subquery = $this->db
+            ->table('catalog_order')
+            ->select($this->db->raw('COALESCE(user_uuid, ' . $concat . ') AS identifier, delivery, uuid'))
+            ->where('date', '>=', Carbon::now()->subDays(30));
+
+        return $this->db
+            ->table($this->db->raw("({$subquery->toSql()}) as combined"))
+            ->mergeBindings($subquery)
+            ->select('identifier', 'delivery', $this->db->raw('COUNT(uuid) AS order_count'))
+            ->groupBy('identifier')
+            ->orderBy('order_count', 'desc')
+            ->limit(10)
+            ->get()
+            ->map(function ($item) {
+                if (!Uuid::isValid($item->identifier)) {
+                    $item->identifier = null;
+                }
+                $item->delivery = json_decode($item->delivery, true);
+
+                return $item;
+            });
     }
 }
