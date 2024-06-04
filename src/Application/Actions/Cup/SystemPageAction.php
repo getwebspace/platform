@@ -225,11 +225,11 @@ class SystemPageAction extends AbstractAction
                 }
 
                 $this->container->get(ParameterService::class)->create([
-                    'key' => 'catalog_invoice',
+                    'name' => 'catalog_invoice',
                     'value' => INVOICE_TEMPLATE,
                 ]);
                 $this->container->get(ParameterService::class)->create([
-                    'key' => 'catalog_dispatch',
+                    'name' => 'catalog_dispatch',
                     'value' => DISPATCH_TEMPLATE,
                 ]);
             }
