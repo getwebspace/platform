@@ -276,6 +276,10 @@ class TwigExtension extends AbstractExtension
     }
 
     /**
+     * @param mixed $subject
+     * @param mixed $pattern
+     * @param mixed $replacement
+     *
      * @return null|array|string|string[]
      */
     public function preg_replace($subject, $pattern, $replacement)
@@ -571,7 +575,7 @@ class TwigExtension extends AbstractExtension
             ->from('catalog_product as cp')
             ->leftJoin('catalog_order_product as cop', 'cp.uuid', '=', 'cop.product_uuid')
             ->where('cp.type', '=', $type)
-            ->groupBy('cp.uuid', ...array_map(fn($col) => "cp.{$col}", array_keys((new \App\Domain\Models\CatalogProduct())->getAttributes())))
+            ->groupBy('cp.uuid', ...array_map(fn ($col) => "cp.{$col}", array_keys((new \App\Domain\Models\CatalogProduct())->getAttributes())))
             ->orderByDesc('order_count')
             ->limit($limit)
             ->get();

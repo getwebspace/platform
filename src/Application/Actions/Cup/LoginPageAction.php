@@ -4,10 +4,8 @@ namespace App\Application\Actions\Cup;
 
 use App\Application\Actions\Cup\User\UserAction;
 use App\Application\Auth;
-use App\Domain\Exceptions\HttpRedirectException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
-use App\Domain\Traits\UseSecurity;
 use Psr\Container\ContainerInterface;
 
 class LoginPageAction extends UserAction
@@ -45,9 +43,8 @@ class LoginPageAction extends UserAction
                 @setcookie('refresh_token', $result['refresh_token'], time() + \App\Domain\References\Date::MONTH, '/auth');
 
                 return $this->respondWithRedirect($this->getParam('redirect', '/cup'));
-            } else {
-                $this->addError('grecaptcha', 'EXCEPTION_WRONG_GRECAPTCHA');
             }
+            $this->addError('grecaptcha', 'EXCEPTION_WRONG_GRECAPTCHA');
         } catch (UserNotFoundException $e) {
             $this->addError($identifier, $e->getMessage());
         } catch (WrongPasswordException $e) {
@@ -58,7 +55,7 @@ class LoginPageAction extends UserAction
             'identifier' => $identifier,
             'oauth' => $this->container->get('plugin')->get()->filter(function ($plugin) {
                 return is_a($plugin, \App\Domain\Plugin\AbstractOAuthPlugin::class);
-            })
+            }),
         ]);
     }
 }

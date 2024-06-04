@@ -122,7 +122,9 @@ class OpenAuthProvider extends AbstractAuthProvider
         // nothing
     }
 
-    /** @throws TokenNotFoundException */
+    /**
+     * @throws TokenNotFoundException
+     */
     public function refresh(string $token, array $params): ?UserToken
     {
         return null;

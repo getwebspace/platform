@@ -12,7 +12,6 @@ use App\Domain\Casts\Decimal;
 use App\Domain\Casts\Meta;
 use App\Domain\Casts\Uuid;
 use App\Domain\Traits\HasFiles;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

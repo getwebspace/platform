@@ -2,7 +2,6 @@
 
 namespace App\Application\Actions\Auth;
 
-use App\Domain\Exceptions\HttpRedirectException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
 

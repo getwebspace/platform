@@ -47,18 +47,6 @@ return function (ContainerBuilder $containerBuilder): void {
             // setup the Eloquent ORM
             $capsule->bootEloquent();
 
-//            $capsule->getConnection()->enableQueryLog();
-//
-//            if ($c->get('settings')['displayErrorDetails']) {
-//                register_shutdown_function(function () use ($capsule) {
-//                    $log = collect($capsule->getConnection()->getRawQueryLog());
-//                    dump([
-//                        'log' => $log->pluck('raw_query')->all(),
-//                        'time' => $log->sum('time'),
-//                    ]);
-//                });
-//            }
-
             return $capsule->getConnection();
         },
     ]);

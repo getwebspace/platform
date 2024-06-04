@@ -32,14 +32,18 @@ abstract class AbstractAuthProvider
         $this->userTokenService = $container->get(UserTokenService::class);
     }
 
-    /** @throws HttpRedirectException */
+    /**
+     * @throws HttpRedirectException
+     */
     abstract public function login(array $credentials, array $params): ?User;
 
     abstract public function register(array $data): ?User;
 
     abstract public function logout(string $token): void;
 
-    /** @throws TokenNotFoundException */
+    /**
+     * @throws TokenNotFoundException
+     */
     abstract public function refresh(string $token, array $params): ?UserToken;
 
     abstract public function revoke(string $token, ?string $uuid): void;

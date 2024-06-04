@@ -12,7 +12,6 @@ use App\Domain\Casts\User\Password;
 use App\Domain\Casts\User\Status as UserStatus;
 use App\Domain\Casts\Uuid;
 use App\Domain\Traits\HasFiles;
-use App\Domain\Traits\UseSecurity;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

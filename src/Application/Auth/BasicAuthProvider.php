@@ -41,7 +41,9 @@ class BasicAuthProvider extends AbstractAuthProvider
         }
     }
 
-    /** @throws TokenNotFoundException */
+    /**
+     * @throws TokenNotFoundException
+     */
     public function refresh(string $token, array $params): ?UserToken
     {
         $token = $this->userTokenService->read([

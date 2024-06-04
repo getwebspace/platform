@@ -57,14 +57,14 @@ class ProductService extends AbstractService
         // sync attributes
         if ($data['attributes']) {
             $product->attributes()->sync(
-                collect($data['attributes'])->map(fn ($value) => ['value' => $value])->filter(fn($item) => !blank($item['value']))
+                collect($data['attributes'])->map(fn ($value) => ['value' => $value])->filter(fn ($item) => !blank($item['value']))
             );
         }
 
         // sync relations
         if ($data['relations']) {
             $product->relations()->sync(
-                collect($data['relations'])->map(fn ($count) => ['count' => floatval($count)])->filter(fn($item) => $item['count'] > 0)
+                collect($data['relations'])->map(fn ($count) => ['count' => floatval($count)])->filter(fn ($item) => $item['count'] > 0)
             );
         }
 
@@ -228,14 +228,14 @@ class ProductService extends AbstractService
             // sync attributes
             if (isset($data['attributes'])) {
                 $entity->attributes()->sync(
-                    collect($data['attributes'])->map(fn ($value) => ['value' => $value])->filter(fn($item) => !blank($item['value']))
+                    collect($data['attributes'])->map(fn ($value) => ['value' => $value])->filter(fn ($item) => !blank($item['value']))
                 );
             }
 
             // sync relations
             if (isset($data['relations'])) {
                 $entity->relations()->sync(
-                    collect($data['relations'])->map(fn ($count) => ['count' => floatval($count)])->filter(fn($item) => $item['count'] > 0)
+                    collect($data['relations'])->map(fn ($count) => ['count' => floatval($count)])->filter(fn ($item) => $item['count'] > 0)
                 );
             }
 

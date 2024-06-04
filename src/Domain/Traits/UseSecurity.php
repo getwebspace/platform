@@ -2,9 +2,6 @@
 
 namespace App\Domain\Traits;
 
-use App\Domain\Models\User;
-use App\Domain\Models\UserToken;
-use App\Domain\Service\User\TokenService as UserTokenService;
 use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;

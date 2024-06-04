@@ -22,7 +22,9 @@ class Auth
 
     protected ContainerInterface $container;
 
-    /** @var AbstractAuthProvider[] $providers */
+    /**
+     * @var AbstractAuthProvider[]
+     */
     protected array $providers = [];
 
     final public function __construct(ContainerInterface $container)
@@ -40,7 +42,7 @@ class Auth
         }
     }
 
-    public function addProvider(string $name, AbstractAuthProvider $provider)
+    public function addProvider(string $name, AbstractAuthProvider $provider): void
     {
         $this->providers[$name] = $provider;
     }
@@ -54,7 +56,7 @@ class Auth
     public function login(string $provider, array $credentials, array $params = []): ?array
     {
         if (!isset($this->providers[$provider])) {
-            throw new WrongAuthProviderException;
+            throw new WrongAuthProviderException();
         }
 
         $default = [
@@ -86,7 +88,7 @@ class Auth
     public function register(string $provider, array $data): ?array
     {
         if (!isset($this->providers[$provider])) {
-            throw new WrongAuthProviderException;
+            throw new WrongAuthProviderException();
         }
 
         $user = $this->providers[$provider]->register($data);
@@ -108,7 +110,7 @@ class Auth
     public function logout(string $provider, string $token): void
     {
         if (!isset($this->providers[$provider])) {
-            throw new WrongAuthProviderException;
+            throw new WrongAuthProviderException();
         }
 
         $this->providers[$provider]->logout($token);
@@ -121,7 +123,7 @@ class Auth
     public function refresh(string $provider, string $token, array $params = []): ?array
     {
         if (!isset($this->providers[$provider])) {
-            throw new WrongAuthProviderException;
+            throw new WrongAuthProviderException();
         }
 
         $default = [
@@ -155,7 +157,7 @@ class Auth
     public function revoke(string $provider, string $token, ?string $uuid): void
     {
         if (!isset($this->providers[$provider])) {
-            throw new WrongAuthProviderException;
+            throw new WrongAuthProviderException();
         }
 
         $this->providers[$provider]->revoke($token, $uuid);
@@ -178,6 +180,8 @@ class Auth
                     'ip' => $ip,
                     'comment' => $comment,
                 ]);
+            break;
+
             default:
                 $token->update([
                     'unique' => $this->getRefreshToken($user->uuid, $ip, $agent),

@@ -13,7 +13,7 @@ class UserLoginAction extends UserAction
         $provider = $this->getParam('provider', $_SESSION['auth_provider'] ?? 'BasicAuthProvider');
 
         $data = [
-            'username' => $this->getParam('username',),
+            'username' => $this->getParam('username'),
             'phone' => $this->getParam('phone'),
             'email' => $this->getParam('email'),
             'password' => $this->getParam('password'),
@@ -22,8 +22,8 @@ class UserLoginAction extends UserAction
         ];
 
         if (
-            ($this->isGet() && $data['code'] && $data['state']) ||
-            ($this->isPost() && (($data[$identifier] && $data['password']) || $provider))
+            ($this->isGet() && $data['code'] && $data['state'])
+            || ($this->isPost() && (($data[$identifier] && $data['password']) || $provider))
         ) {
             if ($this->isPost() && $this->isRecaptchaChecked() || $this->isGet()) {
                 try {
@@ -61,7 +61,7 @@ class UserLoginAction extends UserAction
             'identifier' => $identifier,
             'oauth' => $this->container->get('plugin')->get()->filter(function ($plugin) {
                 return is_a($plugin, \App\Domain\Plugin\AbstractOAuthPlugin::class);
-            })
+            }),
         ]);
     }
 }

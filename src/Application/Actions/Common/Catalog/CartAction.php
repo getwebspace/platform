@@ -2,7 +2,6 @@
 
 namespace App\Application\Actions\Common\Catalog;
 
-use App\Domain\Casts\Reference\Type as ReferenceType;
 use App\Domain\Plugin\AbstractPaymentPlugin;
 use App\Domain\Service\Catalog\Exception\OrderShippingLimitException;
 use App\Domain\Service\Catalog\Exception\WrongEmailValueException;

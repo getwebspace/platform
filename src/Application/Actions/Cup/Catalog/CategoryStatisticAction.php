@@ -49,7 +49,7 @@ class CategoryStatisticAction extends CatalogAction
                 $this->db->raw('ROUND(AVG(order_sums.sum)) as average_check')
             )
             ->leftJoin('catalog_order_product as cop', 'co.uuid', '=', 'cop.order_uuid')
-            ->leftJoinSub($orderSumsSubquery, 'order_sums', function($join) {
+            ->leftJoinSub($orderSumsSubquery, 'order_sums', function ($join): void {
                 $join->on('co.uuid', '=', 'order_sums.uuid');
             })
             ->where('co.date', '>=', Carbon::now()->subDays(30))
@@ -68,7 +68,7 @@ class CategoryStatisticAction extends CatalogAction
                 $formattedDate = $date->format('Y-m-d');
 
                 if (!$orders->has($formattedDate)) {
-                    $orders->put($formattedDate, (object)[
+                    $orders->put($formattedDate, (object) [
                         'date' => $formattedDate,
                         'order_count' => 0,
                         'sum' => 0,
