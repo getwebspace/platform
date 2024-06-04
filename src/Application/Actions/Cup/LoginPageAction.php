@@ -3,55 +3,62 @@
 namespace App\Application\Actions\Cup;
 
 use App\Application\Actions\Cup\User\UserAction;
+use App\Application\Auth;
+use App\Domain\Exceptions\HttpRedirectException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
 use App\Domain\Traits\UseSecurity;
+use Psr\Container\ContainerInterface;
 
 class LoginPageAction extends UserAction
 {
-    use UseSecurity;
+    private Auth $auth;
+
+    public function __construct(ContainerInterface $container)
+    {
+        parent::__construct($container);
+
+        $this->auth = $container->get(Auth::class);
+    }
 
     protected function action(): \Slim\Psr7\Response
     {
-        if ($this->isPost()) {
-            $data = [
-                'identifier' => $this->getParam('identifier', ''),
-                'password' => $this->getParam('password', ''),
+        $identifier = $this->parameter('user_login_type', 'username');
 
-                'redirect' => $this->getParam('redirect'),
-            ];
-
-            if ($this->isRecaptchaChecked()) {
-                try {
-                    $user = $this->userService->read([
-                        'identifier' => $data['identifier'],
-                        'password' => $data['password'],
-                        'status' => \App\Domain\Casts\User\Status::WORK,
-                    ]);
-
-                    $tokens = $this->getTokenPair([
-                        'user' => $user,
+        try {
+            if ($this->isPost() && $this->isRecaptchaChecked()) {
+                $result = $this->auth->login(
+                    'BasicAuthProvider',
+                    [
+                        'identifier' => $this->getParam('identifier', ''),
+                        'password' => $this->getParam('password'),
+                    ],
+                    [
+                        'redirect' => $this->request->getUri()->getPath(),
                         'agent' => $this->getServerParam('HTTP_USER_AGENT'),
                         'ip' => $this->getRequestRemoteIP(),
-                        'comment' => 'Login via CUP',
-                    ]);
+                        'comment' => 'Login via common page',
+                    ]
+                );
 
-                    setcookie('access_token', $tokens['access_token'], time() + \App\Domain\References\Date::MONTH, '/');
-                    setcookie('refresh_token', $tokens['refresh_token'], time() + \App\Domain\References\Date::MONTH, '/auth');
+                @setcookie('access_token', $result['access_token'], time() + \App\Domain\References\Date::MONTH, '/');
+                @setcookie('refresh_token', $result['refresh_token'], time() + \App\Domain\References\Date::MONTH, '/auth');
 
-                    $this->container->get(\App\Application\PubSub::class)->publish('cup:user:login', $user);
-
-                    return $this->respondWithRedirect($data['redirect'] ?: '/cup');
-                } catch (UserNotFoundException $exception) {
-                    $this->addError('identifier', $exception->getMessage());
-                } catch (WrongPasswordException $exception) {
-                    $this->addError('password', $exception->getMessage());
-                }
+                return $this->respondWithRedirect($this->getParam('redirect', '/cup'));
             } else {
                 $this->addError('grecaptcha', 'EXCEPTION_WRONG_GRECAPTCHA');
             }
+        } catch (UserNotFoundException $e) {
+            $this->addError($identifier, $e->getMessage());
+        } catch (WrongPasswordException $e) {
+            $this->addError('password', $e->getMessage());
         }
 
-        return $this->respondWithTemplate('cup/auth/login.twig');
+        return $this->respondWithTemplate('cup/auth/login.twig', [
+            'identifier' => $identifier,
+            'oauth' => $this->container->get('plugin')->get()->filter(function ($plugin) {
+                return is_a($plugin, \App\Domain\Plugin\AbstractOAuthPlugin::class);
+            })
+        ]);
     }
 }

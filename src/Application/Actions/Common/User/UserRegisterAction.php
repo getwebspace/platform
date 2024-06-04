@@ -16,51 +16,35 @@ class UserRegisterAction extends UserAction
     protected function action(): \Slim\Psr7\Response
     {
         if ($this->isPost()) {
-            $data = [
-                'firstname' => $this->getParam('firstname', ''),
-                'lastname' => $this->getParam('lastname', ''),
-                'username' => $this->getParam('username', ''),
-                'email' => $this->getParam('email', ''),
-                'phone' => $this->getParam('phone', ''),
-                'address' => $this->getParam('address', ''),
-                'additional' => $this->getParam('additional', ''),
-                'is_allow_mail' => $this->getParam('is_allow_mail', true),
-                'password' => $this->getParam('password'),
-                'password_again' => $this->getParam('password_again'),
-                'external_id' => $this->getParam('external_id', ''),
-            ];
-
             if ($this->isRecaptchaChecked()) {
-                if ($data['password'] === $data['password_again']) {
-                    try {
-                        $user = $this->userService->create([
-                            'firstname' => $data['firstname'],
-                            'lastname' => $data['lastname'],
-                            'username' => $data['username'],
-                            'email' => $data['email'],
-                            'phone' => $data['phone'],
-                            'address' => $data['address'],
-                            'additional' => $data['additional'],
-                            'is_allow_mail' => $data['is_allow_mail'],
-                            'password' => $data['password'],
-                            'group_uuid' => $this->parameter('user_group'),
-                            'external_id' => $data['external_id'],
-                        ]);
+                $provider = $this->getParam('provider', $_SESSION['auth_provider'] ?? 'BasicAuthProvider');
 
-                        $this->container->get(\App\Application\PubSub::class)->publish('common:user:register', $user);
+                try {
+                    $this->auth->register($provider, [
+                        'firstname' => $this->getParam('firstname', ''),
+                        'lastname' => $this->getParam('lastname', ''),
+                        'username' => $this->getParam('username', ''),
+                        'email' => $this->getParam('email', ''),
+                        'phone' => $this->getParam('phone', ''),
+                        'address' => $this->getParam('address', ''),
+                        'additional' => $this->getParam('additional', ''),
+                        'is_allow_mail' => $this->getParam('is_allow_mail', true),
+                        'password' => $this->getParam('password'),
+                        'password_again' => $this->getParam('password_again'),
+                        'external_id' => $this->getParam('external_id', ''),
+                    ]);
 
-                        return $this->respondWithRedirect('/user/login');
-                    } catch (MissingUniqueValueException $e) {
-                        $this->addError('email', $e->getMessage());
-                        $this->addError('username', $e->getMessage());
-                        $this->addError('phone', $e->getMessage());
-                    } catch (UsernameAlreadyExistsException|WrongUsernameValueException $e) {
-                        $this->addError('username', $e->getMessage());
-                    } catch (EmailAlreadyExistsException|EmailBannedException|WrongEmailValueException $e) {
-                        $this->addError('email', $e->getMessage());
-                    } catch (PhoneAlreadyExistsException|WrongPhoneValueException $exception) {
-                        $this->addError('phone', $exception->getMessage());
-                    }
+                    return $this->respondWithRedirect('/user/login');
+                } catch (MissingUniqueValueException $e) {
+                    $this->addError('email', $e->getMessage());
+                    $this->addError('username', $e->getMessage());
+                    $this->addError('phone', $e->getMessage());
+                } catch (UsernameAlreadyExistsException|WrongUsernameValueException $e) {
+                    $this->addError('username', $e->getMessage());
+                } catch (EmailAlreadyExistsException|EmailBannedException|WrongEmailValueException $e) {
+                    $this->addError('email', $e->getMessage());
+                } catch (PhoneAlreadyExistsException|WrongPhoneValueException $e) {
+                    $this->addError('phone', $e->getMessage());
                 }
             }
 

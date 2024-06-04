@@ -7,6 +7,7 @@ use App\Domain\Exceptions\HttpForbiddenException;
 use App\Domain\Exceptions\HttpMethodNotAllowedException;
 use App\Domain\Exceptions\HttpNotFoundException;
 use App\Domain\Exceptions\HttpNotImplementedException;
+use App\Domain\Exceptions\HttpRedirectException;
 use App\Domain\Models\File;
 use App\Domain\Service\File\FileService;
 use App\Domain\Traits\HasFiles;
@@ -165,6 +166,8 @@ abstract class AbstractAction
 
         try {
             $result = $this->action();
+        } catch (HttpRedirectException $exception) {
+            return $this->respondWithRedirect($exception->getUrl(), $exception->getCode());
         } catch (AbstractHttpException $exception) {
             $error = [
                 'code' => $exception->getCode(),

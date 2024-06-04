@@ -8,42 +8,26 @@ use App\Domain\Traits\UseSecurity;
 
 class RefreshTokenAction extends AuthAction
 {
-    use UseSecurity;
-
     protected function action(): \Slim\Psr7\Response
     {
         $redirect = $this->getParam('redirect', '/');
-        $refresh_token = $this->getParam('token', $this->getCookie('refresh_token', null));
-        $output = [];
+        $refresh_token = $this->getParam('token', $this->getCookie('refresh_token'));
+
+        $result = [];
 
         if ($refresh_token) {
             try {
-                /** @var UserToken $token */
-                $token = $this->userTokenService->read([
-                    'unique' => $refresh_token,
-                    'agent' => $this->getServerParam('HTTP_USER_AGENT'),
-                ]);
-                $expired = $token->date->getTimestamp() + \App\Domain\References\Date::MONTH;
-
-                if ($expired >= time()) {
-                    $pairs = $this->getTokenPair([
-                        'user' => $token->user,
-                        'user_token' => $token,
+                $result = $this->auth->refresh(
+                    $this->getParam('provider', $_SESSION['auth_provider'] ?? 'BasicAuthProvider'),
+                    $refresh_token,
+                    [
+                        'agent' => $this->getServerParam('HTTP_USER_AGENT'),
                         'ip' => $this->getRequestRemoteIP(),
-                    ]);
+                    ]
+                );
 
-                    setcookie('access_token', $pairs['access_token'], time() + \App\Domain\References\Date::MONTH, '/');
-                    setcookie('refresh_token', $pairs['refresh_token'], time() + \App\Domain\References\Date::MONTH, '/auth');
-
-                    $this->container->get(\App\Application\PubSub::class)->publish('auth:user:refresh-token', $token->user);
-
-                    $output = [
-                        'access_token' => $pairs['access_token'],
-                        'refresh_token' => $pairs['refresh_token'],
-                    ];
-                } else {
-                    $this->userTokenService->delete($token);
-                }
+                @setcookie('access_token', $result['access_token'], time() + \App\Domain\References\Date::MONTH, '/');
+                @setcookie('refresh_token', $result['refresh_token'], time() + \App\Domain\References\Date::MONTH, '/auth');
             } catch (TokenNotFoundException $e) {
                 $redirect = '/auth/logout';
             }
@@ -53,7 +37,7 @@ class RefreshTokenAction extends AuthAction
 
         switch ($this->isRequestJson()) {
             case true:
-                return $this->respondWithJson($output);
+                return $this->respondWithJson($result);
 
             case false:
             default:

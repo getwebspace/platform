@@ -2,28 +2,36 @@
 
 namespace App\Application\Actions\Auth;
 
-use App\Domain\Traits\UseSecurity;
+use App\Domain\Models\User;
 
 class RevokeTokenAction extends AuthAction
 {
-    use UseSecurity;
-
     protected function action(): \Slim\Psr7\Response
     {
         $redirect = $this->getParam('redirect', '/');
-        $refresh_token = $this->getCookie('refresh_token', null);
+        $refresh_token = $this->getParam('token', $this->getCookie('refresh_token'));
+        $uuid = $this->getParam('uuid');
 
         if ($refresh_token) {
-            /** @var \App\Domain\Models\User $user */
-            $user = $this->request->getAttribute('user', false);
+            $this->auth->revoke(
+                $this->getParam('provider', $_SESSION['auth_provider'] ?? 'BasicAuthProvider'),
+                $refresh_token,
+                $uuid
+            );
 
-            foreach ($user->tokens()->where('unique', '!=', $refresh_token)->get() as $token) {
-                $this->userTokenService->delete($token);
+            /** @var User $user */
+            if (($user = $this->request->getAttribute('user', false)) !== false && $user->tokens->isEmpty()) {
+                $redirect = '/auth/logout';
             }
-
-            $this->container->get(\App\Application\PubSub::class)->publish('auth:user:revoke-token', $user);
         }
 
-        return $this->respondWithRedirect($redirect, 307);
+        switch ($this->isRequestJson()) {
+            case true:
+                return $this->respondWithJson();
+
+            case false:
+            default:
+                return $this->response->withAddedHeader('Location', $redirect)->withStatus(307);
+        }
     }
 }

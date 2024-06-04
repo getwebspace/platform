@@ -17,6 +17,11 @@ return function (ContainerBuilder $containerBuilder): void {
             return $container->get(\Slim\App::class)->getRouteCollector();
         },
 
+        // auth manager
+        \App\Application\Auth::class => function (ContainerInterface $container) {
+            return new \App\Application\Auth($container);
+        },
+
         // pubsub component
         \App\Application\PubSub::class => function (ContainerInterface $container) {
             return new \App\Application\PubSub($container);

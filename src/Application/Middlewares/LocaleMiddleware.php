@@ -22,7 +22,8 @@ class LocaleMiddleware extends AbstractMiddleware
         // change lang by cookie
         if ($query_locale !== null) {
             $user_locale = $query_locale;
-            setcookie('language', $query_locale, time() + \App\Domain\References\Date::YEAR, '/');
+
+            @setcookie('language', $query_locale, time() + \App\Domain\References\Date::YEAR, '/');
         }
 
         // change lang by user settings

@@ -36,6 +36,11 @@ return function (App $app, Container $container): void {
             // Auth section
             $proxy
                 ->group('/auth', function (Group $proxy): void {
+                    // register
+                    $proxy
+                        ->map(['GET', 'POST'], '/register', \App\Application\Actions\Auth\RegisterAction::class)
+                        ->setName('auth:register');
+
                     // login
                     $proxy
                         ->map(['GET', 'POST'], '/login', \App\Application\Actions\Auth\LoginAction::class)

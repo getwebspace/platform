@@ -2,41 +2,49 @@
 
 namespace App\Application\Actions\Auth;
 
+use App\Domain\Exceptions\HttpRedirectException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
 use App\Domain\Service\User\Exception\WrongPasswordException;
-use App\Domain\Traits\UseSecurity;
 
 class LoginAction extends AuthAction
 {
-    use UseSecurity;
-
     protected function action(): \Slim\Psr7\Response
     {
-        $identifier = $this->getParam('identifier', '');
-        $password = $this->getParam('password', '');
+        $redirect = $this->getParam('redirect', '/');
 
         try {
-            $user = $this->userService->read([
-                'identifier' => $identifier,
-                'password' => $password,
-                'status' => \App\Domain\Casts\User\Status::WORK,
-            ]);
+            $result = $this->auth->login(
+                $this->getParam('provider', $_SESSION['auth_provider'] ?? 'BasicAuthProvider'),
+                [
+                    'identifier' => $this->getParam('identifier', ''),
+                    'password' => $this->getParam('password', ''),
+                    'code' => $this->getParam('code'),
+                    'state' => $this->getParam('state'),
+                ],
+                [
+                    'redirect' => $this->request->getUri()->getPath(),
+                    'agent' => $this->getServerParam('HTTP_USER_AGENT'),
+                    'ip' => $this->getRequestRemoteIP(),
+                    'comment' => 'Login via Auth',
+                ]
+            );
 
-            $tokens = $this->getTokenPair([
-                'user' => $user,
-                'agent' => $this->getServerParam('HTTP_USER_AGENT'),
-                'ip' => $this->getRequestRemoteIP(),
-                'comment' => 'Login via Auth',
-            ]);
+            switch ($this->isRequestJson()) {
+                case true:
+                    return $this->respondWithJson([
+                        'user' => $result['user'],
+                        'access_token' => $result['access_token'],
+                        'refresh_token' => $result['refresh_token'],
+                    ]);
 
-            $this->container->get(\App\Application\PubSub::class)->publish('auth:user:login', $user);
-
-            return $this->respondWithJson([
-                'access_token' => $tokens['access_token'],
-                'refresh_token' => $tokens['refresh_token'],
-            ]);
-        } catch (UserNotFoundException|WrongPasswordException $exception) {
-            return $this->response->withStatus(404);
+                case false:
+                default:
+                    return $this->response->withAddedHeader('Location', $redirect)->withStatus(307);
+            }
+        } catch (UserNotFoundException $e) {
+            return $this->respondWithJson(['error' => $e->getMessage()])->withStatus(404);
+        } catch (WrongPasswordException $e) {
+            return $this->respondWithJson(['error' => $e->getMessage()])->withStatus(400);
         }
     }
 }

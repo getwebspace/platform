@@ -33,6 +33,7 @@ class TokenService extends AbstractService
     public function read(array $data = [])
     {
         $default = [
+            'uuid' => null,
             'user_uuid' => null,
             'unique' => null,
             'agent' => null,
@@ -42,6 +43,9 @@ class TokenService extends AbstractService
 
         $criteria = [];
 
+        if ($data['uuid'] !== null) {
+            $criteria['uuid'] = $data['uuid'];
+        }
         if ($data['user_uuid'] !== null) {
             $criteria['user_uuid'] = $data['user_uuid'];
         }
@@ -56,6 +60,7 @@ class TokenService extends AbstractService
         }
 
         switch (true) {
+            case !is_array($data['uuid']) && $data['uuid'] !== null:
             case !is_array($data['unique']) && $data['unique'] !== null:
                 /** @var UserToken $userToken */
                 $userToken = UserToken::firstWhere($criteria);

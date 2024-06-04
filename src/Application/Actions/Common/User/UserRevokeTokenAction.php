@@ -6,6 +6,11 @@ class UserRevokeTokenAction extends UserAction
 {
     protected function action(): \Slim\Psr7\Response
     {
-        return $this->respondWithRedirect('/auth/revoke?redirect=' . $this->getParam('redirect', '/user/profile'));
+        $params = [
+            'redirect' => $this->getParam('redirect', '/user/profile'),
+            'uuid' => $this->getParam('uuid'),
+        ];
+
+        return $this->respondWithRedirect('/auth/revoke?' . urldecode(http_build_query($params)));
     }
 }
