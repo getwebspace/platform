@@ -183,6 +183,20 @@
                                                                     </div>
                                                                 </a>
                                                             </div>
+                                                            <div class="col-12 col-sm-6 col-lg-4">
+                                                                <a href="/cup/catalog/statistic" class="card card-stats card-primary card-round">
+                                                                    <div class="card-body">
+                                                                        <p class="card-category">
+                                                                            <b>{{ 'Statistic'|locale }}</b><br>
+                                                                            {% locale %}
+                                                                                View statistics for the last 30 days:
+                                                                                orders and revenue, top sold products,
+                                                                                top buyers
+                                                                            {% endlocale %}
+                                                                        </p>
+                                                                    </div>
+                                                                </a>
+                                                            </div>
                                                         {% endif %}
 
                                                         {% if parameter('guestbook_is_enabled', 'yes') != 'no' %}
@@ -216,6 +230,7 @@
                                                                 </a>
                                                             </div>
                                                         {% endif %}
+
                                                         <div class="col-12 col-sm-6 col-lg-4">
                                                             <a href="/cup/parameters" class="card card-stats card-primary card-round">
                                                                 <div class="card-body">
