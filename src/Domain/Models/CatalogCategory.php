@@ -37,9 +37,9 @@ use Illuminate\Support\Collection;
  * @property string $system
  * @property array $specifics
  * @property CatalogCategory $parent
- * @property CatalogAttribute[] $attributes
- * @property CatalogAttribute[] $filters
- * @property CatalogProduct[] $products
+ * @property Collection<CatalogAttribute> $attributes
+ * @property Collection<CatalogAttribute> $filters
+ * @property Collection<CatalogProduct> $products
  */
 class CatalogCategory extends Model
 {

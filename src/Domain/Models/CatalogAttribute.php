@@ -17,8 +17,8 @@ use Illuminate\Support\Collection;
  * @property string $type
  * @property string $group
  * @property bool $is_filter
- * @property CatalogCategory[] $categories
- * @property CatalogProduct[] $products
+ * @property Collection<CatalogCategory> $categories
+ * @property Collection<CatalogProduct> $products
  */
 class CatalogAttribute extends Model
 {

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Collection;
 
 /**
  * @property string $uuid
@@ -27,7 +28,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $system
  * @property string $external_id
  * @property string $export
- * @property CatalogProduct[] $products
+ * @property Collection<CatalogProduct> $products
  * @property Reference $status
  * @property Reference $payment
  */

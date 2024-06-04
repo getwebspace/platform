@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Collection;
 
 /**
  * @property string $uuid
@@ -51,8 +52,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $external_id
  * @property string $export
  * @property CatalogCategory $category
- * @property CatalogAttribute[] $attributes
- * @property CatalogProduct[] $relations
+ * @property Collection<CatalogAttribute> $attributes
+ * @property Collection<CatalogProduct> $relations
  */
 class CatalogProduct extends Model
 {

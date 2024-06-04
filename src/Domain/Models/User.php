@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Collection;
 
 /**
  * @property string $uuid
@@ -48,16 +49,15 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string $external_id
  * @property UserStatus $status
  * @property UserGroup $group
- * @property UserToken[] $tokens
- * @property UserIntegration[] $integrations
- * @property CatalogOrder[] $orders
+ * @property Collection<UserToken> $tokens
+ * @property Collection<UserIntegration> $integrations
+ * @property Collection<CatalogOrder> $orders
  */
 class User extends Model
 {
     use HasFactory;
     use HasUuids;
     use HasFiles;
-    use UseSecurity;
 
     protected $table = 'user';
 

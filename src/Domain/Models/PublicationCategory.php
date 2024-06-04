@@ -29,7 +29,7 @@ use Illuminate\Support\Collection;
  * @property array $template
  * @property array $meta
  * @property PublicationCategory $parent
- * @property Publication[] $publications
+ * @property Collection<Publication> $publications
  */
 class PublicationCategory extends Model
 {
