@@ -62,12 +62,12 @@ final class V20240414153158 extends AbstractMigration
             ->addColumn('uuid', 'char', ['limit' => 36])
             ->addColumn('user_uuid', 'char', ['limit' => 36])
             ->addForeignKey('user_uuid', 'user', 'uuid', ['delete' => 'CASCADE'])
-            ->addColumn('unique', 'text', ['default' => ''])
-            ->addColumn('comment', 'text', ['default' => ''])
+            ->addColumn('unique', 'string', ['limit' => 64, 'default' => ''])
+            ->addColumn('comment', 'string', ['limit' => 255, 'default' => ''])
             ->addColumn('ip', 'string', ['limit' => 16, 'default' => ''])
             ->addColumn('agent', 'string', ['limit' => 255, 'default' => ''])
             ->addColumn('date', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
-            ->addIndex('user_uuid')
+            ->addIndex(['user_uuid', 'unique', 'agent'], ['unique' => true])
             ->create();
 
         // create table user integration
@@ -79,7 +79,6 @@ final class V20240414153158 extends AbstractMigration
             ->addColumn('provider', 'string', ['limit' => 128, 'default' => ''])
             ->addColumn('unique', 'string', ['limit' => 512, 'default' => ''])
             ->addColumn('date', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
-            ->addIndex('user_uuid')
             ->addIndex(['user_uuid', 'provider'], ['unique' => true])
             ->create();
 
