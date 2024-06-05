@@ -16255,6 +16255,11 @@ be a descendant of the grid when it is being dragged.
     display: block;
 }
 
+.select2-container--bootstrap.select2-container--open {
+    display: block;
+    z-index: 2147483647;
+}
+
 .select2-container--bootstrap .select2-selection {
     background-color: #ffffff;
     border: 1px solid #ebedf2;
