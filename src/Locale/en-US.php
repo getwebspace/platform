@@ -53,6 +53,7 @@ return [
     'title' => 'Title',
     'price' => 'Price',
     'price_wholesale' => 'Price wholesale',
+    'price_self' => 'Self price',
     'stock' => 'Stock',
     'date' => 'Date',
     'DESC' => 'Desc',
