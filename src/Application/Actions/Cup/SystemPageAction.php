@@ -18,8 +18,6 @@ use App\Domain\Service\User\UserService;
 
 class SystemPageAction extends AbstractAction
 {
-    private const LOCK_FILE = VAR_DIR . '/installer.lock';
-
     private const PRIVATE_SECRET_FILE = VAR_DIR . '/private.secret.key';
 
     private const PUBLIC_SECRET_FILE = VAR_DIR . '/public.secret.key';
@@ -28,31 +26,18 @@ class SystemPageAction extends AbstractAction
     {
         $access = false;
 
-        // first install
-        if (!file_exists(self::LOCK_FILE)) {
-            $access = true;
-        }
-
-        /** @var false|User $user */
-        $user = $this->request->getAttribute('user', false);
-
-        // exist user
-        if (!$access && $user) {
-            if ($user->group !== null && in_array('cup:main', $user->group->access, true)) {
-                $access = true;
-            }
+        if (!file_exists(LOCK_FILE)) {
+            $access = true; // first install
         }
 
         // ok, allow access to page
         if ($access) {
             if ($this->isPost()) {
                 $this->gen_openssl();
-                $this->setup_data();
                 $this->setup_user();
 
                 if (!$this->hasError()) {
-                    // write lock file
-                    file_put_contents(self::LOCK_FILE, time());
+                    file_put_contents(LOCK_FILE, time()); // write lock file
 
                     return $this->respondWithRedirect('/cup');
                 }
@@ -64,7 +49,7 @@ class SystemPageAction extends AbstractAction
             ]);
         }
 
-        return $this->respondWithRedirect('/cup/login?redirect=/cup/system');
+        return $this->respondWithRedirect('/cup');
     }
 
     protected function gen_openssl(): void
@@ -85,193 +70,37 @@ class SystemPageAction extends AbstractAction
         }
     }
 
-    protected function setup_data(): void
-    {
-        if ($databaseData = $this->getParam('database', [])) {
-            if ($databaseData['fill'] === 'default' && $databaseData['action'] !== 'delete') {
-                $referenceService = $this->container->get(ReferenceService::class);
-
-                $order_status = [
-                    ['title' => __('New'), 'order' => 1],
-                    ['title' => __('In processing'), 'order' => 2],
-                    ['title' => __('Payed'), 'order' => 3],
-                    ['title' => __('Sent'), 'order' => 4],
-                    ['title' => __('Delivered'), 'order' => 5],
-                    ['title' => __('Canceled'), 'order' => 6],
-                ];
-                foreach ($order_status as $i => $el) {
-                    try {
-                        $referenceService->create(array_merge($el, [
-                            'order' => $i + 1,
-                            'type' => \App\Domain\Casts\Reference\Type::ORDER_STATUS,
-                        ]));
-                    } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
-                        // nothing
-                    }
-                }
-
-                $payment_methods = [
-                    ['title' => __('Cash'), 'order' => 1],
-                    ['title' => __('Card'), 'order' => 2],
-                    ['title' => __('To the courier'), 'order' => 3],
-                ];
-                foreach ($payment_methods as $i => $el) {
-                    try {
-                        $referenceService->create(array_merge($el, [
-                            'order' => $i + 1,
-                            'type' => \App\Domain\Casts\Reference\Type::PAYMENT,
-                        ]));
-                    } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
-                        // nothing
-                    }
-                }
-
-                $stock_status = [
-                    ['title' => __('Pre-Order'), 'order' => 1],
-                    ['title' => __('Out Of Stock'), 'order' => 2],
-                    ['title' => __('In Stock'), 'order' => 3],
-                    ['title' => __('2-3 Days'), 'order' => 4],
-                ];
-                foreach ($stock_status as $i => $el) {
-                    try {
-                        $referenceService->create(array_merge($el, [
-                            'order' => $i + 1,
-                            'type' => \App\Domain\Casts\Reference\Type::STOCK_STATUS,
-                        ]));
-                    } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
-                        // nothing
-                    }
-                }
-
-                $weight_class = [
-                    ['title' => __('Kilogram'), 'value' => ['unit' => __('kg'), 'value' => 1000]],
-                    ['title' => __('Gram'), 'value' => ['unit' => __('g'), 'value' => 1]],
-                    ['title' => __('Ounce'), 'value' => ['unit' => __('oz'), 'value' => 35.2739]],
-                    ['title' => __('Pound'), 'value' => ['unit' => __('lb'), 'value' => 2.2046]],
-                ];
-                foreach ($weight_class as $i => $el) {
-                    try {
-                        $referenceService->create(array_merge($el, [
-                            'order' => $i + 1,
-                            'type' => \App\Domain\Casts\Reference\Type::WEIGHT_CLASS,
-                        ]));
-                    } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
-                        // nothing
-                    }
-                }
-
-                $length_class = [
-                    ['title' => __('Meter'), 'value' => ['unit' => __('m'), 'value' => 100.0000]],
-                    ['title' => __('Centimeter'), 'value' => ['unit' => __('cm'), 'value' => 1.0000]],
-                    ['title' => __('Millimeter'), 'value' => ['unit' => __('mm'), 'value' => 0.1000]],
-                    ['title' => __('Inch'), 'value' => ['unit' => __('inch'), 'value' => 2.5400]],
-                ];
-                foreach ($length_class as $i => $el) {
-                    try {
-                        $referenceService->create(array_merge($el, [
-                            'order' => $i + 1,
-                            'type' => \App\Domain\Casts\Reference\Type::LENGTH_CLASS,
-                        ]));
-                    } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
-                        // nothing
-                    }
-                }
-
-                $tax_rates = [
-                    ['title' => __('VAT 20'), 'value' => ['rate' => 20.0000]],
-                    ['title' => __('VAT 10'), 'value' => ['rate' => 10.0000]],
-                ];
-                foreach ($tax_rates as $i => $el) {
-                    try {
-                        $referenceService->create(array_merge($el, [
-                            'order' => $i + 1,
-                            'type' => \App\Domain\Casts\Reference\Type::TAX_RATE,
-                        ]));
-                    } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
-                        // nothing
-                    }
-                }
-
-                $social_networks = [
-                    ['title' => __('Facebook'), 'value' => ['url' => '#']],
-                    ['title' => __('Instagram'), 'value' => ['url' => '#']],
-                    ['title' => __('Telegram'), 'value' => ['url' => '#']],
-                    ['title' => __('WhatsApp'), 'value' => ['url' => '#']],
-                ];
-                foreach ($social_networks as $i => $el) {
-                    try {
-                        $referenceService->create(array_merge($el, [
-                            'order' => $i + 1,
-                            'type' => \App\Domain\Casts\Reference\Type::SOCIAL_NETWORK,
-                        ]));
-                    } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
-                        // nothing
-                    }
-                }
-
-                $address_formats = [
-                    ['title' => __('Default'), 'value' => ['format' => '{address}']],
-                    ['title' => __('International address'), 'value' => ['format' => "{company.title}\n{address}\n{city} {postcode}\n{country}"]],
-                ];
-                foreach ($address_formats as $i => $el) {
-                    try {
-                        $referenceService->create(array_merge($el, [
-                            'order' => $i + 1,
-                            'type' => \App\Domain\Casts\Reference\Type::ADDRESS_FORMAT,
-                        ]));
-                    } catch (\App\Domain\Service\Reference\Exception\TitleAlreadyExistsException $e) {
-                        // nothing
-                    }
-                }
-
-                $this->container->get(ParameterService::class)->create([
-                    'name' => 'catalog_invoice',
-                    'value' => INVOICE_TEMPLATE,
-                ]);
-                $this->container->get(ParameterService::class)->create([
-                    'name' => 'catalog_dispatch',
-                    'value' => DISPATCH_TEMPLATE,
-                ]);
-            }
-        }
-    }
-
     protected function setup_user(): void
     {
-        if ($databaseData = $this->getParam('database', [])) {
-            $user = $this->request->getAttribute('user', false);
+        $user = $this->request->getAttribute('user', false);
 
-            if (!$user) {
-                $userData = $this->getParam('user', []);
+        if (!$user) {
+            $userData = $this->getParam('user', []);
+            $userGroupService = $this->container->get(UserGroupService::class);
+            $userService = $this->container->get(UserService::class);
 
-                if ($userData && $databaseData['action'] !== 'delete') {
-                    $userGroupService = $this->container->get(UserGroupService::class);
-                    $userService = $this->container->get(UserService::class);
+            // create or read group
+            try {
+                $userData['group'] = $userGroupService->create([
+                    'title' => __('Administrators'),
+                    'access' => $this->getRoutes()->values()->all(),
+                ]);
+            } catch (TitleAlreadyExistsException $e) {
+                $userData['group'] = $userGroupService->read([
+                    'title' => __('Administrators'),
+                ]);
+            }
 
-                    // create or read group
-                    try {
-                        $userData['group'] = $userGroupService->create([
-                            'title' => __('Administrators'),
-                            'access' => $this->getRoutes()->values()->all(),
-                        ]);
-                    } catch (TitleAlreadyExistsException $e) {
-                        $userData['group'] = $userGroupService->read([
-                            'title' => __('Administrators'),
-                        ]);
-                    }
-
-                    try {
-                        // create user with administrator group
-                        $userService->create($userData);
-                    } catch (MissingUniqueValueException $e) {
-                        $this->addError('user[email]', $e->getMessage());
-                        $this->addError('user[username]', $e->getMessage());
-                    } catch (UsernameAlreadyExistsException|WrongUsernameValueException $e) {
-                        $this->addError('user[username]', $e->getMessage());
-                    } catch (EmailAlreadyExistsException|EmailBannedException|WrongEmailValueException $e) {
-                        $this->addError('user[email]', $e->getMessage());
-                    }
-                }
+            try {
+                // create user with administrator group
+                $userService->create($userData);
+            } catch (MissingUniqueValueException $e) {
+                $this->addError('user[email]', $e->getMessage());
+                $this->addError('user[username]', $e->getMessage());
+            } catch (UsernameAlreadyExistsException|WrongUsernameValueException $e) {
+                $this->addError('user[username]', $e->getMessage());
+            } catch (EmailAlreadyExistsException|EmailBannedException|WrongEmailValueException $e) {
+                $this->addError('user[email]', $e->getMessage());
             }
         }
     }
@@ -332,103 +161,3 @@ class SystemPageAction extends AbstractAction
         ];
     }
 }
-
-const INVOICE_TEMPLATE = <<<'EOD'
-        <div class="m-5">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <h3 class="font-weight-bold">{{ 'Invoice'|locale }}</h3>
-                    {#<img src="/images/logo.png" style="width: 100%; max-width: 300px" />#}
-                </div>
-                <div class="col-6">
-                    {{ parameter('common_title') }}<br />
-                    {{ 'Order'|locale }}: <b>{{ order.external_id ?: order.serial }}</b><br />
-                    {{ 'Date'|locale }}: <b>{{ order.date|df('d.m.Y H:i') }}</b><br />
-                    {{ 'Shipping'|locale }}: <b>{{ order.shipping|df('d.m.Y H:i') }}</b>
-                </div>
-                <div class="col-6 text-right">
-                    {{ qr_code(base_url() ~ '/cart/done/' ~ order.uuid, 100) }}
-                </div>
-            </div>
-
-            <div class="row mt-3">
-                <div class="col-6">
-                    {{ order.delivery.client }}<br />
-                    {{ order.phone ? order.phone : '-' }}<br />
-                    {{ order.email ? order.email : '-' }}
-                </div>
-                <div class="col-6 text-right">
-                    {{ order.delivery.address }}<br />
-                    {{ order.comment }}
-                </div>
-            </div>
-
-            <div class="row py-1 mt-3 bg-grey2">
-                <div class="col-8 col-md-6 text-nowrap font-weight-bold">{{ 'Item'|locale }}</div>
-                <div class="d-none d-md-block col-md-2 text-right text-nowrap font-weight-bold">{{ 'Price'|locale }}</div>
-                <div class="d-none d-md-block col-md-2 text-right text-nowrap font-weight-bold">{{ 'Quantity'|locale }}</div>
-                <div class="col-4 col-md-2 text-right text-nowrap font-weight-bold">{{ 'Sum'|locale }}</div>
-            </div>
-
-            {% for item in order.products().where('type', 'product').get() %}
-                <div class="row py-1 {{ loop.last ?: 'border-bottom' }} {{ loop.index0 % 2 ? 'bg-grey1' }}">
-                    <div class="col-8 col-md-6 overflow-hidden text-nowrap">{{ item.title }}</div>
-                    <div class="d-none d-md-block col-md-2 text-right text-nowrap">{{ item.totalPrice()|number_format(2, '.', ' ') }}</div>
-                    <div class="d-none d-md-block col-md-2 text-right text-nowrap">{{ item.totalCount() }}</div>
-                    <div class="col-4 col-md-2 text-right text-nowrap">{{ item.totalSum()|number_format(2, '.', ' ') }}</div>
-                </div>
-            {% endfor %}
-
-            <div class="row border-top">
-                <div class="col-6 text-nowrap font-weight-bold border-top">{{ 'Discount'|locale }}:</div>
-    			<div class="col-6 text-right text-nowrap font-weight-bold border-top">{{ order.totalDiscount()|number_format(2, '.', ' ') }}</div>
-
-                <div class="col-6 text-nowrap font-weight-bold border-top">{{ 'Tax'|locale }}:</div>
-    			<div class="col-6 text-right text-nowrap font-weight-bold border-top">{{ order.totalTax()|number_format(2, '.', ' ') }}</div>
-
-                <div class="col-6 text-nowrap font-weight-bold border-top">{{ 'Total'|locale }}:</div>
-                <div class="col-6 text-right text-nowrap font-weight-bold border-top">{{ order.totalSum()|number_format(2, '.', ' ') }}</div>
-            </div>
-        </div>
-    EOD;
-
-const DISPATCH_TEMPLATE = <<<'EOD'
-        <div class="m-5">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <h3 class="font-weight-bold">{{ 'Dispatch Note'|locale }}</h3>
-                    {#<img src="/images/logo.png" style="width: 100%; max-width: 300px" />#}
-                </div>
-                <div class="col-6">
-                    {{ parameter('common_title') }}<br />
-                    {{ 'Order'|locale }}: <b>{{ order.external_id ?: order.serial }}</b><br />
-                    {{ 'Date'|locale }}: <b>{{ order.date|df('d.m.Y H:i') }}</b><br />
-                    {{ 'Shipping'|locale }}: <b>{{ order.shipping|df('d.m.Y H:i') }}</b><br />
-                    {{ 'Total price'|locale }}: <b>{{ order.totalSum()|number_format(2, '.', ' ') }}</b>
-                </div>
-                <div class="col-6 text-right">
-                    {{ order.delivery.client }}<br />
-                    {{ order.phone ? order.phone : '-' }}<br />
-                    {{ order.email ? order.email : '-' }}<br />
-                    {{ order.delivery.address }}<br />
-                    {{ order.comment }}
-                </div>
-            </div>
-        
-            <div class="row py-1 mt-3 bg-grey2">
-                <div class="col-6 text-nowrap font-weight-bold">{{ 'Item'|locale }}</div>
-                <div class="col-2 text-right text-nowrap font-weight-bold">{{ 'Volumetric weight'|locale }}</div>
-                <div class="col-2 text-right text-nowrap font-weight-bold">{{ 'Weight'|locale }}</div>
-                <div class="col-2 text-right text-nowrap font-weight-bold">{{ 'Quantity'|locale }}</div>
-            </div>
-        
-            {% for item in order.products().where('type', 'product').get() %}
-                <div class="row py-1 {{ loop.last ?: 'border-bottom' }} {{ loop.index0 % 2 ? 'bg-grey1' }}">
-                    <div class="col-6 text-nowrap font-weight-bold">{{ item.title }}</div>
-                    <div class="col-2 text-right text-nowrap font-weight-bold">{{ catalog_product_dimensional_weight(item) }}</div>
-                    <div class="col-2 text-right text-nowrap font-weight-bold">{{ item.weightWithClass() }}</div>
-                    <div class="col-2 text-right text-nowrap font-weight-bold">{{ item.totalCount() }}</div>
-                </div>
-            {% endfor %}
-        </div>
-    EOD;

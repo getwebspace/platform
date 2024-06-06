@@ -21,6 +21,11 @@ class LoginPageAction extends UserAction
 
     protected function action(): \Slim\Psr7\Response
     {
+        // first install redirect
+        if (!file_exists(LOCK_FILE)) {
+            return $this->respondWithRedirect('/cup/system');
+        }
+
         $identifier = $this->parameter('user_login_type', 'username');
 
         try {

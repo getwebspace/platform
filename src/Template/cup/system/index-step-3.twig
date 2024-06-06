@@ -8,7 +8,7 @@
                     {{ 'Setting up user with administrator rights'|locale }}
                 </p>
             </div>
-            <div class="col-6">
+            <div class="col-12">
                 {% include 'cup/form.twig' with {
                     'label': 'Login'|locale,
                     'type': 'text',
@@ -20,7 +20,7 @@
                     }
                 } %}
             </div>
-            <div class="col-6">
+            <div class="col-12">
                 {% include 'cup/form.twig' with {
                     'label': 'E-Mail',
                     'type': 'email',
@@ -32,7 +32,7 @@
                     }
                 } %}
             </div>
-            <div class="col-6">
+            <div class="col-12">
                 {% include 'cup/form.twig' with {
                     'label': 'Password'|locale,
                     'type': 'password',
@@ -43,39 +43,10 @@
                 } %}
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-12">
-                <h4 class="text-center">{{ 'Database'|locale }}</h4>
-            </div>
-            <div class="col-6">
-                {% include 'cup/form.twig' with {
-                    'label': 'Scheme'|locale,
-                    'type': 'select',
-                    'name': 'database[action]',
-                    'args': {
-                        'option': _({'': 'Do not change', 'create': 'Create', 'update': 'Update', 'delete': 'Delete'}),
-                        'selected': user == null ? 'create' : '',
-                    }
-                } %}
-            </div>
-            <div class="col-6">
-                {% include 'cup/form.twig' with {
-                    'label': 'Filling the base'|locale,
-                    'type': 'select',
-                    'name': 'database[fill]',
-                    'args': {
-                        'option': _({'no': 'no', 'default': 'Default'}),
-                        'selected': user == null ? 'default' : 'no'
-                    }
-                } %}
-            </div>
-        </div>
     </div>
 
-    <div class="card-footer">
-        <button type="submit" class="btn btn-primary mx-1">
-            {{ 'Apply'|locale }}
-        </button>
+    <div class="card-footer d-flex justify-content-center">
+        <a href="/cup/system/2" class="btn btn-secondary mx-1 w-25">{{ 'Back'|locale }}</a>
+        <button type="submit" class="btn btn-primary mx-1 w-75">{{ 'Apply'|locale }}</button>
     </div>
 </form>
