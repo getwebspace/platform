@@ -54,7 +54,7 @@ abstract class ReferenceAction extends AbstractAction
             case 'store-locations':
                 return ReferenceType::STORE_LOCATION;
 
-            case 'social-network':
+            case 'social-networks':
                 return ReferenceType::SOCIAL_NETWORK;
 
             case 'manufacturer':
