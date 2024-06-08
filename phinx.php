@@ -14,7 +14,7 @@ return [
             'suffix' => '.sqlite',
         ],
         'prod' => [
-            'dsn' => $_ENV['DATABASE'] ?? 'sqlite://./var/database',
+            'dsn' => !empty($_ENV['DATABASE']) ? $_ENV['DATABASE'] : 'sqlite://./var/database',
             'suffix' => '.sqlite',
         ],
     ],
