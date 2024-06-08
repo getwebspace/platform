@@ -72,7 +72,7 @@ class ReferenceSeeder extends AbstractSeed
                 'uuid' => Ramsey\Uuid\Uuid::uuid4()->toString(),
                 'type' => \App\Domain\Casts\Reference\Type::WEIGHT_CLASS,
                 'title' => $item['title'],
-                'value' => $item['value'],
+                'value' => json_encode($item['value'], JSON_UNESCAPED_UNICODE),
                 'order' => $i + 1,
                 'status' => true
             ];
@@ -90,7 +90,7 @@ class ReferenceSeeder extends AbstractSeed
                 'uuid' => Ramsey\Uuid\Uuid::uuid4()->toString(),
                 'type' => \App\Domain\Casts\Reference\Type::LENGTH_CLASS,
                 'title' => $item['title'],
-                'value' => $item['value'],
+                'value' => json_encode($item['value'], JSON_UNESCAPED_UNICODE),
                 'order' => $i + 1,
                 'status' => true
             ];
@@ -111,7 +111,7 @@ class ReferenceSeeder extends AbstractSeed
                 'uuid' => Ramsey\Uuid\Uuid::uuid4()->toString(),
                 'type' => \App\Domain\Casts\Reference\Type::TAX_RATE,
                 'title' => $item['title'],
-                'value' => $item['value'],
+                'value' => json_encode($item['value'], JSON_UNESCAPED_UNICODE),
                 'order' => $i + 1,
                 'status' => true
             ];
@@ -140,7 +140,7 @@ class ReferenceSeeder extends AbstractSeed
                 'uuid' => Ramsey\Uuid\Uuid::uuid4()->toString(),
                 'type' => \App\Domain\Casts\Reference\Type::SOCIAL_NETWORK,
                 'title' => $item['title'],
-                'value' => $item['value'],
+                'value' => json_encode($item['value'], JSON_UNESCAPED_UNICODE),
                 'order' => $i + 1,
                 'status' => true
             ];
@@ -156,7 +156,7 @@ class ReferenceSeeder extends AbstractSeed
                 'uuid' => Ramsey\Uuid\Uuid::uuid4()->toString(),
                 'type' => \App\Domain\Casts\Reference\Type::ADDRESS_FORMAT,
                 'title' => $item['title'],
-                'value' => $item['value'],
+                'value' => json_encode($item['value'], JSON_UNESCAPED_UNICODE),
                 'order' => $i + 1,
                 'status' => true
             ];
