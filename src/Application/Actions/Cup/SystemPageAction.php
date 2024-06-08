@@ -81,14 +81,14 @@ class SystemPageAction extends AbstractAction
 
             // create or read group
             try {
-                $userData['group'] = $userGroupService->create([
-                    'title' => __('Administrators'),
-                    'access' => $this->getRoutes()->values()->all(),
+                $group = $userGroupService->create([
+                    'title' => 'Administrators',
+                    'access' => $this->getRoutes()->values()->all()
                 ]);
             } catch (TitleAlreadyExistsException $e) {
-                $userData['group'] = $userGroupService->read([
-                    'title' => __('Administrators'),
-                ]);
+                $group = $userGroupService->read(['title' => 'Administrators']);
+            } finally {
+                $userData['group_uuid'] = $group->uuid;
             }
 
             try {
