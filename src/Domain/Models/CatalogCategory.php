@@ -162,7 +162,7 @@ class CatalogCategory extends Model
 
     public function products(): HasMany
     {
-        return $this->hasMany(CatalogProduct::class, 'category_uuid', 'uuid');
+        return $this->hasMany(CatalogProduct::class, 'category_uuid', 'uuid')->where('status', CatalogStatus::WORK);
     }
 
     public function toArray(): array

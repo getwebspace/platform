@@ -7,7 +7,7 @@ use App\Domain\Casts\Boolean;
 use App\Domain\Casts\Catalog\Product\Dimension as ProductDimension;
 use App\Domain\Casts\Catalog\Product\Tags as ProductTags;
 use App\Domain\Casts\Catalog\Product\Type as ProductType;
-use App\Domain\Casts\Catalog\Status;
+use App\Domain\Casts\Catalog\Status as CatalogStatus;
 use App\Domain\Casts\Decimal;
 use App\Domain\Casts\Meta;
 use App\Domain\Casts\Uuid;
@@ -126,7 +126,7 @@ class CatalogProduct extends Model
         'manufacturer' => 'string',
         'tags' => ProductTags::class,
         'order' => 'int',
-        'status' => Status::class,
+        'status' => CatalogStatus::class,
         'date' => 'datetime',
         'meta' => Meta::class,
         'external_id' => 'string',
@@ -195,7 +195,7 @@ class CatalogProduct extends Model
             'related_uuid',
             'uuid',
             'uuid'
-        )->withPivot('count');
+        )->withPivot('count')->where('status', CatalogStatus::WORK);
     }
 
     public function price(string $type = 'price', int $precision = 0): float
