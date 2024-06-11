@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 /**
- * @property Collection $files
- * @property Collection $documents
- * @property Collection $images
- * @property Collection $audios
- * @property Collection $videos
+ * @property Collection<File> $files
+ * @property Collection<File> $documents
+ * @property Collection<File> $images
+ * @property Collection<File> $audios
+ * @property Collection<File> $videos
  */
 trait HasFiles
 {
