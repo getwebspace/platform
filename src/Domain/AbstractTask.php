@@ -10,6 +10,7 @@ use Illuminate\Database\Connection as DataBase;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Cache\Adapter\ArrayAdapter as Cache;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter as FileCache;
 
 abstract class AbstractTask
 {
@@ -25,6 +26,8 @@ abstract class AbstractTask
     protected DataBase $db;
 
     protected Cache $cache;
+
+    protected FileCache $persistentCache;
 
     private ?Task $entity;
 
@@ -76,6 +79,7 @@ abstract class AbstractTask
         $this->logger = $container->get(LoggerInterface::class);
         $this->db = $container->get(DataBase::class);
         $this->cache = $container->get(Cache::class);
+        $this->persistentCache = $container->get(FileCache::class);
         $this->entity = $entity;
         $this->taskService = $container->get(TaskService::class);
         $this->renderer = $container->get('view');

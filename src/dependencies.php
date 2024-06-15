@@ -59,6 +59,12 @@ return function (ContainerBuilder $containerBuilder): void {
 
             return $cache;
         },
+        \Symfony\Component\Cache\Adapter\FilesystemAdapter::class => function (ContainerInterface $c): \Symfony\Component\Cache\Adapter\FilesystemAdapter {
+            $cache = new Symfony\Component\Cache\Adapter\FilesystemAdapter('', 0, CACHE_DIR);
+            $cache->setLogger($c->get(\Psr\Log\LoggerInterface::class));
+
+            return $cache;
+        },
     ]);
 
     // tnt search

@@ -23,6 +23,7 @@ use Slim\Interfaces\RouteCollectorInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 use Symfony\Component\Cache\Adapter\ArrayAdapter as Cache;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter as FileCache;
 
 abstract class AbstractAction
 {
@@ -48,6 +49,8 @@ abstract class AbstractAction
 
     protected Cache $cache;
 
+    protected FileCache $persistentCache;
+
     protected RouteCollectorInterface $routeCollector;
 
     protected Request $request;
@@ -68,6 +71,7 @@ abstract class AbstractAction
         $this->logger = $container->get(LoggerInterface::class);
         $this->db = $container->get(DataBase::class);
         $this->cache = $container->get(Cache::class);
+        $this->persistentCache = $container->get(FileCache::class);
         $this->routeCollector = $container->get(RouteCollectorInterface::class);
         $this->renderer = $container->get('view');
     }

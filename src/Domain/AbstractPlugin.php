@@ -13,6 +13,7 @@ use Slim\Interfaces\RouteInterface;
 use Slim\Psr7\Request;
 use Slim\Psr7\Response;
 use Symfony\Component\Cache\Adapter\ArrayAdapter as Cache;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter as FileCache;
 
 abstract class AbstractPlugin
 {
@@ -32,6 +33,8 @@ abstract class AbstractPlugin
     protected ContainerInterface $container;
 
     protected Cache $cache;
+
+    protected FileCache $persistentCache;
 
     protected LoggerInterface $logger;
 
@@ -66,6 +69,7 @@ abstract class AbstractPlugin
         $this->container = $container;
         $this->container->set(static::NAME, $this);
         $this->cache = $container->get(Cache::class);
+        $this->persistentCache = $container->get(FileCache::class);
         $this->logger = $container->get(LoggerInterface::class);
         $this->router = $container->get(App::class)->getRouteCollector();
         $this->renderer = $container->get('view');
