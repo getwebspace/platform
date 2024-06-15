@@ -136,12 +136,24 @@ class UserService extends AbstractService
         switch (true) {
             case $data['identifier'] !== null:
                 /** @var User $user */
-                $user = User::where('email', $data['identifier'])
-                    ->orWhere('phone', $data['identifier'])
-                    ->orWhere('username', $data['identifier'])
+                $user = User::query()
+                    ->orWhere($this->db->raw('lower(email)'), strtolower($data['identifier']))
+                    ->orWhere($this->db->raw('lower(phone)'), strtolower($data['identifier']))
+                    ->orWhere($this->db->raw('lower(username)'), strtolower($data['identifier']))
                     ->first();
 
-                return $user ?: throw new UserNotFoundException();
+                if (!$user || ($data['status'] !== null && $data['status'] !== $user->status)) {
+                    throw new UserNotFoundException();
+                }
+
+                // optional: check password
+                if ($data['password'] !== null) {
+                    if (!password_verify($data['password'], $user->password)) {
+                        throw new WrongPasswordException();
+                    }
+                }
+
+                return $user;
 
             case !is_array($data['uuid']) && $data['uuid'] !== null:
             case !is_array($data['username']) && $data['username'] !== null:
@@ -149,7 +161,25 @@ class UserService extends AbstractService
             case !is_array($data['phone']) && $data['phone'] !== null:
             case !is_array($data['external_id']) && $data['external_id'] !== null:
                 /** @var User $user */
-                $user = User::firstWhere($criteria);
+                $user = User::firstWhere(function (Builder $query) use ($data): void {
+                    switch (true) {
+                        case $data['uuid'] !== null:
+                            $query->where($this->db->raw('lower(uuid)'), strtolower($data['uuid']));
+                            break;
+                        case $data['username'] !== null:
+                            $query->where($this->db->raw('lower(username)'), strtolower($data['username']));
+                            break;
+                        case $data['email'] !== null:
+                            $query->where($this->db->raw('lower(email)'), strtolower($data['email']));
+                            break;
+                        case $data['phone'] !== null:
+                            $query->where($this->db->raw('lower(phone)'), strtolower($data['phone']));
+                            break;
+                        case $data['external_id'] !== null:
+                            $query->where($this->db->raw('lower(external_id)'), strtolower($data['external_id']));
+                            break;
+                    }
+                });
 
                 if (!$user || ($data['status'] !== null && $data['status'] !== $user->status)) {
                     throw new UserNotFoundException();
