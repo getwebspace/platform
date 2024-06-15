@@ -2,6 +2,7 @@
 
 namespace App\Application\Auth;
 
+use App\Domain\Casts\User\Status as UserStatus;
 use App\Domain\Models\User;
 use App\Domain\Models\UserToken;
 use App\Domain\Service\User\Exception\TokenNotFoundException;
@@ -16,9 +17,22 @@ class BasicAuthProvider extends AbstractAuthProvider
      */
     public function login(array $credentials, array $params): ?User
     {
+        $default = [
+            'identifier' => null,
+            'username' => null,
+            'email' => null,
+            'phone' => null,
+            'password' => null,
+            'status' => UserStatus::WORK,
+        ];
+        $credentials = array_merge($default, $credentials);
         $user = $this->userService->read($credentials);
 
-        if (is_a($user, User::class)) {
+        if (is_a($user, User::class) && $user->status === UserStatus::WORK) {
+            if (!password_verify($credentials['password'], $user->password)) {
+                throw new WrongPasswordException();
+            }
+
             return $user;
         }
 

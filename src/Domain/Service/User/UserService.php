@@ -85,7 +85,6 @@ class UserService extends AbstractService
             'external_id' => null,
             'provider' => null,
             'unique' => null,
-            'password' => null, // optional: for check
         ];
         $data = array_merge($default, static::$default_read, $data);
 
@@ -166,18 +165,7 @@ class UserService extends AbstractService
                     }
                 });
 
-                if (!$user || ($data['status'] !== null && $data['status'] !== $user->status)) {
-                    throw new UserNotFoundException();
-                }
-
-                // optional: check password
-                if ($data['password'] !== null) {
-                    if (!password_verify($data['password'], $user->password)) {
-                        throw new WrongPasswordException();
-                    }
-                }
-
-                return $user;
+                return $user ?: throw new UserNotFoundException();
 
             case !is_array($data['firstname']) && $data['firstname'] !== null:
             case !is_array($data['lastname']) && $data['lastname'] !== null:
