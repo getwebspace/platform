@@ -134,27 +134,7 @@ class UserService extends AbstractService
         }
 
         switch (true) {
-            case $data['identifier'] !== null:
-                /** @var User $user */
-                $user = User::query()
-                    ->orWhere($this->db->raw('lower(email)'), strtolower($data['identifier']))
-                    ->orWhere($this->db->raw('lower(phone)'), strtolower($data['identifier']))
-                    ->orWhere($this->db->raw('lower(username)'), strtolower($data['identifier']))
-                    ->first();
-
-                if (!$user || ($data['status'] !== null && $data['status'] !== $user->status)) {
-                    throw new UserNotFoundException();
-                }
-
-                // optional: check password
-                if ($data['password'] !== null) {
-                    if (!password_verify($data['password'], $user->password)) {
-                        throw new WrongPasswordException();
-                    }
-                }
-
-                return $user;
-
+            case !is_array($data['identifier']) && $data['identifier'] !== null:
             case !is_array($data['uuid']) && $data['uuid'] !== null:
             case !is_array($data['username']) && $data['username'] !== null:
             case !is_array($data['email']) && $data['email'] !== null:
@@ -163,6 +143,11 @@ class UserService extends AbstractService
                 /** @var User $user */
                 $user = User::firstWhere(function (Builder $query) use ($data): void {
                     switch (true) {
+                        case $data['identifier'] !== null:
+                            $query->orWhere($this->db->raw('lower(email)'), strtolower($data['identifier']));
+                            $query->orWhere($this->db->raw('lower(phone)'), strtolower($data['identifier']));
+                            $query->orWhere($this->db->raw('lower(username)'), strtolower($data['identifier']));
+                            break;
                         case $data['uuid'] !== null:
                             $query->where($this->db->raw('lower(uuid)'), strtolower($data['uuid']));
                             break;
