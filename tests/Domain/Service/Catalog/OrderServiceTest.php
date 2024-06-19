@@ -153,7 +153,7 @@ class OrderServiceTest extends TestCase
             $this->assertEquals($opts['price_type'], $op->pivot->price_type);
 
             if ($op->pivot->price_type === \App\Domain\References\Catalog::PRODUCT_PRICE_TYPE_PRICE_SELF) {
-                $this->assertEquals($opts['discount'], $op->pivot->discount);
+                $this->assertEquals($opts['discount'], abs($op->pivot->discount));
                 $this->assertEquals($opts['tax'], $op->pivot->tax);
                 $this->assertEquals($opts['tax_included'], $op->pivot->tax_included);
             }

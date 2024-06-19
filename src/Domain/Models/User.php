@@ -132,6 +132,7 @@ class User extends Model
         'firstname' => '',
         'lastname' => '',
         'patronymic' => '',
+        'birthdate' => null,
         'gender' => '',
         'country' => '',
         'city' => '',

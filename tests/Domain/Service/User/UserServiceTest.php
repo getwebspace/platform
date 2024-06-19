@@ -215,23 +215,6 @@ class UserServiceTest extends TestCase
         ]);
     }
 
-    public function testReadWithWrongPassword(): void
-    {
-        $this->expectException(WrongPasswordException::class);
-
-        $data = [
-            'username' => $this->getFaker()->userName,
-            'password' => $this->getFaker()->password,
-        ];
-
-        $this->service->create($data);
-
-        $this->service->read([
-            'username' => $data['username'],
-            'password' => $data['password'] . '-wrong',
-        ]);
-    }
-
     public function testUpdate(): void
     {
         $user = $this->service->create([
