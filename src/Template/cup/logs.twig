@@ -22,16 +22,6 @@
                     </div>
                 </div>
                 <div class="card-body p-0">
-                    <style>
-                        .CodeMirror {
-                            width: 100% !important;
-                            min-height: 86vh !important;
-                        }
-                        [data-input] {
-                            padding: 0;
-                        }
-                    </style>
-
                     <div class="tab-content">
                         {% for file, lines in files %}
                             <div class="tab-pane fade {{ loop.index0 == 0 ? 'active show' : '' }}" id="file-{{ file|replace({'.': '-'}) }}" role="tabpanel">
@@ -53,5 +43,15 @@
             </div>
         </div>
     </div>
+
+    <style>
+        .CodeMirror {
+            width: 100% !important;
+            min-height: 86vh !important;
+        }
+        [data-input] {
+            padding: 0;
+        }
+    </style>
 {% endblock %}
 

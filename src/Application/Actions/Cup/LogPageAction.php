@@ -11,8 +11,6 @@ class LogPageAction extends AbstractAction
         return $this->respondWithTemplate('cup/logs.twig', [
             'files' => [
                 'app.log' => $this->getFileContents('app.log'),
-                'nginx.access.log' => $this->getFileContents('nginx.access.log'),
-                'nginx.error.log' => $this->getFileContents('nginx.error.log'),
             ],
         ]);
     }
