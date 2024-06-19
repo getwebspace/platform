@@ -61,8 +61,8 @@ You can define the next environment variables
 
 | Type    | Variable Name      | Default        | description                                                       |
 |---------|--------------------|----------------|-------------------------------------------------------------------|
-| Build   | BUILD_DEPENDENSIES |                | Dependencies used in the build                                    |   
-| Build   | DEPENDENSIES       |                | Core Libraries                                                    |   
+| Build   | BUILD_DEPENDENCIES |                | Dependencies used in the build                                    |   
+| Build   | DEPENDENCIES       |                | Core Libraries                                                    |   
 | Build   | EXTRA_EXTENSIONS   | pdo_mysql      | Additional Libraries                                              |   
 | Build   | PLATFORM_HOME      | /var/container | Home directory                                                    |   
 | Runtime | DEBUG              | 0              | Debug mode                                                        |   
