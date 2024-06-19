@@ -5,6 +5,7 @@ up:
 	@chmod -R 0777 public/resource || :
 	@chmod -R 0777 theme || :
 	@chmod -R 0777 var || :
+	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/phinx migrate
 
 down:
 	@docker-compose -f docker-compose.dev.yml down
