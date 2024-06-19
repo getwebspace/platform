@@ -1,4 +1,4 @@
-FROM php:8.2-fpm-alpine3.18
+FROM php:8.3-fpm-alpine3.20
 
 MAINTAINER Aleksey Ilyin <alksily@getwebspace.org>
 
@@ -30,34 +30,36 @@ WORKDIR ${PLATFORM_HOME}
 
 # Install packages and dependencies
 RUN set -x \
-    && apk update \
-    && apk add --no-cache --virtual .build-deps ${PHPIZE_DEPS} ${BUILD_DEPENDENCIES} \
+    && apk add --update --no-cache \
         runit \
         nginx \
-        curl \
-        git \
-        unzip \
-        imagemagick \
-        imagemagick-dev \
         libzip-dev \
-        libpng-dev \
         libxml2-dev \
+        libpng-dev \
+        libjpeg-turbo-dev \
+        libwebp-dev \
+        libxpm-dev \
+        freetype-dev \
         icu-dev \
-        yaml-dev \
-        php-dev \
+        ${PHPIZE_DEPS} \
+        ${BUILD_DEPENDENCIES} \
         ${DEPENDENCIES} \
-    && nginx -V \
-    && pecl install -f imagick yaml \
-    && docker-php-ext-install -j$(nproc) zip gd intl soap ${EXTRA_EXTENSIONS} \
-    && docker-php-ext-enable opcache.so imagick yaml \
+    \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp --with-xpm \
+    && docker-php-ext-install -j$(nproc) zip gd intl ${EXTRA_EXTENSIONS} \
+    && docker-php-ext-enable opcache.so \
     && docker-php-source delete \
     \
     # Remove alpine cache and unused dependencies
     && rm -rf /var/cache/apk/* \
-    && apk del .build-deps \
     \
     # Remove default server definition
     && rm /etc/nginx/http.d/default.conf \
+    \
+    # Checks
+    && nginx -V \
+    && php -v \
+    && php -m \
     \
     # Make sure files/folders needed by the processes are accessible when they run under the www-data user
     && chown -R www-data:www-data /run \
