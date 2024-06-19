@@ -336,31 +336,6 @@
                                                         'value': '960'
                                                     }
                                                 } %}
-
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'ImageMagick executable',
-                                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('System field. If you don\'t know what this field is for, it\'s best not to touch it.'|locale) ~ '"></i>',
-                                                    'type': 'text',
-                                                    'name': 'image[convert_bin]',
-                                                    'args': {
-                                                        'placeholder': '/usr/bin/convert',
-                                                        'value': '/usr/bin/convert'
-                                                    }
-                                                } %}
-
-                                                {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'ImageMagick options',
-                                                    'postfix': '<i class="far fa-question-circle" data-toggle="tooltip" data-placement="top" title="' ~ ('System field. If you don\'t know what this field is for, it\'s best not to touch it.'|locale) ~ '"></i>',
-                                                    'type': 'textarea',
-                                                    'name': 'image[convert_args]',
-                                                    'args': {
-                                                        'placeholder': '...',
-                                                        'value': [
-                                                            '-quality 70%',
-                                                        ]|join('\n'),
-                                                        'style': 'min-height: 150px;'
-                                                    }
-                                                } %}
                                             </div>
 
                                             {# TAB: Other Publication #}

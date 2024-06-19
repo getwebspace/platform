@@ -34,17 +34,9 @@ class ConvertImageTask extends AbstractTask
             return;
         }
 
-        $convert_size = $this->parameter('image_convert_min_size', 100000);
-        $command = $this->parameter('image_convert_bin', '/usr/bin/convert');
-        $params = [
-            '-quality 80%',
-        ];
-        if (($arg = $this->parameter('image_convert_args', false)) !== false) {
-            $params = array_map('trim', explode(PHP_EOL, $arg));
-        }
-        $params[] = '-set comment "Converted in WebSpace Engine CMS"';
-
         $fileService = $this->container->get(FileService::class);
+
+        $convert_size = $this->parameter('image_convert_min_size', 100000);
 
         foreach ((array) $args['uuid'] as $index => $uuid) {
             try {
@@ -67,25 +59,25 @@ class ConvertImageTask extends AbstractTask
                             'middle' => $this->parameter('image_convert_size_middle', 450),
                             'small' => $this->parameter('image_convert_size_small', 200),
                         ];
-                        $filesize = +filesize($original);
+                        $filesize = filesize($original);
+
+                        // resize original picture
+                        $this->resizeAndSaveImage($original, $folder . '/' . $file->name . '.webp');
+                        $filesize += filesize($folder . '/' . $file->name . '.webp');
 
                         foreach ($sizes as $size => $pixels) {
                             if ($pixels > 0) {
                                 $path = $folder . '/' . $size;
-                                $buf = array_merge($params, ['-resize x' . $pixels . '\>']);
 
                                 if (!file_exists($path)) {
-                                    @mkdir($path, 0o777, true);
+                                    @mkdir($path, 0777, true);
                                 }
-                                @exec($command . " '" . $original . "' " . implode(' ', $buf) . " '" . $path . '/' . $file->name . ".webp'");
-                                $filesize += +filesize($path . '/' . $file->name . '.webp');
+
+                                // resize specific size
+                                $this->resizeAndSaveImage($original, $path . '/' . $file->name . '.webp', $pixels);
+                                $filesize += filesize($path . '/' . $file->name . '.webp');
                             }
                         }
-
-                        @exec($command . " '" . $original . "' " . implode(' ', $params) . " '" . $folder . '/' . $file->name . ".webp'");
-                        $filesize += +filesize($folder . '/' . $file->name . '.webp');
-
-                        $this->logger->info('Task: convert image', ['params' => $params]);
 
                         $file->update([
                             // set file ext and type
@@ -111,5 +103,60 @@ class ConvertImageTask extends AbstractTask
         $this->container->get(\App\Application\PubSub::class)->publish('task:file:convert');
 
         $this->setStatusDone();
+    }
+
+    /**
+     * @throws \Exception
+     */
+    private function resizeAndSaveImage($original, $destination, $maxHeight = null): void
+    {
+        [$width, $height, $type] = getimagesize($original);
+
+        // create image from
+        switch ($type) {
+            case IMAGETYPE_JPEG:
+                $source = imagecreatefromjpeg($original);
+                break;
+            case IMAGETYPE_PNG:
+                $source = imagecreatefrompng($original);
+                break;
+            case IMAGETYPE_GIF:
+                $source = imagecreatefromgif($original);
+                break;
+            case IMAGETYPE_WEBP:
+                $source = imagecreatefromwebp($original);
+                break;
+            case IMAGETYPE_BMP:
+                $source = imagecreatefrombmp($original);
+                break;
+            case IMAGETYPE_WBMP:
+                $source = imagecreatefromwbmp($original);
+                break;
+            case IMAGETYPE_XBM:
+                $source = imagecreatefromxbm($original);
+                break;
+            default:
+                throw new \Exception('Unsupported image type');
+        }
+
+        // calculate new image size
+        if ($maxHeight) {
+            $ratio = $height / $maxHeight;
+            $newWidth = intval($width / $ratio);
+            $newHeight = intval($maxHeight);
+        } else {
+            $newWidth = intval($width);
+            $newHeight = intval($height);
+        }
+
+        $thumbnail = imagecreatetruecolor($newWidth, $newHeight);
+        imagecopyresampled($thumbnail, $source, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+        // save as WebP
+        imagewebp($thumbnail, $destination);
+
+        // releasing memory
+        imagedestroy($source);
+        imagedestroy($thumbnail);
     }
 }

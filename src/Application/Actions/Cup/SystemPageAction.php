@@ -137,13 +137,12 @@ class SystemPageAction extends AbstractAction
         }
 
         $extensions = [
-            'pdo' => extension_loaded('pdo'),
-            'sqlite3' => extension_loaded('sqlite3'),
+            'mbstring' => extension_loaded('mbstring'),
             'curl' => extension_loaded('curl'),
             'json' => extension_loaded('json'),
-            'mbstring' => extension_loaded('mbstring'),
             'gd' => extension_loaded('gd'),
-            'imagick' => extension_loaded('imagick'),
+            'pdo' => extension_loaded('pdo'),
+            'sqlite3' => extension_loaded('sqlite3'),
             'xml' => extension_loaded('xml'),
             'yaml' => extension_loaded('yaml'),
             'zip' => extension_loaded('zip'),
