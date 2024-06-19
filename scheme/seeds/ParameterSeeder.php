@@ -14,13 +14,13 @@ class ParameterSeeder extends AbstractSeed
             [
                 'name' => 'catalog_dispatch',
                 'value' => DISPATCH_TEMPLATE,
-            ]
+            ],
         ];
 
         // Check the number of records in the table
         $count = $this->fetchRow('SELECT COUNT(*) as count FROM params');
 
-        if ($count['count'] == 0) {
+        if ($count['count'] === 0) {
             // Insert the data if the table is empty
             $this->table('params')->insert($data)->saveData();
         }

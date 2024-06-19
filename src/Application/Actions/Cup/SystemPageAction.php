@@ -4,8 +4,6 @@ namespace App\Application\Actions\Cup;
 
 use App\Domain\AbstractAction;
 use App\Domain\Models\User;
-use App\Domain\Service\Parameter\ParameterService;
-use App\Domain\Service\Reference\ReferenceService;
 use App\Domain\Service\User\Exception\EmailAlreadyExistsException;
 use App\Domain\Service\User\Exception\EmailBannedException;
 use App\Domain\Service\User\Exception\MissingUniqueValueException;
@@ -83,7 +81,7 @@ class SystemPageAction extends AbstractAction
             try {
                 $group = $userGroupService->create([
                     'title' => 'Administrators',
-                    'access' => $this->getRoutes()->values()->all()
+                    'access' => $this->getRoutes()->values()->all(),
                 ]);
             } catch (TitleAlreadyExistsException $e) {
                 $group = $userGroupService->read(['title' => 'Administrators']);

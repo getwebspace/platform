@@ -70,7 +70,7 @@ class ConvertImageTask extends AbstractTask
                                 $path = $folder . '/' . $size;
 
                                 if (!file_exists($path)) {
-                                    @mkdir($path, 0777, true);
+                                    @mkdir($path, 0o777, true);
                                 }
 
                                 // resize specific size
@@ -106,6 +106,10 @@ class ConvertImageTask extends AbstractTask
     }
 
     /**
+     * @param mixed $original
+     * @param mixed $destination
+     * @param null|mixed $maxHeight
+     *
      * @throws \Exception
      */
     private function resizeAndSaveImage($original, $destination, $maxHeight = null): void
@@ -116,25 +120,39 @@ class ConvertImageTask extends AbstractTask
         switch ($type) {
             case IMAGETYPE_JPEG:
                 $source = imagecreatefromjpeg($original);
+
                 break;
+
             case IMAGETYPE_PNG:
                 $source = imagecreatefrompng($original);
+
                 break;
+
             case IMAGETYPE_GIF:
                 $source = imagecreatefromgif($original);
+
                 break;
+
             case IMAGETYPE_WEBP:
                 $source = imagecreatefromwebp($original);
+
                 break;
+
             case IMAGETYPE_BMP:
                 $source = imagecreatefrombmp($original);
+
                 break;
+
             case IMAGETYPE_WBMP:
                 $source = imagecreatefromwbmp($original);
+
                 break;
+
             case IMAGETYPE_XBM:
                 $source = imagecreatefromxbm($original);
+
                 break;
+
             default:
                 throw new \Exception('Unsupported image type');
         }

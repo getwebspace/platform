@@ -189,11 +189,11 @@ class OrderService extends AbstractService
     private function generateSerial(): string
     {
         $currentDate = datetime();
-        $dayOfYear = str_pad(strval((+$currentDate->format('z')) + 1), 3, '0', STR_PAD_RIGHT);
+        $dayOfYear = mb_str_pad(strval((+$currentDate->format('z')) + 1), 3, '0', STR_PAD_RIGHT);
         $year = $currentDate->format('y');
 
         $ordersCount = $this->getDayCount();
-        $dailyOrderNumberFormatted = str_pad(strval($ordersCount), 3, '0', STR_PAD_LEFT);
+        $dailyOrderNumberFormatted = mb_str_pad(strval($ordersCount), 3, '0', STR_PAD_LEFT);
 
         return "{$year}{$dayOfYear}{$dailyOrderNumberFormatted}";
     }

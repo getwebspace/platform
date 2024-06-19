@@ -23,7 +23,7 @@ class ReferenceSeeder extends AbstractSeed
                 'type' => \App\Domain\Casts\Reference\Type::ORDER_STATUS,
                 'title' => $item['title'],
                 'order' => $i + 1,
-                'status' => true
+                'status' => true,
             ];
         }
 
@@ -39,7 +39,7 @@ class ReferenceSeeder extends AbstractSeed
                 'type' => \App\Domain\Casts\Reference\Type::PAYMENT,
                 'title' => $item['title'],
                 'order' => $i + 1,
-                'status' => true
+                'status' => true,
             ];
         }
 
@@ -56,7 +56,7 @@ class ReferenceSeeder extends AbstractSeed
                 'type' => \App\Domain\Casts\Reference\Type::STOCK_STATUS,
                 'title' => $item['title'],
                 'order' => $i + 1,
-                'status' => true
+                'status' => true,
             ];
         }
 
@@ -74,7 +74,7 @@ class ReferenceSeeder extends AbstractSeed
                 'title' => $item['title'],
                 'value' => json_encode($item['value'], JSON_UNESCAPED_UNICODE),
                 'order' => $i + 1,
-                'status' => true
+                'status' => true,
             ];
         }
 
@@ -92,7 +92,7 @@ class ReferenceSeeder extends AbstractSeed
                 'title' => $item['title'],
                 'value' => json_encode($item['value'], JSON_UNESCAPED_UNICODE),
                 'order' => $i + 1,
-                'status' => true
+                'status' => true,
             ];
         }
 
@@ -113,7 +113,7 @@ class ReferenceSeeder extends AbstractSeed
                 'title' => $item['title'],
                 'value' => json_encode($item['value'], JSON_UNESCAPED_UNICODE),
                 'order' => $i + 1,
-                'status' => true
+                'status' => true,
             ];
         }
 
@@ -132,7 +132,7 @@ class ReferenceSeeder extends AbstractSeed
             ['title' => 'Tumblr', 'value' => ['url' => '#']],
             ['title' => 'VK', 'value' => ['url' => '#']],
             ['title' => 'WeChat', 'value' => ['url' => '#']],
-            ['title' => 'Discord', 'value' => ['url' => '#']]
+            ['title' => 'Discord', 'value' => ['url' => '#']],
         ];
 
         foreach ($social_networks as $i => $item) {
@@ -142,7 +142,7 @@ class ReferenceSeeder extends AbstractSeed
                 'title' => $item['title'],
                 'value' => json_encode($item['value'], JSON_UNESCAPED_UNICODE),
                 'order' => $i + 1,
-                'status' => true
+                'status' => true,
             ];
         }
 
@@ -158,14 +158,14 @@ class ReferenceSeeder extends AbstractSeed
                 'title' => $item['title'],
                 'value' => json_encode($item['value'], JSON_UNESCAPED_UNICODE),
                 'order' => $i + 1,
-                'status' => true
+                'status' => true,
             ];
         }
 
         // Check the number of records in the table
         $count = $this->fetchRow('SELECT COUNT(*) as count FROM reference');
 
-        if ($count['count'] == 0) {
+        if ($count['count'] === 0) {
             // Insert the data if the table is empty
             $this->table('reference')->insert($data)->saveData();
         }

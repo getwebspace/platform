@@ -143,24 +143,35 @@ class UserService extends AbstractService
                 $user = User::firstWhere(function (Builder $query) use ($data): void {
                     switch (true) {
                         case $data['identifier'] !== null:
-                            $query->orWhere($this->db->raw('lower(email)'), strtolower($data['identifier']));
-                            $query->orWhere($this->db->raw('lower(phone)'), strtolower($data['identifier']));
-                            $query->orWhere($this->db->raw('lower(username)'), strtolower($data['identifier']));
+                            $query->orWhere($this->db->raw('lower(email)'), mb_strtolower($data['identifier']));
+                            $query->orWhere($this->db->raw('lower(phone)'), mb_strtolower($data['identifier']));
+                            $query->orWhere($this->db->raw('lower(username)'), mb_strtolower($data['identifier']));
+
                             break;
+
                         case $data['uuid'] !== null:
-                            $query->where($this->db->raw('lower(uuid)'), strtolower($data['uuid']));
+                            $query->where($this->db->raw('lower(uuid)'), mb_strtolower($data['uuid']));
+
                             break;
+
                         case $data['username'] !== null:
-                            $query->where($this->db->raw('lower(username)'), strtolower($data['username']));
+                            $query->where($this->db->raw('lower(username)'), mb_strtolower($data['username']));
+
                             break;
+
                         case $data['email'] !== null:
-                            $query->where($this->db->raw('lower(email)'), strtolower($data['email']));
+                            $query->where($this->db->raw('lower(email)'), mb_strtolower($data['email']));
+
                             break;
+
                         case $data['phone'] !== null:
-                            $query->where($this->db->raw('lower(phone)'), strtolower($data['phone']));
+                            $query->where($this->db->raw('lower(phone)'), mb_strtolower($data['phone']));
+
                             break;
+
                         case $data['external_id'] !== null:
-                            $query->where($this->db->raw('lower(external_id)'), strtolower($data['external_id']));
+                            $query->where($this->db->raw('lower(external_id)'), mb_strtolower($data['external_id']));
+
                             break;
                     }
                 });

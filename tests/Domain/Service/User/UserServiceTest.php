@@ -9,7 +9,6 @@ use App\Domain\Service\User\Exception\MissingUniqueValueException;
 use App\Domain\Service\User\Exception\PhoneAlreadyExistsException;
 use App\Domain\Service\User\Exception\UsernameAlreadyExistsException;
 use App\Domain\Service\User\Exception\UserNotFoundException;
-use App\Domain\Service\User\Exception\WrongPasswordException;
 use App\Domain\Service\User\UserService;
 use tests\TestCase;
 
