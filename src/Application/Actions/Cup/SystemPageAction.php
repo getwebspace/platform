@@ -134,26 +134,28 @@ class SystemPageAction extends AbstractAction
             }
         }
 
-        $extensions = [
-            'mbstring' => extension_loaded('mbstring'),
+        $extensions = collect([
             'curl' => extension_loaded('curl'),
-            'json' => extension_loaded('json'),
+            'fileinfo' => extension_loaded('fileinfo'),
             'gd' => extension_loaded('gd'),
+            'intl' => extension_loaded('intl'),
+            'json' => extension_loaded('json'),
+            'mbstring' => extension_loaded('mbstring'),
+            'opcache' => extension_loaded('Zend OPcache'),
+            'openssl' => extension_loaded('openssl'),
             'pdo' => extension_loaded('pdo'),
             'sqlite3' => extension_loaded('sqlite3'),
             'xml' => extension_loaded('xml'),
-            'yaml' => extension_loaded('yaml'),
             'zip' => extension_loaded('zip'),
-        ];
-        $extra_extensions = [];
+        ]);
 
         foreach (explode(' ', $_ENV['EXTRA_EXTENSIONS']) as $ext_name) {
-            $extra_extensions[$ext_name] = extension_loaded($ext_name);
+            $extensions[$ext_name] = extension_loaded($ext_name);
         }
 
         return [
-            'php' => version_compare(phpversion(), '8.2', '>='),
-            'extensions' => collect($extensions)->merge($extra_extensions)->sortKeys(),
+            'php' => version_compare(phpversion(), '8.3', '>='),
+            'extensions' => $extensions->sortKeys(),
             'folders' => $fileAccess,
         ];
     }
