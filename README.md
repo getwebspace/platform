@@ -17,28 +17,53 @@ primarily intended for: online stores and mass media or blogs.
 ![Demo site](image.png)
 
 ## Features
-- Docker compatible
-- Templates in Twig
-- Template & file editor
-- Plugins API
-- HTTP API (dedicated API, and each public controller as API)
 - Static pages
-- Publications with Categories
-- Catalog and Products (shop)
+- Users:
+  * User groups
+  * Permissions
+  * Mailing list
+- Publications
+    * News
+    * Categories
+- Shop:
+    * Catalog
+    * Products
+    * Attributes
+    * Orders
+    * Statistic
 - Dynamic forms
 - Guestbook
-- Users and User groups with permissions
-- User mailing list
-- SMTP & SendPulse
-- reCAPTCHA
-- OAuth (via [SocialConnect](https://github.com/SocialConnect))
-- Files and image optimization (imagemagick)
+- Files and image optimization (GD -> WebP)
 - Background tasks
+- Templates in Twig
+- Mailing, via:
+    * SMTP
+    * SendPulse
+- Editor, files:
+    * Theme
+    * Resource
+- Plugins API, types:
+    * Default
+    * OAuth
+    * Delivery
+    * Payment
+    * Language (locale)
+    * Legacy
+- HTTP API:
+    * Dedicated REST API
+    * Each public controller as API
+- reCAPTCHA
+- Docker compatible
 
 and more..
 
+## Themes
+- [Default shop theme](https://github.com/getwebspace/platform-default-theme)
+
 ## Plugins
-- [Search optimization](https://github.com/getwebspace/platform-plugin-seo) (robots.txt, sitemap, Yandex.Market, Google Merchant)
+- [Search optimization](https://github.com/getwebspace/platform-plugin-seo)
+- [ClearCache](https://github.com/getwebspace/platform-plugin-clearcache)
+- [Turbo PWA](https://github.com/getwebspace/platform-plugin-turbo)
 
 ## Languages
 - English (default)
