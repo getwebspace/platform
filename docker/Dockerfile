@@ -76,8 +76,7 @@ RUN set -x \
     # Install platform
     && composer install ${NO_DEV} --no-suggest --no-progress \
     && chown -R www-data:www-data ${PLATFORM_HOME} \
-    && find ${PLATFORM_HOME} -type f -exec chmod 0644 {} + \
-    && find ${PLATFORM_HOME} -type d -exec chmod 0755 {} + \
+    && chmod -R 0755 ${PLATFORM_HOME} \
     && chmod -R 0777 ${PLATFORM_HOME}/plugin \
     && chmod -R 0776 ${PLATFORM_HOME}/public/uploads \
     && chmod -R 0777 ${PLATFORM_HOME}/public/resource \
