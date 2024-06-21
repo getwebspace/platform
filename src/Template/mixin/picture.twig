@@ -15,7 +15,7 @@
         {% set small = parameter('image_convert_size_small', 200) %}
 
         <picture>
-            <source srcset="{{ file.public_path('big') }}" media="(min-width: {{ small }}px)" />
+            <source srcset="{{ file.public_path('big') }}" media="(min-width: {{ big }}px)" />
             <source srcset="{{ file.public_path('middle') }}" media="(min-width: {{ middle }}px)" />
             <source srcset="{{ file.public_path('small') }}" media="(min-width: {{ small }}px)" />
             <img src="{{ file.public_path() }}"
