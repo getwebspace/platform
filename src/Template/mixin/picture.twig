@@ -9,10 +9,6 @@
     args - other args
 #}
 {% htmlcompress %}
-    {% if placeholder is null %}
-        {% set placeholder = '/assets/img/no_image.jpeg' %}
-    {% endif %}
-
     {% if file and file.type starts with 'image/' %}
         {% set big = parameter('image_convert_size_big', 960) %}
         {% set middle = parameter('image_convert_size_middle', 450) %}
@@ -23,7 +19,6 @@
             <source srcset="{{ file.public_path('middle') }}" media="(min-width: {{ middle }}px)" />
             <source srcset="{{ file.public_path('small') }}" media="(min-width: {{ small }}px)" />
             <img src="{{ file.public_path() }}"
-                {{ placeholder ? ('src="' ~ placeholder ~ '"')|raw : '' }}
                 {{ id ? ('id="'~ id|trim ~ '"')|raw : '' }}
                 {{ class ? ('class="'~ class|trim ~'"')|raw : '' }}
                 {{ alt ? ('alt="'~ alt|trim ~'"')|raw : '' }}
@@ -33,8 +28,11 @@
             />
         </picture>
     {% else %}
-        <img
-            {{ placeholder ? ('src="' ~ placeholder ~ '"')|raw : '' }}
+        {% if placeholder is null %}
+            {% set placeholder = '/assets/img/no_image.jpeg' %}
+        {% endif %}
+
+        <img src="{{ placeholder }}"
             {{ id ? ('id="'~ id|trim ~ '"')|raw : '' }}
             {{ class ? ('class="'~ class|trim ~'"')|raw : '' }}
             {{ alt ? ('alt="'~ alt|trim ~'"')|raw : '' }}
