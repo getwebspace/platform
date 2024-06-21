@@ -29,7 +29,7 @@ class AttributeService extends AbstractService
         }
 
         // if address generation is enabled
-        if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
+        if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && blank($attribute->address)) {
             $attribute->address = implode('-', array_filter([$attribute->group ?? '', $attribute->title ?? uniqid()], fn ($el) => (bool) $el));
         }
 
@@ -143,7 +143,7 @@ class AttributeService extends AbstractService
             $entity->fill($data);
 
             // if address generation is enabled
-            if ($this->parameter('common_auto_generate_address', 'no') === 'yes') {
+            if ($this->parameter('common_auto_generate_address', 'no') === 'yes' && blank($entity->address)) {
                 $entity->address = implode('-', array_filter([$entity->group ?? '', $entity->title ?? uniqid()], fn ($el) => (bool) $el));
             }
 
