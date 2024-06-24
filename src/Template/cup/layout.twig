@@ -283,55 +283,61 @@
                                                                         {% if stats.pages %}
                                                                             <tr>
                                                                                 <th width="50%">{{ 'Number of pages'|locale }}:</th>
-                                                                                <td width="50%" class="text-center">{{ stats.pages }}</td>
+                                                                                <td width="50%" class="text-right">{{ stats.pages }}</td>
                                                                             </tr>
                                                                         {% endif %}
                                                                         {% if stats.publications %}
                                                                             <tr>
                                                                                 <th width="50%">{{ 'Number of publications'|locale }}:</th>
-                                                                                <td width="50%" class="text-center">{{ stats.publications }}</td>
+                                                                                <td width="50%" class="text-right">{{ stats.publications }}</td>
                                                                             </tr>
                                                                         {% endif %}
                                                                         {% if stats.guestbook %}
                                                                             <tr>
                                                                                 <th width="50%">{{ 'Number of reviews'|locale }}:</th>
-                                                                                <td width="50%" class="text-center">{{ stats.guestbook }}</td>
+                                                                                <td width="50%" class="text-right">{{ stats.guestbook }}</td>
                                                                             </tr>
                                                                         {% endif %}
                                                                         {% if stats.users %}
                                                                             <tr>
                                                                                 <th width="50%">{{ 'Number of users'|locale }}:</th>
-                                                                                <td width="50%" class="text-center">{{ stats.users }}</td>
+                                                                                <td width="50%" class="text-right">{{ stats.users }}</td>
                                                                             </tr>
                                                                         {% endif %}
-                                                                        {% if stats.catalog.category or stats.catalog.product %}
+                                                                        {% if stats.catalog.category %}
                                                                             <tr>
-                                                                                <th width="50%">{{ 'Number of categories and products'|locale }}:</th>
-                                                                                <td width="50%" class="text-center">{{ stats.catalog.category }} | {{ stats.catalog.product }}</td>
+                                                                                <th width="50%">{{ 'Number of categories'|locale }}:</th>
+                                                                                <td width="50%" class="text-right">{{ stats.catalog.category }}</td>
+                                                                            </tr>
+                                                                        {% endif %}
+                                                                        {% if stats.catalog.product %}
+                                                                            <tr>
+                                                                                <th width="50%">{{ 'Number of products'|locale }}:</th>
+                                                                                <td width="50%" class="text-right">{{ stats.catalog.product }}</td>
                                                                             </tr>
                                                                         {% endif %}
                                                                         {% if stats.catalog.order %}
                                                                             <tr>
                                                                                 <th width="50%">{{ 'Number of orders'|locale }}:</th>
-                                                                                <td width="50%" class="text-center">{{ stats.catalog.order }}</td>
+                                                                                <td width="50%" class="text-right">{{ stats.catalog.order }}</td>
                                                                             </tr>
                                                                         {% endif %}
                                                                         {% if stats.forms %}
                                                                             <tr>
                                                                                 <th width="50%">{{ 'Number of forms'|locale }}:</th>
-                                                                                <td width="50%" class="text-center">{{ stats.forms }}</td>
+                                                                                <td width="50%" class="text-right">{{ stats.forms }}</td>
                                                                             </tr>
                                                                         {% endif %}
                                                                         {% if stats.files %}
                                                                             <tr>
                                                                                 <th width="50%">{{ 'Number of files'|locale }}:</th>
-                                                                                <td width="50%" class="text-center">{{ stats.files }}</td>
+                                                                                <td width="50%" class="text-right">{{ stats.files }}</td>
                                                                             </tr>
                                                                         {% endif %}
                                                                         {% if plugins.count() %}
                                                                             <tr>
                                                                                 <th width="50%">{{ 'Number of plugins'|locale }}:</th>
-                                                                                <td width="50%" class="text-center">
+                                                                                <td width="50%" class="text-right">
                                                                                     {{ plugins.count() }}
                                                                                 </td>
                                                                             </tr>
@@ -344,7 +350,7 @@
                                                                     <table class="table table-properties">
                                                                         <tr>
                                                                             <th width="50%">{{ 'Build'|locale }}:</th>
-                                                                            <td width="50%" class="text-center">
+                                                                            <td width="50%" class="text-right">
                                                                                 {{ properties.version.branch }}
 
                                                                                 {% if properties.version.commit %}
@@ -354,35 +360,35 @@
                                                                         </tr>
                                                                         <tr>
                                                                             <th width="50%">{{ 'Operating system'|locale }}:</th>
-                                                                            <td width="50%" class="text-center">{{ properties.os }}</td>
+                                                                            <td width="50%" class="text-right">{{ properties.os }}</td>
                                                                         </tr>
                                                                         <tr>
                                                                             <th width="50%">{{ 'PHP version'|locale }}:</th>
-                                                                            <td width="50%" class="text-center">{{ properties.php }}</td>
+                                                                            <td width="50%" class="text-right">{{ properties.php }}</td>
                                                                         </tr>
                                                                         <tr>
                                                                             <th width="50%">{{ 'Dedicated RAM'|locale }}:</th>
-                                                                            <td width="50%" class="text-center">{{ properties.memory_limit }}</td>
+                                                                            <td width="50%" class="text-right">{{ properties.memory_limit }}</td>
                                                                         </tr>
                                                                         {% if properties.disable_functions %}
                                                                             <tr>
                                                                                 <th width="50%">{{ 'Disabled features'|locale }}:</th>
-                                                                                <td width="50%" class="text-center">{{ properties.disable_functions }}</td>
+                                                                                <td width="50%" class="text-right">{{ properties.disable_functions }}</td>
                                                                             </tr>
                                                                         {% endif %}
                                                                         {% if properties.disable_classes %}
                                                                             <tr>
                                                                                 <th width="50%">{{ 'Disabled classes'|locale }}:</th>
-                                                                                <td width="50%" class="text-center">{{ properties.disable_classes }}</td>
+                                                                                <td width="50%" class="text-right">{{ properties.disable_classes }}</td>
                                                                             </tr>
                                                                         {% endif %}
                                                                         <tr>
                                                                             <th width="50%">{{ 'Maximum upload file size'|locale }}:</th>
-                                                                            <td width="50%" class="text-center">{{ properties.upload_max_filesize }}</td>
+                                                                            <td width="50%" class="text-right">{{ properties.upload_max_filesize }}</td>
                                                                         </tr>
                                                                         <tr>
                                                                             <th width="50%">{{ 'Maximum downloadable files'|locale }}:</th>
-                                                                            <td width="50%" class="text-center">{{ properties.max_file_uploads }}</td>
+                                                                            <td width="50%" class="text-right">{{ properties.max_file_uploads }}</td>
                                                                         </tr>
                                                                     </table>
                                                                 </div>
