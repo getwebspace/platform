@@ -53,7 +53,10 @@ class ListAction extends CatalogAction
             unset($parts[count($parts) - 1]);
         }
 
-        return ['address' => implode('/', $parts), 'offset' => $offset];
+        return [
+            'address' => implode('/', $parts),
+            'offset' => $offset
+        ];
     }
 
     protected function prepareMain(array $args, Collection $categories): ?Response

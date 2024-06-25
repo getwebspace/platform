@@ -421,7 +421,7 @@ return function (App $app, Container $container): void {
                                     $publicationCategoryService = $container->get(\App\Domain\Service\Publication\CategoryService::class);
 
                                     if (($categories = $publicationCategoryService->read()) !== null) {
-                                        $categoryPath = $categories->pluck('address')->implode('|');
+                                        $categoryPath = $categories->pluck('address')->sortByDesc(fn ($value) => mb_strlen($value))->implode('|');
 
                                         // view categories and products
                                         $proxy

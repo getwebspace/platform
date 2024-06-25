@@ -50,7 +50,7 @@ class ListAction extends AbstractAction
                         ],
                     ]);
 
-                    // publication
+                // publication
                 default:
                     try {
                         $publication = $publicationService->read(['address' => $args['address']]);
