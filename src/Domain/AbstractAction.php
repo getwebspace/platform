@@ -275,9 +275,7 @@ abstract class AbstractAction
                 }
             }
 
-            if ($sync) {
-                $entity->files()->sync($sync);
-            }
+            $entity->files()->sync($sync);
         }
 
         return $entity;

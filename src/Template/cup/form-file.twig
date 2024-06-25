@@ -41,6 +41,16 @@
                                         'value': 1
                                     }
                                 } %}
+
+                                <div class="d-none">
+                                    {% include 'cup/form.twig' with {
+                                        'type': 'hidden',
+                                        'name': 'files[' ~ file.uuid ~ '][order]',
+                                        'args': {
+                                            'value': file.order(),
+                                        }
+                                    } %}
+                                </div>
                             </div>
                         </div>
                     {% endfor %}
