@@ -51,7 +51,7 @@ class LoginPageAction extends UserAction
             }
             $this->addError('grecaptcha', 'EXCEPTION_WRONG_GRECAPTCHA');
         } catch (UserNotFoundException $e) {
-            $this->addError($identifier, $e->getMessage());
+            $this->addError('identifier', $e->getMessage());
         } catch (WrongPasswordException $e) {
             $this->addError('password', $e->getMessage());
         }
