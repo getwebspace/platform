@@ -18,19 +18,28 @@ return function (App $app, Container $container): void {
             // API section
             $proxy
                 ->group('/api', function (Group $proxy): void {
-                    // search
                     $proxy
-                        ->map(['GET'], '/v1/search', \App\Application\Actions\Api\v1\SearchAction::class)
-                        ->setName('api:v1:search');
+                        ->group('/v1', function (Group $proxy): void {
+                            // search
+                            $proxy
+                                ->map(['GET'], '/telemetry', \App\Application\Actions\Api\v1\TelemetryAction::class)
+                                ->setName('api:v1:telemetry');
 
-                    // entity getter/setter
-                    $proxy
-                        ->map(['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], '/v1/{args:.*}', \App\Application\Actions\Api\v1\EntityAction::class)
-                        ->setName('api:v1:entity')
-                        ->add(\Slim\Middleware\BodyParsingMiddleware::class);
+                            // search
+                            $proxy
+                                ->map(['GET'], '/search', \App\Application\Actions\Api\v1\SearchAction::class)
+                                ->setName('api:v1:search')
+                                ->add(\App\Application\Middlewares\AuthorizationAPIMiddleware::class);
+
+                            // models getter/setter
+                            $proxy
+                                ->map(['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], '/v1/{args:.*}', \App\Application\Actions\Api\v1\EntityAction::class)
+                                ->setName('api:v1:entity')
+                                ->add(\Slim\Middleware\BodyParsingMiddleware::class)
+                                ->add(\App\Application\Middlewares\AuthorizationAPIMiddleware::class);
+                        });
                 })
-                ->add(\App\Application\Middlewares\AuthorizationAPIMiddleware::class)
-                ->add(\App\Application\Middlewares\IsRouteEnabledMiddleware::class)
+                ->add(\App\Application\Middlewares\IsRouteEnabledAPIMiddleware::class)
                 ->add(\App\Application\Middlewares\CORSMiddleware::class);
 
             // Auth section

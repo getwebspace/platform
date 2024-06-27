@@ -456,10 +456,32 @@
                                             {# TAB: API #}
                                             <div class="tab-pane fade" id="other-api">
                                                 {% include 'cup/parameters/field.twig' with {
-                                                    'label': 'Enable API Access',
-                                                    'description': 'Allows you to programmatically receive data from the site',
+                                                    'label': 'Enable API models access',
+                                                    'description': 'Restricts access to model data',
                                                     'type': 'select',
                                                     'name': 'entity[is_enabled]',
+                                                    'args': {
+                                                        'option': _(['yes', 'no']),
+                                                        'selected': 'yes'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Enable API search access',
+                                                    'description': 'Restricts access to search via API',
+                                                    'type': 'select',
+                                                    'name': 'search[is_enabled]',
+                                                    'args': {
+                                                        'option': _(['yes', 'no']),
+                                                        'selected': 'yes'
+                                                    }
+                                                } %}
+
+                                                {% include 'cup/parameters/field.twig' with {
+                                                    'label': 'Enable API telemetry access',
+                                                    'description': 'Restricts access to telemetry data',
+                                                    'type': 'select',
+                                                    'name': 'telemetry[is_enabled]',
                                                     'args': {
                                                         'option': _(['yes', 'no']),
                                                         'selected': 'yes'
@@ -494,8 +516,6 @@
                                                                 'selected': 'key'
                                                             }
                                                         } %}
-
-                                                        <hr>
 
                                                         {% include 'cup/parameters/field.twig' with {
                                                             'label': 'API access keys',

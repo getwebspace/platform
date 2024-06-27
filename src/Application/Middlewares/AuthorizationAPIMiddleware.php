@@ -52,11 +52,11 @@ class AuthorizationAPIMiddleware extends AbstractMiddleware
             }
 
             $response = new Response();
-            $response = $response->withHeader('Content-Type', 'application/json; charset=utf-8');
-            $response = $response->withStatus(401);
-            $response->getBody()->write(json_encode(['status' => 401]));
+            $response->getBody()->write('Client must authenticate itself');
 
-            return $response;
+            return $response
+                ->withHeader('Content-Type', 'text/plain; charset=utf-8')
+                ->withStatus(401);
         }
 
         return (new Response())->withStatus(200);
