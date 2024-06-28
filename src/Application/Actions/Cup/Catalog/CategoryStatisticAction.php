@@ -25,7 +25,7 @@ class CategoryStatisticAction extends CatalogAction
                 'co_inner.uuid',
                 $this->db->raw('SUM(
                     CASE
-                        WHEN cop_inner.tax_included = false THEN (cop_inner.price + cop_inner.tax - cop_inner.discount) * cop_inner.count
+                        WHEN cop_inner.tax_included = false THEN (cop_inner.price * (1 + cop_inner.tax / 100) - cop_inner.discount) * cop_inner.count
                         ELSE (cop_inner.price - cop_inner.discount) * cop_inner.count
                     END
                 ) as sum')
@@ -41,7 +41,7 @@ class CategoryStatisticAction extends CatalogAction
                 $this->db->raw('COUNT(DISTINCT co.uuid) as order_count'),
                 $this->db->raw('SUM(
                     CASE
-                        WHEN cop.tax_included = false THEN (cop.price + cop.tax - cop.discount) * cop.count
+                        WHEN cop.tax_included = false THEN (cop.price * (1 + cop.tax / 100) - cop.discount) * cop.count
                         ELSE (cop.price - cop.discount) * cop.count
                     END
                 ) as sum'),
@@ -90,7 +90,7 @@ class CategoryStatisticAction extends CatalogAction
             ->leftJoin('catalog_product as cp', 'cp.uuid', '=', 'cop.product_uuid')
             ->select('cp.uuid', 'cp.title', $this->db->raw('SUM(cop.count) as total_sold'),
                 $this->db->raw('SUM(CASE 
-                        WHEN cop.tax_included = false THEN (cop.price + cop.tax - cop.discount) * cop.count
+                        WHEN cop.tax_included = false THEN (cop.price * (1 + cop.tax / 100) - cop.discount) * cop.count
                         ELSE (cop.price - cop.discount) * cop.count
                     END) as total_revenue'))
             ->where('co.date', '>=', datetime()->subDays(30))
