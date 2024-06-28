@@ -15,6 +15,15 @@ class TelemetryAction extends ActionApi
     protected function action(): \Slim\Psr7\Response
     {
         return $this->respondWithJson([
+            'version' => [
+                'branch' => ($_ENV['COMMIT_BRANCH'] ?? 'other'),
+                'commit' => ($_ENV['COMMIT_SHA'] ?? false),
+            ],
+            'environment' => [
+                'os' => @implode(' ', [php_uname('s'), php_uname('r'), php_uname('m')]),
+                'php' => PHP_VERSION,
+                'memory_limit' => ini_get('memory_limit'),
+            ],
             'stats' => [
                 'pages' => \App\Domain\Models\Page::count(),
                 'publications' => [
