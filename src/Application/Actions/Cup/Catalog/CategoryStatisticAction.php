@@ -2,7 +2,6 @@
 
 namespace App\Application\Actions\Cup\Catalog;
 
-use Carbon\Carbon;
 use Ramsey\Uuid\Uuid;
 
 class CategoryStatisticAction extends CatalogAction
@@ -52,14 +51,14 @@ class CategoryStatisticAction extends CatalogAction
             ->leftJoinSub($orderSumsSubquery, 'order_sums', function ($join): void {
                 $join->on('co.uuid', '=', 'order_sums.uuid');
             })
-            ->where('co.date', '>=', Carbon::now()->subDays(30))
+            ->where('co.date', '>=', datetime()->subDays(30))
             ->groupBy($this->db->raw('DATE(co.date)'))
             ->orderBy($this->db->raw('DATE(co.date)'))
             ->get();
 
         if ($orders->isNotEmpty()) {
-            $startDate = Carbon::now()->subDays(30);
-            $endDate = Carbon::now();
+            $startDate = datetime()->subDays(30);
+            $endDate = datetime();
             $period = new \DatePeriod($startDate, new \DateInterval('P1D'), $endDate->addDay());
 
             $orders = $orders->keyBy('date');
@@ -94,8 +93,9 @@ class CategoryStatisticAction extends CatalogAction
                         WHEN cop.tax_included = false THEN (cop.price + cop.tax - cop.discount) * cop.count
                         ELSE (cop.price - cop.discount) * cop.count
                     END) as total_revenue'))
-            ->where('co.date', '>=', Carbon::now()->subDays(30))
+            ->where('co.date', '>=', datetime()->subDays(30))
             ->where('cp.type', '=', 'product')
+            ->where('cp.status', '=', \App\Domain\Casts\Catalog\Status::WORK)
             ->groupBy('cp.uuid', 'cp.title')
             ->orderBy('total_sold', 'desc')
             ->orderBy('total_revenue', 'desc')
@@ -116,7 +116,7 @@ class CategoryStatisticAction extends CatalogAction
         $subquery = $this->db
             ->table('catalog_order')
             ->select($this->db->raw('COALESCE(user_uuid, ' . $concat . ') AS identifier, delivery, uuid'))
-            ->where('date', '>=', Carbon::now()->subDays(30));
+            ->where('date', '>=', datetime()->subDays(30));
 
         return $this->db
             ->table($this->db->raw("({$subquery->toSql()}) as combined"))
