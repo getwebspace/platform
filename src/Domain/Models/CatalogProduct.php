@@ -216,6 +216,24 @@ class CatalogProduct extends Model
         return round($price, $precision);
     }
 
+    public function price_lowest(int $days = 30, int $precision = 0): ?float
+    {
+        $price = $this::query()
+            ->from('catalog_order_product as cop')
+            ->selectRaw('MIN(
+                    CASE
+                        WHEN cop.tax_included = false THEN (cop.price * (1 + cop.tax / 100) - cop.discount)
+                        ELSE (cop.price - cop.discount)
+                    END
+                ) as lowest')
+            ->leftJoin('catalog_order as co', 'cop.order_uuid', '=', 'co.uuid')
+            ->where('cop.product_uuid', $this->uuid)
+            ->where('co.date', '>=', datetime()->subDays($days))
+            ->value('lowest');
+
+        return round($price, $precision);
+    }
+
     public function tax(string $type = 'price', int $precision = 0): float
     {
         $price = match ($type) {

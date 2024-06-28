@@ -356,7 +356,7 @@ if (!function_exists(('datetime'))) {
             is_string($value), is_numeric($value) => new Carbon($value),
             is_a($value, DateTime::class) => Carbon::instance($value),
             is_a($value, Carbon::class) => clone $value,
-            default => new Carbon('now'),
+            default => Carbon::now(),
         };
     }
 }
