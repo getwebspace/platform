@@ -95,7 +95,6 @@ class CategoryStatisticAction extends CatalogAction
                     END) as total_revenue'))
             ->where('co.date', '>=', datetime()->subDays(30))
             ->where('cp.type', '=', 'product')
-            ->where('cp.status', '=', \App\Domain\Casts\Catalog\Status::WORK)
             ->groupBy('cp.uuid', 'cp.title')
             ->orderBy('total_sold', 'desc')
             ->orderBy('total_revenue', 'desc')
