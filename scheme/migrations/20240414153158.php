@@ -53,6 +53,9 @@ final class V20240414153158 extends AbstractMigration
             ->addColumn('source', 'string', ['limit' => 512, 'default' => ''])
             ->addColumn('language', 'string', ['limit' => 5, 'default' => ''])
             ->addColumn('external_id', 'string', ['limit' => 255, 'default' => ''])
+            ->addIndex(['username'], ['unique' => true])
+            ->addIndex(['email'], ['unique' => true])
+            ->addIndex(['phone'], ['unique' => true])
             ->create();
 
         // create table user token
@@ -125,7 +128,7 @@ final class V20240414153158 extends AbstractMigration
         $table = $this->table('form_data', ['id' => false, 'primary_key' => 'uuid']);
         $table
             ->addColumn('uuid', 'char', ['limit' => 36])
-            ->addColumn('form_uuid', 'char', ['limit' => 36, 'default' => '00000000-0000-0000-0000-000000000000'])
+            ->addColumn('form_uuid', 'char', ['limit' => 36])
             ->addForeignKey('form_uuid', 'form', 'uuid', ['delete' => 'CASCADE'])
             ->addColumn('data', 'text', ['default' => '{}'])
             ->addColumn('message', 'text', ['default' => ''])
@@ -375,7 +378,8 @@ final class V20240414153158 extends AbstractMigration
             ->addColumn('value', 'text', ['default' => '{}'])
             ->addColumn('order', 'integer', ['default' => 1])
             ->addColumn('status', 'boolean', ['default' => 0])
-            ->addIndex(['type', 'title'], ['unique' => true])
+            ->addIndex(['title'], ['unique' => true])
+            ->addIndex(['type'], ['unique' => true])
             ->create();
 
         // create table task
@@ -389,7 +393,6 @@ final class V20240414153158 extends AbstractMigration
             ->addColumn('params', 'text', ['default' => '{}'])
             ->addColumn('output', 'string', ['limit' => 1000, 'default' => ''])
             ->addColumn('date', 'datetime', ['default' => 'CURRENT_TIMESTAMP'])
-            ->addIndex('title')
             ->addIndex('status')
             ->create();
     }
