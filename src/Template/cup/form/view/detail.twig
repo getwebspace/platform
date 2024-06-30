@@ -21,47 +21,50 @@
                         </a>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body p-0">
                     <iframe src="/cup/form/{{ item.form_uuid }}/view/{{ item.uuid }}/preview" frameborder="0" style="width: 100%; min-height: 350px; overflow-y: scroll"></iframe>
+                </div>
 
-                    {% if item.files %}
+                {% if item.files %}
+                    <div class="card-body">
                         <table class="table table-striped">
                             <thead>
-                                <tr>
-                                    <th scope="col" style="width: 80%;">{{ 'File name'|locale }}</th>
-                                    <th scope="col" class="text-right">{{ 'Size'|locale }}</th>
-                                </tr>
+                            <tr>
+                                <th scope="col" style="width: 80%;">{{ 'File name'|locale }}</th>
+                                <th scope="col" class="text-right">{{ 'Size'|locale }}</th>
+                            </tr>
                             </thead>
 
                             <tbody>
-                                {% for file in item.files %}
-                                    <tr>
-                                        <td>
-                                            {% if 'image/' in file.type %}
-                                                <i class="far fa-file-image"></i>
-                                            {% elseif 'text/' in file.type %}
-                                                <i class="far fa-file-image"></i>
-                                            {% elseif '/pdf' in file.type %}
-                                                <i class="far fa-file-pdf"></i>
-                                            {% elseif '/msword' in file.type or 'wordprocessingml' in file.type %}
-                                                <i class="far fa-file-word"></i>
-                                            {% elseif '/ms-excel' in file.type or 'spreadsheetml' in file.type %}
-                                                <i class="far fa-file-excel"></i>
-                                            {% else %}
-                                                <i class="far fa-file"></i>
-                                            {% endif %}
+                            {% for file in item.files %}
+                                <tr>
+                                    <td>
+                                        {% if 'image/' in file.type %}
+                                            <i class="far fa-file-image"></i>
+                                        {% elseif 'text/' in file.type %}
+                                            <i class="far fa-file-image"></i>
+                                        {% elseif '/pdf' in file.type %}
+                                            <i class="far fa-file-pdf"></i>
+                                        {% elseif '/msword' in file.type or 'wordprocessingml' in file.type %}
+                                            <i class="far fa-file-word"></i>
+                                        {% elseif '/ms-excel' in file.type or 'spreadsheetml' in file.type %}
+                                            <i class="far fa-file-excel"></i>
+                                        {% else %}
+                                            <i class="far fa-file"></i>
+                                        {% endif %}
 
-                                            <a href="{{ file.public_path() }}" target="_blank">
-                                                {{ file.filename() }}
-                                            </a>
-                                        </td>
-                                        <td class="text-right">{{ file.size() }}</td>
-                                    </tr>
-                                {% endfor %}
+                                        <a href="{{ file.public_path() }}" target="_blank">
+                                            {{ file.filename() }}
+                                        </a>
+                                    </td>
+                                    <td class="text-right">{{ file.size() }}</td>
+                                </tr>
+                            {% endfor %}
                             </tbody>
                         </table>
-                    {% endif %}
-                </div>
+                    </div>
+                {% endif %}
+
                 <div class="card-footer">
                     <form action="/cup/form/{{ item.form_uuid }}/view/{{ item.uuid }}/delete" method="post" onsubmit="return confirm('{{ 'Are you sure you want to delete the entry?'|locale }}');">
                         <button type="submit" class="btn btn-danger btn-round">
