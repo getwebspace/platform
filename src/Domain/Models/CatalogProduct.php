@@ -231,7 +231,7 @@ class CatalogProduct extends Model
             ->where('co.date', '>=', datetime()->subDays($days))
             ->value('lowest');
 
-        return round($price, $precision);
+        return $price ? round($price, $precision) : null;
     }
 
     public function tax(string $type = 'price', int $precision = 0): float
