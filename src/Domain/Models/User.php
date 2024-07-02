@@ -4,6 +4,7 @@ namespace App\Domain\Models;
 
 use App\Domain\Casts\Boolean;
 use App\Domain\Casts\Email;
+use App\Domain\Casts\Json;
 use App\Domain\Casts\Phone;
 use App\Domain\Casts\User\Company as UserCompany;
 use App\Domain\Casts\User\Legal as UserLegal;
@@ -38,6 +39,7 @@ use Illuminate\Support\Collection;
  * @property array $messenger
  * @property string $website
  * @property string $source
+ * @property array $loyalty
  * @property \DateTime $register
  * @property \DateTime $change
  * @property string $language
@@ -83,6 +85,7 @@ class User extends Model
         'messenger',
         'website',
         'source',
+        'loyalty',
         'register',
         'change',
         'language',
@@ -114,6 +117,7 @@ class User extends Model
         'messenger' => UserMessenger::class,
         'website' => 'string',
         'source' => 'string',
+        'loyalty' => Json::class,
         'register' => 'datetime',
         'change' => 'datetime',
         'language' => 'string',
@@ -143,6 +147,7 @@ class User extends Model
         'messenger' => '{}',
         'website' => '',
         'source' => '',
+        'loyalty' => '[]',
         'register' => 'now',
         'change' => 'now',
         'language' => '',
