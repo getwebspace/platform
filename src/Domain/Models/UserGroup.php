@@ -47,7 +47,7 @@ class UserGroup extends Model
     protected $attributes = [
         'title' => '',
         'description' => '',
-        'access' => '{}',
+        'access' => '[]',
     ];
 
     protected $hidden = [
