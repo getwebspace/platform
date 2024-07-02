@@ -4,6 +4,7 @@
 ![Visitors](https://visitor-badge.glitch.me/badge?page_id=getwebspace.platform)
 
 ## WebSpace Engine
+
 [Website](https://getwebspace.org/) |
 [Documentation](https://github.com/getwebspace/platform/wiki) |
 [Official Repository](https://github.com/getwebspace/platform) |
@@ -11,35 +12,37 @@
 [Docker template](https://github.com/getwebspace/platform-template) |
 [Demo website here](https://demo.getwebspace.org)
 
-Simple free open source multi-user site engine with great functionality,
-primarily intended for: online stores and mass media or blogs.
+![Demo site](image.jpeg)
 
-![Demo site](image.png)
+A simple yet powerful e-commerce platform, this free, open-source, multi-user site engine
+offers extensive functionality, making it ideal for online stores, mass media, and blogs.
 
 ## Features
+
 - Static pages
 - Users:
-  * User groups
-  * Permissions
-  * Mailing list
+    * Users
+    * User groups
+    * Permissions
+    * Mailing list
 - Publications
-    * News
+    * Posts
     * Categories
 - Shop:
-    * Catalog
+    * Catalogs
     * Products
     * Attributes
     * Orders
     * Statistic
 - Dynamic forms
 - Guestbook
-- Files and image optimization (GD -> WebP)
+- Files and Image optimization (GD -> WebP)
 - Background tasks
-- Templates in Twig
+- Theme templates in Twig
 - Mailing, via:
     * SMTP
     * SendPulse
-- Editor, files:
+- File editor:
     * Theme
     * Resource
 - Plugins API, types:
@@ -51,79 +54,76 @@ primarily intended for: online stores and mass media or blogs.
     * Legacy
 - HTTP API:
     * Dedicated REST API
+    * Search API
     * Each public controller as API
-- reCAPTCHA
+    * Telemetry
+- Included reCAPTCHA
+- Latest PHP version
+- Latest dependencies
 - Docker compatible
 
 and more..
 
-## Themes
-- [Default shop theme](https://github.com/getwebspace/platform-default-theme)
+<details>
+  <summary>Quickstart</summary>
 
-## Plugins
-- [Search optimization](https://github.com/getwebspace/platform-plugin-seo)
-- [ClearCache](https://github.com/getwebspace/platform-plugin-clearcache)
-- [Turbo PWA](https://github.com/getwebspace/platform-plugin-turbo)
+  **Production mode**  
+  [Installation instructions](https://github.com/getwebspace/platform/wiki/Installation-(Docker)) from Docker template [getwebspace/platform-template](https://github.com/getwebspace/platform-template)
+  
+  **Developer mode**  
+  Clone repo and use docker by running the command: `make up`, then open `http://localhost:9000`
+</details>
 
-## Languages
-- English (default)
-- Ukrainian ([plugin](https://github.com/getwebspace/platform-lang-ukrainian))
-- Russian ([plugin](https://github.com/getwebspace/platform-lang-russian))
+<details>
+  <summary>Environment variables</summary>
 
-## Roadmap
-- Products series
-- New attributes
+  You can define the next environment variables
+  
+  | Type    | Variable Name      | Default        | description                                                       |
+  |---------|--------------------|----------------|-------------------------------------------------------------------|
+  | Build   | BUILD_DEPENDENCIES |                | Dependencies used in the build                                    |   
+  | Build   | DEPENDENCIES       |                | Core Libraries                                                    |   
+  | Build   | EXTRA_EXTENSIONS   | pdo_mysql      | Additional Libraries                                              |   
+  | Build   | PLATFORM_HOME      | /var/container | Home directory                                                    |   
+  | Runtime | DEBUG              | 0              | Debug mode                                                        |   
+  | Runtime | TEST               | 0              | Test mode                                                         |   
+  | Runtime | DATABASE           |                | PDO Database params (default: sqlite)                             |   
+  | Runtime | SIMPLE_PHONE_CHECK | 0              | Checking the user's phone number for compliance with the standard |   
+  | Runtime | TZ                 |                | TimeZone (default: UTC)                                           |   
+  
+  **Database Example**:
+  `mysql://my_user:my_pass@127.0.0.0:3306/example`
+</details>
 
-## Quickstart install
-### Production mode
-[Installation instructions](https://github.com/getwebspace/platform/wiki/Installation-(Docker)) from Docker template [getwebspace/platform-template](https://github.com/getwebspace/platform-template)
+<details>
+  <summary>Makefile commands</summary>
+  
+  | Command               | Action                                        |
+  |-----------------------|-----------------------------------------------|
+  | `make up`             | Up                                            |
+  | `make down`           | Down                                          |
+  | `make run-test`       | PHPUnit test's                                |
+  | `make run-lint`       | PHP Coding Standards automatically code fixer |
+  | `make migrate-up`     | Phinx migration up                            |
+  | `make migrate-down`   | Phinx migration rollback                      |
+  | `make migrate-create` | Phinx create empty migration file             |
+  | `make migrate-status` | Phinx check status                            |
+</details>
 
-### Developer mode
-Use docker by running the command: `docker-compose up -d`, then open `http://localhost:9000`
+<details>
+  <summary>Verified addons (plugins)</summary>
 
-### Environment variables
-You can define the next environment variables
-
-| Type    | Variable Name      | Default        | description                                                       |
-|---------|--------------------|----------------|-------------------------------------------------------------------|
-| Build   | BUILD_DEPENDENCIES |                | Dependencies used in the build                                    |   
-| Build   | DEPENDENCIES       |                | Core Libraries                                                    |   
-| Build   | EXTRA_EXTENSIONS   | pdo_mysql      | Additional Libraries                                              |   
-| Build   | PLATFORM_HOME      | /var/container | Home directory                                                    |   
-| Runtime | DEBUG              | 0              | Debug mode                                                        |   
-| Runtime | TEST               | 0              | Test mode                                                         |   
-| Runtime | DATABASE           |                | PDO Database params (default: sqlite)                             |   
-| Runtime | SIMPLE_PHONE_CHECK | 0              | Checking the user's phone number for compliance with the standard |   
-| Runtime | TZ                 |                | TimeZone (default: UTC)                                           |   
-
-**Database Example**:
-`mysql://my_user:my_pass@127.0.0.0:3306/example`
-
-#### Install dependencies
-```shell script
-./composer install
-```
-
-#### Static analyzer
-```shell script
-./phpcs
-```
-
-#### Unit tests
-```shell script
-./phpunit [..]
-```
-
-#### Post install check chmod's
-```shell script
-chmod -R 0777 plugin
-chmod -R 0777 public/resource
-chmod -R 0777 theme
-chmod -R 0777 var
-```
+  | Themes                                                                | Plugins                                                                   | Languages                                                           |
+  |-----------------------------------------------------------------------|---------------------------------------------------------------------------|---------------------------------------------------------------------|
+  | [Default shop](https://github.com/getwebspace/platform-default-theme) | [Search optimization](https://github.com/getwebspace/platform-plugin-seo) | English                                                             |
+  |                                                                       | [ClearCache](https://github.com/getwebspace/platform-plugin-clearcache)   | [Ukrainian](https://github.com/getwebspace/platform-lang-ukrainian) |
+  |                                                                       | [Turbo PWA](https://github.com/getwebspace/platform-plugin-turbo)         | [Russian](https://github.com/getwebspace/platform-lang-russian)     |
+</details>
 
 ## Collaborators
+
 <a href="https://github.com/alksily"><img src="https://avatars.githubusercontent.com/u/5148853?v=4" alt="alksily" width="40"/></a>
 
 ## Copyright & license
+
 Licensed under the MIT license. See [License File](LICENSE.md) for more information.
