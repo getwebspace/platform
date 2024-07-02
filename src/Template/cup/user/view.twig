@@ -97,9 +97,9 @@
                             <dt class="col-4">{{ 'Web-site'|locale }}</dt>
                             <dd class="col-8"><a href="{{ item.website }}" target="_blank">{{ item.website }}</a></dd>
                         {% endif %}
-                        {% if item.messengers %}
+                        {% if item.messenger %}
                             <dt class="col-4">{{ 'Messengers'|locale }}</dt>
-                            <dd class="col-8">{{ item.messengers.implode(', ') }}</dd>
+                            <dd class="col-8">{{ item.messenger.implode(', ') }}</dd>
                         {% endif %}
                         {% if item.legal.code or item.legal.number %}
                             <dt class="col-4">{{ 'Registration No'|locale }}</dt>
