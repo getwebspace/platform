@@ -22,5 +22,8 @@ migrate-up:
 migrate-down:
 	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/phinx rollback
 
+migrate-create:
+	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/phinx create
+
 migrate-status:
 	@docker-compose -f docker-compose.dev.yml exec platform ./vendor/bin/phinx status
