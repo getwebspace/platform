@@ -3,12 +3,6 @@
 namespace App\Application\Actions\Api\v1;
 
 use App\Application\Actions\Api\ActionApi;
-use App\Domain\AbstractException;
-use App\Domain\Service\Catalog\ProductService as CatalogProductService;
-use App\Domain\Service\Page\PageService;
-use App\Domain\Service\Publication\PublicationService;
-use Illuminate\Support\Collection;
-use Psr\Container\ContainerExceptionInterface;
 
 class TelemetryAction extends ActionApi
 {

@@ -55,7 +55,7 @@ class ListAction extends CatalogAction
 
         return [
             'address' => implode('/', $parts),
-            'offset' => $offset
+            'offset' => $offset,
         ];
     }
 
