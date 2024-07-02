@@ -17,52 +17,54 @@
 A simple yet powerful e-commerce platform, this free, open-source, multi-user site engine
 offers extensive functionality, making it ideal for online stores, mass media, and blogs.
 
-## Features
+<details>
+  <summary>Features</summary>
 
-- Static pages
-- Users:
+  - Static pages
+  - Users:
     * Users
     * User groups
     * Permissions
     * Mailing list
-- Publications
+  - Publications
     * Posts
     * Categories
-- Shop:
+  - Shop:
     * Catalogs
     * Products
     * Attributes
     * Orders
     * Statistic
-- Dynamic forms
-- Guestbook
-- Files and Image optimization (GD -> WebP)
-- Background tasks
-- Theme templates in Twig
-- Mailing, via:
+  - Dynamic forms
+  - Guestbook
+  - Files and Image optimization (GD -> WebP)
+  - Background tasks
+  - Theme templates in Twig
+  - Mailing, via:
     * SMTP
     * SendPulse
-- File editor:
+  - File editor:
     * Theme
     * Resource
-- Plugins API, types:
+  - Plugins API, types:
     * Default
     * OAuth
     * Delivery
     * Payment
     * Language (locale)
     * Legacy
-- HTTP API:
+  - HTTP API:
     * Dedicated REST API
     * Search API
     * Each public controller as API
     * Telemetry
-- Included reCAPTCHA
-- Latest PHP version
-- Latest dependencies
-- Docker compatible
+  - Included reCAPTCHA
+  - Latest PHP version
+  - Latest dependencies
+  - Docker compatible
 
-and more..
+  and more..
+</details>
 
 <details>
   <summary>Quickstart</summary>
