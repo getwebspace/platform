@@ -573,7 +573,7 @@ class TwigExtension extends AbstractExtension
             ->select('cp.*')
             ->addSelect($this->db->raw('COUNT(cop.product_uuid) as order_count'))
             ->from('catalog_product as cp')
-            ->leftJoin('catalog_order_product as cop', 'cp.uuid', '=', 'cop.product_uuid')
+            ->join('catalog_order_product as cop', 'cp.uuid', '=', 'cop.product_uuid')
             ->where('cp.type', '=', $type)
             ->where('cp.status', '=', \App\Domain\Casts\Catalog\Status::WORK)
             ->groupBy('cp.uuid', ...array_map(fn ($col) => "cp.{$col}", array_keys((new \App\Domain\Models\CatalogProduct())->getAttributes())))
